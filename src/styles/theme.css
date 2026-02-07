@@ -1,0 +1,27 @@
+:root {
+  /* LIGHT DEFAULT */
+  --bg: #F6F8FB;
+  --card: rgba(255, 255, 255, 0.8);
+  --text: #0f172a;
+  --muted: #475569;
+  --border: rgba(0, 0, 0, 0.08);
+  --primary: #3b82f6;
+  --hover: #3b82f6;
+
+  /* design tokens */
+  --radius: 10px;
+}
+
+.dark {
+  /* DARK */
+  --bg: #0B1220;
+  --card: rgba(83, 83, 83, 0.062);
+  --text: #ffffff;
+  --muted: #94a3b8;
+  --border: rgba(255, 255, 255, 0.1);
+  --primary: #60a5fa;
+  --hover: #3b82f6;
+
+  /* pode manter o mesmo radius ou mudar */
+  --radius: 10px;
+}

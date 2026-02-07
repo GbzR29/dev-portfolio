@@ -18,7 +18,7 @@ export function MyButton({
 
   const styles = {
     primary:
-      "bg-blue-500 text-black hover:bg-blue-400 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)]",
+      "bg-blue-500 text-white hover:bg-blue-400 hover:shadow-[0_0_25px_rgba(59,130,246,0.6)]",
 
     outline:
       "border border-blue-500 text-blue-400 hover:bg-blue-500/10 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"

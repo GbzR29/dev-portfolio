@@ -1,18 +1,19 @@
 import Typewriter from "@/components/Typewriter";
 import { MyButton } from "@/components/ui/Button";
 
-export default function HeroContent() {
+export default function HeroCard() {
   return (
-    <div className="
-      bg-white/5
-      backdrop-blur-md
-      border border-white/10
-      rounded-2xl
-      p-10
-      space-y-6
-      shadow-xl
-    ">
-
+    <div
+      className="
+        bg-[var(--card)]
+        backdrop-blur-md
+        border border-[var(--border)]
+        border-animated
+        rounded-2xl
+        p-10
+        space-y-6
+        shadow-xl">
+            
       <h1 className="text-5xl font-bold">
         <Typewriter
           text="Gabriel Carvalho"

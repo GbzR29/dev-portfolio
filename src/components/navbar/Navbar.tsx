@@ -1,5 +1,8 @@
 "use client";
 
+import { useTheme } from "@/components/providers/ThemeProvider";
+
+
 import { useState } from "react";
 import { Menu, X, Moon, Languages } from "lucide-react";
 import Image from "next/image";
@@ -7,7 +10,9 @@ import { NavLinks } from "./NavLinks";
 import { MobileMenu } from "./MobileMenu";
 
 export default function Navbar() {
+  
   const [open, setOpen] = useState(false);
+  const { toggleTheme } = useTheme();
 
   return (
     <>
@@ -26,8 +31,8 @@ export default function Navbar() {
           <NavLinks />
 
           <div className="flex gap-4 text-gray-400">
-            <Moon className="cursor-pointer hover:text-blue-400" size={20} />
-            <Languages className="cursor-pointer hover:text-blue-400" size={20} />
+            <Moon onClick={toggleTheme} className="cursor-pointer hover:text-blue-400" size={24} />
+            <Languages className="cursor-pointer hover:text-blue-400" size={24} />
           </div>
         </div>
 

@@ -28,18 +28,19 @@ export default function StackCard() {
   return (
     <div className="
       w-full max-w-sm   
-      bg-[#0B1220]/80
+      bg-[var(--card)]
       backdrop-blur-md
-      border border-white/10
+      border-animated
+      border border-[var(--border)]
       rounded-2xl
       p-8
       shadow-xl
-      hover:border-blue-400/30
+       
       transition-all
       duration-300">
         
       <h3 className="text-blue-400 font-semibold mb-6 text-2xl">
-        Stack
+        My Skills
       </h3>
 
       <ul className="flex flex-wrap gap-3">

@@ -22,7 +22,7 @@ export default function TriangleParticles() {
     let particles: Particle[] = [];
     let animationId: number;
 
-    const PARTICLE_COUNT = 100; 
+    const PARTICLE_COUNT = 200; 
 
     // -------------------------
     // resize

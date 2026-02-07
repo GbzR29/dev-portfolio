@@ -5,7 +5,7 @@ export default function HeroAvatar() {
     <div className="relative w-[300px] h-[300px]">
 
       {/* glow */}
-      <div className="absolute inset-0 rounded-full blur-3xl bg-blue-500/30" />
+      <div className="absolute inset-0 rounded-full blur-3xl bg-blue-500/60" />
 
       {/* image */}
       <div className="relative rounded-full overflow-hidden">

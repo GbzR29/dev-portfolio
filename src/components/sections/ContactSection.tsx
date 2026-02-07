@@ -9,18 +9,18 @@ export function ContactSection() {
       "
     >
       <div className="max-w-3xl mx-auto space-y-10 text-center">
-        <h2 className="text-3xl font-semibold">Contato</h2>
+        <h2 className="text-3xl font-semibold">Contact</h2>
 
         <p className="text-gray-400">
-          Quer conversar sobre projetos, jogos ou tecnologia? Me chama.
+          Want to talk about projects, games, or technology? Send me a message.
         </p>
 
         <div className="flex justify-center gap-6">
           <a
-            href="mailto:seuemail@email.com"
+            href="mailto:gabrielfeliperc@hotmail.com"
             className="px-6 py-3 bg-blue-500 rounded-xl hover:bg-blue-600 transition"
           >
-            Enviar email
+            Send email
           </a>
 
           <a

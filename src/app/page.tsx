@@ -6,18 +6,18 @@ import { ProjectsSection } from "@/components/sections/ProjectsSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 
 import TriangleParticles from "@/components/particles/TriangleParticles";
+import HeroCard from "@/components/cards/HeroCard";
 
 
 
 export default function Home() {
   return (
       
-    <main className="min-h-screen bg-[#0B1220] text-white flex flex-col">
+    <main className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)]">
 
       <TriangleParticles />  
 
       <Navbar/>
-
       <HeroSection />
       <AboutSection />
       <ProjectsSection />
