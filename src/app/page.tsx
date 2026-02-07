@@ -8,7 +8,19 @@ export default function Home() {
 
       <Navbar />
 
-      <section className="flex flex-1 items-center justify-between px-20">
+      <section
+        className="
+          flex flex-1 items-center justify-between
+
+          px-20
+
+          max-lg:flex-col-reverse
+          max-lg:justify-center
+          max-lg:gap-12
+          max-lg:px-6
+          max-lg:py-12
+        "
+      >
         <HeroContent />
         <HeroAvatar />
       </section>
