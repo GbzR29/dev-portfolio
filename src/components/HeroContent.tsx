@@ -1,5 +1,5 @@
 import Typewriter from "@/components/Typewriter";
-import { MyButton } from "@/components/Button";
+import { MyButton } from "@/components/ui/Button";
 
 export default function HeroContent() {
   return (
