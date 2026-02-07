@@ -26,20 +26,19 @@ export default function StackCard() {
   ];
 
   return (
-    <div
-      className="
-        bg-[#0B1220]/80
-        backdrop-blur-md
-        border border-white/10
-        rounded-2xl
-        p-8
-        shadow-xl
-        hover:border-blue-400/30
-        transition-all
-        duration-300
-      "
-    >
-      <h3 className="text-blue-400 font-semibold mb-6 text-lg">
+    <div className="
+      w-full max-w-sm   
+      bg-[#0B1220]/80
+      backdrop-blur-md
+      border border-white/10
+      rounded-2xl
+      p-8
+      shadow-xl
+      hover:border-blue-400/30
+      transition-all
+      duration-300">
+        
+      <h3 className="text-blue-400 font-semibold mb-6 text-2xl">
         Stack
       </h3>
 
@@ -53,7 +52,7 @@ export default function StackCard() {
               rounded-lg
               bg-white/5
               border border-white/10
-              text-sm text-gray-300
+              text-base text-gray-300
 
               hover:bg-blue-500/10
               hover:border-blue-400/40

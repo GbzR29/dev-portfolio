@@ -23,7 +23,7 @@ export default function AboutSection() {
       <div className="flex flex-1 items-center justify-between gap-24 px-25 max-lg:flex-col-reverse max-lg:justify-center max-lg:gap-12 max-lg:px-6 max-lg:py-12">
 
         {/* text */}
-        <div className="flex-2 max-w-2xl space-y-8">
+        <div className="flex-1 max-w-2xl space-y-8">
 
           <h2 className="text-4xl font-bold">
             About me
