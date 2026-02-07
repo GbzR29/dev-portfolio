@@ -37,16 +37,13 @@ export const metadata: Metadata = {
   description: "Welcome to my online corner!",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+
+
+export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
+
   return (
     <html lang="pt-br">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} ${kanit.variable} ${ubuntu.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} ${kanit.variable} ${ubuntu.variable} antialiased`}>
         {children}
       </body>
     </html>

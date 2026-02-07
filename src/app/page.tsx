@@ -1,29 +1,27 @@
 import Navbar from "@/components/navbar/Navbar";
-import HeroContent from "@/components/HeroContent";
-import HeroAvatar from "@/components/HeroAvatar";
+import AboutSection from "@/components/sections/AboutSection";
+
+import HeroSection from "@/components/sections/HeroSection";
+import { ProjectsSection } from "@/components/sections/ProjectsSection";
+import { ContactSection } from "@/components/sections/ContactSection";
+
+import TriangleParticles from "@/components/particles/TriangleParticles";
+
+
 
 export default function Home() {
   return (
+      
     <main className="min-h-screen bg-[#0B1220] text-white flex flex-col">
 
-      <Navbar />
+      <TriangleParticles />  
 
-      <section
-        className="
-          flex flex-1 items-center justify-between
+      <Navbar/>
 
-          px-20
-
-          max-lg:flex-col-reverse
-          max-lg:justify-center
-          max-lg:gap-12
-          max-lg:px-6
-          max-lg:py-12
-        "
-      >
-        <HeroContent />
-        <HeroAvatar />
-      </section>
+      <HeroSection />
+      <AboutSection />
+      <ProjectsSection />
+      <ContactSection />      
 
     </main>
   );
