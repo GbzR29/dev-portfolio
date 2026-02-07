@@ -4,8 +4,21 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 import StackCard from "@/components/cards/StackCard";
+import ReadMoreButton from "@/components/ui/ReadMoreButton";
 
 
+
+{/*flex flex-1 
+  items-center 
+  justify-between 
+  gap-24
+  px-25 
+
+  max-lg:flex-col-reverse 
+  max-lg:justify-center 
+  max-lg:gap-12 
+  max-lg:px-6 
+  max-lg:py-12*/}
 
 export default function AboutSection() {
   const [open, setOpen] = useState(false);
@@ -18,9 +31,10 @@ export default function AboutSection() {
         px-6 sm:px-10 lg:px-20
         py-24
         border-t border-white/5
-      "
-    >
-      <div className="flex flex-1 items-center justify-between gap-24 px-25 max-lg:flex-col-reverse max-lg:justify-center max-lg:gap-12 max-lg:px-6 max-lg:py-12">
+      ">
+
+        <div className="
+        flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-32 w-full max-w-6xl mx-auto">
 
         {/* text */}
         <div className="flex-1 max-w-2xl space-y-8">
@@ -65,22 +79,10 @@ export default function AboutSection() {
           </div>
 
           {/* button */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="
-              flex items-center gap-2
-              text-blue-400
-              hover:text-blue-300
-              transition font-medium
-            "
-          >
-            {open ? "Read less" : "Read more"}
-
-            <ChevronDown
-              size={18}
-              className={`transition-transform ${open ? "rotate-180" : ""}`}
-            />
-          </button>
+          <ReadMoreButton
+            open={open}
+            onToggle={() => setOpen(!open)}
+          />
         </div>
 
 
