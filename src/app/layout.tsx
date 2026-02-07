@@ -34,7 +34,7 @@ const ubuntu = Ubuntu({
 
 export const metadata: Metadata = {
   title: "Gabriel Carvalho",
-  description: "!Welcome to my online corner!",
+  description: "Welcome to my online corner!",
 };
 
 export default function RootLayout({
