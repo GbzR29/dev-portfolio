@@ -26,6 +26,7 @@ export default function StackCard() {
 
   return (
     <Card maxWidth="sm">
+      
       <h3 className="text-blue-400 font-semibold mb-6 text-2xl">
         My Skills
       </h3>

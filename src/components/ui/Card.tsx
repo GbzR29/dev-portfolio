@@ -20,7 +20,6 @@ export function Card({
   onClick,
   hoverable = true,
 }: CardProps) {
-  // Mapeamento de padding para classes Tailwind
   const paddingClasses = {
     sm: "p-4",
     md: "p-6",
@@ -34,9 +33,8 @@ export function Card({
       onClick={onClick}
       className={`
         bg-[var(--card)]
-        backdrop-blur-md
-        border-animated
-        border border-[var(--border)]
+        backdrop-blur-sm       
+        card-glow-animated       
         rounded-2xl
         shadow-xl
         ${paddingClasses[padding]}

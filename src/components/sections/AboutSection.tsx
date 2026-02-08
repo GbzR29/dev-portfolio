@@ -1,3 +1,4 @@
+// components/sections/AboutSection.tsx
 "use client";
 
 import { useState } from "react";
@@ -11,12 +12,10 @@ export default function AboutSection() {
     <section
       id="about"
       className="
-        relative
         w-full
         py-24
         px-6 sm:px-10 lg:px-20
         border-t border-white/5
-        /* No mobile, removemos min-h-screen e items-center para evitar bugs de scroll/clique */
         flex flex-col justify-center
         lg:min-h-screen lg:flex-row lg:items-center
       "
@@ -24,19 +23,16 @@ export default function AboutSection() {
       <div className="
         w-full max-w-7xl mx-auto
         flex flex-col lg:flex-row 
-        items-center lg:items-start 
+        lg:items-center
         justify-between 
         gap-16 lg:gap-12
-        isolation-isolate
       ">
         
         {/* LADO ESQUERDO: Texto */}
-        <div className="w-full lg:max-w-xl space-y-8 relative z-50 order-1">
-          <h2 className="text-4xl font-bold">
-            About me
-          </h2>
+        <div className="w-full lg:max-w-xl space-y-8">
+          <h2 className="text-4xl font-bold">About me</h2>
 
-          <div className="relative group">
+          <div className="relative">
             <div
               className={`
                 space-y-10 text-gray-400 leading-relaxed
@@ -62,14 +58,13 @@ export default function AboutSection() {
               </p>
             </div>
 
-            {/* fade while closing */}
+            {/* Fade out effect */}
             {!open && (
-              <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[#0E1628] to-transparent pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[var(--background)] to-transparent pointer-events-none" />
             )}
           </div>
 
-          {/* Wrapper do botão com pointer-events garantido */}
-          <div className="relative z-50 pt-2 pointer-events-auto">
+          <div className="pt-2">
             <ReadMoreButton
               open={open}
               onToggle={() => setOpen(!open)}
@@ -78,19 +73,13 @@ export default function AboutSection() {
         </div>
 
         {/* LADO DIREITO: Card */}
-        {/* z-0 e order-2 garante que fique visualmente depois e "abaixo" na pilha de camadas */}
         <div className="
-          relative z-0 order-2 
-          w-full flex justify-center lg:justify-end
-          mt-4 lg:mt-0
-          pointer-events-none /* Desabilita cliques na área VAZIA ao redor do card */
+          w-full max-w-sm
+          flex justify-center lg:justify-end
+          lg:ml-4
         ">
-          {/* Reabilitamos cliques apenas no card em si */}
-          <div className="pointer-events-auto">
-            <StackCard />
-          </div>
+          <StackCard />
         </div>
-
       </div>
     </section>
   );

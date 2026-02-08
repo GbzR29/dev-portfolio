@@ -15,49 +15,53 @@
 }
 
 
-@layer utilities {
 
-  .border-animated {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
+@layer utilities {
+  .card-glow-animated {
+    @apply relative cursor-pointer;
+    /* Removido o bg fixo e isolation daqui para não conflitar com as props do componente */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
-  .border-animated::before {
+  .card-glow-animated::before {
     content: "";
     position: absolute;
-    inset: 0;
-    padding: 1.5px;
+    inset: -2px; 
     border-radius: inherit;
+    padding: 3px; 
     pointer-events: none;
+    
+    /* Z-index negativo sem isolation no pai permite que o blur funcione */
+    z-index: -1;
 
-    background: conic-gradient(from var(--angle),
-        transparent,
-        rgba(59, 130, 246, 0.9),
-        rgba(96, 165, 250, 1),
-        rgba(59, 130, 246, 0.9),
-        transparent);
+    background: conic-gradient(
+      from var(--angle),
+      transparent,
+      #0062ff,
+      #3b82f6,
+      #adcdff,
+      transparent
+    );
 
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
 
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
     animation: border-spin 3s linear infinite;
-    z-index: 1;
-   
   }
 
-  .border-animated>* {
-    position: relative;
-    z-index: 2;
-  }
-
-  .border-animated:hover::before {
+  .card-glow-animated:hover::before {
     opacity: 1;
   }
 
+  .card-glow-animated:hover {
+    box-shadow: 
+      0 0 15px rgba(0, 98, 255, 0.5),
+      0 0 30px rgba(0, 59, 155, 0.3);
+  }
 
   @property --angle {
     syntax: "<angle>";
