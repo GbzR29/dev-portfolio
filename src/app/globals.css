@@ -19,10 +19,35 @@
 @layer utilities {
   .card-glow-animated {
     @apply relative cursor-pointer;
-    /* Removido o bg fixo e isolation daqui para não conflitar com as props do componente */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
+  /* --- BORDA BRANCA ESTÁTICA (PADRÃO) --- */
+  .card-glow-animated::after {
+    content: "";
+    position: absolute;
+    inset: -1px; /* Um pouco menor que a animada para um encaixe perfeito */
+    border-radius: inherit;
+    padding: 3px; /* Espessura da borda branca */
+    pointer-events: none;
+    z-index: -1;
+
+    /* Cor da borda estática (usando var ou branco semi-transparente) */
+    background: var(--border); 
+    
+    /* No Dark Mode, talvez você prefira algo como rgba(255,255,255,0.1) */
+    /* background: rgba(255, 255, 255, 0.2); */
+
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    
+    transition: opacity 0.4s ease;
+    opacity: 1;
+  }
+
+  /* --- BORDA ANIMADA (HOVER) --- */
   .card-glow-animated::before {
     content: "";
     position: absolute;
@@ -30,8 +55,6 @@
     border-radius: inherit;
     padding: 3px; 
     pointer-events: none;
-    
-    /* Z-index negativo sem isolation no pai permite que o blur funcione */
     z-index: -1;
 
     background: conic-gradient(
@@ -53,6 +76,13 @@
     animation: border-spin 3s linear infinite;
   }
 
+  /* --- ESTADOS DE HOVER --- */
+  
+  /* Esconde a borda branca e mostra a colorida */
+  .card-glow-animated:hover::after {
+    opacity: 0;
+  }
+
   .card-glow-animated:hover::before {
     opacity: 1;
   }
@@ -61,6 +91,7 @@
     box-shadow: 
       0 0 15px rgba(0, 98, 255, 0.5),
       0 0 30px rgba(0, 59, 155, 0.3);
+    transform: translateY(-2px);
   }
 
   @property --angle {
