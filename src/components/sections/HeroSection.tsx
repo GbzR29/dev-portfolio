@@ -1,6 +1,7 @@
 import HeroAvatar from "@/components/HeroAvatar";
 import HeroCard from "@/components/cards/HeroCard";
 
+
 export default function HeroSection() {
   return (
     <section className="min-h-screen flex items-center px-6 sm:px-10 lg:px-20 py-12 lg:py-24">
@@ -22,6 +23,7 @@ export default function HeroSection() {
           <HeroAvatar />
         </div>
 
+      
       </div>
     </section>
   );

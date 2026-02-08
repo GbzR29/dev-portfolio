@@ -46,6 +46,7 @@
     transition: opacity 0.3s ease;
     animation: border-spin 3s linear infinite;
     z-index: 1;
+   
   }
 
   .border-animated>* {

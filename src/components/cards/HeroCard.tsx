@@ -1,19 +1,11 @@
+// components/cards/HeroCard.tsx
+import { Card } from "@/components/ui/Card";
 import Typewriter from "@/components/Typewriter";
 import { MyButton } from "@/components/ui/Button";
 
 export default function HeroCard() {
   return (
-    <div
-      className="
-        bg-[var(--card)]
-        backdrop-blur-md
-        border border-[var(--border)]
-        border-animated
-        rounded-2xl
-        p-10
-        space-y-6
-        shadow-xl">
-            
+    <Card padding="2xl" className="space-y-6">
       <h1 className="text-5xl font-bold">
         <Typewriter
           text="Gabriel Carvalho"
@@ -35,6 +27,6 @@ export default function HeroCard() {
         <MyButton text="View projects" />
         <MyButton text="Contact" variant="outline" />
       </div>
-    </div>
+    </Card>
   );
 }

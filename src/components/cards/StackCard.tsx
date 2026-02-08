@@ -1,5 +1,5 @@
-"use client";
-
+// components/cards/StackCard.tsx
+import { Card } from "@/components/ui/Card";
 import {
   SiCplusplus,
   SiC,
@@ -8,7 +8,6 @@ import {
   SiOpengl,
   SiAssemblyscript,
 } from "react-icons/si";
-
 import { Cpu, Gamepad2, Brain } from "lucide-react";
 
 export default function StackCard() {
@@ -26,19 +25,7 @@ export default function StackCard() {
   ];
 
   return (
-    <div className="
-      w-full max-w-sm   
-      bg-[var(--card)]
-      backdrop-blur-md
-      border-animated
-      border border-[var(--border)]
-      rounded-2xl
-      p-8
-      shadow-xl
-       
-      transition-all
-      duration-300">
-        
+    <Card maxWidth="sm">
       <h3 className="text-blue-400 font-semibold mb-6 text-2xl">
         My Skills
       </h3>
@@ -68,6 +55,6 @@ export default function StackCard() {
           </li>
         ))}
       </ul>
-    </div>
+    </Card>
   );
 }
