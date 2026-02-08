@@ -41,7 +41,7 @@ export default function StackCard() {
               rounded-lg
               bg-white/5
               border border-white/10
-              text-base text-gray-300
+              text-base text-[var(--text-muted)]
 
               hover:bg-blue-500/10
               hover:border-blue-400/40

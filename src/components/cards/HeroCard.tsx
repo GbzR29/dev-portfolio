@@ -19,7 +19,7 @@ export default function HeroCard() {
         Engine Programmer • Game Developer • Fullstack
       </p>
 
-      <p className="text-gray-400 max-w-md">
+      <p className="text-[var(--text-muted)] max-w-md">
         I build systems from scratch. Engines, games and tools that actually work.
       </p>
 

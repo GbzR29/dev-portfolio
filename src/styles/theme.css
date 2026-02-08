@@ -1,27 +1,42 @@
 :root {
-  /* LIGHT DEFAULT */
+  /* --- LIGHT THEME --- */
   --bg: #F6F8FB;
   --card: rgba(255, 255, 255, 0.8);
-  --text: #0f172a;
-  --muted: #475569;
   --border: rgba(0, 0, 0, 0.08);
-  --primary: #3b82f6;
-  --hover: #3b82f6;
+  
+  /* Textos */
+  --text-main: #0f172a;      /* Títulos e corpo principal */
+  --text-muted: #6b6b6b;     /* Legendas e textos menos importantes */
+  --text-navbar: #1e293b;    /* Links da navegação */
+  --text-card: #334155;      /* Texto específico dentro do card */
 
-  /* design tokens */
-  --radius: 10px;
+  /* Componentes Específicos */
+  --navbar-bg: rgba(255, 255, 255, 0.7);
+  --nav-hover: #3b82f6;
+  
+  /* Estados e Ações */
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --radius: 12px;
 }
 
 .dark {
-  /* DARK */
+  /* --- DARK THEME --- */
   --bg: #0B1220;
-  --card: rgba(117, 117, 117, 0.062);
-  --text: #ffffff;
-  --muted: #94a3b8;
-  --border: rgba(253, 253, 253, 0.1);
-  --primary: #60a5fa;
-  --hover: #3b82f6;
+  --card: rgba(30, 41, 59, 0.5); /* Azul escuro semi-transparente para o blur */
+  --border: rgba(255, 255, 255, 0.1);
 
-  /* pode manter o mesmo radius ou mudar */
-  --radius: 10px;
+  /* Textos */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-navbar: #e2e8f0;
+  --text-card: #cbd5e1;
+
+  /* Componentes Específicos */
+  --navbar-bg: rgba(11, 18, 32, 0.8);
+  --nav-hover: #60a5fa;
+
+  /* Estados e Ações */
+  --primary: #60a5fa;
+  --primary-hover: #3b82f6;
 }

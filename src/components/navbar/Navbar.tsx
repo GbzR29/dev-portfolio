@@ -21,7 +21,7 @@ export default function Navbar() {
         {/* logo */}
         <div className="flex items-center gap-3">
           <Image src="/logo.png" alt="logo" width={42} height={42} />
-          <span className="text-blue-400 font-semibold text-lg">
+          <span className="text-[var(--primary)] font-semibold text-lg">
             gabrielfc.dev
           </span>
         </div>
@@ -30,9 +30,9 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-8">
           <NavLinks />
 
-          <div className="flex gap-4 text-gray-400">
-            <Moon onClick={toggleTheme} className="cursor-pointer hover:text-blue-400" size={24} />
-            <Languages className="cursor-pointer hover:text-blue-400" size={24} />
+          <div className="flex gap-4 text-[var(--text-muted)]">
+            <Moon onClick={toggleTheme} className="cursor-pointer hover:text-[var(--primary)]" size={24} />
+            <Languages className="cursor-pointer hover:text-[var(--primary)]" size={24} />
           </div>
         </div>
 

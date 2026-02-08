@@ -13,7 +13,7 @@ import HeroCard from "@/components/cards/HeroCard";
 export default function Home() {
   return (
       
-    <main className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text)]">
+    <main className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text-main)]">
 
       <TriangleParticles />  
 

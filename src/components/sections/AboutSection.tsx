@@ -35,7 +35,7 @@ export default function AboutSection() {
           <div className="relative">
             <div
               className={`
-                space-y-10 text-gray-400 leading-relaxed
+                space-y-10 text-[var(--text-muted)] leading-relaxed
                 overflow-hidden transition-all duration-500
                 ${open ? "max-h-[1000px]" : "max-h-[140px]"}
               `}
