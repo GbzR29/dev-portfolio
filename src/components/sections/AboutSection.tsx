@@ -1,9 +1,11 @@
 // components/sections/AboutSection.tsx
+
 "use client";
 
 import { useState } from "react";
 import StackCard from "@/components/cards/StackCard";
 import ReadMoreButton from "@/components/ui/ReadMoreButton";
+import { zIndex } from "@/lib/z-index";
 
 export default function AboutSection() {
   const [open, setOpen] = useState(false);

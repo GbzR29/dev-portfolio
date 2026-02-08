@@ -1,8 +1,10 @@
 "use client";
 
-import { Moon, Languages } from "lucide-react";
+import { Moon, Sun, Languages, X } from "lucide-react";
 import { NavLinks } from "./NavLinks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useTheme } from "@/components/providers/ThemeProvider";
+import { zIndex } from "@/lib/z-index";
 
 interface MobileMenuProps {
   open: boolean;
@@ -10,61 +12,139 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const { theme, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  // trava scroll
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "auto";
+    if (typeof window !== 'undefined') {
+      setMounted(true);
+      document.body.style.overflow = open ? "hidden" : "auto";
+      
+      return () => {
+        document.body.style.overflow = "auto";
+      };
+    }
   }, [open]);
+
+  if (!mounted) return null;
 
   return (
     <>
-      {/* overlay blur */}
+      {/* Overlay adaptável ao tema */}
       <div
         onClick={onClose}
         className={`
-          fixed inset-0 z-40
-          bg-black/40 backdrop-blur-2xl
-          transition-opacity duration-300
-          ${open ? "opacity-100" : "opacity-0 pointer-events-none"}
+          fixed inset-0 backdrop-blur-xl
+          transition-all duration-500 ease-out
+          ${open 
+            ? "opacity-100 translate-y-0" 
+            : "opacity-0 -translate-y-full pointer-events-none"}
         `}
+        style={{ 
+          zIndex: zIndex.mobileMenuOverlay,
+          // Agora usa uma cor baseada no tema para o fundo do overlay
+          background: theme === 'dark' 
+            ? 'linear-gradient(to bottom, rgba(11, 18, 32, 0.9) 0%, rgba(11, 18, 32, 0.7) 100%)'
+            : 'linear-gradient(to bottom, rgba(246, 248, FB, 0.9) 0%, rgba(246, 248, FB, 0.7) 100%)'
+        }}
       />
 
-      {/* wrapper (top aligned) */}
-      <div className="fixed inset-0 z-50 flex justify-center pt-24 pointer-events-none">
+      <div 
+        className={`
+          fixed top-0 left-0 right-0
+          transform transition-all duration-500 ease-out
+          ${open ? "translate-y-0" : "-translate-y-full"}
+        `}
+        style={{ zIndex: zIndex.mobileMenu }}
+      >
+        <div className="min-h-screen pt-24 pb-12 px-6">
+          <div className="max-w-2xl mx-auto">
+            {/* Card principal seguindo as cores do seu CSS */}
+            <div
+              className={`
+                bg-[var(--card)]
+                backdrop-blur-2xl
+                rounded-3xl
+                border border-[var(--border)]
+                shadow-2xl
+                p-8
+                animate-fade-in-up
+                transition-colors duration-300
+              `}
+            >
+              {/* Header do menu mobile */}
+              <div className="flex justify-end mb-10 pb-6 border-b border-[var(--border)]">
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-lg hover:bg-[var(--primary)]/10 transition-all duration-300"
+                  aria-label="Close menu"
+                >
+                  <X className="text-[var(--text-muted)] hover:text-[var(--primary)]" size={28} />
+                </button>
+              </div>
 
-        {/* card */}
-        <div
-          className={`
-            pointer-events-auto
-            flex flex-col items-center gap-10
+              {/* Links de navegação */}
+              <div className="space-y-3 mb-12">
+                <NavLinks vertical onClick={onClose} />
+              </div>
 
-            backdrop-blur-xl
-            bg-[#0B1220]/60
+              {/* Divider gradiente que se adapta */}
+              <div className="w-full h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent mb-8" />
 
-            rounded-2xl
-            border border-white/10
-            shadow-2xl
+              {/* Ações de tema e idioma */}
+              <div className="flex items-center justify-between p-4 bg-[var(--primary)]/5 rounded-xl border border-[var(--border)]">
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={toggleTheme}
+                    className="p-2 rounded-lg hover:bg-[var(--primary)]/10 transition-all duration-300 group"
+                    aria-label="Toggle theme"
+                  >
+                    {theme === 'dark' ? (
+                      <Sun className="text-[var(--primary)]" size={24} />
+                    ) : (
+                      <Moon className="text-[var(--text-muted)] group-hover:text-[var(--primary)]" size={24} />
+                    )}
+                  </button>
+                  
+                  <button
+                    className="p-2 rounded-lg hover:bg-[var(--primary)]/10 transition-all duration-300 group"
+                    aria-label="Change language"
+                  >
+                    <Languages className="text-[var(--text-muted)] group-hover:text-[var(--primary)]" size={24} />
+                  </button>
+                </div>
 
-            px-10 py-12
-            w-[94%] max-w-lg
+                <div className="text-sm font-medium text-[var(--text-muted)]">
+                  {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
+                </div>
+              </div>
 
-            transition-all duration-300 ease-out
-            ${open ? "opacity-100 scale-100 translate-y-0"
-                    : "opacity-0 scale-95 -translate-y-4"}
-          `}
-        >
-
-          <NavLinks vertical onClick={onClose} />
-
-          <div className="w-32 h-px bg-gray-700/60" />
-
-          <div className="flex gap-8 text-gray-400">
-            <Moon size={24} className="hover:text-blue-400 cursor-pointer" />
-            <Languages size={24} className="hover:text-blue-400 cursor-pointer" />
+              {/* Footer informativo */}
+              <div className="mt-8 pt-6 border-t border-[var(--border)] text-center">
+                <p className="text-[var(--text-muted)] text-sm opacity-70">
+                  Scroll to navigate • Click to jump
+                </p>
+              </div>
+            </div>
           </div>
-
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in-up {
+          animation: fadeInUp 0.5s ease-out;
+        }
+      `}</style>
     </>
   );
 }

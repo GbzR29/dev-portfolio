@@ -1,4 +1,5 @@
 // components/cards/StackCard.tsx
+
 import { Card } from "@/components/ui/Card";
 import {
   SiCplusplus,
@@ -9,6 +10,7 @@ import {
   SiAssemblyscript,
 } from "react-icons/si";
 import { Cpu, Gamepad2, Brain } from "lucide-react";
+import { zIndex } from "@/lib/z-index";
 
 export default function StackCard() {
   const stack = [
@@ -25,7 +27,7 @@ export default function StackCard() {
   ];
 
   return (
-    <Card maxWidth="sm">
+    <Card maxWidth="sm" style={{ zIndex: zIndex.card }}>
       
       <h3 className="text-blue-400 font-semibold mb-6 text-2xl">
         My Skills

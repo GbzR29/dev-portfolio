@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
+import { zIndex } from "@/lib/z-index";
 
 type Props = {
   open: boolean;
@@ -12,8 +13,6 @@ export default function ReadMoreButton({ open, onToggle }: Props) {
     <button
       onClick={onToggle}
       className="
-        relative z-50
-
         flex
         flex-col lg:flex-row     
         items-center lg:items-center
@@ -31,6 +30,7 @@ export default function ReadMoreButton({ open, onToggle }: Props) {
         hover:scale-105 active:scale-95
         select-none
       "
+      style={{ zIndex: zIndex.card }}
     >
       <span>
         {open ? "Read less" : "Read more"}
@@ -46,4 +46,3 @@ export default function ReadMoreButton({ open, onToggle }: Props) {
     </button>
   );
 }
-

@@ -10,6 +10,7 @@ interface CardProps {
   maxWidth?: string;
   onClick?: () => void;
   hoverable?: boolean;
+  style?: React.CSSProperties; // Adicione esta linha
 }
 
 export function Card({
@@ -19,6 +20,7 @@ export function Card({
   maxWidth = "none",
   onClick,
   hoverable = true,
+  style, // Adicione esta linha
 }: CardProps) {
   const paddingClasses = {
     sm: "p-4",
@@ -43,6 +45,7 @@ export function Card({
         ${className}
         ${onClick ? "cursor-pointer hover:scale-[1.02]" : ""}
       `}
+      style={style} // Adicione esta linha
     >
       {children}
     </div>

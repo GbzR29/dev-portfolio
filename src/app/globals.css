@@ -94,6 +94,10 @@
     transform: translateY(-2px);
   }
 
+  .blog-card-content {
+    @apply relative z-10 flex flex-col h-full;
+  }
+
   @property --angle {
     syntax: "<angle>";
     inherits: false;
