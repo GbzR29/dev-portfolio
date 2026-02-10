@@ -71,7 +71,7 @@ const PROJECTS_DATA: Project[] = [
     shortDescription: "A process-level VM and bytecode interpreter simulating a custom Instruction Set Architecture (ISA).",
     longDescription: "A low-level emulation project that implements a full Fetch-Decode-Execute cycle. It features custom registers, a software-managed stack, and a bespoke instruction set to understand how hardware interprets binary data.",
     github: "https://github.com/GbzR29/virtual-machine",
-    image: "/projects/vm-preview.png",
+    image: "/projects/virtual-machine.png",
     tags: ["C++", "Emulation", "Assembly", "Architecture"],
     codeSnippet: `void VM::Execute() {
     uint8_t opcode = m_Memory[m_PC++];
