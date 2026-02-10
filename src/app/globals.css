@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* =========================================================
+   BASE
+========================================================= */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -15,30 +19,95 @@
 }
 
 
+/* =========================================================
+   ===================== GLITCH EFFECT =====================
+   RGB split + slices + bursts (cyberpunk style)
+========================================================= */
+
+@keyframes glitch-shift {
+  0%, 90%, 100% { transform: translate(0); }
+  92% { transform: translate(-3px, 1px); }
+  94% { transform: translate(3px, -1px); }
+  96% { transform: translate(-2px, 2px); }
+}
+
+@keyframes glitch-slice {
+  0%, 90%, 100% {
+    clip-path: inset(0 0 0 0);
+  }
+
+  92% { clip-path: inset(10% 0 70% 0); }
+  94% { clip-path: inset(60% 0 20% 0); }
+  96% { clip-path: inset(30% 0 40% 0); }
+}
+
+
+/* =========================================================
+   UTILITIES
+========================================================= */
 
 @layer utilities {
+
+  /* ================= GLITCH ================= */
+
+    .binary-glitch {
+    position: relative;
+    display: inline-flex;
+    white-space: nowrap;
+    font-family: monospace;
+
+    opacity: 0.20; /* menos chamativo */
+    filter: blur(0.3px); /* efeito digital bonito */
+  }
+
+  .binary-glitch span {
+    position: absolute;
+    inset: 0;
+  }
+
+  .glitch-base {
+    position: relative;
+    color: var(--primary);
+  }
+
+  .glitch-red {
+    color: #ff0033;
+    mix-blend-mode: screen;
+    animation: glitch-shift 3s infinite;
+  }
+
+  .glitch-cyan {
+    color: #00e5ff;
+    mix-blend-mode: screen;
+    animation: glitch-shift 3s infinite reverse;
+  }
+
+
+
+  /* ================= INPUT GLOW ================= */
+
   .input-glow-animated {
     @apply relative bg-[var(--card)] backdrop-blur-sm rounded-xl transition-all duration-300;
   }
 
-  /* Borda estática padrão */
   .input-glow-animated::after {
     content: "";
     position: absolute;
     inset: -1px;
     border-radius: inherit;
-    padding: 1.5px; 
+    padding: 1.5px;
     pointer-events: none;
     z-index: 0;
     background: var(--border);
+
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
+
     transition: opacity 0.3s ease;
   }
 
-  /* Borda animada (Ativa no focus-within) */
   .input-glow-animated::before {
     content: "";
     position: absolute;
@@ -47,6 +116,7 @@
     padding: 2px;
     pointer-events: none;
     z-index: 0;
+
     background: conic-gradient(
       from var(--angle),
       transparent,
@@ -55,64 +125,58 @@
       #adcdff,
       transparent
     );
+
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
+
     opacity: 0;
     transition: opacity 0.3s ease;
     animation: border-spin 3s linear infinite;
   }
 
-  /* Quando o input interno recebe foco, brilha o container */
-  .input-glow-animated:focus-within::before {
-    opacity: 1;
-  }
-  .input-glow-animated:focus-within::after {
-    opacity: 0;
-  }
+  .input-glow-animated:focus-within::before { opacity: 1; }
+  .input-glow-animated:focus-within::after { opacity: 0; }
+
   .input-glow-animated:focus-within {
     box-shadow: 0 0 15px rgba(0, 98, 255, 0.3);
   }
 
+
+  /* ================= CARD GLOW ================= */
 
   .card-glow-animated {
     @apply relative cursor-pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
 
-  /* --- BORDA BRANCA ESTÁTICA (PADRÃO) --- */
   .card-glow-animated::after {
     content: "";
     position: absolute;
-    inset: -1px; /* Um pouco menor que a animada para um encaixe perfeito */
+    inset: -1px;
     border-radius: inherit;
-    padding: 3px; /* Espessura da borda branca */
+    padding: 3px;
     pointer-events: none;
     z-index: -1;
 
-    /* Cor da borda estática (usando var ou branco semi-transparente) */
-    background: var(--border); 
-    
-    /* No Dark Mode, talvez você prefira algo como rgba(255,255,255,0.1) */
-    /* background: rgba(255, 255, 255, 0.2); */
+    background: var(--border);
 
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    
-    transition: opacity 0.4s ease;
+
     opacity: 1;
+    transition: opacity 0.4s ease;
   }
 
-  /* --- BORDA ANIMADA (HOVER) --- */
   .card-glow-animated::before {
     content: "";
     position: absolute;
-    inset: -2px; 
+    inset: -2px;
     border-radius: inherit;
-    padding: 3px; 
+    padding: 3px;
     pointer-events: none;
     z-index: -1;
 
@@ -135,37 +199,37 @@
     animation: border-spin 3s linear infinite;
   }
 
-  /* --- ESTADOS DE HOVER --- */
-  
-  /* Esconde a borda branca e mostra a colorida */
-  .card-glow-animated:hover::after {
-    opacity: 0;
-  }
-
-  .card-glow-animated:hover::before {
-    opacity: 1;
-  }
+  .card-glow-animated:hover::after { opacity: 0; }
+  .card-glow-animated:hover::before { opacity: 1; }
 
   .card-glow-animated:hover {
-    box-shadow: 
+    box-shadow:
       0 0 15px rgba(0, 98, 255, 0.5),
       0 0 30px rgba(0, 59, 155, 0.3);
     transform: translateY(-2px);
   }
 
+
+  /* ================= LAYOUT HELPERS ================= */
+
   .blog-card-content {
     @apply relative z-10 flex flex-col h-full;
   }
+}
 
-  @property --angle {
-    syntax: "<angle>";
-    inherits: false;
-    initial-value: 0deg;
-  }
 
-  @keyframes border-spin {
-    to {
-      --angle: 360deg;
-    }
+/* =========================================================
+   SHARED ANIMATIONS
+========================================================= */
+
+@property --angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes border-spin {
+  to {
+    --angle: 360deg;
   }
 }

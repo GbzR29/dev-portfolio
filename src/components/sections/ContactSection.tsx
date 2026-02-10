@@ -2,6 +2,8 @@
 
 export function ContactSection() {
   return (
+
+    
     <section
       id="contact"
       className="
@@ -10,6 +12,8 @@ export function ContactSection() {
         border-t border-white/5
       "
     >
+
+
       <div className="max-w-3xl mx-auto space-y-10 text-center">
         <h2 className="text-3xl font-semibold">Contact</h2>
 

@@ -12,7 +12,12 @@ export const learningTranslations = {
     trackCppDesc: "From basics to C++23. Memory management, smart pointers, templates, and high-performance patterns.",
     trackOpenglDesc: "Classic 3D Graphics. Mastering GLSL shaders, Buffers, Textures, and the Graphics Pipeline.",
     trackVulkanDesc: "The next level of graphics. Full GPU control, explicit synchronization, and Ray Tracing.",
-    trackSdlDesc: "Cross-platform window management, low-latency audio, and robust input handling."
+    trackSdlDesc: "Cross-platform window management, low-latency audio, and robust input handling.",
+
+    beginner: "Beginner",
+    intermediate: "Intermediate",
+    advanced: "Advanced",
+    begAdv: "Beginner/Advanced"
   },
   pt: {
     learnTitle: "Learn",
@@ -27,7 +32,12 @@ export const learningTranslations = {
     trackCppDesc: "Do básico ao C++23. Gerenciamento de memória, smart pointers, templates e padrões de alta performance.",
     trackOpenglDesc: "Gráficos 3D Clássicos. Dominando shaders GLSL, Buffers, Texturas e o Pipeline Gráfico.",
     trackVulkanDesc: "O próximo nível dos gráficos. Controle total da GPU, sincronização explícita e Ray Tracing.",
-    trackSdlDesc: "Gerenciamento de janelas multi-plataforma, áudio de baixa latência e manipulação robusta de entrada."
+    trackSdlDesc: "Gerenciamento de janelas multi-plataforma, áudio de baixa latência e manipulação robusta de entrada.",
+
+    beginner: "Iniciante",
+    intermediate: "Intermediário",
+    advanced: "Avançado",
+    begAdv: "Iniciante/Avançado"
   },
   es: {
     learnTitle: "Aprender",
@@ -42,7 +52,12 @@ export const learningTranslations = {
     trackCppDesc: "Desde lo básico hasta C++23. Gestión de memoria, punteros inteligentes, plantillas y patrones de alto rendimiento.",
     trackOpenglDesc: "Gráficos 3D clásicos. Dominando shaders GLSL, buffers, texturas y el pipeline gráfico.",
     trackVulkanDesc: "El siguiente nivel de gráficos. Control total de la GPU, sincronización explícita y Ray Tracing.",
-    trackSdlDesc: "Gestión de ventanas multiplataforma, audio de baja latencia y manejo robusto de entradas."
+    trackSdlDesc: "Gestión de ventanas multiplataforma, audio de baja latencia y manejo robusto de entradas.",
+
+    beginner: "Principiante",
+    intermediate: "Intermedio",
+    advanced: "Avanzado",
+    begAdv: "Principiante/Avanzado"
   },
   zh: {
     learnTitle: "学习",
@@ -57,6 +72,11 @@ export const learningTranslations = {
     trackCppDesc: "从基础到 C++23。内存管理、智能指针、模板和高性能模式。",
     trackOpenglDesc: "经典 3D 图形。精通 GLSL 着色器、缓冲区、纹理和图形流水线。",
     trackVulkanDesc: "下一代图形。全 GPU 控制、显式同步和光线追踪。",
-    trackSdlDesc: "跨平台窗口管理、低延迟音频和强大的输入处理。"
+    trackSdlDesc: "跨平台窗口管理、低延迟音频和强大的输入处理。",
+
+    beginner: "初学者",
+    intermediate: "中级",
+    advanced: "高级",
+    begAdv: "初级/高级"
   }
 };

@@ -21,7 +21,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-[var(--text-muted)] text-sm max-w-xs">
-              Copyright © {currentYear} Gabriel FC. All rights reserved.
+              Copyright © {currentYear} GabrielFRC. All rights reserved.
             </p>
           </div>
 

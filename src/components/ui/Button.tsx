@@ -1,20 +1,25 @@
-import { ButtonHTMLAttributes } from "react";
+"use client";
+
+import { ButtonHTMLAttributes, ReactNode } from "react"; // Importamos ReactNode
 import clsx from "clsx";
 
 interface MyButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: string;
   variant?: "primary" | "outline";
+  icon?: ReactNode; // 1. Adicionamos a propriedade icon como opcional (?)
 }
 
 export function MyButton({
   text,
   variant = "primary",
   className,
+  icon, // 2. Pegamos o icon aqui
   ...props
 }: MyButtonProps) {
 
+  // 3. Adicionei "flex items-center justify-center gap-2" para o ícone e o texto ficarem alinhados
   const base =
-    "px-6 py-2 rounded-lg font-medium transition-all duration-300";
+    "px-6 py-2 rounded-lg font-medium transition-all duration-300 flex items-center justify-center gap-2";
 
   const styles = {
     primary:
@@ -29,7 +34,9 @@ export function MyButton({
       className={clsx(base, styles[variant], className)}
       {...props}
     >
-      {text}
+      {/* 4. Renderizamos o ícone se ele existir, antes do texto */}
+      {icon && <span className="flex-shrink-0">{icon}</span>}
+      <span>{text}</span>
     </button>
   );
 }

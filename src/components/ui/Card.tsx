@@ -1,4 +1,3 @@
-// components/ui/Card.tsx
 "use client";
 
 import React from "react";
@@ -6,11 +5,12 @@ import React from "react";
 interface CardProps {
   children: React.ReactNode;
   className?: string;
-  padding?: "sm" | "md" | "lg" | "xl" | "2xl";
+  // ADICIONE "none" AQUI NA LISTA DE TIPOS
+  padding?: "none" | "sm" | "md" | "lg" | "xl" | "2xl"; 
   maxWidth?: string;
   onClick?: () => void;
   hoverable?: boolean;
-  style?: React.CSSProperties; // Adicione esta linha
+  style?: React.CSSProperties;
 }
 
 export function Card({
@@ -20,9 +20,10 @@ export function Card({
   maxWidth = "none",
   onClick,
   hoverable = true,
-  style, // Adicione esta linha
+  style,
 }: CardProps) {
   const paddingClasses = {
+    none: "p-0", // ADICIONE ESSA LINHA (mapeia "none" para padding zero)
     sm: "p-4",
     md: "p-6",
     lg: "p-8",
@@ -45,7 +46,7 @@ export function Card({
         ${className}
         ${onClick ? "cursor-pointer hover:scale-[1.02]" : ""}
       `}
-      style={style} // Adicione esta linha
+      style={style}
     >
       {children}
     </div>
