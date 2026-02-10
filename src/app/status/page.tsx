@@ -3,7 +3,7 @@
 import { Construction, Wrench, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import Navbar from "@/components/navbar/Navbar";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer/Footer";
 
 interface StatusPageProps {
   type?: "development" | "maintenance";

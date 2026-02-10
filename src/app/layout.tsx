@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Orbitron, Kanit, Ubuntu } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,9 +45,13 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
   return (
     <html lang="pt-br">
       <body className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} ${kanit.variable} ${ubuntu.variable} antialiased`}>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+
+        <LanguageProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </LanguageProvider>
+        
       </body>
     </html>
   );

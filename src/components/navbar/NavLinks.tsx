@@ -24,15 +24,23 @@ export function NavLinks({ onClick, vertical }: NavLinksProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Gerencia o destaque do link ativo baseado no scroll (apenas na home)
+  // Gerencia o destaque do link ativo
   useEffect(() => {
-    if (!isHomePage) {
-      if (pathname.includes('/blog')) setActiveSection('blog');
+    // 1. Se estiver em subpáginas, destaca o link correspondente
+    if (pathname.includes('/blog')) {
+      setActiveSection('blog');
+      return;
+    }
+    if (pathname.includes('/learn')) {
+      setActiveSection('learn');
       return;
     }
 
+    // 2. Lógica de Scroll (apenas na home)
+    if (!isHomePage) return;
+
     const handleScroll = () => {
-      const sections = ["about", "projects", "contact"]; // 'blog' removido do scroll se for página externa
+      const sections = ["about", "projects", "contact"]; 
       const scrollPosition = window.scrollY + (isMobile ? 120 : 100);
 
       for (const section of sections) {
@@ -52,15 +60,14 @@ export function NavLinks({ onClick, vertical }: NavLinksProps) {
   }, [isMobile, isHomePage, pathname]);
 
   const handleNavClick = (section: string, e: React.MouseEvent) => {
-    // Se for o link do Blog, deixa o Next.js navegar normalmente para /blog
-    if (section === "blog") {
+    // Se for link para páginas internas (Blog ou Learn)
+    if (section === "blog" || section === "learn") {
       if (onClick) onClick(); // Fecha menu mobile
-      return;
+      return; // Deixa o Next.js navegar
     }
 
-    // Para outros links:
+    // Para links de âncora (About, Projects, Contact)
     if (isHomePage) {
-      // Se já estiver na Home, faz scroll suave
       e.preventDefault();
       const element = document.getElementById(section);
       if (element) {
@@ -70,17 +77,16 @@ export function NavLinks({ onClick, vertical }: NavLinksProps) {
         });
       }
     } else {
-      // Se não estiver na Home, o comportamento padrão do <Link> vai redirecionar para /#section
+      // Se não estiver na Home, o <Link> redireciona para /#section automaticamente
       if (onClick) onClick();
     }
-    
-    if (onClick && isMobile) setTimeout(onClick, 300);
   };
 
   const navItems = [
     { label: "About me", section: "about", href: "/#about" },
     { label: "Projects", section: "projects", href: "/#projects" },
     { label: "Blog", section: "blog", href: "/blog" },
+    { label: "Learn", section: "learn", href: "/learn" }, // Adicionado!
     { label: "Contact", section: "contact", href: "/#contact" }
   ];
 
