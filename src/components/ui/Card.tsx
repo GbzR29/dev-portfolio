@@ -4,27 +4,28 @@ import React, { ElementType, HTMLAttributes } from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-// Função utilitária para combinar classes Tailwind sem conflitos
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  as?: ElementType; // Permite mudar a tag HTML (div, section, article...)
+  as?: ElementType;
   padding?: "none" | "sm" | "md" | "lg" | "xl" | "2xl";
+  maxWidth?: string; // Adicionei aqui para podermos extraí-lo
   hoverable?: boolean;
-  glow?: boolean; // Opção de ligar/desligar o efeito de animação
+  glow?: boolean;
 }
 
 export function Card({
   children,
   className,
   padding = "xl",
+  maxWidth = "none", // Extraímos maxWidth aqui
   as: Component = "div",
   hoverable = true,
   glow = true,
-  ...props // Captura todas as outras propriedades (onClick, onMouseEnter, id, etc)
+  ...props // Agora o 'props' contém apenas atributos HTML válidos
 }: CardProps) {
   
   const paddingClasses = {
@@ -39,20 +40,16 @@ export function Card({
   return (
     <Component
       className={cn(
-        // Classes Base
         "bg-[var(--card)] backdrop-blur-sm rounded-2xl shadow-xl transition-all duration-300",
-        // Padding Dinâmico
         paddingClasses[padding],
-        // Efeito de Glow Condicional
         glow && "card-glow-animated",
-        // Hover Condicional
         hoverable && "hover:shadow-2xl hover:border-white/10",
-        // Click Condicional
         props.onClick && "cursor-pointer hover:scale-[1.01] active:scale-[0.98]",
-        // Classes extras enviadas via props (sobrescrevem as anteriores)
+        // Aplicamos a lógica do maxWidth na classe do Tailwind, não no DOM
+        maxWidth !== "none" ? `max-w-${maxWidth}` : "",
         className
       )}
-      {...props}
+      {...props} // Agora o React não verá o 'maxWidth' aqui dentro
     >
       {children}
     </Component>

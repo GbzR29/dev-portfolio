@@ -1,47 +1,86 @@
 "use client";
 
+import React from "react";
 import HeroAvatar from "@/components/HeroAvatar";
 import HeroCard from "@/components/cards/HeroCard";
 import BinaryDecorations from "@/components/ui/BinaryDecoration";
+import { Card } from "@/components/ui/Card"; // Seu componente Card personalizado
 
 export default function HeroSection() {
   return (
-    // Alterado de py-20 para pt-32 (topo) e pb-20 (baixo) no mobile
-    // lg:py-20 mantém o padrão original em telas grandes
-    <section className="relative min-h-[100dvh] w-full flex items-center justify-center px-6 pt-32 pb-20 lg:py-20 lg:px-20 overflow-hidden bg-background">
-      
-      {/* --- CAMADA DECORATIVA (BACKGROUND) --- */}
+    <section
+      id="hero"
+      className="
+        w-full
+        min-h-[100dvh]
+        px-6 sm:px-10 lg:px-20
+        pt-32 pb-20 lg:py-0
+        flex flex-col justify-center
+        relative overflow-hidden
+        bg-background
+      "
+    >
+      {/* Decorações Binárias - Consistente com AboutSection */}
+      <BinaryDecorations />
+
+      {/* Camada Decorativa de Background (Grid e Radial Glow) */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary-rgb),0.05),transparent_70%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
       </div>
 
-      {/* --- CONTEÚDO PRINCIPAL --- */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto">
-        {/* Adicionado gap-20 no mobile para separar o Avatar do Card abaixo dele */}
-        <div className="flex flex-col-reverse lg:flex-row items-center justify-between gap-20 lg:gap-8">
-          
-          {/* Lado Esquerdo: Card de Informações */}
-          <div className="w-full lg:flex-1 flex justify-center lg:justify-start animate-in fade-in slide-in-from-left-8 duration-1000">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-              <HeroCard />
-            </div>
+      <div className="
+        w-full max-w-7xl mx-auto
+        flex flex-col lg:flex-row 
+        items-center
+        justify-between 
+        gap-12 lg:gap-16
+        relative z-10
+      ">
+        
+        {/* --- LADO SUPERIOR (Mobile) / DIREITO (Desktop): Avatar --- */}
+        <div className="
+          w-full max-w-[280px] sm:max-w-md
+          flex justify-center lg:justify-end 
+          lg:order-2
+          animate-in fade-in slide-in-from-top-8 lg:slide-in-from-right-8 duration-1000
+        ">
+          <div className="relative group">
+            {/* Glow sutil atrás do avatar */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-1000" />
+            
+            <HeroAvatar />
           </div>
-
-          {/* Lado Direito: Avatar/Imagem */}
-          <div className="w-full lg:flex-1 flex justify-center lg:justify-end animate-in fade-in slide-in-from-right-8 duration-1000">
-             <div className="relative">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
-                <HeroAvatar />
-             </div>
-          </div>
-
         </div>
+
+        {/* --- LADO INFERIOR (Mobile) / ESQUERDO (Desktop): Informações --- */}
+        <div className="
+          w-full lg:max-w-2xl 
+          lg:order-1 
+          animate-in fade-in slide-in-from-bottom-8 lg:slide-in-from-left-8 duration-1000
+        ">
+          <Card 
+            padding="none" 
+            glow={true} 
+            hoverable={false}
+            className="bg-transparent border-none shadow-none lg:bg-[var(--card)] lg:border lg:border-white/5 lg:shadow-xl"
+          >
+            {/* O conteúdo interno (HeroCard) já deve ter seus próprios paddings/estilos */}
+            <div className="relative group">
+              {/* Efeito de borda colorida sutil via gradiente, similar ao StackCard */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-[var(--primary)] to-blue-600 rounded-2xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
+              
+              <div className="relative">
+                <HeroCard />
+              </div>
+            </div>
+          </Card>
+        </div>
+        
       </div>
 
-      {/* Decorativo de rodapé da seção */}
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-background to-transparent z-20" />
+      {/* Gradiente de transição no rodapé para a próxima seção */}
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-background to-transparent z-20 pointer-events-none" />
     </section>
   );
 }
