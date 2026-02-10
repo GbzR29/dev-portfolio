@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon, Sun, Languages, X } from "lucide-react";
+import { Moon, Sun, Languages, X, ChevronRight } from "lucide-react";
 import { NavLinks } from "./NavLinks";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
@@ -30,121 +30,112 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
 
   return (
     <>
-      {/* Overlay adaptável ao tema */}
+      {/* Overlay com blur mais denso e transição suave */}
       <div
         onClick={onClose}
         className={`
-          fixed inset-0 backdrop-blur-xl
-          transition-all duration-500 ease-out
-          ${open 
-            ? "opacity-100 translate-y-0" 
-            : "opacity-0 -translate-y-full pointer-events-none"}
+          fixed inset-0 backdrop-blur-md
+          transition-opacity duration-500 ease-in-out
+          ${open ? "opacity-100" : "opacity-0 pointer-events-none"}
         `}
         style={{ 
           zIndex: zIndex.mobileMenuOverlay,
-          // Agora usa uma cor baseada no tema para o fundo do overlay
           background: theme === 'dark' 
-            ? 'linear-gradient(to bottom, rgba(11, 18, 32, 0.9) 0%, rgba(11, 18, 32, 0.7) 100%)'
-            : 'linear-gradient(to bottom, rgba(246, 248, FB, 0.9) 0%, rgba(246, 248, FB, 0.7) 100%)'
+            ? 'rgba(2, 6, 23, 0.8)' 
+            : 'rgba(255, 255, 255, 0.7)'
         }}
       />
 
       <div 
         className={`
           fixed top-0 left-0 right-0
-          transform transition-all duration-500 ease-out
-          ${open ? "translate-y-0" : "-translate-y-full"}
+          transform transition-all duration-500 cubic-bezier(0.16, 1, 0.3, 1)
+          ${open ? "translate-y-0 opacity-100" : "-translate-y-12 opacity-0 pointer-events-none"}
         `}
         style={{ zIndex: zIndex.mobileMenu }}
       >
-        <div className="min-h-screen pt-24 pb-12 px-6">
-          <div className="max-w-2xl mx-auto">
-            {/* Card principal seguindo as cores do seu CSS */}
+        {/* Ajuste de PT-16 para subir o menu na tela */}
+        <div className="pt-16 pb-8 px-4 sm:px-6">
+          <div className="max-w-lg mx-auto">
             <div
               className={`
+                relative overflow-hidden
                 bg-[var(--card)]
                 backdrop-blur-2xl
-                rounded-3xl
-                border border-[var(--border)]
-                shadow-2xl
-                p-8
-                animate-fade-in-up
+                rounded-[2.5rem]
+                border border-white/10
+                shadow-[0_20px_50px_rgba(0,0,0,0.3)]
+                p-6 sm:p-8
                 transition-colors duration-300
               `}
             >
-              {/* Header do menu mobile */}
-              <div className="flex justify-end mb-10 pb-6 border-b border-[var(--border)]">
+              {/* Detalhe Decorativo de Background */}
+              <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-[var(--primary)]/10 blur-[60px] rounded-full" />
+
+              {/* Header: Título e Close */}
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-[var(--primary)]/10 flex items-center justify-center">
+                    <div className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse" />
+                  </div>
+                  <span className="font-semibold text-[var(--text-muted)] text-sm tracking-wider uppercase">Menu</span>
+                </div>
+                
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-lg hover:bg-[var(--primary)]/10 transition-all duration-300"
+                  className="p-3 rounded-2xl bg-white/5 border border-white/5 hover:bg-[var(--primary)]/10 transition-all active:scale-95"
                   aria-label="Close menu"
                 >
-                  <X className="text-[var(--text-muted)] hover:text-[var(--primary)]" size={28} />
+                  <X className="text-[var(--text-muted)]" size={20} />
                 </button>
               </div>
 
-              {/* Links de navegação */}
-              <div className="space-y-3 mb-12">
-                <NavLinks vertical onClick={onClose} />
+              {/* Links de Navegação */}
+              <nav className="mb-8">
+                {/* Aqui você pode passar uma prop para NavLinks estilizar os itens individualmente */}
+                <div className="grid gap-2">
+                   <NavLinks vertical onClick={onClose} />
+                </div>
+              </nav>
+
+              {/* Container de Ações (Ajustado para design mais moderno) */}
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <button
+                  onClick={toggleTheme}
+                  className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-[var(--primary)]/10 transition-all"
+                >
+                  {theme === 'dark' ? (
+                    <>
+                      <Sun className="text-yellow-400" size={20} />
+                      <span className="text-xs font-medium text-[var(--text-muted)]">Light</span>
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="text-blue-400" size={20} />
+                      <span className="text-xs font-medium text-[var(--text-muted)]">Dark</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-[var(--primary)]/10 transition-all"
+                >
+                  <Languages className="text-[var(--primary)]" size={20} />
+                  <span className="text-xs font-medium text-[var(--text-muted)]">English</span>
+                </button>
               </div>
 
-              {/* Divider gradiente que se adapta */}
-              <div className="w-full h-px bg-gradient-to-r from-transparent via-[var(--border)] to-transparent mb-8" />
-
-              {/* Ações de tema e idioma */}
-              <div className="flex items-center justify-between p-4 bg-[var(--primary)]/5 rounded-xl border border-[var(--border)]">
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={toggleTheme}
-                    className="p-2 rounded-lg hover:bg-[var(--primary)]/10 transition-all duration-300 group"
-                    aria-label="Toggle theme"
-                  >
-                    {theme === 'dark' ? (
-                      <Sun className="text-[var(--primary)]" size={24} />
-                    ) : (
-                      <Moon className="text-[var(--text-muted)] group-hover:text-[var(--primary)]" size={24} />
-                    )}
-                  </button>
-                  
-                  <button
-                    className="p-2 rounded-lg hover:bg-[var(--primary)]/10 transition-all duration-300 group"
-                    aria-label="Change language"
-                  >
-                    <Languages className="text-[var(--text-muted)] group-hover:text-[var(--primary)]" size={24} />
-                  </button>
-                </div>
-
-                <div className="text-sm font-medium text-[var(--text-muted)]">
-                  {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
-                </div>
-              </div>
-
-              {/* Footer informativo */}
-              <div className="mt-8 pt-6 border-t border-[var(--border)] text-center">
-                <p className="text-[var(--text-muted)] text-sm opacity-70">
-                  Scroll to navigate • Click to jump
+              {/* Status Bar / Footer */}
+              <div className="flex items-center justify-center gap-2 pt-4 border-t border-white/5">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                <p className="text-[var(--text-muted)] text-[10px] uppercase tracking-[0.2em] font-bold opacity-50">
+                  Ready to collaborate
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <style jsx global>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in-up {
-          animation: fadeInUp 0.5s ease-out;
-        }
-      `}</style>
     </>
   );
 }

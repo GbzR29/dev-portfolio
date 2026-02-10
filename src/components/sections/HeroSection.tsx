@@ -20,7 +20,10 @@ export default function HeroSection() {
         bg-background
       "
     >
-      <BinaryDecorations />
+      {/* Container separado para BinaryDecorations com overflow-visible */}
+      <div className="absolute inset-0 z-1 pointer-events-none overflow-visible">
+        <BinaryDecorations />
+      </div>
 
       {/* Camada Decorativa de Background */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
