@@ -1,4 +1,4 @@
-export const translations = {
+export const homeTranslations = {
   en: {
     // Navbar
     navAbout: "About me",
@@ -100,4 +100,4 @@ export const translations = {
   }
 };
 
-export type Language = keyof typeof translations;
+export type Language = keyof typeof homeTranslations;

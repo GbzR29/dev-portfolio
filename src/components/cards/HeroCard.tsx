@@ -10,7 +10,7 @@ export default function HeroCard() {
   const { t } = useLanguage(); // Acesse as traduções
 
   const handleDownload = () => {
-    window.open('/cv/resume.pdf', '_blank');
+    window.open('/pdf/resume.pdf', '_blank');
   };
 
   const scrollToSection = (id: string) => {

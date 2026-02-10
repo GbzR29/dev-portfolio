@@ -1,16 +1,15 @@
-"use client"; // Corrigindo o erro de Build
+"use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-// Importamos os componentes reais que você já tem no projeto
 import Navbar from "@/components/navbar/Navbar"; 
 import Footer from "@/components/footer/Footer";
-
 import TriangleParticles from "@/components/particles/TriangleParticles";
+import { useLanguage } from "@/components/providers/LanguageProvider";
+import { Card } from "@/components/ui/Card"; // Importando seu Card
+import { MyButton } from "@/components/ui/Button"; // Importando seu MyButton
+import { InputBox } from "@/components/ui/InputBox";
 
-import StatusPage from "../status/page";
+import { Mail } from "lucide-react";
 
-// Mock data atualizado com temas mais voltados ao seu perfil
 const POSTS = [
   {
     id: 1,
@@ -39,93 +38,106 @@ const POSTS = [
 ];
 
 export default function BlogPage() {
+  const { t } = useLanguage();
 
-  //return <StatusPage type="development" />;
+  if (!t) return null;
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text-main)] transition-colors duration-300">
-
       <TriangleParticles />
       <Navbar />
       
       <main className="flex-grow pt-32 pb-20">
         <section className="container mx-auto px-6 lg:px-20">
-          {/* Header da Página */}
+          
           <div className="mb-16 text-center max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-6xl font-extrabold mb-6">
-              My blog<span className="text-[var(--primary)]"></span>
+              {t.blogTitle}<span className="text-[var(--primary)]">.</span>
             </h1>
             <p className="text-xl text-[var(--text-muted)] leading-relaxed">
-              Tutorials, technical insights, and experiments in the world of software development and game engines.
+              {t.blogSubtitle}
             </p>
           </div>
 
-          {/* Grid de Posts */}
+         
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {POSTS.map((post) => (
-              <article 
+              <Card 
                 key={post.id} 
-                className="group flex flex-col bg-[var(--card)] border border-[var(--border)] rounded-2xl overflow-hidden hover:border-[var(--primary)]/50 transition-all duration-300 shadow-xl shadow-black/5"
+                padding="sm" 
+                className="flex flex-col h-full overflow-hidden border border-[var(--border)]"
+                hoverable={true}
               >
-                {/* Imagem do Post */}
-                <div className="relative aspect-video overflow-hidden">
+               
+                <div className="relative aspect-video overflow-hidden -mx-4 -mt-4 mb-6 rounded-t-xl">
                   <img 
                     src={post.image} 
                     alt={post.title} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--card)] to-transparent opacity-60" />
-                  <span className="absolute top-4 left-4 px-3 py-1 bg-[var(--primary)] text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-lg">
+                  <span className="absolute top-4 left-4 px-3 py-1 bg-[var(--primary)] text-white text-[10px] font-bold uppercase tracking-widest rounded-full">
                     {post.category}
                   </span>
                 </div>
                 
-                {/* Conteúdo */}
-                <div className="p-6 flex flex-col flex-grow">
+               
+                <div className="flex flex-col flex-grow px-2 pb-2">
                   <div className="flex items-center gap-2 mb-4 text-xs text-[var(--text-muted)] font-medium">
                     <span>{post.date}</span>
                     <span className="w-1 h-1 rounded-full bg-[var(--border)]" />
-                    <span>5 min read</span>
+                    <span>5 {t.readTime}</span>
                   </div>
                   
-                  <h2 className="text-xl font-bold mb-3 text-[var(--text-main)] group-hover:text-[var(--primary)] transition-colors line-clamp-2">
+                  <h2 className="text-xl font-bold mb-3 text-[var(--text-main)] group-hover:text-[var(--primary)]">
                     {post.title}
                   </h2>
                   
-                  <p className="text-[var(--text-muted)] text-sm mb-6 flex-grow leading-relaxed line-clamp-3">
+                  <p className="text-[var(--text-muted)] text-sm mb-6 flex-grow leading-relaxed">
                     {post.excerpt}
                   </p>
 
-                  <button className="flex items-center gap-2 text-sm font-bold text-[var(--primary)] group-hover:gap-4 transition-all">
-                    READ MORE 
-                    <span className="text-lg">→</span>
-                  </button>
+                  
+                  <MyButton 
+                    text={t.readMore} 
+                    variant="outline" 
+                    className="w-full sm:w-auto self-start"
+                    onClick={() => console.log(`Navigating to post ${post.id}`)}
+                  />
                 </div>
-              </article>
+              </Card>
             ))}
           </div>
           
-          {/* Newsletter / CTA */}
-          <div className="mt-20 p-8 md:p-12 rounded-3xl bg-gradient-to-br from-[var(--card)] to-[var(--bg)] border border-[var(--border)] relative overflow-hidden text-center">
+          
+          <Card 
+            padding="2xl" 
+            className="mt-20 border border-[var(--border)] relative overflow-hidden text-center"
+            hoverable={false}
+          >
             <div className="relative z-10">
-              <h3 className="text-2xl md:text-3xl font-bold mb-4">Stay up to date with the latest news.</h3>
+              <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                {t.newsletterTitle}
+              </h3>
               <p className="text-[var(--text-muted)] mb-8 max-w-md mx-auto">
-                Receive notifications of new technical articles and project updates directly to your email.
+                {t.newsletterDesc}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <input
+
+                <InputBox
                   type="email"
-                  placeholder="Your best email"
-                  className="flex-grow px-6 py-3 rounded-xl border border-[var(--border)] bg-[var(--bg)] text-[var(--text-main)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-all"
+                  placeholder={t.emailPlaceholder}
+                  icon={<Mail size={18} />}
                 />
-                <button className="bg-[var(--primary)] text-white px-8 py-3 rounded-xl font-bold hover:opacity-90 transition-all shadow-lg shadow-[var(--primary)]/20">
-                  Subscribe
-                </button>
+                <MyButton 
+                  text={t.subscribe} 
+                  className="h-[50px] whitespace-nowrap" // h-[50px] para alinhar com o input py-3
+                />
               </div>
             </div>
-            {/* Elemento decorativo de fundo */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--primary)] opacity-[0.03] blur-[100px] -mr-32 -mt-32" />
-          </div>
+           
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--primary)] opacity-[0.05] blur-[100px] -mr-32 -mt-32" />
+          </Card>
         </section>
       </main>
       

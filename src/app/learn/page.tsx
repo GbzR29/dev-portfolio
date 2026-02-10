@@ -4,56 +4,49 @@ import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
 import { Card } from "@/components/ui/Card";
 import { MyButton } from "@/components/ui/Button";
-
 import TriangleParticles from "@/components/particles/TriangleParticles";
-
-import { BookOpen, Code2, Cpu, Globe, Zap, ArrowRight } from "lucide-react";
+import { BookOpen, Code2, Cpu, Globe, Zap } from "lucide-react";
 import Link from "next/link";
-
-const TRACKS = [
-  {
-    id: "cpp",
-    title: "Modern C++",
-    description: "From basics to C++23. Memory management, smart pointers, templates, and high-performance patterns.",
-    icon: <Code2 className="text-[var(--primary)]" size={32} />,
-    level: "Beginner/Advanced",
-    lessons: "15 Lessons"
-  },
-  {
-    id: "opengl",
-    title: "OpenGL 4.6",
-    description: "Classic 3D Graphics. Mastering GLSL shaders, Buffers, Textures, and the Graphics Pipeline.",
-    icon: <Zap className="text-[var(--primary)]" size={32} />,
-    level: "Intermediate",
-    lessons: "22 Lessons"
-  },
-  {
-    id: "vulkan",
-    title: "Vulkan API",
-    description: "The next level of graphics. Full GPU control, explicit synchronization, and Ray Tracing.",
-    icon: <Cpu className="text-[var(--primary)]" size={32} />,
-    level: "Advanced",
-    lessons: "12 Lessons"
-  },
-  {
-    id: "sdl3",
-    title: "SDL3 Framework",
-    description: "Cross-platform window management, low-latency audio, and robust input handling.",
-    icon: <Globe className="text-[var(--primary)]" size={32} />,
-    level: "Beginner",
-    lessons: "8 Lessons"
-  }
-];
-
-const CHAPTERS = [
-  { id: "intro", title: "Introduction" },
-  { id: "vbo", title: "Vertex Buffer Objects" },
-  { id: "vao", title: "Vertex Array Objects" },
-  { id: "shaders", title: "First Shaders" },
-  { id: "draw", title: "Drawing the Triangle" },
-];
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 export default function LearnPage() {
+  const { t } = useLanguage();
+
+  const TRACKS = [
+    {
+      id: "cpp", // Este ID será o nome da URL: /learn/cpp
+      title: "Modern C++",
+      description: t.trackCppDesc,
+      icon: <Code2 className="text-[var(--primary)]" size={32} />,
+      level: "Beginner/Advanced",
+      lessons: `15 ${t.lessons}`
+    },
+    {
+      id: "opengl", // URL: /learn/opengl
+      title: "OpenGL 4.6",
+      description: t.trackOpenglDesc,
+      icon: <Zap className="text-[var(--primary)]" size={32} />,
+      level: "Intermediate",
+      lessons: `22 ${t.lessons}`
+    },
+    {
+      id: "vulkan",
+      title: "Vulkan API",
+      description: t.trackVulkanDesc,
+      icon: <Cpu className="text-[var(--primary)]" size={32} />,
+      level: "Advanced",
+      lessons: `12 ${t.lessons}`
+    },
+    {
+      id: "sdl3",
+      title: "SDL3 Framework",
+      description: t.trackSdlDesc,
+      icon: <Globe className="text-[var(--primary)]" size={32} />,
+      level: "Beginner",
+      lessons: `8 ${t.lessons}`
+    }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text-main)] transition-colors duration-300">
       <TriangleParticles />
@@ -62,17 +55,15 @@ export default function LearnPage() {
       <main className="flex-grow pt-32 pb-20">
         <section className="container mx-auto px-6 lg:px-20">
           
-          {/* Header Section */}
           <div className="max-w-3xl mb-16">
             <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight">
-              Learn<span className="text-[var(--primary)]">Engine</span>
+              {t.learnTitle}<span className="text-[var(--primary)]">{t.learnEngine}</span>
             </h1>
             <p className="text-xl text-[var(--text-muted)] leading-relaxed">
-              Deep-dive tutorials on engine architecture, game mathematics, and modern graphics APIs. From hardware primitives to the final pixel.
+              {t.learnSubtitle}
             </p>
           </div>
 
-          {/* Tracks Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {TRACKS.map((track) => (
               <Card key={track.id} padding="lg" className="flex flex-col h-full border border-[var(--border)]">
@@ -94,41 +85,38 @@ export default function LearnPage() {
                     <span>{track.lessons}</span>
                   </div>
                   
+                  {/* Redirecionamento dinâmico baseado no ID da trilha */}
                   <Link href={`/learn/${track.id}`}>
-                    <MyButton text="Start Track" className="group flex items-center gap-2" />
+                    <MyButton text={t.startTrack} className="group flex items-center gap-2" />
                   </Link>
                 </div>
               </Card>
             ))}
           </div>
 
-          {/* AI Roadmap / Special Section */}
           <Card padding="lg" className="mt-16 bg-gradient-to-br from-[var(--card)] to-[var(--bg)] border border-[var(--primary)]/20">
             <div className="flex flex-col md:flex-row items-center gap-8">
               <div className="p-5 bg-[var(--primary)] rounded-2xl text-white shadow-lg shadow-[var(--primary)]/30">
                 <Zap size={32} />
               </div>
               <div>
-                <h4 className="text-xl font-bold mb-2">AI in Engine Development</h4>
+                <h4 className="text-xl font-bold mb-2">{t.aiTitle}</h4>
                 <p className="text-[var(--text-muted)] max-w-xl">
-                  Upcoming modules: Implementing Neural Networks in C++ for game AI and using Machine Learning for Real-time Ray Tracing denoising.
+                  {t.aiDesc}
                 </p>
               </div>
               <div className="md:ml-auto">
-                <MyButton text="Notify Me" variant="outline" />
+                <MyButton text={t.notifyMe} variant="outline" />
               </div>
             </div>
           </Card>
-
         </section>
       </main>
-
       <Footer />
     </div>
   );
 }
 
-// Reusable Small Component
 function Badge({ text }: { text: string }) {
   return (
     <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-[var(--bg)] border border-[var(--border)] rounded-full text-[var(--text-muted)]">
