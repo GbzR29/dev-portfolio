@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/Card";
 import { ArrowUpRight } from "lucide-react";
 import { Project } from "../sections/ProjectsSection";
-import Image from "next/image"; // Importe o componente de imagem do Next.js
+import Image from "next/image";
 
 interface Props {
   project: Project;
@@ -17,10 +17,8 @@ export default function ProjectCard({ project, onClick }: Props) {
         padding="none" 
         className="h-full flex flex-col overflow-hidden border border-[var(--border)] hover:border-[var(--primary)]/50 transition-colors bg-[var(--card)]"
       >
-        {/* Topo: Imagem real com fallback para o texto */}
         <div className="h-48 relative overflow-hidden border-b border-[var(--border)]">
           
-          {/* A Imagem do Projeto */}
           <Image 
             src={project.image}
             alt={project.title}
@@ -29,10 +27,8 @@ export default function ProjectCard({ project, onClick }: Props) {
             sizes="(max-width: 768px) 100vw, 50vw"
           />
 
-          {/* Overlay de cor no hover */}
           <div className="absolute inset-0 bg-black/40 group-hover:bg-[var(--primary)]/10 transition-colors z-10" />
-          
-          {/* O texto estilo terminal aparece apenas se a imagem falhar ou como um detalhe sutil */}
+
           <div className="absolute bottom-2 left-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
             <span className="text-[var(--primary)] text-[10px] font-mono bg-black/80 px-2 py-1 rounded border border-[var(--primary)]/30">
               EXEC: {project.title.toUpperCase()}.EXE
@@ -40,7 +36,7 @@ export default function ProjectCard({ project, onClick }: Props) {
           </div>
         </div>
 
-        {/* Corpo: Conteúdo */}
+
         <div className="p-6 flex flex-col flex-grow">
           <div className="flex justify-between items-start mb-4">
             <h3 className="text-xl font-bold text-white group-hover:text-[var(--primary)] transition-colors">

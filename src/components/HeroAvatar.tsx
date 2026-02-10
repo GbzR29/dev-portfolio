@@ -6,7 +6,7 @@ export default function HeroAvatar() {
   return (
     <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] group">
       
-      {/* 1. Glow de fundo pulsante e dinâmico */}
+      {/* 1. Glow de fundo dinâmico */}
       <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/40 to-blue-500/40 blur-3xl animate-pulse group-hover:scale-110 transition-transform duration-700" />
 
       {/* 2. Anel rotativo */}
@@ -29,8 +29,7 @@ export default function HeroAvatar() {
           />
         </div>
       </div>
-
-      {/* 4. Badge Tech com bolinha verde individualizada */}
+      
       <div className="absolute -bottom-2 -right-2 bg-background/80 backdrop-blur-md border border-primary/30 px-4 py-1 rounded-full z-20 shadow-xl flex items-center gap-2">
         <span className="text-emerald-500 animate-pulse font-bold">
           ●

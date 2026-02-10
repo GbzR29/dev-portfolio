@@ -43,9 +43,9 @@ export function ContactSection() {
             </div>
           </div>
 
-          {/* Coluna do Card de Ação usando seu componente Card */}
+        
           <div className="relative">
-            {/* Efeito de brilho externo (opcional, já que o Card tem glow próprio) */}
+            
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur opacity-10"></div>
             
             <Card 

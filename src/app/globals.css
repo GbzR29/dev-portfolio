@@ -21,7 +21,6 @@
 
 /* =========================================================
    ===================== GLITCH EFFECT =====================
-   RGB split + slices + bursts (cyberpunk style)
 ========================================================= */
 
 @keyframes glitch-shift {
@@ -56,8 +55,8 @@
     white-space: nowrap;
     font-family: monospace;
 
-    opacity: 0.20; /* menos chamativo */
-    filter: blur(0.3px); /* efeito digital bonito */
+    opacity: 0.20; 
+    filter: blur(0.5px); 
   }
 
   .binary-glitch span {

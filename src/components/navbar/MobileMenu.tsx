@@ -30,7 +30,6 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
 
   return (
     <>
-      {/* Overlay com blur mais denso e transição suave */}
       <div
         onClick={onClose}
         className={`
@@ -54,7 +53,6 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
         `}
         style={{ zIndex: zIndex.mobileMenu }}
       >
-        {/* Ajuste de PT-16 para subir o menu na tela */}
         <div className="pt-16 pb-8 px-4 sm:px-6">
           <div className="max-w-lg mx-auto">
             <div
@@ -69,10 +67,8 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 transition-colors duration-300
               `}
             >
-              {/* Detalhe Decorativo de Background */}
+             
               <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-[var(--primary)]/10 blur-[60px] rounded-full" />
-
-              {/* Header: Título e Close */}
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-[var(--primary)]/10 flex items-center justify-center">
@@ -90,15 +86,14 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
                 </button>
               </div>
 
-              {/* Links de Navegação */}
+             
               <nav className="mb-8">
-                {/* Aqui você pode passar uma prop para NavLinks estilizar os itens individualmente */}
+             
                 <div className="grid gap-2">
                    <NavLinks vertical onClick={onClose} />
                 </div>
               </nav>
-
-              {/* Container de Ações (Ajustado para design mais moderno) */}
+          
               <div className="grid grid-cols-2 gap-3 mb-6">
                 <button
                   onClick={toggleTheme}

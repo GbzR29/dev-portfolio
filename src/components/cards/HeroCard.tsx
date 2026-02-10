@@ -34,22 +34,18 @@ export default function HeroCard() {
 
           {/* Camada Principal Branca */}
           <span className="relative glitch-base text-white">
-            <Typewriter text={t.heroTitle} speed={85} loop pauseDuration={2000} />
+            <Typewriter text={t.heroTitle} speed={85} loop pauseDuration={3500} />
           </span>
-
 
           {/* Camada Cyan */}
           <span className="absolute inset-0 glitch-cyan opacity-90 select-none" aria-hidden="true">
-            <Typewriter text={t.heroTitle} speed={85} loop pauseDuration={2000} />
+            <Typewriter text={t.heroTitle} speed={85} loop pauseDuration={3500} />
           </span>
 
           {/* Camada Vermelha */}
           <span className="absolute inset-0 glitch-red opacity-90 select-none" aria-hidden="true">
-            <Typewriter text={t.heroTitle} speed={85} loop pauseDuration={2000} />
+            <Typewriter text={t.heroTitle} speed={85} loop pauseDuration={3500} />
           </span>
-
-
-
         </div>
       </h1>
 
