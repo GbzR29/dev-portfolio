@@ -1,23 +1,49 @@
 # Dev Portfolio
 
-Personal development portfolio showcasing selected projects in software development, game programming, and real-time computer graphics.
+Personal development portfolio showcasing selected projects in software engineering, game development, and real-time graphics programming.
 
-This repository contains the source code for my personal website, where I present projects, experiments, and ideas I enjoy building — from low-level systems and graphics to web applications and interactive experiences.
+This repository contains the source code for my personal website — a place where I document projects, experiments, and technical explorations ranging from low-level systems and rendering engines to modern web applications and interactive tools.
 
-## Tech Stack
+The focus is not just presentation, but clarity, performance, and clean architecture.
 
-- **TypeScript**
-- **React**
-- **Next.js**
-- **Node.js**
-- **Tailwind CSS**
+---
 
-## Purpose
+## ✨ Philosophy
 
-This portfolio serves as a central place to showcase my work, technical interests, and ongoing learning.  
-It focuses on clarity, performance, and clean architecture rather than visual excess.
+This portfolio follows a few core principles:
 
-## Running Locally
+• Clean and readable code  
+• Performance-first mindset  
+• Minimal and functional design  
+• Strong technical substance over visual noise  
+• Built with modern tools, engineered with care  
+
+The goal is to present real engineering work, not just screenshots.
+
+---
+
+## 🚀 What you'll find here
+
+- Game engine experiments (C++ / OpenGL)
+- Real-time rendering projects
+- Graphics programming studies
+- Web applications and tools
+- Technical write-ups and tutorials
+- Playable or interactive demos
+
+---
+
+## 🛠 Tech Stack
+
+- TypeScript
+- React
+- Next.js
+- Node.js
+- Tailwind CSS
+
+---
+
+## 📦 Running locally
 
 ```bash
 npm install
