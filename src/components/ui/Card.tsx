@@ -1,29 +1,34 @@
 "use client";
 
-import React from "react";
+import React, { ElementType, HTMLAttributes } from "react";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-interface CardProps {
+// Função utilitária para combinar classes Tailwind sem conflitos
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-  className?: string;
-  // ADICIONE "none" AQUI NA LISTA DE TIPOS
-  padding?: "none" | "sm" | "md" | "lg" | "xl" | "2xl"; 
-  maxWidth?: string;
-  onClick?: () => void;
+  as?: ElementType; // Permite mudar a tag HTML (div, section, article...)
+  padding?: "none" | "sm" | "md" | "lg" | "xl" | "2xl";
   hoverable?: boolean;
-  style?: React.CSSProperties;
+  glow?: boolean; // Opção de ligar/desligar o efeito de animação
 }
 
 export function Card({
   children,
-  className = "",
+  className,
   padding = "xl",
-  maxWidth = "none",
-  onClick,
+  as: Component = "div",
   hoverable = true,
-  style,
+  glow = true,
+  ...props // Captura todas as outras propriedades (onClick, onMouseEnter, id, etc)
 }: CardProps) {
+  
   const paddingClasses = {
-    none: "p-0", // ADICIONE ESSA LINHA (mapeia "none" para padding zero)
+    none: "p-0",
     sm: "p-4",
     md: "p-6",
     lg: "p-8",
@@ -32,23 +37,24 @@ export function Card({
   };
 
   return (
-    <div
-      onClick={onClick}
-      className={`
-        bg-[var(--card)]
-        backdrop-blur-sm       
-        card-glow-animated       
-        rounded-2xl
-        shadow-xl
-        ${paddingClasses[padding]}
-        ${hoverable ? "transition-all duration-300" : ""}
-        ${maxWidth !== "none" ? `max-w-${maxWidth}` : ""}
-        ${className}
-        ${onClick ? "cursor-pointer hover:scale-[1.02]" : ""}
-      `}
-      style={style}
+    <Component
+      className={cn(
+        // Classes Base
+        "bg-[var(--card)] backdrop-blur-sm rounded-2xl shadow-xl transition-all duration-300",
+        // Padding Dinâmico
+        paddingClasses[padding],
+        // Efeito de Glow Condicional
+        glow && "card-glow-animated",
+        // Hover Condicional
+        hoverable && "hover:shadow-2xl hover:border-white/10",
+        // Click Condicional
+        props.onClick && "cursor-pointer hover:scale-[1.01] active:scale-[0.98]",
+        // Classes extras enviadas via props (sobrescrevem as anteriores)
+        className
+      )}
+      {...props}
     >
       {children}
-    </div>
+    </Component>
   );
 }

@@ -23,7 +23,7 @@
 .dark {
   /* --- DARK THEME --- */
   --bg: #0B1220;
-  --card: rgba(30, 41, 59, 0.5); /* Azul escuro semi-transparente para o blur */
+  --card: rgba(9, 23, 54, 0.253); /* Azul escuro semi-transparente para o blur */
   --border: rgba(255, 255, 255, 0.1);
 
   /* Textos */
