@@ -6,8 +6,12 @@ import { MyButton } from "@/components/ui/Button";
 import { zIndex } from "@/lib/z-index";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 
+import GlitchEffect from "../effects/GlitchEffect";
+
 export default function HeroCard() {
   const { t } = useLanguage();
+
+  const title = t?.heroTitle || "Carregando...";
 
   const handleDownload = () => {
     window.open('/pdf/resume.pdf', '_blank');
@@ -29,24 +33,23 @@ export default function HeroCard() {
       className="space-y-6"
       style={{ zIndex: zIndex.card }}
     >
-      <h1 className="text-3xl sm:text-5xl font-bold text-center flex justify-center">
-        <div className="relative inline-block">
+      <h1 className="text-3xl sm:text-5xl font-bold text-center flex justify-center text-[var(--text-main)]">
+        <Typewriter
+          text={t?.heroTitle || ""}
+          speed={85}
+          loop
+          pauseDuration={3500}
+        >
+          {(currentText) => (
+            <div className="relative inline-flex items-center">
+              <GlitchEffect text={currentText} />
 
-          {/* Camada Principal Branca */}
-          <span className="relative glitch-base text-white">
-            <Typewriter text={t.heroTitle} speed={85} loop pauseDuration={3500} />
-          </span>
-
-          {/* Camada Cyan */}
-          <span className="absolute inset-0 glitch-cyan opacity-90 select-none" aria-hidden="true">
-            <Typewriter text={t.heroTitle} speed={85} loop pauseDuration={3500} />
-          </span>
-
-          {/* Camada Vermelha */}
-          <span className="absolute inset-0 glitch-red opacity-90 select-none" aria-hidden="true">
-            <Typewriter text={t.heroTitle} speed={85} loop pauseDuration={3500} />
-          </span>
-        </div>
+              <span className="animate-cursor-blink text-[var(--text-main)] ml-1 font-bold">
+                |
+              </span>
+            </div>
+          )}
+        </Typewriter>
       </h1>
 
       <p className="text-[var(--primary)] font-medium text-center uppercase tracking-[0.3em] text-xs">

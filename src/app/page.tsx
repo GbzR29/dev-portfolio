@@ -9,19 +9,19 @@ import Footer from "@/components/footer/Footer";
 import TriangleParticles from "@/components/particles/TriangleParticles";
 
 export const metadata = {
-  title: 'Gabriel Carvalho | My web portfolio', 
-  description: 'Welcome to my online corner',
+  title: 'Gabriel Carvalho | Portfolio & Game Development', 
+  description: 'Welcome to my digital corner!',
   
   openGraph: {
     title: 'Gabriel Carvalho | Portfolio & Game Development',
     description: 'Welcome to my digital corner!',
     url: 'https://www.gabrielfrc.dev/',
-    siteName: 'GabrielFRC.dev',
+    siteName: 'gabrielfrc.dev',
     images: [
       {
         url: '/logo.png',
-        width: 1200,
-        height: 630,
+        width: 600,
+        height: 315,
         alt: 'Banner preview',
       },
     ],
