@@ -21,28 +21,24 @@ export default function AboutSection() {
         px-6 sm:px-10 lg:px-20
         border-t border-white/5
         flex flex-col justify-center
-        lg:min-h-screen lg:flex-row lg:items-center
+        lg:min-h-screen
         relative
       "
     >
-      <BinaryDecoration className="absolute top-10 left-10" text="01110111 01100101 01101100 01100011 01101111 01101101 01100101 00100001"/>
-
-      <GridDecoration/>
-
+      <BinaryDecoration className="absolute top-10 left-10" text="01110111 01100101 01101100 01100011 01101111 01101101 01100101 00100001" />
+      <GridDecoration />
 
       <div className="
         w-full max-w-7xl mx-auto
         flex flex-col lg:flex-row 
         lg:items-start
-        justify-between 
-        gap-16 lg:gap-12
+        lg:justify-between 
+        gap-16 lg:gap-24  {/* Aumentei ainda mais o gap no desktop */}
         relative z-10
       ">
-        
         {/* LADO ESQUERDO: Texto */}
-        <div className="w-full lg:max-w-xl space-y-8">
+        <div className="w-full lg:w-1/2 space-y-8">
           <div className="space-y-2">
-            {/* Removido o comentário // 01. About me */}
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
               {t.aboutTitle}
             </h2>
@@ -59,7 +55,7 @@ export default function AboutSection() {
               <p>{t.aboutPara1}</p>
               <p>{t.aboutPara2}</p>
               <p>{t.aboutPara3}</p>
-              
+
               {/* Quick Tech Stats */}
               <div className="grid grid-cols-2 gap-6 pt-6 border-t border-white/10">
                 <div className="space-y-1">
@@ -88,15 +84,11 @@ export default function AboutSection() {
         </div>
 
         {/* LADO DIREITO: StackCard */}
-        <div className="
-          w-full max-w-sm
-          flex justify-center lg:justify-end
-          lg:sticky lg:top-32
-        ">
-          <div className="relative group">
-             {/* Brilho atrás do card */}
-             <div className="absolute -inset-1 bg-gradient-to-r from-[var(--primary)] to-blue-600 rounded-2xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
-             <StackCard />
+        <div className="w-full lg:w-1/2 flex justify-center lg:justify-end">
+          <div className="relative group w-full max-w-md lg:max-w-2xl">
+            {/* Brilho atrás do card - ajustado para não cortar */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-[var(--primary)] to-blue-600 rounded-2xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
+            <StackCard />
           </div>
         </div>
       </div>
