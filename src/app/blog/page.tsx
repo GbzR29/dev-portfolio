@@ -4,8 +4,8 @@ import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
 import TriangleParticles from "@/components/particles/TriangleParticles";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { Card } from "@/components/ui/Card"; // Importando seu Card
-import { MyButton } from "@/components/ui/Button"; // Importando seu MyButton
+import Card from "@/components/ui/Card";
+import { MyButton } from "@/components/ui/Button"; 
 import { InputBox } from "@/components/ui/InputBox";
 
 import { Mail } from "lucide-react";

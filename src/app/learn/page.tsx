@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
-import { Card } from "@/components/ui/Card";
+import Card from "@/components/ui/Card";
 import { MyButton } from "@/components/ui/Button";
 import TriangleParticles from "@/components/particles/TriangleParticles";
 import { BookOpen, Code2, Cpu, Globe, Zap } from "lucide-react";

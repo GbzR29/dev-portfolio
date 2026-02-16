@@ -2,7 +2,7 @@
 
 import Navbar from "@/components/navbar/Navbar";
 import { LessonSidebar } from "@/components/sidebar/LessonSidebar";
-import { Card } from "@/components/ui/Card";
+import Card from "@/components/ui/Card";
 import { useParams, useRouter } from "next/navigation"; 
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useEffect } from "react";
