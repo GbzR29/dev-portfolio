@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getUsers } from "@/services/userService";
 
 export default async function UsersPage() {
