@@ -5,17 +5,10 @@ import Typewriter from "@/components/Typewriter";
 import { MyButton } from "@/components/ui/Button";
 import { zIndex } from "@/lib/z-index";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-
 import GlitchEffect from "../effects/GlitchEffect";
 
 export default function HeroCard() {
   const { t } = useLanguage();
-
-  const title = t?.heroTitle || "Carregando...";
-
-  const handleDownload = () => {
-    window.open('/pdf/resume.pdf', '_blank');
-  };
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -30,10 +23,11 @@ export default function HeroCard() {
   return (
     <Card
       padding="2xl"
-      className="space-y-6"
+      className="space-y-6 overflow-hidden" // Adicionado overflow-hidden
       style={{ zIndex: zIndex.card }}
     >
-      <h1 className="text-3xl sm:text-5xl font-bold text-center flex justify-center text-[var(--text-main)]">
+      {/* Título com altura fixa para evitar "tremida" vertical no mobile */}
+      <h1 className="min-h-[80px] sm:min-h-[120px] text-3xl sm:text-5xl font-bold text-center flex items-center justify-center text-[var(--text-main)]">
         <Typewriter
           text={t?.heroTitle || ""}
           speed={85}
@@ -41,10 +35,12 @@ export default function HeroCard() {
           pauseDuration={3500}
         >
           {(currentText) => (
-            <div className="relative inline-flex items-center">
+            <div className="relative inline-flex items-center justify-center">
+              {/* O Glitch agora está isolado para não afetar o fluxo do texto */}
               <GlitchEffect text={currentText} />
-
-              <span className="animate-cursor-blink text-[var(--text-main)] ml-1 font-bold">
+              
+              {/* Cursor com posição absoluta para não empurrar o texto lateralmente */}
+              <span className="absolute -right-4 animate-cursor-blink text-[var(--text-main)] font-bold">
                 |
               </span>
             </div>
@@ -60,22 +56,23 @@ export default function HeroCard() {
         {t.heroDescription}
       </p>
 
+      {/* Botões: Forçando o arredondamento via style ou garantindo a classe */}
       <div className="flex flex-col sm:flex-row gap-4 pt-2 justify-center items-center">
         <MyButton
           text={t.heroViewProjects}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto rounded-xl" // Forçando a classe aqui
           onClick={() => scrollToSection('projects')}
         />
         <MyButton
           text={t.heroContact}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto rounded-xl"
           onClick={() => scrollToSection('contact')}
         />
         <MyButton
           text={t.heroMyCv}
           variant="outline"
-          onClick={handleDownload}
-          className="w-full sm:w-auto"
+          className="w-full sm:w-auto rounded-xl"
+          onClick={() => window.open('/pdf/resume.pdf', '_blank')}
         />
       </div>
     </Card>

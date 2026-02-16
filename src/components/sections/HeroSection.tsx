@@ -26,7 +26,7 @@ export default function HeroSection() {
 
       <GridDecoration />
 
-      {/* Usamos isMounted para controlar a visibilidade. 
+      {/* isMounted para controlar a visibilidade. 
         Se não estiver montado, mantemos opacidade baixa para evitar o flash branco, 
         mas renderizamos a estrutura para o SEO.
       */}

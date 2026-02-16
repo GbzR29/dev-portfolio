@@ -1,121 +1,159 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 
 interface NavLinksProps {
   onClick?: () => void;
   vertical?: boolean;
+  className?: string;
 }
 
-export function NavLinks({ onClick, vertical }: NavLinksProps) {
-  const [activeSection, setActiveSection] = useState<string>("");
-  const [isMobile, setIsMobile] = useState(false);
-  const pathname = usePathname();
-  const router = useRouter();
+const NAV_ITEMS = [
+  { label: "Home", section: "hero", href: "/" },
+  { label: "About me", section: "about", href: "/#about" },
+  { label: "Projects", section: "projects", href: "/#projects" },
+  { label: "Blog", section: "blog", href: "/blog" },
+  { label: "Learn", section: "learn", href: "/learn" },
+  { label: "Contact", section: "contact", href: "/#contact" },
+];
 
+function _NavLinks({ onClick, vertical, className }: NavLinksProps) {
+  const [activeSection, setActiveSection] = useState<string>("");
+  const [isMobileLayout, setIsMobileLayout] = useState(false);
+  const pathname = usePathname();
   const isHomePage = pathname === "/";
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    const handleResize = () => setIsMobileLayout(window.innerWidth < 1024);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Gerencia o destaque do link ativo
+  // Active link logic
   useEffect(() => {
-    // 1. Se estiver em subpáginas, destaca o link correspondente
-    if (pathname.includes('/blog')) {
-      setActiveSection('blog');
+    if (pathname.startsWith("/blog")) {
+      setActiveSection("blog");
       return;
     }
-    if (pathname.includes('/learn')) {
-      setActiveSection('learn');
+    if (pathname.startsWith("/learn")) {
+      setActiveSection("learn");
+      return;
+    }
+    if (!isHomePage) {
+      setActiveSection("");
       return;
     }
 
-    // 2. Lógica de Scroll (apenas na home)
-    if (!isHomePage) return;
-
-    const handleScroll = () => {
-      const sections = ["about", "projects", "contact"]; 
-      const scrollPosition = window.scrollY + (isMobile ? 120 : 100);
+    const sections = ["about", "projects", "contact"];
+    const onScroll = () => {
+      const scrollPos = window.scrollY + (isMobileLayout ? 120 : 100);
 
       for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const offsetTop = element.offsetTop;
-          const offsetHeight = element.offsetHeight;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section);
-            break;
-          }
+        const el = document.getElementById(section);
+        if (!el) continue;
+        const top = el.offsetTop;
+        const height = el.offsetHeight;
+        if (scrollPos >= top && scrollPos < top + height) {
+          setActiveSection(section);
+          return;
         }
       }
+      if (window.scrollY < 300) setActiveSection("hero");
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobile, isHomePage, pathname]);
 
-  const handleNavClick = (section: string, e: React.MouseEvent) => {
-    // Se for link para páginas internas (Blog ou Learn)
-    if (section === "blog" || section === "learn") {
-      if (onClick) onClick(); // Fecha menu mobile
-      return; // Deixa o Next.js navegar
-    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isMobileLayout, isHomePage, pathname]);
 
-    // Para links de âncora (About, Projects, Contact)
-    if (isHomePage) {
-      e.preventDefault();
-      const element = document.getElementById(section);
-      if (element) {
-        window.scrollTo({
-          top: element.offsetTop - (isMobile ? 100 : 80),
-          behavior: 'smooth'
-        });
+  const handleNavClick = useCallback(
+    (section: string, e: React.MouseEvent, href: string) => {
+      if (section === "blog" || section === "learn" || !isHomePage) {
+        if (onClick) onClick();
+        return; // let Next handle navigation
       }
-    } else {
-      // Se não estiver na Home, o <Link> redireciona para /#section automaticamente
-      if (onClick) onClick();
-    }
-  };
 
-  const navItems = [
-    { label: "About me", section: "about", href: "/#about" },
-    { label: "Projects", section: "projects", href: "/#projects" },
-    { label: "Blog", section: "blog", href: "/blog" },
-    { label: "Learn", section: "learn", href: "/learn" }, // Adicionado!
-    { label: "Contact", section: "contact", href: "/#contact" }
-  ];
+      // Smooth scroll for anchors in Home
+      if (href.startsWith("/#") || section === "hero") {
+        e.preventDefault();
+        const targetId = section === "hero" ? "top" : section;
+        if (section === "hero") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          const el = document.getElementById(targetId);
+          if (el) {
+            window.scrollTo({
+              top: el.offsetTop - (isMobileLayout ? 100 : 80),
+              behavior: "smooth",
+            });
+          }
+        }
+        if (onClick) onClick();
+      }
+    },
+    [isHomePage, isMobileLayout, onClick]
+  );
 
   return (
-    <nav className={`${vertical ? "flex flex-col gap-6 text-xl" : "flex items-center gap-10 text-[var(--text-navbar)]"} font-medium`}>
-      {navItems.map(({ label, section, href }) => (
-        <Link
-          key={section}
-          href={href}
-          onClick={(e) => handleNavClick(section, e)}
-          className={`
-            relative py-1 transition-all duration-300 group inline-block
-            ${vertical ? "text-[var(--text-main)] hover:text-[var(--primary)]" : "text-[var(--text-navbar)] hover:text-[var(--primary)]"}
-            ${activeSection === section ? "text-[var(--primary)] !font-bold" : ""}
-          `}
-        >
-          {label}
-          
-          <span 
+    <nav
+      className={`
+        ${vertical ? "flex flex-col w-full gap-2" : "flex items-center gap-10"} 
+        ${className || ""}
+      `}
+      aria-label="Primary"
+    >
+      {NAV_ITEMS.map(({ label, section, href }, index) => {
+        const isActive = activeSection === section;
+        return (
+          <Link
+            key={section}
+            href={href}
+            onClick={(e) => handleNavClick(section, e, href)}
             className={`
-              absolute left-0 -bottom-1 h-[2px] bg-[var(--primary)]
-              transition-all duration-300 ease-in-out
-              ${activeSection === section ? "w-full opacity-100" : "w-0 opacity-0 group-hover:w-full group-hover:opacity-50"}
-              ${vertical ? "hidden" : "block"} 
+              group relative transition-all duration-300
+              ${vertical ? "flex items-center justify-between py-5 border-b border-[var(--border)] last:border-0" : "py-1 text-[var(--text-navbar)] font-medium"}
+              ${isActive ? "text-[var(--primary)]" : "text-[var(--text-main)] hover:text-[var(--primary)]"}
             `}
-            style={{ boxShadow: activeSection === section ? '0 0 8px var(--primary)' : 'none' }}
-          />
-        </Link>
-      ))}
+            aria-current={isActive ? "page" : undefined}
+          >
+            <div className="flex items-center gap-4">
+              {vertical && (
+                <span className="font-mono text-[10px] opacity-30 group-hover:opacity-100 transition-opacity">
+                  0{index + 1}
+                </span>
+              )}
+              <span
+                className={`
+                  transition-transform duration-300
+                  ${vertical ? "text-2xl font-light tracking-tight group-active:scale-95" : ""}
+                  ${isActive && vertical ? "font-normal translate-x-2" : ""}
+                `}
+              >
+                {label}
+              </span>
+            </div>
+
+            {vertical && <ChevronRight size={18} className={`transition-all duration-300 ${isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 group-hover:opacity-50 group-hover:translate-x-0"}`} />}
+
+            {!vertical && (
+              <span
+                className={`
+                  absolute left-0 -bottom-1 h-[2px] bg-[var(--primary)]
+                  transition-all duration-300 ease-in-out
+                  ${isActive ? "w-full opacity-100" : "w-0 opacity-0 group-hover:w-full group-hover:opacity-50"}
+                `}
+                style={{ boxShadow: isActive ? "0 0 8px var(--primary)" : "none" }}
+              />
+            )}
+          </Link>
+        );
+      })}
     </nav>
   );
 }
+
+export const NavLinks = memo(_NavLinks);

@@ -4,6 +4,8 @@
 import { useState } from "react";
 import ProjectCard from "@/components/cards/ProjectCard";
 import ProjectModal from "@/components/modals/ProjectModal"; // Ajuste o import conforme onde criou
+import BinaryDecoration from "../ui/BinaryDecoration";
+import GridDecoration from "../ui/GridDecoration";
 
 // Types
 export interface Project {
@@ -89,17 +91,22 @@ export function ProjectsSection() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <section id="projects" className="px-6 sm:px-10 lg:px-20 py-24 border-t border-white/5 relative">
+    <section 
+      id="projects" 
+      className="px-6 sm:px-10 lg:px-20 py-24 border-t border-white/5 relative overflow-hidden"
+    >      
+      {/* Luz no Canto Inferior Esquerdo */}
+      <div 
+        className="absolute top-0 left-0 w-[400px] h-[400px] bg-blue-600/5 blur-[100px] rounded-full pointer-events-none translate-y-1/4 -translate-x-1/4 z-0" 
+      />
+      {/* ------------------------------------- */}
 
-      {/* Elemento decorativo de fundo */}
-      <div className="absolute top-0 right-0 w-1/3 h-full bg-[var(--primary)]/5 blur-[100px] pointer-events-none" />
-
-      {/* Background Decorativo Sutil */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
-        <div className="absolute top-10 left-10 font-mono text-[10px] text-[var(--primary)] select-none">
-          01001101 01011001 00100000 01010000 01010010 01001111 01001010 01000101 01000011 01010100 01010011  
-        </div>
-      </div>
+      <BinaryDecoration 
+        className="absolute top-10 left-10" 
+        text="01101101 01111001 00100000 01110000 01110010 01101111 01101010 01100101 01100011 01110100 01110011 00100001 " 
+      />
+      
+      <GridDecoration />
 
       <div className="max-w-7xl mx-auto space-y-16 relative z-10">
         
@@ -125,7 +132,7 @@ export function ProjectsSection() {
         </div>
       </div>
 
-      {/* Modal - Renderizado condicionalmente */}
+      {/* Modal */}
       {selectedProject && (
         <ProjectModal 
             project={selectedProject} 

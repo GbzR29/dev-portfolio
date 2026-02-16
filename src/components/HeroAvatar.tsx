@@ -11,10 +11,10 @@ export default function HeroAvatar() {
       
       {/* 2. Anéis Orbitais Duplos (Estáticos em posição, mas giratórios) */}
       {/* Anel Externo (Horário) */}
-      <div className="absolute inset-[-15px] rounded-full border-[1.5px] border-dashed border-primary/30 animate-[spin_30s_linear_infinite] opacity-40 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute inset-[-15px] rounded-full border-[1.5px] border-dashed border-primary/30 animate-[spin_30s_linear_infinite] opacity-40 pointer-events-none" />
       
       {/* Anel Interno (Anti-horário) */}
-      <div className="absolute inset-[-5px] rounded-full border border-dotted border-blue-400/20 animate-[spin_20s_linear_reverse_infinite] opacity-50" />
+      <div className="absolute inset-[-5px] rounded-full border border-dotted border-blue-400/20 animate-[spin_20s_linear_reverse_infinite] opacity-50 pointer-events-none" />
 
       {/* 3. Container Principal (Removida animação float) */}
       <div className="relative h-full w-full rounded-full p-3 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-md border border-white/20 shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
