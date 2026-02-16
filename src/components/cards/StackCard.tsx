@@ -1,6 +1,5 @@
 // components/cards/StackCard.tsx
-
-import { Card } from "@/components/ui/Card";
+import Card from "@/components/ui/Card";
 import {
   SiCplusplus,
   SiC,

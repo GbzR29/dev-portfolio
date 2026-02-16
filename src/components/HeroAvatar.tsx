@@ -4,38 +4,46 @@ import HeroImage from "@/components/HeroImage";
 
 export default function HeroAvatar() {
   return (
-    <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] group">
+    <div className="relative w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] group isolate">
       
-      {/* 1. Glow de fundo dinâmico */}
-      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/40 to-blue-500/40 blur-3xl animate-pulse group-hover:scale-110 transition-transform duration-700" />
+      {/* 1. Glow de fundo ultra-difuso */}
+      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/30 via-blue-500/20 to-purple-500/30 blur-[80px] animate-pulse group-hover:scale-125 transition-transform duration-1000" />
+      
+      {/* 2. Anéis Orbitais Duplos (Estáticos em posição, mas giratórios) */}
+      {/* Anel Externo (Horário) */}
+      <div className="absolute inset-[-15px] rounded-full border-[1.5px] border-dashed border-primary/30 animate-[spin_30s_linear_infinite] opacity-40 group-hover:opacity-100 transition-opacity" />
+      
+      {/* Anel Interno (Anti-horário) */}
+      <div className="absolute inset-[-5px] rounded-full border border-dotted border-blue-400/20 animate-[spin_20s_linear_reverse_infinite] opacity-50" />
 
-      {/* 2. Anel rotativo */}
-      <div className="absolute inset-[-10px] rounded-full border border-dashed border-primary/20 animate-[spin_20s_linear_infinite] opacity-35" />
-
-      {/* 3. Container da Imagem */}
-      <div className="relative h-full w-full rounded-full p-2 bg-background/50 backdrop-blur-sm border border-white/10 overflow-hidden shadow-2xl">
+      {/* 3. Container Principal (Removida animação float) */}
+      <div className="relative h-full w-full rounded-full p-3 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-md border border-white/20 shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
         
-        {/* Overlay interno para profundidade */}
-        <div className="absolute inset-0 z-10 rounded-full shadow-[inset_0_0_40px_rgba(0,0,0,0.5)] pointer-events-none" />
+        {/* Overlay de Vinheta para Profundidade */}
+        <div className="absolute inset-0 z-10 rounded-full shadow-[inset_0_0_60px_rgba(0,0,0,0.6)] pointer-events-none" />
 
-        <div className="relative h-full w-full rounded-full overflow-hidden grayscale-[20%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105">
-          <HeroImage
-            path="/perfil.jpeg"
-            alt="Gabriel profile picture"
-            width={350}
-            height={350}
-            fill={false}
-            className="object-cover h-full w-full"
-          />
+        {/* Container da Imagem com Zoom e Filtro no Hover */}
+        <div className="relative h-full w-full rounded-full overflow-hidden bg-muted">
+          <div className="h-full w-full grayscale-[30%] group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-out">
+            <HeroImage
+              path="/perfil.jpeg"
+              alt="Gabriel profile picture"
+              width={400}
+              height={400}
+              className="object-cover h-full w-full"
+            />
+          </div>
         </div>
       </div>
       
-      <div className="absolute -bottom-2 -right-2 bg-background/80 backdrop-blur-md border border-primary/30 px-4 py-1 rounded-full z-20 shadow-xl flex items-center gap-2">
-        <span className="text-emerald-500 animate-pulse font-bold">
-          ●
+      {/* 4. Badge de Status com Efeito Ping */}
+      <div className="absolute bottom-6 -right-2 bg-black/60 backdrop-blur-xl border border-white/10 px-4 py-1.5 rounded-2xl z-20 shadow-2xl flex items-center gap-2.5">
+        <span className="relative flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
         </span>
-        <span className="text-[10px] font-mono text-foreground/80 uppercase tracking-wider">
-          Online
+        <span className="text-[11px] font-bold font-mono text-white tracking-[0.15em] uppercase">
+          Available
         </span>
       </div>
     </div>

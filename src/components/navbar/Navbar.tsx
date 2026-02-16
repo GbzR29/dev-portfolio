@@ -35,20 +35,21 @@ export default function Navbar() {
 
   return (
     <>
-      <header 
-        className="fixed w-full top-0 left-0 bg-[var(--navbar-bg)] backdrop-blur-xl border-b border-[var(--border)] transition-all duration-300"
+      <header
+        className="sticky top-0 w-full bg-[var(--navbar-bg)] backdrop-blur-xl border-b border-[var(--border)] transition-all duration-300"
         style={{ zIndex: zIndex.navbar }}
       >
+
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-10">
           <div className="flex items-center justify-between h-20">
-            
+
             {/* Logo */}
             <div className="flex items-center gap-3 shrink-0">
               <div className="relative w-10 h-10">
-                <Image 
-                  src="/logo.png" 
-                  alt="logo" 
-                  fill 
+                <Image
+                  src="/logo.png"
+                  alt="logo"
+                  fill
                   className="object-contain"
                   priority
                 />
@@ -61,7 +62,7 @@ export default function Navbar() {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-8">
               <NavLinks />
-              
+
               <div className="flex items-center gap-4 ml-4 pl-6 border-l border-[var(--border)]">
                 {/* Theme Toggle */}
                 <button
@@ -75,14 +76,13 @@ export default function Navbar() {
                     <Moon className="text-[var(--text-muted)] hover:text-[var(--primary)]" size={20} />
                   )}
                 </button>
-                
+
                 {/* Language Selector */}
                 <div className="relative" ref={langMenuRef}>
                   <button
                     onClick={() => setLangOpen(!langOpen)}
-                    className={`p-2 rounded-lg transition-all duration-300 transform hover:scale-110 ${
-                      langOpen ? "bg-[var(--primary)]/20 text-[var(--primary)]" : "hover:bg-[var(--primary)]/10 text-[var(--text-muted)] hover:text-[var(--primary)]"
-                    }`}
+                    className={`p-2 rounded-lg transition-all duration-300 transform hover:scale-110 ${langOpen ? "bg-[var(--primary)]/20 text-[var(--primary)]" : "hover:bg-[var(--primary)]/10 text-[var(--text-muted)] hover:text-[var(--primary)]"
+                      }`}
                     aria-label="Change language"
                   >
                     <Languages size={20} />
@@ -99,9 +99,8 @@ export default function Navbar() {
                               setLanguage(lang.code as any);
                               setLangOpen(false);
                             }}
-                            className={`w-full flex items-center justify-between px-4 py-3 text-sm transition-colors hover:bg-[var(--primary)]/10 ${
-                              language === lang.code ? "text-[var(--primary)] font-bold" : "text-[var(--text-main)]"
-                            }`}
+                            className={`w-full flex items-center justify-between px-4 py-3 text-sm transition-colors hover:bg-[var(--primary)]/10 ${language === lang.code ? "text-[var(--primary)] font-bold" : "text-[var(--text-main)]"
+                              }`}
                           >
                             <div className="flex items-center gap-3">
                               <span className="text-base">{lang.flag}</span>

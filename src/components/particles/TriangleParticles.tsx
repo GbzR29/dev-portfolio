@@ -21,44 +21,52 @@ export default function TriangleParticles() {
 
     let particles: Particle[] = [];
     let animationId: number;
-
-    const PARTICLE_COUNT = 200; 
+    let width = 0;
+    let height = 0;
+    const DPR = window.devicePixelRatio || 1;
 
     // -------------------------
-    // resize
+    // Resize com DPR correto
     // -------------------------
     const resize = () => {
-      canvas.width = document.body.scrollWidth;
-      canvas.height = document.body.scrollHeight;
+      width = window.innerWidth;
+      height = window.innerHeight;
 
+      canvas.style.width = width + "px";
+      canvas.style.height = height + "px";
+
+      canvas.width = width * DPR;
+      canvas.height = height * DPR;
+
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+      createParticles();
     };
 
-    resize();
-    window.addEventListener("resize", resize);
-
     // -------------------------
-    // create particles
+    // Densidade adaptativa
     // -------------------------
     const createParticles = () => {
+      const density = 0.00008; // controla densidade
+      const count = Math.floor(width * height * density);
+
       particles = [];
 
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
+      for (let i = 0; i < count; i++) {
         particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: 6 + Math.random() * 12,
-          speedX: (Math.random() - 0.5) * 0.4,
-          speedY: (Math.random() - 0.5) * 0.4,
+          x: Math.random() * width,
+          y: Math.random() * height,
+          size: 6 + Math.random() * 10,
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.3,
           rotation: Math.random() * Math.PI * 2,
           rotationSpeed: (Math.random() - 0.5) * 0.01,
         });
       }
     };
 
-    createParticles();
-
     // -------------------------
-    // desenhar triângulo
+    // Desenhar triângulo
     // -------------------------
     const drawTriangle = (p: Particle) => {
       ctx.save();
@@ -72,28 +80,28 @@ export default function TriangleParticles() {
       ctx.lineTo(-p.size, p.size);
       ctx.closePath();
 
-      ctx.fillStyle = "rgba(0, 102, 255, 0.11)"; // azul suave
+      ctx.fillStyle = "rgba(0, 102, 255, 0.08)";
       ctx.fill();
 
       ctx.restore();
     };
 
     // -------------------------
-    // loop
+    // Loop
     // -------------------------
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, width, height);
 
       for (const p of particles) {
         p.x += p.speedX;
         p.y += p.speedY;
         p.rotation += p.rotationSpeed;
 
-        // wrap screen
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
+        // wrap suave
+        if (p.x < -p.size) p.x = width + p.size;
+        if (p.x > width + p.size) p.x = -p.size;
+        if (p.y < -p.size) p.y = height + p.size;
+        if (p.y > height + p.size) p.y = -p.size;
 
         drawTriangle(p);
       }
@@ -101,6 +109,8 @@ export default function TriangleParticles() {
       animationId = requestAnimationFrame(animate);
     };
 
+    resize();
+    window.addEventListener("resize", resize);
     animate();
 
     return () => {
@@ -112,11 +122,7 @@ export default function TriangleParticles() {
   return (
     <canvas
       ref={canvasRef}
-      className="
-        fixed inset-0
-        z-0
-        pointer-events-none
-      "
+      className="fixed inset-0 z-0 pointer-events-none"
     />
   );
 }

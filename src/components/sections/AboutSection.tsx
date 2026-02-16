@@ -5,7 +5,8 @@ import { useState } from "react";
 import StackCard from "@/components/cards/StackCard";
 import ReadMoreButton from "@/components/ui/ReadMoreButton";
 
-import BinaryDecorations from "@/components/ui/BinaryDecoration";
+import BinaryDecoration from "@/components/ui/BinaryDecoration";
+import GridDecoration from "../ui/GridDecoration";
 
 export default function AboutSection() {
   const [open, setOpen] = useState(false);
@@ -24,7 +25,10 @@ export default function AboutSection() {
         relative
       "
     >
-      <BinaryDecorations/>
+      <BinaryDecoration className="absolute top-10 left-10" text="01110111 01100101 01101100 01100011 01101111 01101101 01100101 00100001"/>
+
+      <GridDecoration/>
+
 
       <div className="
         w-full max-w-7xl mx-auto

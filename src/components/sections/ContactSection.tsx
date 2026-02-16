@@ -3,7 +3,7 @@
 import { SiGithub, SiLinkedin } from "react-icons/si";
 import { Mail, MessageSquare } from "lucide-react";
 import { MyButton } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card"; // Certifique-se de que o path está correto
+import Card from "@/components/ui/Card";
 import Link from "next/link";
 
 export function ContactSection() {

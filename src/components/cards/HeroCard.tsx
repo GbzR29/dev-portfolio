@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@/components/ui/Card";
+import Card from "@/components/ui/Card";
 import Typewriter from "@/components/Typewriter";
 import { MyButton } from "@/components/ui/Button";
 import { zIndex } from "@/lib/z-index";
