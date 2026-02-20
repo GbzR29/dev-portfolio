@@ -1,53 +1,54 @@
 :root {
-  /* --- BASE PALETTE (Light) --- */
-  --bg: #F8FAFC;
-  --surface: #FFFFFF;
-  --surface-overlay: rgba(255, 255, 255, 0.9);
-  --border: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(15, 23, 42, 0.15);
+  /* --- BASE PALETTE (Light & Airy) --- */
+  --bg: #FFFFFF;               /* Branco Puro para limpeza visual */
+  --surface: #F9FAFB;          /* Cinza muito sutil para cartões/áreas */
+  --surface-overlay: rgba(255, 255, 255, 0.95);
+  --border: #E5E7EB;           /* Cinza neutro claro */
+  --border-strong: #D1D5DB;    /* Cinza neutro médio */
 
-  /* Textos */
-  --text-main: #0F172A;      /* Slate 900 */
-  --text-muted: #64748B;    /* Slate 500 */
-  --text-navbar: #1E293B;
+  /* Textos (Neutral em vez de Slate para menos "sujeira" azulada) */
+  --text-main: #111827;        /* Cinza Quase Preto (Suave) */
+  --text-muted: #6B7280;       /* Cinza Médio */
+  --text-navbar: #1F2937;
   --text-inverse: #FFFFFF;
 
-  /* Brand Colors */
-  --primary: #3B82F6;
-  --primary-hover: #2563EB;
-  --primary-low: rgba(59, 130, 246, 0.1);
+  /* Brand Colors (Azul mais vibrante e limpo) */
+  --primary: #2563EB;          /* Azul Royal (Melhor contraste no branco) */
+  --primary-hover: #1D4ED8;
+  --primary-low: rgba(37, 99, 235, 0.08);
   
-  /* Accent Colors (Futuras) */
-  --accent: #8B5CF6;         /* Violeta para destaques */
-  --success: #10B981;
-  --error: #EF4444;
+  /* Accent Colors (Roxo mais luminoso) */
+  --accent: #8B5CF6;           /* Violeta Vibrante */
+  --success: #059669;
+  --error: #DC2626;
 
   --radius-lg: 16px;
   --radius-md: 12px;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 }
 
 .dark {
-  /* --- BASE PALETTE (Dark) --- */
-  --bg: #030712;             /* Gray 950 - Mais profundo que o anterior */
-  --surface: #0F172A;        /* Slate 900 */
-  --surface-overlay: rgba(15, 23, 42, 0.8);
-  --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.12);
+  /* --- BASE PALETTE (Soft Dark) --- */
+  /* Mais claro que o anterior para reduzir o contraste agressivo */
+  --bg: #111827;               /* Gray 900 (Não é preto total) */
+  --surface: #1F2937;          /* Gray 800 */
+  --surface-overlay: rgba(31, 41, 55, 0.9);
+  --border: #374151;           /* Gray 700 */
+  --border-strong: #4B5563;    /* Gray 600 */
 
   /* Textos */
-  --text-main: #F1F5F9;      /* Slate 100 */
-  --text-muted: #94A3B8;     /* Slate 400 */
-  --text-navbar: #E2E8F0;
-  --text-inverse: #020617;
+  --text-main: #F9FAFB;        /* Gray 50 (Quase branco) */
+  --text-muted: #9CA3AF;       /* Gray 400 */
+  --text-navbar: #F3F4F6;
+  --text-inverse: #111827;
 
-  /* Brand Colors */
-  --primary: #60A5FA;
-  --primary-hover: #93C5FD;
-  --primary-low: rgba(96, 165, 250, 0.15);
+  /* Brand Colors (Ajustados para fundo escuro suave) */
+  --primary: #3B82F6;          /* Azul um pouco mais claro para destacar */
+  --primary-hover: #60A5FA;
+  --primary-low: rgba(59, 130, 246, 0.2);
 
   /* Accent Colors */
-  --accent: #A78BFA;
+  --accent: #A78BFA;           /* Roxo mais pastel/luminoso */
   --success: #34D399;
   --error: #F87171;
 }

@@ -24,6 +24,9 @@ export default function HeroSection() {
         text="01101101 01111001 00100000 01101111 01101110 01101100 01101001 01101110 01100101 00100000 01100011 01101111 01110010 01101110 01100101 01110010 00100001"
       />
 
+     
+      
+     
       <GridDecoration />
 
       {/* isMounted para controlar a visibilidade. 
