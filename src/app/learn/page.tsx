@@ -1,141 +1,235 @@
+// app/learn/page.tsx  (or components/pages/LearnPage.tsx)
 "use client";
 
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
-import Card from "@/components/ui/Card";
-import { MyButton } from "@/components/ui/Button";
 import TriangleParticles from "@/components/particles/TriangleParticles";
-import { BookOpen, Code2, Cpu, Globe, Zap } from "lucide-react";
-
-
-
+import { MyButton } from "@/components/ui/Button";
+import { BookOpen, Code2, Cpu, Globe, Zap, ArrowRight, Lock } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+
+// ─── Track config ─────────────────────────────────────────────────────────────
+
+type TrackStatus = "available" | "coming-soon";
+
+interface Track {
+  id: string;
+  path: string;
+  title: string;
+  descKey: keyof ReturnType<typeof useLanguage>["t"];
+  levelKey: keyof ReturnType<typeof useLanguage>["t"];
+  lessonsCount: number;
+  icon: React.ReactNode;
+  accentColor: string;
+  status: TrackStatus;
+}
+
+const TRACK_CONFIG: Omit<Track, "descKey" | "levelKey">[] = [
+  {
+    id: "cpp",
+    path: "C++",
+    title: "Modern C++",
+    lessonsCount: 15,
+    icon: <Code2 size={28} />,
+    accentColor: "#3b82f6",
+    status: "available",
+  },
+  {
+    id: "opengl",
+    path: "OpenGL",
+    title: "OpenGL 4.6",
+    lessonsCount: 22,
+    icon: <Zap size={28} />,
+    accentColor: "#8b5cf6",
+    status: "available",
+  },
+  {
+    id: "vulkan",
+    path: "Vulkan",
+    title: "Vulkan API",
+    lessonsCount: 12,
+    icon: <Cpu size={28} />,
+    accentColor: "#ef4444",
+    status: "coming-soon",
+  },
+  {
+    id: "sdl3",
+    path: "SDL3",
+    title: "SDL3 Framework",
+    lessonsCount: 8,
+    icon: <Globe size={28} />,
+    accentColor: "#22c55e",
+    status: "coming-soon",
+  },
+];
+
+// ─── Track card ───────────────────────────────────────────────────────────────
+
+function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: any }) {
+  const descMap: Record<string, string> = {
+    cpp:    t.trackCppDesc,
+    opengl: t.trackOpenglDesc,
+    vulkan: t.trackVulkanDesc,
+    sdl3:   t.trackSdlDesc,
+  };
+  const levelMap: Record<string, string> = {
+    cpp:    t.begAdv,
+    opengl: t.intermediate,
+    vulkan: t.advanced,
+    sdl3:   t.beginner,
+  };
+
+  const isAvailable = config.status === "available";
+
+  return (
+    <div
+      className={`
+        group relative flex flex-col overflow-hidden rounded-2xl
+        border transition-all duration-300
+        ${isAvailable
+          ? "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]"
+          : "border-white/5 bg-white/[0.01] opacity-70"
+        }
+      `}
+    >
+      {/* Coming soon overlay badge */}
+      {!isAvailable && (
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10">
+          <Lock size={10} className="text-[var(--text-muted)]" />
+          <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
+            Soon
+          </span>
+        </div>
+      )}
+
+      {/* Top color bar */}
+      <div
+        className="h-1 w-full flex-shrink-0 rounded-t-2xl opacity-70 group-hover:opacity-100 transition-opacity"
+        style={{ background: `linear-gradient(90deg, ${config.accentColor}, transparent)` }}
+      />
+
+      <div className="flex flex-col flex-grow p-6 sm:p-7">
+        {/* Icon + level */}
+        <div className="flex items-start justify-between mb-5">
+          <div
+            className="p-3 rounded-xl border"
+            style={{
+              background: `${config.accentColor}12`,
+              borderColor: `${config.accentColor}25`,
+              color: config.accentColor,
+            }}
+          >
+            {config.icon}
+          </div>
+          <span className="text-[9px] font-bold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[var(--text-muted)]">
+            {levelMap[config.id]}
+          </span>
+        </div>
+
+        <h3 className="text-xl font-bold text-white mb-2">{config.title}</h3>
+        <p className="text-[var(--text-muted)] text-sm leading-relaxed flex-grow mb-6">
+          {descMap[config.id]}
+        </p>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between mt-auto">
+          <div className="flex items-center gap-1.5 text-[var(--text-muted)] text-xs font-mono">
+            <BookOpen size={13} style={{ color: config.accentColor }} />
+            <span>{config.lessonsCount} {t.lessons}</span>
+          </div>
+
+          {isAvailable ? (
+            <Link href={`/learn/${config.path}`}>
+              <button
+                className="group/btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200"
+                style={{
+                  background: `${config.accentColor}15`,
+                  color: config.accentColor,
+                  border: `1px solid ${config.accentColor}25`,
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = `${config.accentColor}25`;
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = `${config.accentColor}15`;
+                }}
+              >
+                {t.startTrack}
+                <ArrowRight size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
+              </button>
+            </Link>
+          ) : (
+            <span className="text-xs text-[var(--text-muted)] font-mono opacity-50">
+              // coming soon
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function LearnPage() {
   const { t } = useLanguage();
 
   if (!t) return null;
 
-  const TRACKS = [
-    {
-      id: "cpp", // Pasta: /learn/C++
-      path: "C++", 
-      title: "Modern C++",
-      description: t.trackCppDesc,
-      icon: <Code2 className="text-[var(--primary)]" size={32} />,
-      level: t.begAdv, // Nível traduzido
-      lessons: `15 ${t.lessons}`
-    },
-    {
-      id: "opengl", // Pasta: /learn/OpenGL
-      path: "OpenGL",
-      title: "OpenGL 4.6",
-      description: t.trackOpenglDesc,
-      icon: <Zap className="text-[var(--primary)]" size={32} />,
-      level: t.intermediate, // Nível traduzido
-      lessons: `22 ${t.lessons}`
-    },
-    {
-      id: "vulkan", // Pasta: /learn/Vulkan
-      path: "Vulkan",
-      title: "Vulkan API",
-      description: t.trackVulkanDesc,
-      icon: <Cpu className="text-[var(--primary)]" size={32} />,
-      level: t.advanced, // Nível traduzido
-      lessons: `12 ${t.lessons}`
-    },
-    {
-      id: "sdl3", // Pasta: /learn/SDL3
-      path: "SDL3",
-      title: "SDL3 Framework",
-      description: t.trackSdlDesc,
-      icon: <Globe className="text-[var(--primary)]" size={32} />,
-      level: t.beginner, // Nível traduzido
-      lessons: `8 ${t.lessons}`
-    }
-  ];
-
-  
-
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text-main)] transition-colors duration-300">
       <TriangleParticles />
       <Navbar />
 
-      <main className="flex-grow pt-32 pb-20">
-        <section className="container mx-auto px-6 lg:px-20">
-          
-          <div className="max-w-3xl mb-16">
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight">
-              {t.learnTitle} <span className="text-[var(--primary)]">{t.learnEngine}</span>
+      <main className="flex-grow pt-28 pb-24">
+        <div className="max-w-6xl mx-auto px-6 lg:px-10 space-y-16">
+
+          {/* ── Header ─────────────────────────────────────────────────────── */}
+          <header className="space-y-5 max-w-2xl">
+            <div className="flex items-center gap-3">
+              <div className="h-px w-8 bg-[var(--primary)]" />
+              <span className="font-mono text-[10px] text-[var(--primary)] uppercase tracking-[0.3em]">
+                // gabrielfc.dev/learn
+              </span>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
+              {t.learnTitle}{" "}
+              <span className="text-[var(--primary)]">{t.learnEngine}</span>
             </h1>
             <p className="text-xl text-[var(--text-muted)] leading-relaxed">
               {t.learnSubtitle}
             </p>
-          </div>
+          </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {TRACKS.map((track) => (
-              <Card key={track.id} padding="lg" className="flex flex-col h-full border border-[var(--border)]">
-                <div className="flex items-start justify-between mb-6">
-                  <div className="p-3 bg-[var(--bg)] border border-[var(--border)] rounded-xl">
-                    {track.icon}
-                  </div>
-                  <Badge text={track.level} />
-                </div>
-
-                <h3 className="text-2xl font-bold mb-3 text-[var(--text-main)]">{track.title}</h3>
-                <p className="text-[var(--text-muted)] mb-8 text-sm leading-relaxed flex-grow">
-                  {track.description}
-                </p>
-
-                <div className="flex items-center justify-between mt-auto">
-                  <div className="flex items-center gap-2 text-[var(--text-muted)] text-sm font-medium">
-                    <BookOpen size={16} className="text-[var(--primary)]" />
-                    <span>{track.lessons}</span>
-                  </div>
-                  
-                  {/* Redirecionamento para a pasta correta (Case Sensitive conforme você pediu) */}
-                  <Link href={`/learn/${track.path}`}>
-                    <MyButton text={t.startTrack} className="group flex items-center gap-2" />
-                  </Link>
-                </div>
-              </Card>
+          {/* ── Tracks grid ────────────────────────────────────────────────── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {TRACK_CONFIG.map((config) => (
+              <TrackCard key={config.id} config={config} t={t} />
             ))}
           </div>
 
-          {/* Banner de IA */}
-          <Card padding="lg" className="mt-16 bg-gradient-to-br from-[var(--card)] to-[var(--bg)] border border-[var(--primary)]/20 overflow-hidden relative">
-             {/* Efeito de brilho sutil ao fundo */}
-            <div className="absolute -right-10 -top-10 w-40 h-40 bg-[var(--primary)] opacity-10 blur-3xl" />
-            
-            <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-              <div className="p-5 bg-[var(--primary)] rounded-2xl text-white shadow-lg shadow-[var(--primary)]/30">
-                <Zap size={32} />
+          {/* ── AI banner ──────────────────────────────────────────────────── */}
+          <div className="relative overflow-hidden rounded-2xl border border-[var(--primary)]/20 bg-white/[0.02] p-8 md:p-10">
+            <div className="absolute -right-16 -top-16 w-56 h-56 bg-[var(--primary)] opacity-5 blur-3xl rounded-full pointer-events-none" />
+
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-6 relative z-10">
+              <div className="flex-shrink-0 p-4 bg-[var(--primary)]/10 border border-[var(--primary)]/20 rounded-2xl text-[var(--primary)]">
+                <Zap size={28} />
               </div>
-              <div>
-                <h4 className="text-xl font-bold mb-2">{t.aiTitle}</h4>
-                <p className="text-[var(--text-muted)] max-w-xl">
-                  {t.aiDesc}
-                </p>
+              <div className="flex-1 text-center md:text-left">
+                <h4 className="text-xl font-bold text-white mb-2">{t.aiTitle}</h4>
+                <p className="text-[var(--text-muted)] max-w-xl">{t.aiDesc}</p>
               </div>
-              <div className="md:ml-auto">
+              <div className="md:ml-auto flex-shrink-0">
                 <MyButton text={t.notifyMe} variant="outline" />
               </div>
             </div>
-          </Card>
-        </section>
+          </div>
+        </div>
       </main>
+
       <Footer />
     </div>
-  );
-}
-
-function Badge({ text }: { text: string }) {
-  return (
-    <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 bg-[var(--bg)] border border-[var(--border)] rounded-full text-[var(--text-muted)] whitespace-nowrap">
-      {text}
-    </span>
   );
 }
