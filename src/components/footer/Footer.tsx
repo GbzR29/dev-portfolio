@@ -4,7 +4,7 @@ import { Mail } from "lucide-react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 
 export default function Footer() {
-  const currentYear = 2026;
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="w-full border-t border-[var(--border)] bg-[var(--navbar-bg)] backdrop-blur-md py-12 transition-colors duration-300">

@@ -25,8 +25,6 @@ export default function HeroSection() {
       />
 
      
-      
-     
       <GridDecoration />
 
       {/* isMounted para controlar a visibilidade. 

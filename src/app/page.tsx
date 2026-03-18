@@ -9,8 +9,9 @@ import Footer from "@/components/footer/Footer";
 import TriangleParticles from "@/components/particles/TriangleParticles";
 
 export const metadata = {
-  title: 'Gabriel Carvalho | Portfolio & Game Development', 
-  description: 'Welcome to my digital corner!',
+  
+  title: 'Gabriel Carvalho | Game Dev & Graphics Programmer',
+  description: 'C++ game developer building a custom game engine with OpenGL/Vulkan. Exploring graphics programming, ECS, and low-level systems since 2016.',
   
   openGraph: {
     title: 'Gabriel Carvalho | Portfolio & Game Development',
