@@ -38,8 +38,8 @@ function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: an
     <div className={`
       group relative flex flex-col overflow-hidden rounded-2xl border transition-all duration-300
       ${isAvailable
-        ? "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]"
-        : "border-white/5 bg-white/[0.01] opacity-75"
+        ? "border-[var(--border)] bg-[var(--card)] shadow-sm hover:border-[var(--border-strong)] hover:shadow-md"
+        : "border-[var(--border)] bg-[var(--card)] shadow-sm opacity-75"
       }
     `}>
       {/* Top color accent bar */}
@@ -60,18 +60,18 @@ function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: an
           {/* Right side: soon + level stacked vertically */}
           <div className="flex flex-col items-end gap-1.5">
             {!isAvailable && (
-              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/5 border border-white/10">
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[var(--surface)] border border-[var(--border)]">
                 <Lock size={9} className="text-[var(--text-muted)]" />
                 <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">Soon</span>
               </div>
             )}
-            <span className="text-[9px] font-bold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[var(--text-muted)] whitespace-nowrap">
+            <span className="text-[9px] font-bold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-muted)] whitespace-nowrap">
               {levelMap[config.id]}
             </span>
           </div>
         </div>
 
-        <h3 className="text-xl font-bold text-white mb-2">{config.title}</h3>
+        <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">{config.title}</h3>
         <p className="text-[var(--text-muted)] text-sm leading-relaxed flex-grow mb-6">
           {descMap[config.id]}
         </p>
@@ -140,14 +140,14 @@ export default function LearnPage() {
           </div>
 
           {/* AI banner */}
-          <div className="relative overflow-hidden rounded-2xl border border-[var(--primary)]/20 bg-white/[0.02] p-8 md:p-10">
+          <div className="relative overflow-hidden rounded-2xl border border-[var(--primary)]/20 bg-[var(--card)] shadow-sm p-8 md:p-10">
             <div className="absolute -right-16 -top-16 w-56 h-56 bg-[var(--primary)] opacity-5 blur-3xl rounded-full pointer-events-none" />
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6 relative z-10">
               <div className="flex-shrink-0 p-4 bg-[var(--primary)]/10 border border-[var(--primary)]/20 rounded-2xl text-[var(--primary)]">
                 <Zap size={26} />
               </div>
               <div className="flex-1 text-center md:text-left">
-                <h4 className="text-xl font-bold text-white mb-2">{t.aiTitle}</h4>
+                <h4 className="text-xl font-bold text-[var(--text-main)] mb-2">{t.aiTitle}</h4>
                 <p className="text-[var(--text-muted)] max-w-xl">{t.aiDesc}</p>
               </div>
               <div className="md:ml-auto flex-shrink-0">

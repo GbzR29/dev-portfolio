@@ -18,7 +18,7 @@ export default function AboutSection() {
       className="
         w-full py-24
         px-6 sm:px-10 lg:px-20
-        border-t border-white/5
+        border-t border-[var(--separator)]
         flex flex-col justify-center
         lg:min-h-screen
         relative
@@ -51,9 +51,9 @@ export default function AboutSection() {
               <p>{t.aboutPara3}</p>
 
               {/* Quick tech stats — labels and values now from i18n */}
-              <div className="grid grid-cols-2 gap-6 pt-6 border-t border-white/10">
+              <div className="grid grid-cols-2 gap-6 pt-6 border-t border-[var(--separator)]">
                 <div className="space-y-1">
-                  <span className="block text-white font-mono text-xs uppercase italic opacity-70">
+                  <span className="block text-[var(--text-muted)] font-mono text-xs uppercase italic">
                     {t.aboutFocusLabel}:
                   </span>
                   <span className="text-[var(--primary)] text-sm font-medium">
@@ -61,7 +61,7 @@ export default function AboutSection() {
                   </span>
                 </div>
                 <div className="space-y-1">
-                  <span className="block text-white font-mono text-xs uppercase italic opacity-70">
+                  <span className="block text-[var(--text-muted)] font-mono text-xs uppercase italic">
                     {t.aboutStackLabel}:
                   </span>
                   <span className="text-[var(--primary)] text-sm font-medium">

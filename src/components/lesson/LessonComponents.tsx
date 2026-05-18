@@ -48,7 +48,7 @@ export function CodeBlock({
           {copied ? tx(t, "codeCopied", "✓ copied") : tx(t, "codeCopy", "copy")}
         </button>
       </div>
-      <pre className="p-5 overflow-x-auto bg-[#0d1117] text-sm leading-relaxed">
+      <pre className="p-5 overflow-x-auto bg-[var(--code-bg)] text-sm leading-relaxed">
         <code className="font-mono text-[#e6edf3] whitespace-pre">{children}</code>
       </pre>
     </div>
@@ -93,10 +93,22 @@ export function IC({ children }: { children: string }) {
 }
 
 // ─── H2 / H3 ─────────────────────────────────────────────────────────────────
+// scroll-mt-28 offsets the fixed navbar so headings aren't hidden when jumped to.
+
+function slug(text: React.ReactNode): string {
+  return String(text)
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .trim();
+}
 
 export function H2({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-2xl font-bold text-[var(--text-main)] pt-6 pb-1 border-b border-white/5">
+    <h2
+      id={slug(children)}
+      className="text-2xl font-bold text-[var(--text-main)] pt-6 pb-1 border-b border-white/5 scroll-mt-28"
+    >
       {children}
     </h2>
   );
@@ -104,7 +116,12 @@ export function H2({ children }: { children: React.ReactNode }) {
 
 export function H3({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="text-lg font-semibold text-[var(--text-main)] pt-4">{children}</h3>
+    <h3
+      id={slug(children)}
+      className="text-lg font-semibold text-[var(--text-main)] pt-4 scroll-mt-28"
+    >
+      {children}
+    </h3>
   );
 }
 
@@ -171,7 +188,7 @@ export function PipelineDiagram({ t }: { t?: any }) {
 export function NDCDiagram() {
   return (
     <div className="my-6 flex justify-center">
-      <div className="relative w-52 h-52 border-2 border-white/20 rounded bg-[#0d1117]">
+      <div className="relative w-52 h-52 border-2 border-white/20 rounded bg-[var(--code-bg)]">
         {/* Grid lines */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-full h-px bg-white/10" />
@@ -210,7 +227,7 @@ export function NDCDiagram() {
 
 export function VBOFlowDiagram({ t }: { t?: any }) {
   return (
-    <div className="my-6 rounded-xl border border-white/10 bg-[#0d1117] p-6 overflow-x-auto">
+    <div className="my-6 rounded-xl border border-white/10 bg-[var(--code-bg)] p-6 overflow-x-auto">
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-max mx-auto sm:w-auto">
 
         <div className="flex flex-col items-center gap-2">
@@ -276,7 +293,7 @@ export function VBOFlowDiagram({ t }: { t?: any }) {
 
 export function VAODiagram({ t }: { t?: any }) {
   return (
-    <div className="my-6 rounded-xl border border-white/10 bg-[#0d1117] p-5">
+    <div className="my-6 rounded-xl border border-white/10 bg-[var(--code-bg)] p-5">
       <div className="text-[9px] font-mono font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-4">
         {tx(t, "vaoDiagramTitle", "VAO records bindings so you can replay them with one call")}
       </div>

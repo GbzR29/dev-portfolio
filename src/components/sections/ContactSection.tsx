@@ -14,7 +14,7 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="px-6 sm:px-10 lg:px-20 py-32 border-t border-white/5 bg-gradient-to-b from-transparent to-blue-500/5"
+      className="px-6 sm:px-10 lg:px-20 py-32 border-t border-[var(--separator)] bg-gradient-to-b from-transparent to-blue-500/5"
     >
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -29,7 +29,7 @@ export function ContactSection() {
               {t.contactAvailable}
             </div>
 
-            <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold text-[var(--text-main)] tracking-tight">
               {t.contactHeadline}
             </h2>
 
@@ -37,8 +37,8 @@ export function ContactSection() {
               {t.contactBody}
             </p>
 
-            <div className="flex items-center gap-4 text-gray-300 pt-2">
-              <div className="p-2 rounded-lg bg-white/5 border border-white/10 flex-shrink-0">
+            <div className="flex items-center gap-4 text-[var(--text-muted)] pt-2">
+              <div className="p-2 rounded-lg bg-[var(--surface)] border border-[var(--border)] flex-shrink-0">
                 <Mail size={18} className="text-blue-400" />
               </div>
               <span className="text-sm md:text-base font-mono">gabrielfeliperc@hotmail.com</span>
@@ -48,8 +48,8 @@ export function ContactSection() {
           {/* Right: Terminal card */}
           <div className="relative">
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur opacity-10" />
-            <Card padding="none" hoverable={false} className="relative border border-white/10 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-white/[0.03]">
+            <Card padding="none" hoverable={false} className="relative border border-[var(--border)] overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-[var(--surface)]">
                 <div className="flex items-center gap-2 text-xs text-gray-400">
                   <Terminal size={13} className="text-blue-400/70" />
                   <span className="font-mono">contact.sh</span>
@@ -60,8 +60,8 @@ export function ContactSection() {
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
                 </div>
               </div>
-              <div className="px-5 py-4 font-mono text-xs border-b border-white/5 bg-black/20 space-y-1 select-none">
-                <p><span className="text-blue-400/60">$</span> <span className="text-white/40">./send_message --to gabriel</span></p>
+              <div className="px-5 py-4 font-mono text-xs border-b border-[var(--separator)] bg-[var(--code-bg)]/80 space-y-1 select-none">
+                <p><span className="text-blue-400/60">$</span> <span className="text-[var(--code-text)]/50">./send_message --to gabriel</span></p>
                 <p className="text-green-400/50">✓ Connection established. Ready to receive.</p>
               </div>
               <div className="p-6 space-y-4">
@@ -70,10 +70,10 @@ export function ContactSection() {
                 </Link>
                 <div className="grid grid-cols-2 gap-3">
                   <Link href="https://github.com/GbzR29" target="_blank" rel="noopener noreferrer">
-                    <MyButton text="GitHub" variant="outline" icon={<SiGithub size={17} />} className="w-full py-5 border-white/10 text-white hover:border-blue-500" />
+                    <MyButton text="GitHub" variant="outline" icon={<SiGithub size={17} />} className="w-full py-5 border-[var(--border)] text-[var(--text-main)] hover:border-blue-500" />
                   </Link>
                   <Link href="https://www.linkedin.com/in/gabriel-carvalho-479740234/" target="_blank" rel="noopener noreferrer">
-                    <MyButton text="LinkedIn" variant="outline" icon={<SiLinkedin size={17} />} className="w-full py-5 border-white/10 text-white hover:border-blue-500" />
+                    <MyButton text="LinkedIn" variant="outline" icon={<SiLinkedin size={17} />} className="w-full py-5 border-[var(--border)] text-[var(--text-main)] hover:border-blue-500" />
                   </Link>
                 </div>
                 <p className="text-center text-xs text-[var(--text-muted)] font-mono pt-1">{t.contactResponseTime}</p>

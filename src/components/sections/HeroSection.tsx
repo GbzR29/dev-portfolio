@@ -62,7 +62,7 @@ export default function HeroSection() {
         className="absolute inset-0 pointer-events-none z-0 opacity-[0.025]"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.5) 2px, rgba(255,255,255,0.5) 3px)",
+            "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(128,128,128,0.3) 2px, rgba(128,128,128,0.3) 3px)",
           backgroundSize: "100% 3px",
         }}
       />

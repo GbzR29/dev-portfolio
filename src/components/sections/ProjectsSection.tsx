@@ -16,6 +16,8 @@ export interface Project {
   shortDescription: string;
   longDescription: string;
   github: string;
+  /** Link para demo ao vivo (WASM, vídeo, etc.) — opcional */
+  demoUrl?: string;
   image: string;
   tags: string[];
   codeSnippet: string;

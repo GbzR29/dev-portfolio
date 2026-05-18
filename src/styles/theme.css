@@ -1,26 +1,35 @@
 :root {
   /* --- BASE PALETTE (Light & Airy) --- */
-  --bg: #FFFFFF;               /* Branco Puro para limpeza visual */
-  --surface: #F9FAFB;          /* Cinza muito sutil para cartões/áreas */
+  --bg: #F8FAFC;
+  --surface: #F9FAFB;
   --surface-overlay: rgba(255, 255, 255, 0.95);
-  --border: #E5E7EB;           /* Cinza neutro claro */
-  --border-strong: #D1D5DB;    /* Cinza neutro médio */
+  --card: #FFFFFF;
+  --navbar-bg: rgba(255, 255, 255, 0.88);
 
-  /* Textos (Neutral em vez de Slate para menos "sujeira" azulada) */
-  --text-main: #111827;        /* Cinza Quase Preto (Suave) */
-  --text-muted: #6B7280;       /* Cinza Médio */
+  /* Borders */
+  --border: #E5E7EB;
+  --border-strong: #D1D5DB;
+  --separator: rgba(0, 0, 0, 0.07);
+
+  /* Textos */
+  --text-main: #111827;
+  --text-muted: #6B7280;
   --text-navbar: #1F2937;
   --text-inverse: #FFFFFF;
 
-  /* Brand Colors (Azul mais vibrante e limpo) */
-  --primary: #2563EB;          /* Azul Royal (Melhor contraste no branco) */
+  /* Brand */
+  --primary: #2563EB;
   --primary-hover: #1D4ED8;
   --primary-low: rgba(37, 99, 235, 0.08);
-  
-  /* Accent Colors (Roxo mais luminoso) */
-  --accent: #8B5CF6;           /* Violeta Vibrante */
+
+  /* Accent */
+  --accent: #8B5CF6;
   --success: #059669;
   --error: #DC2626;
+
+  /* Code blocks — mantém escuro mesmo em light (padrão de mercado) */
+  --code-bg: #0d1117;
+  --code-text: #e6edf3;
 
   --radius-lg: 16px;
   --radius-md: 12px;
@@ -29,26 +38,34 @@
 
 .dark {
   /* --- BASE PALETTE (Soft Dark) --- */
-  /* Mais claro que o anterior para reduzir o contraste agressivo */
-  --bg: #111827;               /* Gray 900 (Não é preto total) */
-  --surface: #1F2937;          /* Gray 800 */
+  --bg: #111827;
+  --surface: #1F2937;
   --surface-overlay: rgba(31, 41, 55, 0.9);
-  --border: #374151;           /* Gray 700 */
-  --border-strong: #4B5563;    /* Gray 600 */
+  --card: #1F2937;
+  --navbar-bg: rgba(17, 24, 39, 0.88);
+
+  /* Borders */
+  --border: #374151;
+  --border-strong: #4B5563;
+  --separator: rgba(255, 255, 255, 0.07);
 
   /* Textos */
-  --text-main: #F9FAFB;        /* Gray 50 (Quase branco) */
-  --text-muted: #9CA3AF;       /* Gray 400 */
+  --text-main: #F9FAFB;
+  --text-muted: #9CA3AF;
   --text-navbar: #F3F4F6;
   --text-inverse: #111827;
 
-  /* Brand Colors (Ajustados para fundo escuro suave) */
-  --primary: #3B82F6;          /* Azul um pouco mais claro para destacar */
+  /* Brand */
+  --primary: #3B82F6;
   --primary-hover: #60A5FA;
-  --primary-low: rgba(59, 130, 246, 0.2);
+  --primary-low: rgba(59, 130, 246, 0.15);
 
-  /* Accent Colors */
-  --accent: #A78BFA;           /* Roxo mais pastel/luminoso */
+  /* Accent */
+  --accent: #A78BFA;
   --success: #34D399;
   --error: #F87171;
+
+  /* Code blocks */
+  --code-bg: #0d1117;
+  --code-text: #e6edf3;
 }

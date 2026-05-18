@@ -45,14 +45,14 @@ export default function HeroCard() {
         <h1
           className="
             text-[clamp(3rem,8vw,6rem)]
-            font-black leading-[0.88] tracking-tighter text-white
+            font-black leading-[0.88] tracking-tighter text-[var(--text-main)]
           "
           style={{ fontFamily: "var(--font-orbitron)" }}
         >
           <span className="block">GABRIEL</span>
           <span className="block text-[var(--primary)]">
             CARVALHO
-            <span className="text-white/30">.</span>
+            <span className="text-[var(--text-muted)]/40">.</span>
           </span>
         </h1>
       </div>
@@ -88,7 +88,7 @@ export default function HeroCard() {
             key={stat.label}
             className="
               flex items-center gap-2 px-3 py-1.5
-              rounded-lg bg-white/[0.04] border border-white/[0.07]
+              rounded-lg bg-[var(--surface)] border border-[var(--border)]
               hover:border-[var(--primary)]/30 hover:bg-[var(--primary)]/5
               transition-colors duration-300
             "
@@ -96,7 +96,7 @@ export default function HeroCard() {
             <span className="font-mono text-[9px] text-[var(--text-muted)] uppercase tracking-[0.2em]">
               {stat.label}
             </span>
-            <span className="w-px h-3 bg-white/10" />
+            <span className="w-px h-3 bg-[var(--border)]" />
             <span className="font-mono text-[11px] text-[var(--primary)] font-bold">
               {stat.value}
             </span>
@@ -138,7 +138,7 @@ export default function HeroCard() {
           className="
             flex items-center gap-2
             px-6 py-3 rounded-xl
-            border border-white/15 text-[var(--text-main)] font-semibold text-sm
+            border border-[var(--border-strong)] text-[var(--text-main)] font-semibold text-sm
             hover:border-[var(--primary)] hover:text-[var(--primary)]
             active:scale-[0.97]
             transition-all duration-300
@@ -154,7 +154,7 @@ export default function HeroCard() {
             flex items-center gap-1.5
             px-3 py-3
             text-[var(--text-muted)] font-medium text-sm
-            hover:text-white
+            hover:text-[var(--text-main)]
             transition-colors duration-300
           "
         >
