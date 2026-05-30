@@ -31,7 +31,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Aqui o 't' agora contém a união de todos os seus arquivos (home, learning, blog)
-  const t = translations[language];
+  //correção temporária para as traduções
+  const t = translations[language] as typeof translations.en;
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
