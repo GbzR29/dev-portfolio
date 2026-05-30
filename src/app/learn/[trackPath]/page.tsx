@@ -82,7 +82,7 @@ function SidebarContent({
             {visitedCount}/{chapters.length}
           </span>
         </div>
-        <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+        <div className="h-1 bg-[var(--surface)] rounded-full overflow-hidden">
           <div
             className="h-full bg-[var(--primary)] rounded-full transition-all duration-500"
             style={{ width: `${visitedPct}%` }}
@@ -162,10 +162,10 @@ function TableOfContents({ headings, activeId }: { headings: TocHeading[]; activ
               document.getElementById(h.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
             }}
             className={`block py-1 text-[11px] leading-relaxed transition-colors
-              ${h.level === 3 ? "pl-3 border-l border-white/5" : ""}
+              ${h.level === 3 ? "pl-3 border-l border-[var(--separator)]" : ""}
               ${activeId === h.id
                 ? "text-[var(--primary)] font-medium"
-                : "text-[var(--text-muted)] hover:text-white"
+                : "text-[var(--text-muted)] hover:text-[var(--text-main)]"
               }`}
           >
             {h.text}
@@ -283,14 +283,14 @@ export default function LessonPage() {
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setIsDrawerOpen(false)}
           />
-          <aside className="absolute inset-y-0 left-0 w-72 bg-[var(--bg)] border-r border-white/10 overflow-y-auto animate-in slide-in-from-left duration-200">
-            <div className="flex items-center justify-between px-4 pt-6 pb-3 border-b border-white/5">
-              <span className="text-sm font-semibold text-white">
+          <aside className="absolute inset-y-0 left-0 w-72 bg-[var(--bg)] border-r border-[var(--border)] overflow-y-auto animate-in slide-in-from-left duration-200">
+            <div className="flex items-center justify-between px-4 pt-6 pb-3 border-b border-[var(--separator)]">
+              <span className="text-sm font-semibold text-[var(--text-main)]">
                 {t.lessonChapters ?? "Chapters"}
               </span>
               <button
                 onClick={() => setIsDrawerOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                className="p-1.5 rounded-lg hover:bg-[var(--primary-low)] transition-colors"
               >
                 <X size={16} className="text-[var(--text-muted)]" />
               </button>
@@ -300,30 +300,30 @@ export default function LessonPage() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-28 pb-24">
+      <div className="max-w-7xl mx-auto pt-28 pb-24">
 
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-mono mb-8">
-          <Link href="/learn" className="hover:text-white transition-colors flex items-center gap-1.5">
+        {/* Breadcrumb — with horizontal padding */}
+        <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-mono mb-6 px-4 sm:px-6">
+          <Link href="/learn" className="hover:text-[var(--text-main)] transition-colors flex items-center gap-1.5">
             <ArrowLeft size={12} />
             Learn
           </Link>
           <ChevronRight size={12} className="opacity-40" />
           <span className="text-[var(--primary)]">{track.title}</span>
           <ChevronRight size={12} className="opacity-40" />
-          <span className="text-white truncate max-w-[180px]">{currentChapter?.title}</span>
+          <span className="text-[var(--text-main)] truncate max-w-[180px]">{currentChapter?.title}</span>
         </div>
 
-        {/* 3-column layout */}
-        <div className="flex gap-8 xl:gap-12 items-start">
+        {/* 3-column layout — sidebar at left edge, ToC at right edge */}
+        <div className="flex items-start">
 
-          {/* ── Desktop sidebar ──────────────────────────────────────── */}
-          <aside className="hidden lg:block w-56 flex-shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-2xl border border-white/5 bg-white/[0.015]">
+          {/* ── Desktop sidebar — no left gap, attached to edge ─────── */}
+          <aside className="hidden lg:block w-48 flex-shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-r-2xl border-y border-r border-[var(--border)] bg-[var(--card)]">
             <SidebarContent {...sidebarProps} />
           </aside>
 
-          {/* ── Main content ─────────────────────────────────────────── */}
-          <main className="flex-1 min-w-0">
+          {/* ── Main content — padded internally ─────────────────────── */}
+          <main className="flex-1 min-w-0 px-5 sm:px-7 lg:px-9 xl:px-11">
 
             {/* Chapter header */}
             <header className="mb-10 pb-8 border-b border-[var(--separator)]">
@@ -331,7 +331,7 @@ export default function LessonPage() {
                 <span className="font-mono text-[10px] text-[var(--primary)] uppercase tracking-[0.25em]">
                   {track.title}
                 </span>
-                <span className="text-white/20 text-xs">·</span>
+                <span className="text-[var(--separator)] text-xs">·</span>
                 <span className="font-mono text-[10px] text-[var(--text-muted)]">
                   Chapter {currentIndex + 1} of {track.chapters.length}
                 </span>
@@ -343,7 +343,7 @@ export default function LessonPage() {
 
               <div className="flex items-center gap-4 flex-wrap">
                 <div className="flex items-center gap-2.5 flex-1 min-w-[140px] max-w-xs">
-                  <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                  <div className="flex-1 h-1.5 bg-[var(--surface)] rounded-full overflow-hidden">
                     <div
                       className="h-full bg-[var(--primary)] rounded-full transition-all duration-500"
                       style={{ width: `${overallPct}%` }}
@@ -387,7 +387,7 @@ export default function LessonPage() {
               {nextChapter ? (
                 <button
                   onClick={() => setActiveChapterId(nextChapter.id)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 text-[var(--text-muted)] hover:border-[var(--primary)]/40 hover:text-white transition-all text-sm group ml-auto"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--primary)]/40 hover:text-[var(--text-main)] transition-all text-sm group ml-auto"
                 >
                   <div className="text-right">
                     <div className="text-[9px] font-mono uppercase tracking-widest opacity-60 mb-0.5">
@@ -406,8 +406,8 @@ export default function LessonPage() {
             </div>
           </main>
 
-          {/* ── Table of Contents (xl+) ───────────────────────────────── */}
-          <aside className="hidden xl:block w-44 flex-shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto">
+          {/* ── Table of Contents — no right gap, attached to edge ─── */}
+          <aside className="hidden xl:block w-40 flex-shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-l-2xl border-y border-l border-[var(--border)] bg-[var(--card)] px-4 py-5">
             <TableOfContents headings={headings} activeId={activeTocId} />
           </aside>
         </div>

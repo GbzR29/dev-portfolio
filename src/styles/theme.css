@@ -27,6 +27,10 @@
   --success: #059669;
   --error: #DC2626;
 
+  /* Highlight — amber, used for achievements/metrics */
+  --highlight: #D97706;
+  --highlight-low: rgba(217, 119, 6, 0.08);
+
   /* Code blocks — mantém escuro mesmo em light (padrão de mercado) */
   --code-bg: #0d1117;
   --code-text: #e6edf3;
@@ -64,6 +68,10 @@
   --accent: #A78BFA;
   --success: #34D399;
   --error: #F87171;
+
+  /* Highlight — amber, used for achievements/metrics */
+  --highlight: #FBBF24;
+  --highlight-low: rgba(251, 191, 36, 0.12);
 
   /* Code blocks */
   --code-bg: #0d1117;

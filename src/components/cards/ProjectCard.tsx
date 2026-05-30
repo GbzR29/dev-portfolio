@@ -149,9 +149,9 @@ export default function ProjectCard({ project, onClick }: Props) {
 
             {/* Key metric */}
             {project.metric && (
-              <div className="flex items-center gap-2 pt-3 border-t border-white/5">
-                <Zap size={11} className="text-blue-400/60 flex-shrink-0" />
-                <span className="text-[11px] font-mono text-blue-400/70 line-clamp-1">
+              <div className="flex items-center gap-2 pt-3 border-t border-[var(--separator)]">
+                <Zap size={11} className="text-[var(--highlight)] flex-shrink-0" />
+                <span className="text-[11px] font-mono text-[var(--highlight)] line-clamp-1 opacity-80">
                   {project.metric}
                 </span>
               </div>

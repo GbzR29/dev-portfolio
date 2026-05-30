@@ -3,6 +3,8 @@
 
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { okaidia } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 // Always returns a non-empty string. Falls back to `fallback` if t is missing
@@ -31,8 +33,8 @@ export function CodeBlock({
   };
 
   return (
-    <div className="rounded-xl overflow-hidden border border-white/10 my-6">
-      <div className="flex items-center justify-between px-4 py-2.5 bg-white/[0.03] border-b border-white/10">
+    <div className="rounded-xl overflow-hidden border border-[var(--border)] my-6">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-[var(--surface)] border-b border-[var(--border)]">
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
           <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
@@ -43,14 +45,28 @@ export function CodeBlock({
         </div>
         <button
           onClick={handleCopy}
-          className="text-[10px] font-mono text-[var(--text-muted)] hover:text-white transition-colors px-2 py-1 rounded border border-transparent hover:border-white/10"
+          className="text-[10px] font-mono text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors px-2 py-1 rounded border border-transparent hover:border-[var(--border)]"
         >
           {copied ? tx(t, "codeCopied", "✓ copied") : tx(t, "codeCopy", "copy")}
         </button>
       </div>
-      <pre className="p-5 overflow-x-auto bg-[var(--code-bg)] text-sm leading-relaxed">
-        <code className="font-mono text-[#e6edf3] whitespace-pre">{children}</code>
-      </pre>
+      <div className="overflow-auto bg-[var(--code-bg)]">
+        <SyntaxHighlighter
+          language={lang}
+          style={okaidia}
+          showLineNumbers
+          lineNumberStyle={{ color: "#75715e", fontSize: "0.7rem", minWidth: "2.5em", userSelect: "none" }}
+          customStyle={{
+            margin: 0,
+            padding: "1.25rem 1.25rem 1.25rem 0",
+            fontSize: "0.82rem",
+            lineHeight: "1.75",
+            backgroundColor: "transparent",
+          }}
+        >
+          {children}
+        </SyntaxHighlighter>
+      </div>
     </div>
   );
 }
@@ -86,7 +102,7 @@ export function Callout({
 
 export function IC({ children }: { children: string }) {
   return (
-    <code className="bg-white/5 border border-white/10 px-1.5 py-0.5 rounded text-blue-300 font-mono text-[0.85em]">
+    <code className="bg-[var(--surface)] border border-[var(--border)] px-1.5 py-0.5 rounded text-[var(--primary)] font-mono text-[0.85em]">
       {children}
     </code>
   );
@@ -107,7 +123,7 @@ export function H2({ children }: { children: React.ReactNode }) {
   return (
     <h2
       id={slug(children)}
-      className="text-2xl font-bold text-[var(--text-main)] pt-6 pb-1 border-b border-white/5 scroll-mt-28"
+      className="text-2xl font-bold text-[var(--text-main)] pt-6 pb-1 border-b border-[var(--separator)] scroll-mt-28"
     >
       {children}
     </h2>
@@ -141,7 +157,7 @@ const PIPELINE_STAGES = [
 
 export function PipelineDiagram({ t }: { t?: any }) {
   return (
-    <div className="my-6 rounded-xl border border-white/10 bg-white/[0.02] overflow-x-auto">
+    <div className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-x-auto">
       <div className="flex items-center p-5 gap-1 w-max mx-auto">
         {PIPELINE_STAGES.map((stage, i) => (
           <div key={stage.labelKey} className="flex items-center gap-1">
@@ -158,7 +174,7 @@ export function PipelineDiagram({ t }: { t?: any }) {
                 flex flex-col items-center justify-center
                 ${stage.programmable
                   ? "bg-[var(--primary)]/10 border-[var(--primary)]/30"
-                  : "bg-white/[0.04] border-white/10"
+                  : "bg-[var(--surface)] border-[var(--border)]"
                 }
               `}>
                 <span className={`
@@ -174,7 +190,7 @@ export function PipelineDiagram({ t }: { t?: any }) {
             </div>
             {/* Arrow between stages */}
             {i < PIPELINE_STAGES.length - 1 && (
-              <ChevronRight size={12} className="text-white/20 flex-shrink-0" />
+              <ChevronRight size={12} className="text-[var(--text-muted)]/40 flex-shrink-0" />
             )}
           </div>
         ))}
@@ -234,9 +250,9 @@ export function VBOFlowDiagram({ t }: { t?: any }) {
           <div className="text-[9px] font-mono font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">
             {tx(t, "vboFlowCpuRam", "CPU RAM")}
           </div>
-          <div className="border border-white/20 rounded-lg px-4 py-3 bg-white/[0.03] text-center">
+          <div className="border border-[var(--border)] rounded-lg px-4 py-3 bg-[var(--surface)] text-center">
             <div className="font-mono text-[10px] text-[var(--text-muted)]">float vertices[]</div>
-            <div className="font-mono text-[11px] text-white mt-1">{"{ -0.5, -0.5, 0.5..."}</div>
+            <div className="font-mono text-[11px] text-[var(--text-main)] mt-1">{"{ -0.5, -0.5, 0.5..."}</div>
           </div>
         </div>
 
@@ -278,7 +294,7 @@ export function VBOFlowDiagram({ t }: { t?: any }) {
           </div>
           <div className="border border-green-500/30 rounded-lg px-4 py-3 bg-green-500/5 text-center">
             <div className="font-mono text-[10px] text-green-400">gl_Position</div>
-            <div className="font-mono text-[11px] text-white mt-1">
+            <div className="font-mono text-[11px] text-[var(--text-main)] mt-1">
               {tx(t, "vboFlowVertexPos", "= vertex pos")}
             </div>
           </div>
@@ -319,17 +335,146 @@ export function VAODiagram({ t }: { t?: any }) {
         </div>
 
         <div className="flex flex-col gap-2">
-          <div className="border border-white/10 rounded-lg px-4 py-2 bg-white/[0.03] font-mono text-[10px] text-white text-center">
+          <div className="border border-[var(--border)] rounded-lg px-4 py-2 bg-[var(--surface)] font-mono text-[10px] text-[var(--text-main)] text-center">
             {tx(t, "vaoVboPositions", "VBO #1 (positions)")}
           </div>
-          <div className="border border-white/10 rounded-lg px-4 py-2 bg-white/[0.03] font-mono text-[10px] text-white text-center">
+          <div className="border border-[var(--border)] rounded-lg px-4 py-2 bg-[var(--surface)] font-mono text-[10px] text-[var(--text-main)] text-center">
             {tx(t, "vaoVboTexCoords", "VBO #2 (tex coords)")}
           </div>
-          <div className="border border-white/10 rounded-lg px-4 py-2 bg-white/[0.03] font-mono text-[10px] text-white text-center">
+          <div className="border border-[var(--border)] rounded-lg px-4 py-2 bg-[var(--surface)] font-mono text-[10px] text-[var(--text-main)] text-center">
             {tx(t, "vaoEboIndices", "EBO #1 (indices)")}
           </div>
         </div>
 
+      </div>
+    </div>
+  );
+}
+
+// ─── LessonTable ──────────────────────────────────────────────────────────────
+
+export function LessonTable({
+  headers,
+  rows,
+}: {
+  headers: string[];
+  rows: (string | React.ReactNode)[][];
+}) {
+  return (
+    <div className="rounded-xl border border-[var(--border)] overflow-hidden my-4">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-[var(--border)] bg-[var(--surface)]">
+            {headers.map((h, i) => (
+              <th key={i} className="text-left px-4 py-3 font-mono text-[11px] text-[var(--text-muted)] uppercase tracking-widest">
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-[var(--separator)]">
+          {rows.map((row, i) => (
+            <tr key={i}>
+              {row.map((cell, j) => (
+                <td key={j} className={`px-4 py-3 text-xs ${j === 0 ? "font-mono text-[var(--primary)]" : "text-[var(--text-muted)]"}`}>
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ─── MathBlock ─────────────────────────────────────────────────────────────────
+// Renders a mathematical formula with optional GLSL and GLM code equivalents.
+
+export function MathBlock({
+  children,
+  label,
+  glsl,
+  glm,
+}: {
+  children: React.ReactNode;
+  label?: string;
+  glsl?: string;
+  glm?: string;
+}) {
+  return (
+    <div className="my-5 rounded-xl border border-[var(--border)] overflow-hidden">
+      <div className="flex items-start gap-3 px-5 py-4 bg-[var(--surface)]">
+        <span className="text-[var(--primary)] font-mono text-base flex-shrink-0 mt-0.5 opacity-50 select-none">∑</span>
+        <div className="min-w-0 flex-1">
+          {label && (
+            <div className="text-[9px] font-mono uppercase tracking-widest text-[var(--text-muted)] mb-2">{label}</div>
+          )}
+          <div className="font-mono text-[var(--text-main)] text-sm leading-loose">{children}</div>
+        </div>
+      </div>
+      {(glsl || glm) && (
+        <div className="border-t border-[var(--border)] bg-[var(--code-bg)] px-5 py-3 space-y-1.5">
+          {glsl && (
+            <div className="flex items-baseline gap-3">
+              <span className="text-[9px] font-mono text-emerald-400/60 uppercase tracking-widest flex-shrink-0 w-10">GLSL</span>
+              <code className="font-mono text-[11px] text-[#e6edf3]">{glsl}</code>
+            </div>
+          )}
+          {glm && (
+            <div className="flex items-baseline gap-3">
+              <span className="text-[9px] font-mono text-blue-400/60 uppercase tracking-widest flex-shrink-0 w-10">GLM</span>
+              <code className="font-mono text-[11px] text-[#e6edf3]">{glm}</code>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Matrix4x4 ────────────────────────────────────────────────────────────────
+// Visual 4×4 matrix for math explanations.
+
+export function Matrix4x4({
+  data,
+  label,
+}: {
+  data: (string | number)[][];
+  label?: string;
+}) {
+  return (
+    <div className="inline-flex flex-col items-center">
+      {label && (
+        <span className="text-[9px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-2 text-center">
+          {label}
+        </span>
+      )}
+      <div className="flex items-stretch gap-0">
+        {/* Left bracket via borders */}
+        <div className="border-l-2 border-t-2 border-b-2 border-[var(--border-strong)] w-2.5 rounded-l" />
+        <div className="px-3 py-2 flex flex-col gap-0.5">
+          {data.map((row, i) => (
+            <div key={i} className="flex gap-3">
+              {row.map((cell, j) => (
+                <span
+                  key={j}
+                  className={`font-mono text-[11px] text-right leading-5 min-w-[3ch] ${
+                    cell === 0 || cell === "0"
+                      ? "text-[var(--text-muted)] opacity-25"
+                      : cell === 1 || cell === "1"
+                      ? "text-[var(--primary)]"
+                      : "text-[var(--text-main)]"
+                  }`}
+                >
+                  {cell}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+        {/* Right bracket */}
+        <div className="border-r-2 border-t-2 border-b-2 border-[var(--border-strong)] w-2.5 rounded-r" />
       </div>
     </div>
   );

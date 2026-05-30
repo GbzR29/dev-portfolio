@@ -132,12 +132,12 @@ function OverviewTab({ project }: { project: Project }) {
 
         {/* Key result */}
         {project.metric && (
-          <div className="flex items-center gap-3 p-3.5 rounded-xl bg-blue-500/5 border border-blue-500/15">
-            <div className="p-1.5 rounded-lg bg-blue-500/10 flex-shrink-0">
-              <Zap size={14} className="text-blue-400" />
+          <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--highlight-low)] border border-[var(--highlight)]/20">
+            <div className="p-1.5 rounded-lg bg-[var(--highlight)]/10 flex-shrink-0">
+              <Zap size={14} className="text-[var(--highlight)]" />
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-blue-400/60 mb-0.5">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--highlight)]/60 mb-0.5">
                 Key Result
               </p>
               <p className="text-sm font-semibold text-[var(--text-main)]">{project.metric}</p>

@@ -5,11 +5,13 @@
 
 import { Track } from "./types";
 import { openGLTrack } from "./opengl";
+import { glslTrack }   from "./glsl";
 // import { cppTrack }    from "./cpp";    // uncomment when ready
 // import { vulkanTrack } from "./vulkan"; // uncomment when ready
 
 const ALL_TRACKS: Record<string, Track> = {
   OpenGL: openGLTrack,
+  GLSL:   glslTrack,
   // "C++":   cppTrack,
   // Vulkan:  vulkanTrack,
 };
