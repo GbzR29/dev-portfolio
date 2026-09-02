@@ -11,7 +11,7 @@ import {
   X, BookOpen, AlignLeft,
 } from "lucide-react";
 import { getTrack } from "@/lib/tracks";
-import type { Chapter, Track } from "@/lib/tracks/types";
+import { LessonSidebar } from "@/components/sidebar/LessonSidebar";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -50,95 +50,6 @@ function useLessonProgress(trackId: string) {
   );
 
   return { visited, markVisited };
-}
-
-// ─── Sidebar content ──────────────────────────────────────────────────────────
-
-function SidebarContent({
-  track, chapters, activeId, visited, onSelect, t,
-}: {
-  track: Track;
-  chapters: Chapter[];
-  activeId: string;
-  visited: Set<string>;
-  onSelect: (id: string) => void;
-  t: any;
-}) {
-  const visitedCount = visited.size;
-  const visitedPct = Math.round((visitedCount / chapters.length) * 100);
-
-  return (
-    <div className="flex flex-col gap-5 py-5 px-4">
-      {/* Track meta + progress */}
-      <div>
-        <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--primary)] mb-2">
-          {track.title}
-        </p>
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[10px] font-mono text-[var(--text-muted)]">
-            {t.lessonProgress ?? "Progress"}
-          </span>
-          <span className="text-[10px] font-mono text-[var(--text-muted)]">
-            {visitedCount}/{chapters.length}
-          </span>
-        </div>
-        <div className="h-1 bg-[var(--surface)] rounded-full overflow-hidden">
-          <div
-            className="h-full bg-[var(--primary)] rounded-full transition-all duration-500"
-            style={{ width: `${visitedPct}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Chapter list */}
-      <nav>
-        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)] px-1 mb-2">
-          {t.lessonChapters ?? "Chapters"}
-        </p>
-        <div className="space-y-0.5">
-          {chapters.map((ch, i) => {
-            const isActive = ch.id === activeId;
-            const isDone = visited.has(ch.id) && !isActive;
-            return (
-              <button
-                key={ch.id}
-                onClick={() => onSelect(ch.id)}
-                className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
-                  ${isActive
-                    ? "bg-[var(--primary)]/10 text-[var(--text-main)] border border-[var(--primary)]/20"
-                    : "text-[var(--text-muted)] hover:bg-white/[0.04] hover:text-white border border-transparent"
-                  }`}
-              >
-                {/* Status indicator */}
-                <span
-                  className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center transition-colors
-                    ${isActive
-                      ? "bg-[var(--primary)] text-white"
-                      : isDone
-                      ? "bg-emerald-500/15 border border-emerald-500/30 text-emerald-400"
-                      : "bg-white/5 text-[var(--text-muted)] group-hover:bg-white/10"
-                    }`}
-                >
-                  {isDone
-                    ? <CheckCircle2 size={10} />
-                    : <span className="text-[9px] font-bold font-mono">{i + 1}</span>
-                  }
-                </span>
-
-                <span className="text-xs leading-snug flex-1 text-left">{ch.title}</span>
-
-                {ch.minRead && (
-                  <span className="flex-shrink-0 flex items-center gap-1 text-[9px] font-mono text-[var(--text-muted)] opacity-50">
-                    <Clock size={9} />{ch.minRead}m
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </nav>
-    </div>
-  );
 }
 
 // ─── Table of Contents ────────────────────────────────────────────────────────
@@ -295,7 +206,7 @@ export default function LessonPage() {
                 <X size={16} className="text-[var(--text-muted)]" />
               </button>
             </div>
-            <SidebarContent {...sidebarProps} />
+            <LessonSidebar {...sidebarProps} />
           </aside>
         </div>
       )}
@@ -317,9 +228,9 @@ export default function LessonPage() {
         {/* 3-column layout — sidebar at left edge, ToC at right edge */}
         <div className="flex items-start">
 
-          {/* ── Desktop sidebar — no left gap, attached to edge ─────── */}
-          <aside className="hidden lg:block w-48 flex-shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-r-2xl border-y border-r border-[var(--border)] bg-[var(--card)]">
-            <SidebarContent {...sidebarProps} />
+          {/* ── Desktop sidebar ───────────────────────────────────────── */}
+          <aside className="hidden lg:block w-60 flex-shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto ml-4 xl:ml-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-sm">
+            <LessonSidebar {...sidebarProps} />
           </aside>
 
           {/* ── Main content — padded internally ─────────────────────── */}
@@ -406,8 +317,8 @@ export default function LessonPage() {
             </div>
           </main>
 
-          {/* ── Table of Contents — no right gap, attached to edge ─── */}
-          <aside className="hidden xl:block w-40 flex-shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto rounded-l-2xl border-y border-l border-[var(--border)] bg-[var(--card)] px-4 py-5">
+          {/* ── Table of Contents — mirrors the sidebar card ────────── */}
+          <aside className="hidden xl:block w-44 flex-shrink-0 sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto mr-4 xl:mr-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-sm px-4 py-5">
             <TableOfContents headings={headings} activeId={activeTocId} />
           </aside>
         </div>
