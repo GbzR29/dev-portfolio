@@ -8,15 +8,19 @@ import { MyButton } from "@/components/ui/Button";
 import { BookOpen, Code2, Cpu, Globe, Zap, ArrowRight, Lock, Triangle } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { getTrack } from "@/lib/tracks";
 
 type TrackStatus = "available" | "coming-soon";
 
+// `path` is the /learn/[trackPath] segment and must match a key in ALL_TRACKS
+// (src/lib/tracks/index.ts). `plannedLessons` is only used for tracks that do
+// not exist yet — available tracks report their real chapter count.
 const TRACK_CONFIG = [
-  { id: "cpp",    path: "C++",    title: "Modern C++",       lessonsCount: 15, icon: <Code2    size={26} />, accentColor: "#3b82f6", status: "available"   as TrackStatus },
-  { id: "opengl", path: "OpenGL", title: "OpenGL 4.6",       lessonsCount: 9,  icon: <Zap      size={26} />, accentColor: "#8b5cf6", status: "available"   as TrackStatus },
-  { id: "glsl",   path: "GLSL",   title: "GLSL Shaders",     lessonsCount: 6,  icon: <Triangle size={26} />, accentColor: "#EC4899", status: "available"   as TrackStatus },
-  { id: "vulkan", path: "Vulkan", title: "Vulkan API",        lessonsCount: 12, icon: <Cpu      size={26} />, accentColor: "#ef4444", status: "coming-soon" as TrackStatus },
-  { id: "sdl3",   path: "SDL3",   title: "SDL3 Framework",   lessonsCount: 8,  icon: <Globe    size={26} />, accentColor: "#22c55e", status: "coming-soon" as TrackStatus },
+  { id: "cpp",    path: "C++",    title: "Modern C++",     plannedLessons: 15, icon: <Code2    size={26} />, accentColor: "#3b82f6", status: "available"   as TrackStatus },
+  { id: "opengl", path: "OpenGL", title: "OpenGL 4.6",     plannedLessons: 13, icon: <Zap      size={26} />, accentColor: "#8b5cf6", status: "available"   as TrackStatus },
+  { id: "glsl",   path: "GLSL",   title: "GLSL Shaders",   plannedLessons: 6,  icon: <Triangle size={26} />, accentColor: "#EC4899", status: "available"   as TrackStatus },
+  { id: "sdl3",   path: "SDL3",   title: "SDL3 Framework", plannedLessons: 10, icon: <Globe    size={26} />, accentColor: "#22c55e", status: "available"   as TrackStatus },
+  { id: "vulkan", path: "Vulkan", title: "Vulkan API",     plannedLessons: 12, icon: <Cpu      size={26} />, accentColor: "#ef4444", status: "coming-soon" as TrackStatus },
 ];
 
 function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: any }) {
@@ -36,6 +40,8 @@ function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: an
   };
 
   const isAvailable = config.status === "available";
+  // Read the real chapter count so the card can never drift from the content
+  const lessonsCount = getTrack(config.path)?.chapters.length ?? config.plannedLessons;
 
   return (
     <div className={`
@@ -83,7 +89,7 @@ function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: an
         <div className="flex items-center justify-between mt-auto">
           <div className="flex items-center gap-1.5 text-[var(--text-muted)] text-xs font-mono">
             <BookOpen size={13} style={{ color: config.accentColor }} />
-            <span>{config.lessonsCount} {t.lessons}</span>
+            <span>{lessonsCount} {t.lessons}</span>
           </div>
 
           {isAvailable ? (
