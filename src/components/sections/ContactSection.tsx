@@ -60,9 +60,9 @@ export function ContactSection() {
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
                 </div>
               </div>
-              <div className="px-5 py-4 font-mono text-xs border-b border-[var(--separator)] bg-[var(--code-bg)]/80 space-y-1 select-none">
-                <p><span className="text-blue-400/60">$</span> <span className="text-[var(--code-text)]/50">./send_message --to gabriel</span></p>
-                <p className="text-green-400/50">✓ Connection established. Ready to receive.</p>
+              <div className="px-5 py-4 font-mono text-xs border-b border-[var(--separator)] bg-[var(--code-bg)] space-y-1 select-none">
+                <p><span className="text-[var(--primary)]">$</span> <span className="text-[var(--code-muted)]">./send_message --to gabriel</span></p>
+                <p className="text-emerald-500/80">✓ Connection established. Ready to receive.</p>
               </div>
               <div className="p-6 space-y-4">
                 <Link href="mailto:gabrielfeliperc@hotmail.com" className="block">

@@ -3,7 +3,7 @@
 
 import { Track } from "@/lib/tracks/types";
 import {
-  CodeBlock, Callout, H2, H3, LessonTable,
+  CodeBlock, Callout, H2, LessonTable,
 } from "@/components/lesson/LessonComponents";
 
 function tx(t: any, key: string, fallback: string): string {

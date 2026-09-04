@@ -3,13 +3,26 @@
 
 import { Track } from "@/lib/tracks/types";
 import {
-  CodeBlock, Callout, IC, H2, H3,
+  CodeBlock, Callout, H2, H3,
   PipelineDiagram, NDCDiagram,
   VBOFlowDiagram, VAODiagram, LessonTable,
   MathBlock, Matrix4x4,
 } from "@/components/lesson/LessonComponents";
 import { InteractiveNDC2D } from "@/components/lesson/InteractiveNDC2D";
 import { InteractiveNDC3D } from "@/components/lesson/InteractiveNDC3D";
+
+// Newer chapters live in their own modules so this file stays navigable.
+import { SetupContent } from "./chapters/setup";
+import { CameraContent, DepthTestingContent } from "./chapters/transforms";
+import {
+  LightCastersContent, AdvancedLightingContent, ShadowMappingContent,
+} from "./chapters/lighting";
+import { ModelLoadingContent } from "./chapters/models";
+import {
+  BlendingContent, FramebuffersContent, CubemapsContent,
+  InstancingContent, UBOContent,
+} from "./chapters/advanced";
+import { DebuggingContent, ComputeContent } from "./chapters/tooling";
 
 // tx: returns translated string or English fallback. Never shows a key name.
 function tx(t: any, key: string, fallback: string): string {
@@ -1165,7 +1178,7 @@ vec3 transformedNormal = mat3(uModel) * aNormal;
               </div>
             </div>
             <p className="text-sm text-[var(--text-muted)] mb-2 ml-9">{desc}</p>
-            <div className="ml-9 font-mono text-[10px] bg-[var(--code-bg)] rounded-lg px-3 py-2 text-[#e6edf3] overflow-x-auto">
+            <div className="ml-9 font-mono text-[10px] bg-[var(--code-bg)] border border-[var(--code-border)] rounded-lg px-3 py-2 text-[var(--code-text)] overflow-x-auto">
               {code}
             </div>
           </div>
@@ -1710,22 +1723,54 @@ glDrawArrays(GL_TRIANGLES, 0, 3);`}</CodeBlock>
 
 // ── Exported track ────────────────────────────────────────────────────────────
 
+const GETTING_STARTED = "Getting Started";
+const TRANSFORMS      = "3D & Transformations";
+const LIGHTING        = "Lighting";
+const MODELS          = "Model Loading";
+const ADVANCED        = "Advanced OpenGL";
+const MODERN          = "Modern OpenGL & Tooling";
+
 export const openGLTrack: Track = {
   id: "opengl",
   title: "OpenGL 4.6",
   chapters: [
-    { id: "legacy",          title: "Legacy & Modern OpenGL",   minRead: 10, content: (t) => <LegacyContent          t={t} /> },
-    { id: "pipeline",        title: "The Graphics Pipeline",    minRead: 8,  content: (t) => <PipelineContent        t={t} /> },
-    { id: "vbo",             title: "Vertex Buffer Objects",    minRead: 10, content: (t) => <VBOContent             t={t} /> },
-    { id: "vao",             title: "Vertex Array Objects",     minRead: 7,  content: (t) => <VAOContent             t={t} /> },
-    { id: "shaders",         title: "First Shaders",            minRead: 9,  content: (t) => <ShadersContent        t={t} /> },
-    { id: "triangle",        title: "Drawing the Triangle",     minRead: 5,  content: (t) => <TriangleContent        t={t} /> },
-    { id: "ebo",             title: "Indexed Drawing (EBO)",    minRead: 8,  content: (t) => <EBOContent             t={t} /> },
-    { id: "textures",        title: "Textures",                 minRead: 12, content: (t) => <TexturesContent        t={t} /> },
-    { id: "linear-algebra",  title: "Linear Algebra for 3D",   minRead: 14, content: (t) => <LinearAlgebraContent  t={t} /> },
-    { id: "transformations", title: "Transformations + GLM",   minRead: 11, content: (t) => <TransformationsContent t={t} /> },
-    { id: "lighting",        title: "Phong Lighting",           minRead: 13, content: (t) => <LightingContent        t={t} /> },
-    { id: "winding",         title: "Face Winding & Culling",   minRead: 8,  content: (t) => <WindingContent         t={t} /> },
-    { id: "dsa",             title: "Direct State Access (DSA)", minRead: 9, content: (t) => <DSAContent             t={t} /> },
+    // ── Getting Started ──────────────────────────────────────────────────────
+    { id: "legacy",          section: GETTING_STARTED, title: "Legacy & Modern OpenGL",    minRead: 10, content: (t) => <LegacyContent          t={t} /> },
+    { id: "setup",           section: GETTING_STARTED, title: "Window & Context",          minRead: 10, content: (t) => <SetupContent           t={t} /> },
+    { id: "pipeline",        section: GETTING_STARTED, title: "The Graphics Pipeline",     minRead: 8,  content: (t) => <PipelineContent        t={t} /> },
+    { id: "vbo",             section: GETTING_STARTED, title: "Vertex Buffer Objects",     minRead: 10, content: (t) => <VBOContent             t={t} /> },
+    { id: "vao",             section: GETTING_STARTED, title: "Vertex Array Objects",      minRead: 7,  content: (t) => <VAOContent             t={t} /> },
+    { id: "shaders",         section: GETTING_STARTED, title: "First Shaders",             minRead: 9,  content: (t) => <ShadersContent         t={t} /> },
+    { id: "triangle",        section: GETTING_STARTED, title: "Drawing the Triangle",      minRead: 5,  content: (t) => <TriangleContent        t={t} /> },
+    { id: "ebo",             section: GETTING_STARTED, title: "Indexed Drawing (EBO)",     minRead: 8,  content: (t) => <EBOContent             t={t} /> },
+    { id: "textures",        section: GETTING_STARTED, title: "Textures",                  minRead: 12, content: (t) => <TexturesContent        t={t} /> },
+
+    // ── 3D & Transformations ─────────────────────────────────────────────────
+    { id: "linear-algebra",  section: TRANSFORMS,      title: "Linear Algebra for 3D",     minRead: 14, content: (t) => <LinearAlgebraContent   t={t} /> },
+    { id: "transformations", section: TRANSFORMS,      title: "Transformations + GLM",     minRead: 11, content: (t) => <TransformationsContent t={t} /> },
+    { id: "camera",          section: TRANSFORMS,      title: "Camera & View Matrix",      minRead: 11, content: (t) => <CameraContent          t={t} /> },
+    { id: "depth-testing",   section: TRANSFORMS,      title: "Depth Testing",             minRead: 9,  content: (t) => <DepthTestingContent    t={t} /> },
+
+    // ── Lighting ─────────────────────────────────────────────────────────────
+    { id: "lighting",        section: LIGHTING,        title: "Phong Lighting",            minRead: 13, content: (t) => <LightingContent        t={t} /> },
+    { id: "light-casters",   section: LIGHTING,        title: "Light Casters",             minRead: 11, content: (t) => <LightCastersContent    t={t} /> },
+    { id: "advanced-lighting", section: LIGHTING,      title: "Blinn-Phong & Gamma",       minRead: 10, content: (t) => <AdvancedLightingContent t={t} /> },
+    { id: "shadow-mapping",  section: LIGHTING,        title: "Shadow Mapping",            minRead: 14, content: (t) => <ShadowMappingContent   t={t} /> },
+
+    // ── Model Loading ────────────────────────────────────────────────────────
+    { id: "model-loading",   section: MODELS,          title: "Model Loading (Assimp)",    minRead: 13, content: (t) => <ModelLoadingContent    t={t} /> },
+
+    // ── Advanced OpenGL ──────────────────────────────────────────────────────
+    { id: "winding",         section: ADVANCED,        title: "Face Winding & Culling",    minRead: 8,  content: (t) => <WindingContent         t={t} /> },
+    { id: "blending",        section: ADVANCED,        title: "Blending & Transparency",   minRead: 10, content: (t) => <BlendingContent        t={t} /> },
+    { id: "framebuffers",    section: ADVANCED,        title: "Framebuffers & Post-FX",    minRead: 12, content: (t) => <FramebuffersContent    t={t} /> },
+    { id: "cubemaps",        section: ADVANCED,        title: "Cubemaps & Skybox",         minRead: 10, content: (t) => <CubemapsContent        t={t} /> },
+    { id: "instancing",      section: ADVANCED,        title: "Instancing",                minRead: 9,  content: (t) => <InstancingContent      t={t} /> },
+    { id: "ubo",             section: ADVANCED,        title: "Uniform Buffer Objects",    minRead: 10, content: (t) => <UBOContent             t={t} /> },
+
+    // ── Modern OpenGL & Tooling ──────────────────────────────────────────────
+    { id: "dsa",             section: MODERN,          title: "Direct State Access (DSA)", minRead: 9,  content: (t) => <DSAContent             t={t} /> },
+    { id: "debugging",       section: MODERN,          title: "Debugging OpenGL",          minRead: 11, content: (t) => <DebuggingContent       t={t} /> },
+    { id: "compute",         section: MODERN,          title: "Compute Shaders",           minRead: 13, content: (t) => <ComputeContent         t={t} /> },
   ],
 };

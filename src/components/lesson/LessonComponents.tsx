@@ -4,7 +4,8 @@
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { okaidia } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useTheme } from "@/components/providers/ThemeProvider";
+import { lessonSyntaxTheme } from "@/lib/syntaxTheme";
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 // Always returns a non-empty string. Falls back to `fallback` if t is missing
@@ -25,6 +26,7 @@ export function CodeBlock({
   t?: any;
 }) {
   const [copied, setCopied] = useState(false);
+  const { theme } = useTheme();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(children);
@@ -53,15 +55,14 @@ export function CodeBlock({
       <div className="overflow-auto bg-[var(--code-bg)]">
         <SyntaxHighlighter
           language={lang}
-          style={okaidia}
+          style={lessonSyntaxTheme(theme)}
           showLineNumbers
-          lineNumberStyle={{ color: "#75715e", fontSize: "0.7rem", minWidth: "2.5em", userSelect: "none" }}
+          lineNumberStyle={{ color: "var(--code-gutter)", fontSize: "0.7rem", minWidth: "2.5em", userSelect: "none" }}
           customStyle={{
             margin: 0,
             padding: "1.25rem 1.25rem 1.25rem 0",
             fontSize: "0.82rem",
             lineHeight: "1.75",
-            backgroundColor: "transparent",
           }}
         >
           {children}
@@ -204,21 +205,21 @@ export function PipelineDiagram({ t }: { t?: any }) {
 export function NDCDiagram() {
   return (
     <div className="my-6 flex justify-center">
-      <div className="relative w-52 h-52 border-2 border-white/20 rounded bg-[var(--code-bg)]">
+      <div className="relative w-52 h-52 border-2 border-[var(--code-line)] rounded bg-[var(--code-bg)]">
         {/* Grid lines */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-full h-px bg-white/10" />
+          <div className="w-full h-px bg-[var(--code-line)]" />
         </div>
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="h-full w-px bg-white/10" />
+          <div className="h-full w-px bg-[var(--code-line)]" />
         </div>
         {/* Axis labels */}
         <span className="absolute top-1.5 left-1/2 -translate-x-1/2 font-mono text-[9px] text-blue-400">+1.0</span>
-        <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 font-mono text-[9px] text-[var(--text-muted)]">-1.0</span>
-        <span className="absolute left-1.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-[var(--text-muted)]">-1.0</span>
+        <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 font-mono text-[9px] text-[var(--code-muted)]">-1.0</span>
+        <span className="absolute left-1.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-[var(--code-muted)]">-1.0</span>
         <span className="absolute right-1.5 top-1/2 -translate-y-1/2 font-mono text-[9px] text-blue-400">+1.0</span>
-        <span className="absolute top-1.5 right-2 font-mono text-[8px] text-[var(--text-muted)]">Y</span>
-        <span className="absolute bottom-2 right-2 font-mono text-[8px] text-[var(--text-muted)]">X</span>
+        <span className="absolute top-1.5 right-2 font-mono text-[8px] text-[var(--code-muted)]">Y</span>
+        <span className="absolute bottom-2 right-2 font-mono text-[8px] text-[var(--code-muted)]">X</span>
         {/* Triangle SVG */}
         <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full">
           <polygon
@@ -243,16 +244,16 @@ export function NDCDiagram() {
 
 export function VBOFlowDiagram({ t }: { t?: any }) {
   return (
-    <div className="my-6 rounded-xl border border-white/10 bg-[var(--code-bg)] p-6 overflow-x-auto">
+    <div className="my-6 rounded-xl border border-[var(--code-border)] bg-[var(--code-bg)] p-6 overflow-x-auto">
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-max mx-auto sm:w-auto">
 
         <div className="flex flex-col items-center gap-2">
-          <div className="text-[9px] font-mono font-bold text-[var(--text-muted)] uppercase tracking-widest mb-1">
+          <div className="text-[9px] font-mono font-bold text-[var(--code-muted)] uppercase tracking-widest mb-1">
             {tx(t, "vboFlowCpuRam", "CPU RAM")}
           </div>
-          <div className="border border-[var(--border)] rounded-lg px-4 py-3 bg-[var(--surface)] text-center">
-            <div className="font-mono text-[10px] text-[var(--text-muted)]">float vertices[]</div>
-            <div className="font-mono text-[11px] text-[var(--text-main)] mt-1">{"{ -0.5, -0.5, 0.5..."}</div>
+          <div className="border border-[var(--code-border)] rounded-lg px-4 py-3 bg-[var(--code-surface)] text-center">
+            <div className="font-mono text-[10px] text-[var(--code-muted)]">float vertices[]</div>
+            <div className="font-mono text-[11px] text-[var(--code-text)] mt-1">{"{ -0.5, -0.5, 0.5..."}</div>
           </div>
         </div>
 
@@ -262,7 +263,7 @@ export function VBOFlowDiagram({ t }: { t?: any }) {
             <div className="h-px w-10 bg-[var(--primary)]/40" />
             <ChevronRight size={12} className="text-[var(--primary)]" />
           </div>
-          <div className="text-[8px] font-mono text-[var(--text-muted)] opacity-60">
+          <div className="text-[8px] font-mono text-[var(--code-muted)] opacity-80">
             {tx(t, "vboFlowUpload", "upload")}
           </div>
         </div>
@@ -273,7 +274,7 @@ export function VBOFlowDiagram({ t }: { t?: any }) {
           </div>
           <div className="border border-[var(--primary)]/30 rounded-lg px-4 py-3 bg-[var(--primary)]/5 text-center">
             <div className="font-mono text-[10px] text-[var(--primary)]">VBO #1</div>
-            <div className="font-mono text-[11px] text-white mt-1">[ vertex buffer ]</div>
+            <div className="font-mono text-[11px] text-[var(--code-text)] mt-1">[ vertex buffer ]</div>
           </div>
         </div>
 
@@ -283,7 +284,7 @@ export function VBOFlowDiagram({ t }: { t?: any }) {
             <div className="h-px w-10 bg-green-500/40" />
             <ChevronRight size={12} className="text-green-400" />
           </div>
-          <div className="text-[8px] font-mono text-[var(--text-muted)] opacity-60">
+          <div className="text-[8px] font-mono text-[var(--code-muted)] opacity-80">
             {tx(t, "vboFlowDrawCall", "draw call")}
           </div>
         </div>
@@ -294,7 +295,7 @@ export function VBOFlowDiagram({ t }: { t?: any }) {
           </div>
           <div className="border border-green-500/30 rounded-lg px-4 py-3 bg-green-500/5 text-center">
             <div className="font-mono text-[10px] text-green-400">gl_Position</div>
-            <div className="font-mono text-[11px] text-[var(--text-main)] mt-1">
+            <div className="font-mono text-[11px] text-[var(--code-text)] mt-1">
               {tx(t, "vboFlowVertexPos", "= vertex pos")}
             </div>
           </div>
@@ -309,8 +310,8 @@ export function VBOFlowDiagram({ t }: { t?: any }) {
 
 export function VAODiagram({ t }: { t?: any }) {
   return (
-    <div className="my-6 rounded-xl border border-white/10 bg-[var(--code-bg)] p-5">
-      <div className="text-[9px] font-mono font-bold text-[var(--text-muted)] uppercase tracking-widest text-center mb-4">
+    <div className="my-6 rounded-xl border border-[var(--code-border)] bg-[var(--code-bg)] p-5">
+      <div className="text-[9px] font-mono font-bold text-[var(--code-muted)] uppercase tracking-widest text-center mb-4">
         {tx(t, "vaoDiagramTitle", "VAO records bindings so you can replay them with one call")}
       </div>
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -318,30 +319,30 @@ export function VAODiagram({ t }: { t?: any }) {
         <div className="border-2 border-[var(--primary)]/40 rounded-xl p-4 bg-[var(--primary)]/5 text-center min-w-[130px]">
           <div className="font-mono text-[10px] font-bold text-[var(--primary)] mb-3">VAO</div>
           <div className="space-y-1.5">
-            <div className="text-[9px] font-mono text-[var(--text-muted)] text-left">
+            <div className="text-[9px] font-mono text-[var(--code-muted)] text-left">
               {tx(t, "vaoAttrib0", "attrib 0 → VBO #1")}
             </div>
-            <div className="text-[9px] font-mono text-[var(--text-muted)] text-left">
+            <div className="text-[9px] font-mono text-[var(--code-muted)] text-left">
               {tx(t, "vaoAttrib1", "attrib 1 → VBO #1")}
             </div>
-            <div className="text-[9px] font-mono text-[var(--text-muted)] text-left">
+            <div className="text-[9px] font-mono text-[var(--code-muted)] text-left">
               {tx(t, "vaoIndices", "indices → EBO #1")}
             </div>
           </div>
         </div>
 
-        <div className="font-mono text-[var(--text-muted)] text-xs">
+        <div className="font-mono text-[var(--code-muted)] text-xs">
           {tx(t, "vaoBindOnce", "bind once")}
         </div>
 
         <div className="flex flex-col gap-2">
-          <div className="border border-[var(--border)] rounded-lg px-4 py-2 bg-[var(--surface)] font-mono text-[10px] text-[var(--text-main)] text-center">
+          <div className="border border-[var(--code-border)] rounded-lg px-4 py-2 bg-[var(--code-surface)] font-mono text-[10px] text-[var(--code-text)] text-center">
             {tx(t, "vaoVboPositions", "VBO #1 (positions)")}
           </div>
-          <div className="border border-[var(--border)] rounded-lg px-4 py-2 bg-[var(--surface)] font-mono text-[10px] text-[var(--text-main)] text-center">
+          <div className="border border-[var(--code-border)] rounded-lg px-4 py-2 bg-[var(--code-surface)] font-mono text-[10px] text-[var(--code-text)] text-center">
             {tx(t, "vaoVboTexCoords", "VBO #2 (tex coords)")}
           </div>
-          <div className="border border-[var(--border)] rounded-lg px-4 py-2 bg-[var(--surface)] font-mono text-[10px] text-[var(--text-main)] text-center">
+          <div className="border border-[var(--code-border)] rounded-lg px-4 py-2 bg-[var(--code-surface)] font-mono text-[10px] text-[var(--code-text)] text-center">
             {tx(t, "vaoEboIndices", "EBO #1 (indices)")}
           </div>
         </div>
@@ -414,17 +415,17 @@ export function MathBlock({
         </div>
       </div>
       {(glsl || glm) && (
-        <div className="border-t border-[var(--border)] bg-[var(--code-bg)] px-5 py-3 space-y-1.5">
+        <div className="border-t border-[var(--code-border)] bg-[var(--code-bg)] px-5 py-3 space-y-1.5">
           {glsl && (
             <div className="flex items-baseline gap-3">
               <span className="text-[9px] font-mono text-emerald-400/60 uppercase tracking-widest flex-shrink-0 w-10">GLSL</span>
-              <code className="font-mono text-[11px] text-[#e6edf3]">{glsl}</code>
+              <code className="font-mono text-[11px] text-[var(--code-text)]">{glsl}</code>
             </div>
           )}
           {glm && (
             <div className="flex items-baseline gap-3">
               <span className="text-[9px] font-mono text-blue-400/60 uppercase tracking-widest flex-shrink-0 w-10">GLM</span>
-              <code className="font-mono text-[11px] text-[#e6edf3]">{glm}</code>
+              <code className="font-mono text-[11px] text-[var(--code-text)]">{glm}</code>
             </div>
           )}
         </div>

@@ -57,7 +57,7 @@ function CardPlaceholder({ project }: { project: Project }) {
         <div className="w-12 h-12 rounded-xl border border-blue-500/25 bg-blue-500/5 flex items-center justify-center">
           <span className="font-mono text-base font-bold text-blue-400/70">{initials}</span>
         </div>
-        <span className="font-mono text-[8px] text-white/15 tracking-widest uppercase">preview unavailable</span>
+        <span className="font-mono text-[8px] text-[var(--code-muted)] opacity-60 tracking-widest uppercase">preview unavailable</span>
       </div>
     </div>
   );
@@ -135,7 +135,7 @@ export default function ProjectCard({ project, onClick }: Props) {
               {project.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
-                  className="text-[11px] font-mono text-[var(--text-muted)] bg-white/5 px-2 py-0.5 rounded border border-white/8"
+                  className="text-[11px] font-mono text-[var(--text-muted)] bg-[var(--surface)] px-2 py-0.5 rounded border border-[var(--border)]"
                 >
                   {tag}
                 </span>

@@ -164,7 +164,7 @@ export function ProjectsSection() {
   return (
     <section
       id="projects"
-      className="px-6 sm:px-10 lg:px-20 py-24 border-t border-white/5 relative overflow-hidden"
+      className="px-6 sm:px-10 lg:px-20 py-24 border-t border-[var(--separator)] relative overflow-hidden"
     >
       {/* Ambient light */}
       <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-blue-600/5 blur-[100px] rounded-full pointer-events-none translate-y-1/4 -translate-x-1/4 z-0" />

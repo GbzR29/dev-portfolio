@@ -11,7 +11,8 @@ import {
 import { SiGithub, SiCplusplus, SiOpengl, SiVulkan } from "react-icons/si";
 import { Project, ProjectStatus } from "@/components/sections/ProjectsSection";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useTheme } from "@/components/providers/ThemeProvider";
+import { modalSyntaxTheme } from "@/lib/syntaxTheme";
 
 // ─── Status config ─────────────────────────────────────────────────────────────
 
@@ -78,7 +79,7 @@ function ScreenshotPlaceholder({ project }: { project: Project }) {
           <span className="font-mono text-lg font-bold text-blue-400/70">{initials}</span>
         </div>
         <span className="font-mono text-[9px] text-blue-400/50 uppercase tracking-[0.25em]">{primaryTag}</span>
-        <span className="font-mono text-[8px] text-white/15 tracking-wider">PREVIEW UNAVAILABLE</span>
+        <span className="font-mono text-[8px] text-[var(--code-muted)] opacity-60 tracking-wider">PREVIEW UNAVAILABLE</span>
       </div>
     </div>
   );
@@ -170,37 +171,37 @@ function OverviewTab({ project }: { project: Project }) {
 // ─── Code tab ──────────────────────────────────────────────────────────────────
 
 function CodeTab({ project }: { project: Project }) {
+  const { theme } = useTheme();
   return (
     <div className="flex flex-col h-full min-h-[320px]">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/5 bg-white/[0.02] flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--code-border)] bg-[var(--code-surface)] flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="flex gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
             <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
             <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-gray-400">
+          <div className="flex items-center gap-1.5 text-xs text-[var(--code-muted)]">
             <Terminal size={12} className="text-blue-400/70" />
             <span className="font-mono">{project.codeFilename}</span>
           </div>
         </div>
-        <Code2 size={13} className="text-white/20" />
+        <Code2 size={13} className="text-[var(--code-muted)] opacity-60" />
       </div>
 
       {/* Syntax highlighted code */}
       <div className="overflow-auto bg-[var(--code-bg)]">
         <SyntaxHighlighter
           language="cpp"
-          style={vscDarkPlus}
+          style={modalSyntaxTheme(theme)}
           showLineNumbers
-          lineNumberStyle={{ color: "#4b5563", fontSize: "0.7rem", minWidth: "2.5em" }}
+          lineNumberStyle={{ color: "var(--code-gutter)", fontSize: "0.7rem", minWidth: "2.5em" }}
           customStyle={{
             margin: 0,
             padding: "1.5rem 1.5rem 1.5rem 0",
             fontSize: "0.82rem",
             lineHeight: "1.75",
-            backgroundColor: "transparent",
           }}
         >
           {project.codeSnippet}

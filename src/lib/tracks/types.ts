@@ -13,6 +13,12 @@ export interface Chapter {
   id: string;
   title: string;
   minRead?: number;
+  /**
+   * Optional category heading. Consecutive chapters sharing a section are
+   * grouped under one collapsible header in the sidebar. Chapters stay a flat
+   * ordered list, so numbering, progress and prev/next are unaffected.
+   */
+  section?: string;
   /** Content is a function so it can receive the current translations object */
   content: (t: TrackTranslations) => ReactNode;
 }
