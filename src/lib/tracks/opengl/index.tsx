@@ -6,8 +6,8 @@ import {
   CodeBlock, Callout, H2, H3,
   PipelineDiagram, NDCDiagram,
   VBOFlowDiagram, VAODiagram, LessonTable,
-  MathBlock, Matrix4x4,
 } from "@/components/lesson/LessonComponents";
+import { Equation } from "@/components/lesson/Tex";
 import { InteractiveNDC2D } from "@/components/lesson/InteractiveNDC2D";
 import { InteractiveNDC3D } from "@/components/lesson/InteractiveNDC3D";
 import { InteractiveBasis2D } from "@/components/lesson/InteractiveBasis2D";
@@ -23,8 +23,9 @@ import { TextureFigure } from "@/components/lesson/figures/TextureFigure";
 import { SetupContent } from "./chapters/setup";
 import { CameraContent, DepthTestingContent } from "./chapters/transforms";
 import {
-  AdvancedLightingContent, ShadowMappingContent,
-} from "./chapters/lighting";
+  BlinnPhongContent, GammaContent, ShadowMappingContent, PointShadowsContent,
+  NormalMappingContent, HdrContent, BloomContent, DeferredContent,
+} from "./chapters/lighting-advanced";
 import { ModelLoadingContent } from "./chapters/models";
 import {
   LightColorContent, BasicLightingContent, MaterialsContent, LightingMapsContent,
@@ -35,6 +36,7 @@ import {
   InstancingContent, UBOContent,
 } from "./chapters/advanced";
 import { DebuggingContent, ComputeContent } from "./chapters/tooling";
+import { PbrTheoryContent, PbrLightingContent, IblDiffuseContent, IblSpecularContent } from "./chapters/pbr";
 
 // tx: returns translated string or English fallback. Never shows a key name.
 function tx(t: any, key: string, fallback: string): string {
@@ -1004,57 +1006,34 @@ function LinearAlgebraContent({ t }: { t: any }) {
         )}
       </p>
 
-      <MathBlock label={tx(t, "ch08la_addLabel", "Addition")} glsl="vec3 r = a + b;" glm="glm::vec3 r = a + b;">
-        <span className="text-[var(--primary)]">a</span>
-        {" + "}
-        <span className="text-[var(--primary)]">b</span>
-        {" = (a"}
-        <sub>x</sub>{" + b"}<sub>x</sub>
-        {",  a"}<sub>y</sub>{" + b"}<sub>y</sub>
-        {",  a"}<sub>z</sub>{" + b"}<sub>z</sub>
-        {")"}
-        <div className="text-[var(--text-muted)] text-[11px] mt-1.5">
-          {tx(t, "ch08la_addNote", "Use: displacement, moving a point by an offset, combining forces")}
-        </div>
-      </MathBlock>
+      <Equation label={tx(t, "ch08la_addLabel", "Addition")} glsl="vec3 r = a + b;" glm="glm::vec3 r = a + b;"
+        notes={[tx(t, "ch08la_addNote", "Use: displacement, moving a point by an offset, combining forces")]}>
+        {String.raw`\blue{\mathbf{a}} + \amber{\mathbf{b}} \;=\; \begin{pmatrix} \blue{a_x} + \amber{b_x} \\ \blue{a_y} + \amber{b_y} \\ \blue{a_z} + \amber{b_z} \end{pmatrix}`}
+      </Equation>
 
-      <MathBlock label={tx(t, "ch08la_dotLabel", "Dot product")} glsl="float d = dot(a, b);" glm="float d = glm::dot(a, b);">
-        <span className="text-[var(--primary)]">a</span>
-        {" · "}
-        <span className="text-[var(--primary)]">b</span>
-        {" = a"}<sub>x</sub>{"b"}<sub>x</sub>
-        {" + a"}<sub>y</sub>{"b"}<sub>y</sub>
-        {" + a"}<sub>z</sub>{"b"}<sub>z</sub>
-        {"  =  |a| |b| cos(θ)"}
-        <div className="text-[var(--text-muted)] text-[11px] mt-1.5 space-y-0.5">
-          <div>{tx(t, "ch08la_dotNote1", "→ result = 1: vectors parallel (same direction)")}</div>
-          <div>{tx(t, "ch08la_dotNote2", "→ result = 0: vectors perpendicular (90°)")}</div>
-          <div>{tx(t, "ch08la_dotNote3", "→ result < 0: vectors opposing (> 90°)")}</div>
-          <div className="text-[var(--primary)]/70">{tx(t, "ch08la_dotUse", "Use: Phong diffuse lighting — dot(normal, lightDir) gives brightness")}</div>
-        </div>
-      </MathBlock>
+      <Equation label={tx(t, "ch08la_dotLabel", "Dot product")} glsl="float d = dot(a, b);" glm="float d = glm::dot(a, b);"
+        notes={[
+          tx(t, "ch08la_dotNote1", "→ result = 1: vectors parallel (same direction)"),
+          tx(t, "ch08la_dotNote2", "→ result = 0: vectors perpendicular (90°)"),
+          tx(t, "ch08la_dotNote3", "→ result < 0: vectors opposing (> 90°)"),
+          tx(t, "ch08la_dotUse", "Use: Phong diffuse lighting — dot(normal, lightDir) gives brightness"),
+        ]}>
+        {String.raw`\blue{\mathbf{a}} \cdot \amber{\mathbf{b}} \;=\; \blue{a_x}\amber{b_x} + \blue{a_y}\amber{b_y} + \blue{a_z}\amber{b_z} \;=\; \lVert\blue{\mathbf{a}}\rVert\,\lVert\amber{\mathbf{b}}\rVert\cos\theta`}
+      </Equation>
 
-      <MathBlock label={tx(t, "ch08la_lenLabel", "Length / normalize")} glsl="float l = length(a);  vec3 u = normalize(a);" glm="float l = glm::length(a);  glm::vec3 u = glm::normalize(a);">
-        {"|a|  =  √(a"}<sub>x</sub>{"² + a"}<sub>y</sub>{"² + a"}<sub>z</sub>{"²)"}
-        <br />
-        {"â  =  a / |a|  →  |â| = 1"}
-        <div className="text-[var(--text-muted)] text-[11px] mt-1.5">
-          {tx(t, "ch08la_lenNote", "Unit vectors are essential for lighting — dot(normalize(normal), normalize(lightDir))")}
-        </div>
-      </MathBlock>
+      <Equation label={tx(t, "ch08la_lenLabel", "Length / normalize")}
+        glsl="float l = length(a);  vec3 u = normalize(a);" glm="float l = glm::length(a);  glm::vec3 u = glm::normalize(a);"
+        notes={[tx(t, "ch08la_lenNote", "Unit vectors are essential for lighting — dot(normalize(normal), normalize(lightDir))")]}>
+        {String.raw`\lVert\blue{\mathbf{a}}\rVert = \sqrt{a_x^2 + a_y^2 + a_z^2} \qquad \hat{\mathbf{a}} = \frac{\blue{\mathbf{a}}}{\lVert\blue{\mathbf{a}}\rVert} \;\;\Rightarrow\;\; \lVert\hat{\mathbf{a}}\rVert = 1`}
+      </Equation>
 
-      <MathBlock label={tx(t, "ch08la_crossLabel", "Cross product")} glsl="vec3 n = cross(a, b);" glm="glm::vec3 n = glm::cross(a, b);">
-        <span className="text-[var(--primary)]">a</span>
-        {" × "}
-        <span className="text-[var(--primary)]">b</span>
-        {" = (a"}<sub>y</sub>{"b"}<sub>z</sub>{" − a"}<sub>z</sub>{"b"}<sub>y</sub>
-        {",  a"}<sub>z</sub>{"b"}<sub>x</sub>{" − a"}<sub>x</sub>{"b"}<sub>z</sub>
-        {",  a"}<sub>x</sub>{"b"}<sub>y</sub>{" − a"}<sub>y</sub>{"b"}<sub>x</sub>
-        {")"}
-        <div className="text-[var(--text-muted)] text-[11px] mt-1.5">
-          {tx(t, "ch08la_crossNote", "Result is perpendicular to both a and b (right-hand rule). Use: computing surface normals from two edge vectors")}
-        </div>
-      </MathBlock>
+      <Equation label={tx(t, "ch08la_crossLabel", "Cross product")} glsl="vec3 n = cross(a, b);" glm="glm::vec3 n = glm::cross(a, b);"
+        notes={[
+          tx(t, "ch08la_crossNote", "Result is perpendicular to both a and b (right-hand rule). Use: computing surface normals from two edge vectors"),
+          tx(t, "ch08la_crossLen", "Its length is |a| |b| sin θ — the area of the parallelogram the two vectors span."),
+        ]}>
+        {String.raw`\blue{\mathbf{a}} \times \amber{\mathbf{b}} \;=\; \begin{vmatrix} \mathbf{i} & \mathbf{j} & \mathbf{k} \\ \blue{a_x} & \blue{a_y} & \blue{a_z} \\ \amber{b_x} & \amber{b_y} & \amber{b_z} \end{vmatrix} \;=\; \begin{pmatrix} \blue{a_y}\amber{b_z} - \blue{a_z}\amber{b_y} \\ \blue{a_z}\amber{b_x} - \blue{a_x}\amber{b_z} \\ \blue{a_x}\amber{b_y} - \blue{a_y}\amber{b_x} \end{pmatrix}`}
+      </Equation>
 
       <CodeBlock lang="cpp" filename="normal_from_edges.cpp" t={t}>{`// Compute face normal from two edges — cross product in practice
 glm::vec3 edge1 = B - A;           // vector along one edge
@@ -1099,26 +1078,36 @@ glm::vec3 normal = glm::normalize(glm::cross(edge1, edge2));
         )}
       </p>
 
-      <div className="my-6 flex flex-wrap gap-8 items-start justify-start">
-        <Matrix4x4 label={tx(t, "ch08la_identityLabel", "Identity")} data={[
-          [1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]
-        ]} />
-        <Matrix4x4 label={tx(t, "ch08la_translateLabel", "Translate (tx, ty, tz)")} data={[
-          [1,0,0,"tx"],[0,1,0,"ty"],[0,0,1,"tz"],[0,0,0,1]
-        ]} />
-        <Matrix4x4 label={tx(t, "ch08la_scaleLabel", "Scale (sx, sy, sz)")} data={[
-          ["sx",0,0,0],[0,"sy",0,0],[0,0,"sz",0],[0,0,0,1]
-        ]} />
-      </div>
+      <Equation label={tx(t, "ch08la_basicMatsLabel", "Identity, translation and scale")}
+        glm="glm::translate(glm::mat4(1.0f), glm::vec3(tx, ty, tz));   glm::scale(glm::mat4(1.0f), glm::vec3(sx, sy, sz));">
+        {String.raw`\underset{\text{Identity}}{\begin{bmatrix} 1&\muted{0}&\muted{0}&\muted{0} \\ \muted{0}&1&\muted{0}&\muted{0} \\ \muted{0}&\muted{0}&1&\muted{0} \\ \muted{0}&\muted{0}&\muted{0}&1 \end{bmatrix}}
+\qquad
+\underset{\text{Translate}}{\begin{bmatrix} 1&\muted{0}&\muted{0}&\amber{t_x} \\ \muted{0}&1&\muted{0}&\amber{t_y} \\ \muted{0}&\muted{0}&1&\amber{t_z} \\ \muted{0}&\muted{0}&\muted{0}&1 \end{bmatrix}}
+\qquad
+\underset{\text{Scale}}{\begin{bmatrix} \green{s_x}&\muted{0}&\muted{0}&\muted{0} \\ \muted{0}&\green{s_y}&\muted{0}&\muted{0} \\ \muted{0}&\muted{0}&\green{s_z}&\muted{0} \\ \muted{0}&\muted{0}&\muted{0}&1 \end{bmatrix}}`}
+      </Equation>
 
-      <div className="my-6">
-        <Matrix4x4 label={tx(t, "ch08la_rotYLabel", "Rotation around Y axis (θ)")} data={[
-          ["cos θ",0,"sin θ",0],
-          [0,      1, 0,     0],
-          ["-sin θ",0,"cos θ",0],
-          [0,      0, 0,     1],
-        ]} />
-      </div>
+      <Equation label={tx(t, "ch08la_rotMatsLabel", "Rotations by θ around each axis")}
+        glm="glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0, 1, 0));   // axis as the last argument">
+        {String.raw`\underset{R_x(\theta)}{\begin{bmatrix} 1&\muted{0}&\muted{0}&\muted{0} \\ \muted{0}&\purple{\cos\theta}&\purple{-\sin\theta}&\muted{0} \\ \muted{0}&\purple{\sin\theta}&\purple{\cos\theta}&\muted{0} \\ \muted{0}&\muted{0}&\muted{0}&1 \end{bmatrix}}
+\quad
+\underset{R_y(\theta)}{\begin{bmatrix} \purple{\cos\theta}&\muted{0}&\purple{\sin\theta}&\muted{0} \\ \muted{0}&1&\muted{0}&\muted{0} \\ \purple{-\sin\theta}&\muted{0}&\purple{\cos\theta}&\muted{0} \\ \muted{0}&\muted{0}&\muted{0}&1 \end{bmatrix}}
+\quad
+\underset{R_z(\theta)}{\begin{bmatrix} \purple{\cos\theta}&\purple{-\sin\theta}&\muted{0}&\muted{0} \\ \purple{\sin\theta}&\purple{\cos\theta}&\muted{0}&\muted{0} \\ \muted{0}&\muted{0}&1&\muted{0} \\ \muted{0}&\muted{0}&\muted{0}&1 \end{bmatrix}}`}
+      </Equation>
+
+      <p>
+        {tx(t, "ch08la_matVecIntro",
+          "Multiplying a translation matrix by a position shows why the fourth row and column exist: the w = 1 of the vector picks up the last column and adds it to x, y and z."
+        )}
+      </p>
+
+      <Equation label={tx(t, "ch08la_matVecLabel", "A translation, worked out")}>
+        {String.raw`\begin{bmatrix} 1&\muted{0}&\muted{0}&\amber{t_x} \\ \muted{0}&1&\muted{0}&\amber{t_y} \\ \muted{0}&\muted{0}&1&\amber{t_z} \\ \muted{0}&\muted{0}&\muted{0}&1 \end{bmatrix}
+\begin{pmatrix} x \\ y \\ z \\ \purple{1} \end{pmatrix}
+=
+\begin{pmatrix} x + \amber{t_x}\cdot\purple{1} \\ y + \amber{t_y}\cdot\purple{1} \\ z + \amber{t_z}\cdot\purple{1} \\ \purple{1} \end{pmatrix}`}
+      </Equation>
 
       <p className="text-sm">
         {tx(t, "ch08la_matrixNote",
@@ -1142,22 +1131,15 @@ glm::mat4 R = glm::rotate(glm::mat4(1.0f),    glm::radians(45.0f), glm::vec3(0,1
         )}
       </p>
 
-      <MathBlock label={tx(t, "ch08la_wLabel", "The w trick")}>
-        <div className="space-y-1">
-          <div>
-            {"vec4(px, py, pz,  "}
-            <span className="text-[var(--primary)]">1.0</span>
-            {")  →  "}
-            {tx(t, "ch08la_wPos", "position — translation applies")}
-          </div>
-          <div>
-            {"vec4(dx, dy, dz,  "}
-            <span className="text-red-400">0.0</span>
-            {")  →  "}
-            {tx(t, "ch08la_wDir", "direction / normal — translation does NOT apply")}
-          </div>
-        </div>
-      </MathBlock>
+      <Equation label={tx(t, "ch08la_wLabel", "The w trick")}
+        where={[
+          [String.raw`\purple{w = 1}`, tx(t, "ch08la_wPos", "position — translation applies")],
+          [String.raw`\red{w = 0}`, tx(t, "ch08la_wDir", "direction / normal — translation does NOT apply")],
+        ]}>
+        {String.raw`T\begin{pmatrix} p_x\\p_y\\p_z\\ \purple{1} \end{pmatrix} = \begin{pmatrix} p_x+\amber{t_x}\\p_y+\amber{t_y}\\p_z+\amber{t_z}\\ \purple{1} \end{pmatrix}
+\qquad
+T\begin{pmatrix} d_x\\d_y\\d_z\\ \red{0} \end{pmatrix} = \begin{pmatrix} d_x\\d_y\\d_z\\ \red{0} \end{pmatrix}`}
+      </Equation>
 
       <p>
         {tx(t, "ch08la_homogFig",
@@ -1250,18 +1232,14 @@ vec3 transformedNormal = mat3(uModel) * aNormal;
 
       <VertexJourneyFigure t={t} />
 
-      <MathBlock label={tx(t, "ch08la_fullMVP", "Complete MVP formula")}>
-        {"v"}<sub>{"clip"}</sub>{" = "}
-        <span className="text-purple-400">P</span>
-        {" × "}
-        <span className="text-emerald-400">V</span>
-        {" × "}
-        <span className="text-blue-400">M</span>
-        {" × v"}<sub>{"local"}</sub>
-        <br />
-        {"v"}<sub>{"ndc"}</sub>{"  = v"}<sub>{"clip"}</sub>{".xyz / v"}<sub>{"clip"}</sub>{".w  "}
-        <span className="text-[var(--text-muted)] text-[11px]">{"← done automatically by GPU"}</span>
-      </MathBlock>
+      <Equation label={tx(t, "ch08la_fullMVP", "Complete MVP formula")}
+        glsl="gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);"
+        notes={[tx(t, "ch08la_divideNote", "The divide by w happens automatically after the vertex shader — the GPU does it, you never write it.")]}>
+        {String.raw`\begin{aligned}
+\mathbf{v}_{\text{clip}} &= \purple{P}\;\green{V}\;\blue{M}\;\mathbf{v}_{\text{local}} \\[4pt]
+\mathbf{v}_{\text{ndc}} &= \frac{\mathbf{v}_{\text{clip}}.xyz}{\mathbf{v}_{\text{clip}}.w}
+\end{aligned}`}
+      </Equation>
 
       <CodeBlock lang="glsl" filename="mvp_vertex.glsl" t={t}>{`#version 460 core
 
@@ -1395,6 +1373,21 @@ glm::mat4 projection = glm::perspective(
     0.1f,                 // near plane (do not set to 0)
     100.0f                // far plane
 );`}</CodeBlock>
+
+      <Equation label={tx(t, "ch08_perspEqLabel", "glm::perspective(fov, aspect, n, f)")}
+        where={[
+          [String.raw`\amber{t}`, tx(t, "ch08_wT", "tan(fov / 2) — how wide the frustum opens")],
+          [String.raw`a`, tx(t, "ch08_wA", "aspect = width / height")],
+          [String.raw`n,\\ f`, tx(t, "ch08_wNF", "near and far planes")],
+        ]}
+        note={tx(t, "ch08_perspEqNote", "The bottom row is the whole trick: it copies −z into w. After the GPU divides by w, x and y shrink with distance — that is perspective — and z lands in [−1, 1].")}>
+        {String.raw`P \;=\; \begin{bmatrix}
+\dfrac{1}{a\,\amber{t}} & 0 & 0 & 0 \\[6pt]
+0 & \dfrac{1}{\amber{t}} & 0 & 0 \\[6pt]
+0 & 0 & -\dfrac{f+n}{f-n} & -\dfrac{2fn}{f-n} \\[6pt]
+0 & 0 & \purple{-1} & 0
+\end{bmatrix}`}
+      </Equation>
 
       <Callout type="warn" t={t}>
         {tx(t, "ch08_nearWarn",
@@ -1652,6 +1645,7 @@ const GETTING_STARTED = "Getting Started";
 const TRANSFORMS      = "3D & Transformations";
 const LIGHTING        = "Lighting";
 const ADV_LIGHTING    = "Advanced Lighting";
+const PBR             = "PBR";
 const MODELS          = "Model Loading";
 const ADVANCED        = "Advanced OpenGL";
 const MODERN          = "Modern OpenGL & Tooling";
@@ -1685,8 +1679,20 @@ export const openGLTrack: Track = {
     { id: "light-casters",   section: LIGHTING,        title: "Light Casters",             minRead: 14, content: (t) => <LightCastersContent    t={t} /> },
     { id: "multiple-lights", section: LIGHTING,        title: "Multiple Lights",           minRead: 9,  content: (t) => <MultipleLightsContent  t={t} /> },
 
-    { id: "advanced-lighting", section: ADV_LIGHTING,  title: "Blinn-Phong & Gamma",       minRead: 10, content: (t) => <AdvancedLightingContent t={t} /> },
+    { id: "advanced-lighting", section: ADV_LIGHTING,  title: "Blinn-Phong",               minRead: 9,  content: (t) => <BlinnPhongContent      t={t} /> },
+    { id: "gamma",           section: ADV_LIGHTING,    title: "Gamma Correction",          minRead: 10, content: (t) => <GammaContent           t={t} /> },
     { id: "shadow-mapping",  section: ADV_LIGHTING,    title: "Shadow Mapping",            minRead: 14, content: (t) => <ShadowMappingContent   t={t} /> },
+    { id: "point-shadows",   section: ADV_LIGHTING,    title: "Point Shadows",             minRead: 10, content: (t) => <PointShadowsContent    t={t} /> },
+    { id: "normal-mapping",  section: ADV_LIGHTING,    title: "Normal Mapping",            minRead: 12, content: (t) => <NormalMappingContent   t={t} /> },
+    { id: "hdr",             section: ADV_LIGHTING,    title: "HDR & Tone Mapping",        minRead: 10, content: (t) => <HdrContent             t={t} /> },
+    { id: "bloom",           section: ADV_LIGHTING,    title: "Bloom",                     minRead: 10, content: (t) => <BloomContent           t={t} /> },
+    { id: "deferred",        section: ADV_LIGHTING,    title: "Deferred Shading",          minRead: 12, content: (t) => <DeferredContent        t={t} /> },
+
+    // ── PBR ──────────────────────────────────────────────────────────────────
+    { id: "pbr-theory",      section: PBR,             title: "PBR Theory",                minRead: 16, content: (t) => <PbrTheoryContent       t={t} /> },
+    { id: "pbr-lighting",    section: PBR,             title: "Cook-Torrance Lighting",    minRead: 16, content: (t) => <PbrLightingContent     t={t} /> },
+    { id: "ibl-diffuse",     section: PBR,             title: "IBL: Diffuse Irradiance",   minRead: 13, content: (t) => <IblDiffuseContent      t={t} /> },
+    { id: "ibl-specular",    section: PBR,             title: "IBL: Specular",             minRead: 16, content: (t) => <IblSpecularContent     t={t} /> },
 
     // ── Model Loading ────────────────────────────────────────────────────────
     { id: "model-loading",   section: MODELS,          title: "Model Loading (Assimp)",    minRead: 13, content: (t) => <ModelLoadingContent    t={t} /> },

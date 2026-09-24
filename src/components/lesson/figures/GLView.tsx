@@ -155,6 +155,23 @@ export function GLView<R>({
   );
 }
 
+/** Seconds elapsed while `on`, advancing every frame — drives figure animations. */
+export function useAnimationTime(on: boolean) {
+  const [time, setTime] = useState(0);
+  useEffect(() => {
+    if (!on) return;
+    let raf = 0, last = performance.now();
+    const tick = (now: number) => {
+      setTime(v => v + Math.max(0, now - last) / 1000);
+      last = now;
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [on]);
+  return time;
+}
+
 // ── Sky sources ───────────────────────────────────────────────────────────────
 // "procedural" is always there; any set under public/textures/skybox/<name>/
 // shows up next to it (faces and/or equirect), through the asset manifest.

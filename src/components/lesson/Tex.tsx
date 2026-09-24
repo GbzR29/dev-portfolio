@@ -44,14 +44,18 @@ export function Tex({ children }: { children: string }) {
 }
 
 /**
- * A displayed equation, centred like a textbook, with an optional name and a
- * "where" legend that explains each symbol.
+ * A displayed equation, centred like a textbook, with an optional name, a
+ * "where" legend that explains each symbol, bullet notes, and the matching
+ * GLSL / GLM one-liners underneath.
  */
-export function Equation({ children, label, where, note }: {
+export function Equation({ children, label, where, note, notes, glsl, glm }: {
   children: string;
   label?: string;
   where?: [string, ReactNode][];
   note?: ReactNode;
+  notes?: ReactNode[];
+  glsl?: string;
+  glm?: string;
 }) {
   return (
     <div className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden">
@@ -67,15 +71,42 @@ export function Equation({ children, label, where, note }: {
           <span className="col-span-2 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] pt-2">where</span>
           {where.map(([sym, meaning], i) => (
             <div key={i} className="contents">
-              <span className="text-[var(--text-main)]" dangerouslySetInnerHTML={{ __html: render(sym, false) }} />
+              <span className="text-[var(--text-main)] whitespace-nowrap" dangerouslySetInnerHTML={{ __html: render(sym, false) }} />
               <span className="text-[var(--text-muted)] leading-snug">{meaning}</span>
             </div>
           ))}
         </div>
       )}
+      {notes && notes.length > 0 && (
+        <ul className="px-4 pb-3.5 pt-2.5 border-t border-[var(--separator)] space-y-1 text-[13px] text-[var(--text-muted)] leading-relaxed">
+          {notes.map((n, i) => (
+            <li key={i} className="flex gap-2">
+              <span className="text-[var(--primary)]">→</span>
+              {/* Older texts carry their own arrow; drop it so there is only one */}
+              <span>{typeof n === "string" ? n.replace(/^\s*→\s*/, "") : n}</span>
+            </li>
+          ))}
+        </ul>
+      )}
       {note && (
         <div className="px-4 pb-3.5 pt-2 border-t border-[var(--separator)] text-[13px] text-[var(--text-muted)] leading-relaxed">
           {note}
+        </div>
+      )}
+      {(glsl || glm) && (
+        <div className="border-t border-[var(--code-border)] bg-[var(--code-bg)] px-4 py-2.5 space-y-1 overflow-x-auto">
+          {glsl && (
+            <div className="flex items-baseline gap-3">
+              <span className="text-[9px] font-mono text-emerald-400/70 uppercase tracking-widest flex-shrink-0 w-10">GLSL</span>
+              <code className="font-mono text-[11.5px] text-[var(--code-text)] whitespace-pre">{glsl}</code>
+            </div>
+          )}
+          {glm && (
+            <div className="flex items-baseline gap-3">
+              <span className="text-[9px] font-mono text-blue-400/70 uppercase tracking-widest flex-shrink-0 w-10">GLM</span>
+              <code className="font-mono text-[11.5px] text-[var(--code-text)] whitespace-pre">{glm}</code>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -5,6 +5,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { CameraLookAtFigure } from "@/components/lesson/figures/CameraLookAtFigure";
+import { Equation } from "@/components/lesson/Tex";
 
 // ── Camera & View Matrix ──────────────────────────────────────────────────────
 
@@ -39,6 +40,19 @@ glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, worldUp);
 //   up      = cross(right, forward)             // re-orthogonalized, no drift
 // then packs right/up/-forward into the rows and applies -dot(axis, position).`}</CodeBlock>
 
+      <Equation label={tx(t, "oglCam_lookatEqLabel", "The LookAt matrix")}
+        where={[
+          [String.raw`\red{\mathbf{r}}`, tx(t, "oglCam_wR", "right = normalize(cross(forward, worldUp))")],
+          [String.raw`\green{\mathbf{u}}`, tx(t, "oglCam_wU", "up = cross(right, forward)")],
+          [String.raw`\blue{\mathbf{f}}`, tx(t, "oglCam_wF", "forward = normalize(target − position)")],
+          [String.raw`\mathbf{p}`, tx(t, "oglCam_wP", "camera position")],
+        ]}
+        note={tx(t, "oglCam_lookatEqNote", "Read right to left: first move the world so the camera sits at the origin, then rotate it so the camera's axes line up with x, y and −z. The rotation's rows are the camera's own axes.")}>
+        {String.raw`\text{view} \;=\;
+\underbrace{\begin{bmatrix} \red{r_x}&\red{r_y}&\red{r_z}&0 \\ \green{u_x}&\green{u_y}&\green{u_z}&0 \\ \blue{-f_x}&\blue{-f_y}&\blue{-f_z}&0 \\ 0&0&0&1 \end{bmatrix}}_{\text{rotate}}
+\underbrace{\begin{bmatrix} 1&0&0&-p_x \\ 0&1&0&-p_y \\ 0&0&1&-p_z \\ 0&0&0&1 \end{bmatrix}}_{\text{translate}}`}
+      </Equation>
+
       <Callout type="info" t={t}>
         {tx(t, "oglCam_handedNote",
           "OpenGL's view space is right-handed with the camera looking down NEGATIVE Z. That minus sign is the source of endless confusion: a target 'in front of' the camera has a smaller Z than the camera. NDC, on the other hand, is left-handed — the projection matrix performs that flip for you, which is why you almost never think about it."
@@ -51,6 +65,11 @@ glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, worldUp);
           "For a first-person camera you do not store a target — you store two angles and derive the forward vector from them every frame. Yaw rotates around the world Y axis, pitch around the camera's right axis."
         )}
       </p>
+
+      <Equation label={tx(t, "oglCam_eulerEqLabel", "Direction from yaw and pitch")}
+        note={tx(t, "oglCam_eulerEqNote", "It is a point on the unit sphere: pitch tilts it up (y = sin pitch) and shrinks the horizontal circle it moves on by cos pitch; yaw walks around that circle.")}>
+        {String.raw`\mathbf{d} \;=\; \begin{pmatrix} \cos(\text{yaw})\,\cos(\text{pitch}) \\ \sin(\text{pitch}) \\ \sin(\text{yaw})\,\cos(\text{pitch}) \end{pmatrix}`}
+      </Equation>
 
       <CodeBlock lang="cpp" filename="euler.cpp" t={t}>{`float yaw   = -90.0f;   // -90 so the default direction is -Z, not +X
 float pitch =   0.0f;
@@ -235,6 +254,19 @@ glDepthMask(GL_TRUE);    // restore, or the next frame's opaque pass breaks`}</C
         )}
       </p>
 
+      <Equation label={tx(t, "oglDepth_eqLabel", "Where a distance ends up in the depth buffer")}
+        where={[
+          [String.raw`d`, tx(t, "oglDepth_wD", "view-space distance in front of the camera")],
+          [String.raw`n,\ f`, tx(t, "oglDepth_wNF", "near and far planes")],
+        ]}
+        notes={[tx(t, "oglDepth_halfNote", "Half of all depth values are used before d = 2nf / (f + n) — about twice the near plane when far ≫ near. With n = 0.1 that is the first 20 centimetres of the scene.")]}>
+        {String.raw`z_{\text{ndc}}(d) \;=\; \frac{f+n}{f-n} \;-\; \frac{2fn}{(f-n)\,d}
+\qquad
+z_{\text{buffer}} = \frac{z_{\text{ndc}} + 1}{2}
+\qquad
+z_{\text{ndc}} = 0 \;\Longleftrightarrow\; d = \frac{2fn}{f+n} \approx 2n`}
+      </Equation>
+
       <LessonTable
         headers={[tx(t, "oglDepth_z0", "Fix"), tx(t, "oglDepth_z1", "Effect")]}
         rows={[
@@ -257,6 +289,11 @@ glDisable(GL_POLYGON_OFFSET_FILL);`}</CodeBlock>
           "To see the depth buffer, output gl_FragCoord.z as a greyscale colour. It will look almost entirely white, which is the point — that is the non-linear distribution making itself visible. Linearize it back to view-space distance to get a readable image, and you will understand z-fighting immediately."
         )}
       </Callout>
+
+      <Equation label={tx(t, "oglDepth_linLabel", "Undoing it: linearized depth")}
+        glsl="float d = (2.0 * n * f) / (f + n - ndc * (f - n));">
+        {String.raw`d \;=\; \frac{2nf}{f + n - z_{\text{ndc}}\,(f - n)}`}
+      </Equation>
 
       <CodeBlock lang="glsl" filename="visualize_depth.frag" t={t}>{`#version 460 core
 out vec4 FragColor;

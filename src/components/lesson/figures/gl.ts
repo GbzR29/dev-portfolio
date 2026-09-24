@@ -286,8 +286,8 @@ export async function loadCubemap(gl: WebGL2RenderingContext, faces: (string | H
   return tex;
 }
 
-/** Loads one 2D image (URL or canvas) as a texture with repeat on S. */
-export async function loadTexture2D(gl: WebGL2RenderingContext, src: string | HTMLCanvasElement): Promise<WebGLTexture> {
+/** Loads one 2D image (URL or canvas) as a texture; repeats on S, and on T too when `repeatT`. */
+export async function loadTexture2D(gl: WebGL2RenderingContext, src: string | HTMLCanvasElement, repeatT = false): Promise<WebGLTexture> {
   const im = typeof src === "string"
     ? await new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; })
     : src;
@@ -299,6 +299,6 @@ export async function loadTexture2D(gl: WebGL2RenderingContext, src: string | HT
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, repeatT ? gl.REPEAT : gl.CLAMP_TO_EDGE);
   return tex;
 }
