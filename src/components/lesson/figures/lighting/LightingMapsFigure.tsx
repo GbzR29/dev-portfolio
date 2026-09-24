@@ -192,7 +192,7 @@ export function LightingMapsFigure({ t }: { t?: TrackTranslations }) {
       </div>
 
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
-        <GLView<Res> init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.35, 1.2]}
+        <GLView<Res> orbit init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.35, 1.2]}
           frame={[look, view, emission, time]} aspect={16 / 9} />
       </div>
 

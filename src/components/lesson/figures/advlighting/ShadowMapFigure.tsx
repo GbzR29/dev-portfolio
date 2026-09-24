@@ -203,7 +203,7 @@ export function ShadowMapFigure({ t }: { t?: TrackTranslations }) {
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{tx(t, "figShadow_hint", "drag to orbit · inset: depth seen from the light")}</span>
       </div>
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
-        <GLView<Res> init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.4, 1.2]}
+        <GLView<Res> orbit init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.4, 1.2]}
           frame={[look, az, el, bias, slopeBias, pcf, sizeIdx, cullFront, shadowsOn, showMap]} aspect={16 / 9} />
       </div>
       <div className="p-4 md:p-5 grid gap-4 md:grid-cols-2">

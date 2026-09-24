@@ -5,6 +5,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { CameraLookAtFigure } from "@/components/lesson/figures/CameraLookAtFigure";
+import { YawPitchFigure } from "@/components/lesson/figures/YawPitchFigure";
 import { Equation } from "@/components/lesson/Tex";
 
 // ── Camera & View Matrix ──────────────────────────────────────────────────────
@@ -66,9 +67,29 @@ glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, worldUp);
         )}
       </p>
 
+      <p>
+        {tx(t, "oglCam_eulerSteps",
+          "The formula looks odd at first — why is the middle row so different from the other two? Each row is simply one coordinate of d, and they come from two right triangles, one per angle. Build it in two steps:"
+        )}
+      </p>
+
+      <Equation label={tx(t, "oglCam_eulerStep1", "Step 1 — pitch, seen from the side")}
+        where={[
+          [String.raw`\green{y}`, tx(t, "oglCam_eulerWy", "how high d points — the opposite side of the triangle")],
+          [String.raw`\amber{h}`, tx(t, "oglCam_eulerWh", "the length left over for the ground plane — the adjacent side")],
+        ]}>
+        {String.raw`\green{y} = \sin(\text{pitch}) \qquad \amber{h} = \cos(\text{pitch})`}
+      </Equation>
+      <Equation label={tx(t, "oglCam_eulerStep2", "Step 2 — yaw, seen from above: split h between X and Z")}
+        note={tx(t, "oglCam_eulerStep2Note", "Same triangle idea, but the hypotenuse is now h instead of 1 — that is where the extra cos(pitch) in x and z comes from.")}>
+        {String.raw`\red{x} = \amber{h}\cos(\text{yaw}) \qquad \blue{z} = \amber{h}\sin(\text{yaw})`}
+      </Equation>
+
+      <YawPitchFigure t={t} />
+
       <Equation label={tx(t, "oglCam_eulerEqLabel", "Direction from yaw and pitch")}
-        note={tx(t, "oglCam_eulerEqNote", "It is a point on the unit sphere: pitch tilts it up (y = sin pitch) and shrinks the horizontal circle it moves on by cos pitch; yaw walks around that circle.")}>
-        {String.raw`\mathbf{d} \;=\; \begin{pmatrix} \cos(\text{yaw})\,\cos(\text{pitch}) \\ \sin(\text{pitch}) \\ \sin(\text{yaw})\,\cos(\text{pitch}) \end{pmatrix}`}
+        note={tx(t, "oglCam_eulerEqNote", "Read it row by row: each row is one coordinate. y depends only on pitch; x and z are the yaw circle, shrunk by cos(pitch). It is always a unit vector, since cos²·(cos² + sin²) + sin² = 1.")}>
+        {String.raw`\mathbf{d} = \begin{pmatrix} \red{x} \\ \green{y} \\ \blue{z} \end{pmatrix} = \begin{pmatrix} \cos(\text{yaw})\,\amber{\cos(\text{pitch})} \\ \sin(\text{pitch}) \\ \sin(\text{yaw})\,\amber{\cos(\text{pitch})} \end{pmatrix}`}
       </Equation>
 
       <CodeBlock lang="cpp" filename="euler.cpp" t={t}>{`float yaw   = -90.0f;   // -90 so the default direction is -Z, not +X

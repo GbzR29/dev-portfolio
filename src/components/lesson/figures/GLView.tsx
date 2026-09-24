@@ -29,7 +29,7 @@ export function rayDir(l: Look, aspect: number, ndcX: number, ndcY: number): Vec
 }
 
 export function GLView<R>({
-  init, draw, frame, look, onLook, onHover, aspect = 16 / 9, className = "", fovRange = [0.6, 1.9], children,
+  init, draw, frame, look, onLook, onHover, aspect = 16 / 9, className = "", fovRange = [0.6, 1.9], orbit = false, children,
 }: {
   /** Builds GPU resources once. May be async (texture loads). */
   init: (gl: WebGL2RenderingContext) => R | Promise<R>;
@@ -42,6 +42,12 @@ export function GLView<R>({
   aspect?: number;
   className?: string;
   fovRange?: [number, number];
+  /**
+   * Orbit scenes (camera = target − forward·distance) drag like Blender:
+   * drag right and the object turns right, drag down and you see its top.
+   * Off = first-person look, where the view follows the hand like a mouse-look.
+   */
+  orbit?: boolean;
   children?: React.ReactNode;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -136,8 +142,9 @@ export function GLView<R>({
           const dx = e.clientX - d.x, dy = e.clientY - d.y;
           drag.current = { x: e.clientX, y: e.clientY };
           const l = lookRef.current;
-          // "Grab the world": drag right and the view turns left
-          const k = 0.0045 * (l.fov / 1.2);
+          // First person: "grab the world" (drag right, the view turns left).
+          // Orbit: the camera sits behind the look direction, so both signs flip.
+          const k = 0.0045 * (l.fov / 1.2) * (orbit ? -1 : 1);
           onLook({ ...l, yaw: l.yaw - dx * k, pitch: Math.max(-1.52, Math.min(1.52, l.pitch + dy * k)) });
         }}
         onPointerUp={() => { drag.current = null; }}

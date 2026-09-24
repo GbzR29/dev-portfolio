@@ -199,7 +199,7 @@ export function DeferredFigure({ t }: { t?: TrackTranslations }) {
         </div>
       </div>
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
-        <GLView<Res> init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.4, 1.3]}
+        <GLView<Res> orbit init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.4, 1.3]}
           frame={[look, count, view, time]} aspect={16 / 9} />
         {!floatOk && <p className="text-[11px] font-mono text-red-400 px-2 pt-1">{tx(t, "figDeferred_noFloat", "This browser cannot render to float textures, so positions are clipped to 8 bits and lighting will look wrong.")}</p>}
       </div>

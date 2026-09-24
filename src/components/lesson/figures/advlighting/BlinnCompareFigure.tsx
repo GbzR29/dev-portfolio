@@ -94,7 +94,7 @@ export function BlinnCompareFigure({ t }: { t?: TrackTranslations }) {
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{tx(t, "figScene_hint", "drag to orbit · scroll to zoom")}</span>
       </div>
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2 relative">
-        <GLView<Res> init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.4, 1.3]}
+        <GLView<Res> orbit init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.4, 1.3]}
           frame={[look, shin, height, match]} aspect={16 / 9} />
         <span className="absolute top-4 left-4 text-[10px] font-mono px-1.5 py-0.5 rounded bg-black/60 text-red-300">Phong</span>
         <span className="absolute top-4 right-4 text-[10px] font-mono px-1.5 py-0.5 rounded bg-black/60 text-purple-300">Blinn-Phong</span>

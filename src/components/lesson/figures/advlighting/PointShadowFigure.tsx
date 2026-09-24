@@ -193,7 +193,7 @@ export function PointShadowFigure({ t }: { t?: TrackTranslations }) {
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{tx(t, "figScene_hint", "drag to orbit · scroll to zoom")}</span>
       </div>
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
-        <GLView<Res> init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.5, 1.5]}
+        <GLView<Res> orbit init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.5, 1.5]}
           frame={[look, time, pcf, shadowsOn, showDepth]} aspect={16 / 9} />
       </div>
       <div className="p-4 md:p-5 grid gap-4 md:grid-cols-2">

@@ -137,7 +137,7 @@ export function PbrSpheresFigure({ t, ibl = false }: { t?: TrackTranslations; ib
   // Orbit: the camera circles the chart (drag right and the chart turns right)
   const f = forwardFrom(look.yaw, look.pitch);
   const DIST = 10.5;
-  const cam: Vec3 = [f[0] * DIST, f[1] * DIST, -f[2] * DIST];
+  const cam: Vec3 = [-f[0] * DIST, -f[1] * DIST, -f[2] * DIST];
 
   const init = async (gl: WebGL2RenderingContext): Promise<Res> => {
     const cube = gl.createVertexArray()!;
@@ -257,7 +257,7 @@ export function PbrSpheresFigure({ t, ibl = false }: { t?: TrackTranslations; ib
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{tx(t, "figPbr_hint", "drag to orbit · wheel to zoom")}</span>
       </div>
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
-        <GLView<Res> init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.35, 1.2]}
+        <GLView<Res> orbit init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.35, 1.2]}
           frame={[look, mode, albedo, lights, power, exposure, bg, lod, showLut, loading]} aspect={16 / 10}>
           <span className="absolute left-3 bottom-2 text-[9px] font-mono text-white/70 pointer-events-none">roughness →</span>
           <span className="absolute left-2 top-3 text-[9px] font-mono text-white/70 pointer-events-none [writing-mode:vertical-rl] rotate-180">metallic →</span>

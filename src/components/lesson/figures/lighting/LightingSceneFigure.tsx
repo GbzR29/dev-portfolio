@@ -254,7 +254,7 @@ result += CalcSpotLight(spotLight, norm, FragPos, viewDir);`;
       </div>
 
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
-        <GLView<Res> init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.4, 1.3]}
+        <GLView<Res> orbit init={init} draw={draw} look={look} onLook={setLook} fovRange={[0.4, 1.3]}
           frame={[look, sunAz, sunEl, px, py, pz, cut, outer, aimX, on, time, mode]} aspect={16 / 9} />
       </div>
 

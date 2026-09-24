@@ -192,7 +192,7 @@ export function EnvMapFigure({ t }: { t?: TrackTranslations }) {
       </div>
 
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
-        <GLView<Res> init={init} draw={draw} look={look} onLook={setLook}
+        <GLView<Res> orbit init={init} draw={draw} look={look} onLook={setLook}
           frame={[look, mode, ior, shape]} aspect={16 / 9} fovRange={[0.4, 1.4]} />
       </div>
 
