@@ -318,7 +318,7 @@ renderScene(mainShader);`}</CodeBlock>
       </Callout>
       <Callout type="tip" t={t}>
         {tx(t, "oglShadow_csmTip",
-          "For an outdoor scene with a sun, a single shadow map cannot cover the whole view with usable resolution. The production answer is cascaded shadow maps: split the camera frustum into several depth ranges and give each its own map, so near objects get dense texels and distant ones share a coarse map.")}
+          "For an outdoor scene with a sun, a single shadow map cannot cover the whole view with usable resolution. The production answer is cascaded shadow maps: split the camera frustum into several depth ranges and give each its own map, so near objects get dense texels and distant ones share a coarse map. The Cascaded Shadow Maps chapter builds it step by step.")}
       </Callout>
 
       <KeyIdeas t={t} id="oglShadow" items={[

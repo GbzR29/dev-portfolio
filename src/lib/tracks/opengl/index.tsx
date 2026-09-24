@@ -38,6 +38,10 @@ import {
 import { DebuggingContent, ComputeContent } from "./chapters/tooling";
 import { PbrTheoryContent, PbrLightingContent, IblDiffuseContent, IblSpecularContent } from "./chapters/pbr";
 import { PostProcessingContent, SsaoContent, ParallaxContent, AntiAliasingContent } from "./chapters/post";
+import { StencilContent } from "./chapters/stencil";
+import { GeometryShaderContent, TessellationContent } from "./chapters/shader-stages";
+import { CascadedShadowsContent } from "./chapters/csm";
+import { ParticlesContent } from "./chapters/particles";
 
 // tx: returns translated string or English fallback. Never shows a key name.
 function tx(t: any, key: string, fallback: string): string {
@@ -1685,6 +1689,7 @@ export const openGLTrack: Track = {
     { id: "gamma",           section: ADV_LIGHTING,    title: "Gamma Correction",          minRead: 10, content: (t) => <GammaContent           t={t} /> },
     { id: "shadow-mapping",  section: ADV_LIGHTING,    title: "Shadow Mapping",            minRead: 14, content: (t) => <ShadowMappingContent   t={t} /> },
     { id: "point-shadows",   section: ADV_LIGHTING,    title: "Point Shadows",             minRead: 10, content: (t) => <PointShadowsContent    t={t} /> },
+    { id: "cascaded-shadows", section: ADV_LIGHTING,   title: "Cascaded Shadow Maps",      minRead: 15, content: (t) => <CascadedShadowsContent t={t} /> },
     { id: "normal-mapping",  section: ADV_LIGHTING,    title: "Normal Mapping",            minRead: 12, content: (t) => <NormalMappingContent   t={t} /> },
     { id: "hdr",             section: ADV_LIGHTING,    title: "HDR & Tone Mapping",        minRead: 10, content: (t) => <HdrContent             t={t} /> },
     { id: "bloom",           section: ADV_LIGHTING,    title: "Bloom",                     minRead: 10, content: (t) => <BloomContent           t={t} /> },
@@ -1707,11 +1712,15 @@ export const openGLTrack: Track = {
 
     // ── Advanced OpenGL ──────────────────────────────────────────────────────
     { id: "winding",         section: ADVANCED,        title: "Face Winding & Culling",    minRead: 8,  content: (t) => <WindingContent         t={t} /> },
+    { id: "stencil-testing", section: ADVANCED,        title: "Stencil Testing",           minRead: 12, content: (t) => <StencilContent         t={t} /> },
     { id: "blending",        section: ADVANCED,        title: "Blending & Transparency",   minRead: 10, content: (t) => <BlendingContent        t={t} /> },
     { id: "framebuffers",    section: ADVANCED,        title: "Framebuffers & Post-FX",    minRead: 12, content: (t) => <FramebuffersContent    t={t} /> },
     { id: "cubemaps",        section: ADVANCED,        title: "Cubemaps & Skybox",         minRead: 10, content: (t) => <CubemapsContent        t={t} /> },
     { id: "instancing",      section: ADVANCED,        title: "Instancing",                minRead: 9,  content: (t) => <InstancingContent      t={t} /> },
+    { id: "particles",       section: ADVANCED,        title: "Particles",                 minRead: 15, content: (t) => <ParticlesContent       t={t} /> },
     { id: "ubo",             section: ADVANCED,        title: "Uniform Buffer Objects",    minRead: 10, content: (t) => <UBOContent             t={t} /> },
+    { id: "geometry-shader", section: ADVANCED,        title: "Geometry Shader",           minRead: 13, content: (t) => <GeometryShaderContent  t={t} /> },
+    { id: "tessellation",    section: ADVANCED,        title: "Tessellation",              minRead: 15, content: (t) => <TessellationContent    t={t} /> },
 
     // ── Modern OpenGL & Tooling ──────────────────────────────────────────────
     { id: "dsa",             section: MODERN,          title: "Direct State Access (DSA)", minRead: 9,  content: (t) => <DSAContent             t={t} /> },
