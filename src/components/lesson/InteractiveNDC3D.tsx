@@ -271,7 +271,8 @@ export function InteractiveNDC3D() {
     const C = PALETTES[theme];
     const gridGain = GRID_GAIN[theme];
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Shown at up to 400 CSS px, so render a little above the logical size to stay sharp
+    const dpr = Math.min(window.devicePixelRatio || 1, 2) * (400 / SIZE);
     const px  = Math.round(SIZE * dpr);
     if (canvas.width !== px) { canvas.width = px; canvas.height = px; }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -757,7 +758,7 @@ export function InteractiveNDC3D() {
           <canvas
             ref={canvasRef}
             width={SIZE} height={SIZE}
-            style={{ width: "min(340px, 88vw)", height: "auto", aspectRatio: "1", touchAction: "none" }}
+            style={{ width: "min(400px, 88vw)", height: "auto", aspectRatio: "1", touchAction: "none" }}
             className={`select-none rounded ${cursor}`}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}

@@ -13,10 +13,105 @@
     @apply border-border outline-ring/50;
   }
 
+  /* Painted on html too, so overscroll and the scrollbar gutter match the theme */
+  html,
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--bg);
+    color: var(--text-main);
   }
 }
+
+
+/* =========================================================
+   SCROLLBAR
+   Thin, rounded, follows the theme. Browsers without the
+   WebKit pseudo-elements (Firefox) get the standard props;
+   Chromium ignores ::-webkit-scrollbar once scrollbar-color
+   is set, so the standard props are gated behind @supports.
+========================================================= */
+
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 999px;
+  /* Transparent border + content-box clip = a pill that floats off the edge */
+  border: 2.5px solid transparent;
+  background-clip: content-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--scrollbar-thumb-active);
+}
+
+/* Small inner scroll areas (code blocks, lists) get a slimmer bar */
+pre::-webkit-scrollbar,
+textarea::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar,
+.overflow-auto::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+pre::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb,
+.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-x-auto::-webkit-scrollbar-thumb,
+.overflow-auto::-webkit-scrollbar-thumb {
+  border-width: 1.5px;
+}
+
+
+/* =========================================================
+   LIGHT MODE CONTRAST
+   Tailwind's -300/-400 hues are tuned for dark surfaces and
+   drop to ~2:1 on white. In light mode they are shifted to the
+   -600 shade of the same hue. Elements sitting on a forced dark
+   badge (bg-black/…) keep the original colour.
+========================================================= */
+
+html:not(.dark) :is(.text-blue-300, .text-blue-400, .hover\:text-blue-300:hover, .hover\:text-blue-400:hover):not([class*="bg-black"]) { color: #2563EB; }
+html:not(.dark) :is(.text-green-300, .text-green-400, .hover\:text-green-400:hover):not([class*="bg-black"]) { color: #16A34A; }
+html:not(.dark) :is(.text-emerald-300, .text-emerald-400, .hover\:text-emerald-400:hover):not([class*="bg-black"]) { color: #059669; }
+html:not(.dark) :is(.text-red-300, .text-red-400, .hover\:text-red-400:hover):not([class*="bg-black"]) { color: #DC2626; }
+html:not(.dark) :is(.text-amber-300, .text-amber-400, .hover\:text-amber-400:hover):not([class*="bg-black"]) { color: #D97706; }
+html:not(.dark) :is(.text-yellow-300, .text-yellow-400, .hover\:text-yellow-400:hover):not([class*="bg-black"]) { color: #CA8A04; }
+html:not(.dark) :is(.text-cyan-300, .text-cyan-400, .hover\:text-cyan-400:hover):not([class*="bg-black"]) { color: #0891B2; }
+html:not(.dark) :is(.text-purple-300, .text-purple-400, .hover\:text-purple-400:hover):not([class*="bg-black"]) { color: #9333EA; }
+html:not(.dark) :is(.text-violet-300, .text-violet-400, .hover\:text-violet-400:hover):not([class*="bg-black"]) { color: #7C3AED; }
+html:not(.dark) :is(.text-orange-300, .text-orange-400, .hover\:text-orange-400:hover):not([class*="bg-black"]) { color: #EA580C; }
+html:not(.dark) :is(.text-gray-300, .text-gray-400, .hover\:text-gray-300:hover):not([class*="bg-black"]) { color: var(--text-muted); }
+
+/* Alpha variants in use */
+html:not(.dark) .text-blue-400\/70    { color: rgb(37 99 235 / 0.75); }
+html:not(.dark) .text-blue-400\/60    { color: rgb(37 99 235 / 0.65); }
+html:not(.dark) .text-blue-400\/50    { color: rgb(37 99 235 / 0.55); }
+html:not(.dark) .text-emerald-400\/60 { color: rgb(5 150 105 / 0.70); }
+
+/* Muted text that is additionally faded: fine on dark, washed out on light */
+html:not(.dark) [class*="text-[var(--text-muted)]"]:is(.opacity-50, .opacity-55, .opacity-60, .opacity-70) { opacity: 0.82; }
+html:not(.dark) [class*="text-[var(--text-muted)]"]:is(.opacity-25, .opacity-35) { opacity: 0.55; }
 
 
 /* =========================================================

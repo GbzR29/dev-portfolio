@@ -200,6 +200,8 @@ export default function LessonPage() {
       <DocsLayout
         drawerTitle={t.lessonChapters ?? "Chapters"}
         drawerKey={activeChapterId}
+        backHref="/learn"
+        backLabel="Learn"
         left={
           <LessonSidebar
             track={track}
@@ -265,7 +267,7 @@ export default function LessonPage() {
         {/* Chapter body — larger type and looser leading for long-form reading */}
         <div
           ref={contentRef}
-          className="[&_article]:text-[1.0625rem] [&_article]:leading-[1.85] [&_article>p]:!mt-6"
+          className="[&_article]:text-[1.125rem] [&_article]:leading-[1.85] [&_article>p]:!mt-6"
         >
           {currentChapter?.content(t)}
 

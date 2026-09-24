@@ -1,26 +1,30 @@
 :root {
-  /* --- BASE PALETTE (Light & Airy) --- */
-  --bg: #F8FAFC;
-  --surface: #F9FAFB;
-  --surface-overlay: rgba(255, 255, 255, 0.95);
+  color-scheme: light;
+
+  /* --- BASE PALETTE (Light) ---
+     Page, surface and card are three distinct steps, so cards read as
+     raised instead of melting into the background. */
+  --bg: #EEF1F5;
+  --surface: #F6F7F9;
+  --surface-overlay: rgba(255, 255, 255, 0.96);
   --card: #FFFFFF;
-  --navbar-bg: rgba(255, 255, 255, 0.88);
+  --navbar-bg: rgba(255, 255, 255, 0.90);
 
   /* Borders */
-  --border: #E5E7EB;
-  --border-strong: #D1D5DB;
-  --separator: rgba(0, 0, 0, 0.07);
+  --border: #DADFE6;
+  --border-strong: #C2C9D3;
+  --separator: rgba(0, 0, 0, 0.09);
 
-  /* Textos */
-  --text-main: #111827;
-  --text-muted: #6B7280;
-  --text-navbar: #1F2937;
+  /* Textos — muted stays ≥ 7:1 on white, so it survives extra opacity */
+  --text-main: #0F172A;
+  --text-muted: #4B5563;
+  --text-navbar: #1E293B;
   --text-inverse: #FFFFFF;
 
   /* Brand */
   --primary: #2563EB;
   --primary-hover: #1D4ED8;
-  --primary-low: rgba(37, 99, 235, 0.08);
+  --primary-low: rgba(37, 99, 235, 0.10);
 
   /* Accent */
   --accent: #8B5CF6;
@@ -32,13 +36,19 @@
   --highlight-low: rgba(217, 119, 6, 0.08);
 
   /* Code surfaces — segue o tema (light) */
-  --code-bg: #F6F8FA;
+  --code-bg: #F3F5F8;
   --code-text: #1F2328;
-  --code-surface: rgba(0, 0, 0, 0.04);
-  --code-border: rgba(0, 0, 0, 0.10);
-  --code-line: rgba(0, 0, 0, 0.10);
-  --code-muted: rgba(0, 0, 0, 0.42);
-  --code-gutter: #9AA4B2;
+  --code-surface: rgba(0, 0, 0, 0.045);
+  --code-border: rgba(0, 0, 0, 0.12);
+  --code-line: rgba(0, 0, 0, 0.12);
+  --code-muted: rgba(0, 0, 0, 0.55);
+  --code-gutter: #7B8494;
+
+  /* Scrollbar */
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: #C2C9D3;
+  --scrollbar-thumb-hover: #8B95A3;
+  --scrollbar-thumb-active: #2563EB;
 
   --radius-lg: 16px;
   --radius-md: 12px;
@@ -46,6 +56,8 @@
 }
 
 .dark {
+  color-scheme: dark;
+
   /* --- BASE PALETTE (Soft Dark) --- */
   --bg: #111827;
   --surface: #1F2937;
@@ -86,4 +98,10 @@
   --code-line: rgba(255, 255, 255, 0.12);
   --code-muted: rgba(255, 255, 255, 0.35);
   --code-gutter: #6E7781;
+
+  /* Scrollbar */
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: #374151;
+  --scrollbar-thumb-hover: #4B5563;
+  --scrollbar-thumb-active: #3B82F6;
 }

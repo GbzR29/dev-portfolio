@@ -10,6 +10,15 @@ import {
 } from "@/components/lesson/LessonComponents";
 import { InteractiveNDC2D } from "@/components/lesson/InteractiveNDC2D";
 import { InteractiveNDC3D } from "@/components/lesson/InteractiveNDC3D";
+import { InteractiveBasis2D } from "@/components/lesson/InteractiveBasis2D";
+import { TransformOrderFigure } from "@/components/lesson/figures/TransformOrderFigure";
+import { FrustumFigure } from "@/components/lesson/figures/FrustumFigure";
+import { HomogeneousFigure } from "@/components/lesson/figures/HomogeneousFigure";
+import { VertexJourneyFigure } from "@/components/lesson/figures/VertexJourneyFigure";
+import { VectorOpsFigure } from "@/components/lesson/figures/VectorOpsFigure";
+import { PhongFigure } from "@/components/lesson/figures/PhongFigure";
+import { WindingFigure } from "@/components/lesson/figures/WindingFigure";
+import { TextureFigure } from "@/components/lesson/figures/TextureFigure";
 
 // Newer chapters live in their own modules so this file stays navigable.
 import { SetupContent } from "./chapters/setup";
@@ -192,7 +201,7 @@ function PipelineContent({ t }: { t: any }) {
 
       <Callout type="tip" t={t}>
         {tx(t, "ch01_ndcInteractiveTip",
-          "Drag any vertex on the canvas above. Notice how moving a point outside the [-1, 1] boundary clips it — the triangle edge disappears at the border. The CCW/CW indicator shows the winding order (covered in chapter 10)."
+          "Drag any vertex on the canvas above, or click it to get an X/Y gizmo that moves it along a single axis. You can also type exact values in the coordinate fields. Notice how moving a point outside the [-1, 1] boundary clips it — the triangle edge disappears at the border. The CCW/CW indicator shows the winding order (covered in chapter 10)."
         )}
       </Callout>
 
@@ -920,6 +929,14 @@ stbi_image_free(data);  // CPU copy no longer needed`}</CodeBlock>
         ]}
       />
 
+      <p>
+        {tx(t, "ch07_texFig",
+          "Those parameters are easier to choose once you have seen them. Every pixel in the figure below is computed the way the GPU samples a texture — switch tabs to compare wrap modes, magnification filters and mipmaps."
+        )}
+      </p>
+
+      <TextureFigure t={t} />
+
       <H2>{tx(t, "ch07_shaderTitle", "Sampling in the fragment shader")}</H2>
       <CodeBlock lang="glsl" filename="textured.vert" t={t}>{`#version 460 core
 
@@ -1042,6 +1059,35 @@ glm::vec3 edge2 = C - A;           // vector along adjacent edge
 glm::vec3 normal = glm::normalize(glm::cross(edge1, edge2));
 // normal is now perpendicular to the triangle face`}</CodeBlock>
 
+      <p>
+        {tx(t, "ch08la_vecFig",
+          "The two products you will use constantly are easier to trust once you have seen them. The dot product is a shadow; the cross product is an area standing up."
+        )}
+      </p>
+
+      <VectorOpsFigure t={t} />
+
+      {/* ── MATRIX INTUITION ────────────────────────────────────────────── */}
+      <H2>{tx(t, "ch08la_basisTitle", "What a matrix actually does")}</H2>
+      <p>
+        {tx(t, "ch08la_basisBody",
+          "Before the 4×4 formulas, one idea makes all of them readable: a matrix only records where the basis vectors land. In 2D, î = (1, 0) and ĵ = (0, 1). The first column of the matrix is the new î, the second column is the new ĵ. Every other point is built from those two — the vector (x, y) is x steps of î plus y steps of ĵ, so M · (x, y) = x·î + y·ĵ."
+        )}
+      </p>
+      <p>
+        {tx(t, "ch08la_basisTry",
+          "Drag the red î and green ĵ below and watch the whole grid follow. The numbers in each matrix column are just the coordinates of the arrow of the same colour."
+        )}
+      </p>
+
+      <InteractiveBasis2D />
+
+      <Callout type="tip" t={t}>
+        {tx(t, "ch08la_basisTip",
+          "The shaded square is the original 1×1 square after the transform. Its area is the determinant: det = 2 means areas doubled, det < 0 means space was mirrored (the F reads backwards), and det = 0 means everything was squashed onto a line — information was lost, which is why that matrix has no inverse. 3D works the same way, with a third column for k̂."
+        )}
+      </Callout>
+
       {/* ── MATRICES ────────────────────────────────────────────────────── */}
       <H2>{tx(t, "ch08la_matricesTitle", "4×4 Matrices")}</H2>
       <p>
@@ -1109,6 +1155,14 @@ glm::mat4 R = glm::rotate(glm::mat4(1.0f),    glm::radians(45.0f), glm::vec3(0,1
           </div>
         </div>
       </MathBlock>
+
+      <p>
+        {tx(t, "ch08la_homogFig",
+          "Why does adding a component make translation possible? It is easiest to see one dimension down: 2D points with a third coordinate w. Step through the figure below."
+        )}
+      </p>
+
+      <HomogeneousFigure t={t} />
 
       <CodeBlock lang="glsl" filename="homogeneous.glsl" t={t}>{`// In the vertex shader — all positions are vec4
 layout (location = 0) in vec3 aPos;  // 3-component input
@@ -1184,6 +1238,14 @@ vec3 transformedNormal = mat3(uModel) * aNormal;
           </div>
         ))}
       </div>
+
+      <p>
+        {tx(t, "ch08la_journeyIntro",
+          "Now watch all three happen to one vertex. Each step moves the whole scene into the next space, and the table tracks the same vertex's coordinates along the way."
+        )}
+      </p>
+
+      <VertexJourneyFigure t={t} />
 
       <MathBlock label={tx(t, "ch08la_fullMVP", "Complete MVP formula")}>
         {"v"}<sub>{"clip"}</sub>{" = "}
@@ -1270,16 +1332,31 @@ glm::mat4 identity(1.0f);  // identity matrix`}</CodeBlock>
           "Start with an identity matrix and apply transformations. Order matters: scale first, then rotate, then translate. In code you write them in reverse (TRS applied right-to-left by the GPU)."
         )}
       </p>
+      <p>
+        {tx(t, "ch08_orderBody",
+          "Why does the order matter so much? Because rotation and scaling always happen around the origin (0, 0, 0). Play the figure below: the same two operations, in opposite orders, give two very different results."
+        )}
+      </p>
+
+      <TransformOrderFigure t={t} />
+
+      <p>
+        {tx(t, "ch08_orderCode",
+          "Each glm call multiplies the new matrix on the right: model = model × M. So the call you write last is the one that touches the vertex first. To scale, then rotate, then translate, write them in the opposite order:"
+        )}
+      </p>
       <CodeBlock lang="cpp" filename="model_matrix.cpp" t={t}>{`glm::mat4 model(1.0f);  // start with identity
 
-// 1. Rotate 45° around Z axis
-model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+// Written top to bottom, applied to the vertex bottom to top.
 
-// 2. Scale by 0.5 on all axes
+// 3. (runs last) move 1 unit to the right
+model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
+// 2. rotate 45° around Z
+model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+// 1. (runs first) scale by 0.5
 model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 
-// 3. Move 1 unit to the right
-model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));`}</CodeBlock>
+// model = T * R * S  →  vertex' = T * (R * (S * vertex))`}</CodeBlock>
 
       <H2>{tx(t, "ch08_viewTitle", "View matrix — camera")}</H2>
       <p>
@@ -1299,6 +1376,14 @@ model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));`}</CodeBlock>
           "glm::perspective creates a frustum where things farther away appear smaller. The arguments are the vertical field of view in radians, the aspect ratio of your window, and the near/far clip planes."
         )}
       </p>
+      <p>
+        {tx(t, "ch08_frustumBody",
+          "Those four numbers describe a volume called the view frustum: a pyramid with its tip cut off. Anything inside it ends up on screen, anything outside is clipped. Orbit the figure below, then switch to orthographic to see the pyramid become a box."
+        )}
+      </p>
+
+      <FrustumFigure t={t} />
+
       <CodeBlock lang="cpp" filename="projection_matrix.cpp" t={t}>{`float aspect = (float)windowWidth / (float)windowHeight;
 
 glm::mat4 projection = glm::perspective(
@@ -1367,6 +1452,14 @@ function LightingContent({ t }: { t: any }) {
           ["Specular", tx(t, "phongSpecular", "Highlight — depends on angle between reflected light and camera"),        "shininess (e.g. 32)"],
         ]}
       />
+
+      <p>
+        {tx(t, "ch09_phongFig",
+          "All three terms come from a handful of vectors at the surface point: the normal N, the direction to the light L, the direction to the eye V and the reflection R. Drag the sun and the eye below and watch each term respond."
+        )}
+      </p>
+
+      <PhongFigure t={t} />
 
       <H2>{tx(t, "ch09_normalsTitle", "Normals as a vertex attribute")}</H2>
       <p>
@@ -1497,34 +1590,7 @@ function WindingContent({ t }: { t: any }) {
         )}
       </p>
 
-      {/* Visual diagram */}
-      <div className="my-6 grid grid-cols-2 gap-4">
-        {[
-          { label: "CCW — Front face ✓", color: "#22c55e", bg: "bg-emerald-500/5 border-emerald-500/20", pts: "150,30 40,220 260,220" },
-          { label: "CW  — Back face  ✗", color: "#ef4444", bg: "bg-red-500/5 border-red-500/20",       pts: "150,30 260,220 40,220" },
-        ].map(({ label, color, bg, pts }) => (
-          <div key={label} className={`rounded-xl border ${bg} p-4 flex flex-col items-center gap-3`}>
-            <svg viewBox="0 0 300 250" className="w-full max-w-[180px]">
-              <polygon points={pts} fill={color + "18"} stroke={color + "aa"} strokeWidth="2" />
-              {pts.split(" ").map((p, i) => {
-                const [x,y] = p.split(",").map(Number);
-                const offsets = [[-14,-10],[10,8],[-24,8]];
-                return (
-                  <g key={i}>
-                    <circle cx={x} cy={y} r="7" fill={color} fillOpacity={0.85} />
-                    <text x={x+offsets[i][0]} y={y+offsets[i][1]} fill={color} fontSize="13" fontFamily="monospace" fontWeight="bold">v{i}</text>
-                  </g>
-                );
-              })}
-              {/* Arrow arc */}
-              <path d={pts.split(" ").length >= 3 ?
-                `M 150 135 m 0 -30 a 30 30 0 1 ${pts === "150,30 40,220 260,220" ? "1" : "0"} 0.01 0`
-                : ""} fill="none" stroke={color} strokeWidth="1.5" strokeOpacity={0.5} markerEnd="url(#arr)" />
-            </svg>
-            <span className="font-mono text-[10px] font-bold" style={{ color }}>{label}</span>
-          </div>
-        ))}
-      </div>
+      <WindingFigure t={t} />
 
       <H2>{tx(t, "ch10_cullingTitle", "Enabling face culling")}</H2>
       <p>

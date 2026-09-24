@@ -4,6 +4,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { CameraLookAtFigure } from "@/components/lesson/figures/CameraLookAtFigure";
 
 // ── Camera & View Matrix ──────────────────────────────────────────────────────
 
@@ -23,6 +24,8 @@ export function CameraContent({ t }: { t: TrackTranslations }) {
           "Three vectors define a camera: where it is, what it is looking at, and which way is up. glm::lookAt builds an orthonormal basis from them and combines it with a translation, producing a matrix that transforms world space into view space — a space where the camera sits at the origin looking down -Z."
         )}
       </p>
+
+      <CameraLookAtFigure t={t} />
 
       <CodeBlock lang="cpp" filename="lookat.cpp" t={t}>{`glm::vec3 cameraPos    = glm::vec3(0.0f, 0.0f,  3.0f);
 glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f,  0.0f);

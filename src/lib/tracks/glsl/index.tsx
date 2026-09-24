@@ -5,6 +5,7 @@ import { Track } from "@/lib/tracks/types";
 import {
   CodeBlock, Callout, H2, LessonTable,
 } from "@/components/lesson/LessonComponents";
+import { InteractiveUV } from "@/components/lesson/InteractiveUV";
 
 function tx(t: any, key: string, fallback: string): string {
   const val = t?.[key];
@@ -204,6 +205,21 @@ void main() {
     vec2 uv       = pixelPos / uResolution; // [0,1] range
     FragColor = vec4(uv, 0.0, 1.0);         // red=X, green=Y gradient
 }`}</CodeBlock>
+
+      <H2>{tx(t, "glsl03_uvVisTitle", "Seeing UV, one fragment at a time")}</H2>
+      <p>
+        {tx(t, "glsl03_uvVisBody",
+          "The widget below runs a real fragment shader. Drop the resolution to a few fragments and hover them: every square is one call to main(), with its own gl_FragCoord. Dividing it by uResolution gives the UV, and the shader turns that UV into a colour. Switch presets to see centering, fract() tiling, polar coordinates and time, or edit the code directly."
+        )}
+      </p>
+
+      <InteractiveUV />
+
+      <Callout type="tip" t={t}>
+        {tx(t, "glsl03_uvVisTip",
+          "gl_FragCoord points at the centre of the fragment, so the bottom-left one is (0.5, 0.5), not (0, 0). Reading UV as a colour (red = u, green = v) is also how you debug a shader: when something looks wrong, output the value you doubt as a colour and check it."
+        )}
+      </Callout>
 
       <H2>{tx(t, "glsl03_centeredTitle", "Centering and aspect ratio correction")}</H2>
       <p>{tx(t, "glsl03_centeredBody", "For most effects you want a centered coordinate system with aspect ratio correction.")}</p>

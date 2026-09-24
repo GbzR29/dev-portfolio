@@ -15,8 +15,17 @@ const LIMIT     = 2.0;       // how far outside the NDC box a vertex may go
 const SNAP      = 0.05;      // Alt-drag snap increment
 const FINE      = 0.22;      // Shift-drag movement multiplier
 const HIT_R     = 15;        // vertex grab radius, in viewBox units
+const AXIS_HIT  = 8;         // gizmo arm grab distance, in viewBox units
+const GIZMO_IN  = 10;        // arms start this far out, so the dot stays grabbable
+const GIZMO_OUT = 40;        // arm length, constant on screen regardless of zoom
 
-type Pt = { x: number; y: number };
+type Pt   = { x: number; y: number };
+type Axis = 0 | 1;           // X, Y
+
+const AXIS_COLOR = ["#ef4444", "#22c55e"] as const;
+const AXIS_NAME  = ["X", "Y"] as const;
+// Screen-space direction of each NDC axis (Y is flipped on screen).
+const AXIS_SCREEN: Pt[] = [{ x: 1, y: 0 }, { x: 0, y: -1 }];
 
 // ── Coordinate conversions ───────────────────────────────────────────────────
 // Screen (viewBox px) = centre + pan + ndc * h, with Y flipped.
@@ -86,15 +95,27 @@ const fmt    = (n: number) => n.toFixed(2);
 const clampN = (v: number) => Math.max(-LIMIT, Math.min(LIMIT, v));
 const snapTo = (v: number) => Math.round(v / SNAP) * SNAP;
 
+/** Shortest distance from point p to segment a→b, for gizmo hit testing. */
+function distToSegment(p: Pt, a: Pt, b: Pt): number {
+  const vx = b.x - a.x, vy = b.y - a.y;
+  const len2 = vx * vx + vy * vy;
+  if (len2 < 1e-6) return Math.hypot(p.x - a.x, p.y - a.y);
+  const t = Math.max(0, Math.min(1, ((p.x - a.x) * vx + (p.y - a.y) * vy) / len2));
+  return Math.hypot(p.x - (a.x + vx * t), p.y - (a.y + vy * t));
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 export function InteractiveNDC2D() {
   const [verts,    setVerts]    = useState<Pt[]>(DEFAULT.map(v => ({ ...v })));
   const [zoom,     setZoom]     = useState(1.0);
   const [pan,      setPan]      = useState<Pt>({ x: 0, y: 0 });
   const [selected, setSelected] = useState<number | null>(null);
-  const [hover,    setHover]    = useState<number | null>(null);
+  const [hover,    setHover]    = useState<{ vertex: number | null; axis: Axis | null }>(
+    { vertex: null, axis: null });
   const [panning,  setPanning]  = useState(false);
   const [copied,   setCopied]   = useState(false);
+  // Raw text of the field being typed into, so "-", "" and "0." survive editing.
+  const [draft,    setDraft]    = useState<{ key: string; text: string } | null>(null);
 
   const svgRef = useRef<SVGSVGElement>(null);
   const { theme } = useTheme();
@@ -131,7 +152,12 @@ export function InteractiveNDC2D() {
   // Active pointers, keyed by pointerId — this is what makes pinch possible.
   const pointers = useRef(new Map<number, Pt>());
   const pinch    = useRef<{ dist: number; mid: Pt } | null>(null);
-  const drag     = useRef<{ mode: "vertex" | "pan"; idx: number; last: Pt } | null>(null);
+  const drag     = useRef<
+    | { mode: "pan"; last: Pt }
+    | { mode: "vertex"; idx: number; last: Pt }
+    | { mode: "axis"; idx: number; axis: Axis; last: Pt }
+    | null
+  >(null);
 
   // ── Client coords → viewBox coords ──────────────────────────────────────
   const toLocal = useCallback((clientX: number, clientY: number): Pt | null => {
@@ -151,6 +177,25 @@ export function InteractiveNDC2D() {
     });
     return best;
   }, [verts, zoom, pan]);
+
+  /** Gizmo arms of the selected vertex take priority over the vertex dots. */
+  const pickAxis = useCallback((p: Pt): Axis | null => {
+    if (selected === null || selected >= verts.length) return null;
+    const o = {
+      x: n2s(verts[selected].x, "x", zoom, pan),
+      y: n2s(verts[selected].y, "y", zoom, pan),
+    };
+    let best: Axis | null = null;
+    let bestD = AXIS_HIT;
+    ([0, 1] as Axis[]).forEach(a => {
+      const d = AXIS_SCREEN[a];
+      const from = { x: o.x + d.x * GIZMO_IN,        y: o.y + d.y * GIZMO_IN };
+      const to   = { x: o.x + d.x * (GIZMO_OUT + 6), y: o.y + d.y * (GIZMO_OUT + 6) };
+      const dist = distToSegment(p, from, to);
+      if (dist <= bestD) { bestD = dist; best = a; }
+    });
+    return best;
+  }, [selected, verts, zoom, pan]);
 
   const pinchState = () => {
     const [a, b] = [...pointers.current.values()];
@@ -184,20 +229,32 @@ export function InteractiveNDC2D() {
     const local = toLocal(e.clientX, e.clientY);
     if (!local) return;
 
+    const last = { x: e.clientX, y: e.clientY };
+
     // Middle button pans. Only the left button (or a finger) grabs a vertex.
     const wantsPan = e.pointerType === "mouse" && e.button === 1;
+    const axis = wantsPan ? null : pickAxis(local);
+
+    if (axis !== null && selected !== null) {
+      drag.current = { mode: "axis", idx: selected, axis, last };
+      setDraft(null);
+      e.preventDefault();
+      return;
+    }
+
     const idx = wantsPan ? null : hitTest(local);
 
     if (idx !== null) {
-      drag.current = { mode: "vertex", idx, last: { x: e.clientX, y: e.clientY } };
+      drag.current = { mode: "vertex", idx, last };
       setSelected(idx);
+      setDraft(null);
     } else {
-      drag.current = { mode: "pan", idx: -1, last: { x: e.clientX, y: e.clientY } };
+      drag.current = { mode: "pan", last };
       setPanning(true);
       if (!wantsPan) setSelected(null);
     }
     e.preventDefault();
-  }, [toLocal, hitTest]);
+  }, [toLocal, hitTest, pickAxis, selected]);
 
   // ── Pointer move ─────────────────────────────────────────────────────────
   const onPointerMove = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
@@ -224,7 +281,9 @@ export function InteractiveNDC2D() {
     const d = drag.current;
     if (!d) {
       const local = toLocal(e.clientX, e.clientY);
-      setHover(local ? hitTest(local) : null);
+      if (!local) { setHover({ vertex: null, axis: null }); return; }
+      const axis = pickAxis(local);
+      setHover({ vertex: axis === null ? hitTest(local) : null, axis });
       return;
     }
 
@@ -242,6 +301,21 @@ export function InteractiveNDC2D() {
 
     const h = HALF * zoomRef.current;
     const k = e.shiftKey ? FINE : 1;
+
+    if (d.mode === "axis") {
+      // Only the dragged component moves; the other one stays locked.
+      setVerts(prev => prev.map((v, i) => {
+        if (i !== d.idx) return v;
+        if (d.axis === 0) {
+          const nx = v.x + (dx / h) * k;
+          return { ...v, x: clampN(e.altKey ? snapTo(nx) : nx) };
+        }
+        const ny = v.y - (dy / h) * k;
+        return { ...v, y: clampN(e.altKey ? snapTo(ny) : ny) };
+      }));
+      return;
+    }
+
     setVerts(prev => prev.map((v, i) => {
       if (i !== d.idx) return v;
       let nx = v.x + (dx / h) * k;
@@ -249,7 +323,7 @@ export function InteractiveNDC2D() {
       if (e.altKey) { nx = snapTo(nx); ny = snapTo(ny); }
       return { x: clampN(nx), y: clampN(ny) };
     }));
-  }, [toLocal, hitTest, applyZoom, commitView]);
+  }, [toLocal, hitTest, pickAxis, applyZoom, commitView]);
 
   // ── Pointer up / cancel ──────────────────────────────────────────────────
   const endPointer = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
@@ -280,9 +354,16 @@ export function InteractiveNDC2D() {
     return () => svg.removeEventListener("wheel", onWheel);
   }, []);
 
-  // ── Keyboard nudge for the selected vertex ───────────────────────────────
+  // ── Keyboard: nudge, remove or deselect the selected vertex ─────────────
   const onKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (selected === null) return;
+    if (e.key === "Escape") { setSelected(null); return; }
+    if (e.key === "Delete" || e.key === "Backspace") {
+      e.preventDefault();
+      setVerts(prev => prev.length <= MIN_VERTS ? prev : prev.filter((_, j) => j !== selected));
+      setSelected(null);
+      return;
+    }
     const arrows = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
     if (!arrows.includes(e.key)) return;
     e.preventDefault();
@@ -325,6 +406,16 @@ export function InteractiveNDC2D() {
     setVerts(DEFAULT.map(v => ({ ...v })));
     commitView(1, { x: 0, y: 0 });
     setSelected(null);
+    setDraft(null);
+  };
+
+  // ── Numeric editing ──────────────────────────────────────────────────────
+  const setComponent = (vi: number, axis: Axis, raw: string) => {
+    setDraft({ key: `${vi}-${axis}`, text: raw });
+    const n = parseFloat(raw);
+    if (Number.isNaN(n)) return; // partial input like "-" or "" — keep the last value
+    setVerts(prev => prev.map((v, i) =>
+      i !== vi ? v : axis === 0 ? { ...v, x: clampN(n) } : { ...v, y: clampN(n) }));
   };
 
   // ── Generated code ───────────────────────────────────────────────────────
@@ -372,6 +463,12 @@ export function InteractiveNDC2D() {
   for (let v = Math.floor(yFrom / step) * step; v <= yTo + 1e-9; v += step)
     gridY.push(parseFloat(v.toFixed(4)));
 
+  // Gizmo anchor (screen position of the selected vertex)
+  const gizmoO = selected !== null && selected < verts.length
+    ? { x: n2s(verts[selected].x, "x", zoom, pan), y: n2s(verts[selected].y, "y", zoom, pan) }
+    : null;
+  const dragAxis = drag.current?.mode === "axis" ? drag.current.axis : null;
+
   const gridStroke = (v: number) =>
     Math.abs(v) < 1e-6 ? C.gridZero : Math.abs(Math.abs(v) - 1) < 1e-6 ? C.gridOne : C.gridSub;
 
@@ -384,7 +481,7 @@ export function InteractiveNDC2D() {
           NDC 2D — Interactive
         </span>
         <span className="text-[9px] text-[var(--text-muted)] font-mono text-right">
-          drag vertices · pan · pinch or scroll to zoom
+          click a vertex for the gizmo · pinch or scroll to zoom
         </span>
       </div>
 
@@ -399,17 +496,20 @@ export function InteractiveNDC2D() {
             role="application"
             aria-label="Interactive NDC coordinate editor"
             style={{
-              width: "min(340px, 88vw)", height: "auto", aspectRatio: "1",
+              width: "min(400px, 88vw)", height: "auto", aspectRatio: "1",
               touchAction: "none", overflow: "hidden", outline: "none",
             }}
             className={`select-none rounded ${
-              panning ? "cursor-grabbing" : hover !== null ? "cursor-grab" : "cursor-crosshair"
+              panning ? "cursor-grabbing"
+              : hover.axis !== null ? "cursor-pointer"
+              : hover.vertex !== null ? "cursor-grab"
+              : "cursor-crosshair"
             }`}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={endPointer}
             onPointerCancel={endPointer}
-            onPointerLeave={() => { if (!drag.current) setHover(null); }}
+            onPointerLeave={() => { if (!drag.current) setHover({ vertex: null, axis: null }); }}
             onContextMenu={(e) => e.preventDefault()}
             onMouseDown={(e) => { if (e.button === 1) e.preventDefault(); }}
             onKeyDown={onKeyDown}
@@ -476,7 +576,7 @@ export function InteractiveNDC2D() {
               const sy = n2s(v.y, "y", zoom, pan);
               const color    = colorFor(i);
               const inBounds = Math.abs(v.x) <= 1.0001 && Math.abs(v.y) <= 1.0001;
-              const isActive = selected === i || hover === i;
+              const isActive = selected === i || hover.vertex === i;
               return (
                 <g key={i}>
                   {isActive && (
@@ -497,6 +597,47 @@ export function InteractiveNDC2D() {
                 </g>
               );
             })}
+
+            {/* Gizmo on the selected vertex: drag an arm to move along one axis */}
+            {gizmoO && (
+              <g>
+                {/* Guide line along the axis being dragged */}
+                {dragAxis === 0 && (
+                  <line x1={0} y1={gizmoO.y} x2={SZ} y2={gizmoO.y}
+                    stroke={AXIS_COLOR[0]} strokeOpacity={0.35} strokeWidth="1" strokeDasharray="4 3" />
+                )}
+                {dragAxis === 1 && (
+                  <line x1={gizmoO.x} y1={0} x2={gizmoO.x} y2={SZ}
+                    stroke={AXIS_COLOR[1]} strokeOpacity={0.35} strokeWidth="1" strokeDasharray="4 3" />
+                )}
+                {([0, 1] as Axis[]).map(a => {
+                  const d = AXIS_SCREEN[a];
+                  const active = hover.axis === a || dragAxis === a;
+                  const x1 = gizmoO.x + d.x * GIZMO_IN,  y1 = gizmoO.y + d.y * GIZMO_IN;
+                  const x2 = gizmoO.x + d.x * GIZMO_OUT, y2 = gizmoO.y + d.y * GIZMO_OUT;
+                  const size = active ? 7 : 5.5;
+                  // Arrow head: tip, then the two base corners
+                  const head = [
+                    `${x2 + d.x * size},${y2 + d.y * size}`,
+                    `${x2 - d.y * size * 0.55},${y2 + d.x * size * 0.55}`,
+                    `${x2 + d.y * size * 0.55},${y2 - d.x * size * 0.55}`,
+                  ].join(" ");
+                  return (
+                    <g key={a}>
+                      <line x1={x1} y1={y1} x2={x2} y2={y2}
+                        stroke={AXIS_COLOR[a]} strokeWidth={active ? 3.2 : 2} strokeLinecap="round" />
+                      <polygon points={head} fill={AXIS_COLOR[a]} />
+                      <text
+                        x={a === 0 ? x2 + size + 3 : x2 + 5}
+                        y={a === 0 ? y2 + 3 : y2 - size + 2}
+                        fill={AXIS_COLOR[a]} fontSize="8" fontFamily="monospace" fontWeight="bold">
+                        {AXIS_NAME[a]}
+                      </text>
+                    </g>
+                  );
+                })}
+              </g>
+            )}
           </svg>
         </div>
 
@@ -510,28 +651,53 @@ export function InteractiveNDC2D() {
                 Vertex Coordinates (NDC)
               </p>
               <span className="text-[9px] font-mono text-[var(--text-muted)] opacity-60">
-                {verts.length}/{MAX_VERTS}
+                x · y · z &nbsp;·&nbsp; {verts.length}/{MAX_VERTS}
               </span>
             </div>
-            <div className="space-y-1 max-h-44 overflow-y-auto pr-1">
+            <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
               {verts.map((v, i) => {
                 const inBounds = Math.abs(v.x) <= 1.0001 && Math.abs(v.y) <= 1.0001;
                 const color = inBounds ? colorFor(i) : "#ef4444";
                 return (
-                  <button
+                  <div
                     key={i}
-                    onClick={() => setSelected(selected === i ? null : i)}
-                    onMouseEnter={() => setHover(i)}
-                    onMouseLeave={() => setHover(null)}
-                    className={`w-full flex items-center gap-2.5 font-mono text-[11px] px-1.5 py-0.5 rounded transition-colors ${
-                      selected === i ? "bg-[var(--primary-low)]" : "hover:bg-[var(--primary-low)]/50"
+                    onMouseEnter={() => setHover({ vertex: i, axis: null })}
+                    onMouseLeave={() => setHover({ vertex: null, axis: null })}
+                    className={`flex items-center gap-2 font-mono text-[10px] px-1.5 py-0.5 rounded transition-colors ${
+                      selected === i ? "bg-[var(--primary-low)]" : ""
                     }`}
                   >
-                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
-                    <span className="text-[var(--text-muted)] w-5 text-left">v{i}</span>
-                    <span style={{ color }}>({fmt(v.x)}, {fmt(v.y)}, 0.00)</span>
-                    {!inBounds && <span className="text-[9px] text-red-400 ml-auto">clipped</span>}
-                  </button>
+                    <button
+                      onClick={() => setSelected(selected === i ? null : i)}
+                      className="flex items-center gap-2 flex-shrink-0"
+                      title="Select for the gizmo"
+                    >
+                      <span className="w-2 h-2 rounded-full" style={{ background: color }} />
+                      <span className="text-[var(--text-muted)] w-5 text-left">v{i}</span>
+                    </button>
+                    {([0, 1] as Axis[]).map(a => (
+                      <input
+                        key={a}
+                        type="number"
+                        step={0.05}
+                        min={-LIMIT}
+                        max={LIMIT}
+                        aria-label={`v${i} ${AXIS_NAME[a]}`}
+                        value={draft?.key === `${i}-${a}` ? draft.text : fmt(a === 0 ? v.x : v.y)}
+                        onChange={e => setComponent(i, a, e.target.value)}
+                        onFocus={() => setSelected(i)}
+                        onBlur={() => setDraft(null)}
+                        style={{ color }}
+                        className="w-14 bg-transparent border border-[var(--border)] rounded px-1.5 py-0.5 text-right
+                          focus:outline-none focus:border-[var(--primary)]/60 transition-colors
+                          [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                    ))}
+                    <span className="w-8 text-right text-[var(--text-muted)] opacity-50" title="z is always 0 in 2D">
+                      0.00
+                    </span>
+                    {!inBounds && <span className="text-[9px] text-red-400">clipped</span>}
+                  </div>
                 );
               })}
             </div>
@@ -588,9 +754,13 @@ export function InteractiveNDC2D() {
             </div>
 
             <p className="text-[9px] font-mono text-[var(--text-muted)] opacity-70 leading-relaxed">
-              <span className="text-[var(--primary)]">shift</span> fine drag ·{" "}
+              <span style={{ color: AXIS_COLOR[0] }}>X</span>{" "}
+              <span style={{ color: AXIS_COLOR[1] }}>Y</span> gizmo arms constrain one axis ·{" "}
+              <span className="text-[var(--primary)]">shift</span> fine ·{" "}
               <span className="text-[var(--primary)]">alt</span> snap {SNAP} ·{" "}
-              <span className="text-[var(--primary)]">arrows</span> nudge selected
+              <span className="text-[var(--primary)]">arrows</span> nudge ·{" "}
+              <span className="text-[var(--primary)]">del</span> remove ·{" "}
+              <span className="text-[var(--primary)]">esc</span> deselect
             </p>
           </div>
         </div>

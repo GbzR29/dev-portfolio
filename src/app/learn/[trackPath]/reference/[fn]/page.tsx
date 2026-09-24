@@ -191,6 +191,8 @@ export default function ReferenceEntryPage() {
       <DocsLayout
         drawerTitle={tt.refTitle ?? "Function reference"}
         drawerKey={fn}
+        backHref={referenceHref(reference)}
+        backLabel={tt.refTitle ?? "Function reference"}
         left={<ReferenceSidebar reference={reference} activeName={entry.name} />}
         right={
           <div>

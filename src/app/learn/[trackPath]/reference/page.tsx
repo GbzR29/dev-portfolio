@@ -46,6 +46,8 @@ export default function ReferenceIndexPage() {
   return (
     <DocsLayout
       drawerTitle={tt.refTitle ?? "Function reference"}
+      backHref={`/learn/${encodeURIComponent(trackPath)}`}
+      backLabel={reference.title ?? "Back"}
       left={<ReferenceSidebar reference={reference} />}
       right={
         <div>
