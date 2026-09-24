@@ -16,7 +16,6 @@ import { FrustumFigure } from "@/components/lesson/figures/FrustumFigure";
 import { HomogeneousFigure } from "@/components/lesson/figures/HomogeneousFigure";
 import { VertexJourneyFigure } from "@/components/lesson/figures/VertexJourneyFigure";
 import { VectorOpsFigure } from "@/components/lesson/figures/VectorOpsFigure";
-import { PhongFigure } from "@/components/lesson/figures/PhongFigure";
 import { WindingFigure } from "@/components/lesson/figures/WindingFigure";
 import { TextureFigure } from "@/components/lesson/figures/TextureFigure";
 
@@ -24,9 +23,13 @@ import { TextureFigure } from "@/components/lesson/figures/TextureFigure";
 import { SetupContent } from "./chapters/setup";
 import { CameraContent, DepthTestingContent } from "./chapters/transforms";
 import {
-  LightCastersContent, AdvancedLightingContent, ShadowMappingContent,
+  AdvancedLightingContent, ShadowMappingContent,
 } from "./chapters/lighting";
 import { ModelLoadingContent } from "./chapters/models";
+import {
+  LightColorContent, BasicLightingContent, MaterialsContent, LightingMapsContent,
+  LightCastersContent, MultipleLightsContent,
+} from "./chapters/lighting-basics";
 import {
   BlendingContent, FramebuffersContent, CubemapsContent,
   InstancingContent, UBOContent,
@@ -1427,150 +1430,6 @@ glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "uProjection"), 1, GL_FAL
   );
 }
 
-// ── Chapter 09: Phong Lighting ────────────────────────────────────────────────
-
-function LightingContent({ t }: { t: any }) {
-  return (
-    <article className="space-y-5 text-[var(--text-muted)] leading-relaxed text-base">
-
-      <p className="text-lg text-[var(--text-main)]">
-        {tx(t, "ch09_intro",
-          "Lighting transforms a flat-shaded object into something that reads as three-dimensional. The Phong model — the most widely used introductory lighting model — breaks illumination into three independent components: ambient, diffuse, and specular."
-        )}
-      </p>
-
-      <H2>{tx(t, "ch09_componentsTitle", "The three components")}</H2>
-      <LessonTable
-        headers={[
-          tx(t, "phongHeader0", "Component"),
-          tx(t, "phongHeader1", "What it simulates"),
-          tx(t, "phongHeader2", "Key variable"),
-        ]}
-        rows={[
-          ["Ambient",  tx(t, "phongAmbient",  "Indirect light — prevents fully unlit surfaces from being pure black"),  "ambientStrength (e.g. 0.1)"],
-          ["Diffuse",  tx(t, "phongDiffuse",  "Direct light — brightness depends on angle between surface and light"),   "dot(normal, lightDir)"],
-          ["Specular", tx(t, "phongSpecular", "Highlight — depends on angle between reflected light and camera"),        "shininess (e.g. 32)"],
-        ]}
-      />
-
-      <p>
-        {tx(t, "ch09_phongFig",
-          "All three terms come from a handful of vectors at the surface point: the normal N, the direction to the light L, the direction to the eye V and the reflection R. Drag the sun and the eye below and watch each term respond."
-        )}
-      </p>
-
-      <PhongFigure t={t} />
-
-      <H2>{tx(t, "ch09_normalsTitle", "Normals as a vertex attribute")}</H2>
-      <p>
-        {tx(t, "ch09_normalsBody",
-          "A normal is a unit vector perpendicular to the surface at each vertex. It tells the lighting equation which direction the surface is facing. You add it as a third vertex attribute."
-        )}
-      </p>
-      <CodeBlock lang="cpp" filename="normals.cpp" t={t}>{`// position (xyz)  +  normal (xyz)  — stride = 6 floats
-float vertices[] = {
-    -0.5f, -0.5f,  0.5f,    0.0f, 0.0f, 1.0f,  // front face
-     0.5f, -0.5f,  0.5f,    0.0f, 0.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,    0.0f, 0.0f, 1.0f,
-    // ... more faces
-};
-
-int stride = 6 * sizeof(float);
-
-glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);               // position
-glEnableVertexAttribArray(0);
-glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3*sizeof(float))); // normal
-glEnableVertexAttribArray(1);`}</CodeBlock>
-
-      <H2>{tx(t, "ch09_vertTitle", "Vertex shader")}</H2>
-      <p>
-        {tx(t, "ch09_vertBody",
-          "The vertex shader passes the world-space position and normal to the fragment shader. We transform the position by the model matrix to get world space, and the normal by the normal matrix to account for non-uniform scaling."
-        )}
-      </p>
-      <CodeBlock lang="glsl" filename="phong.vert" t={t}>{`#version 460 core
-
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aNormal;
-
-out vec3 FragPos;
-out vec3 Normal;
-
-uniform mat4 uModel;
-uniform mat4 uView;
-uniform mat4 uProjection;
-uniform mat3 uNormalMatrix;  // transpose(inverse(mat3(model)))
-
-void main() {
-    FragPos = vec3(uModel * vec4(aPos, 1.0));
-    Normal  = normalize(uNormalMatrix * aNormal);
-    gl_Position = uProjection * uView * vec4(FragPos, 1.0);
-}`}</CodeBlock>
-
-      <Callout type="info" t={t}>
-        {tx(t, "ch09_normalMatrixNote",
-          "The normal matrix is needed because non-uniform scaling distorts normals. Compute it on the CPU each frame: glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model))), then upload with glUniformMatrix3fv."
-        )}
-      </Callout>
-
-      <H2>{tx(t, "ch09_fragTitle", "Fragment shader — full Phong calculation")}</H2>
-      <CodeBlock lang="glsl" filename="phong.frag" t={t}>{`#version 460 core
-
-in  vec3 FragPos;
-in  vec3 Normal;
-out vec4 FragColor;
-
-uniform vec3 uLightPos;
-uniform vec3 uLightColor;
-uniform vec3 uObjectColor;
-uniform vec3 uViewPos;   // camera position
-
-void main() {
-    // --- Ambient ---
-    float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * uLightColor;
-
-    // --- Diffuse ---
-    vec3 norm     = normalize(Normal);
-    vec3 lightDir = normalize(uLightPos - FragPos);
-    float diff    = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse  = diff * uLightColor;
-
-    // --- Specular ---
-    float specularStrength = 0.5;
-    vec3 viewDir    = normalize(uViewPos - FragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec      = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
-    vec3 specular   = specularStrength * spec * uLightColor;
-
-    vec3 result = (ambient + diffuse + specular) * uObjectColor;
-    FragColor = vec4(result, 1.0);
-}`}</CodeBlock>
-
-      <H2>{tx(t, "ch09_cpuTitle", "Setting the uniforms from C++")}</H2>
-      <CodeBlock lang="cpp" filename="lighting_uniforms.cpp" t={t}>{`glUseProgram(shaderProgram);
-
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-glm::vec3 cameraPos(0.0f, 0.0f, 3.0f);
-
-glUniform3fv(glGetUniformLocation(shaderProgram, "uLightPos"),    1, glm::value_ptr(lightPos));
-glUniform3fv(glGetUniformLocation(shaderProgram, "uLightColor"),  1, glm::value_ptr(glm::vec3(1.0f)));      // white light
-glUniform3fv(glGetUniformLocation(shaderProgram, "uObjectColor"), 1, glm::value_ptr(glm::vec3(1.0f, 0.5f, 0.31f))); // coral
-glUniform3fv(glGetUniformLocation(shaderProgram, "uViewPos"),     1, glm::value_ptr(cameraPos));
-
-glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
-glUniformMatrix3fv(glGetUniformLocation(shaderProgram, "uNormalMatrix"), 1, GL_FALSE, glm::value_ptr(normalMatrix));`}</CodeBlock>
-
-      <Callout type="tip" t={t}>
-        {tx(t, "ch09_nextTip",
-          "Try moving the light position with glfwGetTime() — multiply by a sin/cos to orbit the light around your object. It immediately makes the lighting feel dynamic and proves your normal calculations are correct."
-        )}
-      </Callout>
-
-    </article>
-  );
-}
-
 // ── Chapter 10: Face Winding & Culling ────────────────────────────────────────
 
 function WindingContent({ t }: { t: any }) {
@@ -1792,6 +1651,7 @@ glDrawArrays(GL_TRIANGLES, 0, 3);`}</CodeBlock>
 const GETTING_STARTED = "Getting Started";
 const TRANSFORMS      = "3D & Transformations";
 const LIGHTING        = "Lighting";
+const ADV_LIGHTING    = "Advanced Lighting";
 const MODELS          = "Model Loading";
 const ADVANCED        = "Advanced OpenGL";
 const MODERN          = "Modern OpenGL & Tooling";
@@ -1818,10 +1678,15 @@ export const openGLTrack: Track = {
     { id: "depth-testing",   section: TRANSFORMS,      title: "Depth Testing",             minRead: 9,  content: (t) => <DepthTestingContent    t={t} /> },
 
     // ── Lighting ─────────────────────────────────────────────────────────────
-    { id: "lighting",        section: LIGHTING,        title: "Phong Lighting",            minRead: 13, content: (t) => <LightingContent        t={t} /> },
-    { id: "light-casters",   section: LIGHTING,        title: "Light Casters",             minRead: 11, content: (t) => <LightCastersContent    t={t} /> },
-    { id: "advanced-lighting", section: LIGHTING,      title: "Blinn-Phong & Gamma",       minRead: 10, content: (t) => <AdvancedLightingContent t={t} /> },
-    { id: "shadow-mapping",  section: LIGHTING,        title: "Shadow Mapping",            minRead: 14, content: (t) => <ShadowMappingContent   t={t} /> },
+    { id: "light-color",     section: LIGHTING,        title: "Light & Color",             minRead: 7,  content: (t) => <LightColorContent      t={t} /> },
+    { id: "lighting",        section: LIGHTING,        title: "Basic Lighting (Phong)",    minRead: 18, content: (t) => <BasicLightingContent   t={t} /> },
+    { id: "materials",       section: LIGHTING,        title: "Materials",                 minRead: 9,  content: (t) => <MaterialsContent       t={t} /> },
+    { id: "lighting-maps",   section: LIGHTING,        title: "Lighting Maps",             minRead: 9,  content: (t) => <LightingMapsContent    t={t} /> },
+    { id: "light-casters",   section: LIGHTING,        title: "Light Casters",             minRead: 14, content: (t) => <LightCastersContent    t={t} /> },
+    { id: "multiple-lights", section: LIGHTING,        title: "Multiple Lights",           minRead: 9,  content: (t) => <MultipleLightsContent  t={t} /> },
+
+    { id: "advanced-lighting", section: ADV_LIGHTING,  title: "Blinn-Phong & Gamma",       minRead: 10, content: (t) => <AdvancedLightingContent t={t} /> },
+    { id: "shadow-mapping",  section: ADV_LIGHTING,    title: "Shadow Mapping",            minRead: 14, content: (t) => <ShadowMappingContent   t={t} /> },
 
     // ── Model Loading ────────────────────────────────────────────────────────
     { id: "model-loading",   section: MODELS,          title: "Model Loading (Assimp)",    minRead: 13, content: (t) => <ModelLoadingContent    t={t} /> },

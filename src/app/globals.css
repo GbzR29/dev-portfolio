@@ -84,6 +84,30 @@ textarea::-webkit-scrollbar-thumb,
 
 
 /* =========================================================
+   FORMULAS (KaTeX colour macros — see components/lesson/Tex.tsx)
+   Same hues as the figures; darker shades on light surfaces.
+========================================================= */
+
+.tx-red    { color: #f87171; }
+.tx-green  { color: #4ade80; }
+.tx-blue   { color: #60a5fa; }
+.tx-amber  { color: #fbbf24; }
+.tx-purple { color: #c084fc; }
+.tx-cyan   { color: #22d3ee; }
+.tx-muted  { color: var(--text-muted); }
+
+html:not(.dark) .tx-red    { color: #dc2626; }
+html:not(.dark) .tx-green  { color: #16a34a; }
+html:not(.dark) .tx-blue   { color: #2563eb; }
+html:not(.dark) .tx-amber  { color: #d97706; }
+html:not(.dark) .tx-purple { color: #9333ea; }
+html:not(.dark) .tx-cyan   { color: #0891b2; }
+
+/* Inline formulas sit on the text baseline at the body size */
+.tex-inline .katex { font-size: 1.05em; }
+
+
+/* =========================================================
    LIGHT MODE CONTRAST
    Tailwind's -300/-400 hues are tuned for dark surfaces and
    drop to ~2:1 on white. In light mode they are shifted to the

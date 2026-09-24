@@ -4,10 +4,11 @@ import { useId, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { useStepper, stepAmount, StepperControls } from "./Stepper";
-import { Arrow, Label } from "./svg";
+import { Arrow, Label, pts } from "./svg";
 import {
   type V3, type Face, type CamBasis, add, sub, scale, dot,
   makeProjector, useOrbit, boxFaces, fmtV, lookAtBasis, viewTransform, frontFacing, lightAmount,
+  towardEye, visibleRuns, cylinderFaces, type Box,
 } from "./scene3d";
 import { TexturedFace, useProtoTextures, type ProtoName } from "./protoTexture";
 
@@ -40,6 +41,44 @@ function cameraBasis(orbitDeg: number, heightDeg: number, dist: number): CamBasi
   return lookAtBasis(pos, TARGET, WORLD_UP);
 }
 
+// ── The camera model ──────────────────────────────────────────────────────────
+// A small film camera built from primitives in the camera's own basis:
+// a textured body, a lens barrel with a hood and blue glass, two film reels.
+type RGB = [number, number, number];
+const flatFill = (c: RGB, light: number) => {
+  const k = 0.38 + 0.62 * Math.max(0, Math.min(1, light));
+  return `rgb(${Math.round(c[0] * k)},${Math.round(c[1] * k)},${Math.round(c[2] * k)})`;
+};
+const at = (b: CamBasis, r: number, u: number, f: number): V3 =>
+  add(b.pos, add(scale(b.r, r), add(scale(b.u, u), scale(b.f, f))));
+
+const CAMERA_PARTS = {
+  faces(b: CamBasis): (Face & { tex?: ProtoName; flat?: RGB })[] {
+    const out: (Face & { tex?: ProtoName; flat?: RGB })[] = [];
+    // Body, longer along the viewing direction
+    boxFaces(at(b, 0, 0, -0.2), [0.13, 0.15, 0.22], [b.r, b.u, b.f]).forEach(fc => out.push({ ...fc, tex: "light" }));
+    // Lens barrel and hood along forward (u × r = f keeps the winding right)
+    cylinderFaces(at(b, 0, 0, 0.1), b.f, b.u, b.r, 0.085, 0.08).forEach(fc => out.push({ ...fc, flat: [58, 62, 70] }));
+    cylinderFaces(at(b, 0, 0, 0.2), b.f, b.u, b.r, 0.11, 0.025).forEach(fc =>
+      out.push({ ...fc, flat: fc.pts.length > 4 && dot(fc.normal, b.f) > 0.9 ? [90, 150, 235] : [40, 44, 50] }));
+    // Two film reels on top, their axis along right (f × u = r)
+    for (const f of [-0.32, -0.08]) {
+      cylinderFaces(at(b, 0, 0.27, f), b.r, b.f, b.u, 0.12, 0.04).forEach(fc => out.push({ ...fc, flat: [74, 78, 88] }));
+    }
+    return out;
+  },
+  /** Rough boxes around each part, for hiding lines behind the camera. */
+  boxes(b: CamBasis): Box[] {
+    const ax: [V3, V3, V3] = [b.r, b.u, b.f];
+    return [
+      { c: at(b, 0, 0, -0.2), half: [0.13, 0.15, 0.22], ax },
+      { c: at(b, 0, 0, 0.13), half: [0.1, 0.1, 0.11], ax },
+      { c: at(b, 0, 0.27, -0.32), half: [0.04, 0.12, 0.12], ax },
+      { c: at(b, 0, 0.27, -0.08), half: [0.04, 0.12, 0.12], ax },
+    ];
+  },
+};
+
 // ── Figure ────────────────────────────────────────────────────────────────────
 export function CameraLookAtFigure({ t }: { t?: TrackTranslations }) {
   const [orbitDeg, setOrbitDeg]   = useState(35);
@@ -63,20 +102,24 @@ export function CameraLookAtFigure({ t }: { t?: TrackTranslations }) {
   const S = (q: V3) => P(W.point(q));            // world-space point → screen
 
   // ── Scene geometry ────────────────────────────────────────────────────────
-  const faces: (Face & { tex: ProtoName; light: number })[] = [];
+  // The same boxes, in the transformed space, for line-vs-solid occlusion
+  const occluders: Box[] = [
+    { c: W.point(TARGET), half: [0.35, 0.35, 0.35], ax: [W.dir([1, 0, 0]), W.dir([0, 1, 0]), W.dir([0, 0, 1])] },
+    ...CAMERA_PARTS.boxes(b).map(bx => ({ c: W.point(bx.c), half: bx.half, ax: bx.ax.map(W.dir) as [V3, V3, V3] })),
+  ];
+  const toward = towardEye(orbit);
+  const WORLD_AXES: V3[] = [[1.6, 0, 0], [0, 1.4, 0], [0, 0, 1.6]];
+
+  const faces: (Face & { tex?: ProtoName; flat?: RGB; light: number })[] = [];
   const lit = (n: V3) => lightAmount(W.dir(n));
   // The target: a prototype cube at the origin
   boxFaces(TARGET, [0.35, 0.35, 0.35]).forEach(fc => faces.push({ ...fc, tex: "orange", light: lit(fc.normal) }));
-  // The camera: a body and a lens, oriented by (right, up, forward)
-  const axes: [V3, V3, V3] = [b.r, b.u, b.f];
-  boxFaces(add(b.pos, scale(b.f, -0.16)), [0.2, 0.15, 0.16], axes)
-    .forEach(fc => faces.push({ ...fc, tex: "light", light: lit(fc.normal) }));
-  boxFaces(add(b.pos, scale(b.f, 0.08)), [0.09, 0.09, 0.08], axes)
-    .forEach(fc => faces.push({ ...fc, tex: "dark", light: lit(fc.normal) * 0.6 }));
+  // The camera: a film camera oriented by (right, up, forward)
+  CAMERA_PARTS.faces(b).forEach(fc => faces.push({ ...fc, light: lit(fc.normal) }));
 
   // Back faces are dropped, then the rest is painted far to near
   const drawn = faces
-    .map(fc => { const sp = fc.pts.map(S); return { sp, tex: fc.tex, light: fc.light, depth: sp.reduce((s, q) => s + q.depth, 0) / sp.length }; })
+    .map(fc => { const sp = fc.pts.map(S); return { sp, quad: fc.pts, tex: fc.tex, flat: fc.flat, light: fc.light, depth: sp.reduce((s, q) => s + q.depth, 0) / sp.length }; })
     .filter(d => frontFacing(d.sp))
     .sort((x, y) => y.depth - x.depth);
 
@@ -176,9 +219,30 @@ export function CameraLookAtFigure({ t }: { t?: TrackTranslations }) {
             )}
 
             {/* Solid geometry, back to front */}
-            {drawn.map((d, i) => (
-              <TexturedFace key={i} id={`${uid}-f${i}`} sp={d.sp} name={d.tex} tex={textures?.[d.tex]} light={d.light} />
+            {drawn.map((d, i) => d.tex ? (
+              <TexturedFace key={i} id={`${uid}-f${i}`} quad={d.quad} project={S} name={d.tex} tex={textures?.[d.tex]} light={d.light} />
+            ) : (
+              <polygon key={i} points={pts(d.sp)} fill={flatFill(d.flat ?? [90, 90, 90], d.light)}
+                stroke="rgba(0,0,0,0.35)" strokeWidth="0.5" strokeLinejoin="round" />
             ))}
+
+            {/* World axes again, only where they are in front of the solids */}
+            {WORLD_AXES.map((d, i) => {
+              const tipW = W.point(d);
+              const runs = visibleRuns(W.point([0, 0, 0]), tipW, occluders, toward);
+              return runs.map(([ra, rb], k) => {
+                const endsAtTip = Math.hypot(rb[0] - tipW[0], rb[1] - tipW[1], rb[2] - tipW[2]) < 1e-6;
+                const A = P(ra), B = P(rb);
+                return endsAtTip ? (
+                  <g key={`${i}-${k}`}>
+                    <Arrow a={A} b={B} color="var(--code-muted)" w={1.2} head={5} />
+                    <text x={B.x + 4} y={B.y - 3} fill="var(--code-muted)" fontSize="9" fontFamily="monospace">{"xyz"[i]}</text>
+                  </g>
+                ) : (
+                  <line key={`${i}-${k}`} x1={A.x} y1={A.y} x2={B.x} y2={B.y} stroke="var(--code-muted)" strokeWidth="1.2" strokeLinecap="round" />
+                );
+              });
+            })}
 
             {/* Camera vectors */}
             {wupAlpha > 0.02 && (
@@ -195,7 +259,7 @@ export function CameraLookAtFigure({ t }: { t?: TrackTranslations }) {
             {aU >= 1 && <Label x={uTip.x + 6} y={uTip.y - 2} color={COL_U} bold>up</Label>}
 
             {/* Labels for the two points that define everything */}
-            <Label x={cam.x + 12} y={cam.y - 16} color="var(--text-main)">
+            <Label x={cam.x + 26} y={cam.y + 26} color="var(--text-main)">
               {aV >= 1 ? "camera (0, 0, 0)" : `cameraPos ${fmtV(b.pos, 1)}`}
             </Label>
             {(() => { const q = S(TARGET); return <Label x={q.x + 12} y={q.y + 26} color="var(--text-main)">target</Label>; })()}

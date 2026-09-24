@@ -3,7 +3,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { BookMarked, CheckCircle2, ChevronRight, Clock } from "lucide-react";
+import {
+  BookMarked, Boxes, CheckCircle2, ChevronRight, Clock, Hash, Layers, Lightbulb, Move3d, Rocket, Sparkles, Wrench,
+  type LucideIcon,
+} from "lucide-react";
 import type { Chapter, Track } from "@/lib/tracks/types";
 
 /** Only the keys this sidebar reads — keeps it decoupled from the full bundle. */
@@ -24,6 +27,18 @@ interface LessonSidebarProps {
   /** When set, a link to the track's API reference is shown under the chapters. */
   referenceHref?: string;
 }
+
+/** An icon per section, matched on its title; anything unknown gets a plain mark. */
+const SECTION_ICONS: [RegExp, LucideIcon][] = [
+  [/getting|start/i, Rocket],
+  [/transform|3d/i, Move3d],
+  [/pbr|physically/i, Sparkles],
+  [/light/i, Lightbulb],
+  [/model/i, Boxes],
+  [/advanced/i, Layers],
+  [/modern|tool/i, Wrench],
+];
+const sectionIcon = (title: string) => SECTION_ICONS.find(([re]) => re.test(title))?.[1] ?? Hash;
 
 /** A chapter plus its position in the flat list, so numbering stays global. */
 type Entry = { chapter: Chapter; index: number };
@@ -113,85 +128,90 @@ export function LessonSidebar({
             return (
               <div key={groupTitle ?? `ungrouped-${gi}`}>
 
-                {groupTitle && (
-                  <button
-                    onClick={() => toggle(groupTitle)}
-                    aria-expanded={isOpen}
-                    className="w-full flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-lg
-                      transition-colors hover:bg-[var(--primary-low)]/60 group mt-4 first:mt-0"
-                  >
-                    <ChevronRight
-                      size={11}
-                      className={`flex-shrink-0 transition-transform duration-200
-                        ${isOpen ? "rotate-90" : ""}
-                        ${hasActive ? "text-[var(--primary)]" : "text-[var(--text-muted)]"}`}
-                    />
-                    <span
-                      className={`flex-1 text-left text-[10px] font-bold uppercase tracking-[0.16em] leading-tight transition-colors
-                        ${hasActive
-                          ? "text-[var(--primary)]"
-                          : "text-[var(--text-muted)] group-hover:text-[var(--text-main)]"
-                        }`}
+                {groupTitle && (() => {
+                  const Icon = sectionIcon(groupTitle);
+                  const pct = Math.round((doneInGroup / group.entries.length) * 100);
+                  return (
+                    <button
+                      onClick={() => toggle(groupTitle)}
+                      aria-expanded={isOpen}
+                      className={`w-full flex flex-col gap-1.5 px-2.5 py-2 rounded-lg mt-5 first:mt-0 transition-colors group
+                        ${hasActive ? "bg-[var(--primary-low)]/60" : "hover:bg-[var(--primary-low)]/50"}`}
                     >
-                      {groupTitle}
-                    </span>
-                    <span className="flex-shrink-0 text-[9px] font-mono text-[var(--text-muted)] opacity-55">
-                      {doneInGroup}/{group.entries.length}
-                    </span>
-                  </button>
-                )}
+                      <span className="w-full flex items-center gap-2">
+                        <ChevronRight
+                          size={12}
+                          className={`flex-shrink-0 transition-transform duration-200 text-[var(--text-muted)] ${isOpen ? "rotate-90" : ""}`}
+                        />
+                        <span className={`flex-shrink-0 w-6 h-6 rounded-md flex items-center justify-center transition-colors
+                          ${hasActive
+                            ? "bg-[var(--primary)] text-white"
+                            : "bg-[var(--surface)] border border-[var(--border)] text-[var(--text-muted)] group-hover:text-[var(--primary)]"}`}
+                        >
+                          <Icon size={13} />
+                        </span>
+                        <span
+                          className={`flex-1 text-left text-[12px] font-bold uppercase tracking-[0.1em] leading-tight transition-colors
+                            ${hasActive ? "text-[var(--primary)]" : "text-[var(--text-main)]"}`}
+                        >
+                          {groupTitle}
+                        </span>
+                        <span className="flex-shrink-0 text-[10px] font-mono text-[var(--text-muted)]">
+                          {doneInGroup}/{group.entries.length}
+                        </span>
+                      </span>
+                      {/* Section progress, aligned with the title */}
+                      <span className="block h-[3px] ml-[46px] mr-1 rounded-full bg-[var(--border)] overflow-hidden">
+                        <span className="block h-full rounded-full bg-[var(--primary)] transition-all duration-500" style={{ width: `${pct}%` }} />
+                      </span>
+                    </button>
+                  );
+                })()}
 
                 {isOpen && (
-                  <div className={groupTitle ? "pl-1.5" : ""}>
-                    {group.entries.map(({ chapter, index }, i) => {
+                  // The tree: chapters hang off a vertical guide under the section icon
+                  <div className={groupTitle ? "relative ml-[33px] mt-1 pl-3 border-l border-[var(--border)]" : ""}>
+                    {group.entries.map(({ chapter, index }) => {
                       const isActive = chapter.id === activeId;
                       const isDone   = visited.has(chapter.id) && !isActive;
-                      const isLast   = i === group.entries.length - 1;
 
                       return (
                         <button
                           key={chapter.id}
                           onClick={() => onSelect(chapter.id)}
                           aria-current={isActive ? "page" : undefined}
-                          className={`relative w-full flex items-stretch gap-3 pl-3 pr-2.5 py-2.5 rounded-lg text-left
+                          className={`relative w-full flex items-center gap-2.5 pl-2 pr-2.5 py-2 rounded-lg text-left
                             transition-colors duration-200 group
-                            ${isActive
-                              ? "bg-[var(--primary-low)]"
-                              : "hover:bg-[var(--primary-low)]/60"
-                            }`}
+                            ${isActive ? "bg-[var(--primary-low)]" : "hover:bg-[var(--primary-low)]/60"}`}
                         >
-                          {/* Active accent bar */}
-                          {isActive && (
-                            <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-[var(--primary)]" />
+                          {/* Branch from the guide line; the active one is highlighted */}
+                          {groupTitle && (
+                            <span className={`absolute -left-3 top-1/2 w-3 h-px ${isActive ? "bg-[var(--primary)]" : "bg-[var(--border)]"}`} />
+                          )}
+                          {isActive && groupTitle && (
+                            <span className="absolute -left-[13px] top-1 bottom-1 w-[2px] rounded-full bg-[var(--primary)]" />
                           )}
 
-                          {/* Badge + connecting rail */}
-                          <span className="flex flex-col items-center flex-shrink-0">
-                            <span
-                              className={`w-5 h-5 rounded-full flex items-center justify-center transition-colors
-                                ${isActive
-                                  ? "bg-[var(--primary)] text-white"
-                                  : isDone
-                                  ? "bg-emerald-500/15 border border-emerald-500/40 text-emerald-500"
-                                  : "border border-[var(--border-strong)] text-[var(--text-muted)] group-hover:border-[var(--primary)]/50"
-                                }`}
-                            >
-                              {isDone
-                                ? <CheckCircle2 size={11} />
-                                : <span className="text-[9px] font-bold font-mono">{index + 1}</span>
-                              }
-                            </span>
-                            {!isLast && (
-                              <span className="w-px flex-1 min-h-[10px] mt-1 -mb-2 bg-[var(--separator)]" />
-                            )}
+                          <span
+                            className={`w-5 h-5 flex-shrink-0 rounded-full flex items-center justify-center transition-colors
+                              ${isActive
+                                ? "bg-[var(--primary)] text-white"
+                                : isDone
+                                ? "bg-emerald-500/15 border border-emerald-500/40 text-emerald-500"
+                                : "border border-[var(--border-strong)] text-[var(--text-muted)] group-hover:border-[var(--primary)]/50"
+                              }`}
+                          >
+                            {isDone
+                              ? <CheckCircle2 size={11} />
+                              : <span className="text-[9px] font-bold font-mono">{index + 1}</span>
+                            }
                           </span>
 
-                          {/* Title + read time */}
-                          <span className="flex-1 min-w-0 flex items-start justify-between gap-2 pt-0.5">
+                          <span className="flex-1 min-w-0 flex items-center justify-between gap-2">
                             <span
                               className={`text-[13px] leading-snug transition-colors
                                 ${isActive
-                                  ? "text-[var(--text-main)] font-medium"
+                                  ? "text-[var(--text-main)] font-semibold"
                                   : "text-[var(--text-muted)] group-hover:text-[var(--text-main)]"
                                 }`}
                             >
@@ -199,7 +219,7 @@ export function LessonSidebar({
                             </span>
 
                             {chapter.minRead && (
-                              <span className="flex-shrink-0 flex items-center gap-0.5 text-[9px] font-mono text-[var(--text-muted)] opacity-50 pt-px">
+                              <span className="flex-shrink-0 flex items-center gap-0.5 text-[9px] font-mono text-[var(--text-muted)] opacity-60">
                                 <Clock size={9} />{chapter.minRead}m
                               </span>
                             )}

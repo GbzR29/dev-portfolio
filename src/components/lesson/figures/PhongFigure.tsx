@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { FigureIcon } from "./protoTexture";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label, type P2 } from "./svg";
@@ -253,8 +254,12 @@ export function PhongFigure({ t }: { t?: TrackTranslations }) {
             <circle cx={PNT.x} cy={PNT.y} r={3.5} fill="var(--text-main)" />
             <Label x={PNT.x + 6} y={PNT.y + 15} color="var(--text-main)">P</Label>
 
-            <Sun p={light} active={hover === "light"} />
-            <Eye p={eye} look={lookDir} active={hover === "eye"} />
+            <FigureIcon name="sun" x={light.x} y={light.y} size={36}>
+              <Sun p={light} active={hover === "light"} />
+            </FigureIcon>
+            <FigureIcon name="eye" x={eye.x} y={eye.y} size={32}>
+              <Eye p={eye} look={lookDir} active={hover === "eye"} />
+            </FigureIcon>
 
             {behind && (
               <Label x={W / 2} y={22} anchor="middle" color={COL_R} bold>

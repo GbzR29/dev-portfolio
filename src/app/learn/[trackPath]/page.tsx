@@ -1,6 +1,7 @@
 // app/learn/[trackPath]/page.tsx
 "use client";
 
+import { ChapterBoundary } from "@/components/lesson/ChapterBoundary";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/LanguageProvider";
@@ -269,7 +270,9 @@ export default function LessonPage() {
           ref={contentRef}
           className="[&_article]:text-[1.125rem] [&_article]:leading-[1.85] [&_article>p]:!mt-6"
         >
-          {currentChapter?.content(t)}
+          <ChapterBoundary resetKey={activeChapterId}>
+            {currentChapter?.content(t)}
+          </ChapterBoundary>
 
           {reference && usage && (
             <ChapterFunctions reference={reference} names={usage.get(activeChapterId) ?? []} />

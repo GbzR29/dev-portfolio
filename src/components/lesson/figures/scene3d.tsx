@@ -49,6 +49,51 @@ export function makeProjector(o: Orbit, cx: number, cy: number, unit: number, di
 }
 export type Projector = ReturnType<typeof makeProjector>;
 
+/** Unit vector from the scene toward the diagram's eye, for an orbit. */
+export const towardEye = (o: Orbit): V3 =>
+  [Math.sin(o.yaw) * Math.cos(o.pitch), Math.sin(o.pitch), Math.cos(o.yaw) * Math.cos(o.pitch)];
+
+/** An oriented box: centre, half extents and unit axes (same shape as boxFaces takes). */
+export type Box = { c: V3; half: V3; ax: [V3, V3, V3] };
+
+/** Slab test: does the ray p + t·dir (t > 0) pass through the box? */
+function rayHitsBox(p: V3, dir: V3, b: Box): boolean {
+  let t0 = 1e-6, t1 = Infinity;
+  const d = sub(p, b.c);
+  for (let i = 0; i < 3; i++) {
+    const o = dot(d, b.ax[i]), v = dot(dir, b.ax[i]), h = b.half[i];
+    if (Math.abs(v) < 1e-9) { if (Math.abs(o) > h) return false; continue; }
+    let ta = (-h - o) / v, tb = (h - o) / v;
+    if (ta > tb) [ta, tb] = [tb, ta];
+    t0 = Math.max(t0, ta); t1 = Math.min(t1, tb);
+    if (t0 > t1) return false;
+  }
+  return true;
+}
+
+const insideBox = (p: V3, b: Box) => {
+  const d = sub(p, b.c);
+  return [0, 1, 2].every(i => Math.abs(dot(d, b.ax[i])) <= b.half[i] + 1e-9);
+};
+
+/**
+ * The stretches of segment a→b that are NOT hidden by any box, seen from the
+ * `toward` direction. Lines are drawn before the solid geometry (so hidden
+ * parts get covered); these runs are then drawn again on top.
+ */
+export function visibleRuns(a: V3, b: V3, boxes: Box[], toward: V3, samples = 40): [V3, V3][] {
+  const runs: [V3, V3][] = [];
+  let start: V3 | null = null, last: V3 | null = null;
+  for (let i = 0; i <= samples; i++) {
+    const p = lerp3(a, b, i / samples);
+    const seen = boxes.every(bx => !insideBox(p, bx) && !rayHitsBox(p, toward, bx));
+    if (seen) { if (!start) start = p; last = p; }
+    else if (start && last) { runs.push([start, last]); start = last = null; }
+  }
+  if (start && last) runs.push([start, last]);
+  return runs;
+}
+
 /**
  * True when a projected polygon faces the viewer. Faces are wound
  * counter-clockwise seen from outside (see boxFaces); screen y grows downward,
@@ -203,6 +248,27 @@ export function boxFaces(c: V3, half: V3, ax: [V3, V3, V3] = [[1, 0, 0], [0, 1, 
 }
 
 const LIGHT = norm([0.5, 0.9, 0.7]);
+
+/**
+ * A closed cylinder as faces: `sides` quads around the axis plus two caps.
+ * `axis` is its unit direction; u × v must equal axis so the winding stays
+ * counter-clockwise from outside, like boxFaces.
+ */
+export function cylinderFaces(c: V3, axis: V3, u: V3, v: V3, radius: number, halfLen: number, sides = 14): Face[] {
+  const ring = (h: number) => Array.from({ length: sides }, (_, k) => {
+    const a = (k / sides) * Math.PI * 2;
+    return add(add(c, scale(axis, h)), add(scale(u, Math.cos(a) * radius), scale(v, Math.sin(a) * radius)));
+  });
+  const bot = ring(-halfLen), top = ring(halfLen);
+  const faces: Face[] = [];
+  for (let k = 0; k < sides; k++) {
+    const k1 = (k + 1) % sides, mid = ((k + 0.5) / sides) * Math.PI * 2;
+    faces.push({ pts: [bot[k], bot[k1], top[k1], top[k]], normal: add(scale(u, Math.cos(mid)), scale(v, Math.sin(mid))) });
+  }
+  faces.push({ pts: top, normal: axis });
+  faces.push({ pts: [...bot].reverse(), normal: scale(axis, -1) });
+  return faces;
+}
 
 /** How much the key light hits a face with normal n (0..1). */
 export const lightAmount = (n: V3) => Math.max(0, dot(norm(n), LIGHT));

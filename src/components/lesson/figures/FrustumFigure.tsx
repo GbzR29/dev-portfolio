@@ -5,7 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label, pts } from "./svg";
 import { type V3, add, makeProjector, useOrbit, boxFaces, frontFacing, lightAmount } from "./scene3d";
-import { TexturedFace, useProtoTextures, type ProtoName } from "./protoTexture";
+import { TexturedFace, FigureIcon, useProtoTextures, type ProtoName } from "./protoTexture";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The view frustum from the outside, next to what the camera actually sees.
@@ -95,7 +95,7 @@ export function FrustumFigure({ t }: { t?: TrackTranslations }) {
   // Culled objects keep every face (drawn as a dashed wireframe); the rest lose their back faces
   const faces = objects.flatMap(o => boxFaces(o.c, [o.h, o.h, o.h]).map(fc => {
     const sp = fc.pts.map(P);
-    return { o, sp, light: lightAmount(fc.normal), depth: sp.reduce((a, q) => a + q.depth, 0) / 4 };
+    return { o, sp, quad: fc.pts, light: lightAmount(fc.normal), depth: sp.reduce((a, q) => a + q.depth, 0) / 4 };
   })).filter(f => status[f.o.id] === "culled" || frontFacing(f.sp))
     .sort((a, b) => b.depth - a.depth);
 
@@ -114,7 +114,7 @@ export function FrustumFigure({ t }: { t?: TrackTranslations }) {
     .filter(o => status[o.id] !== "culled")
     .flatMap(o => boxFaces(o.c, [o.h, o.h, o.h]).map(fc => {
       const q = fc.pts.map(p => toNDC(s, p));
-      return { o, sp: q.map(ns), light: lightAmount(fc.normal), depth: q.reduce((a, v) => a + v[2], 0) / 4 };
+      return { o, sp: q.map(ns), quad: fc.pts, light: lightAmount(fc.normal), depth: q.reduce((a, v) => a + v[2], 0) / 4 };
     }))
     .filter(f => frontFacing(f.sp))
     .sort((a, b) => b.depth - a.depth);
@@ -190,7 +190,7 @@ export function FrustumFigure({ t }: { t?: TrackTranslations }) {
                   strokeDasharray="3 2" strokeLinejoin="round" />;
               }
               return (
-                <TexturedFace key={i} id={`${uid}-o${i}`} sp={f.sp} name={f.o.tex} tex={textures?.[f.o.tex]} light={f.light}
+                <TexturedFace key={i} id={`${uid}-o${i}`} quad={f.quad} project={P} name={f.o.tex} tex={textures?.[f.o.tex]} light={f.light}
                   stroke={st === "partial" ? "#f59e0b" : undefined} />
               );
             })}
@@ -210,7 +210,9 @@ export function FrustumFigure({ t }: { t?: TrackTranslations }) {
             <circle cx={P(probe).x} cy={P(probe).y} r={3.2} fill={COL_RAY} stroke="white" strokeWidth="0.8" />
 
             {/* Eye */}
-            <circle cx={eye.x} cy={eye.y} r={3.5} fill="var(--text-main)" />
+            <FigureIcon name="eye" x={eye.x} y={eye.y} size={22}>
+              <circle cx={eye.x} cy={eye.y} r={3.5} fill="var(--text-main)" />
+            </FigureIcon>
             <Label x={eye.x + 6} y={eye.y + 14} color="var(--text-main)">eye (0,0,0)</Label>
             <Arrow a={eye} b={P([0, 0, -1.6])} color="var(--code-muted)" w={1} head={5} />
             <Label x={P([0, 0, -1.6]).x - 4} y={P([0, 0, -1.6]).y - 6} anchor="end">−Z</Label>
@@ -241,7 +243,7 @@ export function FrustumFigure({ t }: { t?: TrackTranslations }) {
                 <line x1={SW / 2} y1={0} x2={SW / 2} y2={SH} stroke="var(--code-line)" />
                 <line x1={0} y1={SH / 2} x2={SW} y2={SH / 2} stroke="var(--code-line)" />
                 {camFaces.map((f, i) => (
-                  <TexturedFace key={i} id={`${uid}-c${i}`} sp={f.sp} name={f.o.tex} tex={textures?.[f.o.tex]} light={f.light} />
+                  <TexturedFace key={i} id={`${uid}-c${i}`} quad={f.quad} project={q => ns(toNDC(s, q))} name={f.o.tex} tex={textures?.[f.o.tex]} light={f.light} />
                 ))}
                 {objects.filter(o => status[o.id] !== "culled").map(o => {
                   const q = ns(toNDC(s, [o.c[0], o.c[1] + o.h, o.c[2] + o.h]));

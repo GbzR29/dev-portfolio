@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "assets": "node scripts/gen-assets-manifest.mjs",
+    "predev": "node scripts/gen-assets-manifest.mjs",
     "dev": "next dev --turbopack",
+    "prebuild": "node scripts/gen-assets-manifest.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -13,6 +16,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.0",
+    "katex": "^0.18.9",
     "lucide-react": "^0.476.0",
     "mongodb": "^7.1.0",
     "next": "^16.1.6",

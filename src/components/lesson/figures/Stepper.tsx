@@ -63,7 +63,10 @@ export function useStepper(steps: number, msPerStep = 1100, holdMs = 450) {
   };
   useEffect(() => cancel, []);
 
-  const commit = (r: number) => { rawRef.current = r; setRaw(r); };
+  const commit = useCallback((r: number) => {
+    const safe = Number.isFinite(r) ? Math.max(0, Math.min(steps, r)) : 0;
+    rawRef.current = safe; setRaw(safe);
+  }, [steps]);
 
   /** Runs toward `to`. With holds, it pauses briefly on every step it reaches. */
   const runTo = useCallback((to: number, withHolds: boolean) => {
@@ -74,7 +77,9 @@ export function useStepper(steps: number, msPerStep = 1100, holdMs = 450) {
     let hold = 0;
 
     const tick = (now: number) => {
-      const dt = now - last; last = now;
+      // rAF hands over the frame's start time, which can be earlier than the
+      // performance.now() taken when play was pressed: never step backwards.
+      const dt = Math.max(0, now - last); last = Math.max(last, now);
       let r = rawRef.current;
       if (hold > 0) {
         hold -= dt;
@@ -91,7 +96,7 @@ export function useStepper(steps: number, msPerStep = 1100, holdMs = 450) {
       raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);
-  }, [msPerStep, holdMs]);
+  }, [msPerStep, holdMs, commit]);
 
   const play = () => {
     if (playing) { cancel(); setPlaying(false); return; }
@@ -105,8 +110,10 @@ export function useStepper(steps: number, msPerStep = 1100, holdMs = 450) {
   const scrub   = (v: number) => { cancel(); setPlaying(false); commit(Math.max(0, Math.min(steps, v))); };
 
   // Eased progress: each step accelerates out of rest and settles into the next.
-  const seg = Math.min(steps - 1, Math.floor(raw));
-  const p   = steps === 0 ? 0 : seg + ease(raw - seg);
+  // Clamped again here so figures can index arrays with it safely.
+  const r   = Math.max(0, Math.min(steps, raw));
+  const seg = Math.max(0, Math.min(steps - 1, Math.floor(r)));
+  const p   = steps === 0 ? 0 : seg + ease(r - seg);
 
   return { p, raw, steps, playing, play, next, prev, restart, scrub, speed, setSpeed };
 }

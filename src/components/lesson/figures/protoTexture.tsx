@@ -1,12 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { pts, type P2 } from "./svg";
+import assets from "@/lib/generated/assets.json";
 
 // ── Prototype textures for figure geometry ────────────────────────────────────
-// Each name loads /textures/prototype/<name>.png from /public. Until that file
-// exists (or if it fails to load) a procedural grid in the same colour is used,
-// so figures always have a texture and pick up real PNGs as soon as they land.
+// A texture dropped in public/textures/prototype/<name>.png (or .jpg) is used
+// when it is listed in the generated asset manifest (scripts/gen-assets-
+// manifest.mjs, run before dev and build). Anything missing falls back to a
+// procedural grid in the same colour — without requesting a file that 404s.
+
+const MANIFEST = assets as {
+  prototype: Record<string, string>;
+  icons: Record<string, string>;
+  maps?: Record<string, string>;
+  skybox: Record<string, { faces?: string[]; equirect?: string }>;
+};
 
 export const PROTO = {
   dark:   "#3b3f46",
@@ -54,9 +63,11 @@ function startLoading() {
   started = true;
   for (const name of NAMES) {
     resolved.set(name, procedural(name));
+    const file = MANIFEST.prototype[name];
+    if (!file) continue;                   // not shipped: keep the procedural tile
     const img = new Image();
-    img.onload = () => { resolved.set(name, img.src); listeners.forEach(f => f()); };
-    img.src = `/textures/prototype/${name}.png`;
+    img.onload = () => { resolved.set(name, file); listeners.forEach(f => f()); };
+    img.src = file;
   }
   listeners.forEach(f => f());
 }
@@ -75,30 +86,93 @@ export function useProtoTextures(): Record<ProtoName, string> | null {
   return Object.fromEntries(NAMES.map(n => [n, resolved.get(n) ?? ""])) as Record<ProtoName, string>;
 }
 
+type V3 = [number, number, number];
+
+const lerp3 = (a: V3, b: V3, t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+
+/** Point at (s, t) on the quad: s runs corner 0 → 1, t runs corner 0 → 3. */
+const bilinear = (q: V3[], s: number, t: number): V3 => lerp3(lerp3(q[0], q[1], s), lerp3(q[3], q[2], s), t);
+
+/** Pushes a polygon out from its centre by `px`, so neighbouring cells overlap instead of leaving hairline gaps. */
+const grow = (p: P2[], px: number): P2[] => {
+  const cx = p.reduce((a, q) => a + q.x, 0) / p.length, cy = p.reduce((a, q) => a + q.y, 0) / p.length;
+  return p.map(q => { const dx = q.x - cx, dy = q.y - cy, l = Math.hypot(dx, dy) || 1; return { x: q.x + (dx / l) * px, y: q.y + (dy / l) * px }; });
+};
+
 /**
- * One textured quad. The texture is mapped with the affine transform that
- * takes the unit square onto corners 0, 1 and 3, then clipped to the real
- * outline; the base colour underneath covers any sliver the affine map misses.
+ * One textured quad, given in 3D plus the projection that puts it on screen.
+ *
+ * SVG can only map an image affinely, which ignores perspective. So the quad
+ * is cut into an n×n grid in 3D (n grows with its size on screen), each cell is
+ * projected on its own and gets the matching slice of the texture: piecewise
+ * affine, which follows perspective closely. The texture's x runs along
+ * corner 0 → 3 and its y along 0 → 1, which keeps the map orientation-
+ * preserving on front faces — the image never shows up mirrored.
  * `light` (0..1) darkens the face for a simple clay-style shading.
  */
-export function TexturedFace({ id, sp, name, tex, light, stroke = "rgba(0,0,0,0.35)", opacity = 1 }: {
-  id: string; sp: P2[]; name: ProtoName; tex: string | undefined; light: number;
+export function TexturedFace({ id, quad, project, name, tex, light, stroke = "rgba(0,0,0,0.35)", opacity = 1 }: {
+  id: string; quad: V3[]; project: (q: V3) => P2; name: ProtoName; tex: string | undefined; light: number;
   stroke?: string; opacity?: number;
 }) {
-  const [A, B, , D] = sp;
-  const m = `matrix(${B.x - A.x} ${B.y - A.y} ${D.x - A.x} ${D.y - A.y} ${A.x} ${A.y})`;
-  const shadow = 0.62 * (1 - (0.3 + 0.7 * Math.max(0, Math.min(1, light))));
+  const sp = quad.map(project);
   const outline = pts(sp);
+  const size = Math.max(Math.hypot(sp[2].x - sp[0].x, sp[2].y - sp[0].y), Math.hypot(sp[3].x - sp[1].x, sp[3].y - sp[1].y));
+  const n = size > 220 ? 4 : size > 110 ? 3 : size > 45 ? 2 : 1;
+  const shadow = 0.62 * (1 - (0.3 + 0.7 * Math.max(0, Math.min(1, light))));
+
+  const cells: { key: string; clip: string; m: string }[] = [];
+  if (tex) {
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      const s0 = i / n, s1 = (i + 1) / n, t0 = j / n, t1 = (j + 1) / n;
+      const a = project(bilinear(quad, s0, t0)), b = project(bilinear(quad, s1, t0));
+      const c = project(bilinear(quad, s1, t1)), d = project(bilinear(quad, s0, t1));
+      // Image x ∈ [t0, t1] goes along a → d, image y ∈ [s0, s1] along a → b
+      const ux = (d.x - a.x) * n, uy = (d.y - a.y) * n, vx = (b.x - a.x) * n, vy = (b.y - a.y) * n;
+      const e = a.x - t0 * ux - s0 * vx, f = a.y - t0 * uy - s0 * vy;
+      cells.push({ key: `${i}-${j}`, clip: pts(grow([a, b, c, d], n > 1 ? 0.35 : 0)), m: `matrix(${ux} ${uy} ${vx} ${vy} ${e} ${f})` });
+    }
+  }
+
   return (
     <g opacity={opacity}>
-      <clipPath id={id}><polygon points={outline} /></clipPath>
       <polygon points={outline} fill={PROTO[name]} />
-      {tex && (
-        <g clipPath={`url(#${id})`}>
-          <image href={tex} x={0} y={0} width={1} height={1} preserveAspectRatio="none" transform={m} />
-        </g>
-      )}
+      <clipPath id={id}><polygon points={outline} /></clipPath>
+      <g clipPath={`url(#${id})`}>
+        {cells.map(cell => (
+          <g key={cell.key}>
+            <clipPath id={`${id}-${cell.key}`}><polygon points={cell.clip} /></clipPath>
+            <g clipPath={`url(#${id}-${cell.key})`}>
+              <image href={tex} x={0} y={0} width={1} height={1} preserveAspectRatio="none" transform={cell.m} />
+            </g>
+          </g>
+        ))}
+      </g>
       <polygon points={outline} fill={`rgba(0,0,0,${shadow.toFixed(3)})`} stroke={stroke} strokeWidth="0.6" strokeLinejoin="round" />
     </g>
   );
 }
+
+// ── Figure icons ──────────────────────────────────────────────────────────────
+// public/textures/icons/<name>.png|svg|webp replaces a figure's drawn icon.
+
+/** URL of an icon image if one ships with the site, else null. */
+export const iconUrl = (name: string): string | null => MANIFEST.icons[name.toLowerCase()] ?? null;
+
+/**
+ * Draws the icon image centred on (x, y) when public/textures/icons/<name>.*
+ * exists, otherwise renders `children` — the figure's own vector drawing.
+ */
+export function FigureIcon({ name, x, y, size, children, opacity = 1 }: {
+  name: string; x: number; y: number; size: number; children: ReactNode; opacity?: number;
+}) {
+  const url = iconUrl(name);
+  if (!url) return <>{children}</>;
+  return <image href={url} x={x - size / 2} y={y - size / 2} width={size} height={size} opacity={opacity}
+    preserveAspectRatio="xMidYMid meet" />;
+}
+
+/** A lighting map shipped in public/textures/maps, or null. */
+export const mapUrl = (name: string): string | null => MANIFEST.maps?.[name.toLowerCase()] ?? null;
+
+/** Skybox sets that ship with the site (see the manifest script). */
+export const skyboxSets = () => MANIFEST.skybox;

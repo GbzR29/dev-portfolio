@@ -6,10 +6,11 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { useStepper, stepAmount, StepperControls } from "./Stepper";
 import { Arrow, Label, pts } from "./svg";
 import {
-  type V3, add, sub, scale, lerp3, rotY, makeProjector, useOrbit, boxFaces, frontFacing, lightAmount,
+  type V3, type Box, add, sub, scale, lerp3, rotY, makeProjector, useOrbit, boxFaces, frontFacing, lightAmount,
+  towardEye, visibleRuns,
   lookAtBasis, viewTransform,
 } from "./scene3d";
-import { TexturedFace, useProtoTextures } from "./protoTexture";
+import { TexturedFace, FigureIcon, useProtoTextures } from "./protoTexture";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // One vertex on its way to the screen. Each step animates the whole scene into
@@ -77,7 +78,7 @@ const GRID: [V3, V3][] = Array.from({ length: 7 }, (_, i) => i - 3).flatMap(k =>
 // The diagram stays centred on whatever the current space is about
 const CENTERS: V3[] = [[0, 0, 0], [1.1, 0.5, 0.5], [0, 0, -2.2], [0, 0, NDC_Z], [0, 0, NDC_Z]];
 const centerAt = (p: number): V3 => {
-  const i = Math.min(3, Math.floor(p));
+  const i = Math.max(0, Math.min(3, Math.floor(p)));
   return lerp3(CENTERS[i], CENTERS[i + 1], p - i);
 };
 
@@ -108,7 +109,7 @@ export function VertexJourneyFigure({ t }: { t?: TrackTranslations }) {
     const pre = fc.pts.map(q => P(pipeline(q, Math.min(p, 3), true)));
     const n = viewTransform(CAM, aV).dir(rotY(fc.normal, MODEL_YAW * aM));
     const depth = pre.reduce((a, b) => a + b.depth, 0) / 4;
-    return { sp, light: lightAmount(n), depth, front: frontFacing(pre) };
+    return { sp, quad: fc.pts, light: lightAmount(n), depth, front: frontFacing(pre) };
   }).filter(f => f.front).sort((a, b) => b.depth - a.depth);
 
   const vtx = L(V_LOCAL);
@@ -208,7 +209,9 @@ export function VertexJourneyFigure({ t }: { t?: TrackTranslations }) {
           {/* Camera: a dot with a short forward arrow, until the projection absorbs it */}
           {showFrustum && aP === 0 && (
             <g opacity={Math.min(1, aM * 2)}>
-              <circle cx={camPt.x} cy={camPt.y} r={4} fill="var(--text-main)" />
+              <FigureIcon name="camera" x={camPt.x} y={camPt.y} size={22}>
+                <circle cx={camPt.x} cy={camPt.y} r={4} fill="var(--text-main)" />
+              </FigureIcon>
               <Arrow a={camPt} b={Wd(add(CAM.pos, scale(CAM.f, 0.9)))} color="#3b82f6" w={2} head={6} />
               <Label x={camPt.x + 8} y={camPt.y - 8} color="var(--text-main)">{aV >= 1 ? "camera (0,0,0)" : "camera"}</Label>
             </g>
@@ -216,8 +219,31 @@ export function VertexJourneyFigure({ t }: { t?: TrackTranslations }) {
 
           {/* The object */}
           {faces.map((f, i) => (
-            <TexturedFace key={i} id={`${uid}-f${i}`} sp={f.sp} name="purple" tex={textures?.purple} light={f.light} />
+            <TexturedFace key={i} id={`${uid}-f${i}`} quad={f.quad} project={L} name="purple" tex={textures?.purple} light={f.light} />
           ))}
+
+          {/* Axes again, only the parts in front of the cube (rigid spaces only) */}
+          {aP === 0 && (() => {
+            const vt = viewTransform(CAM, aV);
+            const cube: Box = {
+              c: pipeline([0, 0, 0], p, true), half: [0.5, 0.5, 0.5],
+              ax: [vt.dir(rotY([1, 0, 0], MODEL_YAW * aM)), vt.dir(rotY([0, 1, 0], MODEL_YAW * aM)), vt.dir(rotY([0, 0, 1], MODEL_YAW * aM))],
+            };
+            const toward = towardEye(orbit);
+            return ([[1.2, 0, 0], [0, 1.2, 0], [0, 0, 1.2]] as V3[]).map((d, i) => {
+              const o3 = pipeline([0, 0, 0], p, aM === 0), e3 = pipeline(d, p, aM === 0);
+              return visibleRuns(o3, e3, [cube], toward).map(([ra, rb], k) => {
+                const A = P(ra), B = P(rb);
+                const atTip = Math.hypot(rb[0] - e3[0], rb[1] - e3[1], rb[2] - e3[2]) < 1e-6;
+                return atTip ? (
+                  <g key={`${i}-${k}`}>
+                    <Arrow a={A} b={B} color="var(--code-muted)" w={1.1} head={5} />
+                    <text x={B.x + 4} y={B.y + 3} fill="var(--code-muted)" fontSize="9" fontFamily="monospace">{"xyz"[i]}</text>
+                  </g>
+                ) : <line key={`${i}-${k}`} x1={A.x} y1={A.y} x2={B.x} y2={B.y} stroke="var(--code-muted)" strokeWidth="1.1" />;
+              });
+            });
+          })()}
 
           {/* The tracked vertex */}
           <circle cx={vtx.x} cy={vtx.y} r={4.5} fill={COL_V} stroke="white" strokeWidth="1.2" />

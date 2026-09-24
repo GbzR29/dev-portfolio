@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { FigureIcon } from "./protoTexture";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label, pts, type P2 } from "./svg";
@@ -151,7 +152,9 @@ export function WindingFigure({ t }: { t?: TrackTranslations }) {
             </text>
             <line x1={mmA.x} y1={mmA.y} x2={mmB.x} y2={mmB.y} stroke={col} strokeWidth="3" strokeLinecap="round" />
             <Arrow a={mmC} b={mmN} color={COL_N} w={1.6} head={5} />
-            <circle cx={camMM.x} cy={camMM.y} r={4} fill="var(--text-main)" />
+            <FigureIcon name="camera" x={camMM.x} y={camMM.y} size={18}>
+              <circle cx={camMM.x} cy={camMM.y} r={4} fill="var(--text-main)" />
+            </FigureIcon>
             <line x1={camMM.x} y1={camMM.y - 6} x2={camMM.x} y2={camMM.y - 16} stroke="var(--text-main)" strokeWidth="1.2" />
             <text x={camMM.x} y={camMM.y + 13} fill="var(--code-muted)" fontSize="8" fontFamily="monospace" textAnchor="middle">camera</text>
           </g>

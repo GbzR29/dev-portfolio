@@ -2,6 +2,10 @@
 "use client";
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
+import { CubemapExplorerFigure } from "@/components/lesson/figures/CubemapExplorerFigure";
+import { SkyboxTrickFigure } from "@/components/lesson/figures/SkyboxTrickFigure";
+import { SkyboxTypesFigure } from "@/components/lesson/figures/SkyboxTypesFigure";
+import { EnvMapFigure } from "@/components/lesson/figures/EnvMapFigure";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 
@@ -238,7 +242,44 @@ export function CubemapsContent({ t }: { t: TrackTranslations }) {
         )}
       </p>
 
+      <H2>{tx(t, "oglCube_dirTitle", "Sampling with a direction")}</H2>
+      <p>
+        {tx(t, "oglCube_dirBody",
+          "Picture yourself standing at the centre of a cube whose walls are painted with the scene around you. To know what you see in some direction, draw a ray from the centre and find where it hits a wall. That is exactly what texture(samplerCube, dir) does, and the GPU does it with almost no maths: the largest component of the direction picks the face, the other two, divided by it, give the position on that face."
+        )}
+      </p>
+
+      <CubemapExplorerFigure t={t} />
+
+      <Callout type="info" t={t}>
+        {tx(t, "oglCube_handedNote",
+          "Notice the labels in the unfolded cube read mirrored while they look right from inside. Cube maps follow a left-handed convention inherited from RenderMan, so faces are stored as if seen from outside. You rarely have to think about it — the six images you download are already authored for it — but it is why a hand-made cubemap often comes out flipped on the first try."
+        )}
+      </Callout>
+
       <H2>{tx(t, "oglCube_loadTitle", "Loading the six faces")}</H2>
+      <p>
+        {tx(t, "oglCube_loadBody",
+          "A cubemap is one texture object with six images. The GL_TEXTURE_CUBE_MAP_POSITIVE_X … NEGATIVE_Z enums are consecutive integers, so the faces can be uploaded in a loop, as long as the files are listed in that exact order."
+        )}
+      </p>
+
+      <LessonTable
+        headers={[
+          tx(t, "oglCube_tFace", "Target"),
+          tx(t, "oglCube_tDir", "Direction"),
+          tx(t, "oglCube_tFile", "Usual file names"),
+        ]}
+        rows={[
+          ["GL_TEXTURE_CUBE_MAP_POSITIVE_X", "+X", "right · px · posx"],
+          ["GL_TEXTURE_CUBE_MAP_NEGATIVE_X", "−X", "left · nx · negx"],
+          ["GL_TEXTURE_CUBE_MAP_POSITIVE_Y", "+Y", "top · py · posy"],
+          ["GL_TEXTURE_CUBE_MAP_NEGATIVE_Y", "−Y", "bottom · ny · negy"],
+          ["GL_TEXTURE_CUBE_MAP_POSITIVE_Z", "+Z", "front · pz · posz"],
+          ["GL_TEXTURE_CUBE_MAP_NEGATIVE_Z", "−Z", "back · nz · negz"],
+        ]}
+      />
+
       <CodeBlock lang="cpp" filename="cubemap.cpp" t={t}>{`// The order is fixed by the enum, and the enum values are consecutive:
 // +X, -X, +Y, -Y, +Z, -Z  →  right, left, top, bottom, front, back
 const std::array<std::string, 6> faces = {
@@ -262,7 +303,10 @@ glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  // note R`}</CodeBlock>
+glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  // note R
+
+// Filter across face edges instead of per face (core since GL 3.2)
+glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);`}</CodeBlock>
 
       <Callout type="warn" t={t}>
         {tx(t, "oglCube_flipWarn",
@@ -273,9 +317,11 @@ glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  // n
       <H2>{tx(t, "oglCube_skyTitle", "The skybox trick")}</H2>
       <p>
         {tx(t, "oglCube_skyBody",
-          "A skybox must appear infinitely distant. You get that by stripping the translation out of the view matrix so the cube never moves relative to the camera, and by forcing its depth to the maximum so it loses every depth test against real geometry."
+          "A skybox is just a unit cube drawn around the camera with the cubemap on its inside. It must look infinitely far away, and three small lines achieve that: strip the translation out of the view matrix so the cube never moves relative to the camera, force its depth to the maximum so it loses every depth test against real geometry, and use GL_LEQUAL so that maximum depth still passes. Switch each one off in the figure below and walk around."
         )}
       </p>
+
+      <SkyboxTrickFigure t={t} />
 
       <CodeBlock lang="glsl" filename="skybox.vert" t={t}>{`#version 460 core
 layout (location = 0) in vec3 aPos;
@@ -306,18 +352,65 @@ glDepthFunc(GL_LESS);                              // restore`}</CodeBlock>
         )}
       </Callout>
 
+      <H2>{tx(t, "oglCube_kindsTitle", "Kinds of sky")}</H2>
+      <p>
+        {tx(t, "oglCube_kindsBody",
+          "The skybox cube and its vertex shader never change. What changes is how the fragment shader turns a direction into a colour — from six images, from one panorama, or from a formula. Each has a place:"
+        )}
+      </p>
+
+      <SkyboxTypesFigure t={t} />
+
+      <LessonTable
+        headers={[
+          tx(t, "oglCube_kType", "Type"),
+          tx(t, "oglCube_kData", "Data"),
+          tx(t, "oglCube_kGood", "Strengths"),
+          tx(t, "oglCube_kBad", "Weaknesses"),
+        ]}
+        rows={[
+          [tx(t, "oglCube_kCube", "Cube map"), tx(t, "oglCube_kCubeData", "6 square images"),
+            tx(t, "oglCube_kCubeGood", "No distortion, hardware filtering, direct sampling"),
+            tx(t, "oglCube_kCubeBad", "Six files to author; resolution fixed per face")],
+          [tx(t, "oglCube_kEqui", "Equirectangular"), tx(t, "oglCube_kEquiData", "1 image, 2:1"),
+            tx(t, "oglCube_kEquiGood", "How HDRIs are shared; one file"),
+            tx(t, "oglCube_kEquiBad", "Poles stretched, seam at u = 0|1, trig per pixel — usually converted to a cube map at load")],
+          [tx(t, "oglCube_kProc", "Procedural"), tx(t, "oglCube_kProcData", "A shader + uniforms"),
+            tx(t, "oglCube_kProcGood", "Zero texture memory, animates freely (time of day, weather)"),
+            tx(t, "oglCube_kProcBad", "Costs ALU every pixel; realism depends on the model")],
+          [tx(t, "oglCube_kDome", "Skydome"), tx(t, "oglCube_kDomeData", "Hemisphere mesh + texture"),
+            tx(t, "oglCube_kDomeGood", "Easy to add clouds as layers, cheap on old hardware"),
+            tx(t, "oglCube_kDomeBad", "Horizon seam; mostly superseded by the three above")],
+        ]}
+      />
+
+      <Callout type="info" t={t}>
+        {tx(t, "oglCube_hdrNote",
+          "Modern renderers load an HDR equirectangular image once, render it into a floating-point cube map (six 90° views), and keep that. The same cube map is then blurred at several roughness levels to light the scene — image-based lighting. Everything in this chapter is the first step of that pipeline."
+        )}
+      </Callout>
+
       <H2>{tx(t, "oglCube_reflectTitle", "Environment mapping")}</H2>
+      <p>
+        {tx(t, "oglCube_reflectBody",
+          "Because a cubemap answers “what is in this direction?”, any shader that can compute a direction can use it. Reflect the view ray off the surface normal and you get a mirror; bend it with refract and you get glass."
+        )}
+      </p>
+
+      <EnvMapFigure t={t} />
+
       <CodeBlock lang="glsl" filename="reflect.frag" t={t}>{`uniform samplerCube uSkybox;
 uniform vec3 uCameraPos;
 
 void main() {
     vec3 I = normalize(FragPos - uCameraPos);
+    vec3 N = normalize(Normal);
 
     // Mirror
-    vec3 R = reflect(I, normalize(Normal));
+    vec3 R = reflect(I, N);
 
     // Glass — the ratio is airIOR / materialIOR
-    // vec3 R = refract(I, normalize(Normal), 1.0 / 1.52);
+    // vec3 R = refract(I, N, 1.0 / 1.52);
 
     FragColor = vec4(texture(uSkybox, R).rgb, 1.0);
 }`}</CodeBlock>
@@ -325,6 +418,34 @@ void main() {
       <Callout type="info" t={t}>
         {tx(t, "oglCube_pbrNote",
           "This is a static reflection: the object mirrors the sky but never other objects, and it does not update as the scene changes. Rendering the scene into a dynamic cubemap fixes that at six times the cost. The same structure, pre-filtered by roughness, is what feeds image-based lighting in a PBR renderer — so this chapter is the foundation of that one."
+        )}
+      </Callout>
+
+      <H2>{tx(t, "oglCube_dynTitle", "Dynamic cube maps")}</H2>
+      <p>
+        {tx(t, "oglCube_dynBody",
+          "To reflect the scene itself, render it six times from the object's position — one 90° field of view per face — into a framebuffer whose colour attachment is a cube map face, then sample that cube map like any other. It costs six extra passes, so engines refresh it only every few frames, at low resolution, or only for the objects that need it."
+        )}
+      </p>
+
+      <CodeBlock lang="cpp" filename="dynamic_cubemap.cpp" t={t}>{`glm::mat4 proj = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
+const glm::vec3 dirs[6] = { {1,0,0}, {-1,0,0}, {0,1,0}, {0,-1,0}, {0,0,1}, {0,0,-1} };
+const glm::vec3 ups[6]  = { {0,-1,0}, {0,-1,0}, {0,0,1}, {0,0,-1}, {0,-1,0}, {0,-1,0} };
+
+glBindFramebuffer(GL_FRAMEBUFFER, envFBO);
+glViewport(0, 0, 256, 256);
+for (int i = 0; i < 6; ++i) {
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                           GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, envCubemap, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glm::mat4 view = glm::lookAt(objectPos, objectPos + dirs[i], ups[i]);
+    drawScene(view, proj);          // everything except the reflective object
+}
+glBindFramebuffer(GL_FRAMEBUFFER, 0);`}</CodeBlock>
+
+      <Callout type="tip" t={t}>
+        {tx(t, "oglCube_sourcesTip",
+          "Free skies: Poly Haven publishes HDRIs under CC0 (equirectangular, several resolutions), and Humus' classic cube map collection ships ready-made six-face sets. For your own scenes, tools like cmgen or cmft convert between panoramas and cube maps."
         )}
       </Callout>
 
