@@ -42,6 +42,10 @@ import { StencilContent } from "./chapters/stencil";
 import { GeometryShaderContent, TessellationContent } from "./chapters/shader-stages";
 import { CascadedShadowsContent } from "./chapters/csm";
 import { ParticlesContent } from "./chapters/particles";
+import { KeyIdeas } from "./chapters/lighting-advanced";
+import {
+  ProfilingContent, FrustumCullingContent, DrawCallsContent, LodContent, StreamingContent,
+} from "./chapters/performance";
 
 // tx: returns translated string or English fallback. Never shows a key name.
 function tx(t: any, key: string, fallback: string): string {
@@ -1508,6 +1512,60 @@ glm::vec3 normal = glm::normalize(glm::cross(edge1, edge2));
         )}
       </Callout>
 
+      <H2>{tx(t, "ch10_areaTitle", "How the GPU decides: the signed area")}</H2>
+      <p>
+        {tx(t, "ch10_areaBody",
+          "The decision is made after the vertex shader and the perspective divide, on the triangle's window-space (screen) coordinates, just before rasterization. The rasterizer computes the triangle's signed area; its sign is the winding as seen on screen:"
+        )}
+      </p>
+      <Equation label={tx(t, "ch10_areaLabel", "Signed area in window coordinates")}
+        where={[
+          [String.raw`(x_i, y_i)`, tx(t, "ch10_wXY", "the three vertices in window coordinates, in submission order")],
+        ]}
+        note={tx(t, "ch10_areaNote", "With glFrontFace(GL_CCW), a > 0 means front-facing. It is the z component of the cross product of two screen-space edges, the same test as in the figure above, done once per triangle. Zero-area (degenerate) triangles are discarded here too, which is why they are a cheap way to stitch strips.")}>
+        {String.raw`a = \frac{1}{2}\sum_{i=0}^{2} \left(x_i\, y_{i \oplus 1} - x_{i \oplus 1}\, y_i\right) \qquad i \oplus 1 = (i + 1) \bmod 3`}
+      </Equation>
+
+      <H2>{tx(t, "ch10_savesTitle", "What culling saves, and what it does not")}</H2>
+      <p>
+        {tx(t, "ch10_savesBody",
+          "Back faces are removed after vertex shading, so every vertex is still transformed. Culling saves rasterization and fragment work, which is usually most of the cost, but a vertex-bound scene gains little. To skip vertex work too, the test has to happen earlier, on groups of triangles: engines split meshes into clusters (meshlets) of about 64–128 triangles. They store a normal cone per cluster and reject whole clusters that face away from the camera, on the CPU or in a compute or mesh shader:"
+        )}
+      </p>
+      <Equation label={tx(t, "ch10_coneLabel", "Cluster back-face culling with a normal cone")}
+        where={[
+          [String.raw`\mathbf a,\ \alpha`, tx(t, "ch10_wCone", "cone axis and half-angle containing every triangle normal of the cluster")],
+          [String.raw`\mathbf c,\ \mathbf e`, tx(t, "ch10_wCE", "cluster centre and camera position")],
+        ]}
+        note={tx(t, "ch10_coneNote", "If the direction to the cluster is within 90° − α of the axis, every triangle faces away and the whole cluster can be skipped. In practice this removes 10–25% of the triangles before any vertex shading (meshoptimizer's meshopt_computeClusterBounds computes the cone).")}>
+        {String.raw`\text{cull cluster} \iff \frac{\mathbf c - \mathbf e}{\lVert \mathbf c - \mathbf e \rVert}\cdot \mathbf a \;\ge\; \sin\alpha`}
+      </Equation>
+
+      <H2>{tx(t, "ch10_casesTitle", "Special cases")}</H2>
+      <LessonTable
+        headers={[tx(t, "ch10_thCase", "Case"), tx(t, "ch10_thDo", "What to do")]}
+        rows={[
+          [tx(t, "ch10_c1", "Mirrored objects (negative scale)"), tx(t, "ch10_c1d", "det(model) < 0 reverses the winding: switch glFrontFace(GL_CW) for those draws, or sort them into their own batch")],
+          [tx(t, "ch10_c2", "Planar reflections"), tx(t, "ch10_c2d", "the reflection matrix mirrors the whole scene: flip glFrontFace while rendering the reflected pass")],
+          [tx(t, "ch10_c3", "Foliage, cloth, paper (two-sided)"), tx(t, "ch10_c3d", "disable culling for that material and flip the normal in the fragment shader with gl_FrontFacing")],
+          [tx(t, "ch10_c4", "Shadow depth pass"), tx(t, "ch10_c4d", "cull front faces instead: stored depth moves to the back side and shadow acne mostly disappears")],
+          [tx(t, "ch10_c5", "Inside a closed mesh (skybox, room)"), tx(t, "ch10_c5d", "the camera sees the inside faces: cull front faces or build the mesh with inward winding")],
+        ]}
+      />
+      <CodeBlock lang="glsl" filename="two_sided.frag" t={t}>{`// Two-sided material: culling disabled for this draw
+void main() {
+    vec3 N = normalize(vNormal);
+    if (!gl_FrontFacing) N = -N;     // light the back side as if it were facing us
+    // … shading with N
+}`}</CodeBlock>
+
+      <KeyIdeas t={t} id="ch10" items={[
+        "Winding is decided on screen: the sign of the triangle's window-space area.",
+        "glEnable(GL_CULL_FACE) removes back faces before rasterization, roughly halving fragment work on closed meshes.",
+        "Vertex shading still runs; cluster cone culling skips whole groups before it.",
+        "Negative scale and reflections flip winding; two-sided materials disable culling and use gl_FrontFacing.",
+      ]} />
+
     </article>
   );
 }
@@ -1654,6 +1712,7 @@ const PBR             = "PBR";
 const POST            = "Post-Processing & Effects";
 const MODELS          = "Model Loading";
 const ADVANCED        = "Advanced OpenGL";
+const PERF            = "Performance";
 const MODERN          = "Modern OpenGL & Tooling";
 
 export const openGLTrack: Track = {
@@ -1711,7 +1770,6 @@ export const openGLTrack: Track = {
     { id: "model-loading",   section: MODELS,          title: "Model Loading (Assimp)",    minRead: 13, content: (t) => <ModelLoadingContent    t={t} /> },
 
     // ── Advanced OpenGL ──────────────────────────────────────────────────────
-    { id: "winding",         section: ADVANCED,        title: "Face Winding & Culling",    minRead: 8,  content: (t) => <WindingContent         t={t} /> },
     { id: "stencil-testing", section: ADVANCED,        title: "Stencil Testing",           minRead: 12, content: (t) => <StencilContent         t={t} /> },
     { id: "blending",        section: ADVANCED,        title: "Blending & Transparency",   minRead: 10, content: (t) => <BlendingContent        t={t} /> },
     { id: "framebuffers",    section: ADVANCED,        title: "Framebuffers & Post-FX",    minRead: 12, content: (t) => <FramebuffersContent    t={t} /> },
@@ -1721,6 +1779,14 @@ export const openGLTrack: Track = {
     { id: "ubo",             section: ADVANCED,        title: "Uniform Buffer Objects",    minRead: 10, content: (t) => <UBOContent             t={t} /> },
     { id: "geometry-shader", section: ADVANCED,        title: "Geometry Shader",           minRead: 13, content: (t) => <GeometryShaderContent  t={t} /> },
     { id: "tessellation",    section: ADVANCED,        title: "Tessellation",              minRead: 15, content: (t) => <TessellationContent    t={t} /> },
+
+    // ── Performance ──────────────────────────────────────────────────────────
+    { id: "profiling",       section: PERF,            title: "Measuring Performance",     minRead: 13, content: (t) => <ProfilingContent       t={t} /> },
+    { id: "winding",         section: PERF,            title: "Face Winding & Culling",    minRead: 11, content: (t) => <WindingContent         t={t} /> },
+    { id: "frustum-culling", section: PERF,            title: "Frustum & Occlusion Culling", minRead: 14, content: (t) => <FrustumCullingContent t={t} /> },
+    { id: "draw-calls",      section: PERF,            title: "Draw Calls & State",        minRead: 13, content: (t) => <DrawCallsContent       t={t} /> },
+    { id: "lod",             section: PERF,            title: "Level of Detail",           minRead: 12, content: (t) => <LodContent             t={t} /> },
+    { id: "streaming",       section: PERF,            title: "Buffer Streaming & Sync",   minRead: 12, content: (t) => <StreamingContent       t={t} /> },
 
     // ── Modern OpenGL & Tooling ──────────────────────────────────────────────
     { id: "dsa",             section: MODERN,          title: "Direct State Access (DSA)", minRead: 9,  content: (t) => <DSAContent             t={t} /> },
