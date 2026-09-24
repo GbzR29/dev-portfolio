@@ -1,11 +1,13 @@
 // src/components/lesson/LessonComponents.tsx
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ChevronRight } from "lucide-react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { Prism as SyntaxHighlighter, createElement } from "react-syntax-highlighter";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { lessonSyntaxTheme } from "@/lib/syntaxTheme";
+import { RefToken, useReference, useRefEntry } from "@/components/reference/RefToken";
+import { referenceIndex, type RefEntry } from "@/lib/reference";
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
 // Always returns a non-empty string. Falls back to `fallback` if t is missing
@@ -13,6 +15,46 @@ import { lessonSyntaxTheme } from "@/lib/syntaxTheme";
 function tx(t: any, key: string, fallback: string): string {
   const val = t?.[key];
   return val && val.length > 0 ? val : fallback;
+}
+
+// ─── Reference linking ────────────────────────────────────────────────────────
+// The highlighter hands its renderer a HAST-like tree. We split text nodes on
+// known API names and swap each match for a RefToken element; createElement
+// accepts a component as tagName, so the rest of the pipeline is untouched.
+
+type HastNode = {
+  type: string;
+  tagName?: unknown;
+  value?: string;
+  properties?: Record<string, unknown>;
+  children?: HastNode[];
+};
+
+function linkifyNode(node: HastNode, pattern: RegExp, index: Map<string, RefEntry>): HastNode[] {
+  // Line-number nodes carry a numeric value — only real strings are scanned.
+  if (node.type === "text" && typeof node.value === "string") {
+    const out: HastNode[] = [];
+    let last = 0;
+    for (const m of node.value.matchAll(pattern)) {
+      const entry = index.get(m[0]);
+      if (!entry || m.index === undefined) continue;
+      if (m.index > last) out.push({ type: "text", value: node.value.slice(last, m.index) });
+      out.push({
+        type: "element",
+        tagName: RefToken,
+        properties: { className: [], entry },
+        children: [{ type: "text", value: m[0] }],
+      });
+      last = m.index + m[0].length;
+    }
+    if (last === 0) return [node];
+    if (last < node.value.length) out.push({ type: "text", value: node.value.slice(last) });
+    return out;
+  }
+  if (node.children) {
+    return [{ ...node, children: node.children.flatMap((c) => linkifyNode(c, pattern, index)) }];
+  }
+  return [node];
 }
 
 // ─── CodeBlock ────────────────────────────────────────────────────────────────
@@ -27,6 +69,25 @@ export function CodeBlock({
 }) {
   const [copied, setCopied] = useState(false);
   const { theme } = useTheme();
+  const reference = useReference();
+
+  const renderer = useMemo(() => {
+    if (!reference) return undefined;
+    const index = referenceIndex(reference);
+    return ({ rows, stylesheet, useInlineStyles }: {
+      rows: HastNode[];
+      stylesheet: { [key: string]: React.CSSProperties };
+      useInlineStyles: boolean;
+    }) =>
+      rows.map((row, i) =>
+        createElement({
+          node: linkifyNode(row, reference.tokenPattern, index)[0] as never,
+          stylesheet,
+          useInlineStyles,
+          key: `row-${i}`,
+        }),
+      );
+  }, [reference]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(children);
@@ -35,7 +96,7 @@ export function CodeBlock({
   };
 
   return (
-    <div className="rounded-xl overflow-hidden border border-[var(--border)] my-6">
+    <div className="rounded-xl overflow-hidden border border-[var(--border)] !my-8">
       <div className="flex items-center justify-between px-4 py-2.5 bg-[var(--surface)] border-b border-[var(--border)]">
         <div className="flex items-center gap-2">
           <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
@@ -57,6 +118,7 @@ export function CodeBlock({
           language={lang}
           style={lessonSyntaxTheme(theme)}
           showLineNumbers
+          renderer={renderer as never}
           lineNumberStyle={{ color: "var(--code-gutter)", fontSize: "0.7rem", minWidth: "2.5em", userSelect: "none" }}
           customStyle={{
             margin: 0,
@@ -90,7 +152,7 @@ export function Callout({
   }[type];
 
   return (
-    <div className={`my-6 p-4 rounded-xl border ${config.border} ${config.bg}`}>
+    <div className={`!my-8 p-5 rounded-xl border ${config.border} ${config.bg}`}>
       <span className={`font-mono text-[10px] font-bold uppercase tracking-widest ${config.color} block mb-2`}>
         {tx(t, config.labelKey, config.fallback)}
       </span>
@@ -102,6 +164,14 @@ export function Callout({
 // ─── InlineCode ───────────────────────────────────────────────────────────────
 
 export function IC({ children }: { children: string }) {
+  const entry = useRefEntry(children);
+  if (entry) {
+    return (
+      <code className="bg-[var(--surface)] border border-[var(--border)] px-1.5 py-0.5 rounded text-[var(--primary)] font-mono text-[0.85em]">
+        <RefToken entry={entry}>{children}</RefToken>
+      </code>
+    );
+  }
   return (
     <code className="bg-[var(--surface)] border border-[var(--border)] px-1.5 py-0.5 rounded text-[var(--primary)] font-mono text-[0.85em]">
       {children}
@@ -124,7 +194,7 @@ export function H2({ children }: { children: React.ReactNode }) {
   return (
     <h2
       id={slug(children)}
-      className="text-2xl font-bold text-[var(--text-main)] pt-6 pb-1 border-b border-[var(--separator)] scroll-mt-28"
+      className="text-2xl font-bold tracking-tight text-[var(--text-main)] !mt-16 pb-2 border-b border-[var(--separator)] scroll-mt-28"
     >
       {children}
     </h2>
@@ -135,7 +205,7 @@ export function H3({ children }: { children: React.ReactNode }) {
   return (
     <h3
       id={slug(children)}
-      className="text-lg font-semibold text-[var(--text-main)] pt-4 scroll-mt-28"
+      className="text-lg font-semibold text-[var(--text-main)] !mt-10 scroll-mt-28"
     >
       {children}
     </h3>

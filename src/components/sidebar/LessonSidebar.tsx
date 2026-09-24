@@ -2,13 +2,16 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { CheckCircle2, ChevronRight, Clock } from "lucide-react";
+import Link from "next/link";
+import { BookMarked, CheckCircle2, ChevronRight, Clock } from "lucide-react";
 import type { Chapter, Track } from "@/lib/tracks/types";
 
 /** Only the keys this sidebar reads — keeps it decoupled from the full bundle. */
 interface SidebarLabels {
   lessonProgress?: string;
   lessonChapters?: string;
+  refTitle?: string;
+  refSidebarHint?: string;
 }
 
 interface LessonSidebarProps {
@@ -18,6 +21,8 @@ interface LessonSidebarProps {
   visited: Set<string>;
   onSelect: (id: string) => void;
   t: SidebarLabels;
+  /** When set, a link to the track's API reference is shown under the chapters. */
+  referenceHref?: string;
 }
 
 /** A chapter plus its position in the flat list, so numbering stays global. */
@@ -37,7 +42,7 @@ function groupChapters(chapters: Chapter[]): Group[] {
 }
 
 export function LessonSidebar({
-  track, chapters, activeId, visited, onSelect, t,
+  track, chapters, activeId, visited, onSelect, t, referenceHref,
 }: LessonSidebarProps) {
   const groups = useMemo(() => groupChapters(chapters), [chapters]);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
@@ -66,11 +71,11 @@ export function LessonSidebar({
     });
 
   return (
-    <div className="flex flex-col gap-5 py-5">
+    <div className="flex flex-col gap-7 py-8">
 
       {/* ── Track meta + progress ─────────────────────────────────────── */}
-      <div className="px-4">
-        <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--primary)] mb-3">
+      <div className="px-6">
+        <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--primary)] mb-3">
           {track.title}
         </p>
 
@@ -94,11 +99,11 @@ export function LessonSidebar({
 
       {/* ── Chapter rail, grouped by section ──────────────────────────── */}
       <nav>
-        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)] px-4 mb-1.5">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)] px-6 mb-2">
           {t?.lessonChapters ?? "Chapters"}
         </p>
 
-        <div className="px-2 space-y-0.5">
+        <div className="px-3 space-y-0.5">
           {groups.map((group, gi) => {
             const groupTitle  = group.title;
             const isOpen      = groupTitle === null || !collapsed.has(groupTitle);
@@ -113,7 +118,7 @@ export function LessonSidebar({
                     onClick={() => toggle(groupTitle)}
                     aria-expanded={isOpen}
                     className="w-full flex items-center gap-1.5 pl-2 pr-2.5 py-1.5 rounded-lg
-                      transition-colors hover:bg-[var(--primary-low)]/60 group mt-1.5 first:mt-0"
+                      transition-colors hover:bg-[var(--primary-low)]/60 group mt-4 first:mt-0"
                   >
                     <ChevronRight
                       size={11}
@@ -122,7 +127,7 @@ export function LessonSidebar({
                         ${hasActive ? "text-[var(--primary)]" : "text-[var(--text-muted)]"}`}
                     />
                     <span
-                      className={`flex-1 text-left text-[9px] font-bold uppercase tracking-[0.16em] leading-tight transition-colors
+                      className={`flex-1 text-left text-[10px] font-bold uppercase tracking-[0.16em] leading-tight transition-colors
                         ${hasActive
                           ? "text-[var(--primary)]"
                           : "text-[var(--text-muted)] group-hover:text-[var(--text-main)]"
@@ -148,7 +153,7 @@ export function LessonSidebar({
                           key={chapter.id}
                           onClick={() => onSelect(chapter.id)}
                           aria-current={isActive ? "page" : undefined}
-                          className={`relative w-full flex items-stretch gap-3 pl-3 pr-2.5 py-2 rounded-lg text-left
+                          className={`relative w-full flex items-stretch gap-3 pl-3 pr-2.5 py-2.5 rounded-lg text-left
                             transition-colors duration-200 group
                             ${isActive
                               ? "bg-[var(--primary-low)]"
@@ -184,7 +189,7 @@ export function LessonSidebar({
                           {/* Title + read time */}
                           <span className="flex-1 min-w-0 flex items-start justify-between gap-2 pt-0.5">
                             <span
-                              className={`text-xs leading-snug transition-colors
+                              className={`text-[13px] leading-snug transition-colors
                                 ${isActive
                                   ? "text-[var(--text-main)] font-medium"
                                   : "text-[var(--text-muted)] group-hover:text-[var(--text-main)]"
@@ -209,6 +214,27 @@ export function LessonSidebar({
           })}
         </div>
       </nav>
+
+      {/* ── API reference link ────────────────────────────────────────── */}
+      {referenceHref && (
+        <div className="px-3">
+          <Link
+            href={referenceHref}
+            className="flex items-start gap-3 rounded-xl border border-[var(--border)] px-3.5 py-3
+              hover:border-[var(--primary)]/50 hover:bg-[var(--primary-low)] transition-colors group"
+          >
+            <BookMarked size={16} className="mt-0.5 flex-shrink-0 text-[var(--primary)]" />
+            <span className="flex flex-col gap-0.5">
+              <span className="text-[13px] font-medium text-[var(--text-main)]">
+                {t?.refTitle ?? "Function reference"}
+              </span>
+              <span className="text-[11px] leading-snug text-[var(--text-muted)]">
+                {t?.refSidebarHint ?? "Every function used in the track, with parameters and examples"}
+              </span>
+            </span>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
