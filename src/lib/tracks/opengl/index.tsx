@@ -37,6 +37,7 @@ import {
 } from "./chapters/advanced";
 import { DebuggingContent, ComputeContent } from "./chapters/tooling";
 import { PbrTheoryContent, PbrLightingContent, IblDiffuseContent, IblSpecularContent } from "./chapters/pbr";
+import { PostProcessingContent, SsaoContent, ParallaxContent, AntiAliasingContent } from "./chapters/post";
 
 // tx: returns translated string or English fallback. Never shows a key name.
 function tx(t: any, key: string, fallback: string): string {
@@ -1646,6 +1647,7 @@ const TRANSFORMS      = "3D & Transformations";
 const LIGHTING        = "Lighting";
 const ADV_LIGHTING    = "Advanced Lighting";
 const PBR             = "PBR";
+const POST            = "Post-Processing & Effects";
 const MODELS          = "Model Loading";
 const ADVANCED        = "Advanced OpenGL";
 const MODERN          = "Modern OpenGL & Tooling";
@@ -1693,6 +1695,12 @@ export const openGLTrack: Track = {
     { id: "pbr-lighting",    section: PBR,             title: "Cook-Torrance Lighting",    minRead: 16, content: (t) => <PbrLightingContent     t={t} /> },
     { id: "ibl-diffuse",     section: PBR,             title: "IBL: Diffuse Irradiance",   minRead: 13, content: (t) => <IblDiffuseContent      t={t} /> },
     { id: "ibl-specular",    section: PBR,             title: "IBL: Specular",             minRead: 16, content: (t) => <IblSpecularContent     t={t} /> },
+
+    // ── Post-Processing & Effects ────────────────────────────────────────────
+    { id: "post-processing", section: POST,            title: "Post-Processing",           minRead: 14, content: (t) => <PostProcessingContent  t={t} /> },
+    { id: "ssao",            section: POST,            title: "SSAO",                      minRead: 14, content: (t) => <SsaoContent            t={t} /> },
+    { id: "parallax-mapping", section: POST,           title: "Parallax Mapping",          minRead: 12, content: (t) => <ParallaxContent        t={t} /> },
+    { id: "anti-aliasing",   section: POST,            title: "Anti-Aliasing",             minRead: 14, content: (t) => <AntiAliasingContent    t={t} /> },
 
     // ── Model Loading ────────────────────────────────────────────────────────
     { id: "model-loading",   section: MODELS,          title: "Model Loading (Assimp)",    minRead: 13, content: (t) => <ModelLoadingContent    t={t} /> },
