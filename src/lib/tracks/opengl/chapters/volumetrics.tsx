@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "./lighting-advanced";
+import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { PhaseFigure } from "@/components/lesson/figures/tech/PhaseFigure";
 import { SKY_PRESETS } from "../presets/atmosphere";

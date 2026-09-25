@@ -1,28 +1,35 @@
 // src/lib/tracks/index.ts
-// Central registry of all available tracks.
-// To add a new track (e.g. Vulkan), create src/lib/tracks/vulkan/index.tsx
-// following the same pattern as opengl/index.tsx, then add it here.
+// Joins each track's catalog entry (./catalog.ts) with its chapter list.
+// To add a new track (e.g. Vulkan): add it to TRACK_CATALOG, create
+// src/lib/tracks/vulkan/index.tsx following gamedev/index.tsx, and register
+// its chapters below.
 
-import { Track } from "./types";
-import { openGLTrack } from "./opengl";
-import { glslTrack }   from "./glsl";
-import { cppTrack }    from "./cpp";
-import { sdl3Track }   from "./sdl3";
-import { gameDevTrack } from "./gamedev";
-import { mathTrack }  from "./math";
-// import { vulkanTrack } from "./vulkan"; // uncomment when ready
+import type { Chapter, Track } from "./types";
+import { TRACK_CATALOG } from "./catalog";
+import { openGLChapters } from "./opengl";
+import { glslChapters }   from "./glsl";
+import { cppChapters }    from "./cpp";
+import { sdl3Chapters }   from "./sdl3";
+import { gameDevChapters } from "./gamedev";
+import { mathChapters }   from "./math";
 
-// Keys must match the `path` field in TRACK_CONFIG (src/app/learn/page.tsx),
-// since the route is /learn/[trackPath].
-const ALL_TRACKS: Record<string, Track> = {
-  OpenGL: openGLTrack,
-  GLSL:   glslTrack,
-  "C++":  cppTrack,
-  SDL3:   sdl3Track,
-  GameDev: gameDevTrack,
-  Math:   mathTrack,
-  // Vulkan:  vulkanTrack,
+// Keyed by catalog id.
+const CHAPTERS: Record<string, Chapter[]> = {
+  opengl:  openGLChapters,
+  glsl:    glslChapters,
+  cpp:     cppChapters,
+  sdl3:    sdl3Chapters,
+  gamedev: gameDevChapters,
+  math:    mathChapters,
 };
+
+// Keyed by route segment (/learn/[trackPath]). Built once, so every lookup of
+// the same path returns the same object.
+const ALL_TRACKS: Record<string, Track> = Object.fromEntries(
+  TRACK_CATALOG
+    .filter((info) => CHAPTERS[info.id])
+    .map((info) => [info.path, { id: info.id, title: info.title, chapters: CHAPTERS[info.id] }]),
+);
 
 export function getTrack(trackPath: string): Track | undefined {
   return ALL_TRACKS[trackPath];

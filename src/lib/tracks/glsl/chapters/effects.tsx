@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "../../opengl/chapters/lighting-advanced";
+import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { GerstnerFigure } from "@/components/lesson/glsl/GerstnerFigure";
 import { WaterLabFigure } from "@/components/lesson/figures/water/WaterLabFigure";

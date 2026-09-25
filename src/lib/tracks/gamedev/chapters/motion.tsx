@@ -7,7 +7,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "../../opengl/chapters/lighting-advanced";
+import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { EasingFigure } from "@/components/lesson/figures/gamedev/EasingFigure";
 import { SmoothingFigure } from "@/components/lesson/figures/gamedev/SmoothingFigure";
 import { SpringFigure } from "@/components/lesson/figures/gamedev/SpringFigure";

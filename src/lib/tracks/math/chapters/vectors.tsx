@@ -8,7 +8,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "../../opengl/chapters/lighting-advanced";
+import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { VectorFigure } from "@/components/lesson/figures/math/VectorFigure";
 import { DotFigure } from "@/components/lesson/figures/math/DotFigure";
 import { CrossFigure } from "@/components/lesson/figures/math/CrossFigure";

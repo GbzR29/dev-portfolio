@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "./lighting-advanced";
+import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { GlyphMetricsFigure } from "@/components/lesson/figures/tech/GlyphMetricsFigure";
 import { SdfTextFigure } from "@/components/lesson/figures/tech/SdfTextFigure";
 

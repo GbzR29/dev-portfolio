@@ -5,7 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "../../opengl/chapters/lighting-advanced";
+import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { INTRO_PRESETS } from "../presets/basics";
 

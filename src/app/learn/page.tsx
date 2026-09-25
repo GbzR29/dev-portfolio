@@ -7,43 +7,26 @@ import TriangleParticles from "@/components/particles/TriangleParticles";
 import { MyButton } from "@/components/ui/Button";
 import { BookOpen, Code2, Cpu, Globe, Zap, ArrowRight, Lock, Triangle, Gamepad2, Sigma } from "lucide-react";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { getTrack } from "@/lib/tracks";
+import { TRACK_CATALOG, type TrackInfo } from "@/lib/tracks/catalog";
 
-type TrackStatus = "available" | "coming-soon";
+// Icons stay here (JSX); everything else about a track lives in the catalog.
+const TRACK_ICONS: Record<string, ReactNode> = {
+  cpp:     <Code2    size={26} />,
+  opengl:  <Zap      size={26} />,
+  glsl:    <Triangle size={26} />,
+  sdl3:    <Globe    size={26} />,
+  gamedev: <Gamepad2 size={26} />,
+  math:    <Sigma    size={26} />,
+  vulkan:  <Cpu      size={26} />,
+};
 
-// `path` is the /learn/[trackPath] segment and must match a key in ALL_TRACKS
-// (src/lib/tracks/index.ts). `plannedLessons` is only used for tracks that do
-// not exist yet — available tracks report their real chapter count.
-const TRACK_CONFIG = [
-  { id: "cpp",    path: "C++",    title: "Modern C++",     plannedLessons: 15, icon: <Code2    size={26} />, accentColor: "#3b82f6", status: "available"   as TrackStatus },
-  { id: "opengl", path: "OpenGL", title: "OpenGL 4.6",     plannedLessons: 13, icon: <Zap      size={26} />, accentColor: "#8b5cf6", status: "available"   as TrackStatus },
-  { id: "glsl",   path: "GLSL",   title: "GLSL Shaders",   plannedLessons: 6,  icon: <Triangle size={26} />, accentColor: "#EC4899", status: "available"   as TrackStatus },
-  { id: "sdl3",   path: "SDL3",   title: "SDL3 Framework", plannedLessons: 10, icon: <Globe    size={26} />, accentColor: "#22c55e", status: "available"   as TrackStatus },
-  { id: "gamedev", path: "GameDev", title: "Game Development", plannedLessons: 8, icon: <Gamepad2 size={26} />, accentColor: "#f97316", status: "available" as TrackStatus },
-  { id: "math",   path: "Math",   title: "Math for Graphics", plannedLessons: 7, icon: <Sigma  size={26} />, accentColor: "#14b8a6", status: "available"   as TrackStatus },
-  { id: "vulkan", path: "Vulkan", title: "Vulkan API",     plannedLessons: 12, icon: <Cpu      size={26} />, accentColor: "#ef4444", status: "coming-soon" as TrackStatus },
-];
-
-function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: any }) {
-  const descMap: Record<string, string> = {
-    cpp:    t.trackCppDesc,
-    opengl: t.trackOpenglDesc,
-    glsl:   t.trackGlslDesc   ?? "Master GLSL types, built-in functions, SDFs, procedural noise and shader techniques — from first principles to a production-ready Shader class.",
-    vulkan: t.trackVulkanDesc,
-    sdl3:   t.trackSdlDesc,
-    gamedev: t.trackGameDevDesc ?? "Game loops and fixed timesteps, easing and springs, randomness and Perlin noise, collision detection and the patterns behind fast game code — with interactive figures.",
-    math:   t.trackMathDesc    ?? "The mathematics of graphics and games, from arithmetic and floating point to vectors, trigonometry and beyond — every formula explained, every idea interactive.",
-  };
-  const levelMap: Record<string, string> = {
-    cpp:    t.begAdv,
-    opengl: t.intermediate,
-    glsl:   t.intermediate    ?? "Intermediate",
-    vulkan: t.advanced,
-    sdl3:   t.beginner,
-    gamedev: t.begAdv       ?? "Beginner → Advanced",
-    math:   t.begAdv        ?? "Beginner → Advanced",
-  };
+function TrackCard({ config, t }: { config: TrackInfo; t: any }) {
+  const icon  = TRACK_ICONS[config.id];
+  const desc  = t[config.descKey]  ?? config.descFallback;
+  const level = t[config.levelKey] ?? config.levelFallback;
 
   const isAvailable = config.status === "available";
   // Read the real chapter count so the card can never drift from the content
@@ -69,7 +52,7 @@ function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: an
           {/* Icon */}
           <div className="p-3 rounded-xl border flex-shrink-0"
             style={{ background: `${config.accentColor}14`, borderColor: `${config.accentColor}28`, color: config.accentColor }}>
-            {config.icon}
+            {icon}
           </div>
 
           {/* Right side: soon + level stacked vertically */}
@@ -81,14 +64,14 @@ function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: an
               </div>
             )}
             <span className="text-[9px] font-bold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-muted)] whitespace-nowrap">
-              {levelMap[config.id]}
+              {level}
             </span>
           </div>
         </div>
 
         <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">{config.title}</h3>
         <p className="text-[var(--text-muted)] text-sm leading-relaxed flex-grow mb-6">
-          {descMap[config.id]}
+          {desc}
         </p>
 
         {/* Footer */}
@@ -149,7 +132,7 @@ export default function LearnPage() {
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {TRACK_CONFIG.map((config) => (
+            {TRACK_CATALOG.map((config) => (
               <TrackCard key={config.id} config={config} t={t} />
             ))}
           </div>
