@@ -8,6 +8,8 @@ import { openGLTrack } from "./opengl";
 import { glslTrack }   from "./glsl";
 import { cppTrack }    from "./cpp";
 import { sdl3Track }   from "./sdl3";
+import { gameDevTrack } from "./gamedev";
+import { mathTrack }  from "./math";
 // import { vulkanTrack } from "./vulkan"; // uncomment when ready
 
 // Keys must match the `path` field in TRACK_CONFIG (src/app/learn/page.tsx),
@@ -17,6 +19,8 @@ const ALL_TRACKS: Record<string, Track> = {
   GLSL:   glslTrack,
   "C++":  cppTrack,
   SDL3:   sdl3Track,
+  GameDev: gameDevTrack,
+  Math:   mathTrack,
   // Vulkan:  vulkanTrack,
 };
 

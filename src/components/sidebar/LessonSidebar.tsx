@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  Aperture, BookMarked, Boxes, Braces, CheckCircle2, ChevronRight, Clock, Gauge, Hash, Layers, Radar, Shapes, Wand, Lightbulb, Move3d, Rocket, Sparkles, Wrench,
+  Aperture, BookMarked, Boxes, Braces, Calculator, CheckCircle2, ChevronRight, Clock, Crosshair, Gauge, Hash, Layers, Mountain, MoveUpRight, Puzzle, Radar, Shapes, Timer, Wand, Waves, Lightbulb, Move3d, Rocket, Sparkles, Wrench,
   type LucideIcon,
 } from "lucide-react";
 import type { Chapter, Track } from "@/lib/tracks/types";
@@ -30,6 +30,12 @@ interface LessonSidebarProps {
 
 /** An icon per section, matched on its title; anything unknown gets a plain mark. */
 const SECTION_ICONS: [RegExp, LucideIcon][] = [
+  // Game Dev sections come first so their titles are not caught by the generic patterns below
+  [/loop|time/i, Timer],
+  [/motion|feel/i, Waves],
+  [/procedural/i, Mountain],
+  [/collision/i, Crosshair],
+  [/architecture/i, Puzzle],
   [/getting|start/i, Rocket],
   [/transform|3d/i, Move3d],
   [/pbr|physically/i, Sparkles],
@@ -44,7 +50,12 @@ const SECTION_ICONS: [RegExp, LucideIcon][] = [
   [/advanced/i, Layers],
   [/modern|tool/i, Wrench],
 ];
-const sectionIcon = (title: string) => SECTION_ICONS.find(([re]) => re.test(title))?.[1] ?? Hash;
+/** Section names that mean something different per track ("Foundations" in C++ vs Math). */
+const TRACK_SECTION_ICONS: Record<string, [RegExp, LucideIcon][]> = {
+  math: [[/foundation/i, Calculator], [/vector/i, MoveUpRight]],
+};
+const sectionIcon = (title: string, trackId: string) =>
+  (TRACK_SECTION_ICONS[trackId] ?? []).concat(SECTION_ICONS).find(([re]) => re.test(title))?.[1] ?? Hash;
 
 /** A chapter plus its position in the flat list, so numbering stays global. */
 type Entry = { chapter: Chapter; index: number };
@@ -135,7 +146,7 @@ export function LessonSidebar({
               <div key={groupTitle ?? `ungrouped-${gi}`}>
 
                 {groupTitle && (() => {
-                  const Icon = sectionIcon(groupTitle);
+                  const Icon = sectionIcon(groupTitle, track.id);
                   const pct = Math.round((doneInGroup / group.entries.length) * 100);
                   return (
                     <button

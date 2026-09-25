@@ -25,6 +25,10 @@ export const learningTranslations = {
       "Dive into Vulkan's explicit GPU control: command buffers, render passes, synchronization, and pipeline objects. Not for the faint of heart.",
     trackSdlDesc:
       "Build real applications with SDL3: window management, input handling, audio, and a complete 2D rendering loop using C++.",
+    trackGameDevDesc:
+      "Game loops and fixed timesteps, easing and springs, randomness and Perlin noise, collision detection and the patterns behind fast game code — with interactive figures.",
+    trackMathDesc:
+      "The mathematics of graphics and games, from arithmetic and floating point to vectors, trigonometry and beyond — every formula explained, every idea interactive.",
 
     // AI banner
     aiTitle: "AI-powered learning assistant — coming soon",
@@ -93,6 +97,10 @@ export const learningTranslations = {
       "Mergulhe no controle explícito de GPU com Vulkan: command buffers, render passes, sincronização e objetos de pipeline. Não é para iniciantes.",
     trackSdlDesc:
       "Construa aplicações reais com SDL3: gerenciamento de janelas, input, áudio e um loop de renderização 2D completo em C++.",
+    trackGameDevDesc:
+      "Game loop e timestep fixo, easing e molas, aleatoriedade e Perlin noise, detecção de colisão e os padrões por trás de código de jogo rápido — com figuras interativas.",
+    trackMathDesc:
+      "A matemática da computação gráfica e dos jogos, da aritmética e ponto flutuante a vetores, trigonometria e além — cada fórmula explicada, cada ideia interativa.",
 
     aiTitle: "Assistente de aprendizado com IA — em breve",
     aiDesc:
@@ -160,6 +168,10 @@ export const learningTranslations = {
       "Sumérgete en el control explícito de GPU con Vulkan: command buffers, render passes, sincronización y objetos de pipeline. No apto para principiantes.",
     trackSdlDesc:
       "Construye aplicaciones reales con SDL3: gestión de ventanas, entrada, audio y un bucle de renderizado 2D completo en C++.",
+    trackGameDevDesc:
+      "Game loop y timestep fijo, easing y muelles, aleatoriedad y ruido Perlin, detección de colisiones y los patrones detrás del código de juego rápido — con figuras interactivas.",
+    trackMathDesc:
+      "Las matemáticas de los gráficos y los juegos, desde la aritmética y el punto flotante hasta vectores, trigonometría y más — cada fórmula explicada, cada idea interactiva.",
 
     aiTitle: "Asistente de aprendizaje con IA — próximamente",
     aiDesc:
@@ -226,6 +238,10 @@ export const learningTranslations = {
       "深入Vulkan的显式GPU控制：命令缓冲区、渲染通道、同步和管线对象。专为有经验的开发者准备。",
     trackSdlDesc:
       "使用SDL3构建真实应用：窗口管理、输入处理、音频和完整的2D渲染循环，全部用C++实现。",
+    trackGameDevDesc:
+      "游戏循环与固定时间步长、缓动与弹簧、随机数与Perlin噪声、碰撞检测，以及高效游戏代码背后的设计模式——配有交互式图示。",
+    trackMathDesc:
+      "图形与游戏背后的数学：从算术和浮点数到向量、三角学及更多——每个公式都有解释，每个概念都可交互。",
 
     aiTitle: "AI学习助手——即将推出",
     aiDesc:

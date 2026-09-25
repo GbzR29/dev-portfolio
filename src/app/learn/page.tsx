@@ -5,7 +5,7 @@ import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
 import TriangleParticles from "@/components/particles/TriangleParticles";
 import { MyButton } from "@/components/ui/Button";
-import { BookOpen, Code2, Cpu, Globe, Zap, ArrowRight, Lock, Triangle } from "lucide-react";
+import { BookOpen, Code2, Cpu, Globe, Zap, ArrowRight, Lock, Triangle, Gamepad2, Sigma } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { getTrack } from "@/lib/tracks";
@@ -20,6 +20,8 @@ const TRACK_CONFIG = [
   { id: "opengl", path: "OpenGL", title: "OpenGL 4.6",     plannedLessons: 13, icon: <Zap      size={26} />, accentColor: "#8b5cf6", status: "available"   as TrackStatus },
   { id: "glsl",   path: "GLSL",   title: "GLSL Shaders",   plannedLessons: 6,  icon: <Triangle size={26} />, accentColor: "#EC4899", status: "available"   as TrackStatus },
   { id: "sdl3",   path: "SDL3",   title: "SDL3 Framework", plannedLessons: 10, icon: <Globe    size={26} />, accentColor: "#22c55e", status: "available"   as TrackStatus },
+  { id: "gamedev", path: "GameDev", title: "Game Development", plannedLessons: 8, icon: <Gamepad2 size={26} />, accentColor: "#f97316", status: "available" as TrackStatus },
+  { id: "math",   path: "Math",   title: "Math for Graphics", plannedLessons: 7, icon: <Sigma  size={26} />, accentColor: "#14b8a6", status: "available"   as TrackStatus },
   { id: "vulkan", path: "Vulkan", title: "Vulkan API",     plannedLessons: 12, icon: <Cpu      size={26} />, accentColor: "#ef4444", status: "coming-soon" as TrackStatus },
 ];
 
@@ -30,6 +32,8 @@ function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: an
     glsl:   t.trackGlslDesc   ?? "Master GLSL types, built-in functions, SDFs, procedural noise and shader techniques — from first principles to a production-ready Shader class.",
     vulkan: t.trackVulkanDesc,
     sdl3:   t.trackSdlDesc,
+    gamedev: t.trackGameDevDesc ?? "Game loops and fixed timesteps, easing and springs, randomness and Perlin noise, collision detection and the patterns behind fast game code — with interactive figures.",
+    math:   t.trackMathDesc    ?? "The mathematics of graphics and games, from arithmetic and floating point to vectors, trigonometry and beyond — every formula explained, every idea interactive.",
   };
   const levelMap: Record<string, string> = {
     cpp:    t.begAdv,
@@ -37,6 +41,8 @@ function TrackCard({ config, t }: { config: (typeof TRACK_CONFIG)[number]; t: an
     glsl:   t.intermediate    ?? "Intermediate",
     vulkan: t.advanced,
     sdl3:   t.beginner,
+    gamedev: t.begAdv       ?? "Beginner → Advanced",
+    math:   t.begAdv        ?? "Beginner → Advanced",
   };
 
   const isAvailable = config.status === "available";
