@@ -9,6 +9,7 @@
 
 import { PROC_SKY_GLSL, sunDirection, type SkyParams } from "../sky/proceduralSky";
 import { norm, cross, type Vec3 } from "../../kit/gl/gl";
+import { PHOTO_GLSL } from "./photoTextures";
 
 export const MAX_WAVES = 8;
 
@@ -145,6 +146,10 @@ uniform float uFoamAmt, uFoamEdge, uShoreFoam, uCaustics, uSSS, uGlint;
 uniform vec4  uTerms;             // reflection, refraction, subsurface, foam
 uniform int   uView, uStyle;
 uniform float uBands;
+// Photo textures for the bed; uHave = (sand, pool tiles) loaded
+uniform sampler2D uSandA, uSandN, uSandAO, uPoolA, uPoolN;
+uniform vec2  uHave;
+uniform float uPix;               // world size of one pixel at distance 1
 
 ${PROC_SKY_GLSL}
 
@@ -246,6 +251,29 @@ float traceBed(vec3 o, vec3 d) {
   if (t > 0.0 && o.x + t * d.x >= xt) best = min(best, t);
   return best < 1e8 ? best : -1.0;
 }
+${PHOTO_GLSL}
+const float SAND_TILE = 2.2, POOL_TILE = 1.2;
+vec3 bedAlbedo(vec3 q);                                  // procedural fallback, below
+// The bed's colour at q, seen dist metres along the ray; bends n by the
+// normal map and writes the ambient occlusion (1 without a map)
+vec3 bedSurface(vec3 q, float dist, inout vec3 n, out float ao) {
+  ao = 1.0;
+  if (uBed == 1 && uHave.y > 0.5) {
+    vec2 uv = planarUV(q, POOL_TILE);
+    float lod = lodFor(dist, POOL_TILE, n);
+    n = bumped(n, uPoolN, uv, lod);
+    return srgbTex(uPoolA, uv, lod);
+  }
+  if (uBed == 0 && uHave.x > 0.5) {
+    vec2 uv = planarUV(q, SAND_TILE);
+    float lod = lodFor(dist, SAND_TILE, n);
+    n = bumped(n, uSandN, uv, lod);
+    ao = textureLod(uSandAO, uv, lod).r;
+    return srgbTex(uSandA, uv, lod) * (0.82 + 0.3 * fbm2(q.xz * 0.35));   // break up the tiling far away
+  }
+  return bedAlbedo(q);
+}
+// Procedural fallbacks, used until (or unless) the photo textures load
 vec3 bedAlbedo(vec3 q) {
   if (uBed == 1) {
     vec2 g = abs(fract(q.xz * 1.6) - 0.5);
@@ -312,8 +340,10 @@ void main() {
     // Dry beach: sand, darker and wetter near the water line
     vec3 q = ro + rd * tBed;
     float wet = smoothstep(0.35, 0.0, q.y - heightAt(q.xz));
-    vec3 alb = bedAlbedo(q) * mix(1.0, 0.55, wet);
-    col = alb * (Ld * max(dot(bedNormal(q.x), sun), 0.0) + ambientLight(sun)) / PI;
+    vec3 nb = bedNormal(q.x);
+    float ao;
+    vec3 alb = bedSurface(q, tBed, nb, ao) * mix(1.0, 0.55, wet);
+    col = alb * (Ld * max(dot(nb, sun), 0.0) * mix(1.0, ao, 0.5) + ambientLight(sun) * ao) / PI;
     col = mix(col, sky(normalize(vec3(rd.x, 0.02, rd.z))), 1.0 - exp(-tBed / 350.0));
     if (uView == 0) { FragColor = vec4(display(col), 1.0); return; }
     FragColor = vec4(vec3(0.15), 1.0); return;
@@ -356,7 +386,10 @@ void main() {
       vec3 sunIn = Ld * (1.0 - fresnel(max(sun.y, 0.0))) * exp(-uAbsorb * above / max(-Ls.y, 0.2));
       // Far away the caustic network is finer than a pixel: fade it to its average (1)
       caus = mix(1.0, caustic(q.xz, above), uCaustics * exp(-(tHit + s) / 25.0));
-      bedLit = bedAlbedo(q) * (sunIn * max(dot(bedNormal(q.x), -Ls), 0.0) * caus + amb * 0.5) / PI;
+      vec3 nb = bedNormal(q.x);
+      float ao;
+      vec3 alb = bedSurface(q, tHit + s, nb, ao);
+      bedLit = alb * (sunIn * max(dot(nb, -Ls), 0.0) * caus * mix(1.0, ao, 0.5) + amb * 0.5 * ao) / PI;
     }
     vec3 refr = bedLit * trans + body;
 

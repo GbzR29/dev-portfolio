@@ -8,6 +8,7 @@
 
 import { PROC_SKY_GLSL, sunDirection, type SkyParams } from "../sky/proceduralSky";
 import type { Vec3 } from "../../kit/gl/gl";
+import { PHOTO_GLSL } from "./photoTextures";
 
 export type ShoreParams = {
   level: number;        // water level (m)
@@ -52,6 +53,10 @@ uniform vec3  uAbsorb, uScatter;
 uniform float uFoamW, uContact, uCells, uCaustics, uGrass, uRain, uStreaks, uSplash;
 uniform int   uStyle, uView;
 uniform vec2  uRes;
+// Photo textures (public/textures/materials_textures); uHave = (grass, sand, wood) loaded
+uniform sampler2D uGrassA, uGrassN, uGrassAO, uSandA, uSandN, uSandAO, uWood;
+uniform vec3  uHave;
+uniform float uPix;               // world size of one pixel at distance 1: 2·tan(fov/2) / height
 
 ${PROC_SKY_GLSL}
 
@@ -68,8 +73,8 @@ float fbmq(vec2 p) {                                // 3 octaves: cheap enough t
 // (two noise lookups only: this runs at every step of every ray)
 float bed(vec2 xz) {
   float r = length(xz - vec2(-1.0, 0.5)) + (noise3(vec3(xz * 0.22, 1.7)) - 0.5) * 4.5;
-  // beach → a shallow sand shelf → the drop-off into deep water
-  float island = mix(0.9, -0.7, smoothstep(2.0, 3.8, r)) + mix(0.0, -3.5, smoothstep(5.5, 10.0, r));
+  // a low grassy dome → beach → a shallow sand shelf → the drop-off into deep water
+  float island = mix(1.2 - 0.12 * max(r, 0.0), -0.7, smoothstep(1.2, 4.2, r)) + mix(0.0, -3.5, smoothstep(5.5, 10.0, r));
   return island + (noise3(vec3(xz * 0.9, 3.3)) - 0.5) * 0.35;
 }
 float sdRoundBox(vec3 p, vec3 b, float r) { vec3 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0) - r; }
@@ -91,6 +96,9 @@ float posts(vec3 p) {                               // two wooden posts of an ol
 }
 float objects(vec3 p) { return min(rocks(p), posts(p)); }
 float map(vec3 p) { return min((p.y - bed(p.xz)) * 0.6, objects(p) * 0.8); }
+// Which term of map() won: the hit threshold grows with distance, so testing
+// objects(p) against a fixed epsilon would paint far rocks and posts as ground
+bool onObject(vec3 p) { return objects(p) * 0.8 < (p.y - bed(p.xz)) * 0.6; }
 vec3 mapNormal(vec3 p) {                            // tetrahedron: 4 samples instead of 6
   const vec2 k = vec2(1.0, -1.0);
   const float e = 0.004;
@@ -108,7 +116,7 @@ float trace(vec3 o, vec3 d, float tmax) {
   return t;
 }
 float softShadow(vec3 o, vec3 d) {
-  float res = 1.0, t = 0.05;
+  float res = 1.0, t = 0.12;                        // start clear of the surface: no self-shadow blotches
   for (int i = 0; i < 16; i++) {
     float h = map(o + d * t);
     res = min(res, 10.0 * h / t);
@@ -203,20 +211,55 @@ float cellFoam(vec2 p, float amount) {
   return smoothstep(thr - 0.05, thr + 0.05, f1);
 }
 
+// ── Photo textures, mapped from above (helpers in photoTextures.ts) ─────────
+// The mip level comes from the hit distance: rays bent by the water have no
+// useful screen derivatives, so texture()'s automatic choice would sparkle.
+${PHOTO_GLSL}
+const float GRASS_TILE = 2.5, SAND_TILE = 2.2, WOOD_TILE = 1.0;
+
 // ── Surface shading for the dry scene and the underwater scene ──────────────
-vec3 albedoAt(vec3 p, vec3 n, bool underwater) {
-  if (objects(p) < 0.02) {
-    if (posts(p) < rocks(p)) return vec3(0.33, 0.23, 0.15) * (0.8 + 0.4 * noise3(vec3(p.y * 30.0, p.xz * 3.0)));
+// Returns the albedo; bends n by the normal maps and writes the ambient occlusion
+vec3 albedoAt(vec3 p, inout vec3 n, bool underwater, float dist, out float ao) {
+  ao = 1.0;
+  if (onObject(p)) {
+    if (posts(p) < rocks(p)) {
+      if (uHave.z > 0.5) {                          // wood wrapped around the post: u by angle, v up the post
+        vec2 c = length(p.xz - vec2(-6.2, -2.0)) < length(p.xz - vec2(-6.9, -3.6)) ? vec2(-6.2, -2.0) : vec2(-6.9, -3.6);
+        vec2 a = p.xz - c;
+        vec2 uv = vec2(atan(a.y, a.x) / 6.2832, p.y / WOOD_TILE);
+        return srgbTex(uWood, uv, lodFor(dist, WOOD_TILE, vec3(0.0, 1.0, 0.0))) * 0.85;
+      }
+      return vec3(0.33, 0.23, 0.15) * (0.8 + 0.4 * noise3(vec3(p.y * 30.0, p.xz * 3.0)));
+    }
     float lichen = smoothstep(0.55, 0.7, noise3(p * 3.0 + 4.0));
     return mix(vec3(0.42, 0.4, 0.37), vec3(0.3, 0.36, 0.2), lichen) * (0.75 + 0.5 * noise3(p * 9.0));
   }
-  float sandN = 0.8 + 0.3 * noise3(vec3(p.xz * 18.0, 0.0));
-  vec3 sand = vec3(0.78, 0.7, 0.52) * sandN;
+  vec3 ng = n;
+  vec3 sand;
+  if (uHave.y > 0.5) {
+    vec2 uv = planarUV(p, SAND_TILE);
+    float lod = lodFor(dist, SAND_TILE, ng);
+    // the photo is one even tone: low-frequency noise breaks up the repetition at a distance
+    sand = srgbTex(uSandA, uv, lod) * (0.82 + 0.3 * noise3(vec3(p.xz * 0.35, 4.0)));
+    n = bumped(ng, uSandN, uv, lod);
+    ao = textureLod(uSandAO, uv, lod).r;
+  } else {
+    sand = vec3(0.78, 0.7, 0.52) * (0.8 + 0.3 * noise3(vec3(p.xz * 18.0, 0.0)));
+  }
   vec3 grassy = vec3(0.32, 0.55, 0.2);
   if (p.y > uLevel + 0.2) {
     // Grass takes over above the beach, with a ragged edge and some variation
-    float g = smoothstep(0.35, 0.6, p.y - uLevel + (noise3(vec3(p.xz * 1.3, 2.0)) - 0.5) * 0.5);
-    vec3 grass = mix(vec3(0.25, 0.48, 0.14), vec3(0.42, 0.6, 0.2), noise3(vec3(p.xz * 4.0, 6.0)));
+    float g = smoothstep(0.28, 0.5, p.y - uLevel + (noise3(vec3(p.xz * 1.3, 2.0)) - 0.5) * 0.5);
+    vec3 grass;
+    if (uHave.x > 0.5) {
+      vec2 uv = planarUV(p, GRASS_TILE);
+      float lod = lodFor(dist, GRASS_TILE, ng);
+      grass = srgbTex(uGrassA, uv, lod);
+      n = normalize(mix(n, bumped(ng, uGrassN, uv, lod), g));
+      ao = mix(ao, textureLod(uGrassAO, uv, lod).r, g);
+    } else {
+      grass = mix(vec3(0.25, 0.48, 0.14), vec3(0.42, 0.6, 0.2), noise3(vec3(p.xz * 4.0, 6.0)));
+    }
     return mix(sand, grass, g);
   }
   if (underwater && uGrass > 0.5) {
@@ -231,12 +274,15 @@ vec3 albedoAt(vec3 p, vec3 n, bool underwater) {
   return sand;
 }
 
-vec3 shade(vec3 p, vec3 n, vec3 sun, vec3 Ld, vec3 amb, bool underwater, float caus) {
-  vec3 alb = albedoAt(p, n, underwater);
-  float sh = softShadow(p + n * 0.02, sun);
+// dist: length of the whole ray path to p (picks the texture mip level)
+vec3 shade(vec3 p, vec3 n, vec3 sun, vec3 Ld, vec3 amb, bool underwater, float caus, float dist) {
+  float sh = softShadow(p + n * 0.04, sun);         // shadow from the geometric normal, before bumping
+  float ao;
+  vec3 alb = albedoAt(p, n, underwater, dist, ao);
   float wet = underwater ? 1.0 : smoothstep(0.35, 0.0, p.y - uLevel);
   alb *= mix(1.0, 0.6, wet * 0.8);
-  return alb * (Ld * max(dot(n, sun), 0.0) * sh * caus + amb * (0.5 + 0.5 * n.y)) / PI;
+  // AO darkens the sky light fully and the sun a little (it also stands for tiny self-shadows)
+  return alb * (Ld * max(dot(n, sun), 0.0) * sh * caus * mix(1.0, ao, 0.5) + amb * (0.5 + 0.5 * n.y) * ao) / PI;
 }
 
 // ── Rain streaks: screen space, three depth layers ──────────────────────────
@@ -284,7 +330,7 @@ void main() {
     // Objects reflected in the water (only the dry part, one trace)
     vec3 R = reflect(rd, N);
     float tr = trace(p + R * 0.05, R, 30.0);
-    if (tr < 30.0) { vec3 q = p + R * (tr + 0.05); refl = shade(q, mapNormal(q), sun, Ld, amb, false, 1.0); }
+    if (tr < 30.0) { vec3 q = p + R * (tr + 0.05); refl = shade(q, mapNormal(q), sun, Ld, amb, false, 1.0, tWater + tr); }
 
     // Refraction: trace the bent ray through the water to the bed or a rock
     vec3 T = refract(rd, N, ETA);
@@ -294,7 +340,7 @@ void main() {
     float depthQ = max(uLevel - q.y, 0.0);
     mat2 M = mat2(1.0) + depthQ * (1.0 - ETA) * windHessian(q.xz);
     float caus = mix(1.0, 1.0 / max(abs(determinant(M)), 0.15), uCaustics);
-    vec3 bedCol = shade(q, nq, sun, Ld * exp(-uAbsorb * depthQ), amb, true, caus);
+    vec3 bedCol = shade(q, nq, sun, Ld * exp(-uAbsorb * depthQ), amb, true, caus, tWater + s);
     vec3 trans = exp(-uAbsorb * s);
     vec3 refr = bedCol * trans + uScatter * amb * (1.0 - trans);
 
@@ -337,7 +383,7 @@ void main() {
     if (uView == 4) { FragColor = vec4(vec3(caus * 0.35), 1.0); return; }
   } else if (tScene < 80.0) {
     vec3 p = ro + rd * tScene;
-    col = shade(p, mapNormal(p), sun, Ld, amb, false, 1.0);
+    col = shade(p, mapNormal(p), sun, Ld, amb, false, 1.0, tScene);
     if (uView > 0) { FragColor = vec4(vec3(0.12), 1.0); return; }
   } else {
     col = sky(rd);
@@ -355,7 +401,7 @@ export function shoreUniforms(p: ShoreParams, sky: SkyParams, cam: { pos: Vec3; 
   const absorb = p.absorb.map(v => v / Math.max(0.05, p.clarity)) as Vec3;
   return {
     f1: {
-      uTanHalf: Math.tan(fov / 2), uAspect: size.w / size.h, uT: time, uLevel: p.level, uWaves: p.waves, uWindDir: p.windDir,
+      uTanHalf: Math.tan(fov / 2), uPix: 2 * Math.tan(fov / 2) / size.h, uAspect: size.w / size.h, uT: time, uLevel: p.level, uWaves: p.waves, uWindDir: p.windDir,
       uFoamW: p.foamWidth, uContact: p.contact, uCells: p.cells, uCaustics: p.caustics, uGrass: +p.grass,
       uRain: p.rain, uStreaks: +p.streaks, uSplash: +p.splashes,
       uTime: time, uCover: sky.cover, uDensity: sky.density, uExposure: sky.exposure,

@@ -7,6 +7,7 @@ import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../../kit/g
 import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
+import { loadPhotos, bindPhotos, type PhotoList } from "./photoTextures";
 import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
 import { WATER_COLOURS } from "./waterShader";
 import { SHORE_FS, SHORE_PRESETS, DEFAULT_SHORE, shoreUniforms, applyShoreUniforms, type ShoreParams } from "./shoreShader";
@@ -16,7 +17,16 @@ import { SHORE_FS, SHORE_PRESETS, DEFAULT_SHORE, shoreUniforms, applyShoreUnifor
 // foam around rocks and posts (from the distance field), caustics, sea grass,
 // and rain — ring ripples, splashes and streaks. Orbit camera around the bay.
 
-type Res = { prog: WebGLProgram; vao: WebGLVertexArrayObject };
+// Photo textures from the asset manifest, in shader sampler order; a missing
+// material keeps its procedural look (uHave says which groups arrived)
+const TEX: PhotoList = [
+  ["uGrassA", "mat:grasspatchyground:albedo"], ["uGrassN", "mat:grasspatchyground:normal"], ["uGrassAO", "mat:grasspatchyground:ao"],
+  ["uSandA", "mat:groundsand:albedo"], ["uSandN", "mat:groundsand:normal"], ["uSandAO", "mat:groundsand:ao"],
+  ["uWood", "mat:wood-texture:albedo"],
+];
+const GROUPS = [[0, 1, 2], [3, 4, 5], [6]];
+
+type Res = { prog: WebGLProgram; vao: WebGLVertexArrayObject; tex: (WebGLTexture | null)[] };
 type Tab = "water" | "foam" | "rain" | "sky";
 const VIEWS = ["final", "thickness", "foam mask", "normal", "caustics"] as const;
 const QUALITY: [string, number][] = [["low", 0.4], ["medium", 0.6], ["high", 1]];
@@ -50,7 +60,11 @@ export function ShoreLabFigure({ t }: { t?: TrackTranslations }) {
     setLook({ ...l, fov: look.fov, pitch: Math.max(-1.45, Math.min(-0.12, l.pitch)) });
   };
 
-  const init = (gl: WebGL2RenderingContext): Res => ({ prog: compileProgram(gl, FULL_VS, SHORE_FS), vao: gl.createVertexArray()! });
+  const [texReady, setTexReady] = useState(0);        // bumps as textures arrive, so a paused view redraws
+  const init = (gl: WebGL2RenderingContext): Res => ({
+    prog: compileProgram(gl, FULL_VS, SHORE_FS), vao: gl.createVertexArray()!,
+    tex: loadPhotos(gl, TEX, () => setTexReady(n => n + 1)),
+  });
   const draw = (gl: WebGL2RenderingContext, r: Res, size: { w: number; h: number; aspect: number }) => {
     const f = forwardFrom(look.yaw, look.pitch);
     const right = norm(cross(f, [0, 1, 0]));
@@ -59,6 +73,7 @@ export function ShoreLabFigure({ t }: { t?: TrackTranslations }) {
     gl.disable(gl.DEPTH_TEST);
     gl.useProgram(r.prog);
     applyShoreUniforms(gl, r.prog, shoreUniforms(s, sky, cam, look.fov, size, time + 5));
+    bindPhotos(gl, r.prog, TEX, r.tex, "uHave", GROUPS);
     drawFullscreen(gl, r.vao);
   };
 
@@ -99,7 +114,7 @@ export function ShoreLabFigure({ t }: { t?: TrackTranslations }) {
 
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
         <GLView<Res> orbit init={init} draw={draw} look={look} onLook={onLook} resolution={quality}
-          frame={[look, dist, s, sky, time]} aspect={16 / 9} />
+          frame={[look, dist, s, sky, time, texReady]} aspect={16 / 9} />
       </div>
 
       <div className="p-4 md:p-5 space-y-3">

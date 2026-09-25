@@ -204,20 +204,60 @@
     }
   },
   "materials": {
+    "brickwall": {
+      "label": "BrickWall",
+      "albedo": "/textures/materials_textures/BrickWall/BaseColor/BrickWallReclaimed_BaseColor.jpg",
+      "normal": "/textures/materials_textures/BrickWall/Normal/BrickWallReclaimed_Normal.png",
+      "roughness": "/textures/materials_textures/BrickWall/Roughness/BrickWallReclaimed_Roughness.jpg",
+      "ao": "/textures/materials_textures/BrickWall/AmbientOcclusion/BrickWallReclaimed_AmbientOcclusion.jpg",
+      "metallic": "/textures/materials_textures/BrickWall/Metallic/BrickWallReclaimed_Metallic.jpg"
+    },
+    "clayceramicglossy": {
+      "label": "ClayCeramicGlossy",
+      "albedo": "/textures/materials_textures/ClayCeramicGlossy/BaseColor/ClayCeramicGlossy_BaseColor.jpg",
+      "normal": "/textures/materials_textures/ClayCeramicGlossy/Normal/ClayCeramicGlossy_Normal.png",
+      "roughness": "/textures/materials_textures/ClayCeramicGlossy/Roughness/ClayCeramicGlossy_Roughness.jpg",
+      "ao": "/textures/materials_textures/ClayCeramicGlossy/AmbientOcclusion/ClayCeramicGlossy_AmbientOcclusion.jpg",
+      "metallic": "/textures/materials_textures/ClayCeramicGlossy/Metallic/ClayCeramicGlossy_Metallic.jpg"
+    },
+    "concretepaverssquare": {
+      "label": "ConcretePaversSquare",
+      "albedo": "/textures/materials_textures/ConcretePaversSquare/BaseColor/ConcretePaversSquare_BaseColor.jpg",
+      "normal": "/textures/materials_textures/ConcretePaversSquare/Normal/ConcretePaversSquare_Normal.png",
+      "roughness": "/textures/materials_textures/ConcretePaversSquare/Roughness/ConcretePaversSquare_Roughness.jpg",
+      "ao": "/textures/materials_textures/ConcretePaversSquare/AmbientOcclusion/ConcretePaversSquare_AmbientOcclusion.jpg",
+      "metallic": "/textures/materials_textures/ConcretePaversSquare/Metallic/ConcretePaversSquare_Metallic.jpg"
+    },
+    "grasspatchyground": {
+      "label": "GrassPatchyGround",
+      "albedo": "/textures/materials_textures/GrassPatchyGround/BaseColor/GrassPatchyGround_BaseColor.jpg",
+      "normal": "/textures/materials_textures/GrassPatchyGround/Normal/GrassPatchyGround_Normal.png",
+      "roughness": "/textures/materials_textures/GrassPatchyGround/Roughness/GrassPatchyGround_Roughness.jpg",
+      "ao": "/textures/materials_textures/GrassPatchyGround/AmbientOcclusion/GrassPatchyGround_AmbientOcclusion.jpg",
+      "metallic": "/textures/materials_textures/GrassPatchyGround/Metallic/GrassPatchyGround_Metallic.jpg"
+    },
+    "groundsand": {
+      "label": "GroundSand",
+      "albedo": "/textures/materials_textures/GroundSand/BaseColor/GroundSand_BaseColor.jpg",
+      "normal": "/textures/materials_textures/GroundSand/Normal/GroundSand_Normal.jpg",
+      "gloss": "/textures/materials_textures/GroundSand/GroundSand005_GLOSS_1K.jpg",
+      "ao": "/textures/materials_textures/GroundSand/AmbientOcclusion/GroundSand_AmbientOcclusion.jpg",
+      "height": "/textures/materials_textures/GroundSand/Displacement/GroundSand_Displacement.jpg"
+    },
     "metalsteelbrushed": {
       "label": "MetalSteelBrushed",
-      "albedo": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_BaseColor.jpg",
-      "normal": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_Normal.png",
-      "roughness": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_Roughness.jpg",
-      "ao": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_AmbientOcclusion.jpg",
-      "metallic": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_Metallic.jpg"
+      "albedo": "/textures/materials_textures/MetalSteelBrushed/BaseColor/MetalSteelBrushed_BaseColor.jpg",
+      "normal": "/textures/materials_textures/MetalSteelBrushed/Normal/MetalSteelBrushed_Normal.png",
+      "roughness": "/textures/materials_textures/MetalSteelBrushed/Roughness/MetalSteelBrushed_Roughness.jpg",
+      "ao": "/textures/materials_textures/MetalSteelBrushed/AmbientOcclusion/MetalSteelBrushed_AmbientOcclusion.jpg",
+      "metallic": "/textures/materials_textures/MetalSteelBrushed/Metallic/MetalSteelBrushed_Metallic.jpg"
     },
-    "squareceramic-glossytiletexture-aqua-blue": {
-      "label": "SquareCeramic GlossyTileTexture_Aqua Blue",
-      "albedo": "/textures/materials_textures/SquareCeramic%20GlossyTileTexture_Aqua%20Blue/TilesSquarePoolMixed001_COL_1K.jpg",
-      "normal": "/textures/materials_textures/SquareCeramic%20GlossyTileTexture_Aqua%20Blue/TilesSquarePoolMixed001_NRM_1K.jpg",
-      "gloss": "/textures/materials_textures/SquareCeramic%20GlossyTileTexture_Aqua%20Blue/TilesSquarePoolMixed001_GLOSS_1K.jpg",
-      "height": "/textures/materials_textures/SquareCeramic%20GlossyTileTexture_Aqua%20Blue/TilesSquarePoolMixed001_DISP_1K.jpg"
+    "squareceramicglossytile-aqua-blue": {
+      "label": "SquareCeramicGlossyTile_Aqua Blue",
+      "albedo": "/textures/materials_textures/SquareCeramicGlossyTile_Aqua%20Blue/BaseColor/TilesSquarePoolMixed_BaseColor.jpg",
+      "normal": "/textures/materials_textures/SquareCeramicGlossyTile_Aqua%20Blue/TilesSquarePoolMixed001_NRM_1K.jpg",
+      "gloss": "/textures/materials_textures/SquareCeramicGlossyTile_Aqua%20Blue/TilesSquarePoolMixed001_GLOSS_1K.jpg",
+      "height": "/textures/materials_textures/SquareCeramicGlossyTile_Aqua%20Blue/Displacement/TilesSquarePoolMixed_Displacement.jpg"
     },
     "squarestackedpavertexture-grey": {
       "label": "SquareStackedPaverTexture_Grey",

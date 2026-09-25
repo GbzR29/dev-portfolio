@@ -33,7 +33,7 @@ out vec4 FragColor;
 void main() { FragColor = vec4(texture(uTex, vUV, uBias).rgb, 1.0); }`;
 
 const MODES = ["nearest, no mips", "bilinear, no mips", "trilinear", "anisotropic ×4", "anisotropic ×16"] as const;
-const TEX_ID = pickTexture("mat:squareceramic-glossytiletexture-aqua-blue:albedo", "mat:squarestackedpavertexture-grey:albedo", "checker");
+const TEX_ID = pickTexture("mat:squareceramicglossytile-aqua-blue:albedo", "mat:squarestackedpavertexture-grey:albedo", "checker");
 
 /** A 256² texture whose every mip level is filled by hand with its own colour (plus a grid). */
 function colouredMips(gl: WebGL2RenderingContext) {

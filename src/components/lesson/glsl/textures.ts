@@ -8,7 +8,7 @@ import assets from "@/lib/generated/assets.json";
 type Manifest = {
   prototype: Record<string, string>;
   protoSets?: Record<string, string[]>;
-  materials?: Record<string, { label: string; albedo: string; normal?: string; roughness?: string; gloss?: string; ao?: string; metallic?: string; height?: string }>;
+  materials?: Record<string, { label: string } & Partial<Record<Channel, string>> & { albedo: string }>;
 };
 const M = assets as unknown as Manifest;
 
@@ -77,17 +77,47 @@ export function textureOptions(): TexOption[] {
     { id: "checker", label: "checker", group: "procedural", src: checker },
     { id: "uvgrid", label: "UV grid", group: "procedural", src: uvGrid },
   ];
+  // One entry per material; the slot decides which of its maps is bound (see withOption)
   for (const [id, m] of Object.entries(M.materials ?? {})) {
     const nice = m.label.replace(/Texture|_/g, " ").replace(/\s+/g, " ").trim();
-    (["albedo", "normal", "roughness", "gloss", "ao", "height"] as const).forEach(ch => {
-      const url = m[ch];
-      if (url) out.push({ id: `mat:${id}:${ch}`, label: `${nice} · ${ch}`, group: "materials", src: () => url });
-    });
+    out.push({ id: `mat:${id}`, label: nice, group: "materials", src: () => m.albedo });
   }
   for (const [colour, list] of Object.entries(M.protoSets ?? {})) {
     list.forEach((url, i) => out.push({ id: `proto:${colour}:${i + 1}`, label: `${colour} ${String(i + 1).padStart(2, "0")}`, group: "prototype", src: () => url }));
   }
   return out;
+}
+
+// ── Slots: a slot id is an option id, or "mat:<material>:<channel>" ───────────
+type Channel = "albedo" | "normal" | "roughness" | "gloss" | "ao" | "metallic" | "height";
+
+/** The dropdown entry a slot shows ("mat:x:normal" → "mat:x"). */
+export function slotOption(slot: string): string {
+  const [kind, a] = slot.split(":");
+  return kind === "mat" ? `mat:${a}` : slot;
+}
+
+/** The map a slot binds, when it is not the material's colour ("normal", "ao"…), else null. */
+export function slotChannel(slot: string): string | null {
+  const [kind, , ch] = slot.split(":");
+  return kind === "mat" && ch && ch !== "albedo" ? ch : null;
+}
+
+/** Picking another material keeps the slot's map (normal stays normal) when the new material has it. */
+export function withOption(slot: string, option: string): string {
+  const [kind, a] = option.split(":");
+  if (kind !== "mat") return option;
+  const ch = (slotChannel(slot) ?? "albedo") as Channel;
+  return M.materials?.[a]?.[ch] ? `mat:${a}:${ch}` : `mat:${a}:albedo`;
+}
+
+function sourceOf(id: string): (() => string | HTMLCanvasElement) | null {
+  const [kind, a, ch] = id.split(":");
+  if (kind === "mat") {
+    const url = M.materials?.[a]?.[(ch ?? "albedo") as Channel];
+    return url ? () => url : null;
+  }
+  return textureOptions().find(o => o.id === id)?.src ?? null;
 }
 
 /** First material id with the given channel, for presets that want "some albedo" / "some normal map". */
@@ -105,9 +135,9 @@ export function loadOption(gl: WebGL2RenderingContext, id: string): Promise<WebG
   if (!per) { per = new Map(); loaded.set(gl, per); }
   const hit = per.get(id);
   if (hit) return hit;
-  const opt = textureOptions().find(o => o.id === id) ?? textureOptions()[0];
+  const source = sourceOf(id) ?? textureOptions()[0].src;
   const p = (async () => {
-    const src = opt.src();
+    const src = source();
     const im = typeof src === "string"
       ? await new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; })
       : src;

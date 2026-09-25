@@ -11,7 +11,7 @@ import {
   buildProgram, buildMeshes, parseControls, usedChannels, DEFAULT_VERTEX,
   type Mode, type MeshKind, type ShaderError, type Control,
 } from "./engine";
-import { textureOptions, loadOption } from "./textures";
+import { textureOptions, loadOption, slotOption, slotChannel, withOption } from "./textures";
 
 // ── What this widget is ───────────────────────────────────────────────────────
 // A small ShaderToy inside the lesson. The reader edits real GLSL ES 3.00 and
@@ -383,13 +383,14 @@ export function ShaderPlayground({ presets, t, title, aspect = 16 / 9, initialPr
                   {used.map(i => (
                     <label key={i} className="flex items-center gap-1.5 text-[10px] font-mono text-[var(--text-muted)]">
                       uTex{i}
-                      <select className={sel} value={channels[i]} onChange={e => setChannels(ch => ch.map((x, k) => (k === i ? e.target.value : x)))}>
+                      <select className={sel} value={slotOption(channels[i])} onChange={e => setChannels(ch => ch.map((x, k) => (k === i ? withOption(x, e.target.value) : x)))}>
                         {groups.map(g => (
                           <optgroup key={g} label={g}>
                             {options.filter(o => o.group === g).map(o => <option key={o.id} value={o.id}>{o.label}</option>)}
                           </optgroup>
                         ))}
                       </select>
+                      {slotChannel(channels[i]) && <span className="text-[var(--primary)]">· {slotChannel(channels[i])}</span>}
                     </label>
                   ))}
                 </div>

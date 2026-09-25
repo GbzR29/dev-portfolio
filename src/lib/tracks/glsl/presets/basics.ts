@@ -2,7 +2,7 @@
 import type { PlaygroundPreset } from "@/components/lesson/glsl/ShaderPlayground";
 import { pickTexture } from "@/components/lesson/glsl/textures";
 
-const TILES = pickTexture("mat:squareceramic-glossytiletexture-aqua-blue:albedo", "mat:squarestackedpavertexture-grey:albedo", "uvgrid");
+const TILES = pickTexture("mat:squareceramicglossytile-aqua-blue:albedo", "mat:squarestackedpavertexture-grey:albedo", "uvgrid");
 const WOOD = pickTexture("mat:wood-texture:albedo", "clouds");
 const PAVER = pickTexture("mat:squarestackedpavertexture-grey:albedo", "checker");
 

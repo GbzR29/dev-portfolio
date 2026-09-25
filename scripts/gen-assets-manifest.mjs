@@ -18,7 +18,8 @@
 //   public/textures/materials_textures/<set>/…                 PBR material sets; channels are detected
 //                                                             from the file names (BaseColor/COL, Normal/NRM,
 //                                                             Roughness, GLOSS, AmbientOcclusion/AO, Metallic,
-//                                                             Displacement/DISP). Loose images become
+//                                                             Displacement/DISP), also inside sub-folders
+//                                                             such as <set>/Normal/…. Loose images become
 //                                                             albedo-only materials. TIFFs are skipped.
 
 import { readdirSync, existsSync, mkdirSync, writeFileSync, statSync, openSync, readSync, closeSync } from "node:fs";
@@ -102,17 +103,28 @@ const CHANNELS = [
   ["metallic", /metallic|metalness/i],
   ["height", /displacement|height|_disp(_|\.)/i],
 ];
+/** Image paths (relative, "/"-separated) anywhere under dir. */
+function imagesDeep(dir, rel = "") {
+  const out = [];
+  for (const f of readdirSync(join(dir, rel))) {
+    const r = rel ? `${rel}/${f}` : f;
+    if (statSync(join(dir, r)).isDirectory()) out.push(...imagesDeep(dir, r));
+    else if (IMG.has(extname(f).toLowerCase()) && !/preview/i.test(f)) out.push(r);
+  }
+  return out;
+}
+
 const materials = {};
 const matRoot = join(pub, "materials_textures");
 if (existsSync(matRoot)) {
   for (const entry of readdirSync(matRoot)) {
     const abs = join(matRoot, entry);
     if (statSync(abs).isDirectory()) {
-      const files = readdirSync(abs).filter(f => IMG.has(extname(f).toLowerCase()) && !/preview/i.test(f));
+      const files = imagesDeep(abs);
       const set = {};
       for (const [ch, re] of CHANNELS) {
-        const hit = files.find(f => re.test(f) && !/16/.test(f.replace(/_\d{4}_/, "_")));
-        if (hit) set[ch] = `/textures/materials_textures/${encodeURI(entry)}/${encodeURI(hit)}`;
+        const hit = files.find(f => re.test(basename(f)) && !/16/.test(basename(f).replace(/_\d{4}_/, "_")));
+        if (hit) set[ch] = `/textures/materials_textures/${encodeURI(entry)}/${hit.split("/").map(encodeURI).join("/")}`;
       }
       if (set.albedo) materials[slug(entry)] = { label: entry, ...set };
     } else if (IMG.has(extname(entry).toLowerCase())) {

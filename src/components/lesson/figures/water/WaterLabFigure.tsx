@@ -7,6 +7,7 @@ import { compileProgram } from "../../kit/gl/gl";
 import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
+import { loadPhotos, bindPhotos, type PhotoList } from "./photoTextures";
 import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
 import {
   WATER_FS, WATER_PRESETS, WATER_COLOURS, DEFAULT_WATER, MAX_WAVES, waterUniforms, applyUniforms, type WaterParams,
@@ -18,7 +19,14 @@ import {
 // quantities behind them (normals, the Jacobian, water thickness, caustics,
 // Fresnel). It only animates while it is on screen.
 
-type Res = { prog: WebGLProgram; vao: WebGLVertexArrayObject };
+// Photo textures for the bed, in shader sampler order (see photoTextures.ts)
+const TEX: PhotoList = [
+  ["uSandA", "mat:groundsand:albedo"], ["uSandN", "mat:groundsand:normal"], ["uSandAO", "mat:groundsand:ao"],
+  ["uPoolA", "mat:squareceramicglossytile-aqua-blue:albedo"], ["uPoolN", "mat:squareceramicglossytile-aqua-blue:normal"],
+];
+const GROUPS = [[0, 1, 2], [3, 4]];
+
+type Res = { prog: WebGLProgram; vao: WebGLVertexArrayObject; tex: (WebGLTexture | null)[] };
 type Tab = "waves" | "water" | "effects" | "sky";
 
 const VIEWS = ["final", "normals", "Jacobian J", "thickness", "caustics", "Fresnel"] as const;
@@ -46,13 +54,19 @@ export function WaterLabFigure({ t }: { t?: TrackTranslations }) {
     setPreset(id);
   };
 
-  const init = (gl: WebGL2RenderingContext): Res => ({ prog: compileProgram(gl, FULL_VS, WATER_FS), vao: gl.createVertexArray()! });
+  const [texReady, setTexReady] = useState(0);        // bumps as textures arrive, so a paused view redraws
+  const init = (gl: WebGL2RenderingContext): Res => ({
+    prog: compileProgram(gl, FULL_VS, WATER_FS), vao: gl.createVertexArray()!,
+    tex: loadPhotos(gl, TEX, () => setTexReady(n => n + 1)),
+  });
   const draw = (gl: WebGL2RenderingContext, r: Res, size: { w: number; h: number; aspect: number }) => {
     if (size.aspect !== aspect) setAspect(size.aspect);
     gl.viewport(0, 0, size.w, size.h);
     gl.disable(gl.DEPTH_TEST);
     gl.useProgram(r.prog);
     applyUniforms(gl, r.prog, waterUniforms(w, sky, look, size.aspect, time + 3));
+    gl.uniform1f(gl.getUniformLocation(r.prog, "uPix"), 2 * Math.tan(look.fov / 2) / size.h);
+    bindPhotos(gl, r.prog, TEX, r.tex, "uHave", GROUPS);
     drawFullscreen(gl, r.vao);
   };
 
@@ -98,7 +112,7 @@ export function WaterLabFigure({ t }: { t?: TrackTranslations }) {
 
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
         <GLView<Res> init={init} draw={draw} look={look} onLook={setLook} resolution={quality}
-          frame={[look, w, sky, time, aspect]} aspect={16 / 9} fovRange={[0.5, 1.8]} />
+          frame={[look, w, sky, time, aspect, texReady]} aspect={16 / 9} fovRange={[0.5, 1.8]} />
       </div>
 
       <div className="p-4 md:p-5 space-y-3">
