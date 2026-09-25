@@ -8,6 +8,10 @@
 //   public/textures/maps/<name>.png|jpg             lighting maps (container_diffuse…)
 //   public/textures/skybox/<set>/px|nx|py|ny|pz|nz.png|jpg   cubemap faces
 //   public/textures/skybox/<set>/equirect.png|jpg             2:1 panorama
+//   public/textures/skybox/<dir>/<Name>_NN.png                loose sky images: a 4:3 PNG is a horizontal
+//                                                             cross (unfolded cube), a 2:1 PNG a panorama.
+//                                                             Images ending in the same number are one sky
+//                                                             (Cubemap_Sky_05 + Panorama_Sky_05 → sky_05).
 //   public/textures/prototype/<Colour>/texture_NN.png          per-colour prototype sets:
 //                                                             texture_01 is the colour's default tile,
 //                                                             every variant is listed under protoSets
@@ -17,7 +21,7 @@
 //                                                             Displacement/DISP). Loose images become
 //                                                             albedo-only materials. TIFFs are skipped.
 
-import { readdirSync, existsSync, mkdirSync, writeFileSync, statSync } from "node:fs";
+import { readdirSync, existsSync, mkdirSync, writeFileSync, statSync, openSync, readSync, closeSync } from "node:fs";
 import { join, extname, basename, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -37,6 +41,16 @@ function images(dir) {
   return out;
 }
 
+/** Width and height of a PNG from its IHDR chunk, or null for anything else. */
+function pngSize(file) {
+  if (extname(file).toLowerCase() !== ".png" || !statSync(file).isFile()) return null;
+  const fd = openSync(file, "r"), b = Buffer.alloc(24);
+  readSync(fd, b, 0, 24, 0);
+  closeSync(fd);
+  return b.toString("latin1", 12, 16) === "IHDR" ? { w: b.readUInt32BE(16), h: b.readUInt32BE(20) } : null;
+}
+
+const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const FACES = ["px", "nx", "py", "ny", "pz", "nz"];
 const skybox = {};
 const skyRoot = join(pub, "skybox");
@@ -47,7 +61,18 @@ if (existsSync(skyRoot)) {
     const entry = {};
     if (FACES.every(f => files[f])) entry.faces = FACES.map(f => files[f]);
     if (files.equirect) entry.equirect = files.equirect;
-    if (entry.faces || entry.equirect) skybox[set] = entry;
+    if (entry.faces || entry.equirect) { skybox[set] = entry; continue; }
+    // Loose skies: classify each image by its aspect ratio, pair them by number
+    for (const f of readdirSync(join(skyRoot, set))) {
+      const size = pngSize(join(skyRoot, set, f));
+      if (!size) continue;
+      const r = size.w / size.h;
+      const kind = Math.abs(r - 4 / 3) < 0.02 ? "cross" : Math.abs(r - 2) < 0.02 ? "equirect" : null;
+      if (!kind) continue;
+      const num = basename(f, extname(f)).replace(/-\d+x\d+$/, "").match(/(\d+)$/);
+      const id = num ? `sky_${num[1].padStart(2, "0")}` : slug(basename(f, extname(f)));
+      (skybox[id] ??= {})[kind] = `/textures/skybox/${encodeURI(set)}/${encodeURI(f)}`;
+    }
   }
 }
 
@@ -79,7 +104,6 @@ const CHANNELS = [
 ];
 const materials = {};
 const matRoot = join(pub, "materials_textures");
-const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 if (existsSync(matRoot)) {
   for (const entry of readdirSync(matRoot)) {
     const abs = join(matRoot, entry);

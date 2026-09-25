@@ -14,7 +14,7 @@ const MANIFEST = assets as {
   prototype: Record<string, string>;
   icons: Record<string, string>;
   maps?: Record<string, string>;
-  skybox: Record<string, { faces?: string[]; equirect?: string }>;
+  skybox: Record<string, { faces?: string[]; equirect?: string; cross?: string }>;
 };
 
 export const PROTO = {

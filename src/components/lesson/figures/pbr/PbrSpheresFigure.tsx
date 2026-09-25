@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, forwardFrom, SKYBOX_CUBE, SUN_DIR, type Vec3 } from "../gl";
-import { GLView, type Look } from "../GLView";
+import { GLView, useSky, SkyPicker, type Look } from "../GLView";
 import { uploadMesh, spherePNUT, trs, FULL_VS, drawFullscreen, type Mesh } from "../glx";
-import { PBR_GLSL, buildIBL, SKY_VS, SKY_FS, type IBL } from "./ibl";
+import { PBR_GLSL, buildIBL, disposeIBL, SKY_VS, SKY_FS, type IBL } from "./ibl";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The classic PBR test chart: a 7×7 grid of spheres, metallic rising bottom to
@@ -105,7 +105,7 @@ out vec4 FragColor;
 void main() { FragColor = vec4(1.0, 0.95, 0.85, 1.0); }`;
 
 type Res = {
-  pbr: WebGLProgram; sky: WebGLProgram; lutProg: WebGLProgram; lamp: WebGLProgram;
+  gl: WebGL2RenderingContext; pbr: WebGLProgram; sky: WebGLProgram; lutProg: WebGLProgram; lamp: WebGLProgram;
   sphere: Mesh; cube: WebGLVertexArrayObject; full: WebGLVertexArrayObject; ibl: IBL | null;
 };
 
@@ -133,13 +133,33 @@ export function PbrSpheresFigure({ t, ibl = false }: { t?: TrackTranslations; ib
   const [showLut, setShowLut] = useState(ibl === "specular");
   const [loading, setLoading] = useState(!!ibl);
   const iblLevel = ibl === "specular" ? 2 : ibl === "diffuse" ? 1 : 0;
+  // "procedural" here means the analytic HDR sky, computed on the GPU
+  const sky = useSky({ initial: "procedural", off: !ibl });
+  const resRef = useRef<Res | null>(null);
+  const [ready, setReady] = useState(false);
+
+  // (Re)build the IBL maps whenever another sky is chosen
+  useEffect(() => {
+    const r = resRef.current;
+    const hdr = sky.id === "procedural";
+    if (!ibl || !r || !sky.id || (!hdr && (sky.busy || !sky.images))) return;
+    let alive = true;
+    setLoading(true);
+    buildIBL(r.gl, { sun: SUN_DIR, sky: hdr ? null : sky.images }).then(next => {
+      if (!alive) { disposeIBL(r.gl, next); return; }
+      if (r.ibl) disposeIBL(r.gl, r.ibl);
+      r.ibl = next;
+      setLoading(false);
+    });
+    return () => { alive = false; };
+  }, [ibl, ready, sky.id, sky.images, sky.busy]);
 
   // Orbit: the camera circles the chart (drag right and the chart turns right)
   const f = forwardFrom(look.yaw, look.pitch);
   const DIST = 10.5;
   const cam: Vec3 = [-f[0] * DIST, -f[1] * DIST, -f[2] * DIST];
 
-  const init = async (gl: WebGL2RenderingContext): Promise<Res> => {
+  const init = (gl: WebGL2RenderingContext): Res => {
     const cube = gl.createVertexArray()!;
     gl.bindVertexArray(cube);
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
@@ -147,14 +167,15 @@ export function PbrSpheresFigure({ t, ibl = false }: { t?: TrackTranslations; ib
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
     const res: Res = {
-      pbr: compileProgram(gl, PBR_VS, PBR_FS),
+      gl, pbr: compileProgram(gl, PBR_VS, PBR_FS),
       sky: compileProgram(gl, SKY_VS, SKY_FS),
       lutProg: compileProgram(gl, FULL_VS, LUT_FS),
       lamp: compileProgram(gl, PBR_VS, LIGHT_FS),
       sphere: uploadMesh(gl, spherePNUT(40, 64)),
       cube, full: gl.createVertexArray()!, ibl: null,
     };
-    if (ibl) { res.ibl = await buildIBL(gl, { sun: SUN_DIR }); setLoading(false); }
+    resRef.current = res;
+    setReady(true);
     return res;
   };
 
@@ -284,6 +305,10 @@ export function PbrSpheresFigure({ t, ibl = false }: { t?: TrackTranslations; ib
             <span className="w-px h-5 bg-[var(--border)] mx-1" />
             {BACKGROUNDS.slice(0, ibl === "specular" ? 3 : 2).map((b, i) => <button key={b} className={btn(bg === i)} onClick={() => setBg(i)}>{b}</button>)}
             {ibl === "specular" && <button className={btn(showLut)} onClick={() => setShowLut(v => !v)}>BRDF LUT</button>}
+            <span className="ml-auto">
+              <SkyPicker sources={sky.sources.map(s => (s.id === "procedural" ? { ...s, label: "analytic HDR sky" } : s))}
+                value={sky.id} onChange={sky.setId} busy={loading} />
+            </span>
           </div>
         )}
         {([

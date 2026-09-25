@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import {
-  mat4, compileProgram, SKYBOX_CUBE, loadCubemap, dirToFace, FACE_NAMES, FACE_FILES, forwardFrom, type Vec3,
+  mat4, compileProgram, SKYBOX_CUBE, dirToFace, FACE_NAMES, FACE_FILES, forwardFrom, type Vec3,
 } from "./gl";
-import { GLView, rayDir, skySources, faceHref, type Look, type SkySource } from "./GLView";
+import { GLView, rayDir, faceHref, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "./GLView";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // You stand inside a real samplerCube. Hover any pixel: the figure shows the
@@ -58,7 +58,7 @@ void main() {
   FragColor = vec4(c, 1.0);
 }`;
 
-type Res = { gl: WebGL2RenderingContext; prog: WebGLProgram; vao: WebGLVertexArrayObject; sky: WebGLTexture | null; loaded: string };
+type Res = { prog: WebGLProgram; vao: WebGLVertexArrayObject; skyTex?: WebGLTexture | null; skyFrom?: SkyImages | null };
 
 // Unfolded cube: [−X][+Z][+X][−Z] across, +Y above +Z, −Y below it. With the
 // faces stored the way OpenGL stores them, these edges line up seamlessly.
@@ -71,32 +71,8 @@ export function CubemapExplorerFigure({ t }: { t?: TrackTranslations }) {
   const [look, setLook] = useState<Look>({ yaw: 0.35, pitch: 0.12, fov: 1.35 });
   const [hover, setHover] = useState<{ x: number; y: number } | null>(null);
   const [showFaces, setShowFaces] = useState(true);
-  const [sources, setSources] = useState<SkySource[]>([]);
-  const [srcId, setSrcId] = useState("procedural");
+  const sky = useSky({ labels: true });
   const [aspect, setAspect] = useState(16 / 9);
-  const resRef = useRef<Res | null>(null);
-  const [skyVer, setSkyVer] = useState(0);
-
-  useEffect(() => {
-    const s = skySources({ labels: true });
-    setSources(s);
-    setSrcId(s[0]?.id ?? "procedural");
-  }, []);
-  const source = sources.find(s => s.id === srcId) ?? sources[0];
-
-  // Swap the cube map when another sky is picked (the first one loads in init)
-  useEffect(() => {
-    const r = resRef.current;
-    if (!r || !source || source.id === r.loaded) return;
-    let alive = true;
-    loadCubemap(r.gl, source.faces).then(tex => {
-      if (!alive) { r.gl.deleteTexture(tex); return; }
-      if (r.sky) r.gl.deleteTexture(r.sky);
-      r.sky = tex; r.loaded = source.id;
-      setSkyVer(v => v + 1);
-    });
-    return () => { alive = false; };
-  }, [source]);
 
   // Direction under the cursor, or straight ahead
   const dir: Vec3 = hover ? rayDir(look, aspect, hover.x, hover.y) : forwardFrom(look.yaw, look.pitch);
@@ -106,7 +82,7 @@ export function CubemapExplorerFigure({ t }: { t?: TrackTranslations }) {
   const ma = [ax, ay, az][major];
   const sc = 2 * hit.s - 1, tc = 2 * hit.t - 1;
 
-  const faceUrls = useMemo(() => (source ? source.faces.map(faceHref) : []), [source]);
+  const faceUrls = useMemo(() => (sky.images ? sky.images.faces.map(faceHref) : []), [sky.images]);
 
   const init = async (gl: WebGL2RenderingContext): Promise<Res> => {
     const prog = compileProgram(gl, VS, FS);
@@ -117,10 +93,7 @@ export function CubemapExplorerFigure({ t }: { t?: TrackTranslations }) {
     gl.bufferData(gl.ARRAY_BUFFER, SKYBOX_CUBE, gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
-    const first = skySources({ labels: true })[0];
-    const r: Res = { gl, prog, vao, sky: await loadCubemap(gl, first.faces), loaded: first.id };
-    resRef.current = r;
-    return r;
+    return { prog, vao };
   };
 
   const draw = (gl: WebGL2RenderingContext, r: Res, size: { w: number; h: number; aspect: number }) => {
@@ -128,7 +101,8 @@ export function CubemapExplorerFigure({ t }: { t?: TrackTranslations }) {
     gl.viewport(0, 0, size.w, size.h);
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    if (!r.sky) return;
+    const cube = skyTexture(gl, r, sky.images);
+    if (!cube) return;
     const f = forwardFrom(look.yaw, look.pitch);
     const view = mat4.stripTranslation(mat4.lookAt([0, 0, 0], f, [0, 1, 0]));
     const proj = mat4.perspective(look.fov, size.aspect, 0.1, 10);
@@ -139,7 +113,7 @@ export function CubemapExplorerFigure({ t }: { t?: TrackTranslations }) {
     gl.uniform3fv(gl.getUniformLocation(r.prog, "uHoverDir"), dir);
     gl.uniform1f(gl.getUniformLocation(r.prog, "uHover"), hover ? 1 : 0);
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_CUBE_MAP, r.sky);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, cube);
     gl.uniform1i(gl.getUniformLocation(r.prog, "uSky"), 0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
@@ -171,7 +145,7 @@ export function CubemapExplorerFigure({ t }: { t?: TrackTranslations }) {
 
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
         <GLView<Res> init={init} draw={draw} look={look} onLook={setLook} onHover={setHover}
-          frame={[look, hover, showFaces, skyVer, aspect]} aspect={16 / 9} />
+          frame={[look, hover, showFaces, sky.images, aspect]} aspect={16 / 9} />
       </div>
 
       <div className="p-4 md:p-5 grid gap-5 md:grid-cols-[1fr_auto]">
@@ -201,14 +175,7 @@ export function CubemapExplorerFigure({ t }: { t?: TrackTranslations }) {
                 : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`}>
               {showFaces ? "✓ " : ""}{tx(t, "figCube_showFaces", "tint faces & seams")}
             </button>
-            {sources.length > 1 && sources.map(s => (
-              <button key={s.id} onClick={() => setSrcId(s.id)}
-                className={`px-2.5 py-1 text-[10px] font-mono rounded-lg border transition-all ${srcId === s.id
-                  ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]"
-                  : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`}>
-                {s.label}
-              </button>
-            ))}
+            <SkyPicker sources={sky.sources} value={sky.id} onChange={sky.setId} busy={sky.busy} />
           </div>
           <p className="text-[12px] text-[var(--text-muted)] leading-relaxed">
             {tx(t, "figCube_note",

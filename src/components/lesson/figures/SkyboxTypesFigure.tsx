@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, SKYBOX_CUBE, loadCubemap, loadTexture2D, forwardFrom, norm, type Vec3 } from "./gl";
-import { GLView, rayDir, skySources, faceHref, type Look, type SkySource } from "./GLView";
+import { mat4, compileProgram, SKYBOX_CUBE, makeTexture2D, forwardFrom, dot as dot3, FACE_NAMES, CROSS_CELLS, crossCellOf } from "./gl";
+import { GLView, rayDir, faceHref, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "./GLView";
+import { PROC_SKY_FS, DEFAULT_SKY_PARAMS, setSkyUniforms, sunDirection } from "./sky/proceduralSky";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Three ways to put a sky behind a scene, rendered by the same skybox cube:
@@ -54,41 +55,14 @@ void main() {
   FragColor = vec4(c, 1.0);
 }`;
 
-const FS_PROC = `#version 300 es
-precision highp float;
-in vec3 vDir;
-uniform vec3 uSun;
-out vec4 FragColor;
-void main() {
-  vec3 d = normalize(vDir);
-  float sunH = uSun.y;                                       // −1 night … 1 noon
-  float day = smoothstep(-0.25, 0.35, sunH);
-  float dusk = exp(-pow(sunH * 5.0, 2.0));                  // strongest near the horizon
-
-  vec3 zenith  = mix(vec3(0.02, 0.03, 0.08), vec3(0.18, 0.40, 0.78), day);
-  vec3 horizon = mix(vec3(0.05, 0.07, 0.15), vec3(0.78, 0.86, 0.94), day);
-  horizon = mix(horizon, vec3(1.0, 0.45, 0.2), dusk * 0.8);
-
-  vec3 c;
-  if (d.y >= 0.0) {
-    c = mix(horizon, zenith, pow(d.y, 0.45));
-    float s = max(dot(d, uSun), 0.0);
-    c += vec3(1.0, 0.8, 0.55) * (pow(s, 64.0) * 0.9 + pow(s, 6.0) * 0.25 * day);
-    c += step(0.9985, s) * vec3(1.0, 0.95, 0.85);
-  } else {
-    vec2 g = d.xz / -d.y;                                    // ground plane y = −1
-    vec2 w = abs(fract(g) - 0.5);
-    float line = (1.0 - smoothstep(0.46, 0.49, max(w.x, w.y))) * min(1.0, -d.y * 3.0);
-    vec3 ground = mix(vec3(0.29, 0.36, 0.3), vec3(0.52, 0.6, 0.54), 1.0 - line) * (0.25 + 0.75 * day);
-    c = mix(ground, horizon, pow(1.0 - min(1.0, -d.y * 4.0), 3.0));
-  }
-  FragColor = vec4(c, 1.0);
-}`;
+// The procedural tab uses the chapter's layered sky (see sky/proceduralSky.ts)
+const FS_PROC = PROC_SKY_FS;
 
 type Kind = "cube" | "equi" | "proc";
 type Res = {
-  gl: WebGL2RenderingContext; vao: WebGLVertexArrayObject;
-  progs: Record<Kind, WebGLProgram>; cube: WebGLTexture; pano: WebGLTexture;
+  vao: WebGLVertexArrayObject; progs: Record<Kind, WebGLProgram>;
+  skyTex?: WebGLTexture | null; skyFrom?: SkyImages | null;
+  pano?: WebGLTexture | null; panoFrom?: SkyImages | null;
 };
 
 const f2 = (n: number) => n.toFixed(2);
@@ -102,36 +76,22 @@ export function SkyboxTypesFigure({ t }: { t?: TrackTranslations }) {
   const [grid, setGrid] = useState(false);
   const [sunEl, setSunEl] = useState(18);
   const [sunAz, setSunAz] = useState(55);
-  const [sources, setSources] = useState<SkySource[]>([]);
-  const resRef = useRef<Res | null>(null);
+  const sky = useSky();
+  const panoHref = useMemo(() => (sky.images ? faceHref(sky.images.equirect) : ""), [sky.images]);
+  const faceHrefs = useMemo(() => (sky.images ? sky.images.faces.map(faceHref) : []), [sky.images]);
+  const sun = sunDirection(sunEl, sunAz);
 
-  useEffect(() => { setSources(skySources()); }, []);
-  const src = sources[0];
-  const panoHref = useMemo(() => (src ? faceHref(src.equirect) : ""), [src]);
-  const faceHrefs = useMemo(() => (src ? src.faces.map(faceHref) : []), [src]);
-
-  const sun: Vec3 = norm([
-    Math.cos((sunEl * Math.PI) / 180) * Math.sin((sunAz * Math.PI) / 180),
-    Math.sin((sunEl * Math.PI) / 180),
-    -Math.cos((sunEl * Math.PI) / 180) * Math.cos((sunAz * Math.PI) / 180),
-  ]);
-
-  const init = async (gl: WebGL2RenderingContext): Promise<Res> => {
+  const init = (gl: WebGL2RenderingContext): Res => {
     const vao = gl.createVertexArray()!;
     gl.bindVertexArray(vao);
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
     gl.bufferData(gl.ARRAY_BUFFER, SKYBOX_CUBE, gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0);
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 12, 0);
-    const s = skySources()[0];
-    const r: Res = {
-      gl, vao,
+    return {
+      vao,
       progs: { cube: compileProgram(gl, VS, FS_CUBE), equi: compileProgram(gl, VS, FS_EQUI), proc: compileProgram(gl, VS, FS_PROC) },
-      cube: await loadCubemap(gl, s.faces),
-      pano: await loadTexture2D(gl, s.equirect),
     };
-    resRef.current = r;
-    return r;
   };
 
   const draw = (gl: WebGL2RenderingContext, r: Res, size: { w: number; h: number; aspect: number }) => {
@@ -147,16 +107,23 @@ export function SkyboxTypesFigure({ t }: { t?: TrackTranslations }) {
     gl.uniformMatrix4fv(gl.getUniformLocation(p, "uView"), false, mat4.stripTranslation(mat4.lookAt([0, 0, 0], f, [0, 1, 0])));
     gl.uniformMatrix4fv(gl.getUniformLocation(p, "uProjection"), false, mat4.perspective(look.fov, size.aspect, 0.1, 10));
     gl.activeTexture(gl.TEXTURE0);
+    const cube = skyTexture(gl, r, sky.images);
+    if (sky.images && r.panoFrom !== sky.images) {
+      if (r.pano) gl.deleteTexture(r.pano);
+      r.pano = makeTexture2D(gl, sky.images.equirect);
+      r.panoFrom = sky.images;
+    }
+    if (kind !== "proc" && !cube) return;
     if (kind === "cube") {
-      gl.bindTexture(gl.TEXTURE_CUBE_MAP, r.cube);
+      gl.bindTexture(gl.TEXTURE_CUBE_MAP, cube);
       gl.uniform1i(gl.getUniformLocation(p, "uSky"), 0);
     } else if (kind === "equi") {
-      gl.bindTexture(gl.TEXTURE_2D, r.pano);
+      gl.bindTexture(gl.TEXTURE_2D, r.pano ?? null);
       gl.uniform1i(gl.getUniformLocation(p, "uPano"), 0);
       gl.uniform1f(gl.getUniformLocation(p, "uFixSeam"), fixSeam ? 1 : 0);
       gl.uniform1f(gl.getUniformLocation(p, "uGrid"), grid ? 1 : 0);
     } else {
-      gl.uniform3fv(gl.getUniformLocation(p, "uSun"), sun);
+      setSkyUniforms(gl, p, { ...DEFAULT_SKY_PARAMS, sunEl, sunAz });
     }
     gl.bindVertexArray(r.vao);
     gl.drawArrays(gl.TRIANGLES, 0, 36);
@@ -165,6 +132,13 @@ export function SkyboxTypesFigure({ t }: { t?: TrackTranslations }) {
   // Panorama coordinate of the hovered (or central) ray, for the marker
   const d = hover ? rayDir(look, aspect, hover.x, hover.y) : forwardFrom(look.yaw, look.pitch);
   const u = Math.atan2(d[2], d[0]) / (2 * Math.PI) + 0.5, v = 0.5 - Math.asin(Math.max(-1, Math.min(1, d[1]))) / Math.PI;
+  // …and in the cross: the cell looking most along d, then d projected onto its image axes
+  const cell = CROSS_CELLS.reduce((best, c) => (dot3(c.fwd, d) > dot3(best.fwd, d) ? c : best));
+  const along = dot3(cell.fwd, d);
+  const crossAt = {
+    x: (cell.col + (dot3(cell.right, d) / along + 1) / 2) / 4,
+    y: (cell.row + (dot3(cell.down, d) / along + 1) / 2) / 3,
+  };
 
   const tabs: [Kind, string, string][] = [
     ["cube", "figSkyT_cube", "Cube map"],
@@ -183,8 +157,8 @@ export function SkyboxTypesFigure({ t }: { t?: TrackTranslations }) {
                0.5 - asin(dir.y) / PI);
 vec3 c = ${fixSeam ? "textureLod(uPano, uv, 0.0)" : "texture(uPano, uv)"}.rgb;`
       : `// no texture at all: colour from the direction and a sun uniform
-vec3 c = mix(horizon, zenith, pow(dir.y, 0.45));
-c += sunColor * pow(max(dot(dir, uSun), 0.0), 64.0);`;
+vec3 c = sky(dir);   // scattering + sun + stars + clouds
+// built step by step in "A procedural sky" below`;
 
   return (
     <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
@@ -201,22 +175,47 @@ c += sunColor * pow(max(dot(dir, uSun), 0.0), 64.0);`;
 
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
         <GLView<Res> init={init} draw={draw} look={look} onLook={setLook} onHover={setHover}
-          frame={[kind, look, fixSeam, grid, sunEl, sunAz, aspect]} aspect={16 / 9} />
+          frame={[kind, look, fixSeam, grid, sunEl, sunAz, aspect, sky.images]} aspect={16 / 9} />
       </div>
 
       <div className="p-4 md:p-5 grid gap-5 md:grid-cols-2">
         {/* What the sky is made of */}
         <div className="space-y-2 min-w-0">
-          <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
-            {tx(t, "figSkyT_source", "Source data")}
-          </p>
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
+              {tx(t, "figSkyT_source", "Source data")}
+            </p>
+            {kind !== "proc" && <SkyPicker sources={sky.sources} value={sky.id} onChange={sky.setId} busy={sky.busy} />}
+          </div>
+          {kind === "cube" && sky.images?.cross && (
+            <div className="relative">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={sky.images.cross} alt="" className="w-full rounded border border-[var(--code-border)] bg-black" />
+              {CROSS_CELLS.map((c, i) => (
+                <span key={i} className="absolute text-[9px] font-mono font-bold text-white [text-shadow:0_0_3px_#000]"
+                  style={{ left: `${(c.col / 4) * 100 + 1}%`, top: `${(c.row / 3) * 100 + 1}%` }}>
+                  {FACE_NAMES[[0, 1, 2, 3, 4, 5].find(f => crossCellOf(f) === c)!]}
+                </span>
+              ))}
+              <span className="absolute w-3 h-3 -ml-1.5 -mt-1.5 rounded-full bg-amber-500 border-2 border-white"
+                style={{ left: `${crossAt.x * 100}%`, top: `${crossAt.y * 100}%` }} />
+            </div>
+          )}
           {kind === "cube" && (
             <div className="grid grid-cols-6 gap-1">
               {faceHrefs.map((h, i) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img key={i} src={h} alt="" className="w-full aspect-square rounded-sm border border-[var(--code-border)]" />
+                <div key={i} className="space-y-0.5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={h} alt="" className="w-full aspect-square rounded-sm border border-[var(--code-border)]" />
+                  <p className="text-[8px] font-mono text-center text-[var(--text-muted)]">{FACE_NAMES[i]}</p>
+                </div>
               ))}
             </div>
+          )}
+          {kind === "cube" && sky.images?.cross && (
+            <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">
+              {tx(t, "figSkyT_crossNote", "Above: the file as downloaded, a 4×3 cross seen from inside. Below: the six faces cut from it, in the order and orientation glTexImage2D expects — several come out mirrored or turned, which is the cube map convention, not a bug.")}
+            </p>
           )}
           {kind === "equi" && panoHref && (
             <div className="relative">

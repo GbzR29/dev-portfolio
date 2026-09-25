@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, SKYBOX_CUBE, sphereMesh, boxMesh, loadCubemap, forwardFrom } from "./gl";
-import { GLView, skySources, type Look } from "./GLView";
+import { mat4, compileProgram, SKYBOX_CUBE, sphereMesh, boxMesh, forwardFrom } from "./gl";
+import { GLView, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "./GLView";
 import { Arrow, Label } from "./svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -64,7 +64,7 @@ void main() {
 type Res = {
   sky: WebGLProgram; obj: WebGLProgram; skyVao: WebGLVertexArrayObject;
   sphere: { vao: WebGLVertexArrayObject; count: number }; box: { vao: WebGLVertexArrayObject; count: number };
-  cube: WebGLTexture;
+  skyTex?: WebGLTexture | null; skyFrom?: SkyImages | null;
 };
 type Mode = 0 | 1 | 2;
 const PRESETS: [string, number][] = [["air", 1.0], ["water", 1.33], ["glass", 1.52], ["diamond", 2.42]];
@@ -116,6 +116,7 @@ export function EnvMapFigure({ t }: { t?: TrackTranslations }) {
   const [mode, setMode] = useState<Mode>(0);
   const [ior, setIor] = useState(1.52);
   const [shape, setShape] = useState<"sphere" | "box">("sphere");
+  const sky = useSky();
 
   // Orbit: the camera sits behind the look direction, always aiming at the origin
   const f = forwardFrom(look.yaw, look.pitch);
@@ -132,7 +133,6 @@ export function EnvMapFigure({ t }: { t?: TrackTranslations }) {
     return {
       sky: compileProgram(gl, SKY_VS, SKY_FS), obj: compileProgram(gl, OBJ_VS, OBJ_FS), skyVao,
       sphere: meshVao(gl, sphereMesh()), box: meshVao(gl, boxMesh()),
-      cube: await loadCubemap(gl, skySources()[0].faces),
     };
   };
 
@@ -144,8 +144,10 @@ export function EnvMapFigure({ t }: { t?: TrackTranslations }) {
     gl.disable(gl.CULL_FACE);        // closed meshes: the depth test is enough
     const view = mat4.lookAt(cam, [0, 0, 0], [0, 1, 0]);
     const proj = mat4.perspective(look.fov, size.aspect, 0.1, 50);
+    const cube = skyTexture(gl, r, sky.images);
+    if (!cube) return;
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_CUBE_MAP, r.cube);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, cube);
 
     const m = shape === "sphere" ? r.sphere : r.box;
     gl.useProgram(r.obj);
@@ -193,7 +195,7 @@ export function EnvMapFigure({ t }: { t?: TrackTranslations }) {
 
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
         <GLView<Res> orbit init={init} draw={draw} look={look} onLook={setLook}
-          frame={[look, mode, ior, shape]} aspect={16 / 9} fovRange={[0.4, 1.4]} />
+          frame={[look, mode, ior, shape, sky.images]} aspect={16 / 9} fovRange={[0.4, 1.4]} />
       </div>
 
       <div className="p-4 md:p-5 grid gap-5 md:grid-cols-[auto_1fr] items-start">
@@ -203,6 +205,7 @@ export function EnvMapFigure({ t }: { t?: TrackTranslations }) {
             <span className="text-[9px] font-mono text-[var(--text-muted)] mr-1">object</span>
             <button className={btn(shape === "sphere")} onClick={() => setShape("sphere")}>sphere</button>
             <button className={btn(shape === "box")} onClick={() => setShape("box")}>box</button>
+            <span className="ml-auto"><SkyPicker sources={sky.sources} value={sky.id} onChange={sky.setId} busy={sky.busy} /></span>
           </div>
           {mode !== 0 && (
             <>

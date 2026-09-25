@@ -101,7 +101,108 @@
   },
   "icons": {},
   "maps": {},
-  "skybox": {},
+  "skybox": {
+    "sky_01": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_01-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_01-512x512.png"
+    },
+    "sky_02": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_02-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_02-512x512.png"
+    },
+    "sky_03": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_03-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_03-512x512.png"
+    },
+    "sky_04": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_04-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_04-512x512.png"
+    },
+    "sky_05": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_05-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_05-512x512.png"
+    },
+    "sky_06": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_06-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_06-512x512.png"
+    },
+    "sky_07": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_07-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_07-512x512.png"
+    },
+    "sky_08": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_08-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_08-512x512.png"
+    },
+    "sky_09": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_09-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_09-512x512.png"
+    },
+    "sky_10": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_10-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_10-512x512.png"
+    },
+    "sky_11": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_11-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_11-512x512.png"
+    },
+    "sky_12": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_12-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_12-512x512.png"
+    },
+    "sky_13": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_13-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_13-512x512.png"
+    },
+    "sky_14": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_14-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_14-512x512.png"
+    },
+    "sky_15": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_15-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_15-512x512.png"
+    },
+    "sky_16": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_16-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_16-512x512.png"
+    },
+    "sky_17": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_17-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_17-512x512.png"
+    },
+    "sky_18": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_18-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_18-512x512.png"
+    },
+    "sky_19": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_19-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_19-512x512.png"
+    },
+    "sky_20": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_20-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_20-512x512.png"
+    },
+    "sky_21": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_21-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_21-512x512.png"
+    },
+    "sky_22": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_22-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_22-512x512.png"
+    },
+    "sky_23": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_23-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_23-512x512.png"
+    },
+    "sky_24": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_24-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_24-512x512.png"
+    },
+    "sky_25": {
+      "cross": "/textures/skybox/Cubemap/Cubemap_Sky_25-512x512.png",
+      "equirect": "/textures/skybox/Panorama/Panorama_Sky_25-512x512.png"
+    }
+  },
   "materials": {
     "clayceramicglossy": {
       "label": "ClayCeramicGlossy",

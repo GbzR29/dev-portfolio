@@ -1785,7 +1785,7 @@ export const openGLTrack: Track = {
     { id: "stencil-testing", section: ADVANCED,        title: "Stencil Testing",           minRead: 12, content: (t) => <StencilContent         t={t} /> },
     { id: "blending",        section: ADVANCED,        title: "Blending & Transparency",   minRead: 10, content: (t) => <BlendingContent        t={t} /> },
     { id: "framebuffers",    section: ADVANCED,        title: "Framebuffers & Post-FX",    minRead: 12, content: (t) => <FramebuffersContent    t={t} /> },
-    { id: "cubemaps",        section: ADVANCED,        title: "Cubemaps & Skybox",         minRead: 10, content: (t) => <CubemapsContent        t={t} /> },
+    { id: "cubemaps",        section: ADVANCED,        title: "Cubemaps & Skybox",         minRead: 22, content: (t) => <CubemapsContent        t={t} /> },
     { id: "instancing",      section: ADVANCED,        title: "Instancing",                minRead: 9,  content: (t) => <InstancingContent      t={t} /> },
     { id: "particles",       section: ADVANCED,        title: "Particles",                 minRead: 15, content: (t) => <ParticlesContent       t={t} /> },
     { id: "ubo",             section: ADVANCED,        title: "Uniform Buffer Objects",    minRead: 10, content: (t) => <UBOContent             t={t} /> },

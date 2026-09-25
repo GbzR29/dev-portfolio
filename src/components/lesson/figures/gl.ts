@@ -268,11 +268,106 @@ export function proceduralEquirect(w = 512): HTMLCanvasElement {
   return c;
 }
 
-/** Loads six face images (URLs or canvases) into a cube map texture. */
-export async function loadCubemap(gl: WebGL2RenderingContext, faces: (string | HTMLCanvasElement)[]): Promise<WebGLTexture> {
-  const imgs = await Promise.all(faces.map(f => typeof f === "string"
-    ? new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = f; })
-    : Promise.resolve(f)));
+/** Resolves once the image at `url` has loaded. */
+export const loadImage = (url: string) =>
+  new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+
+// ── Other sky formats ─────────────────────────────────────────────────────────
+// A horizontal cross is an unfolded cube drawn as seen from INSIDE: four faces
+// across the middle row (turning right as you go right), the top face above
+// the second one and the bottom face below it. In this site's world the second
+// column looks along +X, the same direction as the centre of a panorama, so a
+// cross and the panorama of the same sky agree.
+//
+// Each cell is described by where it looks (fwd) and which world directions
+// point to the right of and down the image (right, down).
+export const CROSS_CELLS: { col: number; row: number; fwd: Vec3; right: Vec3; down: Vec3 }[] = [
+  { col: 0, row: 1, fwd: [0, 0, -1], right: [1, 0, 0], down: [0, -1, 0] },
+  { col: 1, row: 1, fwd: [1, 0, 0], right: [0, 0, 1], down: [0, -1, 0] },
+  { col: 2, row: 1, fwd: [0, 0, 1], right: [-1, 0, 0], down: [0, -1, 0] },
+  { col: 3, row: 1, fwd: [-1, 0, 0], right: [0, 0, -1], down: [0, -1, 0] },
+  { col: 1, row: 0, fwd: [0, 1, 0], right: [0, 0, 1], down: [1, 0, 0] },
+  { col: 1, row: 2, fwd: [0, -1, 0], right: [0, 0, 1], down: [-1, 0, 0] },
+];
+
+/** The cross cell that looks along a cube map face's axis. */
+export const crossCellOf = (face: number) =>
+  CROSS_CELLS.find(c => dot(c.fwd, faceDir(face, 0.5, 0.5)) > 0.99)!;
+
+/**
+ * Cuts a 4×3 horizontal cross into the six faces OpenGL expects. No pixel is
+ * resampled: every face is its cell, rotated or mirrored by the 2×2 matrix
+ * that maps the cell's image axes onto the face's (s, t) axes.
+ */
+export function crossToFaces(img: HTMLImageElement | HTMLCanvasElement): HTMLCanvasElement[] {
+  const cell = img.width / 4;
+  return [0, 1, 2, 3, 4, 5].map(face => {
+    const c = document.createElement("canvas");
+    c.width = c.height = cell;
+    const g = c.getContext("2d")!;
+    const k = crossCellOf(face);
+    // Unit world vectors along the face's s and t axes
+    const mid = faceDir(face, 0.5, 0.5);
+    const S = norm(sub(faceDir(face, 1, 0.5), mid)), T = norm(sub(faceDir(face, 0.5, 1), mid));
+    // cell (a, b) → face (s, t):  s = (S·right) a + (S·down) b,  t = (T·right) a + (T·down) b
+    g.translate(cell / 2, cell / 2);
+    g.transform(dot(S, k.right), dot(T, k.right), dot(S, k.down), dot(T, k.down), 0, 0);
+    g.drawImage(img, k.col * cell, k.row * cell, cell, cell, -cell / 2, -cell / 2, cell, cell);
+    return c;
+  });
+}
+
+const pixels = (img: HTMLImageElement | HTMLCanvasElement) => {
+  const c = document.createElement("canvas");
+  c.width = img.width; c.height = img.height;
+  const g = c.getContext("2d", { willReadFrequently: true })!;
+  g.drawImage(img, 0, 0);
+  return g.getImageData(0, 0, c.width, c.height);
+};
+
+/** Bakes a 2:1 panorama from six faces, sampling each direction's face texel. */
+export function facesToEquirect(faces: (HTMLImageElement | HTMLCanvasElement)[], w = 1024): HTMLCanvasElement {
+  const data = faces.map(pixels);
+  const h = w / 2, c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  const g = c.getContext("2d")!;
+  const img = g.createImageData(w, h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const phi = ((x + 0.5) / w - 0.5) * Math.PI * 2, theta = (0.5 - (y + 0.5) / h) * Math.PI;
+    const { face, s, t } = dirToFace([Math.cos(theta) * Math.cos(phi), Math.sin(theta), Math.cos(theta) * Math.sin(phi)]);
+    const src = data[face];
+    const i = (Math.min(src.height - 1, Math.floor(t * src.height)) * src.width + Math.min(src.width - 1, Math.floor(s * src.width))) * 4;
+    const o = (y * w + x) * 4;
+    img.data[o] = src.data[i]; img.data[o + 1] = src.data[i + 1]; img.data[o + 2] = src.data[i + 2]; img.data[o + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  return c;
+}
+
+/** Bakes six faces from a 2:1 panorama: each texel's direction → longitude/latitude → pixel. */
+export function equirectToFaces(pano: HTMLImageElement | HTMLCanvasElement, size = 512): HTMLCanvasElement[] {
+  const src = pixels(pano);
+  return [0, 1, 2, 3, 4, 5].map(face => {
+    const c = document.createElement("canvas");
+    c.width = c.height = size;
+    const g = c.getContext("2d")!;
+    const img = g.createImageData(size, size);
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+      const [dx, dy, dz] = norm(faceDir(face, (x + 0.5) / size, (y + 0.5) / size));
+      const u = Math.atan2(dz, dx) / (2 * Math.PI) + 0.5, v = 0.5 - Math.asin(dy) / Math.PI;
+      const i = (Math.min(src.height - 1, Math.floor(v * src.height)) * src.width + Math.min(src.width - 1, Math.floor(u * src.width))) * 4;
+      const o = (y * size + x) * 4;
+      img.data[o] = src.data[i]; img.data[o + 1] = src.data[i + 1]; img.data[o + 2] = src.data[i + 2]; img.data[o + 3] = 255;
+    }
+    g.putImageData(img, 0, 0);
+    return c;
+  });
+}
+
+export type TexImage = HTMLImageElement | HTMLCanvasElement;
+
+/** Uploads six decoded face images (+X, −X, +Y, −Y, +Z, −Z) as a cube map texture. */
+export function makeCubemap(gl: WebGL2RenderingContext, imgs: TexImage[]): WebGLTexture {
   const tex = gl.createTexture()!;
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, tex);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);        // cubemaps are never flipped
@@ -286,11 +381,13 @@ export async function loadCubemap(gl: WebGL2RenderingContext, faces: (string | H
   return tex;
 }
 
-/** Loads one 2D image (URL or canvas) as a texture; repeats on S, and on T too when `repeatT`. */
-export async function loadTexture2D(gl: WebGL2RenderingContext, src: string | HTMLCanvasElement, repeatT = false): Promise<WebGLTexture> {
-  const im = typeof src === "string"
-    ? await new Promise<HTMLImageElement>((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; })
-    : src;
+/** Loads six face images (URLs or decoded images) into a cube map texture. */
+export async function loadCubemap(gl: WebGL2RenderingContext, faces: (string | TexImage)[]): Promise<WebGLTexture> {
+  return makeCubemap(gl, await Promise.all(faces.map(f => typeof f === "string" ? loadImage(f) : f)));
+}
+
+/** Uploads one decoded image as a texture; repeats on S, and on T too when `repeatT`. */
+export function makeTexture2D(gl: WebGL2RenderingContext, im: TexImage, repeatT = false): WebGLTexture {
   const tex = gl.createTexture()!;
   gl.bindTexture(gl.TEXTURE_2D, tex);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
@@ -301,4 +398,9 @@ export async function loadTexture2D(gl: WebGL2RenderingContext, src: string | HT
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, repeatT ? gl.REPEAT : gl.CLAMP_TO_EDGE);
   return tex;
+}
+
+/** Loads one 2D image (URL or decoded image) as a texture; repeats on S, and on T too when `repeatT`. */
+export async function loadTexture2D(gl: WebGL2RenderingContext, src: string | TexImage, repeatT = false): Promise<WebGLTexture> {
+  return makeTexture2D(gl, typeof src === "string" ? await loadImage(src) : src, repeatT);
 }

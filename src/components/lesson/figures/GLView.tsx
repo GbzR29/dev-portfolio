@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { forwardFrom, norm, cross, type Vec3 } from "./gl";
 import { skyboxSets } from "./protoTexture";
-import { proceduralFace, proceduralEquirect } from "./gl";
+import { proceduralFace, proceduralEquirect, crossToFaces, equirectToFaces, facesToEquirect, loadImage, makeCubemap, type TexImage } from "./gl";
 
 // ── A WebGL2 canvas for lesson figures ────────────────────────────────────────
 // Owns the context, keeps the drawing buffer matched to its CSS size, redraws
@@ -180,30 +180,127 @@ export function useAnimationTime(on: boolean) {
 }
 
 // ── Sky sources ───────────────────────────────────────────────────────────────
-// "procedural" is always there; any set under public/textures/skybox/<name>/
-// shows up next to it (faces and/or equirect), through the asset manifest.
+// Every sky under public/textures/skybox (through the asset manifest) plus the
+// procedural one. Images load only when a sky is first used, and each sky
+// ends up as both six cube faces and a panorama: a shipped cross is cut into
+// faces, and whichever format is missing is resampled from the other.
 
-export type SkySource = { id: string; label: string; faces: (string | HTMLCanvasElement)[]; equirect: string | HTMLCanvasElement };
+/** A loaded sky: six decoded faces (+X, −X, +Y, −Y, +Z, −Z), a panorama, and the cross it came from. */
+export type SkyImages = { faces: TexImage[]; equirect: TexImage; cross: string | null };
+export type SkySource = { id: string; label: string; shipped: boolean; load: () => Promise<SkyImages> };
 
-const procFaces: Partial<Record<"labelled" | "plain", HTMLCanvasElement[]>> = {};
-let procEquirect: HTMLCanvasElement | null = null;
+/** Names for the numbered skies that ship in public/textures/skybox. */
+const SKY_NAMES: Record<string, string> = {
+  sky_01: "Dusk overcast", sky_02: "Golden haze", sky_03: "Hazy sunset", sky_04: "Blue day",
+  sky_05: "Blue clouds", sky_06: "Clear blue", sky_07: "Pink clouds", sky_08: "Pale morning",
+  sky_09: "Storm light", sky_10: "Grey overcast", sky_11: "Violet night", sky_12: "Moonlit night",
+  sky_13: "Sand haze", sky_14: "Green alien", sky_15: "Dark sunset", sky_16: "Blue cirrus",
+  sky_17: "Magenta sunset", sky_18: "Teal dusk", sky_19: "Red haze", sky_20: "White fog",
+  sky_21: "Orange sunset", sky_22: "Red sunset", sky_23: "Pink streaks", sky_24: "Pale clouds",
+  sky_25: "Lavender dusk",
+};
+/** The sky figures open with, when it ships. */
+export const DEFAULT_SKY = "sky_05";
+
+const skyCache = new Map<string, Promise<SkyImages>>();
+const once = (key: string, make: () => Promise<SkyImages>) => {
+  let p = skyCache.get(key);
+  if (!p) { p = make(); skyCache.set(key, p); p.catch(() => skyCache.delete(key)); }
+  return p;
+};
 
 /**
- * Sky sources: sets shipped in public/textures/skybox first, the procedural
- * sky last (and alone when nothing ships), so [0] is always the one to use.
+ * Sky sources: the default shipped sky first, the other shipped skies, the
+ * procedural sky last (alone when nothing ships), so [0] is the one to use.
  * Labelled procedural faces print "+X", "px.png"… on each face, which helps
  * when studying orientation; scenes use the plain ones.
  */
 export function skySources({ labels = false } = {}): SkySource[] {
   if (typeof document === "undefined") return [];
-  const key = labels ? "labelled" : "plain";
-  const faces = (procFaces[key] ??= [0, 1, 2, 3, 4, 5].map(f => proceduralFace(f, 384, labels)));
-  procEquirect ??= proceduralEquirect(1024);
-  const out: SkySource[] = Object.entries(skyboxSets()).map(([name, set]) =>
-    ({ id: name, label: name, faces: set.faces ?? faces, equirect: set.equirect ?? procEquirect! }));
-  out.push({ id: "procedural", label: "procedural", faces, equirect: procEquirect });
+  const sets = Object.entries(skyboxSets())
+    .sort(([a], [b]) => (a === DEFAULT_SKY ? -1 : b === DEFAULT_SKY ? 1 : a.localeCompare(b)));
+  const out: SkySource[] = sets.map(([id, set]) => ({
+    id, label: SKY_NAMES[id] ?? id.replace(/_/g, " "), shipped: true,
+    load: () => once(id, async () => {
+      const crossUrl = set.cross ?? null;
+      let faces: TexImage[] | null = set.faces ? await Promise.all(set.faces.map(loadImage)) : null;
+      if (!faces && crossUrl) faces = crossToFaces(await loadImage(crossUrl));
+      if (!faces && set.equirect) faces = equirectToFaces(await loadImage(set.equirect));
+      if (!faces) throw new Error(`sky ${id} has no images`);
+      const equirect = set.equirect ? await loadImage(set.equirect) : facesToEquirect(faces);
+      return { faces, equirect, cross: crossUrl };
+    }),
+  }));
+  out.push({
+    id: "procedural", label: "Procedural grid", shipped: false,
+    load: () => once(labels ? "procedural+labels" : "procedural", async () => ({
+      faces: [0, 1, 2, 3, 4, 5].map(f => proceduralFace(f, 384, labels)),
+      equirect: proceduralEquirect(1024),
+      cross: null,
+    })),
+  });
   return out;
 }
 
-/** A face image as something an <image href> can show. */
-export const faceHref = (f: string | HTMLCanvasElement) => (typeof f === "string" ? f : f.toDataURL());
+/** The sky a figure should open with, already loaded. */
+export const defaultSky = () => skySources()[0].load();
+
+/** A sky image as something an <img src> can show. */
+export const faceHref = (f: TexImage) => (f instanceof HTMLImageElement ? f.src : f.toDataURL());
+
+/**
+ * The sky list, the chosen id and its loaded images. Figures upload
+ * `images` to the GPU in their draw call when it changes (see skyTexture).
+ */
+export function useSky({ labels = false, initial, off = false }: { labels?: boolean; initial?: string; off?: boolean } = {}) {
+  const [sources, setSources] = useState<SkySource[]>([]);
+  const [id, setId] = useState("");
+  const [images, setImages] = useState<SkyImages | null>(null);
+  const [busy, setBusy] = useState(true);
+  useEffect(() => {
+    const s = skySources({ labels });
+    setSources(s);
+    setId(s.find(x => x.id === initial)?.id ?? s[0]?.id ?? "");
+  }, [labels, initial]);
+  useEffect(() => {
+    const src = sources.find(x => x.id === id);
+    if (!src || off) return;
+    let alive = true;
+    setBusy(true);
+    src.load()
+      .then(im => { if (alive) { setImages(im); setBusy(false); } })
+      .catch(() => { if (alive) setBusy(false); });
+    return () => { alive = false; };
+  }, [sources, id, off]);
+  return { sources, id, setId, images, busy, source: sources.find(x => x.id === id) ?? null };
+}
+
+/**
+ * Keeps a cube map texture in step with the chosen sky: call it from draw.
+ * Re-uploads only when `images` changed since the last call on `holder`.
+ */
+export function skyTexture(gl: WebGL2RenderingContext, holder: { skyTex?: WebGLTexture | null; skyFrom?: SkyImages | null }, images: SkyImages | null) {
+  if (images && holder.skyFrom !== images) {
+    if (holder.skyTex) gl.deleteTexture(holder.skyTex);
+    holder.skyTex = makeCubemap(gl, images.faces);
+    holder.skyFrom = images;
+  }
+  return holder.skyTex ?? null;
+}
+
+/** A compact sky chooser for figure toolbars. */
+export function SkyPicker({ sources, value, onChange, busy = false }: {
+  sources: SkySource[]; value: string; onChange: (id: string) => void; busy?: boolean;
+}) {
+  if (sources.length < 2) return null;
+  return (
+    <label className="inline-flex items-center gap-1.5">
+      <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">sky</span>
+      <select value={value} onChange={e => onChange(e.target.value)}
+        className="text-[10px] font-mono rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--text-main)] px-1.5 py-1 max-w-[11rem] focus:outline-none focus:border-[var(--primary)]/50">
+        {sources.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+      </select>
+      {busy && <span className="w-3 h-3 rounded-full border-2 border-[var(--primary)] border-t-transparent animate-spin" aria-label="loading" />}
+    </label>
+  );
+}

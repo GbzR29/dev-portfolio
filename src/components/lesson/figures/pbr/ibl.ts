@@ -3,9 +3,9 @@
 //   environment cube (HDR) → irradiance cube (diffuse) → prefiltered cube with
 //   one roughness per mip level (specular) + the split-sum BRDF lookup table.
 
-import { compileProgram, loadCubemap, type Vec3 } from "../gl";
+import { compileProgram, makeCubemap, type Vec3 } from "../gl";
 import { FULL_VS, drawFullscreen, floatTargets } from "../glx";
-import { skySources } from "../GLView";
+import type { SkyImages } from "../GLView";
 
 // ── Shared GLSL ───────────────────────────────────────────────────────────────
 /** The OpenGL cube-map face table (same as gl.ts faceDir): texel (s, t) → direction. */
@@ -89,7 +89,12 @@ ${SKY_GLSL}
 void main() {
   vec3 d = faceDir(uFace, vUV);
   ${fromImage
-    ? "FragColor = vec4(pow(texture(uSrc, d).rgb, vec3(2.2)) * 1.6, 1.0);   // sRGB image → linear"
+    ? `// sRGB image → linear. An 8-bit sky clips the sun to 1.0, so boost the
+    // near-white pixels: a crude inverse tone map that gives the sun back
+    // some of the energy it lost (a real HDR file needs none of this).
+    vec3 c = pow(texture(uSrc, d).rgb, vec3(2.2));
+    float m = max(c.r, max(c.g, c.b));
+    FragColor = vec4(c * (1.0 + 12.0 * pow(smoothstep(0.9, 1.0, m), 2.0)), 1.0);`
     : "FragColor = vec4(sky(d), 1.0);"}
 }`;
 
@@ -215,11 +220,16 @@ function renderCube(gl: WebGL2RenderingContext, fbo: WebGLFramebuffer, vao: WebG
   }
 }
 
+/** Frees every texture an IBL owns. */
+export function disposeIBL(gl: WebGL2RenderingContext, ibl: IBL) {
+  [ibl.env, ibl.irradiance, ibl.prefilter, ibl.lut].forEach(t => gl.deleteTexture(t));
+}
+
 /**
- * Builds everything image-based lighting needs. Uses a skybox from
- * public/textures/skybox when one ships, otherwise the HDR procedural sky.
+ * Builds everything image-based lighting needs, from `opts.sky` (a loaded
+ * skybox, LDR) or, without one, from the analytic HDR sky.
  */
-export async function buildIBL(gl: WebGL2RenderingContext, opts: { sun: Vec3; irradianceDelta?: number }): Promise<IBL> {
+export async function buildIBL(gl: WebGL2RenderingContext, opts: { sun: Vec3; sky?: SkyImages | null; irradianceDelta?: number }): Promise<IBL> {
   const float = floatTargets(gl);
   gl.disable(gl.DEPTH_TEST);
   gl.disable(gl.BLEND);
@@ -228,15 +238,15 @@ export async function buildIBL(gl: WebGL2RenderingContext, opts: { sun: Vec3; ir
   const ENV = 256, IRR = 32, PRE = 128, LEVELS = 5, LUT = 256;
 
   // 1. Environment
-  const shipped = skySources().find(s => s.id !== "procedural");
   const env = cubeTexture(gl, ENV, float, true);
-  if (shipped) {
-    const src = await loadCubemap(gl, shipped.faces);
+  if (opts.sky) {
+    const src = makeCubemap(gl, opts.sky.faces);
     const prog = compileProgram(gl, FULL_VS, CAPTURE_FS(true));
     renderCube(gl, fbo, vao, prog, env, ENV, 0, () => {
       gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_CUBE_MAP, src);
       gl.uniform1i(gl.getUniformLocation(prog, "uSrc"), 0);
     });
+    gl.deleteTexture(src);
   } else {
     const prog = compileProgram(gl, FULL_VS, CAPTURE_FS(false));
     renderCube(gl, fbo, vao, prog, env, ENV, 0, () => gl.uniform3fv(gl.getUniformLocation(prog, "uSun"), opts.sun));

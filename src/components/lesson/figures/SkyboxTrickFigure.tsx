@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, SKYBOX_CUBE, boxMesh, loadCubemap, forwardFrom, type Vec3 } from "./gl";
-import { GLView, skySources, type Look } from "./GLView";
+import { mat4, compileProgram, SKYBOX_CUBE, boxMesh, forwardFrom, type Vec3 } from "./gl";
+import { GLView, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "./GLView";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A tiny scene with a real skybox, where each line of the skybox recipe is a
@@ -63,7 +63,8 @@ void main() {
 
 type Res = {
   sky: WebGLProgram; obj: WebGLProgram;
-  skyVao: WebGLVertexArrayObject; boxVao: WebGLVertexArrayObject; cube: WebGLTexture;
+  skyVao: WebGLVertexArrayObject; boxVao: WebGLVertexArrayObject;
+  skyTex?: WebGLTexture | null; skyFrom?: SkyImages | null;
 };
 
 const BOXES: { p: Vec3; s: number; c: Vec3 }[] = [
@@ -81,6 +82,7 @@ export function SkyboxTrickFigure({ t }: { t?: TrackTranslations }) {
   const [strip, setStrip] = useState(true);
   const [xyww, setXyww] = useState(true);
   const [lequal, setLequal] = useState(true);
+  const sky = useSky();
 
   const cam: Vec3 = [0.3, 1.2, walk];
 
@@ -101,8 +103,7 @@ export function SkyboxTrickFigure({ t }: { t?: TrackTranslations }) {
     gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 24, 0);
     gl.enableVertexAttribArray(1);
     gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 24, 12);
-    const src = skySources()[0];
-    return { sky, obj, skyVao, boxVao, cube: await loadCubemap(gl, src.faces) };
+    return { sky, obj, skyVao, boxVao };
   };
 
   const draw = (gl: WebGL2RenderingContext, r: Res, size: { w: number; h: number; aspect: number }) => {
@@ -139,13 +140,15 @@ export function SkyboxTrickFigure({ t }: { t?: TrackTranslations }) {
     }
 
     // 2. The skybox, last, exactly as the chapter's code does it
+    const cube = skyTexture(gl, r, sky.images);
+    if (!cube) return;
     gl.depthFunc(lequal ? gl.LEQUAL : gl.LESS);
     gl.useProgram(r.sky);
     gl.uniformMatrix4fv(gl.getUniformLocation(r.sky, "uView"), false, strip ? mat4.stripTranslation(view) : view);
     gl.uniformMatrix4fv(gl.getUniformLocation(r.sky, "uProjection"), false, proj);
     gl.uniform1f(gl.getUniformLocation(r.sky, "uXYWW"), xyww ? 1 : 0);
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_CUBE_MAP, r.cube);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, cube);
     gl.uniform1i(gl.getUniformLocation(r.sky, "uSky"), 0);
     gl.bindVertexArray(r.skyVao);
     gl.drawArrays(gl.TRIANGLES, 0, 36);
@@ -187,14 +190,15 @@ export function SkyboxTrickFigure({ t }: { t?: TrackTranslations }) {
 
       <div className="bg-[var(--code-bg)] border-b border-[var(--border)] p-2">
         <GLView<Res> init={init} draw={draw} look={look} onLook={setLook}
-          frame={[look, walk, strip, xyww, lequal]} aspect={16 / 9} />
+          frame={[look, walk, strip, xyww, lequal, sky.images]} aspect={16 / 9} />
       </div>
 
       <div className="p-4 md:p-5 space-y-3">
-        <div className="flex gap-1.5 flex-wrap">
+        <div className="flex gap-1.5 flex-wrap items-center">
           {toggle(strip, setStrip, "mat4(mat3(view))")}
           {toggle(xyww, setXyww, "gl_Position = pos.xyww")}
           {toggle(lequal, setLequal, "glDepthFunc(GL_LEQUAL)")}
+          <span className="ml-auto"><SkyPicker sources={sky.sources} value={sky.id} onChange={sky.setId} busy={sky.busy} /></span>
         </div>
 
         <label className="flex items-center gap-2">
