@@ -1,20 +1,30 @@
 // src/lib/tracks/glsl/index.tsx
 "use client";
 
-import { Track } from "@/lib/tracks/types";
+import type { Track, TrackTranslations } from "@/lib/tracks/types";
+import { tx } from "@/lib/tracks/tx";
 import {
   CodeBlock, Callout, H2, LessonTable,
 } from "@/components/lesson/LessonComponents";
 import { InteractiveUV } from "@/components/lesson/InteractiveUV";
+import { Equation } from "@/components/lesson/Tex";
+import { KeyIdeas } from "../opengl/chapters/lighting-advanced";
+import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
+import { FunctionPlotter } from "@/components/lesson/glsl/FunctionPlotter";
+import { Noise1DFigure } from "@/components/lesson/glsl/Noise1DFigure";
+import { SWIZZLE_PRESETS, SDF_PRESETS } from "./presets/basics";
+import { NOISE_PRESETS } from "./presets/effects";
+import { PlaygroundContent } from "./chapters/playground";
+import { PatternsContent, ColorContent } from "./chapters/shapes";
+import { TexturingContent, WaterContent, GlassContent, FogContent, StylizedContent } from "./chapters/effects";
+import { RaymarchingContent } from "./chapters/raymarching";
 
-function tx(t: any, key: string, fallback: string): string {
-  const val = t?.[key];
-  return val && val.length > 0 ? val : fallback;
-}
+const r = String.raw;
+
 
 // ── Chapter 01: Types & Vectors ───────────────────────────────────────────────
 
-function TypesContent({ t }: { t: any }) {
+function TypesContent({ t }: { t: TrackTranslations }) {
   return (
     <article className="space-y-5 text-[var(--text-muted)] leading-relaxed text-base">
 
@@ -94,13 +104,59 @@ int   n  = int(pi);   // 3    — truncates, not rounds
 ivec2 coord = ivec2(gl_FragCoord.xy);
 vec2  uv    = vec2(coord) / vec2(uResolution);`}</CodeBlock>
 
+
+      <H2>{tx(t, "glsl01_precisionTitle", "Precision qualifiers")}</H2>
+      <p>{tx(t, "glsl01_precisionBody", "GLSL ES (WebGL, mobile) makes you say how precise each float is. Desktop GLSL accepts the keywords and ignores them. highp is 32-bit IEEE. mediump is at least 16-bit half precision (range ±65504, about 3 decimal digits), and on mobile GPUs it can run twice as fast. Colours are fine in mediump; positions, UVs on large textures and time are not.")}</p>
+      <CodeBlock lang="glsl" filename="precision.glsl" t={t}>{`#version 300 es
+precision highp float;       // default for every float in this shader
+precision mediump sampler2D;
+
+mediump vec3 color;          // per-variable override
+highp   vec2 uv;             // needs full precision on a 4K texture
+
+// A classic mediump bug: uTime grows forever. After ~1 hour, sin(uTime * 10.0)
+// in half precision has lost every digit after the point, and the animation freezes.
+// Keep time in highp, or wrap it: mod(uTime, 1000.0).`}</CodeBlock>
+
+      <H2>{tx(t, "glsl01_aggTitle", "Arrays, structs and functions")}</H2>
+      <p>{tx(t, "glsl01_aggBody", "Arrays have a fixed size known at compile time. Structs group fields as in C. Functions pass parameters by value, and the qualifiers in, out and inout say which direction data flows. There are no pointers and no recursion, because the GPU has no call stack to speak of.")}</p>
+      <CodeBlock lang="glsl" filename="aggregates.glsl" t={t}>{`struct Light {
+    vec3  position;
+    vec3  color;
+    float radius;
+};
+uniform Light uLights[4];                       // array of structs, set per field from C++
+
+const vec2 OFFSETS[4] = vec2[4](vec2(-1, 0), vec2(1, 0), vec2(0, -1), vec2(0, 1));
+
+// in: copied in (default)   out: written back   inout: both
+void split(in vec3 c, out float luma, inout vec3 accum) {
+    luma = dot(c, vec3(0.2126, 0.7152, 0.0722));
+    accum += c;
+}
+
+float sum = 0.0;
+for (int i = 0; i < 4; i++) sum += OFFSETS[i].x;  // constant trip count: the compiler unrolls it`}</CodeBlock>
+
+      <H2>{tx(t, "glsl01_swizzleLiveTitle", "Swizzling, live")}</H2>
+      <ShaderPlayground presets={SWIZZLE_PRESETS} t={t} id="glsl01Swz" />
+      <Callout type="warn" t={t}>
+        {tx(t, "glsl01_intWarn", "Integer and float literals are different types: 1 is an int, 1.0 a float, and vec3 v = 1 does not compile in strict compilers (WebGL is strict). Division of ints truncates: 3 / 2 == 1. Write float literals with a dot, and use float(i) whenever a loop index takes part in maths.")}
+      </Callout>
+      <KeyIdeas t={t} id="glsl01" items={[
+        "Scalars float/int/uint/bool; vectors vecN/ivecN/bvecN; matrices matN, column-major.",
+        "Swizzle freely: .xyzw = .rgba = .stpq; reorder, repeat, and assign to several components at once.",
+        "No implicit conversions: 1 is an int, 1.0 a float; cast explicitly.",
+        "highp for positions, UVs and time; mediump is fine for colours.",
+        "Fixed-size arrays, C-like structs, in/out/inout parameters, no recursion.",
+      ]} />
     </article>
   );
 }
 
 // ── Chapter 02: Built-in Functions ────────────────────────────────────────────
 
-function BuiltinsContent({ t }: { t: any }) {
+function BuiltinsContent({ t }: { t: TrackTranslations }) {
   return (
     <article className="space-y-5 text-[var(--text-muted)] leading-relaxed text-base">
 
@@ -175,13 +231,43 @@ vec2 orbit  = vec2(cos(angle), sin(angle)) * 0.5;
 // Oscillate between 0 and 1
 float pulse = sin(uTime * 3.14159) * 0.5 + 0.5;`}</CodeBlock>
 
+
+      <H2>{tx(t, "glsl02_plotTitle", "See every function")}</H2>
+      <p>{tx(t, "glsl02_plotBody", "Shader programmers think in graphs. Before writing a shader you picture the curve that maps an input (a distance, an angle, a time) to an output (a brightness, a blend factor). The plotter below runs on the GPU and accepts any GLSL expression in x. Try the presets, then edit them: combine abs, fract, smoothstep and pow until you get the shape you want.")}</p>
+      <FunctionPlotter t={t} />
+      <Equation label={tx(t, "glsl02_smoothLabel", "smoothstep, exactly")}
+        note={tx(t, "glsl02_smoothNote", "A Hermite cubic with zero slope at both ends, which is why joins made with it look seamless. The quintic 6t⁵ − 15t⁴ + 10t³ also has zero curvature at the ends (Perlin's \"smootherstep\"), which matters when the result is differentiated for normals.")}
+        glsl="float t = clamp((x - e0) / (e1 - e0), 0.0, 1.0);  return t * t * (3.0 - 2.0 * t);">
+        {r`\operatorname{smoothstep}(e_0, e_1, x) = t^2(3 - 2t), \quad t = \operatorname{clamp}\!\left(\frac{x - e_0}{e_1 - e_0},\ 0,\ 1\right)`}
+      </Equation>
+      <LessonTable
+        headers={[tx(t, "glsl02_thShape", "Shape you want"), tx(t, "glsl02_thExpr", "Expression"), tx(t, "glsl02_thUse", "Typical use")]}
+        rows={[
+          [tx(t, "glsl02_s1", "Repeating 0→1 ramp (saw)"), "fract(x)", tx(t, "glsl02_s1u", "tiling, scrolling, stripes")],
+          [tx(t, "glsl02_s2", "Triangle wave"), "abs(fract(x) * 2.0 - 1.0)", tx(t, "glsl02_s2u", "ping-pong animation, mirrored tiling")],
+          [tx(t, "glsl02_s3", "Square wave"), "step(0.5, fract(x))", tx(t, "glsl02_s3u", "checkers, blinking")],
+          [tx(t, "glsl02_s4", "Smooth pulse around c"), "1.0 - smoothstep(0.0, w, abs(x - c))", tx(t, "glsl02_s4u", "lines, rings, highlights")],
+          [tx(t, "glsl02_s5", "Remap a range"), "(x - a) / (b - a)", tx(t, "glsl02_s5u", "the inverse of mix(a, b, t)")],
+          [tx(t, "glsl02_s6", "Ease in / out"), "pow(x, k)  /  1.0 - pow(1.0 - x, k)", tx(t, "glsl02_s6u", "animation curves, falloffs")],
+          [tx(t, "glsl02_s7", "Pixel-width edge"), "smoothstep(-w, w, d), w = fwidth(d)", tx(t, "glsl02_s7u", "anti-aliasing any threshold")],
+        ]}
+      />
+      <Callout type="info" t={t}>
+        {tx(t, "glsl02_derivNote", "dFdx(v), dFdy(v) and fwidth(v) = |dFdx(v)| + |dFdy(v)| tell you how much any value changes to the next pixel. The GPU shades pixels in 2×2 quads and simply subtracts neighbours. They exist only in fragment shaders, and they are how texture() picks mip levels and how every edge in this track is anti-aliased.")}
+      </Callout>
+      <KeyIdeas t={t} id="glsl02" items={[
+        "Built-ins are component-wise and hardware-accelerated: abs, fract, mod, clamp, mix, step, smoothstep…",
+        "Think in curves: plot the function from input to output before writing it.",
+        "smoothstep is a clamped Hermite cubic: seamless transitions and anti-aliased edges.",
+        "fwidth(x) gives the per-pixel change of anything: the key to resolution-independent edges.",
+      ]} />
     </article>
   );
 }
 
 // ── Chapter 03: Fragment Coordinates & UV ─────────────────────────────────────
 
-function FragCoordContent({ t }: { t: any }) {
+function FragCoordContent({ t }: { t: TrackTranslations }) {
   return (
     <article className="space-y-5 text-[var(--text-muted)] leading-relaxed text-base">
 
@@ -274,7 +360,7 @@ glUniform1f(glGetUniformLocation(prog, "uTime"),
 
 // ── Chapter 04: Signed Distance Functions ─────────────────────────────────────
 
-function SDFContent({ t }: { t: any }) {
+function SDFContent({ t }: { t: TrackTranslations }) {
   return (
     <article className="space-y-5 text-[var(--text-muted)] leading-relaxed text-base">
 
@@ -354,13 +440,36 @@ float merged = sdfSmoothUnion(c1, c2, 0.15);`}</CodeBlock>
         )}
       </Callout>
 
+
+      <H2>{tx(t, "glsl04_exploreTitle", "Exploring distance fields")}</H2>
+      <p>{tx(t, "glsl04_exploreBody", "The shader below paints the distance field itself: orange outside, blue inside, a band every 0.04 units and white on the surface. Click and drag to place a probe. The yellow circle has radius |d|, the largest circle around the point that touches no surface. That circle is what makes SDFs so useful: anti-aliasing, outlines, glows, shadows and raymarching all read it.")}</p>
+      <Equation label={tx(t, "glsl04_opsLabel", "Operations on a distance")}
+        where={[[r`d`, tx(t, "glsl04_wD", "the signed distance of a shape")], [r`r,\ w`, tx(t, "glsl04_wRW", "a rounding radius, a shell half-thickness")]]}
+        note={tx(t, "glsl04_opsNote", "Rounding and onion are exact for any exact SDF. Union with min is exact outside both shapes but only a bound inside. Intersection and subtraction give bounds, still safe for raymarching, not exact distances.")}>
+        {r`\text{round: } d - r \qquad \text{onion: } |d| - w \qquad \text{outline: } |d| < w \qquad \text{glow: } e^{-k\,\max(d, 0)}`}
+      </Equation>
+      <Equation label={tx(t, "glsl04_sminLabel", "Smooth minimum (polynomial)")}
+        where={[[r`k`, tx(t, "glsl04_wK", "blend radius: how far apart the shapes start to merge")]]}
+        note={tx(t, "glsl04_sminNote", "Where the two distances differ by more than k, h is 0 or 1 and smin returns the plain min. Inside that band it subtracts a small parabolic amount, which fills the crease between the shapes. The result is organic, blobby joins, the look of every SDF-sculpted character.")}>
+        {r`h = \operatorname{clamp}\!\left(\tfrac12 + \tfrac12\,\frac{d_2 - d_1}{k},\ 0,\ 1\right) \qquad \operatorname{smin}(d_1, d_2) = \operatorname{mix}(d_2, d_1, h) - k\,h\,(1 - h)`}
+      </Equation>
+      <ShaderPlayground presets={SDF_PRESETS} t={t} id="glsl04Sdf" />
+      <Callout type="tip" t={t}>
+        {tx(t, "glsl04_aaTip", "fwidth(d) is the change of d over one pixel, so smoothstep(-w, w, d) with w = fwidth(d) gives an edge exactly one pixel wide at any zoom, rotation or resolution. Text renderers use the same trick with SDF font atlases (Valve, 2007), so glyphs stay sharp at any size from one small texture.")}
+      </Callout>
+      <KeyIdeas t={t} id="glsl04" items={[
+        "An SDF returns signed distance: negative inside, zero on the surface, positive outside.",
+        "|d| is the radius of the largest empty circle around the point.",
+        "Round with d − r, hollow with |d| − w, combine with min/max, blend with smin.",
+        "Anti-alias any SDF with smoothstep(−w, w, d), w = fwidth(d).",
+      ]} />
     </article>
   );
 }
 
 // ── Chapter 05: Noise & Procedural Patterns ───────────────────────────────────
 
-function NoiseContent({ t }: { t: any }) {
+function NoiseContent({ t }: { t: TrackTranslations }) {
   return (
     <article className="space-y-5 text-[var(--text-muted)] leading-relaxed text-base">
 
@@ -438,13 +547,54 @@ void main() {
         )}
       </Callout>
 
+
+      <H2>{tx(t, "glsl05_insideTitle", "Inside the noise functions")}</H2>
+      <p>{tx(t, "glsl05_insideBody", "Every lattice noise has the same three parts: a hash that gives each integer point a random value, what is stored there (a value or a gradient), and the curve used to blend between points. The figure takes them apart in one dimension, where each piece is visible.")}</p>
+      <Noise1DFigure t={t} />
+      <Equation label={tx(t, "glsl05_gradLabel", "Gradient noise in 2D (Perlin)")}
+        where={[
+          [r`\mathbf i,\ \mathbf f`, tx(t, "glsl05_wIF", "integer cell and fractional position inside it")],
+          [r`\mathbf g(\cdot)`, tx(t, "glsl05_wG", "random unit gradient at a lattice corner (from a hash)")],
+          [r`u = 6f^5 - 15f^4 + 10f^3`, tx(t, "glsl05_wU", "the quintic fade, per axis")],
+        ]}
+        note={tx(t, "glsl05_gradNote", "Each corner contributes a plane (gradient · offset) that is zero at the corner itself; the fade blends the four. Because the value at every lattice point is 0, peaks fall between the points and the grid is far less visible than with value noise.")}>
+        {r`n(\mathbf p) = \operatorname{mix}\!\Big(\operatorname{mix}\big(\mathbf g_{00}\cdot\mathbf f,\ \mathbf g_{10}\cdot(\mathbf f - (1,0)),\ u_x\big),\ \operatorname{mix}\big(\mathbf g_{01}\cdot(\mathbf f - (0,1)),\ \mathbf g_{11}\cdot(\mathbf f - (1,1)),\ u_x\big),\ u_y\Big)`}
+      </Equation>
+      <Equation label={tx(t, "glsl05_fbmLabel", "Fractal sum (fBm)")}
+        where={[
+          [r`\lambda`, tx(t, "glsl05_wLac", "lacunarity: frequency multiplier per octave, usually ≈ 2")],
+          [r`g`, tx(t, "glsl05_wGain", "gain (persistence): amplitude multiplier, usually 0.5")],
+          [r`H`, tx(t, "glsl05_wH", "the Hurst exponent: g = λ^(−H); H = 1 is the natural 1/f spectrum")],
+        ]}>
+        {r`\operatorname{fbm}(\mathbf p) = \sum_{i=0}^{N-1} g^{\,i}\; n\!\left(\lambda^{i}\,R^{i}\,\mathbf p\right)`}
+      </Equation>
+      <LessonTable
+        headers={[tx(t, "glsl05_thKind", "Noise"), tx(t, "glsl05_thCost", "Cost (2D)"), tx(t, "glsl05_thLook", "Look / use")]}
+        rows={[
+          [tx(t, "glsl05_k1", "Value"), tx(t, "glsl05_k1c", "4 hashes"), tx(t, "glsl05_k1l", "blocky blobs; cheap clouds, dithering")],
+          [tx(t, "glsl05_k2", "Gradient (Perlin)"), tx(t, "glsl05_k2c", "4 hashes + 4 dots"), tx(t, "glsl05_k2l", "smooth, grid mostly hidden: terrain, fBm")],
+          [tx(t, "glsl05_k3", "Simplex"), tx(t, "glsl05_k3c", "3 corners (n + 1 in n-D)"), tx(t, "glsl05_k3l", "like Perlin, no axis bias, scales better to 3D/4D")],
+          [tx(t, "glsl05_k4", "Worley (cellular)"), tx(t, "glsl05_k4c", "9 feature points"), tx(t, "glsl05_k4l", "cells, stones, scales, caustics, cracks")],
+          [tx(t, "glsl05_k5", "Domain-warped fBm"), tx(t, "glsl05_k5c", "3× fBm"), tx(t, "glsl05_k5l", "marble, gas giants, smoke, alien flesh")],
+        ]}
+      />
+      <ShaderPlayground presets={NOISE_PRESETS} t={t} id="glsl05Noise" />
+      <Callout type="warn" t={t}>
+        {tx(t, "glsl05_hashWarn", "The classic fract(sin(dot(p, k)) · 43758.5453) hash is fine for effects, but on some mobile GPUs sin() loses precision for large arguments and the noise turns into visible stripes. For anything long-lived or large-scale, use an integer hash (PCG, xxHash-style) on uint coordinates, or a tileable noise texture, which is also faster.")}
+      </Callout>
+      <KeyIdeas t={t} id="glsl05" items={[
+        "Lattice noise = hash at integer points + stored value or gradient + a fade curve.",
+        "Gradient (Perlin) noise hides the grid better than value noise; simplex is cheaper in higher dimensions.",
+        "Worley noise measures distance to random feature points: cells.",
+        "fBm sums octaves (×lacunarity in frequency, ×gain in amplitude); domain warping feeds noise into noise.",
+      ]} />
     </article>
   );
 }
 
 // ── Chapter 06: Shader Class in C++ ───────────────────────────────────────────
 
-function ShaderClassContent({ t }: { t: any }) {
+function ShaderClassContent({ t }: { t: TrackTranslations }) {
   return (
     <article className="space-y-5 text-[var(--text-muted)] leading-relaxed text-base">
 
@@ -589,15 +739,36 @@ struct ShaderWatcher {
 
 // ── Exported track ────────────────────────────────────────────────────────────
 
+const BASICS   = "Language Basics";
+const SHAPES   = "Shapes, Patterns & Colour";
+const EFFECTS  = "Effect Recipes";
+const RAYMARCH = "Raymarching";
+const TOOLING  = "Tooling";
+
+
 export const glslTrack: Track = {
   id: "glsl",
   title: "GLSL Shaders",
   chapters: [
-    { id: "types",       title: "Types & Vectors",            minRead: 8,  content: (t) => <TypesContent      t={t} /> },
-    { id: "builtins",    title: "Built-in Functions",         minRead: 10, content: (t) => <BuiltinsContent    t={t} /> },
-    { id: "fragcoord",   title: "Fragment Coordinates & UV",  minRead: 9,  content: (t) => <FragCoordContent   t={t} /> },
-    { id: "sdf",         title: "Signed Distance Functions",  minRead: 11, content: (t) => <SDFContent         t={t} /> },
-    { id: "noise",       title: "Noise & Procedural Patterns",minRead: 10, content: (t) => <NoiseContent       t={t} /> },
-    { id: "shaderclass", title: "Shader Class in C++",        minRead: 12, content: (t) => <ShaderClassContent t={t} /> },
+    // ── Language Basics ─────────────────────────────────────────────────────
+    { id: "types",       section: BASICS,  title: "Types & Vectors",             minRead: 11, content: (t) => <TypesContent       t={t} /> },
+    { id: "builtins",    section: BASICS,  title: "Built-in Functions",          minRead: 13, content: (t) => <BuiltinsContent    t={t} /> },
+    { id: "fragcoord",   section: BASICS,  title: "Fragment Coordinates & UV",   minRead: 9,  content: (t) => <FragCoordContent   t={t} /> },
+    { id: "playground",  section: BASICS,  title: "The Shader Playground",       minRead: 8,  content: (t) => <PlaygroundContent  t={t} /> },
+    // ── Shapes, Patterns & Colour ───────────────────────────────────────────
+    { id: "sdf",         section: SHAPES,  title: "Signed Distance Functions",   minRead: 15, content: (t) => <SDFContent         t={t} /> },
+    { id: "patterns",    section: SHAPES,  title: "Patterns & Transformations",  minRead: 11, content: (t) => <PatternsContent    t={t} /> },
+    { id: "color",       section: SHAPES,  title: "Colour",                      minRead: 12, content: (t) => <ColorContent       t={t} /> },
+    { id: "noise",       section: SHAPES,  title: "Noise & Procedural Patterns", minRead: 16, content: (t) => <NoiseContent       t={t} /> },
+    // ── Effect Recipes ──────────────────────────────────────────────────────
+    { id: "texturing",   section: EFFECTS, title: "Texturing Tricks",            minRead: 12, content: (t) => <TexturingContent   t={t} /> },
+    { id: "water",       section: EFFECTS, title: "Waves & Water",               minRead: 15, content: (t) => <WaterContent       t={t} /> },
+    { id: "glass",       section: EFFECTS, title: "Glass, Refraction & Fresnel", minRead: 13, content: (t) => <GlassContent       t={t} /> },
+    { id: "fog",         section: EFFECTS, title: "Fog",                         minRead: 10, content: (t) => <FogContent         t={t} /> },
+    { id: "stylized",    section: EFFECTS, title: "Toon, Dissolve & Hologram",   minRead: 11, content: (t) => <StylizedContent    t={t} /> },
+    // ── Raymarching ─────────────────────────────────────────────────────────
+    { id: "raymarching", section: RAYMARCH, title: "Raymarching",                minRead: 17, content: (t) => <RaymarchingContent t={t} /> },
+    // ── Tooling ─────────────────────────────────────────────────────────────
+    { id: "shaderclass", section: TOOLING, title: "Shader Class in C++",         minRead: 12, content: (t) => <ShaderClassContent t={t} /> },
   ],
 };

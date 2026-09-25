@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  Aperture, BookMarked, Boxes, CheckCircle2, ChevronRight, Clock, Gauge, Hash, Layers, Lightbulb, Move3d, Rocket, Sparkles, Wrench,
+  Aperture, BookMarked, Boxes, Braces, CheckCircle2, ChevronRight, Clock, Gauge, Hash, Layers, Radar, Shapes, Lightbulb, Move3d, Rocket, Sparkles, Wrench,
   type LucideIcon,
 } from "lucide-react";
 import type { Chapter, Track } from "@/lib/tracks/types";
@@ -35,6 +35,9 @@ const SECTION_ICONS: [RegExp, LucideIcon][] = [
   [/pbr|physically/i, Sparkles],
   [/post|effect/i, Aperture],
   [/perform/i, Gauge],
+  [/language|basics/i, Braces],
+  [/shape|pattern/i, Shapes],
+  [/raymarch/i, Radar],
   [/light/i, Lightbulb],
   [/model/i, Boxes],
   [/advanced/i, Layers],

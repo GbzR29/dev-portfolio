@@ -1,6 +1,142 @@
 {
-  "prototype": {},
+  "prototype": {
+    "dark": "/textures/prototype/Dark/texture_01.png",
+    "green": "/textures/prototype/Green/texture_01.png",
+    "light": "/textures/prototype/Light/texture_01.png",
+    "orange": "/textures/prototype/Orange/texture_01.png",
+    "purple": "/textures/prototype/Purple/texture_01.png",
+    "red": "/textures/prototype/Red/texture_01.png"
+  },
+  "protoSets": {
+    "dark": [
+      "/textures/prototype/Dark/texture_01.png",
+      "/textures/prototype/Dark/texture_02.png",
+      "/textures/prototype/Dark/texture_03.png",
+      "/textures/prototype/Dark/texture_04.png",
+      "/textures/prototype/Dark/texture_05.png",
+      "/textures/prototype/Dark/texture_06.png",
+      "/textures/prototype/Dark/texture_07.png",
+      "/textures/prototype/Dark/texture_08.png",
+      "/textures/prototype/Dark/texture_09.png",
+      "/textures/prototype/Dark/texture_10.png",
+      "/textures/prototype/Dark/texture_11.png",
+      "/textures/prototype/Dark/texture_12.png",
+      "/textures/prototype/Dark/texture_13.png"
+    ],
+    "green": [
+      "/textures/prototype/Green/texture_01.png",
+      "/textures/prototype/Green/texture_02.png",
+      "/textures/prototype/Green/texture_03.png",
+      "/textures/prototype/Green/texture_04.png",
+      "/textures/prototype/Green/texture_05.png",
+      "/textures/prototype/Green/texture_06.png",
+      "/textures/prototype/Green/texture_07.png",
+      "/textures/prototype/Green/texture_08.png",
+      "/textures/prototype/Green/texture_09.png",
+      "/textures/prototype/Green/texture_10.png",
+      "/textures/prototype/Green/texture_11.png",
+      "/textures/prototype/Green/texture_12.png",
+      "/textures/prototype/Green/texture_13.png"
+    ],
+    "light": [
+      "/textures/prototype/Light/texture_01.png",
+      "/textures/prototype/Light/texture_02.png",
+      "/textures/prototype/Light/texture_03.png",
+      "/textures/prototype/Light/texture_04.png",
+      "/textures/prototype/Light/texture_05.png",
+      "/textures/prototype/Light/texture_06.png",
+      "/textures/prototype/Light/texture_07.png",
+      "/textures/prototype/Light/texture_08.png",
+      "/textures/prototype/Light/texture_09.png",
+      "/textures/prototype/Light/texture_10.png",
+      "/textures/prototype/Light/texture_11.png",
+      "/textures/prototype/Light/texture_12.png",
+      "/textures/prototype/Light/texture_13.png"
+    ],
+    "orange": [
+      "/textures/prototype/Orange/texture_01.png",
+      "/textures/prototype/Orange/texture_02.png",
+      "/textures/prototype/Orange/texture_03.png",
+      "/textures/prototype/Orange/texture_04.png",
+      "/textures/prototype/Orange/texture_05.png",
+      "/textures/prototype/Orange/texture_06.png",
+      "/textures/prototype/Orange/texture_07.png",
+      "/textures/prototype/Orange/texture_08.png",
+      "/textures/prototype/Orange/texture_09.png",
+      "/textures/prototype/Orange/texture_10.png",
+      "/textures/prototype/Orange/texture_11.png",
+      "/textures/prototype/Orange/texture_12.png",
+      "/textures/prototype/Orange/texture_13.png"
+    ],
+    "purple": [
+      "/textures/prototype/Purple/texture_01.png",
+      "/textures/prototype/Purple/texture_02.png",
+      "/textures/prototype/Purple/texture_03.png",
+      "/textures/prototype/Purple/texture_04.png",
+      "/textures/prototype/Purple/texture_05.png",
+      "/textures/prototype/Purple/texture_06.png",
+      "/textures/prototype/Purple/texture_07.png",
+      "/textures/prototype/Purple/texture_08.png",
+      "/textures/prototype/Purple/texture_09.png",
+      "/textures/prototype/Purple/texture_10.png",
+      "/textures/prototype/Purple/texture_11.png",
+      "/textures/prototype/Purple/texture_12.png",
+      "/textures/prototype/Purple/texture_13.png"
+    ],
+    "red": [
+      "/textures/prototype/Red/texture_01.png",
+      "/textures/prototype/Red/texture_02.png",
+      "/textures/prototype/Red/texture_03.png",
+      "/textures/prototype/Red/texture_04.png",
+      "/textures/prototype/Red/texture_05.png",
+      "/textures/prototype/Red/texture_06.png",
+      "/textures/prototype/Red/texture_07.png",
+      "/textures/prototype/Red/texture_08.png",
+      "/textures/prototype/Red/texture_09.png",
+      "/textures/prototype/Red/texture_10.png",
+      "/textures/prototype/Red/texture_11.png",
+      "/textures/prototype/Red/texture_12.png",
+      "/textures/prototype/Red/texture_13.png"
+    ]
+  },
   "icons": {},
   "maps": {},
-  "skybox": {}
+  "skybox": {},
+  "materials": {
+    "clayceramicglossy": {
+      "label": "ClayCeramicGlossy",
+      "albedo": "/textures/materials_textures/ClayCeramicGlossy/Poliigon_ClayCeramicGlossy_5212_BaseColor.jpg",
+      "normal": "/textures/materials_textures/ClayCeramicGlossy/Poliigon_ClayCeramicGlossy_5212_Normal.png",
+      "roughness": "/textures/materials_textures/ClayCeramicGlossy/Poliigon_ClayCeramicGlossy_5212_Roughness.jpg",
+      "ao": "/textures/materials_textures/ClayCeramicGlossy/Poliigon_ClayCeramicGlossy_5212_AmbientOcclusion.jpg",
+      "metallic": "/textures/materials_textures/ClayCeramicGlossy/Poliigon_ClayCeramicGlossy_5212_Metallic.jpg"
+    },
+    "metalsteelbrushed": {
+      "label": "MetalSteelBrushed",
+      "albedo": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_BaseColor.jpg",
+      "normal": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_Normal.png",
+      "roughness": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_Roughness.jpg",
+      "ao": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_AmbientOcclusion.jpg",
+      "metallic": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_Metallic.jpg"
+    },
+    "squareceramic-glossytiletexture-aqua-blue": {
+      "label": "SquareCeramic GlossyTileTexture_Aqua Blue",
+      "albedo": "/textures/materials_textures/SquareCeramic%20GlossyTileTexture_Aqua%20Blue/TilesSquarePoolMixed001_COL_1K.jpg",
+      "normal": "/textures/materials_textures/SquareCeramic%20GlossyTileTexture_Aqua%20Blue/TilesSquarePoolMixed001_NRM_1K.jpg",
+      "gloss": "/textures/materials_textures/SquareCeramic%20GlossyTileTexture_Aqua%20Blue/TilesSquarePoolMixed001_GLOSS_1K.jpg",
+      "height": "/textures/materials_textures/SquareCeramic%20GlossyTileTexture_Aqua%20Blue/TilesSquarePoolMixed001_DISP_1K.jpg"
+    },
+    "squarestackedpavertexture-grey": {
+      "label": "SquareStackedPaverTexture_Grey",
+      "albedo": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Poliigon_ConcretePaversSquare_7100_BaseColor.jpg",
+      "normal": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Poliigon_ConcretePaversSquare_7100_Normal.png",
+      "roughness": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Poliigon_ConcretePaversSquare_7100_Roughness.jpg",
+      "ao": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Poliigon_ConcretePaversSquare_7100_AmbientOcclusion.jpg",
+      "metallic": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Poliigon_ConcretePaversSquare_7100_Metallic.jpg"
+    },
+    "wood-texture": {
+      "label": "wood_texture",
+      "albedo": "/textures/materials_textures/wood_texture.png"
+    }
+  }
 }
