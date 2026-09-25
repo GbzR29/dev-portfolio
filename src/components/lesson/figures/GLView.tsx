@@ -29,7 +29,7 @@ export function rayDir(l: Look, aspect: number, ndcX: number, ndcY: number): Vec
 }
 
 export function GLView<R>({
-  init, draw, frame, look, onLook, onHover, aspect = 16 / 9, className = "", fovRange = [0.6, 1.9], orbit = false, children,
+  init, draw, frame, look, onLook, onHover, aspect = 16 / 9, className = "", fovRange = [0.6, 1.9], orbit = false, resolution = 1, children,
 }: {
   /** Builds GPU resources once. May be async (texture loads). */
   init: (gl: WebGL2RenderingContext) => R | Promise<R>;
@@ -48,6 +48,8 @@ export function GLView<R>({
    * Off = first-person look, where the view follows the hand like a mouse-look.
    */
   orbit?: boolean;
+  /** Drawing-buffer scale on top of the (capped) device pixel ratio: < 1 for heavy shaders. */
+  resolution?: number;
   children?: React.ReactNode;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -83,14 +85,14 @@ export function GLView<R>({
     if (!c) return;
     const ro = new ResizeObserver(() => {
       const r = c.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2) * resolution;
       const w = Math.max(1, Math.round(r.width * dpr)), h = Math.max(1, Math.round(r.height * dpr));
       if (c.width !== w || c.height !== h) { c.width = w; c.height = h; }
       setSize({ w, h, aspect: w / h });
     });
     ro.observe(c);
     return () => ro.disconnect();
-  }, []);
+  }, [resolution]);
 
   // Draw on demand
   useEffect(() => {
