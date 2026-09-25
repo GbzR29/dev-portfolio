@@ -476,15 +476,23 @@ uniform vec3  uFogColor; // @color 0.62 0.68 0.76
 float sdBox(vec3 p, vec3 b) { vec3 q = abs(p) - b; return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0); }
 float hash21(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 
-float map(vec3 p) {
-    float ground = p.y;
+// Pillars repeat every 4 units, each cell with its own height. With a
+// different shape per cell, the nearest surface may be in a NEIGHBOURING
+// cell, so the 3×3 cells around p are all checked. Checking only p's own
+// cell lets the ray jump into a taller neighbour and cut its top off.
+float pillars(vec3 p) {
     vec2 cell = floor(p.xz / 4.0);
-    vec3 q = p;
-    q.xz = mod(p.xz, 4.0) - 2.0;                           // repeat every 4 units
-    float h = 0.5 + 3.5 * hash21(cell);
-    float pillar = sdBox(q - vec3(0.0, h, 0.0), vec3(0.45, h, 0.45));
-    return min(ground, pillar);
+    float d = 1e9;
+    for (int j = -1; j <= 1; j++)
+    for (int i = -1; i <= 1; i++) {
+        vec2 c = cell + vec2(i, j);
+        float h = 0.5 + 3.5 * hash21(c);
+        vec3 q = p - vec3(c.x * 4.0 + 2.0, h, c.y * 4.0 + 2.0);   // centre of that cell's pillar
+        d = min(d, sdBox(q, vec3(0.45, h, 0.45)));
+    }
+    return d;
 }
+float map(vec3 p) { return min(p.y, pillars(p)); }
 vec3 normal(vec3 p) {
     const vec2 e = vec2(1e-3, 0.0);
     return normalize(vec3(map(p + e.xyy) - map(p - e.xyy), map(p + e.yxy) - map(p - e.yxy), map(p + e.yyx) - map(p - e.yyx)));
@@ -500,12 +508,12 @@ void main() {
     for (int i = 0; i < 160; i++) {
         float h = map(ro + rd * t);
         if (h < 0.001 * t || t > 150.0) break;
-        t += h * 0.8;                                        // repeated domain: step a little short
+        t += h;
     }
     vec3 col = mix(vec3(0.75, 0.8, 0.88), vec3(0.3, 0.45, 0.7), clamp(rd.y * 2.0, 0.0, 1.0));
     if (t < 150.0) {
         vec3 pos = ro + rd * t, n = normal(pos);
-        bool floorHit = pos.y <= map(pos) + 1e-4;
+        bool floorHit = pos.y < pillars(pos);                 // which surface is closer
         vec3 albedo = floorHit ? vec3(0.3 + 0.1 * mod(floor(pos.x) + floor(pos.z), 2.0)) : vec3(0.75, 0.6, 0.45);
         col = albedo * (0.25 + 0.9 * max(dot(n, sun), 0.0));
     } else t = 400.0;
@@ -518,7 +526,8 @@ void main() {
     else if (uFog == 4) {
         // density a·e^(-b·y) integrated from the camera along the ray
         float a = uDensity * 3.0, b = uFalloff;
-        float amount = rd.y == 0.0 ? a * exp(-b * ro.y) * t
+        // near-horizontal rays: the limit of the formula, a·e^(-b·y0)·t (avoids 0/0)
+        float amount = abs(rd.y) < 1e-4 ? a * exp(-b * ro.y) * t
                      : (a / b) * exp(-b * ro.y) * (1.0 - exp(-b * rd.y * t)) / rd.y;
         vis = exp(-amount);
     }

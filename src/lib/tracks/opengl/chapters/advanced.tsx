@@ -9,6 +9,7 @@ import { SkyboxTypesFigure } from "@/components/lesson/figures/SkyboxTypesFigure
 import { EnvMapFigure } from "@/components/lesson/figures/EnvMapFigure";
 import { SkyFormatsFigure } from "@/components/lesson/figures/sky/SkyFormatsFigure";
 import { ProceduralSkyFigure } from "@/components/lesson/figures/sky/ProceduralSkyFigure";
+import { SkyBuilderFigure } from "@/components/lesson/figures/sky/SkyBuilderFigure";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 
@@ -604,12 +605,47 @@ glDepthFunc(GL_LESS);                              // restore`}</CodeBlock>
         {r`\text{disc} = \operatorname{smoothstep}\big(\cos 1.15R,\ \cos R,\ \mu\big)`}
       </Equation>
 
+      <H3>{tx(t, "oglCube_pToolsTitle", "Tools first: hash, value noise and fBm")}</H3>
+      <p>
+        {tx(t, "oglCube_pToolsBody",
+          "Stars, the Milky Way and clouds are all built from three small functions. None of them is specific to skies: the same three make fire, water ripples, terrain and marble. They are worth knowing by heart.")}
+      </p>
+      <Equation label={tx(t, "oglCube_hashLabel", "1. A hash: integer id → repeatable random number")}
+        where={[
+          [r`\mathbf p`, tx(t, "oglCube_wHashP", "an integer cell id (stored in a vec3). The same id must always give the same number")],
+          [r`\operatorname{fract}(\mathbf p \cdot 0.1031)`, tx(t, "oglCube_wHashF", "scales the id and keeps only the fractional part, which scrambles the digits")],
+          [r`\mathbf p \cdot (\mathbf p_{zyx} + 31.32)`, tx(t, "oglCube_wHashD", "mixes the three components into each other, so neighbouring ids give unrelated results")],
+        ]}
+        note={tx(t, "oglCube_hashNote", "This is Dave Hoskins' “hash without sine”. The older fract(sin(dot(p, k)) · 43758.5) works too, but sin loses precision for large arguments on some GPUs, and the pattern then turns into visible stripes. A hash is not random: it is a deterministic function that only looks random. That is what makes a procedural sky stable from one frame to the next.")}
+        glsl={`float hash13(vec3 p) {\n    p = fract(p * 0.1031);\n    p += dot(p, p.zyx + 31.32);\n    return fract((p.x + p.y) * p.z);\n}`}>
+        {r`h(\mathbf p) = \operatorname{fract}\big((q_x + q_y)\,q_z\big), \qquad \mathbf q = \mathbf f + \mathbf f\cdot(\mathbf f_{zyx} + 31.32),\quad \mathbf f = \operatorname{fract}(0.1031\,\mathbf p)`}
+      </Equation>
+      <Equation label={tx(t, "oglCube_noiseLabel", "2. Value noise: random values at grid points, smoothly blended")}
+        where={[
+          [r`\lfloor x\rfloor,\ f = x - \lfloor x\rfloor`, tx(t, "oglCube_wNoiseI", "the grid point to the left and the position between it and the next one (0 … 1)")],
+          [r`h(\lfloor x\rfloor),\ h(\lfloor x\rfloor + 1)`, tx(t, "oglCube_wNoiseH", "the hashed values at the two surrounding grid points")],
+          [r`u(f) = 3f^2 - 2f^3`, tx(t, "oglCube_wNoiseU", "the smoothstep curve. Its slope is 6f − 6f², which is 0 at both ends, so neighbouring segments join without a corner. Plain linear blending would leave a crease at every grid line")],
+        ]}
+        note={tx(t, "oglCube_noiseNote", "In 2D the same blend is done twice along x (the bottom and top pair of corners) and once along y between the results. In 3D there are four x-blends, two y-blends and one z-blend, eight corners in all. That is noise3() in the shader.")}>
+        {r`n(x) = \operatorname{mix}\!\big(h(\lfloor x\rfloor),\ h(\lfloor x\rfloor + 1),\ u(f)\big)`}
+      </Equation>
+      <Equation label={tx(t, "oglCube_fbmLabel", "3. fBm: octaves of noise, each twice as fine and half as strong")}
+        where={[
+          [r`2^i`, tx(t, "oglCube_wFbmF", "frequency of octave i (the lacunarity is 2): each octave has features half the size of the previous one")],
+          [r`0.5^{\,i+1}`, tx(t, "oglCube_wFbmA", "its amplitude (the gain is 0.5): fine detail is fainter than large shapes, as in clouds, coastlines and mountains")],
+          [r`R`, tx(t, "oglCube_wFbmR", "a small rotation plus an offset between octaves, so the grids of different octaves never line up")],
+        ]}
+        note={tx(t, "oglCube_fbmNote", "The amplitudes add up to 1 − 0.5^N, so the sum stays in 0…1 but clusters around 0.5. This is why the cloud coverage slides its threshold between 0.3 and 0.7 rather than over the whole 0…1 range.")}>
+        {r`\operatorname{fbm}(\mathbf p) = \sum_{i=0}^{N-1} 0.5^{\,i+1}\; n\big(2^i R^i\,\mathbf p\big)`}
+      </Equation>
+
       <H3>{tx(t, "oglCube_pStarsTitle", "3 · Stars from a hash")}</H3>
       <p>
         {tx(t, "oglCube_pStarsBody",
-          "Storing thousands of stars is unnecessary. Scale the direction and round it down, and the sky is cut into cells: floor(70·d) is a 3D integer cell index. A hash function turns that index into a number that looks random but is always the same for the same cell. Keep a star only if the number is below a threshold, place it at a jittered point inside the cell, and give it a brightness from a second hash."
+          "Storing thousands of stars is unnecessary. Scale the direction and round it down, and the sky is cut into cells: floor(70·d) is a 3D integer cell index. A hash function turns that index into a number that looks random but is always the same for the same cell. Keep a star only if the number is below a threshold, place it at a jittered point inside the cell, and give it a brightness from a second hash. Step through it; the equation after the figure sums it up."
         )}
       </p>
+      <SkyBuilderFigure t={t} part="stars" />
       <Equation label={tx(t, "oglCube_starLabel", "One star per lucky cell")}
         where={[
           [r`h_1 < 0.35\,\rho`, tx(t, "oglCube_wKeep", "keep the cell's star if its hash is below the density slider ρ times 0.35")],
@@ -622,6 +658,7 @@ glDepthFunc(GL_LESS);                              // restore`}</CodeBlock>
       </Equation>
 
       <H3>{tx(t, "oglCube_pMilkyTitle", "4 · The Milky Way")}</H3>
+      <SkyBuilderFigure t={t} part="milky" />
       <Equation label={tx(t, "oglCube_milkyLabel", "A soft band around a great circle")}
         where={[
           [r`\mathbf{G}`, tx(t, "oglCube_wG", "the normal of the galaxy's plane. Directions on the band are perpendicular to it, so x = d·G is 0 on the band and grows off it (x is the sine of the angle off the plane)")],
@@ -635,9 +672,10 @@ glDepthFunc(GL_LESS);                              // restore`}</CodeBlock>
       <H3>{tx(t, "oglCube_pCloudTitle", "5 · Clouds on a plane")}</H3>
       <p>
         {tx(t, "oglCube_pCloudBody",
-          "Real clouds are volumes, and the Volumetrics chapter marches through them. A convincing cheap version treats the cloud layer as a flat sheet at height 1. For each view ray, find where it meets the sheet and read 2D noise there."
+          "Real clouds are volumes, and the Volumetrics chapter marches through them. A convincing cheap version treats the cloud layer as a flat sheet at height 1. For each view ray, find where it meets the sheet and read 2D noise there. Eight steps take it from a checkerboard to lit, drifting clouds."
         )}
       </p>
+      <SkyBuilderFigure t={t} part="clouds" />
       <Equation label={tx(t, "oglCube_cloudLabel", "Ray–plane hit, coverage and one step of light")}
         where={[
           [r`t = 1/d_y`, tx(t, "oglCube_wT", "the distance along d to the plane y = 1, since the ray's height is t·d_y. Near the horizon t explodes, so hits far away are spread over huge areas")],

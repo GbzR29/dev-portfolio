@@ -9,6 +9,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "./lighting-advanced";
 import { IntegratorFigure } from "@/components/lesson/figures/advgl/IntegratorFigure";
 import { ParticlesFigure } from "@/components/lesson/figures/advgl/ParticlesFigure";
+import { RainFigure } from "@/components/lesson/figures/advgl/RainFigure";
 
 const r = String.raw;
 
@@ -176,6 +177,57 @@ void main() {
         {r`\alpha' = \alpha \cdot \operatorname{saturate}\!\left(\frac{z_{scene} - z_p}{\delta}\right)`}
       </Equation>
 
+      <H2>{tx(t, "oglPart_rainTitle", "Case study: rain")}</H2>
+      <p>
+        {tx(t, "oglPart_rainBody",
+          "Rain is the textbook particle effect, and it needs a few ideas the general system above does not. The world is far too big to fill with drops. A drop is a streak, not a sprite. And drops have to react to what they hit. The figure puts it all together: the drops, the splash droplets they spawn on the pavement and the ripple rings they spawn on the pond are three pools, drawn with four instanced calls.")}
+      </p>
+
+      <RainFigure t={t} />
+
+      <Equation label={tx(t, "oglPart_vtLabel", "Drops fall at a constant speed")}
+        where={[
+          [r`m g`, tx(t, "oglPart_wMg", "the drop's weight")],
+          [r`\tfrac12 \rho_{air} C_d A\, v^2`, tx(t, "oglPart_wDrag", "air drag, which grows with the square of the speed. ρ_air is the air density (1.2 kg/m³), C_d the drag coefficient (≈ 0.5 for a sphere) and A the drop's cross-section")],
+          [r`v_t`, tx(t, "oglPart_wVt", "terminal velocity, where drag equals weight. A drop reaches it within a few metres of falling: about 6.5 m/s for a 2 mm drop and 9 m/s for the largest")],
+        ]}
+        note={tx(t, "oglPart_vtNote", "So a rain drop needs no gravity integration at all: p += v·Δt with a constant v (plus wind), randomised by ±15% so the rain does not fall in lockstep. That also makes rain cheap enough to be computed without any simulation (see the tip below).")}>
+        {r`m g = \tfrac12\,\rho_{air}\,C_d\,A\,v_t^2 \quad\Longrightarrow\quad v_t = \sqrt{\frac{2 m g}{\rho_{air}\,C_d\,A}}`}
+      </Equation>
+
+      <Equation label={tx(t, "oglPart_boxLabel", "A rain volume that travels with the camera")}
+        where={[
+          [r`B`, tx(t, "oglPart_wB", "half the width of the box around the camera. Drops only exist inside it")],
+          [r`\mathbf c`, tx(t, "oglPart_wCam", "the camera position")],
+          [r`\operatorname{round}`, tx(t, "oglPart_wRound", "rounding to the nearest integer: a drop that drifts out of one side re-enters on the opposite side (toroidal wrapping). The figure does it with two comparisons per axis, which is the same thing for drops that move less than 2B per frame")],
+          [r`\rho`, tx(t, "oglPart_wRho", "density: drops spawned per second per square metre")],
+        ]}
+        note={tx(t, "oglPart_boxNote", "The number alive settles at spawn rate × lifetime: ρ·(2B)²·H/v_t. With ρ = 15, B = 10 m, H = 12 m and v_t = 9 m/s that is about 8000 drops. The same drops are recycled everywhere you go, and the viewer never notices, because every place looks equally rainy. Prewarming spawns the first frame's drops at random heights, so the volume starts full instead of beginning with one flat sheet falling from the top.")}
+        glsl={`x -= 2.0 * B * round((x - cam.x) / (2.0 * B));\nz -= 2.0 * B * round((z - cam.z) / (2.0 * B));`}>
+        {r`x \leftarrow x - 2B\,\operatorname{round}\!\Big(\frac{x - c_x}{2B}\Big) \qquad N_{alive} = \rho\,(2B)^2\,\frac{H}{v_t}`}
+      </Equation>
+
+      <Equation label={tx(t, "oglPart_streakLabel", "A streak is motion blur")}
+        where={[
+          [r`\Delta t_{shutter}`, tx(t, "oglPart_wShutter", "how long a camera (or an eye) integrates light for one image, ≈ 16 ms at 60 Hz")],
+          [r`\mathbf p - \mathbf v\,\Delta t_{shutter}`, tx(t, "oglPart_wTail", "the tail: where the drop was when the exposure started. The head is where it is now")],
+          [r`w_{min}`, tx(t, "oglPart_wWmin", "the world-space width of one pixel at distance d: the screen height spans 2d·tan(fov/2) metres, split into H_px pixels")],
+        ]}
+        note={tx(t, "oglPart_streakNote", "A drop is 2 mm across and nearly round. A photo of rain shows long lines only because it moves 14 cm during a 16 ms exposure. The quad is built in the vertex shader from the head, the tail, and a side vector cross(v, toCamera) that keeps it facing the viewer. Far streaks thinner than a pixel break into flickering dashes. Widening them to one pixel and dividing the alpha by the same factor keeps each streak's total light while removing the aliasing.")}
+        glsl={`vec3 p = pos - vel * shutter * c.y;             // c.y: 0 head, 1 tail\nvec3 side = normalize(cross(vel, normalize(cam - pos)));\nfloat w = max(width, dist * pixel); alpha *= width / w;`}>
+        {r`L = \lVert \mathbf v \rVert\,\Delta t_{shutter} \qquad w_{min} = \frac{2\,d\,\tan(\text{fov}/2)}{H_{px}} \qquad \alpha' = \alpha\,\frac{w}{\max(w,\ w_{min})}`}
+      </Equation>
+
+      <p>
+        {tx(t, "oglPart_rainHit",
+          "When a drop reaches the ground it dies and becomes something else. On pavement it spawns a few child particles: a crown of droplets thrown up and out, which fall back under gravity within a third of a second. This is a sub-emitter: one system's death events feed another system's spawn. On water it spawns a ripple: a flat decal quad lying on the surface, whose fragment shader draws a ring of radius r = c·age that fades out. The figure's ground is flat, so hitting it is y ≤ 0. Real games render a height map of the scene from above once (a rain occlusion map). A drop dies when it falls below the stored height, which also keeps it dry under roofs and trees.")}
+      </p>
+
+      <Callout type="tip" t={t}>
+        {tx(t, "oglPart_rainStateless",
+          "Because drops fall in straight lines at constant speed, rain can skip simulation entirely. Give each instance an id. In the vertex shader, hash the id into a start position and a phase, and compute the drop's height directly as y = top − v·fract(time/T + phase)·T, wrapped around the camera like above. There are no buffers to update and nothing to upload, and a million drops cost only their fill rate. Splashes can be placed the same way, at the moment fract() wraps around. Many shipped games draw their rain like this.")}
+      </Callout>
+
       <H2>{tx(t, "oglPart_gpuTitle", "Moving the simulation to the GPU")}</H2>
       <p>
         {tx(t, "oglPart_gpuBody",
@@ -205,6 +257,7 @@ void main() {
         "Pool with swap-remove keeps live particles packed: O(1) spawn and kill, one contiguous draw.",
         "Draw everything in one instanced call; build camera-facing quads in the vertex shader; depth test on, depth write off.",
         "Additive needs no sorting; alpha needs back-to-front order; premultiplied does both; fill rate is the real cost.",
+        "Rain: a volume that follows the camera with wrapped drops, streaks as long as v × shutter, splashes and ripples as sub-emitters.",
       ]} />
     </Article>
   );

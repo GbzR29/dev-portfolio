@@ -762,7 +762,7 @@ export const glslTrack: Track = {
     { id: "noise",       section: SHAPES,  title: "Noise & Procedural Patterns", minRead: 16, content: (t) => <NoiseContent       t={t} /> },
     // ── Effect Recipes ──────────────────────────────────────────────────────
     { id: "texturing",   section: EFFECTS, title: "Texturing Tricks",            minRead: 12, content: (t) => <TexturingContent   t={t} /> },
-    { id: "water",       section: EFFECTS, title: "Waves & Water",               minRead: 28, content: (t) => <WaterContent       t={t} /> },
+    { id: "water",       section: EFFECTS, title: "Waves & Water",               minRead: 36, content: (t) => <WaterContent       t={t} /> },
     { id: "glass",       section: EFFECTS, title: "Glass, Refraction & Fresnel", minRead: 13, content: (t) => <GlassContent       t={t} /> },
     { id: "fog",         section: EFFECTS, title: "Fog",                         minRead: 10, content: (t) => <FogContent         t={t} /> },
     { id: "stylized",    section: EFFECTS, title: "Toon, Dissolve & Hologram",   minRead: 11, content: (t) => <StylizedContent    t={t} /> },

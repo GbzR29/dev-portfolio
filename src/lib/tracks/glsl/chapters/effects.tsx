@@ -10,6 +10,7 @@ import { KeyIdeas, Article, Lead } from "../../opengl/chapters/lighting-advanced
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { GerstnerFigure } from "@/components/lesson/glsl/GerstnerFigure";
 import { WaterLabFigure } from "@/components/lesson/figures/water/WaterLabFigure";
+import { ShoreLabFigure } from "@/components/lesson/figures/water/ShoreLabFigure";
 import { FresnelFigure } from "@/components/lesson/glsl/FresnelFigure";
 import { FogCurveFigure } from "@/components/lesson/glsl/FogCurveFigure";
 import { TEXTURE_PRESETS, WATER_PRESETS, GLASS_PRESETS, FOG_PRESETS, STYLE_PRESETS } from "../presets/effects";
@@ -251,6 +252,64 @@ export function WaterContent({ t }: { t: TrackTranslations }) {
         ]}
       />
 
+      <H2>{tx(t, "glslWater_shoreTitle", "Shallow water, foam and rain")}</H2>
+      <p>
+        {tx(t, "glslWater_shoreBody",
+          "Open ocean is about big waves. Near a coast the interest moves elsewhere: to what is under the water, to foam where water meets sand and stone, and, when it rains, to thousands of small rings. The second lab looks down on a small bay. The water is a flat plane here, and its ripples exist only in the normal. That costs nothing and suits calm shallows, where waves are centimetres high. The sea bed, a sand island, rocks and two old posts form one distance field, traced three times per pixel: once for the view, once for the refracted ray and once for the reflection.")}
+      </p>
+
+      <ShoreLabFigure t={t} />
+
+      <H3>{tx(t, "glslWater_depthTitle", "Colour from depth")}</H3>
+      <p>
+        {tx(t, "glslWater_depthBody",
+          "Under a flat water plane at height L, the water thickness at (x, z) is simply h = L − bed(x, z). The refracted ray's length through the water replaces h in Beer–Lambert, so the shallow shelf around the island stays turquoise and the drop-off turns deep blue on its own, with no colour ramp painted by hand. Lower the water level and the same terrain becomes a wider beach. The stylised mode instead cuts 1 − e^(−0.7h) into four flat bands, which is how the lake in the reference screenshot gets its crisp rings of colour.")}
+      </p>
+
+      <H3>{tx(t, "glslWater_voroTitle", "Cellular foam: Voronoi noise")}</H3>
+      <p>
+        {tx(t, "glslWater_voroBody",
+          "Shore foam in stylised games is not a smooth white band. It is a lace of cells that breaks apart away from the shore. That pattern comes from cellular (Voronoi, or Worley) noise. Scatter one random feature point in every grid cell. For any position p, F1 is the distance to the nearest feature point. F1 is 0 on a feature point and largest on the borders between two of them, so its level sets are the cell outlines.")}
+      </p>
+      <Equation label={tx(t, "glslWater_f1Label", "Voronoi F1 and the foam rule")}
+        where={[
+          [r`\mathbf f_{\mathbf c}`, tx(t, "glslWater_wFc", "the feature point of grid cell c: its corner plus a hashed offset. Here the offset also swings with time, so the lace slowly moves")],
+          [r`\mathbf c \in 3\times3`, tx(t, "glslWater_wNb", "the nearest feature point is always in p's own cell or one of its 8 neighbours, so 9 distances are enough. It is the same neighbour rule as the fog chapter's pillars")],
+          [r`a`, tx(t, "glslWater_wA", "foam amount, 0 … 1: 1 at the water's edge, falling to 0 once the water is deeper than the foam width")],
+          [r`\theta = 1.05 - 1.1a`, tx(t, "glslWater_wTheta", "the threshold. With a = 1 it is below every value of F1, so all is white. As a drops it rises, and only the borders, where F1 is largest, stay white. At a = 0 nothing is left")],
+        ]}
+        note={tx(t, "glslWater_f1Note", "Offsetting p by the water's slope before the lookup makes the foam ride on the ripples instead of floating above them.")}
+        glsl={`float f1 = voronoiF1(p * cells) / 0.75;\nfloat foam = smoothstep(theta - 0.05, theta + 0.05, f1);`}>
+        {r`F_1(\mathbf p) = \min_{\mathbf c \in 3\times 3} \lVert \mathbf p - \mathbf f_{\mathbf c} \rVert \qquad \text{foam} = \operatorname{smoothstep}\!\big(\theta - 0.05,\ \theta + 0.05,\ F_1 / 0.75\big)`}
+      </Equation>
+
+      <H3>{tx(t, "glslWater_contactTitle", "Contact foam from the distance field")}</H3>
+      <p>
+        {tx(t, "glslWater_contactBody",
+          "Foam collars around rocks and posts, as in the first reference screenshot, need the distance from each water pixel to the nearest object. A rasteriser would have to estimate it from the depth buffer (soft-particle style: foam where the scene depth is close to the water depth). With a distance field it is one function call: objects(p) at the water surface point is exactly that distance. The foam amount is 1 − objects(p)/width, and it goes through the same Voronoi rule as the shore, so both kinds of foam look alike. A thin solid line where the distance reaches 0 hides the exact edge.")}
+      </p>
+
+      <H3>{tx(t, "glslWater_rainTitle", "Raindrops on the water")}</H3>
+      <p>
+        {tx(t, "glslWater_rainBody",
+          "A falling drop starts a ring that spreads and fades. Thousands of them must not cost thousands of evaluations per pixel. So the surface is cut into a grid of 0.7 m cells, and each cell holds one drop that falls again and again: each time at a new random point, at its own random moment. A pixel only has to sum the drops of its own cell and its 8 neighbours, because a ring dies before it has grown past one cell.")}
+      </p>
+      <Equation label={tx(t, "glslWater_ringLabel", "One drop: when, where, and the ring it makes")}
+        where={[
+          [r`\phi_{\mathbf c}`, tx(t, "glslWater_wPhi", "the cell's hashed phase: drops in different cells never fall together. Cells whose phase is above the rain slider stay dry, which is how lighter rain means fewer drops")],
+          [r`\text{cycle},\ a`, tx(t, "glslWater_wCycle", "the integer part counts the drops so far and seeds a new random landing point each time. The fractional part, times the period T, is the current drop's age a in seconds")],
+          [r`s = r - c\,a`, tx(t, "glslWater_wFront", "signed distance from the ring's front, where r is the distance to the landing point and c = 0.55 m/s the ring's speed")],
+          [r`A,\ k,\ \beta,\ \gamma`, tx(t, "glslWater_wRingK", "height (12 mm), crest frequency (a 14 cm wavelength), ring thickness and fade rate. The Gaussian in s keeps only two or three crests, the exponential in a makes old rings disappear")],
+        ]}
+        note={tx(t, "glslWater_ringNote", "The shader needs the ring's slope, not its height. Differentiating along r gives dh/dr = A·e^(−βs²)·e^(−γa)·(k cos ks − 2βs sin ks), and the slope vector is that times the unit vector (p − centre)/r. For the first 0.14 s a small bright crown marks the impact: the splash.")}
+        glsl={`float tt = uT / PERIOD + phase * 7.0;\nfloat cycle = floor(tt), age = fract(tt) * PERIOD;\nvec2 centre = (cell + 0.15 + 0.7 * hash22(cell + cycle * 13.1)) * CELL;\nfloat s = length(p - centre) - age * 0.55;\nfloat h = A * sin(k * s) * exp(-beta * s * s) * exp(-gamma * age);`}>
+        {r`\text{cycle} = \Big\lfloor \tfrac{t}{T} + 7\phi_{\mathbf c} \Big\rfloor,\quad a = T\,\operatorname{fract}\!\Big(\tfrac{t}{T} + 7\phi_{\mathbf c}\Big) \qquad h(r, a) = A\,\sin(k s)\; e^{-\beta s^2}\; e^{-\gamma a}`}
+      </Equation>
+      <p>
+        {tx(t, "glslWater_rainLook",
+          "Two more details make rain read at a glance. Under an overcast sky the reflection is almost uniform, so rings barely change the colour. A soft highlight on each ring's crest, the bright sky caught by its slope, brings them back. The falling rain itself is drawn in screen space here: three layers of thin vertical streaks, hashed per column and scrolling at different speeds, which is cheap and convincing in a still view. Rain that has to exist in 3D, fall around a moving camera and splash where it lands is a particle system. The Advanced OpenGL · Particles chapter builds exactly that.")}
+      </p>
+
       <Callout type="tip" t={t}>
         {tx(t, "glslWater_fftTip", "Production oceans (Sea of Thieves, Assassin's Creed IV) sum not four but thousands of waves, whose amplitudes follow a measured ocean spectrum (Phillips, JONSWAP). The sum is evaluated with an FFT in a compute shader every frame (Tessendorf, 2001). The formulas here are the same, just many more waves.")}
       </Callout>
@@ -263,6 +322,9 @@ export function WaterContent({ t }: { t: TrackTranslations }) {
         "Water colour is Beer–Lambert per channel plus scattered light; depth and clarity set the hue.",
         "Foam lives where the Gerstner map folds (Jacobian J < threshold) and where the water gets thin.",
         "Caustics are the same idea for light: brightness = 1 / |det(I + d(1 − η)H)|.",
+        "In shallows, colour comes from depth (level − bed); cellular foam comes from Voronoi F1 against a threshold.",
+        "A distance field gives contact foam for free: the foam amount is 1 − distance / width.",
+        "Rain rings: one recurring drop per grid cell, summed over the 3×3 neighbourhood, differentiated for the normal.",
       ]} />
     </Article>
   );
@@ -375,6 +437,9 @@ vec3 applyHeightFog(vec3 col, vec3 ro, vec3 rd, float d, vec3 sunDir) {
     return mix(fogCol, col, vis);
 }`}</CodeBlock>
       <ShaderPlayground presets={FOG_PRESETS} t={t} id="glslFog" />
+      <Callout type="warn" t={t}>
+        {tx(t, "glslFog_repeatWarn", "A raymarching pitfall hides in this scene. The pillars repeat with mod(), but each cell has its own random height. A distance function that only measures the pillar in the current cell is wrong near cell borders: it cannot see a taller pillar next door, so the ray jumps into it and slices its top off. The result is ragged, torn tops. The fix is in pillars(): take the minimum over the 3×3 neighbouring cells. Whenever repeated shapes differ per cell, or can reach past their cell, check the neighbours.")}
+      </Callout>
       <Callout type="tip" t={t}>
         {tx(t, "glslFog_tip", "Apply fog to the sky as well, using the same fog colour at the horizon, or distant objects will stand out as flat cut-outs against a blue sky. Fog uses the distance from the camera, not the depth-buffer z: with z, fog changes as you turn your head, because z is measured along the view axis.")}
       </Callout>
