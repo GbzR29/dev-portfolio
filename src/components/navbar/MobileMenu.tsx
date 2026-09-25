@@ -4,13 +4,14 @@ import { X, LayoutGrid, User, Briefcase, PenTool, GraduationCap, MessageSquare, 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useTheme } from "@/components/providers/ThemeProvider";
+import type { Language } from "@/lib/i18n";
 
 interface MobileMenuProps {
   open: boolean;
   onClose: () => void;
-  languages: { code: string; label: string; flag: string }[];
+  languages: { code: Language; label: string; flag: string }[];
   currentLang: string;
-  setLanguage: (lang: any) => void;
+  setLanguage: (lang: Language) => void;
 }
 
 export function MobileMenu({ open, onClose, languages, currentLang, setLanguage }: MobileMenuProps) {

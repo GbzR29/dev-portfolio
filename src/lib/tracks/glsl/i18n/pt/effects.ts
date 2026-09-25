@@ -1,4 +1,4 @@
-// PT text for src/lib/tracks/glsl/chapters/effects.tsx. Keys match the tx() calls there; English is the fallback in the code.
+// PT text for src/lib/tracks/glsl/chapters/effects/*.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
   glslTex_intro: "texture(sampler, uv) parece uma leitura de array, mas é uma das operações mais sofisticadas que uma GPU faz. Ela escolhe um nível de mip pela velocidade com que uv muda entre pixels vizinhos, mistura quatro texels (ou oito, ou dezesseis com anisotropia) e trata a repetição. Saber o que ela faz permite dobrá-la à sua vontade: distorcer a UV, projetar texturas sem UVs ou ler texels exatos quando a filtragem atrapalharia.",

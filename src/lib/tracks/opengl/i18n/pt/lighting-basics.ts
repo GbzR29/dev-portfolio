@@ -1,4 +1,4 @@
-// PT text for src/lib/tracks/opengl/chapters/lighting-basics.tsx. Keys match the tx() calls there; English is the fallback in the code.
+// PT text for src/lib/tracks/opengl/chapters/lighting-basics/*.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
   keyIdeas: "Ideias-chave",

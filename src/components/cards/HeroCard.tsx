@@ -31,7 +31,7 @@ export default function HeroCard() {
       <div className="flex items-center gap-3">
         <div className="h-px w-10 bg-[var(--primary)]" />
         <span className="font-mono text-[10px] sm:text-xs text-[var(--primary)] uppercase tracking-[0.3em] select-none">
-          // graphics programmer & game dev
+          {"// graphics programmer & game dev"}
         </span>
       </div>
 

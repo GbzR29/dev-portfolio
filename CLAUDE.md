@@ -77,4 +77,3 @@ from the `chapters` array — never hand-write them.
 
 - Translations: PT is complete (all tracks + widgets). ES/ZH exist only for OpenGL and GLSL lessons; no ES/ZH widget text yet.
 - Widgets need a better mobile layout (design first).
-- Pre-existing lint errors: `any` in LessonComponents.tsx, `t: any` + JSX comments in app/learn/page.tsx.

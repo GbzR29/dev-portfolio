@@ -1,7 +1,6 @@
 "use client";
 
 import { Mail } from "lucide-react";
-import { useTheme } from "@/components/providers/ThemeProvider";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();

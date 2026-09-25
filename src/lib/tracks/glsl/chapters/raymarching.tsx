@@ -9,7 +9,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { RaymarchSliceFigure } from "@/components/lesson/glsl/RaymarchSliceFigure";
-import { RAYMARCH_PRESETS } from "../presets/effects";
+import { RAYMARCH_PRESETS } from "../presets/raymarching";
 
 const r = String.raw;
 

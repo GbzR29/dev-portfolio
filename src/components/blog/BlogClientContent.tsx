@@ -103,7 +103,7 @@ export default function BlogClientContent({ initialPosts }: BlogClientProps) {
           <header className="space-y-5 max-w-2xl">
             <div className="flex items-center gap-3">
               <div className="h-px w-8 bg-[var(--primary)]" />
-              <span className="font-mono text-[10px] text-[var(--primary)] uppercase tracking-[0.3em]">// gabrielfc.dev</span>
+              <span className="font-mono text-[10px] text-[var(--primary)] uppercase tracking-[0.3em]">{"// gabrielfc.dev"}</span>
             </div>
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">{t.blogTitle}<span className="text-[var(--primary)]">.</span></h1>
             <p className="text-xl text-[var(--text-muted)] leading-relaxed">{t.blogSubtitle}</p>
@@ -127,7 +127,7 @@ export default function BlogClientContent({ initialPosts }: BlogClientProps) {
           )}
           {filtered.length === 0 && (
             <div className="text-center py-20 text-[var(--text-muted)]">
-              <p className="font-mono text-sm">// no posts in this category yet</p>
+              <p className="font-mono text-sm">{"// no posts in this category yet"}</p>
             </div>
           )}
           <NewsletterBanner />

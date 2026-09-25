@@ -1,4 +1,4 @@
-// PT text for src/lib/tracks/opengl/chapters/advanced.tsx. Keys match the tx() calls there; English is the fallback in the code.
+// PT text for src/lib/tracks/opengl/chapters/advanced/*.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
   oglBlend_intro: "Blending é como um fragmento se combina com o que já está no framebuffer em vez de substituí-lo. A equação é de função fixa e simples. O que é realmente difícil é o problema de ordem que ela cria, e esse problema não tem solução correta barata — é por isso que a transparência ainda é um tema de pesquisa.",

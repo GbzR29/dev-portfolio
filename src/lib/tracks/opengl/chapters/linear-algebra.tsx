@@ -4,7 +4,7 @@
 
 import { CodeBlock, Callout, H2 } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { InteractiveBasis2D } from "@/components/lesson/InteractiveBasis2D";
+import { InteractiveBasis2D } from "@/components/lesson/figures/basis/InteractiveBasis2D";
 import { HomogeneousFigure } from "@/components/lesson/figures/HomogeneousFigure";
 import { VertexJourneyFigure } from "@/components/lesson/figures/VertexJourneyFigure";
 import { VectorOpsFigure } from "@/components/lesson/figures/VectorOpsFigure";

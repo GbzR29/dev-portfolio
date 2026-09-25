@@ -1,4 +1,4 @@
-// PT text for src/lib/tracks/opengl/chapters/pbr.tsx. Keys match the tx() calls there; English is the fallback in the code.
+// PT text for src/lib/tracks/opengl/chapters/pbr/*.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
   oglPbrT_intro: "A renderização baseada em física não é um algoritmo, mas uma promessa: cada termo da equação de iluminação tem um significado físico e uma unidade física. Os artistas param de ajustar intensidades especulares por luz; um material criado uma vez fica certo sob o sol do meio-dia, uma vela ou uma HDRI de estúdio. Este capítulo constrói a teoria — os próximos três a transformam em shaders.",

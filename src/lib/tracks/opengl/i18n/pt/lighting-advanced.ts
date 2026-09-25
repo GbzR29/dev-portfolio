@@ -1,4 +1,4 @@
-// PT text for src/lib/tracks/opengl/chapters/lighting-advanced.tsx. Keys match the tx() calls there; English is the fallback in the code.
+// PT text for src/lib/tracks/opengl/chapters/lighting-advanced/*.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
   oglBlinn_intro: "O termo especular de Phong tem um defeito que só aparece em algumas situações — brilho baixo, ângulos rasantes —, mas, quando aparece, é feio: o realce termina numa borda dura. A correção de Jim Blinn em 1977 trocou um único vetor e virou o modelo especular padrão do pipeline fixo do OpenGL por décadas.",

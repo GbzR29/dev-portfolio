@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   { label: "Contact", section: "contact", href: "/#contact" },
 ];
 
-function _NavLinks({ onClick, vertical, className }: NavLinksProps) {
+function NavLinksImpl({ onClick, vertical, className }: NavLinksProps) {
   const [activeSection, setActiveSection] = useState<string>("");
   const [isMobileLayout, setIsMobileLayout] = useState(false);
   const pathname = usePathname();
@@ -156,4 +156,4 @@ function _NavLinks({ onClick, vertical, className }: NavLinksProps) {
   );
 }
 
-export const NavLinks = memo(_NavLinks);
+export const NavLinks = memo(NavLinksImpl);

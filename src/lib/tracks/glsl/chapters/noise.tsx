@@ -9,7 +9,7 @@ import { Equation } from "@/components/lesson/Tex";
 import { KeyIdeas } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { Noise1DFigure } from "@/components/lesson/glsl/Noise1DFigure";
-import { NOISE_PRESETS } from "../presets/effects";
+import { NOISE_PRESETS } from "../presets/noise";
 
 const r = String.raw;
 

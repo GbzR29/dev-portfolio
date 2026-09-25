@@ -8,14 +8,8 @@ import { useTheme } from "@/components/providers/ThemeProvider";
 import { lessonSyntaxTheme } from "@/lib/syntaxTheme";
 import { RefToken, useReference, useRefEntry } from "@/components/reference/RefToken";
 import { referenceIndex, type RefEntry } from "@/lib/reference";
-
-// ─── Helper ───────────────────────────────────────────────────────────────────
-// Always returns a non-empty string. Falls back to `fallback` if t is missing
-// or the key doesn't exist.
-function tx(t: any, key: string, fallback: string): string {
-  const val = t?.[key];
-  return val && val.length > 0 ? val : fallback;
-}
+import { tx } from "@/lib/tracks/tx";
+import type { TrackTranslations } from "@/lib/tracks/types";
 
 // ─── Reference linking ────────────────────────────────────────────────────────
 // The highlighter hands its renderer a HAST-like tree. We split text nodes on
@@ -65,7 +59,7 @@ export function CodeBlock({
   children: string;
   lang?: string;
   filename?: string;
-  t?: any;
+  t?: TrackTranslations;
 }) {
   const [copied, setCopied] = useState(false);
   const { theme } = useTheme();
@@ -143,7 +137,7 @@ export function Callout({
 }: {
   type?: CalloutType;
   children: React.ReactNode;
-  t?: any;
+  t?: TrackTranslations;
 }) {
   const config = {
     info: { border: "border-blue-500/30",   bg: "bg-blue-500/5",   labelKey: "calloutNote",    fallback: "NOTE",    color: "text-blue-400"   },
@@ -226,7 +220,7 @@ const PIPELINE_STAGES = [
   { labelKey: "pipelineStageOutput",       labelFallback: "Output\nMerge",       descKey: "pipelineDriver",   descFallback: "driver",    programmable: false },
 ];
 
-export function PipelineDiagram({ t }: { t?: any }) {
+export function PipelineDiagram({ t }: { t?: TrackTranslations }) {
   return (
     <div className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-x-auto">
       <div className="flex items-center p-5 gap-1 w-max mx-auto">
@@ -312,7 +306,7 @@ export function NDCDiagram() {
 
 // ─── VBO Flow Diagram ─────────────────────────────────────────────────────────
 
-export function VBOFlowDiagram({ t }: { t?: any }) {
+export function VBOFlowDiagram({ t }: { t?: TrackTranslations }) {
   return (
     <div className="my-6 rounded-xl border border-[var(--code-border)] bg-[var(--code-bg)] p-6 overflow-x-auto">
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-max mx-auto sm:w-auto">
@@ -378,7 +372,7 @@ export function VBOFlowDiagram({ t }: { t?: any }) {
 
 // ─── VAO Diagram ──────────────────────────────────────────────────────────────
 
-export function VAODiagram({ t }: { t?: any }) {
+export function VAODiagram({ t }: { t?: TrackTranslations }) {
   return (
     <div className="my-6 rounded-xl border border-[var(--code-border)] bg-[var(--code-bg)] p-5">
       <div className="text-[9px] font-mono font-bold text-[var(--code-muted)] uppercase tracking-widest text-center mb-4">

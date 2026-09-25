@@ -11,6 +11,7 @@ import type { ReactNode } from "react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { getTrack } from "@/lib/tracks";
 import { TRACK_CATALOG, type TrackInfo } from "@/lib/tracks/catalog";
+import type { TrackTranslations } from "@/lib/tracks/types";
 
 // Icons stay here (JSX); everything else about a track lives in the catalog.
 const TRACK_ICONS: Record<string, ReactNode> = {
@@ -23,7 +24,7 @@ const TRACK_ICONS: Record<string, ReactNode> = {
   vulkan:  <Cpu      size={26} />,
 };
 
-function TrackCard({ config, t }: { config: TrackInfo; t: any }) {
+function TrackCard({ config, t }: { config: TrackInfo; t: NonNullable<TrackTranslations> }) {
   const icon  = TRACK_ICONS[config.id];
   const desc  = t[config.descKey]  ?? config.descFallback;
   const level = t[config.levelKey] ?? config.levelFallback;
@@ -98,7 +99,7 @@ function TrackCard({ config, t }: { config: TrackInfo; t: any }) {
               </button>
             </Link>
           ) : (
-            <span className="text-xs text-[var(--text-muted)] font-mono opacity-50">// coming soon</span>
+            <span className="text-xs text-[var(--text-muted)] font-mono opacity-50">{"// coming soon"}</span>
           )}
         </div>
       </div>
@@ -122,7 +123,7 @@ export default function LearnPage() {
             <div className="flex items-center gap-3">
               <div className="h-px w-8 bg-[var(--primary)]" />
               <span className="font-mono text-[10px] text-[var(--primary)] uppercase tracking-[0.3em]">
-                // gabrielfc.dev/learn
+                {"// gabrielfc.dev/learn"}
               </span>
             </div>
             <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">

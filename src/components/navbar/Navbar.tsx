@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { NavLinks } from "./NavLinks";
 import { MobileMenu } from "./MobileMenu";
+import type { Language } from "@/lib/i18n";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
@@ -18,7 +19,7 @@ export default function Navbar() {
   const langMenuRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
 
-  const languages = [
+  const languages: { code: Language; label: string; flag: string }[] = [
     { code: "en", label: "English", flag: "🇺🇸" },
     { code: "pt", label: "Português", flag: "🇧🇷" },
     { code: "zh", label: "中文", flag: "🇨🇳" },
@@ -97,7 +98,7 @@ export default function Navbar() {
                         <button
                           key={lang.code}
                           onClick={() => {
-                            setLanguage(lang.code as any);
+                            setLanguage(lang.code);
                             setLangOpen(false);
                           }}
                           className={`w-full flex items-center justify-between px-4 py-3 text-sm hover:bg-[var(--primary-low)] ${

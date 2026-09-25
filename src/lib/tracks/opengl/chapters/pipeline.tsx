@@ -3,8 +3,8 @@
 // OpenGL track — "The Graphics Pipeline".
 
 import { CodeBlock, Callout, H2, PipelineDiagram, NDCDiagram } from "@/components/lesson/LessonComponents";
-import { InteractiveNDC2D } from "@/components/lesson/InteractiveNDC2D";
-import { InteractiveNDC3D } from "@/components/lesson/InteractiveNDC3D";
+import { InteractiveNDC2D } from "@/components/lesson/figures/ndc/InteractiveNDC2D";
+import { InteractiveNDC3D } from "@/components/lesson/figures/ndc/InteractiveNDC3D";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 
