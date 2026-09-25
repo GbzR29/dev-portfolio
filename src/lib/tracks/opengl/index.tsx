@@ -56,6 +56,9 @@ import { ReflectionsContent } from "./chapters/reflections";
 import { VolumetricsContent } from "./chapters/volumetrics";
 import { DecalsContent } from "./chapters/decals";
 import { TextureCompressionContent } from "./chapters/texturecompression";
+import { TaaContent } from "./chapters/temporal";
+import { GiContent } from "./chapters/gi";
+import { TerrainContent } from "./chapters/terrain";
 
 // tx: returns translated string or English fallback. Never shows a key name.
 function tx(t: any, key: string, fallback: string): string {
@@ -1765,6 +1768,7 @@ export const openGLTrack: Track = {
     { id: "bloom",           section: ADV_LIGHTING,    title: "Bloom",                     minRead: 10, content: (t) => <BloomContent           t={t} /> },
     { id: "color-spaces",    section: ADV_LIGHTING,    title: "Colour Spaces & ACES",      minRead: 15, content: (t) => <ColorSpacesContent     t={t} /> },
     { id: "deferred",        section: ADV_LIGHTING,    title: "Deferred Shading",          minRead: 12, content: (t) => <DeferredContent        t={t} /> },
+    { id: "global-illumination", section: ADV_LIGHTING, title: "Global Illumination",      minRead: 16, content: (t) => <GiContent              t={t} /> },
 
     // ── PBR ──────────────────────────────────────────────────────────────────
     { id: "pbr-theory",      section: PBR,             title: "PBR Theory",                minRead: 16, content: (t) => <PbrTheoryContent       t={t} /> },
@@ -1777,6 +1781,7 @@ export const openGLTrack: Track = {
     { id: "ssao",            section: POST,            title: "SSAO",                      minRead: 14, content: (t) => <SsaoContent            t={t} /> },
     { id: "parallax-mapping", section: POST,           title: "Parallax Mapping",          minRead: 12, content: (t) => <ParallaxContent        t={t} /> },
     { id: "anti-aliasing",   section: POST,            title: "Anti-Aliasing",             minRead: 14, content: (t) => <AntiAliasingContent    t={t} /> },
+    { id: "taa",             section: POST,            title: "Temporal AA & Upscaling",   minRead: 16, content: (t) => <TaaContent             t={t} /> },
 
     // ── Model Loading ────────────────────────────────────────────────────────
     { id: "model-loading",   section: MODELS,          title: "Model Loading (Assimp)",    minRead: 13, content: (t) => <ModelLoadingContent    t={t} /> },
@@ -1800,6 +1805,7 @@ export const openGLTrack: Track = {
     { id: "reflections",     section: TECH,            title: "Reflections",               minRead: 14, content: (t) => <ReflectionsContent     t={t} /> },
     { id: "volumetrics",     section: TECH,            title: "Atmosphere & Volumetrics",  minRead: 16, content: (t) => <VolumetricsContent     t={t} /> },
     { id: "decals",          section: TECH,            title: "Decals",                    minRead: 11, content: (t) => <DecalsContent          t={t} /> },
+    { id: "terrain",         section: TECH,            title: "Terrain Rendering",         minRead: 15, content: (t) => <TerrainContent         t={t} /> },
 
     // ── Performance ──────────────────────────────────────────────────────────
     { id: "profiling",       section: PERF,            title: "Measuring Performance",     minRead: 13, content: (t) => <ProfilingContent       t={t} /> },

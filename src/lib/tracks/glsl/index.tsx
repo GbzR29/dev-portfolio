@@ -18,6 +18,7 @@ import { PlaygroundContent } from "./chapters/playground";
 import { PatternsContent, ColorContent } from "./chapters/shapes";
 import { TexturingContent, WaterContent, GlassContent, FogContent, StylizedContent } from "./chapters/effects";
 import { RaymarchingContent } from "./chapters/raymarching";
+import { RayTracingContent, PathTracingContent, RtAccelContent } from "./chapters/raytracing";
 
 const r = String.raw;
 
@@ -743,6 +744,7 @@ const BASICS   = "Language Basics";
 const SHAPES   = "Shapes, Patterns & Colour";
 const EFFECTS  = "Effect Recipes";
 const RAYMARCH = "Raymarching";
+const RAYTRACE = "Ray & Path Tracing";
 const TOOLING  = "Tooling";
 
 
@@ -763,11 +765,15 @@ export const glslTrack: Track = {
     // ── Effect Recipes ──────────────────────────────────────────────────────
     { id: "texturing",   section: EFFECTS, title: "Texturing Tricks",            minRead: 12, content: (t) => <TexturingContent   t={t} /> },
     { id: "water",       section: EFFECTS, title: "Waves & Water",               minRead: 36, content: (t) => <WaterContent       t={t} /> },
-    { id: "glass",       section: EFFECTS, title: "Glass, Refraction & Fresnel", minRead: 13, content: (t) => <GlassContent       t={t} /> },
-    { id: "fog",         section: EFFECTS, title: "Fog",                         minRead: 10, content: (t) => <FogContent         t={t} /> },
+    { id: "glass",       section: EFFECTS, title: "Glass, Refraction & Fresnel", minRead: 21, content: (t) => <GlassContent       t={t} /> },
+    { id: "fog",         section: EFFECTS, title: "Fog",                         minRead: 18, content: (t) => <FogContent         t={t} /> },
     { id: "stylized",    section: EFFECTS, title: "Toon, Dissolve & Hologram",   minRead: 11, content: (t) => <StylizedContent    t={t} /> },
     // ── Raymarching ─────────────────────────────────────────────────────────
     { id: "raymarching", section: RAYMARCH, title: "Raymarching",                minRead: 17, content: (t) => <RaymarchingContent t={t} /> },
+    // ── Ray & Path Tracing ──────────────────────────────────────────────────
+    { id: "raytracing",  section: RAYTRACE, title: "Ray Tracing",                minRead: 20, content: (t) => <RayTracingContent  t={t} /> },
+    { id: "pathtracing", section: RAYTRACE, title: "Path Tracing",               minRead: 26, content: (t) => <PathTracingContent t={t} /> },
+    { id: "rt-accel",    section: RAYTRACE, title: "Acceleration & Denoising",   minRead: 15, content: (t) => <RtAccelContent     t={t} /> },
     // ── Tooling ─────────────────────────────────────────────────────────────
     { id: "shaderclass", section: TOOLING, title: "Shader Class in C++",         minRead: 12, content: (t) => <ShaderClassContent t={t} /> },
   ],

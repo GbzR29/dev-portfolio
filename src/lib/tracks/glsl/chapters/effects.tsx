@@ -11,6 +11,8 @@ import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { GerstnerFigure } from "@/components/lesson/glsl/GerstnerFigure";
 import { WaterLabFigure } from "@/components/lesson/figures/water/WaterLabFigure";
 import { ShoreLabFigure } from "@/components/lesson/figures/water/ShoreLabFigure";
+import { FogLabFigure } from "@/components/lesson/figures/fog/FogLabFigure";
+import { WindowLabFigure } from "@/components/lesson/figures/glass/WindowLabFigure";
 import { FresnelFigure } from "@/components/lesson/glsl/FresnelFigure";
 import { FogCurveFigure } from "@/components/lesson/glsl/FogCurveFigure";
 import { TEXTURE_PRESETS, WATER_PRESETS, GLASS_PRESETS, FOG_PRESETS, STYLE_PRESETS } from "../presets/effects";
@@ -377,11 +379,70 @@ export function GlassContent({ t }: { t: TrackTranslations }) {
       <Callout type="info" t={t}>
         {tx(t, "glslGlass_rtNote", "In a rasteriser you cannot trace the refracted ray through the scene. Real-time glass samples a cube map, the screen behind the object (screen-space refraction, offsetting the UV by the normal), or a blurred copy of the scene for frosted glass. The ball here is ray-traced analytically because it is a sphere.")}
       </Callout>
+      <H2>{tx(t, "glslGlass_winTitle", "Rain on a window")}</H2>
+      <p>
+        {tx(t, "glslGlass_winBody",
+          "A rainy window brings everything in this chapter together on a flat pane. Each drop is a small lens that bends the street behind it. The condensation around the drops scatters light and blurs the view, and a sliding drop wipes that condensation away and leaves a clear trail. The best-known real-time version is Martijn Steinrucken's (BigWIngs) Shadertoy “Heartfelt”. The lab below rebuilds its technique step by step, and adds frosted glass, dispersion and condensation you can wipe with the pointer.")}
+      </p>
+
+      <WindowLabFigure t={t} />
+
+      <H3>{tx(t, "glslGlass_dropHTitle", "Drops as a height field")}</H3>
+      <p>
+        {tx(t, "glslGlass_dropHBody",
+          "A drop is modelled like the water ripples: a scalar c(uv) that is 0 on dry glass and rises toward 1 inside a drop, a rough stand-in for the drop's thickness. Where the glass is tilted by a drop, light bends by an amount proportional to the slope (the small-angle form of Snell's law). So the background is read at an offset equal to the gradient of c, estimated from two extra evaluations one pixel apart:")}
+      </p>
+      <Equation label={tx(t, "glslGlass_offLabel", "Refraction offset from the drop field")}
+        where={[
+          [r`\nabla c \approx \tfrac{1}{\varepsilon}\big(c(u{+}\varepsilon,v) - c,\ c(u,v{+}\varepsilon) - c\big)`, tx(t, "glslGlass_wGrad", "finite differences with ε = 0.001, which is why drops() runs three times per pixel")],
+          [r`k`, tx(t, "glslGlass_wK", "the refraction slider: how strongly a slope bends the view (it stands for (1 − 1/n) × the distance to the scene)")],
+        ]}
+        glsl={`vec2 n = vec2(drops(uv + e).x - c, drops(uv + e.yx).x - c);\nvec3 col = textureLod(uScene, UV + n * k, lod).rgb;`}>
+        {r`\text{colour}(uv) = \text{scene}\big(uv + k\,\nabla c(uv)\big)`}
+      </Equation>
+
+      <H3>{tx(t, "glslGlass_cellsTitle", "Thousands of drops from a grid")}</H3>
+      <p>
+        {tx(t, "glslGlass_cellsBody",
+          "As with the stars and the raindrops on water, no drop is stored. The glass is cut into cells, 6 times taller than wide because drops slide vertically, and every cell hashes its id into three random numbers n = (n.x, n.y, n.z). n.x places the drop horizontally, n.z gives it its own clock and wobble, and each column of cells is shifted by a random amount so that the rows never line up. Three layers are added together: tiny static drops on a 40-cell grid, and two layers of sliding drops, the second at 1.85× the scale so the sizes vary.")}
+      </p>
+      <Equation label={tx(t, "glslGlass_sawLabel", "Stick, then slide: the sawtooth")}
+        where={[
+          [r`\operatorname{saw}(b, t)`, tx(t, "glslGlass_wSaw", "rises smoothly while t goes from 0 to b = 0.85, then drops back to 0 in the remaining 15%. A slow climb and a sudden fall")],
+          [r`y`, tx(t, "glslGlass_wY", "the drop's height inside its cell. The whole grid scrolls down at a constant speed while the drop climbs inside it almost as fast, so on screen the drop barely creeps. When the sawtooth falls, the drop jumps down its cell. It is the stick-then-slide motion of real drops, held by surface tension until they are heavy enough")],
+          [r`x`, tx(t, "glslGlass_wX", "the horizontal position: n.x − ½ plus a wobble sin(y + sin y), whose amplitude shrinks near the cell's sides so the drop never leaves its column")],
+        ]}
+        glsl={`float saw(float b, float t) { return smoothstep(0.0, b, t) * smoothstep(1.0, b, t); }\nfloat y = (saw(0.85, fract(t + n.z)) - 0.5) * 0.9 + 0.5;`}>
+        {r`\operatorname{saw}(b, t) = \operatorname{smoothstep}(0, b, t)\cdot\operatorname{smoothstep}(1, b, t) \qquad y = 0.9\big(\operatorname{saw}(0.85,\ \operatorname{fract}(t + n_z)) - 0.5\big) + 0.5`}
+      </Equation>
+      <p>
+        {tx(t, "glslGlass_trailBody",
+          "The trail is a vertical strip above the drop. It is narrow where the drop has just passed and narrower still further up, since r shrinks with height. Along it, a repeating pattern fract(10·v) places small droplets left behind, which is why a real trail looks beaded. The static drops use the same sawtooth with b = 0.025: they appear almost instantly (a raindrop hitting) and evaporate over the rest of their cycle. Finally the layers are summed and passed through smoothstep(0.3, 1, c). That merges neighbouring drops into one smooth surface, the way touching water drops fuse.")}
+      </p>
+
+      <H3>{tx(t, "glslGlass_blurTitle", "Blur from the mip chain")}</H3>
+      <Equation label={tx(t, "glslGlass_lodLabel", "Choosing how blurry each pixel is")}
+        where={[
+          [r`\text{lod}`, tx(t, "glslGlass_wLod", "the mip level passed to textureLod. Level L is the image averaged over 2^L × 2^L texels, so blurring by about R pixels means reading level log₂R")],
+          [r`f`, tx(t, "glslGlass_wF", "condensation at this pixel: the fog slider × the wipe mask × (1 − trail), because sliding drops clear the glass they cross")],
+          [r`c`, tx(t, "glslGlass_wC", "the drop mask: inside a drop the level goes to 0, so the view is sharp. A drop is clear water in the middle of the mist")],
+        ]}
+        note={tx(t, "glslGlass_lodNote", "Mipmaps give free, variable blur, but box-shaped: a bright light turns into a square. Six extra taps around a circle at the same level round it off into proper bokeh. The wipe mask is a small 192×108 texture that the page updates from the pointer and that fogs back up a little every frame.")}>
+        {r`\text{lod} = \operatorname{mix}\!\big(\max(f\cdot\text{blur},\ 5\cdot\text{frost}),\ 0,\ \operatorname{smoothstep}(0.1, 0.2, c)\big)`}
+      </Equation>
+      <p>
+        {tx(t, "glslGlass_frostBody",
+          "Frosted glass is a rough surface. Every ray that crosses it is refracted in a slightly random direction, and a pixel averages many such rays, which is a blur whose radius grows with the roughness. Its cheap form is a mip level proportional to the frost, plus a per-pixel jitter of the offset for the grainy look of etched glass. Dispersion reuses the drop offset three times with slightly different strengths for red, green and blue (1 ± 0.3k), so bright lights seen through a drop get coloured fringes, like the glass ball above.")}
+      </p>
+
       <KeyIdeas t={t} id="glslGlass" items={[
         "refract(I, N, η) implements Snell's law; it returns vec3(0) on total internal reflection.",
         "Fresnel: F ≈ R₀ + (1 − R₀)(1 − cosθ)⁵; mix refraction and reflection with it.",
         "R₀ = ((n₁ − n₂)/(n₁ + n₂))²: 4% for glass, 2% for water.",
         "Dispersion: a different η per channel. Absorption: e^(−σ·d).",
+        "Rain on glass: drops are a height field c; read the scene at uv + k·∇c.",
+        "Drops come from hashed grid cells; a sawtooth gives the stick-then-slide motion; trails clear the fog.",
+        "Blur = mip level ≈ log₂(radius); condensation and frost choose the level, drops force it to 0.",
       ]} />
     </Article>
   );
@@ -440,6 +501,56 @@ vec3 applyHeightFog(vec3 col, vec3 ro, vec3 rd, float d, vec3 sunDir) {
       <Callout type="warn" t={t}>
         {tx(t, "glslFog_repeatWarn", "A raymarching pitfall hides in this scene. The pillars repeat with mod(), but each cell has its own random height. A distance function that only measures the pillar in the current cell is wrong near cell borders: it cannot see a taller pillar next door, so the ray jumps into it and slices its top off. The result is ragged, torn tops. The fix is in pillars(): take the minimum over the 3×3 neighbouring cells. Whenever repeated shapes differ per cell, or can reach past their cell, check the neighbours.")}
       </Callout>
+      <H2>{tx(t, "glslFog_layerTitle", "Fog that stays on the ground")}</H2>
+      <p>
+        {tx(t, "glslFog_layerBody",
+          "Exponential and exp² fog depend only on distance, so they fill all of space: the air above your head is as thick as the air in the valley. Real morning fog is a layer. It is dense near the ground, has a top, and above it the air is clear. The lab below adds three layered kinds to the four classic ones. Try each, then raise the camera above the fog height and look down: a layer seen from above is a sea of clouds.")}
+      </p>
+
+      <FogLabFigure t={t} />
+
+      <H3>{tx(t, "glslFog_slabTitle", "A layer with a soft top, integrated exactly")}</H3>
+      <p>
+        {tx(t, "glslFog_slabBody",
+          "Describe the layer by its density at each height. Below the top H it is a constant ρ. Above H it fades exponentially over a thickness s, so the top is soft and the camera never sees a hard line where it crosses it. Along a ray y(t) = y₀ + t·d_y, the fog integral splits at the point where the ray crosses H. The part below H is a constant density times a length, and the part above is the integral of an exponential. Both have closed forms, so this fog costs a handful of instructions per pixel:")}
+      </p>
+      <Equation label={tx(t, "glslFog_slabLabel", "Ground layer: density and its integral along the ray")}
+        where={[
+          [r`t_H = \frac{H - y_0}{d_y}`, tx(t, "glslFog_wTH", "where the ray crosses the top. Looking up (d_y > 0), the part below H is [0, t_H]. Looking down, it is [t_H, ∞). Both intervals are clipped to [0, d], the distance to what the ray hits")],
+          [r`\ell_{\text{below}}`, tx(t, "glslFog_wLb", "the length of the ray inside the constant part. Its contribution is simply ρ·ℓ")],
+          [r`[a_0, a_1]`, tx(t, "glslFog_wA01", "the interval of the ray above H, clipped the same way")],
+          [r`\frac{s}{d_y}\big(e^{\cdots a_0} - e^{\cdots a_1}\big)`, tx(t, "glslFog_wExp", "the antiderivative of e^(−(y₀ + t·d_y − H)/s) with respect to t, evaluated at the two ends. A horizontal ray (d_y ≈ 0) has no crossing: then the density is constant along it and the integral is density × d")],
+        ]}
+        note={tx(t, "glslFog_slabNote", "Seen from above, only the part of the ray below H counts, so the sky and the hilltops stay sharp while the valley disappears. A uniform fog cannot do that. Height fog is the same idea with a single exponential and no flat part. Its integral, (ρ/b)·e^(−b(y₀−H))·(1 − e^(−b·d_y·d))/d_y, is what the code block above computes.")}
+        glsl={`float tH = (H - y0) / dy;\nfloat below = rho * max(min(d, b1) - max(0.0, b0), 0.0);\nfloat above = rho * s / dy * (exp(-(y0 + a0 * dy - H) / s) - exp(-(y0 + a1 * dy - H) / s));\nfloat vis = exp(-(below + above));`}>
+        {r`\rho(y) = \begin{cases} \rho & y \le H \\ \rho\, e^{-(y - H)/s} & y > H \end{cases} \qquad \int_0^d \rho\,dt = \rho\,\ell_{\text{below}} + \rho\,\frac{s}{d_y}\Big(e^{-\frac{y_0 + a_0 d_y - H}{s}} - e^{-\frac{y_0 + a_1 d_y - H}{s}}\Big)`}
+      </Equation>
+
+      <H3>{tx(t, "glslFog_mistTitle", "Mist that moves: marching through the fog")}</H3>
+      <p>
+        {tx(t, "glslFog_mistBody",
+          "Uniform layers look like a painted gradient. Real mist has wisps, thicker and thinner patches that drift. Multiplying the density by 3D noise does that, and the noise moves with the wind. But no closed form can integrate noise, so the shader walks along the ray in N small steps and applies Beer–Lambert one step at a time. This is ray marching again, but through a medium instead of toward a surface:")}
+      </p>
+      <Equation label={tx(t, "glslFog_marchLabel", "Discrete fog integral, front to back")}
+        where={[
+          [r`\rho_i`, tx(t, "glslFog_wRhoI", "density at step i: the layer's ρ(y) times mix(1, 2.2·smoothstep(0.25, 0.75, fbm), noise). The 2.2 roughly keeps the average density the same while the noise adds contrast")],
+          [r`\alpha_i = 1 - e^{-\rho_i \Delta s}`, tx(t, "glslFog_wAlpha", "the fraction of light this step removes. It is also how much of the fog's own light it adds, which is the same rule as the continuous formula")],
+          [r`T_i`, tx(t, "glslFog_wT", "transmittance so far: how much of what lies behind step i still reaches the eye. It starts at 1 and only decreases")],
+          [r`S_i`, tx(t, "glslFog_wS", "the light the fog scatters toward the eye at step i (next equation)")],
+        ]}
+        note={tx(t, "glslFog_marchNote", "Three details matter. The ray is first clipped to the slab where fog exists (y ≤ H + 3s), so no step is wasted in clear air or ends up below the ground. The first step is offset by a random fraction of Δs per pixel, which trades visible bands for fine noise the eye ignores. And the loop stops as soon as T < 1%, because nothing behind can show through any more.")}
+        glsl={`float a = 1.0 - exp(-dens * ds);\nacc += T * a * fogLight;\nT   *= 1.0 - a;\nif (T < 0.01) break;\n// finally: colour = surfaceColour * T + acc`}>
+        {r`C = C_{\text{surface}}\,T_N + \sum_{i=0}^{N-1} T_i\,\alpha_i\,S_i, \qquad T_{i+1} = T_i\,(1 - \alpha_i)`}
+      </Equation>
+      <Equation label={tx(t, "glslFog_lightLabel", "What the fog glows with")}
+        where={[
+          [r`\mathbf C_{\text{fog}}\,E_{\text{sky}}`, tx(t, "glslFog_wAmb", "ambient light from the sky, tinted by the fog colour. This is why fog at night is nearly black")],
+          [r`p_{HG}(\mu, 0.6)`, tx(t, "glslFog_wHG", "Henyey–Greenstein phase with g = 0.6, where μ = cos of the angle between the view ray and the sun. Water droplets scatter mostly forward, so fog glows strongly when you look toward the sun. The sun-scattering slider blends between this and an even glow")],
+          [r`V_{\text{sun}}`, tx(t, "glslFog_wVis", "how much sunlight reaches the point through the fog above it: e^(−½·∫ρ) along the sun direction, using the same closed-form layer integral. Deep inside the layer the fog is darker than at its top. That self-shadowing is what gives a sea of clouds its bright surface. The ½ is an artistic softening: part of the sunlight also arrives already scattered by the fog, so the full attenuation looks too dark")],
+        ]}>
+        {r`S = \mathbf C_{\text{fog}}\,E_{\text{sky}} + \mathbf L_{\text{sun}}\;p_{HG}(\mu, 0.6)\;V_{\text{sun}}, \qquad V_{\text{sun}} = e^{-\frac12\int \rho\,dt\ \text{toward the sun}}`}
+      </Equation>
+
       <Callout type="tip" t={t}>
         {tx(t, "glslFog_tip", "Apply fog to the sky as well, using the same fog colour at the horizon, or distant objects will stand out as flat cut-outs against a blue sky. Fog uses the distance from the camera, not the depth-buffer z: with z, fog changes as you turn your head, because z is measured along the view axis.")}
       </Callout>
@@ -448,6 +559,9 @@ vec3 applyHeightFog(vec3 col, vec3 ro, vec3 rd, float d, vec3 sunDir) {
         "Linear is an art tool, exp is physical, exp² keeps the foreground clear.",
         "Height fog integrates a⋅e^(−b⋅y) analytically along the ray.",
         "Tint the fog toward the sun for cheap scattering; fog the sky too.",
+        "A ground layer (constant below H, exponential top) still integrates in closed form: split the ray where it crosses H.",
+        "Noisy mist has no closed form: march the ray, T ← T(1 − α), add T·α·S per step, jitter the start, stop when T is tiny.",
+        "Fog glows with sky light plus forward-scattered sun (Henyey–Greenstein), dimmed by the fog between it and the sun.",
       ]} />
     </Article>
   );
