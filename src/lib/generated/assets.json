@@ -261,11 +261,11 @@
     },
     "squarestackedpavertexture-grey": {
       "label": "SquareStackedPaverTexture_Grey",
-      "albedo": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Poliigon_ConcretePaversSquare_7100_BaseColor.jpg",
-      "normal": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Poliigon_ConcretePaversSquare_7100_Normal.png",
-      "roughness": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Poliigon_ConcretePaversSquare_7100_Roughness.jpg",
-      "ao": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Poliigon_ConcretePaversSquare_7100_AmbientOcclusion.jpg",
-      "metallic": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Poliigon_ConcretePaversSquare_7100_Metallic.jpg"
+      "albedo": "/textures/materials_textures/SquareStackedPaverTexture_Grey/BaseColor/ConcretePaversSquare_BaseColor.jpg",
+      "normal": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Normal/ConcretePaversSquare_Normal.png",
+      "roughness": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Roughness/ConcretePaversSquare_Roughness.jpg",
+      "ao": "/textures/materials_textures/SquareStackedPaverTexture_Grey/AmbientOcclusion/ConcretePaversSquare_AmbientOcclusion.jpg",
+      "metallic": "/textures/materials_textures/SquareStackedPaverTexture_Grey/Metallic/ConcretePaversSquare_Metallic.jpg"
     },
     "wood-texture": {
       "label": "wood_texture",
