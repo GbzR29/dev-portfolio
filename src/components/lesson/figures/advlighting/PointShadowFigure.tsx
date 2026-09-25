@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
-import { uploadMesh, cubePNUT, makeDepthCube, cubeFaceViews, trs, type Mesh, type DepthCube } from "../glx";
+import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
+import { uploadMesh, cubePNUT, makeDepthCube, cubeFaceViews, trs, type Mesh, type DepthCube } from "../../kit/gl/glx";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Omnidirectional shadows: the scene is rendered six times per frame from the
@@ -108,7 +109,8 @@ export function PointShadowFigure({ t }: { t?: TrackTranslations }) {
   const [pcf, setPcf] = useState(true);
   const [shadowsOn, setShadowsOn] = useState(true);
   const [showDepth, setShowDepth] = useState(false);
-  const time = useAnimationTime(animate);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(animate && vis.on);
 
   const light: Vec3 = [Math.sin(time * 0.6) * 2.4, Math.sin(time * 0.9) * 1.2, Math.cos(time * 0.6) * 1.6];
   const f = forwardFrom(look.yaw, look.pitch);
@@ -185,7 +187,7 @@ export function PointShadowFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPShadow_title", "Point Shadows — Six Faces per Frame")}

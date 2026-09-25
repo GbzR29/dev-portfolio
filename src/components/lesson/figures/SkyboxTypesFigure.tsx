@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, SKYBOX_CUBE, makeTexture2D, forwardFrom, dot as dot3, FACE_NAMES, CROSS_CELLS, crossCellOf } from "./gl";
-import { GLView, rayDir, faceHref, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "./GLView";
+import { mat4, compileProgram, SKYBOX_CUBE, makeTexture2D, forwardFrom, dot as dot3, FACE_NAMES, CROSS_CELLS, crossCellOf } from "../kit/gl/gl";
+import { GLView, rayDir, faceHref, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "../kit/gl/GLView";
 import { PROC_SKY_FS, DEFAULT_SKY_PARAMS, setSkyUniforms, sunDirection } from "./sky/proceduralSky";
 
 // ── What this figure shows ────────────────────────────────────────────────────

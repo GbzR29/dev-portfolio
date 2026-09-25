@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram } from "../gl";
-import { FULL_VS, drawFullscreen } from "../glx";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { compileProgram } from "../../kit/gl/gl";
+import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
 import {
   WATER_FS, WATER_PRESETS, WATER_COLOURS, DEFAULT_WATER, MAX_WAVES, waterUniforms, applyUniforms, type WaterParams,
@@ -23,19 +24,6 @@ type Tab = "waves" | "water" | "effects" | "sky";
 const VIEWS = ["final", "normals", "Jacobian J", "thickness", "caustics", "Fresnel"] as const;
 const QUALITY: [string, number][] = [["low", 0.4], ["medium", 0.6], ["high", 1]];
 
-function useInView<T extends Element>() {
-  const ref = useRef<T>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.05 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-  return [ref, inView] as const;
-}
-
 export function WaterLabFigure({ t }: { t?: TrackTranslations }) {
   const first = WATER_PRESETS[0];
   const [look, setLook] = useState<Look>({ yaw: 1.2, pitch: -0.1, fov: 1.2 });
@@ -45,7 +33,7 @@ export function WaterLabFigure({ t }: { t?: TrackTranslations }) {
   const [tab, setTab] = useState<Tab>("waves");
   const [quality, setQuality] = useState(0.6);
   const [playing, setPlaying] = useState(true);
-  const [figRef, inView] = useInView<HTMLElement>();
+  const { ref: figRef, on: inView } = useVisible<HTMLElement>();
   const time = useAnimationTime(playing && inView);
   const [aspect, setAspect] = useState(16 / 9);
 

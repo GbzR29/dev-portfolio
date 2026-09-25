@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { useVisible } from "../kit/figure";
+import { claimContext, releaseContext } from "../kit/gl/context";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { buildProgram, type ShaderError } from "./engine";
@@ -77,7 +78,7 @@ const PRESETS: { label: string; exprs: string[]; range: [number, number, number,
 const COLORS = ["#ffa626", "#4da6ff", "#59e673"];
 
 export function FunctionPlotter({ t }: { t?: TrackTranslations }) {
-  const { ref, inView } = useInView({ threshold: 0.05 });
+  const { ref, on: inView } = useVisible<HTMLElement>();
   const [preset, setPreset] = useState(0);
   const [exprs, setExprs] = useState(PRESETS[0].exprs);
   const [on, setOn] = useState([true, true, true]);
@@ -88,9 +89,13 @@ export function FunctionPlotter({ t }: { t?: TrackTranslations }) {
   const live = useRef({ range, on }); live.current = { range, on };
 
   useEffect(() => {
-    const gl = canvas.current?.getContext("webgl2", { antialias: false });
+    const c = canvas.current;
+    if (!c) return;
+    claimContext(c);
+    const gl = c.getContext("webgl2", { antialias: false });
     if (!gl) return;
     state.current = { gl, prog: null, vao: gl.createVertexArray()!, t0: performance.now() };
+    return () => releaseContext(c, gl);
   }, []);
 
   useEffect(() => {

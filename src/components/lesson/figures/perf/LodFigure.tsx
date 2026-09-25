@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, norm, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { mat4, compileProgram, forwardFrom, norm, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A field of rocks, each available at four levels of detail (icospheres with
@@ -107,7 +108,8 @@ export function LodFigure({ t }: { t?: TrackTranslations }) {
   const [forceLod, setForceLod] = useState(-1);
   const [dolly, setDolly] = useState(false);
   const [stats, setStats] = useState({ tris: 0, all: 0, counts: [0, 0, 0, 0], switches: 0 });
-  const time = useAnimationTime(dolly);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(dolly && vis.on);
 
   const init = (gl: WebGL2RenderingContext): Res => {
     const meshes = LODS.map(s => { const d = rock(s); const vbo = gl.createBuffer()!; gl.bindBuffer(gl.ARRAY_BUFFER, vbo); gl.bufferData(gl.ARRAY_BUFFER, d, gl.STATIC_DRAW); return { vbo, count: d.length / 3 }; });
@@ -210,7 +212,7 @@ export function LodFigure({ t }: { t?: TrackTranslations }) {
   const LOD_COLORS = ["#33cc59", "#408cff", "#ffbf33", "#ff4d4d"];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figLod_title", "Level of Detail by Screen Size")}

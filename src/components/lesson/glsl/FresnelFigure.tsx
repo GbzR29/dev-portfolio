@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, Label } from "../figures/svg";
+import { Arrow, Label } from "../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Left: a ray hitting the boundary between two media. Snell's law bends the

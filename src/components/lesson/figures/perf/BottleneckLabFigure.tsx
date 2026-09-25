@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { useVisible } from "../../kit/figure";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
-import { cubePNUT, ensureColorTarget, FULL_VS, drawFullscreen, type ColorTarget } from "../glx";
+import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { cubePNUT, ensureColorTarget, FULL_VS, drawFullscreen, type ColorTarget } from "../../kit/gl/glx";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A real experiment, not a simulation. Every knob loads a different part of
@@ -87,7 +87,7 @@ function makeOffsets() {
 }
 
 export function BottleneckLabFigure({ t }: { t?: TrackTranslations }) {
-  const { ref, inView } = useInView({ threshold: 0.1 });
+  const { ref, on: inView } = useVisible<HTMLElement>();
   const [look, setLook] = useState<Look>({ yaw: -0.5, pitch: -0.55, fov: 1.0 });
   const [count, setCount] = useState(1500);
   const [instanced, setInstanced] = useState(false);

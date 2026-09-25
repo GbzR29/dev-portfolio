@@ -6,7 +6,7 @@
 // fog itself.
 
 import { PROC_SKY_GLSL, sunDirection, type SkyParams } from "../sky/proceduralSky";
-import type { Vec3 } from "../gl";
+import type { Vec3 } from "../../kit/gl/gl";
 
 export type FogParams = {
   mode: number;          // 0 none, 1 linear, 2 exp, 3 exp², 4 height, 5 ground layer, 6 mist

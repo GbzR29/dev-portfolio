@@ -1,6 +1,8 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
+import { useVisible } from "./kit/figure";
+import { claimContext, releaseContext } from "./kit/gl/context";
 
 // ── What this widget is ───────────────────────────────────────────────────────
 // A real fragment shader running in WebGL. The body of main() is editable, the
@@ -193,6 +195,7 @@ export function InteractiveUV() {
   const [resIdx,   setResIdx]   = useState(1);
   const [aspect,   setAspect]   = useState<AspectKey>("square");
   const [playing,  setPlaying]  = useState(true);
+  const vis = useVisible();
   const [grid,     setGrid]     = useState(true);
   // Hovered fragment, in fragment units with (0,0) at the bottom-left.
   const [hover,    setHover]    = useState<{ x: number; y: number } | null>(null);
@@ -219,6 +222,7 @@ export function InteractiveUV() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    claimContext(canvas);
     const gl = canvas.getContext("webgl", { preserveDrawingBuffer: true, antialias: false });
     if (!gl) { setNoGL(true); return; }
     glRef.current = gl;
@@ -236,6 +240,7 @@ export function InteractiveUV() {
       progRef.current = null;
       gl.deleteBuffer(buf);
       glRef.current = null;
+      releaseContext(canvas, gl);
     };
   }, []);
 
@@ -285,14 +290,14 @@ export function InteractiveUV() {
 
   useEffect(() => { draw(); }, [draw, progVer, tiles, hover]);
 
-  // Animate only while the shader actually reads uTime.
+  // Animate only while the shader actually reads uTime and the widget is on screen.
   useEffect(() => {
-    if (!usesTime || !playing) return;
+    if (!usesTime || !playing || !vis.on) return;
     let raf = 0;
     const loop = () => { draw(); raf = requestAnimationFrame(loop); };
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
-  }, [usesTime, playing, draw]);
+  }, [usesTime, playing, vis.on, draw]);
 
   // ── Pointer → fragment ───────────────────────────────────────────────────
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -326,7 +331,7 @@ export function InteractiveUV() {
     }`;
 
   return (
-    <div className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <div ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
 
       {/* Header */}
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">

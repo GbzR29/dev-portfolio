@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, SKYBOX_CUBE, boxMesh, forwardFrom, type Vec3 } from "./gl";
-import { GLView, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "./GLView";
+import { mat4, compileProgram, SKYBOX_CUBE, boxMesh, forwardFrom, type Vec3 } from "../kit/gl/gl";
+import { GLView, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "../kit/gl/GLView";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A tiny scene with a real skybox, where each line of the skybox recipe is a

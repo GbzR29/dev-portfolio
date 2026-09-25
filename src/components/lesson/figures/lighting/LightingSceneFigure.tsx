@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, boxMesh, sphereMesh, forwardFrom, norm, type Vec3 } from "../gl";
-import { GLView, type Look } from "../GLView";
+import { mat4, compileProgram, boxMesh, sphereMesh, forwardFrom, norm, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // One small scene lit by a real multi-light Phong shader. The Light Casters
@@ -117,15 +118,8 @@ export function LightingSceneFigure({ t, mode }: { t?: TrackTranslations; mode: 
   // Multi
   const [on, setOn] = useState({ dir: true, p0: true, p1: true, p2: true, p3: true, flash: false });
   const [animate, setAnimate] = useState(mode === "multi");
-  const [time, setTime] = useState(0);
-
-  useEffect(() => {
-    if (!animate) return;
-    let raf = 0, last = performance.now();
-    const tick = (now: number) => { setTime(v => v + Math.max(0, now - last) / 1000); last = now; raf = requestAnimationFrame(tick); };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [animate]);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(animate && vis.on);
 
   const target: Vec3 = [0, 0.4, 0];
   const f = forwardFrom(look.yaw, look.pitch);
@@ -247,7 +241,7 @@ result += CalcSpotLight(spotLight, norm, FragPos, viewDir);`;
   };
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, ...titles[mode])}</span>
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{tx(t, "figScene_hint", "drag to orbit · scroll to zoom")}</span>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, Label } from "./svg";
+import { Arrow, Label } from "../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Where each row of the yaw/pitch direction vector comes from, in two flat

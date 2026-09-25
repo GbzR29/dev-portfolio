@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { useStepper, stepAmount, StepperControls } from "./Stepper";
+import { useStepper, stepAmount, StepperControls } from "../kit/Stepper";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The same two operations applied in opposite orders. Rotation and scaling

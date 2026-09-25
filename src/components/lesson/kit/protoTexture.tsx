@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { pts, type P2 } from "./svg";
 import assets from "@/lib/generated/assets.json";
+import { lerp3, type Vec3 } from "./vec3";
 
 // ── Prototype textures for figure geometry ────────────────────────────────────
 // A texture dropped in public/textures/prototype/<name>.png (or .jpg) is used
@@ -86,9 +87,7 @@ export function useProtoTextures(): Record<ProtoName, string> | null {
   return Object.fromEntries(NAMES.map(n => [n, resolved.get(n) ?? ""])) as Record<ProtoName, string>;
 }
 
-type V3 = [number, number, number];
-
-const lerp3 = (a: V3, b: V3, t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+type V3 = Vec3;
 
 /** Point at (s, t) on the quad: s runs corner 0 → 1, t runs corner 0 → 3. */
 const bilinear = (q: V3[], s: number, t: number): V3 => lerp3(lerp3(q[0], q[1], s), lerp3(q[3], q[2], s), t);

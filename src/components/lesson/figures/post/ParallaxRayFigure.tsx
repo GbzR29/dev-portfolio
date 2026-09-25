@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Label } from "../svg";
+import { Label } from "../../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A slice through a parallax-mapped surface. The polygon is the flat line at

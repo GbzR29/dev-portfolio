@@ -1,6 +1,6 @@
 // src/lib/tracks/types.ts
 
-import { ReactNode } from "react";
+import type { ComponentType } from "react";
 
 /**
  * The translation bundle handed to chapter content. Chapters look keys up
@@ -8,6 +8,9 @@ import { ReactNode } from "react";
  * so every key is optional and a missing bundle is valid.
  */
 export type TrackTranslations = Record<string, string | undefined> | undefined;
+
+/** A chapter's content: a component that receives the current translations. */
+export type ChapterComponent = ComponentType<{ t: TrackTranslations }>;
 
 export interface Chapter {
   id: string;
@@ -19,8 +22,12 @@ export interface Chapter {
    * ordered list, so numbering, progress and prev/next are unaffected.
    */
   section?: string;
-  /** Content is a function so it can receive the current translations object */
-  content: (t: TrackTranslations) => ReactNode;
+  /**
+   * Loads the content on demand, e.g.
+   * `() => import("./chapters/legacy").then((m) => m.LegacyContent)`.
+   * Only the open chapter is downloaded; the track list stays metadata only.
+   */
+  load: () => Promise<ChapterComponent>;
 }
 
 export interface Track {

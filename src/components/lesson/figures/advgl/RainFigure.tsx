@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, norm, cross, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { mat4, compileProgram, forwardFrom, norm, cross, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Rain as a CPU particle system with three pools:
@@ -176,7 +177,8 @@ export function RainFigure({ t }: { t?: TrackTranslations }) {
   const [paused, setPaused] = useState(false);
   const [epoch, setEpoch] = useState(0);            // bumped by "restart"
   const [stats, setStats] = useState({ drops: 0, splashes: 0, ripples: 0 });
-  const time = useAnimationTime(!paused);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(!paused && vis.on);
 
   const init = (gl: WebGL2RenderingContext): Res => {
     const inst = (cap: number, floats: number, attribs: [number, number, number][]) => {
@@ -389,7 +391,7 @@ export function RainFigure({ t }: { t?: TrackTranslations }) {
   ];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figRain_title", "Rain — Streaks, Splashes and Ripples")}

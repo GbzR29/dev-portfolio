@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, Label } from "../svg";
+import { Arrow, Label } from "../../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // SSAO in a 2D slice. The camera looks straight down, so the depth buffer is

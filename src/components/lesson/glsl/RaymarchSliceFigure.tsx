@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Label } from "../figures/svg";
+import { Label } from "../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Sphere tracing in a 2D slice. The scene is a signed distance function: at

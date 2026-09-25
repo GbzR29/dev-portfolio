@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Vec3 } from "../gl";
-import { GLView, type Look } from "../GLView";
+import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, type Look } from "../../kit/gl/GLView";
 import {
   uploadMesh, cubePNUT, trs, ensureColorTarget, FULL_VS, drawFullscreen, type Mesh, type ColorTarget,
-} from "../glx";
+} from "../../kit/gl/glx";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A corridor with a light far brighter than 1.0 at its end, rendered into a

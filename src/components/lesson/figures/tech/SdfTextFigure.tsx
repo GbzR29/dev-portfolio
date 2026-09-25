@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram } from "../gl";
-import { GLView, type Look } from "../GLView";
+import { compileProgram } from "../../kit/gl/gl";
+import { GLView, type Look } from "../../kit/gl/GLView";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Two font atlases for printable ASCII, both built here in the browser:

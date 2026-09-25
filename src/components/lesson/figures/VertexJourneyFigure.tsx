@@ -3,14 +3,14 @@
 import { useId } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { useStepper, stepAmount, StepperControls } from "./Stepper";
-import { Arrow, Label, pts } from "./svg";
+import { useStepper, stepAmount, StepperControls } from "../kit/Stepper";
+import { Arrow, Label, pts } from "../kit/svg";
 import {
   type V3, type Box, add, sub, scale, lerp3, rotY, makeProjector, useOrbit, boxFaces, frontFacing, lightAmount,
   towardEye, visibleRuns,
   lookAtBasis, viewTransform,
-} from "./scene3d";
-import { TexturedFace, FigureIcon, useProtoTextures } from "./protoTexture";
+} from "../kit/scene3d";
+import { TexturedFace, FigureIcon, useProtoTextures } from "../kit/protoTexture";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // One vertex on its way to the screen. Each step animates the whole scene into

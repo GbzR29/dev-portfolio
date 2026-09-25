@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FigureIcon } from "./protoTexture";
+import { FigureIcon } from "../kit/protoTexture";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, Label, type P2 } from "./svg";
+import { Arrow, Label, type P2 } from "../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Left: the textbook Phong diagram at one surface point — drag the light and the

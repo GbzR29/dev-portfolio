@@ -2,8 +2,10 @@
 // Column-major 4×4 matrices (same layout as GLM and glUniformMatrix4fv),
 // shader compilation with readable errors, and a couple of meshes.
 
+import { sub, dot, cross, norm, type Vec3 } from "../vec3";
+
+export { sub, dot, cross, norm, type Vec3 };
 export type Mat4 = Float32Array;
-export type Vec3 = [number, number, number];
 
 export const mat4 = {
   identity(): Mat4 {
@@ -47,12 +49,6 @@ export const mat4 = {
     const m = mat4.identity(); m[0] = m[5] = m[10] = k; return m;
   },
 };
-
-export const sub = (a: Vec3, b: Vec3): Vec3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-export const dot = (a: Vec3, b: Vec3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-export const cross = (a: Vec3, b: Vec3): Vec3 =>
-  [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
-export const norm = (a: Vec3): Vec3 => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
 
 /** Forward vector for a yaw/pitch camera. Yaw 0 looks down −Z, like OpenGL's default. */
 export const forwardFrom = (yaw: number, pitch: number): Vec3 =>

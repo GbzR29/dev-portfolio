@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Label } from "../svg";
+import { Label } from "../../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The slab test for ray vs axis-aligned box, in 2D. A box is the overlap of two

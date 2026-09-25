@@ -5,8 +5,8 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import {
   mat4, compileProgram, SKYBOX_CUBE, dirToFace, FACE_NAMES, FACE_FILES, forwardFrom, type Vec3,
-} from "./gl";
-import { GLView, rayDir, faceHref, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "./GLView";
+} from "../kit/gl/gl";
+import { GLView, rayDir, faceHref, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "../kit/gl/GLView";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // You stand inside a real samplerCube. Hover any pixel: the figure shows the

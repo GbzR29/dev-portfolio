@@ -1,5 +1,5 @@
 // ── Small matrix helpers shared by the technique figures ──────────────────────
-import type { Mat4 } from "../gl";
+import type { Mat4 } from "../../kit/gl/gl";
 
 /** General 4×4 inverse (column-major). */
 export function invert(m: Mat4): Mat4 {

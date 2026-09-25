@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, SKYBOX_CUBE, SUN_DIR, type Vec3 } from "../gl";
-import { GLView, useSky, SkyPicker, type Look } from "../GLView";
-import { uploadMesh, spherePNUT, trs, FULL_VS, drawFullscreen, type Mesh } from "../glx";
+import { mat4, compileProgram, forwardFrom, SKYBOX_CUBE, SUN_DIR, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useSky, SkyPicker, type Look } from "../../kit/gl/GLView";
+import { uploadMesh, spherePNUT, trs, FULL_VS, drawFullscreen, type Mesh } from "../../kit/gl/glx";
 import { PBR_GLSL, buildIBL, disposeIBL, SKY_VS, SKY_FS, type IBL } from "./ibl";
 
 // ── What this figure shows ────────────────────────────────────────────────────

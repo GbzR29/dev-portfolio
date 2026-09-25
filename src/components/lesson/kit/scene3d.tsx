@@ -2,28 +2,11 @@
 
 import { useRef, useState, useEffect, useCallback } from "react";
 import type { P2 } from "./svg";
+import { add, sub, scale, dot, cross, len, norm, lerp3, rotY, rotX, type Vec3 } from "./vec3";
 
-// ── Vector math ───────────────────────────────────────────────────────────────
-export type V3 = [number, number, number];
-
-export const add   = (a: V3, b: V3): V3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
-export const sub   = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-export const scale = (a: V3, k: number): V3 => [a[0] * k, a[1] * k, a[2] * k];
-export const dot   = (a: V3, b: V3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-export const cross = (a: V3, b: V3): V3 =>
-  [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
-export const len   = (a: V3) => Math.hypot(a[0], a[1], a[2]);
-export const norm  = (a: V3): V3 => { const l = len(a) || 1; return [a[0] / l, a[1] / l, a[2] / l]; };
-export const lerp3 = (a: V3, b: V3, t: number): V3 => add(a, scale(sub(b, a), t));
-
-export const rotY = (p: V3, r: number): V3 => {
-  const c = Math.cos(r), s = Math.sin(r);
-  return [p[0] * c + p[2] * s, p[1], -p[0] * s + p[2] * c];
-};
-export const rotX = (p: V3, r: number): V3 => {
-  const c = Math.cos(r), s = Math.sin(r);
-  return [p[0], p[1] * c - p[2] * s, p[1] * s + p[2] * c];
-};
+// ── Vector math (kit/vec3, re-exported for the figures) ──────────────────────
+export { add, sub, scale, dot, cross, len, norm, lerp3, rotY, rotX };
+export type V3 = Vec3;
 
 export const fmtV = (v: V3, d = 2) => `(${v.map(n => (Math.abs(n) < 0.005 ? 0 : n).toFixed(d)).join(", ")})`;
 

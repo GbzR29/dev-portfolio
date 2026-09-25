@@ -1,7 +1,7 @@
 // app/learn/[trackPath]/reference/[fn]/page.tsx
 "use client";
 
-import { Fragment, useEffect, useMemo, type ReactNode } from "react";
+import { Fragment, useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { AlertTriangle, AlignLeft, BookOpen, ChevronRight, ExternalLink } from "lucide-react";
@@ -11,6 +11,7 @@ import { CodeBlock } from "@/components/lesson/LessonComponents";
 import { ReferenceSidebar } from "@/components/reference/ReferenceSidebar";
 import { ReferenceProvider, RefToken } from "@/components/reference/RefToken";
 import { getTrack } from "@/lib/tracks";
+import type { Chapter } from "@/lib/tracks/types";
 import { chaptersUsing } from "@/lib/reference/usage";
 import {
   getReference, loc, referenceHref, referenceIndex,
@@ -160,10 +161,16 @@ export default function ReferenceEntryPage() {
     else if (!reference && trackPath) router.replace(`/learn/${encodeURIComponent(trackPath)}`);
   }, [reference, entry, trackPath, router]);
 
-  const usedIn = useMemo(
-    () => (track && reference && entry ? chaptersUsing(track, reference, entry.name) : []),
-    [track, reference, entry],
-  );
+  // Chapters that mention this function. Scanning them means loading every
+  // chapter of the track, which only this page needs.
+  const [usedIn, setUsedIn] = useState<Chapter[]>([]);
+  useEffect(() => {
+    setUsedIn([]);
+    if (!track || !reference || !entry) return;
+    let alive = true;
+    chaptersUsing(track, reference, entry.name).then((list) => { if (alive) setUsedIn(list); });
+    return () => { alive = false; };
+  }, [track, reference, entry]);
 
   useEffect(() => { window.scrollTo({ top: 0 }); }, [fn]);
 

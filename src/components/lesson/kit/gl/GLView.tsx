@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { forwardFrom, norm, cross, type Vec3 } from "./gl";
-import { skyboxSets } from "./protoTexture";
+import { claimContext, releaseContext } from "./context";
+import { skyboxSets } from "../protoTexture";
 import { proceduralFace, proceduralEquirect, crossToFaces, equirectToFaces, facesToEquirect, loadImage, makeCubemap, type TexImage } from "./gl";
 
 // ── A WebGL2 canvas for lesson figures ────────────────────────────────────────
@@ -57,6 +58,9 @@ export function GLView<R>({
   const res = useRef<R | null>(null);
   const [ready, setReady] = useState(0);
   const [failed, setFailed] = useState<string | null>(null);
+  // `gen` names the canvas: bumping it mounts a fresh canvas with a new context
+  const [gen, setGen] = useState(0);
+  const [lost, setLost] = useState(false);
   const drag = useRef<{ x: number; y: number } | null>(null);
   const lookRef = useRef(look); lookRef.current = look;
   const drawRef = useRef(draw); drawRef.current = draw;
@@ -65,18 +69,33 @@ export function GLView<R>({
   useEffect(() => {
     const c = canvas.current;
     if (!c) return;
+    claimContext(c);
     const gl = c.getContext("webgl2", { antialias: true, preserveDrawingBuffer: false });
     if (!gl) { setFailed("WebGL2 is not available in this browser."); return; }
     glRef.current = gl;
     let alive = true;
+
+    // The browser can take the context away (too many open, GPU reset). The
+    // resources die with it, so the figure offers a fresh canvas instead of
+    // freezing on a blank frame.
+    const onLost = (e: Event) => { e.preventDefault(); res.current = null; if (alive) setLost(true); };
+    const onRestored = () => { if (alive) { setLost(false); setGen(g => g + 1); } };
+    c.addEventListener("webglcontextlost", onLost);
+    c.addEventListener("webglcontextrestored", onRestored);
+
     Promise.resolve()
       .then(() => init(gl))
       .then(r => { if (alive) { res.current = r; setReady(n => n + 1); } })
       .catch(e => { if (alive) setFailed(String(e?.message ?? e)); });
-    return () => { alive = false; };
-    // init is intentionally run once per mount
+    return () => {
+      alive = false;
+      c.removeEventListener("webglcontextlost", onLost);
+      c.removeEventListener("webglcontextrestored", onRestored);
+      releaseContext(c, gl);
+    };
+    // init is intentionally run once per canvas
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [gen]);
 
   // Match the drawing buffer to the element's size (sharp on HiDPI)
   const [size, setSize] = useState<Size>({ w: 1, h: 1, aspect });
@@ -92,17 +111,17 @@ export function GLView<R>({
     });
     ro.observe(c);
     return () => ro.disconnect();
-  }, [resolution]);
+  }, [resolution, gen]);
 
   // Draw on demand
   useEffect(() => {
     const gl = glRef.current, r = res.current;
-    if (!gl || r === null || failed) return;
+    if (!gl || r === null || failed || lost) return;
     const id = requestAnimationFrame(() => {
       try { drawRef.current(gl, r, size); } catch (e) { setFailed(String((e as Error).message)); }
     });
     return () => cancelAnimationFrame(id);
-  }, [frame, size, ready, failed]);
+  }, [frame, size, ready, failed, lost]);
 
   // Wheel = field of view; middle button must not start autoscroll
   useEffect(() => {
@@ -119,7 +138,7 @@ export function GLView<R>({
     c.addEventListener("wheel", onWheel, { passive: false });
     c.addEventListener("mousedown", onDown);
     return () => { c.removeEventListener("wheel", onWheel); c.removeEventListener("mousedown", onDown); };
-  }, [onLook, fovRange]);
+  }, [onLook, fovRange, gen]);
 
   const ndcOf = (e: React.PointerEvent) => {
     const r = canvas.current!.getBoundingClientRect();
@@ -129,6 +148,7 @@ export function GLView<R>({
   return (
     <div className={`relative ${className}`} style={{ aspectRatio: String(aspect) }}>
       <canvas
+        key={gen}
         ref={canvas}
         className={`absolute inset-0 w-full h-full rounded ${onLook ? "cursor-grab active:cursor-grabbing" : ""}`}
         style={{ touchAction: "none" }}
@@ -154,6 +174,15 @@ export function GLView<R>({
         onPointerLeave={() => onHover?.(null)}
         onContextMenu={e => e.preventDefault()}
       />
+      {lost && !failed && (
+        <button
+          type="button"
+          onClick={() => { setLost(false); setGen(g => g + 1); }}
+          className="absolute inset-0 flex items-center justify-center p-6 text-center text-[11px] font-mono text-[var(--text-muted)] hover:text-[var(--primary)] bg-[var(--code-bg)] rounded"
+        >
+          The browser paused this figure (WebGL context lost) — click to reload it
+        </button>
+      )}
       {failed && (
         <div className="absolute inset-0 flex items-center justify-center p-6 text-center text-[11px] font-mono text-red-400 bg-[var(--code-bg)] rounded">
           {failed}

@@ -2,20 +2,9 @@
 "use client";
 
 // The GLSL track. This file only lists the chapters; each chapter's
-// content lives in its own module under ./chapters.
+// content lives in its own module under ./chapters and is loaded on demand.
 
 import type { Chapter } from "@/lib/tracks/types";
-import { PlaygroundContent } from "./chapters/playground";
-import { PatternsContent, ColorContent } from "./chapters/shapes";
-import { TexturingContent, WaterContent, GlassContent, FogContent, StylizedContent } from "./chapters/effects";
-import { RaymarchingContent } from "./chapters/raymarching";
-import { RayTracingContent, PathTracingContent, RtAccelContent } from "./chapters/raytracing";
-import { TypesContent } from "./chapters/types";
-import { BuiltinsContent } from "./chapters/builtins";
-import { FragCoordContent } from "./chapters/fragcoord";
-import { SDFContent } from "./chapters/sdf";
-import { NoiseContent } from "./chapters/noise";
-import { ShaderClassContent } from "./chapters/shader-class";
 
 // ── Exported track ────────────────────────────────────────────────────────────
 
@@ -29,27 +18,27 @@ const TOOLING  = "Tooling";
 
 export const glslChapters: Chapter[] = [
   // ── Language Basics ─────────────────────────────────────────────────────
-  { id: "types",       section: BASICS,  title: "Types & Vectors",             minRead: 11, content: (t) => <TypesContent       t={t} /> },
-  { id: "builtins",    section: BASICS,  title: "Built-in Functions",          minRead: 13, content: (t) => <BuiltinsContent    t={t} /> },
-  { id: "fragcoord",   section: BASICS,  title: "Fragment Coordinates & UV",   minRead: 9,  content: (t) => <FragCoordContent   t={t} /> },
-  { id: "playground",  section: BASICS,  title: "The Shader Playground",       minRead: 8,  content: (t) => <PlaygroundContent  t={t} /> },
+  { id: "types",       section: BASICS,  title: "Types & Vectors",             minRead: 11, load: () => import("./chapters/types").then((m) => m.TypesContent) },
+  { id: "builtins",    section: BASICS,  title: "Built-in Functions",          minRead: 13, load: () => import("./chapters/builtins").then((m) => m.BuiltinsContent) },
+  { id: "fragcoord",   section: BASICS,  title: "Fragment Coordinates & UV",   minRead: 9,  load: () => import("./chapters/fragcoord").then((m) => m.FragCoordContent) },
+  { id: "playground",  section: BASICS,  title: "The Shader Playground",       minRead: 8,  load: () => import("./chapters/playground").then((m) => m.PlaygroundContent) },
   // ── Shapes, Patterns & Colour ───────────────────────────────────────────
-  { id: "sdf",         section: SHAPES,  title: "Signed Distance Functions",   minRead: 15, content: (t) => <SDFContent         t={t} /> },
-  { id: "patterns",    section: SHAPES,  title: "Patterns & Transformations",  minRead: 11, content: (t) => <PatternsContent    t={t} /> },
-  { id: "color",       section: SHAPES,  title: "Colour",                      minRead: 12, content: (t) => <ColorContent       t={t} /> },
-  { id: "noise",       section: SHAPES,  title: "Noise & Procedural Patterns", minRead: 16, content: (t) => <NoiseContent       t={t} /> },
+  { id: "sdf",         section: SHAPES,  title: "Signed Distance Functions",   minRead: 15, load: () => import("./chapters/sdf").then((m) => m.SDFContent) },
+  { id: "patterns",    section: SHAPES,  title: "Patterns & Transformations",  minRead: 11, load: () => import("./chapters/shapes").then((m) => m.PatternsContent) },
+  { id: "color",       section: SHAPES,  title: "Colour",                      minRead: 12, load: () => import("./chapters/shapes").then((m) => m.ColorContent) },
+  { id: "noise",       section: SHAPES,  title: "Noise & Procedural Patterns", minRead: 16, load: () => import("./chapters/noise").then((m) => m.NoiseContent) },
   // ── Effect Recipes ──────────────────────────────────────────────────────
-  { id: "texturing",   section: EFFECTS, title: "Texturing Tricks",            minRead: 12, content: (t) => <TexturingContent   t={t} /> },
-  { id: "water",       section: EFFECTS, title: "Waves & Water",               minRead: 36, content: (t) => <WaterContent       t={t} /> },
-  { id: "glass",       section: EFFECTS, title: "Glass, Refraction & Fresnel", minRead: 21, content: (t) => <GlassContent       t={t} /> },
-  { id: "fog",         section: EFFECTS, title: "Fog",                         minRead: 18, content: (t) => <FogContent         t={t} /> },
-  { id: "stylized",    section: EFFECTS, title: "Toon, Dissolve & Hologram",   minRead: 11, content: (t) => <StylizedContent    t={t} /> },
+  { id: "texturing",   section: EFFECTS, title: "Texturing Tricks",            minRead: 12, load: () => import("./chapters/effects").then((m) => m.TexturingContent) },
+  { id: "water",       section: EFFECTS, title: "Waves & Water",               minRead: 36, load: () => import("./chapters/effects").then((m) => m.WaterContent) },
+  { id: "glass",       section: EFFECTS, title: "Glass, Refraction & Fresnel", minRead: 21, load: () => import("./chapters/effects").then((m) => m.GlassContent) },
+  { id: "fog",         section: EFFECTS, title: "Fog",                         minRead: 18, load: () => import("./chapters/effects").then((m) => m.FogContent) },
+  { id: "stylized",    section: EFFECTS, title: "Toon, Dissolve & Hologram",   minRead: 11, load: () => import("./chapters/effects").then((m) => m.StylizedContent) },
   // ── Raymarching ─────────────────────────────────────────────────────────
-  { id: "raymarching", section: RAYMARCH, title: "Raymarching",                minRead: 17, content: (t) => <RaymarchingContent t={t} /> },
+  { id: "raymarching", section: RAYMARCH, title: "Raymarching",                minRead: 17, load: () => import("./chapters/raymarching").then((m) => m.RaymarchingContent) },
   // ── Ray & Path Tracing ──────────────────────────────────────────────────
-  { id: "raytracing",  section: RAYTRACE, title: "Ray Tracing",                minRead: 20, content: (t) => <RayTracingContent  t={t} /> },
-  { id: "pathtracing", section: RAYTRACE, title: "Path Tracing",               minRead: 26, content: (t) => <PathTracingContent t={t} /> },
-  { id: "rt-accel",    section: RAYTRACE, title: "Acceleration & Denoising",   minRead: 15, content: (t) => <RtAccelContent     t={t} /> },
+  { id: "raytracing",  section: RAYTRACE, title: "Ray Tracing",                minRead: 20, load: () => import("./chapters/raytracing").then((m) => m.RayTracingContent) },
+  { id: "pathtracing", section: RAYTRACE, title: "Path Tracing",               minRead: 26, load: () => import("./chapters/raytracing").then((m) => m.PathTracingContent) },
+  { id: "rt-accel",    section: RAYTRACE, title: "Acceleration & Denoising",   minRead: 15, load: () => import("./chapters/raytracing").then((m) => m.RtAccelContent) },
   // ── Tooling ─────────────────────────────────────────────────────────────
-  { id: "shaderclass", section: TOOLING, title: "Shader Class in C++",         minRead: 12, content: (t) => <ShaderClassContent t={t} /> },
+  { id: "shaderclass", section: TOOLING, title: "Shader Class in C++",         minRead: 12, load: () => import("./chapters/shader-class").then((m) => m.ShaderClassContent) },
 ];

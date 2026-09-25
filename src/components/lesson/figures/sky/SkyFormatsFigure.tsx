@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { CROSS_CELLS, crossCellOf, dirToFace, dot, norm, FACE_NAMES, type Vec3, type TexImage } from "../gl";
-import { useSky, SkyPicker, type SkyImages } from "../GLView";
+import { CROSS_CELLS, crossCellOf, dirToFace, dot, norm, FACE_NAMES, type Vec3, type TexImage } from "../../kit/gl/gl";
+import { useSky, SkyPicker, type SkyImages } from "../../kit/gl/GLView";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // One sky stored two ways: a 4×3 cross (six cube faces) and a 2:1 panorama.

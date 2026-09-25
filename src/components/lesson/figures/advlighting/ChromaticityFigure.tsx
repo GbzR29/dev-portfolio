@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Label } from "../svg";
+import { Label } from "../../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The CIE 1931 xy chromaticity diagram: every colour a human can see, with

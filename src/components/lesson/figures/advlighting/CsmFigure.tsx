@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, norm, cross, type Mat4, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
-import { ortho, cubePNUT, spherePNUT, planePNUT, makeDepthTarget, FULL_VS, type DepthTarget } from "../glx";
+import { mat4, compileProgram, forwardFrom, norm, cross, type Mat4, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
+import { ortho, cubePNUT, spherePNUT, planePNUT, makeDepthTarget, FULL_VS, type DepthTarget } from "../../kit/gl/glx";
 import { splits } from "./CsmSplitFigure";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -200,7 +201,8 @@ export function CsmFigure({ t }: { t?: TrackTranslations }) {
   const [walk, setWalk] = useState(false);
   const [elev, setElev] = useState(32);
   const [showAtlas, setShowAtlas] = useState(true);
-  const time = useAnimationTime(walk);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(walk && vis.on);
 
   const sun = norm([Math.cos((elev * Math.PI) / 180) * 0.55, Math.sin((elev * Math.PI) / 180), -Math.cos((elev * Math.PI) / 180) * 0.83]);
 
@@ -289,7 +291,7 @@ export function CsmFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figCsm_title", "Cascaded Shadow Maps — Live")}

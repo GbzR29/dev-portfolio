@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Label } from "../svg";
+import { Label } from "../../kit/svg";
 import { tessQuad, tessTri, effective, type Spacing } from "./tessellator";
 
 // ── What this figure shows ────────────────────────────────────────────────────

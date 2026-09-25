@@ -5,7 +5,7 @@
 // Way band and a layer of 2D clouds. Everything is radiance in linear units;
 // the caller tone maps and gamma-encodes once at the end.
 
-import type { Vec3 } from "../gl";
+import type { Vec3 } from "../../kit/gl/gl";
 
 export type SkyParams = {
   sunEl: number;        // degrees above the horizon

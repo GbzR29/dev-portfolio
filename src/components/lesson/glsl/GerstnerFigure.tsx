@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { useAnimationTime } from "../figures/GLView";
+import { useAnimationTime } from "../kit/gl/GLView";
+import { useVisible } from "../kit/figure";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A slice through a water surface. A sine wave only moves points up and down.
@@ -23,7 +24,8 @@ export function GerstnerFigure({ t }: { t?: TrackTranslations }) {
   const [multi, setMulti] = useState(false);
   const [orbits, setOrbits] = useState(true);
   const [playing, setPlaying] = useState(true);
-  const time = useAnimationTime(playing);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(playing && vis.on);
 
   const waves = multi
     ? [{ wl, A, dir: 1, ph: 0 }, { wl: wl * 0.55, A: A * 0.45, dir: 1, ph: 1.3 }, { wl: wl * 0.3, A: A * 0.2, dir: -1, ph: 2.1 }]
@@ -54,7 +56,7 @@ export function GerstnerFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figGerst_title", "Sine vs Gerstner — Points Move in Circles")}

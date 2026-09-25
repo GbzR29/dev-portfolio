@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../gl";
-import { FULL_VS, drawFullscreen, makeColorTarget, deleteColorTarget, type ColorTarget } from "../glx";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../../kit/gl/gl";
+import { FULL_VS, drawFullscreen, makeColorTarget, deleteColorTarget, type ColorTarget } from "../../kit/gl/glx";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 import { PATH_TRACE_FS, PATH_DISPLAY_FS, DEFAULT_PATH, type PathParams } from "./pathShader";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -24,15 +25,7 @@ export function PathTracerFigure({ t }: { t?: TrackTranslations }) {
   const [look, setLook] = useState<Look>({ yaw: 0, pitch: 0, fov: 0.75 });
   const [p, setP] = useState<PathParams>({ ...DEFAULT_PATH });
   const [stats, setStats] = useState({ frames: 0, spp: 0, float: true });
-  const figRef = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = figRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.05 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { ref: figRef, on: inView } = useVisible<HTMLElement>();
   const running = inView && stats.frames < MAX_FRAMES;
   const tick = useAnimationTime(running);
   const set = <K extends keyof PathParams>(k: K, v: PathParams[K]) => setP(o => ({ ...o, [k]: v }));

@@ -3,11 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, loadTexture2D, forwardFrom, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
-import { uploadMesh, wallPNUT, cubePNUT, trs, type Mesh } from "../glx";
-import { mapUrl } from "../protoTexture";
-import { makeBrickMaps, SIZE } from "../bricks";
+import { mat4, compileProgram, loadTexture2D, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
+import { uploadMesh, wallPNUT, cubePNUT, trs, type Mesh } from "../../kit/gl/glx";
+import { mapUrl } from "../../kit/protoTexture";
+import { makeBrickMaps, SIZE } from "../../kit/gl/bricks";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A flat quad that looks like bricks. The normal map stores a tangent-space
@@ -65,7 +66,8 @@ export function NormalMapFigure({ t }: { t?: TrackTranslations }) {
   const [view, setView] = useState(0);
   const [animate, setAnimate] = useState(true);
   const [hover, setHover] = useState<{ u: number; v: number } | null>(null);
-  const time = useAnimationTime(animate);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(animate && vis.on);
   const preview = useRef<HTMLCanvasElement>(null);
   const maps = useMemo(() => (typeof document === "undefined" ? null : makeBrickMaps()), []);
 
@@ -127,7 +129,7 @@ export function NormalMapFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figNMap_title", "Normal Mapping — Detail Without Geometry")}

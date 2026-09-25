@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Vec3 } from "../gl";
-import { GLView, type Look } from "../GLView";
+import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, type Look } from "../../kit/gl/GLView";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A heightmap terrain split into 8×8 chunks. Every chunk has 4 meshes

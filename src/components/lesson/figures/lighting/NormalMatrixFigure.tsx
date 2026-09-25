@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, type P2 } from "../svg";
+import { Arrow, type P2 } from "../../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A circle squashed by a non-uniform scale. Its tangents follow the model

@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, norm, cross, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
-import { uploadMesh, planePNUT, trs, type Mesh } from "../glx";
+import { mat4, compileProgram, forwardFrom, norm, cross, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
+import { uploadMesh, planePNUT, trs, type Mesh } from "../../kit/gl/glx";
 import { LIT_VS, LIT_FS, SUN } from "../post/scene";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -105,7 +106,8 @@ export function ParticlesFigure({ t }: { t?: TrackTranslations }) {
   const [sizeK, setSizeK] = useState(1);
   const [paused, setPaused] = useState(false);
   const [stats, setStats] = useState({ alive: 0, sortMs: 0 });
-  const time = useAnimationTime(!paused);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(!paused && vis.on);
 
   const choose = (name: string) => { setPreset(name); setBlend(PRESETS[name].blend); setSort(PRESETS[name].blend === 1); };
 
@@ -257,7 +259,7 @@ export function ParticlesFigure({ t }: { t?: TrackTranslations }) {
         : tx(t, "figPart_note", "Premultiplied alpha stores colour already multiplied by alpha, and blends with ONE, ONE_MINUS_SRC_ALPHA. With alpha = 1 it behaves like normal blending, with alpha = 0 like pure addition, so fire and smoke can share one draw call and one blend state.");
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPart_title", "A Particle System — Pool, Simulation, Instanced Billboards")}

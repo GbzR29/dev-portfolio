@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram } from "../gl";
-import { FULL_VS, drawFullscreen } from "../glx";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { compileProgram } from "../../kit/gl/gl";
+import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 import { WINDOW_FS, WINDOW_PRESETS, DEFAULT_WINDOW, paintCity, type WindowParams } from "./windowShader";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -23,15 +24,7 @@ export function WindowLabFigure({ t }: { t?: TrackTranslations }) {
   const [p, setP] = useState<WindowParams>({ ...DEFAULT_WINDOW });
   const [preset, setPreset] = useState("rain");
   const [playing, setPlaying] = useState(true);
-  const figRef = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = figRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.05 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { ref: figRef, on: inView } = useVisible<HTMLElement>();
   const time = useAnimationTime(playing && inView);
 
   // Condensation: 255 = fogged, 0 = wiped clean. Lives outside React state.

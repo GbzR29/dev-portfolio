@@ -204,14 +204,6 @@
     }
   },
   "materials": {
-    "clayceramicglossy": {
-      "label": "ClayCeramicGlossy",
-      "albedo": "/textures/materials_textures/ClayCeramicGlossy/Poliigon_ClayCeramicGlossy_5212_BaseColor.jpg",
-      "normal": "/textures/materials_textures/ClayCeramicGlossy/Poliigon_ClayCeramicGlossy_5212_Normal.png",
-      "roughness": "/textures/materials_textures/ClayCeramicGlossy/Poliigon_ClayCeramicGlossy_5212_Roughness.jpg",
-      "ao": "/textures/materials_textures/ClayCeramicGlossy/Poliigon_ClayCeramicGlossy_5212_AmbientOcclusion.jpg",
-      "metallic": "/textures/materials_textures/ClayCeramicGlossy/Poliigon_ClayCeramicGlossy_5212_Metallic.jpg"
-    },
     "metalsteelbrushed": {
       "label": "MetalSteelBrushed",
       "albedo": "/textures/materials_textures/MetalSteelBrushed/Poliigon_MetalSteelBrushed_7174_BaseColor.jpg",

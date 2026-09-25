@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../gl";
-import { FULL_VS, drawFullscreen } from "../glx";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../../kit/gl/gl";
+import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
 import { WATER_COLOURS } from "./waterShader";
 import { SHORE_FS, SHORE_PRESETS, DEFAULT_SHORE, shoreUniforms, applyShoreUniforms, type ShoreParams } from "./shoreShader";
@@ -30,15 +31,7 @@ export function ShoreLabFigure({ t }: { t?: TrackTranslations }) {
   const [tab, setTab] = useState<Tab>("water");
   const [quality, setQuality] = useState(0.6);
   const [playing, setPlaying] = useState(true);
-  const figRef = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = figRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.05 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { ref: figRef, on: inView } = useVisible<HTMLElement>();
   const time = useAnimationTime(playing && inView);
 
   const set = <K extends keyof ShoreParams>(k: K, v: ShoreParams[K]) => { setS(o => ({ ...o, [k]: v })); setPreset(""); };

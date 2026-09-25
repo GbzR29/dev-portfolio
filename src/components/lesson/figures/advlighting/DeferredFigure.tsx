@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 import {
   uploadMesh, cubePNUT, spherePNUT, planePNUT, trs, ensureColorTarget, FULL_VS, drawFullscreen,
   type Mesh, type ColorTarget,
-} from "../glx";
+} from "../../kit/gl/glx";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Deferred shading. The geometry pass writes position, normal and colour into
@@ -103,7 +104,8 @@ export function DeferredFigure({ t }: { t?: TrackTranslations }) {
   const [view, setView] = useState(0);
   const [animate, setAnimate] = useState(true);
   const [floatOk, setFloatOk] = useState(true);
-  const time = useAnimationTime(animate);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(animate && vis.on);
 
   const f = forwardFrom(look.yaw, look.pitch);
   const cam: Vec3 = [-f[0] * 11, -f[1] * 11, -f[2] * 11];
@@ -189,7 +191,7 @@ export function DeferredFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figDeferred_title", "Deferred Shading — The G-Buffer")}

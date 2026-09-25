@@ -3,8 +3,8 @@
 // corner and a short staircase: plenty of creases for SSAO, hard silhouettes
 // for anti-aliasing and colour variety for post effects.
 
-import { mat4, compileProgram, type Mat4, type Vec3 } from "../gl";
-import { uploadMesh, cubePNUT, spherePNUT, planePNUT, trs, type Mesh, type SceneItem } from "../glx";
+import { mat4, compileProgram, type Mat4, type Vec3 } from "../../kit/gl/gl";
+import { uploadMesh, cubePNUT, spherePNUT, planePNUT, trs, type Mesh, type SceneItem } from "../../kit/gl/glx";
 
 export const ROOM: SceneItem[] = [
   { mesh: "plane", model: trs([0, 0, 0], [10, 1, 10]), color: [0.7, 0.7, 0.72] },

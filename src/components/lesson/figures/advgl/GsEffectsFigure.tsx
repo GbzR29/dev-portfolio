@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, cross, norm, sub, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { mat4, compileProgram, forwardFrom, cross, norm, sub, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The three textbook geometry-shader effects: explode (move each triangle along
@@ -168,7 +169,8 @@ export function GsEffectsFigure({ t }: { t?: TrackTranslations }) {
   const [len, setLen] = useState(0.15);
   const [wire, setWire] = useState<"off" | "overlay" | "only">("off");
   const [wWidth, setWWidth] = useState(1.2);
-  const time = useAnimationTime(animate);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(animate && vis.on);
   const ex = animate ? explode * (0.5 - 0.5 * Math.cos(time * 1.6)) : explode;
 
   const init = (gl: WebGL2RenderingContext): Res => ({
@@ -223,7 +225,7 @@ export function GsEffectsFigure({ t }: { t?: TrackTranslations }) {
   const emitted = tris * 3 + (normals === "vertex" ? tris * 6 : normals === "face" ? tris * 2 : 0);
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figGsFx_title", "Explode, Shrink, Normals, Wireframe")}

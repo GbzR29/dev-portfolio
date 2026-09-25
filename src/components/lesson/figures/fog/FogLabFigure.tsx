@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../gl";
-import { FULL_VS, drawFullscreen } from "../glx";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../../kit/gl/gl";
+import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
 import { FOG_FS, FOG_LAB_PRESETS, DEFAULT_FOG, fogUniforms, applyFogUniforms, type FogParams } from "./fogShader";
 
@@ -28,15 +29,7 @@ export function FogLabFigure({ t }: { t?: TrackTranslations }) {
   const [preset, setPreset] = useState(first.id);
   const [quality, setQuality] = useState(0.6);
   const [playing, setPlaying] = useState(true);
-  const figRef = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = figRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.05 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { ref: figRef, on: inView } = useVisible<HTMLElement>();
   const time = useAnimationTime(playing && inView && p.mode === 6);
 
   const set = <K extends keyof FogParams>(k: K, v: FogParams[K]) => { setP(o => ({ ...o, [k]: v })); setPreset(""); };

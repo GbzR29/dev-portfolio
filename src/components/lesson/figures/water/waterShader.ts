@@ -8,7 +8,7 @@
 // motivated terms for bands and hard edges.
 
 import { PROC_SKY_GLSL, sunDirection, type SkyParams } from "../sky/proceduralSky";
-import { norm, cross, type Vec3 } from "../gl";
+import { norm, cross, type Vec3 } from "../../kit/gl/gl";
 
 export const MAX_WAVES = 8;
 

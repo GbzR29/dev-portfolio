@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../gl";
-import { FULL_VS, drawFullscreen } from "../glx";
-import { GLView, type Look } from "../GLView";
+import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../../kit/gl/gl";
+import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
+import { GLView, type Look } from "../../kit/gl/GLView";
 import { WHITTED_FS, DEFAULT_WHITTED, type WhittedParams } from "./whittedShader";
 
 // ── What this figure shows ────────────────────────────────────────────────────

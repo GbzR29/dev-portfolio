@@ -7,7 +7,7 @@
 // falling streaks).
 
 import { PROC_SKY_GLSL, sunDirection, type SkyParams } from "../sky/proceduralSky";
-import type { Vec3 } from "../gl";
+import type { Vec3 } from "../../kit/gl/gl";
 
 export type ShoreParams = {
   level: number;        // water level (m)

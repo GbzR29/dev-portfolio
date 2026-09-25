@@ -2,7 +2,8 @@
 "use client";
 
 import { ChapterBoundary } from "@/components/lesson/ChapterBoundary";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChapterContent } from "@/components/lesson/ChapterContent";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import Link from "next/link";
@@ -11,7 +12,7 @@ import {
 } from "lucide-react";
 import { getTrack } from "@/lib/tracks";
 import { getReference, referenceHref } from "@/lib/reference";
-import { chapterUsage } from "@/lib/reference/usage";
+import { chapterNames } from "@/lib/reference/usage";
 import { LessonSidebar } from "@/components/sidebar/LessonSidebar";
 import { DocsLayout } from "@/components/lesson/DocsLayout";
 import { ReferenceProvider } from "@/components/reference/RefToken";
@@ -117,10 +118,16 @@ export default function LessonPage() {
   const contentRef = useRef<HTMLDivElement>(null);
   const { visited, markVisited } = useLessonProgress(track?.id ?? "");
 
-  const usage = useMemo(
-    () => (track && reference ? chapterUsage(track, reference) : undefined),
-    [track, reference],
-  );
+  // Reference functions mentioned in the open chapter (scanned once its content has loaded)
+  const [chapterFns, setChapterFns] = useState<string[]>([]);
+  useEffect(() => {
+    const chapter = track?.chapters.find((c) => c.id === activeChapterId);
+    setChapterFns([]);
+    if (!chapter || !reference) return;
+    let alive = true;
+    chapterNames(chapter, reference).then((names) => { if (alive) setChapterFns(names); });
+    return () => { alive = false; };
+  }, [track, reference, activeChapterId]);
 
   // Init chapter from the URL, else the first one
   useEffect(() => {
@@ -149,23 +156,28 @@ export default function LessonPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [activeChapterId, markVisited]);
 
-  // Extract headings from rendered DOM after chapter content mounts
+  // Extract headings from the rendered chapter. Content arrives asynchronously
+  // (it is downloaded on demand), so watch the DOM instead of reading it once.
   useEffect(() => {
-    const id = setTimeout(() => {
-      if (!contentRef.current) return;
-      const nodes = Array.from(contentRef.current.querySelectorAll("h2, h3"));
-      setHeadings(
-        nodes
-          .filter((h) => h.id)
-          .map((h) => ({
-            id: h.id,
-            text: h.textContent ?? "",
-            level: (h.tagName === "H2" ? 2 : 3) as 2 | 3,
-          })),
-      );
+    const root = contentRef.current;
+    if (!root) return;
+    let last = "";
+    const read = () => {
+      const nodes = Array.from(root.querySelectorAll("h2, h3")).filter((h) => h.id);
+      const key = nodes.map((h) => h.id).join("|");
+      if (key === last) return;
+      last = key;
+      setHeadings(nodes.map((h) => ({
+        id: h.id,
+        text: h.textContent ?? "",
+        level: (h.tagName === "H2" ? 2 : 3) as 2 | 3,
+      })));
       setActiveTocId(nodes[0]?.id ?? "");
-    }, 60);
-    return () => clearTimeout(id);
+    };
+    let id = setTimeout(read, 60);
+    const mo = new MutationObserver(() => { clearTimeout(id); id = setTimeout(read, 60); });
+    mo.observe(root, { childList: true, subtree: true });
+    return () => { clearTimeout(id); mo.disconnect(); };
   }, [activeChapterId]);
 
   // Scroll spy — highlights ToC item as user scrolls
@@ -271,12 +283,10 @@ export default function LessonPage() {
           className="[&_article]:text-[1.125rem] [&_article]:leading-[1.85] [&_article>p]:!mt-6"
         >
           <ChapterBoundary resetKey={activeChapterId}>
-            {currentChapter?.content(t)}
+            {currentChapter && <ChapterContent chapter={currentChapter} t={t} preload={nextChapter} />}
           </ChapterBoundary>
 
-          {reference && usage && (
-            <ChapterFunctions reference={reference} names={usage.get(activeChapterId) ?? []} />
-          )}
+          {reference && <ChapterFunctions reference={reference} names={chapterFns} />}
         </div>
 
         {/* Prev / Next navigation */}

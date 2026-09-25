@@ -3,8 +3,8 @@
 import { useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, Label, pts, type P2 } from "./svg";
-import { type V3, add, cross, len, makeProjector, useOrbit } from "./scene3d";
+import { Arrow, Label, pts, type P2 } from "../kit/svg";
+import { type V3, add, cross, len, makeProjector, useOrbit } from "../kit/scene3d";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Dot: drag a and b; the projection of b onto a is the "shadow" whose signed

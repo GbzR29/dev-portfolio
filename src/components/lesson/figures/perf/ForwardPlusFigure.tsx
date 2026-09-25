@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { useVisible } from "../../kit/figure";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
-import { uploadMesh, cubePNUT, planePNUT, trs, type Mesh } from "../glx";
+import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { uploadMesh, cubePNUT, planePNUT, trs, type Mesh } from "../../kit/gl/glx";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Real tiled forward shading ("Forward+") with up to 1024 moving point lights.
@@ -110,7 +110,7 @@ type Res = {
 };
 
 export function ForwardPlusFigure({ t }: { t?: TrackTranslations }) {
-  const { ref, inView } = useInView({ threshold: 0.05 });
+  const { ref, on: inView } = useVisible<HTMLElement>();
   const [look, setLook] = useState<Look>({ yaw: -0.6, pitch: -0.62, fov: 0.95 });
   const [count, setCount] = useState(256);
   const [radius, setRadius] = useState(3.5);

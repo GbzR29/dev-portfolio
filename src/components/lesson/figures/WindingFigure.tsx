@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FigureIcon } from "./protoTexture";
+import { FigureIcon } from "../kit/protoTexture";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, Label, pts, type P2 } from "./svg";
-import { type V3, add, sub, scale, cross, norm, rotY, makeProjector } from "./scene3d";
-import { useFigureSpeed, SpeedControl, scaledMs } from "./Stepper";
+import { Arrow, Label, pts, type P2 } from "../kit/svg";
+import { type V3, add, sub, scale, cross, norm, rotY, makeProjector } from "../kit/scene3d";
+import { useFigureSpeed, SpeedControl, scaledMs } from "../kit/Stepper";
+import { useVisible } from "../kit/figure";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // One triangle, defined once with its vertices in counter-clockwise order.
@@ -30,10 +31,11 @@ export function WindingFigure({ t }: { t?: TrackTranslations }) {
   const last = useRef<number | null>(null);
   const [speed, setSpeed] = useFigureSpeed();
   const speedRef = useRef(speed); speedRef.current = speed;
+  const vis = useVisible<HTMLElement>();
 
-  // Continuous spin
+  // Continuous spin, paused while the figure is off screen
   useEffect(() => {
-    if (!spin) { last.current = null; return; }
+    if (!spin || !vis.on) { last.current = null; return; }
     let raf = 0;
     const tick = (now: number) => {
       // One full turn takes ~8 s at 1×
@@ -43,7 +45,7 @@ export function WindingFigure({ t }: { t?: TrackTranslations }) {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [spin]);
+  }, [spin, vis.on]);
 
   // The camera looks straight down -Z from +Z; yaw/pitch 0 in the diagram projector.
   const P = makeProjector({ yaw: 0, pitch: 0, zoom: 1 }, W / 2 - 50, H / 2 + 6, 78, 4.2);
@@ -94,7 +96,7 @@ export function WindingFigure({ t }: { t?: TrackTranslations }) {
         : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <style>{`@keyframes wind-flow { to { stroke-dashoffset: -20; } }`}</style>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">

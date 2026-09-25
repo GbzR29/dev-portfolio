@@ -3,9 +3,9 @@
 import { useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram, makeTexture2D, type TexImage, type Vec3 } from "../gl";
-import { FULL_VS, drawFullscreen } from "../glx";
-import { GLView, useSky, SkyPicker, type Look, type SkyImages } from "../GLView";
+import { compileProgram, makeTexture2D, type TexImage, type Vec3 } from "../../kit/gl/gl";
+import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
+import { GLView, useSky, SkyPicker, type Look, type SkyImages } from "../../kit/gl/GLView";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A light probe in 9 numbers. The sky's radiance is projected onto the first

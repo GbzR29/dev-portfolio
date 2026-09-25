@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
-import { ensureColorTarget, FULL_VS, drawFullscreen, type ColorTarget } from "../glx";
+import { mat4, compileProgram, forwardFrom } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
+import { ensureColorTarget, FULL_VS, drawFullscreen, type ColorTarget } from "../../kit/gl/glx";
 import { sceneMeshes, compileLit, drawRoom, roomCamera, clampRoomLook, ROOM_LOOK, SUN, type SceneMeshes } from "./scene";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -122,7 +123,8 @@ export function PostFxFigure({ t }: { t?: TrackTranslations }) {
   const [look, setLook] = useState<Look>(ROOM_LOOK);
   const [fx, setFx] = useState<Fx>(PRESETS.cinematic);
   const [split, setSplit] = useState(0.35);
-  const time = useAnimationTime(fx.grain > 0);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(fx.grain > 0 && vis.on);
   const set = <K extends keyof Fx>(k: K, v: Fx[K]) => setFx(f => ({ ...f, [k]: v }));
 
   const init = (gl: WebGL2RenderingContext): Res => ({
@@ -205,7 +207,7 @@ export function PostFxFigure({ t }: { t?: TrackTranslations }) {
   ];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPostFx_title", "A Post-Processing Stack — One Texture, Many Fullscreen Passes")}

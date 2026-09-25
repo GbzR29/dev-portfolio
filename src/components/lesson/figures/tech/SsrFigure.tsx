@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Mat4 } from "../gl";
-import { GLView, type Look } from "../GLView";
-import { ensureColorTarget, FULL_VS, drawFullscreen, floatTargets, type ColorTarget } from "../glx";
+import { mat4, compileProgram, forwardFrom, type Mat4 } from "../../kit/gl/gl";
+import { GLView, type Look } from "../../kit/gl/GLView";
+import { ensureColorTarget, FULL_VS, drawFullscreen, floatTargets, type ColorTarget } from "../../kit/gl/glx";
 import { ROOM, LIT_VS, LIT_FS, SUN, sceneMeshes, roomCamera, clampRoomLook, type SceneMeshes } from "../post/scene";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -81,8 +81,12 @@ void main() {
     if (any(lessThan(uv, vec2(0.0))) || any(greaterThan(uv, vec2(1.0))) || pos.z > -0.05) break;   // off screen or behind the camera
     vec4 S = texture(gPosition, uv);
     if (S.w == 0.0) { prev = pos; continue; }
-    float dz = S.z - pos.z;                       // > 0: the ray is behind the stored surface
-    if (dz > 0.0 && dz < uThickness) {
+    if (S.z - pos.z > 0.0) {                      // this step took the ray behind the stored surface
+      // Where exactly did it cross? Deciding hit-or-miss at the coarse step
+      // would depend on where each ray's steps happen to land: neighbouring
+      // pixels would disagree, drawing rings and streaks. So refine first,
+      // then apply the thickness test at the crossing.
+      vec3 hit = pos;
       if (uRefine > 0.5) {                        // binary search for the crossing
         vec3 lo = prev, hi = pos;
         for (int b = 0; b < 6; b++) {
@@ -90,10 +94,20 @@ void main() {
           vec4 M = texture(gPosition, project(mid));
           if (M.w != 0.0 && M.z - mid.z > 0.0) hi = mid; else lo = mid;
         }
-        uv = project(hi);
+        hit = hi;
       }
+      uv = project(hit);
+      vec4 H = texture(gPosition, uv);
+      // The surface is assumed to be uThickness deep. Deeper than that, the ray
+      // only passed behind an object: keep marching.
+      float behind = H.z - hit.z;
+      if (H.w == 0.0 || behind > uThickness) { prev = pos; continue; }
       vec2 edge = smoothstep(0.0, 0.12, uv) * smoothstep(0.0, 0.12, 1.0 - uv);   // fade near screen borders
       float conf = edge.x * edge.y * (1.0 - float(i) / float(uSteps));
+      // A real hit ends on the surface (behind ≈ 0). Deeper inside the assumed
+      // thickness the ray passed behind a silhouette and only guesses what is
+      // hidden there: fade it out instead of smearing the silhouette's pixels.
+      conf *= 1.0 - smoothstep(0.25 * uThickness, uThickness, behind);
       FragColor = vec4(texture(uLit, uv).rgb, conf);
       return;
     }
@@ -108,13 +122,26 @@ uniform sampler2D uLit, uSsr, uPlanar, gNormal, gPosition;
 uniform int uMethod, uView;
 uniform float uStrength;
 out vec4 FragColor;
+// Raw SSR is noisy wherever rays graze a surface or guess at what is hidden
+// (under the spheres, rays alternate between hitting the sphere and passing
+// under it). Engines always denoise it; here a small blur weighted by the
+// confidence turns that noise into a soft falloff.
+vec4 ssrBlurred(vec2 uv) {
+  vec2 px = 1.5 / vec2(textureSize(uSsr, 0));
+  vec4 sum = vec4(0.0);
+  for (int y = -2; y <= 2; y++) for (int x = -2; x <= 2; x++) {
+    vec4 s = texture(uSsr, uv + vec2(x, y) * px);
+    sum += vec4(s.rgb * s.a, s.a);
+  }
+  return sum.a > 0.0 ? vec4(sum.rgb / sum.a, sum.a / 25.0) : vec4(0.0);
+}
 void main() {
   vec3 lit = texture(uLit, vUV).rgb;
   vec4 Nr = texture(gNormal, vUV), P = texture(gPosition, vUV);
   float refl = Nr.w * uStrength;
   float fres = 0.04 + 0.96 * pow(1.0 - max(dot(normalize(Nr.xyz), -normalize(P.xyz)), 0.0), 5.0);
   float k = refl * mix(0.35, 1.0, fres);                     // polished: always some reflection, more at grazing angles
-  vec4 r = uMethod == 1 ? texture(uSsr, vUV) : uMethod == 2 ? vec4(texture(uPlanar, vUV).rgb, 1.0) : vec4(0.0);
+  vec4 r = uMethod == 1 ? ssrBlurred(vUV) : uMethod == 2 ? vec4(texture(uPlanar, vUV).rgb, 1.0) : vec4(0.0);
   if (uView == 1) { FragColor = vec4(r.rgb * r.a * step(0.01, Nr.w), 1.0); return; }
   if (uView == 2) { FragColor = vec4(vec3(r.a * step(0.01, Nr.w)), 1.0); return; }
   FragColor = vec4(mix(lit, r.rgb, k * r.a), 1.0);

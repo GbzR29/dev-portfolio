@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Vec3 } from "../gl";
-import { GLView, type Look } from "../GLView";
-import { planePNUT, uploadMesh, trs, type Mesh } from "../glx";
+import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, type Look } from "../../kit/gl/GLView";
+import { planePNUT, uploadMesh, trs, type Mesh } from "../../kit/gl/glx";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A floor lit by a light close to it, seen at a low angle — the situation

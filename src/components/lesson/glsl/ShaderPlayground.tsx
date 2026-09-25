@@ -1,11 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { useVisible } from "../kit/figure";
+import { claimContext, releaseContext } from "../kit/gl/context";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, forwardFrom, type Vec3 } from "../figures/gl";
-import type { Mesh } from "../figures/glx";
+import { mat4, forwardFrom, type Vec3 } from "../kit/gl/gl";
+import type { Mesh } from "../kit/gl/glx";
 import {
   buildProgram, buildMeshes, parseControls, usedChannels, DEFAULT_VERTEX,
   type Mode, type MeshKind, type ShaderError, type Control,
@@ -81,8 +82,8 @@ export function ShaderPlayground({ presets, t, title, aspect = 16 / 9, initialPr
   const mouse = useRef<[number, number, number, number]>([0, 0, 0, 0]);   // ShaderToy semantics: xy while pressed, zw = press point (negative after release)
   const orbit = useRef({ yaw: -0.6, pitch: -0.35, dist: 4.2 });
   const drag = useRef<{ x: number; y: number } | null>(null);
-  const { ref: viewRef, inView } = useInView({ threshold: 0.05 });
-  const setRoot = useCallback((el: HTMLElement | null) => { rootRef.current = el; viewRef(el); }, [viewRef]);
+  const { ref: viewRef, on: inView } = useVisible<HTMLElement>();
+  const setRoot = useCallback((el: HTMLElement | null) => { rootRef.current = el; viewRef.current = el; }, [viewRef]);
 
   const controls = useMemo<Control[]>(() => parseControls(frag, mode === "mesh" ? vert : ""), [frag, vert, mode]);
   const used = useMemo(() => usedChannels(frag, mode === "mesh" ? vert : ""), [frag, vert, mode]);
@@ -98,12 +99,14 @@ export function ShaderPlayground({ presets, t, title, aspect = 16 / 9, initialPr
   useEffect(() => {
     const c = canvasRef.current;
     if (!c) return;
+    claimContext(c);
     const gl = c.getContext("webgl2", { antialias: true, preserveDrawingBuffer: true });
     if (!gl) { setErrors([{ stage: "link", line: null, message: "WebGL2 is not available in this browser." }]); return; }
     const black = gl.createTexture()!;
     gl.bindTexture(gl.TEXTURE_2D, black);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
     glRef.current = { gl, program: null, mode, meshes: null, empty: gl.createVertexArray()!, black, tex: [null, null, null, null], locs: new Map() };
+    return () => releaseContext(c, gl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -3,14 +3,14 @@
 import { useId, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { useStepper, stepAmount, StepperControls } from "./Stepper";
-import { Arrow, Label, pts } from "./svg";
+import { useStepper, stepAmount, StepperControls } from "../kit/Stepper";
+import { Arrow, Label, pts } from "../kit/svg";
 import {
   type V3, type Face, type CamBasis, add, sub, scale, dot,
   makeProjector, useOrbit, boxFaces, fmtV, lookAtBasis, viewTransform, frontFacing, lightAmount,
   towardEye, visibleRuns, cylinderFaces, type Box,
-} from "./scene3d";
-import { TexturedFace, useProtoTextures, type ProtoName } from "./protoTexture";
+} from "../kit/scene3d";
+import { TexturedFace, useProtoTextures, type ProtoName } from "../kit/protoTexture";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // How glm::lookAt builds a camera, one vector at a time, and what the resulting

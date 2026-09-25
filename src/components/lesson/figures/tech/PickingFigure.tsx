@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Mat4, type Vec3 } from "../gl";
-import { GLView, type Look } from "../GLView";
-import { trs } from "../glx";
+import { mat4, compileProgram, forwardFrom, type Mat4, type Vec3 } from "../../kit/gl/gl";
+import { GLView, type Look } from "../../kit/gl/GLView";
+import { trs } from "../../kit/gl/glx";
 import { invert } from "./mat4util";
 import { ROOM, LIT_VS, LIT_FS, SUN, sceneMeshes, roomCamera, clampRoomLook, ROOM_LOOK, type SceneMeshes } from "../post/scene";
 

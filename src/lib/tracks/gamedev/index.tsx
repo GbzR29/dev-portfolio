@@ -6,11 +6,6 @@
 // patterns that keep game code fast and manageable.
 
 import type { Chapter } from "@/lib/tracks/types";
-import { GameLoopContent } from "./chapters/loop";
-import { EasingContent, SpringsContent } from "./chapters/motion";
-import { RandomContent, PerlinContent } from "./chapters/procedural";
-import { CollisionContent, SatContent } from "./chapters/collision";
-import { ObjectPoolContent } from "./chapters/patterns";
 
 const LOOP = "Core Loop & Time";
 const MOTION = "Motion & Game Feel";
@@ -19,16 +14,16 @@ const COLLISION = "Collision Detection";
 const ARCH = "Architecture & Patterns";
 
 export const gameDevChapters: Chapter[] = [
-  { id: "game-loop",   section: LOOP,      title: "The Game Loop & Fixed Timestep", minRead: 16, content: (t) => <GameLoopContent   t={t} /> },
+  { id: "game-loop",   section: LOOP,      title: "The Game Loop & Fixed Timestep", minRead: 16, load: () => import("./chapters/loop").then((m) => m.GameLoopContent) },
 
-  { id: "easing",      section: MOTION,    title: "Lerp, Easing & Tweening",        minRead: 17, content: (t) => <EasingContent     t={t} /> },
-  { id: "springs",     section: MOTION,    title: "Springs & Screen Shake",         minRead: 15, content: (t) => <SpringsContent    t={t} /> },
+  { id: "easing",      section: MOTION,    title: "Lerp, Easing & Tweening",        minRead: 17, load: () => import("./chapters/motion").then((m) => m.EasingContent) },
+  { id: "springs",     section: MOTION,    title: "Springs & Screen Shake",         minRead: 15, load: () => import("./chapters/motion").then((m) => m.SpringsContent) },
 
-  { id: "random",      section: PROC,      title: "Randomness, Seeds & Hashing",    minRead: 18, content: (t) => <RandomContent     t={t} /> },
-  { id: "perlin",      section: PROC,      title: "Perlin Noise & Fractal Terrain", minRead: 20, content: (t) => <PerlinContent     t={t} /> },
+  { id: "random",      section: PROC,      title: "Randomness, Seeds & Hashing",    minRead: 18, load: () => import("./chapters/procedural").then((m) => m.RandomContent) },
+  { id: "perlin",      section: PROC,      title: "Perlin Noise & Fractal Terrain", minRead: 20, load: () => import("./chapters/procedural").then((m) => m.PerlinContent) },
 
-  { id: "collision",   section: COLLISION, title: "Collision Shapes & Overlap",     minRead: 18, content: (t) => <CollisionContent  t={t} /> },
-  { id: "sat",         section: COLLISION, title: "Separating Axis Theorem",        minRead: 13, content: (t) => <SatContent        t={t} /> },
+  { id: "collision",   section: COLLISION, title: "Collision Shapes & Overlap",     minRead: 18, load: () => import("./chapters/collision").then((m) => m.CollisionContent) },
+  { id: "sat",         section: COLLISION, title: "Separating Axis Theorem",        minRead: 13, load: () => import("./chapters/collision").then((m) => m.SatContent) },
 
-  { id: "object-pool", section: ARCH,      title: "Object Pools & Handles",         minRead: 15, content: (t) => <ObjectPoolContent t={t} /> },
+  { id: "object-pool", section: ARCH,      title: "Object Pools & Handles",         minRead: 15, load: () => import("./chapters/patterns").then((m) => m.ObjectPoolContent) },
 ];

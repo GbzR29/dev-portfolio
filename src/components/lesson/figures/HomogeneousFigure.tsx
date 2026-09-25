@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { useStepper, stepAmount, StepperControls } from "./Stepper";
-import { Arrow, Label, pts } from "./svg";
-import { type V3, makeProjector, useOrbit } from "./scene3d";
+import { useStepper, stepAmount, StepperControls } from "../kit/Stepper";
+import { Arrow, Label, pts } from "../kit/svg";
+import { type V3, makeProjector, useOrbit } from "../kit/scene3d";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The 2D version of the w trick. A 2D point (x, y) becomes (x, y, 1): the plane

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, Label, type P2 } from "../svg";
-import { useStepper, stepAmount, StepperControls } from "../Stepper";
+import { Arrow, Label, type P2 } from "../../kit/svg";
+import { useStepper, stepAmount, StepperControls } from "../../kit/Stepper";
 import { Tex } from "../../Tex";
 
 // ── What this figure shows ────────────────────────────────────────────────────

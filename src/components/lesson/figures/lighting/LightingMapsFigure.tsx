@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, boxMeshUV, loadTexture2D, forwardFrom, type Vec3 } from "../gl";
-import { GLView, type Look } from "../GLView";
-import { mapUrl } from "../protoTexture";
+import { mat4, compileProgram, boxMeshUV, loadTexture2D, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
+import { mapUrl } from "../../kit/protoTexture";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A crate with three textures: a diffuse map (its colour), a specular map (how
@@ -117,15 +118,8 @@ export function LightingMapsFigure({ t }: { t?: TrackTranslations }) {
   const [view, setView] = useState(0);
   const [emission, setEmission] = useState(false);
   const [animate, setAnimate] = useState(true);
-  const [time, setTime] = useState(0);
-
-  useEffect(() => {
-    if (!animate) return;
-    let raf = 0, last = performance.now();
-    const tick = (now: number) => { setTime(v => v + Math.max(0, now - last) / 1000); last = now; raf = requestAnimationFrame(tick); };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [animate]);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(animate && vis.on);
 
   const f = forwardFrom(look.yaw, look.pitch);
   const cam: Vec3 = [-f[0] * 3.6, -f[1] * 3.6, -f[2] * 3.6];
@@ -183,7 +177,7 @@ export function LightingMapsFigure({ t }: { t?: TrackTranslations }) {
       : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figMaps_title", "Lighting Maps — Per-Texel Materials")}

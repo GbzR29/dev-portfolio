@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 import {
   uploadMesh, cubePNUT, planePNUT, trs, ensureColorTarget, FULL_VS, drawFullscreen, type Mesh, type ColorTarget,
-} from "../glx";
+} from "../../kit/gl/glx";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Bloom as four passes: render HDR → keep only what is brighter than a
@@ -100,7 +101,8 @@ export function BloomFigure({ t }: { t?: TrackTranslations }) {
   const [passes, setPasses] = useState(5);
   const [intensity, setIntensity] = useState(1);
   const [animate, setAnimate] = useState(true);
-  const time = useAnimationTime(animate);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(animate && vis.on);
 
   const f = forwardFrom(look.yaw, look.pitch);
   const cam: Vec3 = [-f[0] * 8, -f[1] * 8 + 0.5, -f[2] * 8];
@@ -192,7 +194,7 @@ export function BloomFigure({ t }: { t?: TrackTranslations }) {
   const KW = 220, KH = 90, taps = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figBloom_title", "Bloom — Four Passes")}

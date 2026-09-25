@@ -4,7 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Figure, Btn, Row, Readout, Slider, Sliders, C, T, Vec } from "@/components/lesson/kit/figure";
-import { type V3, cross, len, makeProjector, useOrbit, fmtV } from "@/components/lesson/figures/scene3d";
+import { type V3, cross, len, makeProjector, useOrbit, fmtV } from "@/components/lesson/kit/scene3d";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // a × b in 3D (y up, right-handed). a lies along x; b is set by its angle θ

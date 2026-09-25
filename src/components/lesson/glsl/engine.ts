@@ -10,7 +10,7 @@
 // Two modes: "2d" runs one fragment shader over the whole canvas; "mesh"
 // renders a mesh with an editable vertex and fragment shader.
 
-import { cubePNUT, spherePNUT, uploadMesh, type Mesh } from "../figures/glx";
+import { cubePNUT, spherePNUT, uploadMesh, type Mesh } from "../kit/gl/glx";
 
 export type Mode = "2d" | "mesh";
 export type MeshKind = "sphere" | "torus" | "cube" | "plane";

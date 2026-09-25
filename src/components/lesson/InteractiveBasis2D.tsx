@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
-import { useFigureSpeed, SpeedControl, scaledMs } from "@/components/lesson/figures/Stepper";
+import { useFigureSpeed, SpeedControl, scaledMs } from "@/components/lesson/kit/Stepper";
 
 // ── What this widget shows ────────────────────────────────────────────────────
 // A 2×2 matrix is nothing more than "where î and ĵ land". Its first column is

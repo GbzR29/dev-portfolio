@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, Label, type P2 } from "../svg";
+import { Arrow, Label, type P2 } from "../../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // When l̂, n̂ and v̂ lie in one plane, the angle between n̂ and the halfway

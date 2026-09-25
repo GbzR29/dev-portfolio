@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Label, pts, type P2 } from "../svg";
+import { Label, pts, type P2 } from "../../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A geometry shader runs once per input primitive and emits vertices one by one.

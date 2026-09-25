@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
-import { ensureColorTarget, FULL_VS, drawFullscreen, trs, type ColorTarget, type SceneItem } from "../glx";
+import { mat4, compileProgram, forwardFrom } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
+import { ensureColorTarget, FULL_VS, drawFullscreen, trs, type ColorTarget, type SceneItem } from "../../kit/gl/glx";
 import { sceneMeshes, compileLit, drawRoom, roomCamera, clampRoomLook, ROOM_LOOK, SUN, type SceneMeshes } from "./scene";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -104,7 +105,8 @@ export function AaCompareFigure({ t }: { t?: TrackTranslations }) {
   const [sway, setSway] = useState(false);
   const [edges, setEdges] = useState(false);
   const [samplesInfo, setSamplesInfo] = useState(4);
-  const time = useAnimationTime(sway);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(sway && vis.on);
 
   const init = (gl: WebGL2RenderingContext): Res => {
     const maxSamples = Math.min(4, gl.getParameter(gl.MAX_SAMPLES) as number);
@@ -189,7 +191,7 @@ export function AaCompareFigure({ t }: { t?: TrackTranslations }) {
   const cost = ["1 sample, 1 shader run / pixel", `${samplesInfo} samples, ~1 shader run / pixel`, "4 samples, 4 shader runs / pixel", "1 sample + one fullscreen pass"][mode];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figAa_title", "Anti-Aliasing Compared — Same Frame, Four Strategies")}

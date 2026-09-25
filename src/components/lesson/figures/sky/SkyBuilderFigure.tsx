@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, SKYBOX_CUBE, forwardFrom } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { mat4, compileProgram, SKYBOX_CUBE, forwardFrom } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 import { DEFAULT_SKY_PARAMS, setSkyUniforms, type SkyParams } from "./proceduralSky";
 import { BUILDER_FS, STEPS, type SkyPart } from "./skySteps";
 
@@ -40,7 +41,8 @@ export function SkyBuilderFigure({ t, part }: { t?: TrackTranslations; part: Sky
   const [scale, setScale] = useState(12);
   const [sky, setSky] = useState<SkyParams>({ ...DEFAULT_SKY_PARAMS, ...setup.sky });
   const [animate, setAnimate] = useState(part === "clouds");
-  const time = useAnimationTime(animate);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(animate && vis.on);
 
   const init = (gl: WebGL2RenderingContext): Res => {
     const vao = gl.createVertexArray()!;
@@ -87,7 +89,7 @@ export function SkyBuilderFigure({ t, part }: { t?: TrackTranslations; part: Sky
   const k = `figSkyB_${part}${step}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, `figSkyB_${part}Title`, setup.title)}

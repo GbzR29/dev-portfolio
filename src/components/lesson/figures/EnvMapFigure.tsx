@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, SKYBOX_CUBE, sphereMesh, boxMesh, forwardFrom } from "./gl";
-import { GLView, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "./GLView";
-import { Arrow, Label } from "./svg";
+import { mat4, compileProgram, SKYBOX_CUBE, sphereMesh, boxMesh, forwardFrom } from "../kit/gl/gl";
+import { GLView, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "../kit/gl/GLView";
+import { Arrow, Label } from "../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Environment mapping: an object with no texture of its own, coloured entirely

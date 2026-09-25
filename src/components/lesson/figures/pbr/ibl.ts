@@ -3,9 +3,9 @@
 //   environment cube (HDR) → irradiance cube (diffuse) → prefiltered cube with
 //   one roughness per mip level (specular) + the split-sum BRDF lookup table.
 
-import { compileProgram, makeCubemap, type Vec3 } from "../gl";
-import { FULL_VS, drawFullscreen, floatTargets } from "../glx";
-import type { SkyImages } from "../GLView";
+import { compileProgram, makeCubemap, type Vec3 } from "../../kit/gl/gl";
+import { FULL_VS, drawFullscreen, floatTargets } from "../../kit/gl/glx";
+import type { SkyImages } from "../../kit/gl/GLView";
 
 // ── Shared GLSL ───────────────────────────────────────────────────────────────
 /** The OpenGL cube-map face table (same as gl.ts faceDir): texel (s, t) → direction. */

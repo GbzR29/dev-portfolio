@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram } from "../gl";
-import { FULL_VS, drawFullscreen, makeColorTarget, type ColorTarget } from "../glx";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { compileProgram } from "../../kit/gl/gl";
+import { FULL_VS, drawFullscreen, makeColorTarget, type ColorTarget } from "../../kit/gl/glx";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Temporal anti-aliasing, one ingredient at a time, on a deliberately tiny
@@ -141,15 +142,7 @@ export function TaaFigure({ t }: { t?: TrackTranslations }) {
   const [speed, setSpeed] = useState(1);
   const [vectors, setVectors] = useState(false);
   const [playing, setPlaying] = useState(true);
-  const figRef = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const el = figRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.05 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { ref: figRef, on: inView } = useVisible<HTMLElement>();
   const time = useAnimationTime(playing && inView);
 
   const init = (gl: WebGL2RenderingContext): Res => {

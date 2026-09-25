@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, SKYBOX_CUBE, forwardFrom } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { mat4, compileProgram, SKYBOX_CUBE, forwardFrom } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 import { PROC_SKY_FS, DEFAULT_SKY_PARAMS, setSkyUniforms, sunDirection, type SkyParams } from "./proceduralSky";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -75,7 +76,8 @@ export function ProceduralSkyFigure({ t }: { t?: TrackTranslations }) {
   const [look, setLook] = useState<Look>({ yaw: 0.95, pitch: 0.28, fov: 1.5 });
   const [p, setP] = useState<SkyParams>({ ...DEFAULT_SKY_PARAMS });
   const [animate, setAnimate] = useState(false);
-  const time = useAnimationTime(animate);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(animate && vis.on);
   const set = <K extends keyof SkyParams>(k: K, v: SkyParams[K]) => setP(o => ({ ...o, [k]: v }));
 
   const init = (gl: WebGL2RenderingContext): Res => {
@@ -133,7 +135,7 @@ export function ProceduralSkyFigure({ t }: { t?: TrackTranslations }) {
   const note = notes[codeKey];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPSky_title", "A Procedural Sky, Layer by Layer")}

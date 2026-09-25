@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Label } from "../svg";
+import { Label } from "../../kit/svg";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Three ways to advance x'' = −ω²x (a mass on a spring) by a fixed step dt,

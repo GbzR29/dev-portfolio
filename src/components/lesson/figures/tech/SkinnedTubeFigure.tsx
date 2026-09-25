@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
+import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
 import { qAxis, qMul, qRotate, slerp, toDual, type Quat, type V3 } from "./dq";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -139,7 +140,8 @@ export function SkinnedTubeFigure({ t }: { t?: TrackTranslations }) {
   const [blend, setBlend] = useState(0.5);
   const [animate, setAnimate] = useState(false);
   const [bones, setBones] = useState(true);
-  const time = useAnimationTime(animate);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(animate && vis.on);
 
   // Current pose: sliders, or keyframes interpolated per bone with slerp
   let rots: Quat[], shown: Pose;
@@ -234,7 +236,7 @@ export function SkinnedTubeFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSkinTube_title", "GPU Skinning — Four Bones, Two Blending Methods")}

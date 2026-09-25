@@ -3,12 +3,12 @@
 import { useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, norm, type Vec3 } from "../gl";
-import { GLView, type Look } from "../GLView";
+import { mat4, compileProgram, forwardFrom, norm, type Vec3 } from "../../kit/gl/gl";
+import { GLView, type Look } from "../../kit/gl/GLView";
 import {
   ortho, uploadMesh, cubePNUT, spherePNUT, planePNUT, makeDepthTarget, FULL_VS, drawFullscreen,
   SHADOW_SCENE, type Mesh, type DepthTarget,
-} from "../glx";
+} from "../../kit/gl/glx";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Real two-pass shadow mapping. Pass 1 renders the scene's depth from the

@@ -3,9 +3,9 @@
 import { useId, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, Label, pts } from "./svg";
-import { type V3, add, makeProjector, useOrbit, boxFaces, frontFacing, lightAmount } from "./scene3d";
-import { TexturedFace, FigureIcon, useProtoTextures, type ProtoName } from "./protoTexture";
+import { Arrow, Label, pts } from "../kit/svg";
+import { type V3, add, makeProjector, useOrbit, boxFaces, frontFacing, lightAmount } from "../kit/scene3d";
+import { TexturedFace, FigureIcon, useProtoTextures, type ProtoName } from "../kit/protoTexture";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The view frustum from the outside, next to what the camera actually sees.

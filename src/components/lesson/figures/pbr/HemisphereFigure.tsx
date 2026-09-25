@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Arrow, Label, pts } from "../svg";
-import { type V3, makeProjector, useOrbit, towardEye, dot, scale } from "../scene3d";
+import { Arrow, Label, pts } from "../../kit/svg";
+import { type V3, makeProjector, useOrbit, towardEye, dot, scale } from "../../kit/scene3d";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The hemisphere Ω above a surface point p, the space every reflectance

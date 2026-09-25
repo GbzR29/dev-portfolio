@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { mat4, compileProgram, forwardFrom, type Mat4, type Vec3 } from "../gl";
-import { GLView, useAnimationTime, type Look } from "../GLView";
-import { uploadMesh, spherePNUT, planePNUT, wallPNUT, cubePNUT, trs, floatTargets, FULL_VS, drawFullscreen, type Mesh } from "../glx";
+import { mat4, compileProgram, forwardFrom, type Mat4, type Vec3 } from "../../kit/gl/gl";
+import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
+import { useVisible } from "../../kit/figure";
+import { uploadMesh, spherePNUT, planePNUT, wallPNUT, cubePNUT, trs, floatTargets, FULL_VS, drawFullscreen, type Mesh } from "../../kit/gl/glx";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Transparent geometry that no sort can fix: three coloured glass panes that
@@ -128,7 +129,8 @@ export function OitSceneFigure({ t }: { t?: TrackTranslations }) {
   const [alpha, setAlpha] = useState(0.5);
   const [spin, setSpin] = useState(true);
   const [floatOk, setFloatOk] = useState(true);
-  const time = useAnimationTime(spin);
+  const vis = useVisible<HTMLElement>();
+  const time = useAnimationTime(spin && vis.on);
 
   const init = (gl: WebGL2RenderingContext): Res => {
     const float = floatTargets(gl);
@@ -224,7 +226,7 @@ export function OitSceneFigure({ t }: { t?: TrackTranslations }) {
   ];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figOitS_title", "Intersecting Glass — Sorting vs Weighted Blended OIT")}
