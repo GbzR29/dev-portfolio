@@ -18,12 +18,12 @@ export function SDFContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "glsl04_intro",
-          "A Signed Distance Function (SDF) returns the distance from a point to the nearest surface of a shape. Negative = inside, positive = outside, zero = exactly on the edge. SDFs let you draw any shape analytically with perfect anti-aliased edges."
+          "A Signed Distance Function (SDF) is a function that returns the distance from a point to the nearest surface of a shape. Negative values are inside the shape, positive values are outside, and zero is exactly on the surface edge. SDFs let you draw any shape analytically in the fragment shader with clean, anti-aliased edges."
         )}
       </p>
 
       <H2>{tx(t, "glsl04_conceptTitle", "The concept")}</H2>
-      <p>{tx(t, "glsl04_conceptBody", "Sample the SDF at the current UV position. If negative, output the shape color. Use smoothstep to anti-alias the edge.")}</p>
+      <p>{tx(t, "glsl04_conceptBody", "To render a shape: sample the SDF at the current UV position. If the result is negative (inside), output the shape color. Use smoothstep to anti-alias the edge transition.")}</p>
       <CodeBlock lang="glsl" filename="sdf_concept.glsl" t={t}>{`float sdfCircle(vec2 p, float r) {
     return length(p) - r;
 }
@@ -43,7 +43,7 @@ void main() {
 }`}</CodeBlock>
 
       <H2>{tx(t, "glsl04_circleTitle", "SDF: Circle")}</H2>
-      <p>{tx(t, "glsl04_circleBody", "The simplest SDF. Distance from a point to a circle of radius r at the origin is length(p) - r.")}</p>
+      <p>{tx(t, "glsl04_circleBody", "The simplest SDF. Distance from a point to a circle of radius r centered at the origin is just length(p) - r.")}</p>
       <CodeBlock lang="glsl" filename="sdf_shapes.glsl" t={t}>{`float sdfCircle(vec2 p, float r) {
     return length(p) - r;
 }
@@ -53,7 +53,7 @@ float c1 = sdfCircle(uv - vec2(0.3, 0.0), 0.2);   // circle at (0.3, 0)
 float c2 = sdfCircle(uv - vec2(-0.3, 0.0), 0.15);  // circle at (-0.3, 0)`}</CodeBlock>
 
       <H2>{tx(t, "glsl04_boxTitle", "SDF: Rectangle")}</H2>
-      <p>{tx(t, "glsl04_boxBody", "The exact box SDF — b is the half-size of the box.")}</p>
+      <p>{tx(t, "glsl04_boxBody", "The exact box SDF uses component-wise operations. b is the half-size of the box (so a b of (0.3, 0.2) makes a box 0.6 wide and 0.4 tall).")}</p>
       <CodeBlock lang="glsl" filename="sdf_box.glsl" t={t}>{`float sdfBox(vec2 p, vec2 b) {
     vec2 d = abs(p) - b;
     return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
@@ -69,7 +69,7 @@ float box     = sdfBox(uv, vec2(0.4, 0.2));          // 0.8 wide, 0.4 tall
 float rounded = sdfRoundedBox(uv, vec2(0.4, 0.2), 0.05); // with rounded corners`}</CodeBlock>
 
       <H2>{tx(t, "glsl04_combineTitle", "Combining shapes")}</H2>
-      <p>{tx(t, "glsl04_combineBody", "Because SDFs return distances, combining them takes only a few characters.")}</p>
+      <p>{tx(t, "glsl04_combineBody", "Because SDFs return distances, you can combine them with simple math — no special API needed.")}</p>
       <CodeBlock lang="glsl" filename="sdf_combine.glsl" t={t}>{`// Boolean operations
 float sdfUnion(float d1, float d2)     { return min(d1, d2); }
 float sdfSubtract(float d1, float d2)  { return max(d1, -d2); }
@@ -88,7 +88,7 @@ float merged = sdfSmoothUnion(c1, c2, 0.15);`}</CodeBlock>
 
       <Callout type="info" t={t}>
         {tx(t, "glsl04_combineWarn",
-          "Smooth union (smin) blends two shapes smoothly at their boundary using parameter k to control the blending radius. This is how organic-looking blobs and metaballs are made — the shapes attract each other."
+          "Smooth union (smin) blends two shapes smoothly at their boundary. It uses a parameter k to control the blending radius. This is how organic-looking blobs and metaballs are made."
         )}
       </Callout>
 

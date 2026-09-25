@@ -110,7 +110,7 @@ export function CodeBlock({
           onClick={handleCopy}
           className="text-[10px] font-mono text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors px-2 py-1 rounded border border-transparent hover:border-[var(--border)]"
         >
-          {copied ? tx(t, "codeCopied", "✓ copied") : tx(t, "codeCopy", "copy")}
+          {copied ? tx(t, "codeCopied", "copied") : tx(t, "codeCopy", "copy")}
         </button>
       </div>
       <div className="overflow-auto bg-[var(--code-bg)]">

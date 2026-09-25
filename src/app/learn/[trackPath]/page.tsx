@@ -3,7 +3,7 @@
 
 import { ChapterBoundary } from "@/components/lesson/ChapterBoundary";
 import { ChapterContent } from "@/components/lesson/ChapterContent";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import Link from "next/link";
@@ -11,6 +11,8 @@ import {
   ChevronRight, ArrowLeft, Clock, CheckCircle2, AlignLeft,
 } from "lucide-react";
 import { getTrack } from "@/lib/tracks";
+import type { TrackTranslations } from "@/lib/tracks/types";
+import { useLessonText } from "@/lib/i18n/lessons";
 import { getReference, referenceHref } from "@/lib/reference";
 import { chapterNames } from "@/lib/reference/usage";
 import { LessonSidebar } from "@/components/sidebar/LessonSidebar";
@@ -103,7 +105,7 @@ function readChapterParam(): string | null {
 export default function LessonPage() {
   const router   = useRouter();
   const params   = useParams();
-  const { t }    = useLanguage();
+  const { t, language } = useLanguage();
 
   const trackPath = params?.trackPath
     ? decodeURIComponent(params.trackPath as string)
@@ -116,6 +118,22 @@ export default function LessonPage() {
   const [activeTocId, setActiveTocId]         = useState<string>("");
 
   const contentRef = useRef<HTMLDivElement>(null);
+
+  // Lesson text in the current language (null while it downloads), merged over
+  // the global UI strings; chapter titles and sections are translated for display.
+  const lessonText = useLessonText(track?.id, language);
+  const lessonT = useMemo(
+    () => ({ ...t, ...lessonText?.strings }) as TrackTranslations,
+    [t, lessonText],
+  );
+  const shownChapters = useMemo(
+    () => (track?.chapters ?? []).map((c) => ({
+      ...c,
+      title: lessonText?.titles[c.id] ?? c.title,
+      section: c.section && (lessonText?.sections[c.section] ?? c.section),
+    })),
+    [track, lessonText],
+  );
   const { visited, markVisited } = useLessonProgress(track?.id ?? "");
 
   // Reference functions mentioned in the open chapter (scanned once its content has loaded)
@@ -203,9 +221,9 @@ export default function LessonPage() {
   if (!track || !activeChapterId) return null;
 
   const currentIndex   = track.chapters.findIndex((c) => c.id === activeChapterId);
-  const currentChapter = track.chapters[currentIndex];
-  const prevChapter    = track.chapters[currentIndex - 1];
-  const nextChapter    = track.chapters[currentIndex + 1];
+  const currentChapter = shownChapters[currentIndex];
+  const prevChapter    = shownChapters[currentIndex - 1];
+  const nextChapter    = shownChapters[currentIndex + 1];
   const overallPct     = Math.round(((currentIndex + 1) / track.chapters.length) * 100);
 
   return (
@@ -218,7 +236,7 @@ export default function LessonPage() {
         left={
           <LessonSidebar
             track={track}
-            chapters={track.chapters}
+            chapters={shownChapters}
             activeId={activeChapterId}
             visited={visited}
             onSelect={setActiveChapterId}
@@ -283,7 +301,9 @@ export default function LessonPage() {
           className="[&_article]:text-[1.125rem] [&_article]:leading-[1.85] [&_article>p]:!mt-6"
         >
           <ChapterBoundary resetKey={activeChapterId}>
-            {currentChapter && <ChapterContent chapter={currentChapter} t={t} preload={nextChapter} />}
+            {lessonText
+              ? <ChapterContent chapter={track.chapters[currentIndex]} t={lessonT} preload={track.chapters[currentIndex + 1]} />
+              : <div className="min-h-[60vh]" aria-busy="true" />}
           </ChapterBoundary>
 
           {reference && <ChapterFunctions reference={reference} names={chapterFns} />}

@@ -13,12 +13,12 @@ export function FragCoordContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "glsl03_intro",
-          "The fragment shader has access to the pixel's screen position through gl_FragCoord. Combined with a resolution uniform, this gives you the foundation for full-screen shader effects."
+          "The fragment shader has access to the pixel's screen position through gl_FragCoord. Combined with a resolution uniform, this gives you the foundation for writing shader effects that cover the entire screen — the basis of everything from post-processing to live shader art."
         )}
       </p>
 
       <H2>{tx(t, "glsl03_fragcoordTitle", "gl_FragCoord")}</H2>
-      <p>{tx(t, "glsl03_fragcoordBody", "gl_FragCoord.xy gives the pixel position with (0,0) at the bottom-left corner.")}</p>
+      <p>{tx(t, "glsl03_fragcoordBody", "gl_FragCoord.xy gives you the pixel position in window coordinates, where (0,0) is the bottom-left corner. The z component is the depth value in [0,1], and w is 1/clipW for perspective division.")}</p>
       <CodeBlock lang="glsl" filename="fragcoord.glsl" t={t}>{`// gl_FragCoord is built-in — always available in fragment shaders
 // .xy = pixel position in window coordinates (0,0 = bottom-left)
 // .z  = depth in [0.0, 1.0]
@@ -48,7 +48,7 @@ void main() {
       </Callout>
 
       <H2>{tx(t, "glsl03_centeredTitle", "Centering and aspect ratio correction")}</H2>
-      <p>{tx(t, "glsl03_centeredBody", "For most effects you want a centered coordinate system with aspect ratio correction.")}</p>
+      <p>{tx(t, "glsl03_centeredBody", "For most effects you want a centered coordinate system in [-1, +1]. Aspect ratio correction ensures circles look round and squares look square, regardless of window dimensions.")}</p>
       <CodeBlock lang="glsl" filename="centered_uv.glsl" t={t}>{`uniform vec2 uResolution;
 
 void main() {
@@ -67,7 +67,7 @@ void main() {
 }`}</CodeBlock>
 
       <H2>{tx(t, "glsl03_timeTitle", "Animating with time")}</H2>
-      <p>{tx(t, "glsl03_timeBody", "Pass a float uniform that increases each frame, combine with sin/cos for looping animations.")}</p>
+      <p>{tx(t, "glsl03_timeBody", "Pass a float uniform that increases each frame (typically in seconds). Combine with sin/cos to create oscillating, looping animations.")}</p>
       <CodeBlock lang="glsl" filename="time_anim.glsl" t={t}>{`uniform float uTime;       // seconds since start, set each frame
 uniform vec2  uResolution;
 
@@ -90,7 +90,7 @@ glUniform1f(glGetUniformLocation(prog, "uTime"),
 
       <Callout type="tip" t={t}>
         {tx(t, "glsl03_patternTip",
-          "The pattern uv = (gl_FragCoord.xy * 2.0 - uResolution) / uResolution.y is the standard ShaderToy setup. It centers the coordinate system and corrects the aspect ratio, giving [-aspect, aspect] on X and [-1, 1] on Y."
+          "The pattern uv = (gl_FragCoord.xy * 2.0 - uResolution) / uResolution.y is the standard ShaderToy/GLSL art setup. It centers the coordinate system, corrects the aspect ratio using the height, and gives you a range of roughly [-aspect, aspect] on X and [-1, 1] on Y."
         )}
       </Callout>
 

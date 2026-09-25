@@ -12,15 +12,15 @@ export function ShaderClassContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "glsl06_intro",
-          "Embedding shader source in C++ string literals works for tiny examples, but breaks down quickly in real projects. A dedicated Shader class that loads, compiles, and manages GLSL files makes iterating dramatically faster."
+          "Embedding shader source in C++ string literals works for small examples, but breaks down quickly for real projects. A dedicated Shader class that loads, compiles, and manages GLSL files makes iterating on shaders dramatically faster."
         )}
       </p>
 
       <H2>{tx(t, "glsl06_problemTitle", "The problem with string literals")}</H2>
-      <p>{tx(t, "glsl06_problemBody", "Shader source in string literals requires a C++ recompile for every GLSL tweak — and you lose IDE syntax highlighting.")}</p>
+      <p>{tx(t, "glsl06_problemBody", "Shader source in string literals requires a recompile of your C++ every time you tweak GLSL. You lose IDE syntax highlighting, and the code becomes hard to read. Loading from files fixes all of this.")}</p>
 
       <H2>{tx(t, "glsl06_classTitle", "Shader class interface")}</H2>
-      <p>{tx(t, "glsl06_classBody", "A minimal Shader class: constructor with file paths, use() to bind it, and uniform setters.")}</p>
+      <p>{tx(t, "glsl06_classBody", "A minimal Shader class needs: a constructor that takes file paths, a use() method to bind it, and uniform setter helpers. The implementation compiles vertex and fragment shaders and links them into a program.")}</p>
       <CodeBlock lang="cpp" filename="Shader.h" t={t}>{`#pragma once
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -110,7 +110,7 @@ void Shader::setMat4(const std::string& n, glm::mat4 v) const {
 }`}</CodeBlock>
 
       <H2>{tx(t, "glsl06_hotreloadTitle", "Hot reload pattern")}</H2>
-      <p>{tx(t, "glsl06_hotreloadBody", "Watch shader file modification time. When it changes, recompile and swap the program ID.")}</p>
+      <p>{tx(t, "glsl06_hotreloadBody", "Watch the shader file's modification time. When it changes, recompile in a background thread and swap the program ID atomically. This lets you tweak shaders and see results instantly without restarting the app.")}</p>
       <CodeBlock lang="cpp" filename="hot_reload.cpp" t={t}>{`#include <filesystem>
 #include <chrono>
 

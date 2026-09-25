@@ -1,0 +1,36 @@
+// PT text for src/lib/tracks/opengl/chapters/dsa.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  ch11_intro: "Todos os capítulos até aqui usaram bind-to-edit: vincular um objeto, modificá-lo, desvincular. O OpenGL 4.5 introduziu o DSA — modifique qualquer objeto pelo seu ID sem vinculá-lo. Ambos produzem comportamento idêntico na GPU; apenas o código do lado da CPU difere.",
+  ch11_problemTitle: "O problema do bind-to-edit",
+  ch11_problemBody: "O bind é um estado global implícito. glBindBuffer direciona silenciosamente todas as operações de buffer subsequentes até você vincular outra coisa — fácil de corromper o buffer errado.",
+  ch11_dsaTitle: "DSA: opere pelo ID, sem binding",
+  ch11_dsaBody: "As funções DSA recebem o ID do objeto como primeiro argumento. Sem necessidade de binding.",
+  ch11_createVsGen: "glCreate* vs glGen*: glGen* apenas reserva um ID — o objeto não é inicializado até o primeiro bind. glCreate* (DSA) reserva e inicializa imediatamente.",
+  ch11_vaoTitle: "DSA para VAOs",
+  ch11_vaoBody: "O setup do VAO mostra a maior melhoria de legibilidade com DSA. Em vez de vincular uma cadeia de objetos, você os liga explicitamente pelo ID.",
+  ch11_comparisonTitle: "Comparação lado a lado",
+  ch11_compHeader0: "Operação",
+  ch11_compHeader1: "Bind-to-edit",
+  ch11_compHeader2: "DSA",
+  ch11_op1: "Criar buffer",
+  ch11_op2: "Fazer upload de dados",
+  ch11_op3: "Atualizar dados parciais",
+  ch11_op4: "Criar textura",
+  ch11_op5: "Fazer upload de textura",
+  ch11_op6: "Setup de atributos do VAO",
+  ch11_whenTitle: "Quando usar qual",
+  ch11_whenHeader0: "Situação",
+  ch11_whenHeader1: "Recomendado",
+  ch11_when1: "Aprendendo conceitos de OpenGL",
+  ch11_whenRec1: "Bind-to-edit — a maioria dos tutoriais usa, mais fácil de encontrar ajuda",
+  ch11_when2: "Novo projeto, OpenGL 4.5+ disponível",
+  ch11_whenRec2: "DSA — mais limpo, mais seguro, mais fácil de depurar",
+  ch11_when3: "Mantendo codebase existente",
+  ch11_whenRec3: "Bind-to-edit — não misture estilos no mesmo arquivo",
+  ch11_when4: "Precisa de compatibilidade com OpenGL 3.3",
+  ch11_whenRec4: "Bind-to-edit — DSA requer 4.5+",
+  ch11_extensionTip: "O DSA foi originalmente a extensão ARB_direct_state_access antes de se tornar core no 4.5. Em qualquer GPU feita após 2014, o suporte é praticamente universal.",
+};
+
+export default text;

@@ -1,0 +1,37 @@
+// PT text for the pbr widgets. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  figBrdf_title: "Cook-Torrance, Um Fator de Cada Vez",
+  figBrdf_dNote: "Roughness baixa: quase todas as microfacetas apontam ao longo de n, então D é um pico alto e estreito — um brilho pequeno e muito intenso. Roughness alta: as facetas apontam para todo lado e D se achata num lóbulo largo. A área sob a curva (projetada) nunca muda: as facetas sempre cobrem a mesma superfície.",
+  figBrdf_gNote: "G é 1 quando você olha reto para baixo e cai em direção ao horizonte, onde as facetas escondem umas às outras. Superfícies mais ásperas perdem mais. A linha tracejada usa o k menor, para iluminação baseada em imagem.",
+  figBrdf_fNote: "Todo material vira um espelho perfeito em ângulos rasantes. Dielétricos começam perto de 4% de frente e só disparam perto de 90°; metais começam alto e mantêm sua cor — a cor do ouro é o seu F0.",
+  figHemi_title: "O Hemisfério Ω — Radiância Através de um Ângulo Sólido",
+  figHemi_samplesTitle: "Integrando sobre Ω — uma Soma de Riemann em θ e φ",
+  figCam_resetView: "resetar visão",
+  figHemi_drag: "arraste para girar · roda para dar zoom",
+  figHemi_note: "Incline a luz em direção ao horizonte: a mancha roxa dω mantém o tamanho na esfera, mas sua pegada na superfície encolhe por cos θ. A mesma radiância espalhada numa área maior entrega menos energia por metro quadrado — esse fator é o n·l de todo modelo de iluminação.",
+  figHemi_samplesNote: "Cada ponto é uma direção que um shader amostraria; seu tamanho é o peso cos θ · sin θ. sin θ corrige o fato de os anéis perto do polo serem menores que os anéis perto do horizonte; cos θ é a lei de Lambert. Deixe o passo mais fino e a soma se acomoda em π.",
+  figHemi_footprint: "pegada",
+  figHemi_count: "amostras",
+  figHemi_err: "erro",
+  figMicro_title: "Microfacetas — Roughness São Muitos Espelhinhos",
+  figMicro_light: "luz",
+  figMicro_eye: "olho",
+  figMicro_note: "As facetas roxas têm a normal igual a h, então espelham a luz direto para o olho. Superfície lisa: quase toda faceta concorda, o reflexo é um ponto brilhante e concentrado. Superfície áspera: poucas facetas concordam, a mesma energia se espalha num lóbulo largo e fraco. Os raios vermelhos tracejados atingem uma faceta vizinha — luz perdida por shadowing e masking.",
+  figMicro_alignedLbl: "facetas ∥ h",
+  figMicro_blockedLbl: "raios bloqueados",
+  figMicro_fLbl: "quanto cada espelho reflete",
+  figPbr_titleIrr: "IBL Difusa — o Irradiance Map como Luz Ambiente",
+  figPbr_titleSpec: "IBL Completa — Reflexos Pré-filtrados e a BRDF LUT",
+  figPbr_title: "Cook-Torrance — Metallic × Roughness",
+  figPbr_noteD: "Só o D: pontinhos intensos na coluna lisa da esquerda, manchas largas e suaves na direita. O metallic não muda o D em nada — é pura geometria da microssuperfície.",
+  figPbr_noteF: "Só o F: escuro (4%) no centro das linhas dielétricas e claro nas bordas; as linhas de metal refletem a cor do albedo em todo lugar.",
+  figPbr_noteG: "Só o G: quase branco exceto perto da silhueta, e mais escuro quanto mais áspera a esfera — auto-sombreamento das microfacetas.",
+  figPbr_noteIrr: "Desligue as luzes: as linhas de baixo continuam iluminadas, azuladas por cima e quentes do lado do sol — esse é o irradiance map. As linhas de metal ficam pretas: metais não têm difuso, então esperam pela metade especular da IBL.",
+  figPbr_noteSpec: "Agora os metais espelham o céu, nítido à esquerda e borrado à direita: cada coluna lê um mip diferente do mapa pré-filtrado. Mostre o fundo pré-filtrado e mova o nível para ver o borrão que cada roughness usa. O detalhe é a BRDF LUT: vermelho = escala, verde = bias.",
+  figPbr_note: "Linha de baixo: dielétricos tipo plástico — difuso colorido mais um brilho branco. Linha de cima: metais — sem difuso, um brilho tingido pelo albedo. Da esquerda para a direita, o brilho se espalha e enfraquece conforme a roughness cresce, mas a energia total continua a mesma.",
+  figPbr_hint: "arraste para girar · roda para dar zoom",
+  figPbr_loading: "pré-calculando irradiance, prefilter e LUT…",
+};
+
+export default text;

@@ -1,0 +1,36 @@
+// PT text for the sky widgets. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  figPSky_nAll: "Cinco funções independentes de uma direção, somadas e misturadas em ordem. Arraste o sol ao longo do dia, depois isole cada camada para ver com o que ela contribui.",
+  figPSky_nGrad: "Duas cores e uma curva. pow(d.y, 0.45) gasta a maior parte da variação perto do horizonte, onde o céu real muda mais rápido. Barato e totalmente controlável artisticamente, mas as cores só mudam porque a fórmula manda.",
+  figPSky_nScat: "Física, simplificada: a luz do sol enfraquece e avermelha no caminho de entrada (o termo exp com a massa de ar do sol), e cada raio de visão coleta a fração que se espalha em direção ao olho. O azul espalha mais, então o zênite é azul; o caminho longo do horizonte satura todas as cores, então ele fica branco.",
+  figPSky_nSun: "Um disco é um limiar sobre o ângulo até o sol: mu = dot(d, sun) é seu cosseno. O disco pega sua cor da mesma luz do sol atenuada que o céu, então avermelha no pôr do sol de graça.",
+  figPSky_nStars: "O hashing transforma o índice de uma célula num número aleatório repetível, então as mesmas estrelas aparecem a cada quadro sem guardar nenhuma delas. A maioria das estrelas é deixada fraca de propósito: pow(random, 6) dá muitas fracas e poucas brilhantes.",
+  figPSky_nMilky: "Uma faixa em volta de um grande círculo: dot(d, G) é zero no plano da faixa, e uma gaussiana disso dá a borda suave da faixa. O ruído adiciona estrutura; uma gaussiana mais estreita e escura dá a faixa de poeira no meio.",
+  figPSky_nClouds: "O raio de visão é intersectado com uma camada plana na altura 1, e ruído 2D é lido onde ele cai. De longe os pontos de acerto ficam espalhados, então as nuvens são atenuadas com a distância antes de virarem ruído.",
+  figPSky_title: "Um Céu Procedural, Camada por Camada",
+  figPSky_grad: "gradiente",
+  figPSky_scat: "Rayleigh + Mie",
+  figPSky_layers: "camadas",
+  figPSky_time: "hora",
+  figPSky_anim: "animar",
+  figPSky_look: "arraste para olhar · role para dar zoom",
+  figPSky_codeAll: "Juntando tudo",
+  figPSky_codeSolo: "Só esta camada",
+  figSkyB_step: "Passo",
+  figSkyF_title: "Um Céu, Dois Arquivos — Cruz e Panorama",
+  figSkyF_cross: "cruz 4×3 (seis faces)",
+  figSkyF_pano: "panorama equirretangular 2:1",
+  figSkyF_grid: "lat/long de 15° na cruz",
+  figSkyF_faces: "faces do cubo no panorama",
+  figSkyF_latlon: "latitude",
+  figSkyF_lon: "longitude",
+  figSkyF_panoAt: "panorama",
+  figSkyF_cubeAt: "face do cubo",
+  figSkyF_density: "céu coberto por um texel (1 = o maior)",
+  figSkyF_cubeD: "cubo",
+  figSkyF_panoD: "panorama",
+  figSkyF_note: "Aponte para qualquer uma das imagens. As linhas amarelas são o equador e a longitude 0. Na cruz os meridianos se curvam ao cruzar as bordas das faces e todos se encontram no centro de +Y e −Y, que o panorama estica por todas as linhas de cima e de baixo. Os dois últimos números dizem quanto céu um texel cobre aqui, em relação ao maior texel da mesma imagem: um cube map varia no máximo cerca de 5× (centro da face contra o canto), mas os pixels de um panorama encolhem até sumir nos polos, e é por isso que ele desperdiça memória lá em cima e por isso eles cintilam quando reduzidos.",
+};
+
+export default text;

@@ -12,7 +12,7 @@ export function LegacyContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "ch00_intro",
-          "OpenGL was created in 1992. Over 30 years, it went through three distinct eras: Immediate Mode (the original, now obsolete API), the Retained Mode transition, and Modern Core Profile OpenGL — which is what this entire track teaches. Understanding why the old way was abandoned explains every design decision in the modern API."
+          "OpenGL was created in 1992. Over 30 years it went through three eras: Immediate Mode (obsolete), Retained Mode transition, and Modern Core Profile — which this track teaches. Understanding why the old way was abandoned explains every design decision in the modern API."
         )}
       </p>
 
@@ -31,14 +31,14 @@ export function LegacyContent({ t }: { t: TrackTranslations }) {
 
       <Callout type="info" t={t}>
         {tx(t, "ch00_vulkanNote",
-          "Vulkan (2016) and Metal (2014) are the successors for when you need maximum GPU control. Modern OpenGL 4.6 is still the right choice for learning graphics programming — it exposes the core concepts without Vulkan's 800-line boilerplate."
+          "Vulkan and Metal are successors for maximum GPU control. Modern OpenGL 4.6 is still the right choice for learning — it exposes core concepts without Vulkan's 800-line boilerplate."
         )}
       </Callout>
 
       <H2>{tx(t, "ch00_immediateTitle", "Immediate Mode — how it worked")}</H2>
       <p>
         {tx(t, "ch00_immediateBody",
-          "In OpenGL 1.x you submitted vertex data one call at a time, directly between glBegin and glEnd. Every vertex was its own function call, crossing the CPU-GPU boundary individually."
+          "In OpenGL 1.x you submitted vertex data one call at a time, between glBegin and glEnd. Every vertex was its own function call crossing the CPU-GPU boundary."
         )}
       </p>
       <CodeBlock lang="cpp" filename="legacy_immediate.cpp" t={t}>{`// OpenGL 1.x — Immediate Mode (DO NOT USE)
@@ -61,8 +61,8 @@ glEnd();`}</CodeBlock>
         {[
           [tx(t, "ch00_bad1title", "CPU-GPU bottleneck"), tx(t, "ch00_bad1body", "Every glVertex3f call crosses the CPU-GPU boundary. 1 million vertices = 1 million function calls. The bus was the bottleneck, not the GPU.")],
           [tx(t, "ch00_bad2title", "Zero parallelism"), tx(t, "ch00_bad2body", "The GPU can process thousands of vertices in parallel, but immediate mode fed them one at a time. 99% of GPU potential was wasted.")],
-          [tx(t, "ch00_bad3title", "Fixed-function pipeline"), tx(t, "ch00_bad3body", "Lighting, fogging, and blending were hardcoded into the driver. You could configure them but not reprogram them. No custom math, no custom effects.")],
-          [tx(t, "ch00_bad4title", "Stateful color model"), tx(t, "ch00_bad4body", "glColor3f set a 'current color' global state. Forgetting to set it before a vertex silently used the last color. These bugs were notoriously hard to find.")],
+          [tx(t, "ch00_bad3title", "Fixed-function pipeline"), tx(t, "ch00_bad3body", "Lighting and blending were hardcoded into the driver. No custom math, no custom effects.")],
+          [tx(t, "ch00_bad4title", "Stateful color model"), tx(t, "ch00_bad4body", "glColor3f set a global 'current color'. Forgetting to set it before a vertex silently used the last color — notoriously hard bugs.")],
         ].map(([title, body], i) => (
           <li key={i} className="flex items-start gap-3">
             <span className="flex-shrink-0 w-5 h-5 rounded-md bg-red-500/10 border border-red-500/25 flex items-center justify-center font-mono text-[9px] font-bold text-red-400 mt-0.5">
@@ -79,7 +79,7 @@ glEnd();`}</CodeBlock>
       <H2>{tx(t, "ch00_coreTitle", "Core Profile vs Compatibility Profile")}</H2>
       <p>
         {tx(t, "ch00_coreBody",
-          "When OpenGL 3.2 introduced the Core Profile in 2009, it split into two modes. You choose which one at context creation time (through GLFW window hints or equivalent)."
+          "OpenGL 3.2 split into two modes. You choose which at context creation (GLFW window hints)."
         )}
       </p>
       <LessonTable
@@ -98,7 +98,7 @@ glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // ← this is t
       <H2>{tx(t, "ch00_modernTitle", "Modern OpenGL: the core ideas")}</H2>
       <p>
         {tx(t, "ch00_modernBody",
-          "Everything in this track follows three principles that replace Immediate Mode:"
+          "Three principles replace Immediate Mode:"
         )}
       </p>
       <LessonTable
@@ -112,7 +112,7 @@ glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // ← this is t
 
       <Callout type="tip" t={t}>
         {tx(t, "ch00_gluNote",
-          "You may also encounter GLU (GL Utilities) functions like gluPerspective and gluLookAt. GLU was a companion library to Immediate Mode that pre-computed common matrices. In modern OpenGL these are replaced by GLM — a C++ math library with the same functions but as proper mat4 objects you can pass as uniforms."
+          "GLU functions like gluPerspective and gluLookAt were companion helpers for Immediate Mode. In modern OpenGL they are replaced by GLM — the same math as proper mat4 objects you pass as uniforms."
         )}
       </Callout>
 

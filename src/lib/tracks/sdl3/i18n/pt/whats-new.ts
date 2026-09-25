@@ -1,0 +1,36 @@
+// PT text for src/lib/tracks/sdl3/chapters/whats-new.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  sdl01_intro: "O SDL é a camada entre o seu jogo e o sistema operacional: ele abre a janela, lê o teclado, toca o áudio e te entrega um contexto gráfico. O SDL 3.2.0 — lançado em janeiro de 2025 — foi o primeiro SDL3 estável, e ele não é uma atualização direta do SDL2. Este capítulo cobre o que mudou, porque quase todo tutorial que você vai encontrar na internet ainda foi escrito para o SDL2.",
+  sdl01_whyTitle: "Por que uma nova versão principal",
+  sdl01_whyBody: "O SDL2 saiu em 2013 e manteve a compatibilidade de ABI por mais de uma década, o que significou uma década de inconsistências acumuladas que nunca podiam ser corrigidas. O SDL3 gastou esse crédito de compatibilidade de uma vez: normalizou os nomes, deixou as convenções de retorno consistentes, acrescentou uma abstração moderna de GPU e reestruturou o loop principal para que o mesmo código rode em desktop, mobile e na web.",
+  sdl01_tableTitle: "As mudanças que quebram o seu código",
+  sdl01_h2: "Por quê",
+  sdl01_r1: "Toda função que pode falhar agora devolve bool. true é sucesso.",
+  sdl01_r2: "O SDL3 exige C99 ou superior, então o tipo bool de verdade é usado.",
+  sdl01_r3: "A posição é definida separadamente ou fica a cargo do gerenciador de janelas.",
+  sdl01_r4: "O renderer 2D usa float do começo ao fim — movimento de câmera suave, sem arredondamento.",
+  sdl01_r5: "Todos os enumeradores de eventos ganharam o prefixo SDL_EVENT_.",
+  sdl01_r6: "A struct keysym foi achatada para dentro do evento.",
+  sdl01_r7: "As funções do renderer foram renomeadas para dizer o que desenham.",
+  sdl01_r8: "Destroy agora é usado de forma consistente para todo objeto do SDL.",
+  sdl01_r9: "Tempo em nanossegundos, sem a virada dos 49 dias.",
+  sdl01_r10k: "— (não existia)",
+  sdl01_r10: "Uma API gráfica moderna e portável sobre Vulkan, D3D12 e Metal.",
+  sdl01_portWarn: "Essa inversão do valor de retorno é silenciosa. Uma base de código SDL2 portada vai compilar sem um único aviso e depois se comportar como se toda chamada tivesse falhado — ou, pior, como se toda chamada tivesse dado certo. Ao migrar, procure todas as chamadas do SDL dentro de condições antes de tentar rodar qualquer coisa.",
+  sdl01_newTitle: "O que é realmente novo",
+  sdl01_n1t: "SDL_GPU",
+  sdl01_n1b: "Uma API gráfica baseada em command buffers que mira Vulkan, Direct3D 12 e Metal a partir de uma única fonte. É o motivo de muita gente estar migrando para o SDL3.",
+  sdl01_n2t: "Main callbacks",
+  sdl01_n2b: "Em vez de ser dono do while, você fornece quatro funções e o SDL as conduz. É isso que faz o mesmo código funcionar no iOS, no Android e no Emscripten sem alteração.",
+  sdl01_n3t: "Propriedades",
+  sdl01_n3b: "Um armazenamento genérico de chave e valor em todo objeto do SDL, que é como o SDL3 acrescenta opções específicas de plataforma sem acrescentar cem funções.",
+  sdl01_n4t: "Abstração de armazenamento",
+  sdl01_n4b: "Armazenamento do título para os dados somente leitura do jogo e armazenamento do usuário para os saves, para que as exigências de certificação dos consoles deixem de ser uma reescrita no port.",
+  sdl01_n5t: "Câmera e E/S assíncrona",
+  sdl01_n5b: "Captura de webcam e leitura assíncrona de arquivos agora fazem parte da biblioteca principal.",
+  sdl01_migTip: "O SDL traz um documento oficial de migração (docs/README-migration.md no repositório) que lista toda função renomeada e removida. É a única referência confiável para portar — deixe-o aberto numa aba em vez de adivinhar pelos headers novos.",
+  sdl01_versionNote: "A linha 3.2.x é o ramo com ABI estável, e o projeto publica versões de correção com frequência, com as bibliotecas satélite (SDL3_image, SDL3_ttf, SDL3_mixer) versionadas de forma independente. Confira as notas de lançamento da versão que você instalar — o SDL acrescenta funções entre versões de correção, então um trecho que não compila costuma ser uma diferença de versão, não um erro.",
+};
+
+export default text;

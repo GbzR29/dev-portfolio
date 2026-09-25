@@ -15,7 +15,7 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "ch08_intro",
-          "Everything you have drawn so far lives at fixed coordinates in NDC space. To move, rotate, and scale objects — and to place a camera anywhere in the scene — you need matrix math. GLM is the header-only C++ library that mirrors GLSL math types and is the standard choice for OpenGL projects."
+          "Everything drawn so far lives at fixed NDC coordinates. To move, rotate, and scale objects — and place a camera anywhere — you need matrix math. GLM is the header-only C++ library that mirrors GLSL math types."
         )}
       </p>
 
@@ -31,7 +31,7 @@ glm::mat4 identity(1.0f);  // identity matrix`}</CodeBlock>
       <H2>{tx(t, "ch08_mvpTitle", "The MVP matrices")}</H2>
       <p>
         {tx(t, "ch08_mvpBody",
-          "Every vertex goes through three transformations before reaching the screen. Each transformation is a 4×4 matrix, and you multiply them together in reverse order: gl_Position = Projection × View × Model × vertex."
+          "Every vertex goes through three transformations before reaching the screen. Each is a 4×4 matrix multiplied in reverse order: gl_Position = Projection × View × Model × vertex."
         )}
       </p>
 
@@ -51,7 +51,7 @@ glm::mat4 identity(1.0f);  // identity matrix`}</CodeBlock>
       <H2>{tx(t, "ch08_modelTitle", "Model matrix — placing objects")}</H2>
       <p>
         {tx(t, "ch08_modelBody",
-          "Start with an identity matrix and apply transformations. Order matters: scale first, then rotate, then translate. In code you write them in reverse (TRS applied right-to-left by the GPU)."
+          "Start with an identity matrix and apply transformations. Order matters: scale first, then rotate, then translate."
         )}
       </p>
       <p>
@@ -83,7 +83,7 @@ model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
       <H2>{tx(t, "ch08_viewTitle", "View matrix — camera")}</H2>
       <p>
         {tx(t, "ch08_viewBody",
-          "glm::lookAt takes three vectors: the camera position (eye), the point it is looking at (center), and which direction is up. It returns a view matrix that transforms world space into camera space."
+          "glm::lookAt takes three vectors: the camera position (eye), the point it looks at (center), and which direction is up. It returns the view matrix."
         )}
       </p>
       <CodeBlock lang="cpp" filename="view_matrix.cpp" t={t}>{`glm::mat4 view = glm::lookAt(
@@ -95,7 +95,7 @@ model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
       <H2>{tx(t, "ch08_projTitle", "Projection matrix — perspective")}</H2>
       <p>
         {tx(t, "ch08_projBody",
-          "glm::perspective creates a frustum where things farther away appear smaller. The arguments are the vertical field of view in radians, the aspect ratio of your window, and the near/far clip planes."
+          "glm::perspective creates a frustum where things farther away appear smaller. Arguments: vertical FOV in radians, aspect ratio, near and far clip planes."
         )}
       </p>
       <p>
@@ -132,7 +132,7 @@ glm::mat4 projection = glm::perspective(
 
       <Callout type="warn" t={t}>
         {tx(t, "ch08_nearWarn",
-          "Never set the near plane to 0. It causes depth precision issues (z-fighting) because the depth buffer's precision is distributed between near and far — a near plane of 0 gives you no precision at all."
+          "Never set the near plane to 0. It causes depth precision issues (z-fighting) because the depth buffer precision is distributed between near and far."
         )}
       </Callout>
 
@@ -156,7 +156,7 @@ glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "uProjection"), 1, GL_FAL
 
       <Callout type="tip" t={t}>
         {tx(t, "ch08_animTip",
-          "To animate rotation, multiply the angle by glfwGetTime() every frame: glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0,1,0)). The model will spin continuously without any extra state."
+          "To animate rotation, multiply the angle by glfwGetTime() every frame. The model will spin continuously without any extra state."
         )}
       </Callout>
 

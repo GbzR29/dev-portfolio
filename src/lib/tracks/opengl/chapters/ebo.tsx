@@ -37,7 +37,7 @@ float vertices[] = {
       <H2>{tx(t, "ch06_solutionTitle", "The EBO solution")}</H2>
       <p>
         {tx(t, "ch06_solutionBody",
-          "Store four unique vertices and a separate index list. The GPU reads each index, looks up the corresponding vertex, and assembles triangles without any data duplication."
+          "With an EBO, you store four unique vertices and a separate list of six indices. The GPU reads each index, looks up the vertex, and assembles triangles without any duplication."
         )}
       </p>
       <CodeBlock lang="cpp" filename="with_ebo.cpp" t={t}>{`float vertices[] = {
@@ -109,7 +109,7 @@ glBindVertexArray(0);`}</CodeBlock>
 
       <Callout type="tip" t={t}>
         {tx(t, "ch06_nextTip",
-          "EBOs become even more valuable with complex 3D meshes where sharing vertices saves thousands of bytes per mesh. Most mesh loading libraries (Assimp, tinyobjloader) output indexed geometry by default."
+          "EBOs become even more valuable with complex 3D meshes where sharing vertices saves thousands of bytes. Most mesh loading libraries (Assimp, tinyobjloader) output indexed geometry by default."
         )}
       </Callout>
 

@@ -1,0 +1,38 @@
+// PT text for the glsl widgets. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  figFog_title: "Curvas de Neblina — Quanto Sobrevive à Distância d",
+  figFog_note: "A neblina linear tem pontos de início e fim duros que você vê como uma linha no chão. A neblina exponencial é o que um meio uniforme realmente faz: cada metro absorve a mesma fração. A Exp² mantém o primeiro plano nítido e engrossa rápido. A neblina de altura é densa perto do chão e rala em cima. Olhe para cima (aumente o pitch) e a mesma distância atravessa muito menos neblina, que é como os vales se enchem de bruma enquanto os topos das montanhas ficam limpos.",
+  figFresnel_title: "Lei de Snell e o Efeito Fresnel",
+  figFresnel_tir: "reflexão interna total",
+  figFresnel_angle: "incidência θᵢ",
+  figFresnel_denseNote: "Saindo de um meio denso, o raio se afasta da normal. No ângulo crítico (linha vermelha) ele corre ao longo da superfície, e além dele nada sai: todo fóton reflete. É por isso que a parte de baixo da superfície da água parece um espelho, e por que diamantes, com n = 2,42, prendem a luz e cintilam.",
+  figFresnel_note: "De frente (θ = 0) o vidro reflete só 4%. Em ângulos rasantes quase tudo reflete. Olhe para um lago perto dos seus pés e lá longe para ver isso. Arraste o raio, ou arraste no diagrama. O ajuste de uma linha de Schlick (roxo) acompanha de perto a curva exata e é o que os shaders em tempo real usam. Perto do ângulo de Brewster, a luz polarizada p não é refletida de jeito nenhum.",
+  figPlot_title: "Plotter de Funções GLSL",
+  figPlot_help: "variáveis: x, t (segundos) · helpers: PI, TAU, cubicPulse, expImpulse, parabola, gain, noise1…",
+  figGerst_title: "Seno vs Gerstner — Os Pontos Andam em Círculos",
+  figGerst_sine: "seno, mesmos A e λ",
+  figGerst_orbits: "mostrar órbitas das partículas",
+  figGerst_loopNote: "Passando de Q·A·k = 1 a crista se dobra sobre si mesma e a superfície se autointersecta. Num shader isso aparece como triângulos invertidos e vincos pretos. Limite a inclinação e, ao somar ondas, divida-a entre elas.",
+  figGerst_note: "Cada ponto âmbar gira em volta da posição de repouso enquanto a onda passa. Esse é o truque todo: mover os pontos na horizontal em direção à crista deixa as cristas afiadas e os vales largos, como ondas reais de águas profundas, o que um seno nunca consegue. Ondas mais longas viajam mais rápido (ω = √(g·k)), então uma soma de comprimentos de onda nunca se repete exatamente.",
+  figGerst_speed: "velocidade",
+  figGerst_period: "período",
+  figNoise1_title: "Ruído em Uma Dimensão — Construído Peça por Peça",
+  figNoise1_fade: "interpolação",
+  figNoise1_whiteNote: "Um hash por amostra: cada valor não tem relação com o vizinho. Isso é útil para dithering e aleatoriedade por célula, mas parece chuvisco de TV, não uma superfície natural.",
+  figNoise1_valueNote: "Um valor aleatório por inteiro (pontos), misturado entre eles. Com interpolação linear dá para ver uma quina em cada ponto. O smoothstep tem inclinação zero nos pontos, então as junções ficam suaves, mas os morros tendem a ficar sobre a grade, e numa grade 2D isso aparece como bolhas quadradas alinhadas aos eixos.",
+  figNoise1_gradNote: "A ideia de Perlin: guardar uma inclinação aleatória em cada inteiro em vez de um valor. A curva passa por 0 em todo ponto da grade, e a reta g·(x − i) de cada ponto é misturada com a seguinte. Picos e vales agora caem entre os pontos da grade e ela fica muito mais difícil de ver. O fade quíntico também mantém a curvatura contínua, o que importa quando você tira derivadas para normais.",
+  figNoise1_fbmNote: "Movimento browniano fracionário: some oitavas do mesmo ruído, cada uma com a frequência multiplicada pela lacunaridade e a amplitude pelo ganho (roxo: as oitavas individuais). Ganho 0,5 dá o clássico visual 'natural' 1/f; ganho maior é mais áspero, menor é mais suave. Litorais, nuvens e montanhas todos se parecem com isso.",
+  figPal_title: "Paletas de Cosseno — Quatro vec3, Gradientes Infinitos",
+  figPal_note: "Cada canal é uma onda de cosseno sobre t. Mantenha a = b = 0,5 e o canal ocupa exatamente [0, 1]. Frequências c diferentes fazem as matizes ciclarem em velocidades diferentes, e fases d defasadas em terços dão um arco-íris completo. Doze números descrevem o gradiente inteiro, sem leitura de textura e sem desvios.",
+  figMarch_title: "Sphere Tracing, Um Passo de Cada Vez",
+  figMarch_hint: "arraste o olho e o ponto de mira",
+  figMarch_field: "mostrar faixas de distância (a cada 24 px)",
+  figMarch_note: "No espaço aberto os círculos são grandes e o raio cobre a maior parte da distância em poucos passos. Mire o raio para raspar a bola ou o topo da caixa: perto de uma superfície os círculos encolhem e o raio se arrasta, e com poucos passos ele desiste antes de chegar. Essas falhas são os halos escuros que você vê em volta dos objetos em raymarchers baratos. A sobre-relaxação dá passos maiores e recua (vermelho) quando um passo passou do ponto.",
+  figMarch_steps: "passos",
+  figMarch_result: "resultado",
+  pg_title: "Shader Playground",
+  pg_ok: "compilado ✓ — as edições recompilam automaticamente",
+};
+
+export default text;

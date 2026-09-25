@@ -15,14 +15,14 @@ export function WindingContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "ch10_intro",
-          "The order in which you specify a triangle's vertices is not cosmetic — it tells OpenGL which side of the face is the 'front'. OpenGL uses this to skip drawing back-facing triangles entirely, cutting fragment shader work roughly in half on closed meshes."
+          "The order in which you specify a triangle's vertices tells OpenGL which side of the face is the front. OpenGL uses this to skip drawing back-facing triangles entirely, cutting fragment shader work roughly in half on closed meshes."
         )}
       </p>
 
       <H2>{tx(t, "ch10_windingTitle", "What winding order means")}</H2>
       <p>
         {tx(t, "ch10_windingBody",
-          "When you look at a triangle from the front, trace its vertices in order. If they go counter-clockwise (CCW), OpenGL treats it as front-facing. If they go clockwise (CW), it is back-facing. This is determined by the cross product of two edge vectors — it always points toward the viewer for a front face."
+          "When you look at a triangle from the front, trace its vertices in order. If they go counter-clockwise (CCW), OpenGL treats it as front-facing. If they go clockwise (CW), it is back-facing."
         )}
       </p>
 
@@ -53,14 +53,14 @@ glFrontFace(GL_CCW);        // CCW = front face (default)
 
       <Callout type="info" t={t}>
         {tx(t, "ch10_perfNote",
-          "On a closed mesh (like a sphere or cube) where no back face is ever visible, enabling culling eliminates roughly 50% of all fragment shader invocations. For complex scenes this is one of the cheapest performance wins available."
+          "On a closed mesh where no back face is ever visible, enabling culling eliminates roughly 50% of all fragment shader invocations — one of the cheapest performance wins available."
         )}
       </Callout>
 
       <H2>{tx(t, "ch10_normalsTitle", "Normals and winding order")}</H2>
       <p>
         {tx(t, "ch10_normalsBody",
-          "The surface normal of a triangle — the vector perpendicular to it pointing outward — is implicitly defined by its winding order. Using the right-hand rule: curl your fingers from edge v0→v1 to edge v0→v2 and your thumb points in the direction of the outward normal. This is why consistent winding matters when you compute normals for lighting."
+          "The surface normal of a triangle is implicitly defined by its winding order. Using the right-hand rule: curl your fingers from edge v0→v1 to edge v0→v2 and your thumb points in the direction of the outward normal."
         )}
       </p>
       <CodeBlock lang="cpp" filename="normal_from_winding.cpp" t={t}>{`// For a triangle with vertices A, B, C in CCW order:
@@ -77,13 +77,13 @@ glm::vec3 normal = glm::normalize(glm::cross(edge1, edge2));
       </p>
       <ul className="space-y-2 ml-4 list-disc text-[var(--text-muted)] text-sm">
         <li>{tx(t, "ch10_debug1", "Mesh loaded from a file that uses CW winding — flip with glFrontFace(GL_CW) or fix in the exporter")}</li>
-        <li>{tx(t, "ch10_debug2", "Non-uniform scale (negative scale on one axis mirrors faces, reversing winding) — multiply model matrix determinant, reverse if negative")}</li>
+        <li>{tx(t, "ch10_debug2", "Non-uniform scale (negative scale on one axis mirrors faces, reversing winding)")}</li>
         <li>{tx(t, "ch10_debug3", "Manually defined quads where the two triangles have inconsistent vertex order")}</li>
       </ul>
 
       <Callout type="tip" t={t}>
         {tx(t, "ch10_debugTip",
-          "When debugging winding issues, temporarily call glDisable(GL_CULL_FACE) to see all faces. If the mesh looks correct with culling disabled, the problem is winding order. If it still looks wrong, the issue is elsewhere (normals, shader, transform)."
+          "When debugging winding issues, temporarily call glDisable(GL_CULL_FACE) to see all faces. If the mesh looks correct with culling disabled, the problem is winding order."
         )}
       </Callout>
 

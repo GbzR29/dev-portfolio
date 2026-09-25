@@ -59,7 +59,7 @@ export function PipelineContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "ch01_ndc3dTitle", "NDC in 3D")}</H2>
       <p>
         {tx(t, "ch01_ndc3dBody",
-          "In 3D, NDC is a cube: every axis from -1.0 to +1.0. Any vertex outside this cube on any axis is clipped and not drawn. The Z axis controls depth — Z = -1.0 is the near clip plane, Z = +1.0 is the far clip plane. Rotate the visualizer below to see how different shapes sit inside the NDC cube."
+          "In 3D, NDC is a cube: every axis from -1.0 to +1.0. Any vertex outside this cube on any axis is clipped and not drawn. Rotate the visualizer below to see how different shapes sit inside the NDC cube."
         )}
       </p>
 

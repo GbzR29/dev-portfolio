@@ -12,14 +12,14 @@ export function DSAContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "ch11_intro",
-          "Every chapter so far used the traditional bind-to-edit pattern: bind an object, modify it, unbind it. OpenGL 4.5 introduced Direct State Access (DSA) — a parallel API that lets you modify any object by its ID without ever binding it to a global target. Both approaches produce identical GPU behavior; the difference is only in how you write the CPU-side code."
+          "Every chapter so far used bind-to-edit: bind an object, modify it, unbind. OpenGL 4.5 introduced DSA — modify any object by its ID without binding. Both produce identical GPU behavior; only the CPU-side code differs."
         )}
       </p>
 
       <H2>{tx(t, "ch11_problemTitle", "The bind-to-edit problem")}</H2>
       <p>
         {tx(t, "ch11_problemBody",
-          "Binding is implicit global state. When you call glBindBuffer, every subsequent buffer operation silently targets that buffer until you bind something else. This makes code harder to read, and it is easy to accidentally modify the wrong buffer."
+          "Binding is implicit global state. glBindBuffer silently targets all subsequent buffer ops until you bind something else — easy to corrupt the wrong buffer."
         )}
       </p>
       <CodeBlock lang="cpp" filename="bind_to_edit.cpp" t={t}>{`// Traditional bind-to-edit — what we have used so far
@@ -36,7 +36,7 @@ glBufferData(GL_ARRAY_BUFFER,        // ← "which buffer?" — whichever is bou
       <H2>{tx(t, "ch11_dsaTitle", "DSA: operate by ID, no binding")}</H2>
       <p>
         {tx(t, "ch11_dsaBody",
-          "DSA functions take the object ID as their first argument. You never need to bind the object first. The same data upload from above looks like this:"
+          "DSA functions take the object ID as their first argument. No binding needed."
         )}
       </p>
       <CodeBlock lang="cpp" filename="dsa_buffer.cpp" t={t}>{`// DSA — OpenGL 4.5+
@@ -51,14 +51,14 @@ glNamedBufferData(VBO,                // ← object ID, not a target enum
 
       <Callout type="info" t={t}>
         {tx(t, "ch11_createVsGen",
-          "glCreate* vs glGen*: glGen* functions (glGenBuffers, glGenTextures) only reserve an ID. The object is not initialized until it is first bound. glCreate* (DSA) both reserves the ID and initializes the object, so you can use it immediately without binding."
+          "glCreate* vs glGen*: glGen* only reserves an ID — the object is not initialized until first bound. glCreate* (DSA) reserves and initializes immediately."
         )}
       </Callout>
 
       <H2>{tx(t, "ch11_vaoTitle", "DSA for VAOs")}</H2>
       <p>
         {tx(t, "ch11_vaoBody",
-          "The VAO setup is where DSA shows the biggest improvement in readability. Instead of binding the VAO, then binding the VBO inside it, you explicitly link them:"
+          "VAO setup shows the biggest readability improvement with DSA. Instead of binding a chain of objects, you explicitly link them by ID."
         )}
       </p>
       <CodeBlock lang="cpp" filename="dsa_vao.cpp" t={t}>{`// ── Traditional (what you have been using) ───────────────────────────────────
@@ -128,7 +128,7 @@ glDrawArrays(GL_TRIANGLES, 0, 3);`}</CodeBlock>
 
       <Callout type="tip" t={t}>
         {tx(t, "ch11_extensionTip",
-          "DSA was originally available as the extension ARB_direct_state_access before becoming core in 4.5. You can check support with GLEW: if (GLEW_ARB_direct_state_access) — though on any GPU made after 2014, support is effectively universal."
+          "DSA was originally ARB_direct_state_access before becoming core in 4.5. On any GPU made after 2014, support is effectively universal."
         )}
       </Callout>
 

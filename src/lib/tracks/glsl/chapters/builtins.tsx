@@ -17,12 +17,12 @@ export function BuiltinsContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "glsl02_intro",
-          "GLSL ships with a large library of built-in functions implemented natively in hardware — faster than anything you could write yourself."
+          "GLSL ships with a large library of built-in functions implemented natively in hardware — they are faster than anything you could write yourself. Knowing them well means shorter, faster shaders."
         )}
       </p>
 
       <H2>{tx(t, "glsl02_mathTitle", "Math functions")}</H2>
-      <p>{tx(t, "glsl02_mathBody", "The core math functions work component-wise on vectors.")}</p>
+      <p>{tx(t, "glsl02_mathBody", "The core math functions work component-wise on vectors, which is very useful for per-channel color operations.")}</p>
       <CodeBlock lang="glsl" filename="math.glsl" t={t}>{`// Component-wise on scalars and vectors equally
 abs(x)        // absolute value
 sign(x)       // -1.0, 0.0, or 1.0
@@ -39,7 +39,7 @@ clamp(x,lo,hi)// clamp to [lo, hi]
 vec2 tiled = fract(uv * 5.0);  // 5×5 grid of [0,1] tiles`}</CodeBlock>
 
       <H2>{tx(t, "glsl02_interpTitle", "Interpolation functions")}</H2>
-      <p>{tx(t, "glsl02_interpBody", "These are some of the most used functions in all of GLSL.")}</p>
+      <p>{tx(t, "glsl02_interpBody", "These are some of the most used functions in all of GLSL. They control how values transition between states and are the basis of many visual effects.")}</p>
       <CodeBlock lang="glsl" filename="interp.glsl" t={t}>{`// mix: linear interpolation between a and b by t
 mix(a, b, t)   // = a*(1-t) + b*t,  t in [0,1]
 
@@ -56,12 +56,12 @@ smoothstep(0.4, 0.6, x)  // transition only happens between 0.4 and 0.6`}</CodeB
 
       <Callout type="tip" t={t}>
         {tx(t, "glsl02_smoothstepNote",
-          "smoothstep is everywhere. Unlike step (a hard threshold), it produces a smooth S-curve. Use it for anti-aliased edges, dissolve effects, and gradual transitions."
+          "smoothstep is everywhere. Unlike step (a hard threshold), it produces a smooth S-curve transition. Use it for anti-aliased edges, dissolve effects, and any time you want a gradual transition without an explicit lerp."
         )}
       </Callout>
 
       <H2>{tx(t, "glsl02_geoTitle", "Geometric functions")}</H2>
-      <p>{tx(t, "glsl02_geoBody", "Used constantly in lighting, physics, and ray marching.")}</p>
+      <p>{tx(t, "glsl02_geoBody", "Used constantly in lighting, physics, and ray marching. These operate on the vector as a whole, not component-wise.")}</p>
       <CodeBlock lang="glsl" filename="geo.glsl" t={t}>{`length(v)          // magnitude of vector:  sqrt(dot(v,v))
 distance(a, b)     // = length(b - a)
 dot(a, b)          // dot product: |a||b|cos(angle)  — used in lighting
@@ -74,7 +74,7 @@ refract(I, N, eta) // Snell's law refraction, eta = ratio of IOR
 float diff = max(dot(normalize(normal), normalize(lightDir)), 0.0);`}</CodeBlock>
 
       <H2>{tx(t, "glsl02_trigTitle", "Trigonometric functions")}</H2>
-      <p>{tx(t, "glsl02_trigBody", "All trig functions work in radians — great for oscillating animations.")}</p>
+      <p>{tx(t, "glsl02_trigBody", "All trig functions work in radians. They are great for creating oscillating animations and circular motion — combine sin and cos to trace a circle.")}</p>
       <CodeBlock lang="glsl" filename="trig.glsl" t={t}>{`sin(x), cos(x), tan(x)     // standard trig (radians)
 asin(x), acos(x), atan(x)  // inverse trig
 atan(y, x)                 // 2-argument atan2 equivalent

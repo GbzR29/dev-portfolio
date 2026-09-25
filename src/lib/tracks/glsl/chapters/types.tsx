@@ -15,12 +15,12 @@ export function TypesContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "glsl01_intro",
-          "GLSL has a richer type system than C++ in one specific area: built-in vector and matrix types that map directly to GPU registers. Understanding them is the foundation of every shader you will write."
+          "GLSL has a richer type system than C++ in one specific area: built-in vector and matrix types that map directly to GPU registers. Understanding them and how to manipulate them efficiently is the foundation of every shader you will write."
         )}
       </p>
 
       <H2>{tx(t, "glsl01_scalarsTitle", "Scalar types")}</H2>
-      <p>{tx(t, "glsl01_scalarsBody", "GLSL has four scalar types. float is the workhorse — most math in shaders uses it.")}</p>
+      <p>{tx(t, "glsl01_scalarsBody", "GLSL has four scalar types. float is the workhorse — most math in shaders uses it. Integer types are limited on older hardware; prefer float arithmetic unless you genuinely need integer semantics.")}</p>
       <LessonTable
         headers={["Type", "Description", "Example"]}
         rows={[
@@ -32,7 +32,7 @@ export function TypesContent({ t }: { t: TrackTranslations }) {
       />
 
       <H2>{tx(t, "glsl01_vectorsTitle", "Vector types")}</H2>
-      <p>{tx(t, "glsl01_vectorsBody", "Vectors are the most important types in GLSL.")}</p>
+      <p>{tx(t, "glsl01_vectorsBody", "Vectors are the most important types in GLSL. You will use vec2, vec3, and vec4 constantly. They can represent positions, colors, directions, UV coordinates — any set of 2–4 related floats.")}</p>
       <CodeBlock lang="glsl" filename="vectors.glsl" t={t}>{`vec2 uv       = vec2(0.5, 0.75);   // 2 floats — UV coordinates
 vec3 color    = vec3(1.0, 0.0, 0.0); // 3 floats — red
 vec4 position = vec4(0.0, 0.0, 0.0, 1.0); // 4 floats — homogeneous coord
@@ -42,7 +42,7 @@ ivec2 texelCoord = ivec2(128, 256);
 bvec3 mask       = bvec3(true, false, true);`}</CodeBlock>
 
       <H2>{tx(t, "glsl01_swizzleTitle", "Swizzling")}</H2>
-      <p>{tx(t, "glsl01_swizzleBody", "Swizzling lets you reorder and select components in a single expression.")}</p>
+      <p>{tx(t, "glsl01_swizzleBody", "Swizzling lets you reorder and select components of a vector in a single expression. You can use .xyzw, .rgba, or .stpq — all equivalent aliases for the same four components. You can read any combination and even repeat components.")}</p>
       <CodeBlock lang="glsl" filename="swizzle.glsl" t={t}>{`vec4 v = vec4(1.0, 2.0, 3.0, 4.0);
 
 // Read individual components
@@ -59,14 +59,14 @@ v.xy = vec2(10.0, 20.0);  // sets x and y
 v.zw = v.xy;              // copy xy into zw`}</CodeBlock>
 
       <H2>{tx(t, "glsl01_constructorsTitle", "Constructors")}</H2>
-      <p>{tx(t, "glsl01_constructorsBody", "Vectors are constructed by calling the type as a function.")}</p>
+      <p>{tx(t, "glsl01_constructorsBody", "Vectors are constructed by calling the type as a function. You can mix scalars and smaller vectors to fill a larger one. A single scalar fills all components — vec3(1.0) creates (1.0, 1.0, 1.0).")}</p>
       <CodeBlock lang="glsl" filename="constructors.glsl" t={t}>{`vec3 a = vec3(1.0);              // (1.0, 1.0, 1.0) — broadcast scalar
 vec3 b = vec3(vec2(1.0, 2.0), 3.0); // combine smaller vector + scalar
 vec4 c = vec4(b, 1.0);          // extend vec3 with w=1.0
 vec2 d = vec2(c.zw);            // take last two components of c`}</CodeBlock>
 
       <H2>{tx(t, "glsl01_matricesTitle", "Matrices")}</H2>
-      <p>{tx(t, "glsl01_matricesBody", "mat4 is a 4×4 matrix stored column-major.")}</p>
+      <p>{tx(t, "glsl01_matricesBody", "mat4 is a 4×4 matrix stored column-major. mat4(1.0) creates an identity matrix. Matrix × vector multiplication follows standard linear algebra: transform = mat4 * vec4.")}</p>
       <CodeBlock lang="glsl" filename="matrices.glsl" t={t}>{`mat4 identity = mat4(1.0);   // diagonal = 1, rest = 0
 mat2 m2 = mat2(1.0, 0.0,     // column 0
                0.0, 1.0);    // column 1
@@ -78,7 +78,7 @@ vec4 transformed = identity * vec4(1.0, 2.0, 3.0, 1.0);
 vec4 col0 = identity[0];  // first column`}</CodeBlock>
 
       <H2>{tx(t, "glsl01_castingTitle", "Type casting")}</H2>
-      <p>{tx(t, "glsl01_castingBody", "GLSL has no implicit conversions — cast explicitly.")}</p>
+      <p>{tx(t, "glsl01_castingBody", "GLSL has no implicit conversions. You must cast explicitly: float(myInt), int(myFloat). Forgetting this is a very common compile error when mixing integer and float expressions.")}</p>
       <CodeBlock lang="glsl" filename="casting.glsl" t={t}>{`int   i = 3;
 float f = float(i);   // 3.0  — REQUIRED, not implicit
 

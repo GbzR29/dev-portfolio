@@ -1,0 +1,36 @@
+// PT text for src/lib/tracks/cpp/chapters/cpp26.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  cpp14_intro: "O C++26 é a maior versão desde o C++11, e seu recurso principal — reflexão em tempo de compilação — muda o que é possível na linguagem, em vez de só acrescentar conveniências. Este capítulo é um tour pelo que está chegando e pelo que isso significa para código de engine.",
+  cpp14_reflTitle: "Reflexão estática",
+  cpp14_reflBody: "A reflexão permite que o código inspecione tipos em tempo de compilação: enumerar membros, ler nomes, percorrer enumeradores. Toda engine hoje resolve isso com macros, geradores de código ou uma IDL separada — serialização, painéis de propriedades do editor, bindings de script e replicação de rede são todos o mesmo problema. A reflexão elimina essa categoria inteira de ferramentas de build.",
+  cpp14_reflWarn: "A sintaxe da reflexão passou por várias revisões antes de se estabilizar, e as prévias dos compiladores podem diferir do que você vê aqui — os tokens ^^ e [: :] e os nomes exatos das funções de std::meta são os adotados para o C++26, mas trate qualquer exemplo que encontrar na internet como específico de versão até o seu compilador concordar. Consulte a página de status da sua toolchain antes de construir qualquer coisa em cima disso.",
+  cpp14_restTitle: "O resto da versão",
+  cpp14_h0: "Recurso",
+  cpp14_h1: "Por que importa",
+  cpp14_f1: "Contracts",
+  cpp14_w1: "pre / post / contract_assert como construções da linguagem que o compilador e as ferramentas entendem.",
+  cpp14_f2: "std::execution",
+  cpp14_w2: "Senders e receivers — o modelo assíncrono padrão sobre o qual todo o resto vai ser construído.",
+  cpp14_f3: "std::simd",
+  cpp14_w3: "SIMD portável sem intrinsics. Um só código-fonte, saída SSE / AVX / NEON.",
+  cpp14_f4: "Comportamento errôneo",
+  cpp14_w4: "Ler um valor não inicializado passa a ser diagnosticável, em vez de indefinido.",
+  cpp14_f5: "Indexação de pack",
+  cpp14_w5: "Ts...[N] — chega de desempacotar templates recursivamente.",
+  cpp14_f6: "inplace_vector / hive",
+  cpp14_w6: "Armazenamento limitado sem alocação, e armazenamento em blocos com referências estáveis.",
+  cpp14_f7: "#embed",
+  cpp14_w7: "Embute um arquivo binário — um shader, uma fonte, um ícone — direto no programa.",
+  cpp14_f8: "optional<T&>",
+  cpp14_w8: "Uma referência opcional, finalmente, em vez de um ponteiro cru com um comentário.",
+  cpp14_f9: "= delete(\"motivo\")",
+  cpp14_w9: "Explica, na mensagem de erro, por que uma sobrecarga foi apagada.",
+  cpp14_f10: "Aritmética saturada",
+  cpp14_w10: "add_sat / mul_sat — satura em vez de dar a volta. Código de cor e de áudio quer isso.",
+  cpp14_planTitle: "Como adotar isso na prática",
+  cpp14_planBody: "Adote por ordem de risco. As pequenas correções de linguagem — indexação de pack, o placeholder _, delete com motivo, aritmética saturada — são seguras de usar no dia em que o seu compilador as suportar. Contracts e reflexão mudam a forma como você estrutura o código, então faça protótipos num projeto paralelo primeiro e mantenha uma saída de emergência até o suporte ser amplo nos compiladores com que você publica.",
+  cpp14_verifyTip: "Dois links merecem ficar nos seus favoritos: as tabelas de suporte dos compiladores no cppreference, que acompanham o status recurso por recurso em cada versão, e as notas de lançamento da sua biblioteca padrão. Tudo o que você lê sobre o C++26 — incluindo esta página — é uma fotografia; a verdade é o que a sua toolchain compila hoje.",
+};
+
+export default text;

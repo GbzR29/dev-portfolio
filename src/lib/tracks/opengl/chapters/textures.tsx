@@ -20,7 +20,7 @@ export function TexturesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "ch07_uvTitle", "UV / texture coordinates")}</H2>
       <p>
         {tx(t, "ch07_uvBody",
-          "Each vertex carries a pair of floats (U, V) that tell the GPU which part of the texture maps to that vertex point. In OpenGL, (0,0) is the bottom-left corner and (1,1) is the top-right. Values outside [0,1] are handled by the wrap mode you configure."
+          "Each vertex carries a pair of floats (U, V) that tell the GPU which part of the texture maps to that vertex. In OpenGL, (0,0) is bottom-left and (1,1) is top-right."
         )}
       </p>
       <CodeBlock lang="cpp" filename="quad_with_uv.cpp" t={t}>{`// position (x,y,z)   +   texcoord (u,v)
@@ -43,7 +43,7 @@ glEnableVertexAttribArray(1);`}</CodeBlock>
       <H2>{tx(t, "ch07_loadTitle", "Loading an image with stb_image")}</H2>
       <p>
         {tx(t, "ch07_loadBody",
-          "stb_image.h is the standard single-header image loader for OpenGL projects. You include the implementation exactly once in one .cpp file, then call stbi_load to get a pointer to raw pixel data."
+          "stb_image.h is the standard single-header image loader for OpenGL projects. Include the implementation once in a .cpp file, then call stbi_load to get raw pixel data."
         )}
       </p>
       <CodeBlock lang="cpp" filename="load_texture.cpp" t={t}>{`#define STB_IMAGE_IMPLEMENTATION
@@ -135,7 +135,7 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);`}</CodeBlock>
 
       <Callout type="info" t={t}>
         {tx(t, "ch07_unitsNote",
-          "OpenGL supports at least 16 simultaneous texture units (GL_TEXTURE0 through GL_TEXTURE15). You activate a unit, bind a texture to it, then tell the uniform sampler which unit number to read from. This is how you use multiple textures in one draw call."
+          "OpenGL supports at least 16 simultaneous texture units (GL_TEXTURE0 through GL_TEXTURE15). Activate a unit, bind a texture to it, then tell the uniform sampler which unit to read from. This is how you use multiple textures in one draw call."
         )}
       </Callout>
 

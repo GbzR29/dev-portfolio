@@ -19,12 +19,12 @@ export function NoiseContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "glsl05_intro",
-          "Noise is the foundation of procedural textures, terrain, material variation, and organic effects. GLSL has no built-in noise function, so you implement your own from hash functions."
+          "Noise is the foundation of procedural textures, terrain generation, material variation, and organic-looking effects. GLSL has no built-in noise function (the historical noise() was removed from the spec), so you write your own using hash functions."
         )}
       </p>
 
       <H2>{tx(t, "glsl05_hashTitle", "Hash function")}</H2>
-      <p>{tx(t, "glsl05_hashBody", "A hash maps a value to a pseudo-random number using dot + sin + fract.")}</p>
+      <p>{tx(t, "glsl05_hashBody", "A hash function maps a value to a pseudo-random number. In GLSL, the classic approach uses dot product + sin + fract to generate repeatable pseudo-random floats from a vec2 input.")}</p>
       <CodeBlock lang="glsl" filename="hash.glsl" t={t}>{`// Returns pseudo-random float in [0, 1) from a vec2 seed
 float hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -41,7 +41,7 @@ vec2 hash2(vec2 p) {
 float noise = hash(floor(uv * 10.0));  // 10×10 grid of random values`}</CodeBlock>
 
       <H2>{tx(t, "glsl05_valueNoiseTitle", "Value noise")}</H2>
-      <p>{tx(t, "glsl05_valueNoiseBody", "Value noise interpolates between random grid values — smooth, blobby like clouds.")}</p>
+      <p>{tx(t, "glsl05_valueNoiseBody", "Value noise interpolates between random values on a grid. It produces the characteristic smooth, blobby look seen in clouds and terrain.")}</p>
       <CodeBlock lang="glsl" filename="value_noise.glsl" t={t}>{`float noise(vec2 p) {
     vec2 i = floor(p);      // integer cell
     vec2 f = fract(p);      // position within cell
@@ -63,7 +63,7 @@ float noise = hash(floor(uv * 10.0));  // 10×10 grid of random values`}</CodeBl
 float n = noise(uv * 4.0);  // 4 "cells" across the screen`}</CodeBlock>
 
       <H2>{tx(t, "glsl05_fbmTitle", "Fractal Brownian Motion (fBm)")}</H2>
-      <p>{tx(t, "glsl05_fbmBody", "fBm layers multiple octaves at increasing frequency and decreasing amplitude.")}</p>
+      <p>{tx(t, "glsl05_fbmBody", "fBm layers multiple octaves of noise at increasing frequency and decreasing amplitude. This produces the natural, self-similar look of clouds, mountains, and fire. Each layer is called an octave.")}</p>
       <CodeBlock lang="glsl" filename="fbm.glsl" t={t}>{`float fbm(vec2 p) {
     float value = 0.0;
     float amplitude = 0.5;
@@ -87,7 +87,7 @@ void main() {
 
       <Callout type="tip" t={t}>
         {tx(t, "glsl05_fbmTip",
-          "The octave loop multiplies frequency by 2.0 (lacunarity) and amplitude by 0.5 (gain) each iteration. After 4–6 octaves, adding more has diminishing returns and can introduce aliasing."
+          "The octave loop multiplies frequency by 2.0 (lacunarity) and amplitude by 0.5 (gain) each iteration. After 4-6 octaves, adding more has diminishing returns and can cause aliasing artifacts."
         )}
       </Callout>
 

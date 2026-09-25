@@ -105,7 +105,7 @@ int main() {
 
       <Callout type="warn" t={t}>
         {tx(t, "ch05_windingWarn",
-          "The vertex order in your array is not arbitrary — it defines the winding order of the face. OpenGL expects counter-clockwise (CCW) winding for front-facing triangles by default. In the hello triangle above, the three vertices go bottom-left → bottom-right → top-center, which is CCW. Chapter 10 explains why this matters for face culling."
+          "The vertex order in your array is not arbitrary — it defines the winding order of the face. OpenGL expects counter-clockwise (CCW) winding for front-facing triangles by default. Chapter 10 explains why this matters for face culling."
         )}
       </Callout>
 

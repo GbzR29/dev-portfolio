@@ -1,0 +1,38 @@
+// PT text for the lighting widgets. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  figAtt_title: "Atenuação — Como uma Luz Pontual se Apaga",
+  figAtt_range: "Presets por alcance (Kc = 1)",
+  figAtt_phys: "comparar com o físico 1/d²",
+  figAtt_note: "A luz real cai com 1/d², que vai ao infinito em d = 0 e nunca chega bem a zero. As três constantes domam as duas pontas: Kc mantém F ≤ 1 de perto, Kl domina o meio, Kq assume de longe. Escolha a linha cuja distância combina com até onde a luz deve chegar — a linha vermelha mostra onde ela deixa de fazer qualquer diferença visível.",
+  figColor_title: "Luz × Superfície — De Onde Vem a Cor",
+  figColor_in: "luz que entra",
+  figColor_out: "refletida",
+  figColor_rest: "o resto é absorvido",
+  figColor_light: "Cor da luz",
+  figColor_surface: "Cor da superfície (o que ela reflete)",
+  figLambert_title: "Lei do Cosseno de Lambert — Mesma Luz, Área Maior",
+  figLambert_per: "luz por unidade de superfície",
+  figLambert_bright: "brilho",
+  figLambert_note: "O feixe carrega a mesma luz em qualquer ângulo — conte os raios. O que muda é quanto chão ele precisa cobrir. Em θ = 60° ele cobre o dobro do comprimento, então cada ponto recebe metade. Essa razão é exatamente ",
+  figLambert_note2: " quando os dois vetores têm comprimento 1.",
+  figMaps_title: "Lighting Maps — Materiais por Texel",
+  figScene_hint: "arraste para girar · role para dar zoom",
+  figMaps_specNote: "Compare as duas visões especulares: sem mapa as tábuas de madeira brilham como o aço; com o specular map só a moldura de metal pega o brilho.",
+  figMaps_note: "Um material não tem mais uma cor e um shininess — cada texel tem os seus. Troque as visões para ver cada mapa sozinho, depois ligue o emission map: ele é somado depois da iluminação, então brilha até no lado de costas para a luz.",
+  figMat_title: "Materiais — Quatro Números por Superfície",
+  figMat_note: "Clique nos termos para desligá-los. Metais (ouro, cobre, cromo) têm uma cor especular próxima da cor difusa e um brilho concentrado; plásticos têm um brilho branco e largo; borracha quase não reflete. O shininess na tabela é guardado como 0–1 e multiplicado por 128 aqui, como fazia a especificação original do GL.",
+  figNormalM_title: "Por que as Normais Precisam de uma Matriz Própria",
+  figNormalM_worst: "pior ângulo com M · n:",
+  figNormalM_should: "(deveria ser 90°)",
+  figNormalM_note: "Estique o círculo para os lados. As normais vermelhas, multiplicadas pela matriz model, se inclinam na direção do esticamento e deixam de ser perpendiculares — a iluminação calculada com elas está simplesmente errada. As verdes usam a inversa-transposta e ficam a 90° em todo ponto. Com escala uniforme (x = 1) as duas concordam, e é por isso que o bug muitas vezes fica escondido até um modelo ser achatado.",
+  figReflect_s1: "Projete l̂ sobre n̂: sua sombra ao longo da normal é (n̂·l̂) n̂.",
+  figReflect_s2: "Vá duas vezes mais longe ao longo da normal: 2 (n̂·l̂) n̂.",
+  figReflect_title: "Deduzindo o Vetor de Reflexão — Passo a Passo",
+  figReflect_angle: "luz a",
+  figReflect_glsl: "O reflect(I, N) do GLSL calcula I − 2(N·I)N para a direção de entrada I = −l̂, que é o mesmo vetor: ",
+  figSpot_title: "Spotlight — Cone Interno, Cone Externo, Borda Suave",
+  figSpot_hard: "borda dura (γ ≈ φ)",
+};
+
+export default text;

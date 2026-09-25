@@ -20,7 +20,9 @@ src/lib/tracks/tx.ts                   tx(t, key, englishFallback) — the only 
 src/lib/tracks/<track>/index.tsx       exports `<track>Chapters: Chapter[]` (id, section, title, minRead, load) — metadata + lazy loaders
 src/lib/tracks/<track>/chapters/*.tsx  lesson content, one module per chapter (or small group)
 src/lib/tracks/<track>/presets/        shader sources used by the lessons (opengl, glsl)
-src/lib/i18n/                          UI + lesson translations (en/pt/zh/es); lessons exist only for opengl, glsl
+src/lib/i18n/                          UI strings (en/pt/zh/es) + lessons.ts (loads lesson/widget text on demand)
+src/lib/tracks/<track>/i18n/<lang>/    lesson translations, one file per chapter module + _track.ts (titles, sections)
+src/components/lesson/i18n/<lang>/     widget translations, one file per figures/ topic folder
 src/components/lesson/LessonComponents.tsx   CodeBlock, Callout, H2, H3, IC, LessonTable, MathBlock, diagrams
 src/components/lesson/ChapterContent.tsx   renders the open chapter (React.lazy + Suspense), preloads the next one
 src/components/lesson/Prose.tsx        Article, Lead, KeyIdeas — chapter page wrappers
@@ -53,6 +55,9 @@ from the `chapters` array — never hand-write them.
   `@/lib/tracks/tx` — don't redefine `tx` locally.
 - Keep URLs stable: chapter `id` and the registry key form the route.
 - Chapter modules are `"use client"` (they use interactive components).
+- English lives only in the `tx` fallbacks. Translations: add the key to the
+  matching `i18n/<lang>/<chapter-module>.ts` (widgets: `components/lesson/i18n/<lang>/<topic>.ts`).
+  A missing key simply shows English. `useLessonText` loads only the open track's file set.
 
 ## Widget rules
 
@@ -70,6 +75,6 @@ from the `chapters` array — never hand-write them.
 
 ## Still to do (agreed, one small step at a time)
 
-- Translations are the LAST step: lesson text exists in PT/ZH/ES only for OpenGL and GLSL; `tx` fallbacks duplicate English.
+- Translations: PT is complete (all tracks + widgets). ES/ZH exist only for OpenGL and GLSL lessons; no ES/ZH widget text yet.
 - Widgets need a better mobile layout (design first).
 - Pre-existing lint errors: `any` in LessonComponents.tsx, `t: any` + JSX comments in app/learn/page.tsx.
