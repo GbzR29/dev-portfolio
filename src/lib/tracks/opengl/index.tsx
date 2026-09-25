@@ -46,6 +46,16 @@ import { KeyIdeas } from "./chapters/lighting-advanced";
 import {
   ProfilingContent, FrustumCullingContent, DrawCallsContent, LodContent, StreamingContent,
 } from "./chapters/performance";
+import { SkeletalContent } from "./chapters/skeletal";
+import { TextContent } from "./chapters/text";
+import { PickingContent } from "./chapters/picking";
+import { ClusteredContent } from "./chapters/clustered";
+import { OitContent } from "./chapters/oit";
+import { ColorSpacesContent } from "./chapters/color";
+import { ReflectionsContent } from "./chapters/reflections";
+import { VolumetricsContent } from "./chapters/volumetrics";
+import { DecalsContent } from "./chapters/decals";
+import { TextureCompressionContent } from "./chapters/texturecompression";
 
 // tx: returns translated string or English fallback. Never shows a key name.
 function tx(t: any, key: string, fallback: string): string {
@@ -1712,6 +1722,7 @@ const PBR             = "PBR";
 const POST            = "Post-Processing & Effects";
 const MODELS          = "Model Loading";
 const ADVANCED        = "Advanced OpenGL";
+const TECH            = "Advanced Techniques";
 const PERF            = "Performance";
 const MODERN          = "Modern OpenGL & Tooling";
 
@@ -1752,6 +1763,7 @@ export const openGLTrack: Track = {
     { id: "normal-mapping",  section: ADV_LIGHTING,    title: "Normal Mapping",            minRead: 12, content: (t) => <NormalMappingContent   t={t} /> },
     { id: "hdr",             section: ADV_LIGHTING,    title: "HDR & Tone Mapping",        minRead: 10, content: (t) => <HdrContent             t={t} /> },
     { id: "bloom",           section: ADV_LIGHTING,    title: "Bloom",                     minRead: 10, content: (t) => <BloomContent           t={t} /> },
+    { id: "color-spaces",    section: ADV_LIGHTING,    title: "Colour Spaces & ACES",      minRead: 15, content: (t) => <ColorSpacesContent     t={t} /> },
     { id: "deferred",        section: ADV_LIGHTING,    title: "Deferred Shading",          minRead: 12, content: (t) => <DeferredContent        t={t} /> },
 
     // ── PBR ──────────────────────────────────────────────────────────────────
@@ -1780,12 +1792,23 @@ export const openGLTrack: Track = {
     { id: "geometry-shader", section: ADVANCED,        title: "Geometry Shader",           minRead: 13, content: (t) => <GeometryShaderContent  t={t} /> },
     { id: "tessellation",    section: ADVANCED,        title: "Tessellation",              minRead: 15, content: (t) => <TessellationContent    t={t} /> },
 
+    // ── Advanced Techniques ──────────────────────────────────────────────────
+    { id: "skeletal-animation", section: TECH,      title: "Skeletal Animation",        minRead: 18, content: (t) => <SkeletalContent        t={t} /> },
+    { id: "text-rendering",  section: TECH,            title: "Text Rendering",            minRead: 14, content: (t) => <TextContent            t={t} /> },
+    { id: "picking",         section: TECH,            title: "Picking",                   minRead: 13, content: (t) => <PickingContent         t={t} /> },
+    { id: "oit",             section: TECH,            title: "Order-Independent Transparency", minRead: 13, content: (t) => <OitContent        t={t} /> },
+    { id: "reflections",     section: TECH,            title: "Reflections",               minRead: 14, content: (t) => <ReflectionsContent     t={t} /> },
+    { id: "volumetrics",     section: TECH,            title: "Atmosphere & Volumetrics",  minRead: 16, content: (t) => <VolumetricsContent     t={t} /> },
+    { id: "decals",          section: TECH,            title: "Decals",                    minRead: 11, content: (t) => <DecalsContent          t={t} /> },
+
     // ── Performance ──────────────────────────────────────────────────────────
     { id: "profiling",       section: PERF,            title: "Measuring Performance",     minRead: 13, content: (t) => <ProfilingContent       t={t} /> },
     { id: "winding",         section: PERF,            title: "Face Winding & Culling",    minRead: 11, content: (t) => <WindingContent         t={t} /> },
     { id: "frustum-culling", section: PERF,            title: "Frustum & Occlusion Culling", minRead: 14, content: (t) => <FrustumCullingContent t={t} /> },
     { id: "draw-calls",      section: PERF,            title: "Draw Calls & State",        minRead: 13, content: (t) => <DrawCallsContent       t={t} /> },
+    { id: "clustered-shading", section: PERF,          title: "Forward+ & Clustered Shading", minRead: 14, content: (t) => <ClusteredContent     t={t} /> },
     { id: "lod",             section: PERF,            title: "Level of Detail",           minRead: 12, content: (t) => <LodContent             t={t} /> },
+    { id: "texture-compression", section: PERF,        title: "Mipmapping & Texture Compression", minRead: 14, content: (t) => <TextureCompressionContent t={t} /> },
     { id: "streaming",       section: PERF,            title: "Buffer Streaming & Sync",   minRead: 12, content: (t) => <StreamingContent       t={t} /> },
 
     // ── Modern OpenGL & Tooling ──────────────────────────────────────────────
