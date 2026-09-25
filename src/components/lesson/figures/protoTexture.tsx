@@ -93,6 +93,22 @@ const lerp3 = (a: V3, b: V3, t: number): V3 => [a[0] + (b[0] - a[0]) * t, a[1] +
 /** Point at (s, t) on the quad: s runs corner 0 → 1, t runs corner 0 → 3. */
 const bilinear = (q: V3[], s: number, t: number): V3 => lerp3(lerp3(q[0], q[1], s), lerp3(q[3], q[2], s), t);
 
+/**
+ * The same quad with its corners shifted so the image stands upright: its top
+ * edge faces +Y, or −Z on a horizontal face. A cyclic shift keeps the winding,
+ * so the image is only ever rotated, never mirrored.
+ */
+function upright(q: V3[]): V3[] {
+  let best = 0, bestScore = -Infinity;
+  for (let r = 0; r < 4; r++) {
+    // The image's "up" runs from corner 1 back to corner 0 (its y goes 0 → 1)
+    const a = q[r], b = q[(r + 1) % 4];
+    const score = (a[1] - b[1]) - 0.01 * (a[2] - b[2]);
+    if (score > bestScore + 1e-9) { bestScore = score; best = r; }
+  }
+  return [0, 1, 2, 3].map(k => q[(k + best) % 4]);
+}
+
 /** Pushes a polygon out from its centre by `px`, so neighbouring cells overlap instead of leaving hairline gaps. */
 const grow = (p: P2[], px: number): P2[] => {
   const cx = p.reduce((a, q) => a + q.x, 0) / p.length, cy = p.reduce((a, q) => a + q.y, 0) / p.length;
@@ -105,9 +121,10 @@ const grow = (p: P2[], px: number): P2[] => {
  * SVG can only map an image affinely, which ignores perspective. So the quad
  * is cut into an n×n grid in 3D (n grows with its size on screen), each cell is
  * projected on its own and gets the matching slice of the texture: piecewise
- * affine, which follows perspective closely. The texture's x runs along
- * corner 0 → 3 and its y along 0 → 1, which keeps the map orientation-
- * preserving on front faces — the image never shows up mirrored.
+ * affine, which follows perspective closely. The corners are first shifted by
+ * `upright`; then the texture's x runs along corner 0 → 3 and its y along
+ * 0 → 1, which keeps the map orientation-preserving on front faces — the image
+ * is upright and never shows up mirrored.
  * `light` (0..1) darkens the face for a simple clay-style shading.
  */
 export function TexturedFace({ id, quad, project, name, tex, light, stroke = "rgba(0,0,0,0.35)", opacity = 1 }: {
@@ -122,10 +139,11 @@ export function TexturedFace({ id, quad, project, name, tex, light, stroke = "rg
 
   const cells: { key: string; clip: string; m: string }[] = [];
   if (tex) {
+    const q = upright(quad);
     for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
       const s0 = i / n, s1 = (i + 1) / n, t0 = j / n, t1 = (j + 1) / n;
-      const a = project(bilinear(quad, s0, t0)), b = project(bilinear(quad, s1, t0));
-      const c = project(bilinear(quad, s1, t1)), d = project(bilinear(quad, s0, t1));
+      const a = project(bilinear(q, s0, t0)), b = project(bilinear(q, s1, t0));
+      const c = project(bilinear(q, s1, t1)), d = project(bilinear(q, s0, t1));
       // Image x ∈ [t0, t1] goes along a → d, image y ∈ [s0, s1] along a → b
       const ux = (d.x - a.x) * n, uy = (d.y - a.y) * n, vx = (b.x - a.x) * n, vy = (b.y - a.y) * n;
       const e = a.x - t0 * ux - s0 * vx, f = a.y - t0 * uy - s0 * vy;

@@ -232,11 +232,17 @@ export function viewTransform(b: CamBasis, a: number) {
 // ── Shaded boxes ──────────────────────────────────────────────────────────────
 export type Face = { pts: V3[]; normal: V3; fill?: string };
 
-/** An oriented box: centre, half extents along the given (unit) axes. */
+/**
+ * An oriented box: centre, half extents along the given (unit) axes.
+ * Faces come out counter-clockwise seen from outside even when the axes are
+ * left-handed (a camera's right, up, forward: r × u = −f), since frontFacing
+ * relies on that winding.
+ */
 export function boxFaces(c: V3, half: V3, ax: [V3, V3, V3] = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]): Face[] {
   const corner = (sx: number, sy: number, sz: number): V3 =>
     add(c, add(scale(ax[0], half[0] * sx), add(scale(ax[1], half[1] * sy), scale(ax[2], half[2] * sz))));
-  const F = (n: V3, q: V3[]): Face => ({ pts: q, normal: n });
+  const leftHanded = dot(cross(ax[0], ax[1]), ax[2]) < 0;
+  const F = (n: V3, q: V3[]): Face => ({ pts: leftHanded ? [...q].reverse() : q, normal: n });
   return [
     F(ax[0],            [corner(1, -1, -1), corner(1, 1, -1), corner(1, 1, 1), corner(1, -1, 1)]),
     F(scale(ax[0], -1), [corner(-1, -1, -1), corner(-1, -1, 1), corner(-1, 1, 1), corner(-1, 1, -1)]),

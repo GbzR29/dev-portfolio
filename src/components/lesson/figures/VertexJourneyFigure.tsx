@@ -102,14 +102,18 @@ export function VertexJourneyFigure({ t }: { t?: TrackTranslations }) {
   // Object faces, shaded by their (rotating) normals
   // Faces are sorted by their depth before the viewport flattens them, so the
   // painter's order still makes sense once everything lies in one plane.
-  // Back faces are culled using the shape before the viewport flattens it
-  // (once flat, every face has zero area and the test would be meaningless).
+  // Up to NDC, back faces are the ones turned away from the diagram's eye.
+  // The screen step flattens everything into the scene camera's image, so from
+  // there on the camera decides — like glCullFace: a face is kept when its NDC
+  // corners wind counter-clockwise (y up; frontFacing expects y down).
   const faces = boxFaces([0, 0, 0], [0.5, 0.5, 0.5]).map(fc => {
     const sp = fc.pts.map(L);
     const pre = fc.pts.map(q => P(pipeline(q, Math.min(p, 3), true)));
     const n = viewTransform(CAM, aV).dir(rotY(fc.normal, MODEL_YAW * aM));
     const depth = pre.reduce((a, b) => a + b.depth, 0) / 4;
-    return { sp, quad: fc.pts, light: lightAmount(n), depth, front: frontFacing(pre) };
+    const ndc = fc.pts.map(q => ndcOf(viewTransform(CAM, 1).point(model(q, 1))));
+    const front = aS > 0 ? frontFacing(ndc.map(v => ({ x: v[0], y: -v[1] }))) : frontFacing(pre);
+    return { sp, quad: fc.pts, light: lightAmount(n), depth, front };
   }).filter(f => f.front).sort((a, b) => b.depth - a.depth);
 
   const vtx = L(V_LOCAL);
