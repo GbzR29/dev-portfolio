@@ -9,6 +9,7 @@ import { useVisible } from "../../kit/figure";
 import {
   uploadMesh, cubePNUT, planePNUT, trs, ensureColorTarget, FULL_VS, drawFullscreen, type Mesh, type ColorTarget,
 } from "../../kit/gl/glx";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Bloom as four passes: render HDR → keep only what is brighter than a
@@ -194,7 +195,7 @@ export function BloomFigure({ t }: { t?: TrackTranslations }) {
   const KW = 220, KH = 90, taps = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figBloom_title", "Bloom — Four Passes")}
@@ -237,6 +238,6 @@ export function BloomFigure({ t }: { t?: TrackTranslations }) {
           </svg>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

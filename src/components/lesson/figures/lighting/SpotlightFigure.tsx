@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Label } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A spotlight seen from the side, lighting the floor. Inside the inner cone
@@ -40,7 +41,7 @@ export function SpotlightFigure({ t }: { t?: TrackTranslations }) {
   const curve = Array.from({ length: 91 }, (_, i) => { const th = (i / 90) * 45; return `${i ? "L" : "M"} ${px(th)} ${py(intensity(th))}`; }).join(" ");
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSpot_title", "Spotlight — Inner Cone, Outer Cone, Soft Edge")}
@@ -107,6 +108,6 @@ float I = clamp((theta - outerCutOff) / (cutOff - outerCutOff), 0.0, 1.0);`}
           </pre>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

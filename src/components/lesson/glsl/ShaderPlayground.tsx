@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useVisible } from "../kit/figure";
 import { claimContext, releaseContext } from "../kit/gl/context";
+import { useMediaQuery, PHONE } from "../kit/media";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, forwardFrom, type Vec3 } from "../kit/gl/gl";
@@ -12,6 +13,7 @@ import {
   type Mode, type MeshKind, type ShaderError, type Control,
 } from "./engine";
 import { textureOptions, loadOption, slotOption, slotChannel, withOption } from "./textures";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this widget is ───────────────────────────────────────────────────────
 // A small ShaderToy inside the lesson. The reader edits real GLSL ES 3.00 and
@@ -74,6 +76,9 @@ export function ShaderPlayground({ presets, t, title, aspect = 16 / 9, initialPr
   const [values, setValues] = useState<Record<string, number | number[]>>({});
   const [fps, setFps] = useState(0);
   const [full, setFull] = useState(false);
+  // Phones get a taller canvas, like GLView
+  const phone = useMediaQuery(PHONE);
+  const shownAspect = phone && aspect > 4 / 3 ? 4 / 3 : aspect;
 
   const rootRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -310,7 +315,7 @@ export function ShaderPlayground({ presets, t, title, aspect = 16 / 9, initialPr
   const note = preset.note ? tx(t, `${id ?? "pg"}_${preset.id}_note`, preset.note) : null;
 
   return (
-    <figure ref={setRoot} className={`my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm ${full ? "flex flex-col h-screen" : ""}`}>
+    <FigureShell ref={setRoot} fullscreen={false} className={full ? "flex flex-col h-screen" : ""}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {title ?? tx(t, "pg_title", "Shader Playground")}
@@ -331,7 +336,7 @@ export function ShaderPlayground({ presets, t, title, aspect = 16 / 9, initialPr
 
       <div className={`${full ? "flex-1 min-h-0 grid md:grid-cols-2" : ""}`}>
         <div className={`bg-[var(--code-bg)] ${full ? "relative min-h-0" : "border-b border-[var(--border)] p-2"}`}>
-          <div className="relative" style={full ? { position: "absolute", inset: 0 } : { aspectRatio: String(aspect) }}>
+          <div className="relative" style={full ? { position: "absolute", inset: 0 } : { aspectRatio: String(shownAspect) }}>
             <canvas ref={canvasRef} className={`absolute inset-0 w-full h-full rounded ${mode === "mesh" ? "cursor-grab active:cursor-grabbing" : "cursor-crosshair"}`}
               style={{ touchAction: "none" }} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} />
             <div className="absolute top-2 right-2 font-mono text-[10px] text-white/80 bg-black/45 rounded px-1.5 py-0.5 pointer-events-none">
@@ -432,7 +437,7 @@ export function ShaderPlayground({ presets, t, title, aspect = 16 / 9, initialPr
           )}
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }
 

@@ -8,6 +8,7 @@ import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { WINDOW_FS, WINDOW_PRESETS, DEFAULT_WINDOW, paintCity, type WindowParams } from "./windowShader";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A window on a rainy night. Drops and trails refract the street behind; the
@@ -118,7 +119,7 @@ export function WindowLabFigure({ t }: { t?: TrackTranslations }) {
   const note = notes[p.view];
 
   return (
-    <figure ref={figRef} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={figRef}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figWin_title", "Window Lab — Rain, Fog and Frost on Glass")}</span>
         <div className="flex gap-1.5 flex-wrap">
@@ -165,6 +166,6 @@ export function WindowLabFigure({ t }: { t?: TrackTranslations }) {
           </div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

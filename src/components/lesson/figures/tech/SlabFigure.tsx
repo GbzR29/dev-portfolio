@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Label } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The slab test for ray vs axis-aligned box, in 2D. A box is the overlap of two
@@ -45,7 +46,7 @@ export function SlabFigure({ t }: { t?: TrackTranslations }) {
   const f = (v: number) => (Math.abs(v) > 1e4 ? (v > 0 ? "+∞" : "−∞") : v.toFixed(0));
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSlab_title", "Ray vs Box — the Slab Test")}
@@ -89,6 +90,6 @@ export function SlabFigure({ t }: { t?: TrackTranslations }) {
           <div className="mt-1">{hit ? <span className="text-amber-400">hit at t = {f(Math.max(tEnter, 0))}</span> : <span className="text-red-400">miss</span>}</div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

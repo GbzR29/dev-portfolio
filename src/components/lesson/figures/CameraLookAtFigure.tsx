@@ -11,6 +11,7 @@ import {
   towardEye, visibleRuns, cylinderFaces, type Box,
 } from "../kit/scene3d";
 import { TexturedFace, useProtoTextures, type ProtoName } from "../kit/protoTexture";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // How glm::lookAt builds a camera, one vector at a time, and what the resulting
@@ -165,7 +166,7 @@ export function CameraLookAtFigure({ t }: { t?: TrackTranslations }) {
   );
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figCam_title", "Building the LookAt Matrix — Step by Step")}
@@ -333,6 +334,6 @@ export function CameraLookAtFigure({ t }: { t?: TrackTranslations }) {
             "Push the height slider to ±89° and watch right shrink: forward is almost parallel to worldUp, so their cross product nearly vanishes. That is exactly why FPS cameras clamp pitch.")}
         </figcaption>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

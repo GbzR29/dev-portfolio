@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A phase function p(θ) says how much of the light a particle scatters into
@@ -30,7 +31,7 @@ export function PhaseFigure({ t }: { t?: TrackTranslations }) {
   const fwd = hg(1, g), back = hg(-1, g);
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPhase_title", "Phase Functions — Where Scattered Light Goes")}
@@ -70,6 +71,6 @@ export function PhaseFigure({ t }: { t?: TrackTranslations }) {
           <div className="text-[var(--code-muted)] mt-1">Rayleigh: 1×</div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

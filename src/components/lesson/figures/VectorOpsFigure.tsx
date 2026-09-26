@@ -5,6 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label, pts, type P2 } from "../kit/svg";
 import { type V3, add, cross, len, makeProjector, useOrbit } from "../kit/scene3d";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Dot: drag a and b; the projection of b onto a is the "shadow" whose signed
@@ -239,7 +240,7 @@ export function VectorOpsFigure({ t }: { t?: TrackTranslations }) {
       active ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]"
         : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)] hover:border-[var(--primary)]/40"}`;
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figVec_title", "Dot & Cross — What They Measure")}
@@ -257,6 +258,6 @@ export function VectorOpsFigure({ t }: { t?: TrackTranslations }) {
             : tx(t, "figCam_hint", "drag the figure to look around · scroll to zoom")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

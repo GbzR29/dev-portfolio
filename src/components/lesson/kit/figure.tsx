@@ -8,6 +8,7 @@
 // accent colours are fixed hues that have enough contrast on both.
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { FigureShell } from "./FigureShell";
 
 export const C = {
   red: "#ef4444",
@@ -44,7 +45,7 @@ export function Figure({ title, head, children, controls, note }: {
   note?: ReactNode;
 }) {
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{title}</span>
         {head && <div className="flex gap-1.5 flex-wrap">{head}</div>}
@@ -56,7 +57,7 @@ export function Figure({ title, head, children, controls, note }: {
           {note && <p className="text-[12px] text-[var(--text-muted)] leading-relaxed">{note}</p>}
         </div>
       )}
-    </figure>
+    </FigureShell>
   );
 }
 

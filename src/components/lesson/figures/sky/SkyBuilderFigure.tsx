@@ -8,6 +8,7 @@ import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { DEFAULT_SKY_PARAMS, setSkyUniforms, type SkyParams } from "./proceduralSky";
 import { BUILDER_FS, STEPS, type SkyPart } from "./skySteps";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // One sky layer built in small steps. Each step shows its render, the code a
@@ -89,7 +90,7 @@ export function SkyBuilderFigure({ t, part }: { t?: TrackTranslations; part: Sky
   const k = `figSkyB_${part}${step}`;
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, `figSkyB_${part}Title`, setup.title)}
@@ -127,6 +128,6 @@ export function SkyBuilderFigure({ t, part }: { t?: TrackTranslations; part: Sky
         </div>
         <p className="text-[12.5px] text-[var(--text-muted)] leading-relaxed">{tx(t, `${k}x`, cur.text)}</p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

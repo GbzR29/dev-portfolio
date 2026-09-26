@@ -6,6 +6,7 @@ import { claimContext, releaseContext } from "../kit/gl/context";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { buildProgram, type ShaderError } from "./engine";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this widget is ───────────────────────────────────────────────────────
 // A function plotter that runs on the GPU, like Íñigo Quílez's Graphtoy. Up to
@@ -145,7 +146,7 @@ export function FunctionPlotter({ t }: { t?: TrackTranslations }) {
   };
 
   return (
-    <figure ref={ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPlot_title", "GLSL Function Plotter")}
@@ -179,6 +180,6 @@ export function FunctionPlotter({ t }: { t?: TrackTranslations }) {
           </span>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

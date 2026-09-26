@@ -5,6 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label, pts } from "../../kit/svg";
 import { type V3, makeProjector, useOrbit, towardEye, dot, scale } from "../../kit/scene3d";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The hemisphere Ω above a surface point p, the space every reflectance
@@ -82,7 +83,7 @@ export function HemisphereFigure({ t, mode = "radiance" }: { t?: TrackTranslatio
   const { sum, n } = riemann(step);
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {mode === "radiance"
@@ -187,6 +188,6 @@ export function HemisphereFigure({ t, mode = "radiance" }: { t?: TrackTranslatio
           )}
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A cross-section of a surface under a microscope: tiny perfect mirrors
@@ -107,7 +108,7 @@ export function MicrofacetFigure({ t }: { t?: TrackTranslations }) {
   const sunP = { x: W / 2 + L.x * 140, y: BASE - 10 + L.y * 140 };
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figMicro_title", "Microfacets — Roughness Is Many Tiny Mirrors")}
@@ -161,6 +162,6 @@ export function MicrofacetFigure({ t }: { t?: TrackTranslations }) {
           <div className="text-[var(--code-muted)]">{tx(t, "figMicro_fLbl", "how much each mirror reflects")} → F</div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

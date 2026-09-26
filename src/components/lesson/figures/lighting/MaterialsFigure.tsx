@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { drawPhongSphere, rgbCss, type PhongMaterial, type RGB } from "./sphere";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The classic OpenGL/VRML material table (the one LearnOpenGL uses), rendered
@@ -82,7 +83,7 @@ export function MaterialsFigure({ t }: { t?: TrackTranslations }) {
   );
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figMat_title", "Materials — Four Numbers per Surface")}
@@ -124,6 +125,6 @@ material.shininess = ${mat.shininess.toFixed(1)};`}
           </p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

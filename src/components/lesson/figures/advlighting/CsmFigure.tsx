@@ -8,6 +8,7 @@ import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { ortho, cubePNUT, spherePNUT, planePNUT, makeDepthTarget, FULL_VS, type DepthTarget } from "../../kit/gl/glx";
 import { splits } from "./CsmSplitFigure";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Real cascaded shadow maps over a long avenue of trees. Per frame:
@@ -291,7 +292,7 @@ export function CsmFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figCsm_title", "Cascaded Shadow Maps — Live")}
@@ -330,6 +331,6 @@ export function CsmFigure({ t }: { t?: TrackTranslations }) {
             : tx(t, "figCsm_note", "Each colour is one cascade; the inset shows the four depth maps in the atlas. Turn on walk with the tight box: shadow edges crawl and flicker as the box resizes and slides by fractions of a texel every frame. With the sphere fit snapped to texels the edges stay still. Blend seams hides the jump in sharpness where one cascade hands over to the next.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { forwardFrom, norm, cross, type Vec3 } from "./gl";
 import { claimContext, releaseContext } from "./context";
+import { useMediaQuery, PHONE } from "../media";
 import { skyboxSets } from "../protoTexture";
 import { proceduralFace, proceduralEquirect, crossToFaces, equirectToFaces, facesToEquirect, loadImage, makeCubemap, type TexImage } from "./gl";
 
@@ -30,7 +31,7 @@ export function rayDir(l: Look, aspect: number, ndcX: number, ndcY: number): Vec
 }
 
 export function GLView<R>({
-  init, draw, frame, look, onLook, onHover, aspect = 16 / 9, className = "", fovRange = [0.6, 1.9], orbit = false, resolution = 1, children,
+  init, draw, frame, look, onLook, onHover, aspect: wideAspect = 16 / 9, phoneAspect = 4 / 3, className = "", fovRange = [0.6, 1.9], orbit = false, resolution = 1, children,
 }: {
   /** Builds GPU resources once. May be async (texture loads). */
   init: (gl: WebGL2RenderingContext) => R | Promise<R>;
@@ -41,6 +42,8 @@ export function GLView<R>({
   onLook?: (l: Look) => void;
   onHover?: (ndc: { x: number; y: number } | null) => void;
   aspect?: number;
+  /** Phones get at most this aspect, so wide scenes are not a thin strip. Null keeps `aspect`. */
+  phoneAspect?: number | null;
   className?: string;
   fovRange?: [number, number];
   /**
@@ -62,6 +65,11 @@ export function GLView<R>({
   const [gen, setGen] = useState(0);
   const [lost, setLost] = useState(false);
   const drag = useRef<{ x: number; y: number } | null>(null);
+  // Fingers on the canvas; two of them pinch the field of view
+  const touches = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<number | null>(null);
+  const phone = useMediaQuery(PHONE);
+  const aspect = phone && phoneAspect && wideAspect > phoneAspect ? phoneAspect : wideAspect;
   const lookRef = useRef(look); lookRef.current = look;
   const drawRef = useRef(draw); drawRef.current = draw;
 
@@ -144,6 +152,15 @@ export function GLView<R>({
     const r = canvas.current!.getBoundingClientRect();
     return { x: ((e.clientX - r.left) / r.width) * 2 - 1, y: 1 - ((e.clientY - r.top) / r.height) * 2 };
   };
+  const spread = () => {
+    const [a, b] = [...touches.current.values()];
+    return Math.max(1, Math.hypot(a.x - b.x, a.y - b.y));
+  };
+  const release = (e: React.PointerEvent) => {
+    touches.current.delete(e.pointerId);
+    pinch.current = null;
+    drag.current = null;       // lifting one finger of a pinch must not jump into a drag
+  };
 
   return (
     <div className={`relative ${className}`} style={{ aspectRatio: String(aspect) }}>
@@ -155,10 +172,21 @@ export function GLView<R>({
         onPointerDown={e => {
           if (!onLook || (e.pointerType === "mouse" && e.button === 2)) return;
           canvas.current?.setPointerCapture(e.pointerId);
+          touches.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (touches.current.size === 2) { drag.current = null; pinch.current = spread(); return; }
           drag.current = { x: e.clientX, y: e.clientY };
         }}
         onPointerMove={e => {
           onHover?.(ndcOf(e));
+          if (touches.current.has(e.pointerId)) touches.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (onLook && touches.current.size === 2 && pinch.current !== null) {
+            const now = spread(), l = lookRef.current;
+            // Fingers apart = zoom in = narrower field of view
+            const fov = Math.max(fovRange[0], Math.min(fovRange[1], l.fov * (pinch.current / now)));
+            pinch.current = now;
+            onLook({ ...l, fov });
+            return;
+          }
           const d = drag.current;
           if (!d || !onLook) return;
           const dx = e.clientX - d.x, dy = e.clientY - d.y;
@@ -169,8 +197,8 @@ export function GLView<R>({
           const k = 0.0045 * (l.fov / 1.2) * (orbit ? -1 : 1);
           onLook({ ...l, yaw: l.yaw - dx * k, pitch: Math.max(-1.52, Math.min(1.52, l.pitch + dy * k)) });
         }}
-        onPointerUp={() => { drag.current = null; }}
-        onPointerCancel={() => { drag.current = null; }}
+        onPointerUp={release}
+        onPointerCancel={release}
         onPointerLeave={() => onHover?.(null)}
         onContextMenu={e => e.preventDefault()}
       />

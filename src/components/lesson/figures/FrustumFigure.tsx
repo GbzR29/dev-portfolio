@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label, pts } from "../kit/svg";
 import { type V3, add, makeProjector, useOrbit, boxFaces, frontFacing, lightAmount } from "../kit/scene3d";
 import { TexturedFace, FigureIcon, useProtoTextures, type ProtoName } from "../kit/protoTexture";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The view frustum from the outside, next to what the camera actually sees.
@@ -153,7 +154,7 @@ export function FrustumFigure({ t }: { t?: TrackTranslations }) {
   const farMid  = P([fw, fh * 1.05, -s.far]);
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figFrus_title", "The View Frustum — Outside and Inside")}
@@ -315,6 +316,6 @@ export function FrustumFigure({ t }: { t?: TrackTranslations }) {
             : tx(t, "figFrus_noteOrtho", "Move B away: it keeps its size — nothing is divided by distance.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

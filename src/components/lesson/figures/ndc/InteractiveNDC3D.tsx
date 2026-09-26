@@ -9,6 +9,7 @@ import {
   type Vec3, type Pt, type Axis,
 } from "./ndc3dScene";
 import { drawNdc3d } from "./ndc3dDraw";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -341,7 +342,7 @@ export function InteractiveNDC3D() {
     : "cursor-grab active:cursor-grabbing";
 
   return (
-    <div className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell as="div">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           NDC 3D — Interactive
@@ -482,15 +483,18 @@ export function InteractiveNDC3D() {
             <p className="text-[9px] font-mono text-[var(--text-muted)] opacity-70 leading-relaxed">
               <span style={{ color: AXIS_COLOR[0] }}>X</span>{" "}
               <span style={{ color: AXIS_COLOR[1] }}>Y</span>{" "}
-              <span style={{ color: AXIS_COLOR[2] }}>Z</span> gizmo arms constrain one axis ·{" "}
-              <span className="text-[var(--primary)]">shift</span> fine ·{" "}
-              <span className="text-[var(--primary)]">alt</span> snap {SNAP} ·{" "}
-              <span className="text-[var(--primary)]">middle-drag</span> pans
+              <span style={{ color: AXIS_COLOR[2] }}>Z</span> gizmo arms constrain one axis
+              <span data-mouse-only>
+                {" "}· <span className="text-[var(--primary)]">shift</span> fine ·{" "}
+                <span className="text-[var(--primary)]">alt</span> snap {SNAP} ·{" "}
+                <span className="text-[var(--primary)]">middle-drag</span> pans
+              </span>
+              <span data-touch-only> · <span className="text-[var(--primary)]">two fingers</span> pan</span>
             </p>
           </div>
 
         </div>
       </div>
-    </div>
+    </FigureShell>
   );
 }

@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A bounding volume hierarchy over 64 small boxes, built top-down by splitting
@@ -81,7 +82,7 @@ export function BvhFigure({ t }: { t?: TrackTranslations }) {
   const hues = ["#f59e0b", "#22c55e", "#38bdf8", "#a855f7", "#ec4899", "#eab308", "#14b8a6"];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figBvh_title", "A Bounding Volume Hierarchy")}</span>
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{tx(t, "figBvh_hint", "drag the ray's two ends")}</span>
@@ -126,6 +127,6 @@ export function BvhFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figBvh_note", "The coloured outlines are the node boxes at the chosen level: the root holds everything, each level splits a node's boxes in two halves along its longest side. White boxes are the nodes the ray actually opened. A ray that misses a node's box skips its whole subtree at once, so the cost grows like log N instead of N. With 64 primitives the saving is modest. With a million triangles it is the difference between a frame and an hour.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

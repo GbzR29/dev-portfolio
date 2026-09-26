@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The CPU and the GPU are two workers on an assembly line. The CPU records
@@ -61,7 +62,7 @@ export function FrameTimelineFigure({ t }: { t?: TrackTranslations }) {
   const H = lanes[2].y + LANE + 26;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figFrameTl_title", "CPU, GPU and Display — Who Waits for Whom")}
@@ -135,6 +136,6 @@ export function FrameTimelineFigure({ t }: { t?: TrackTranslations }) {
           <div className="mt-1">bound: <span className="text-amber-400">{bound}</span></div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

@@ -7,6 +7,7 @@ import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { uploadMesh, cubePNUT, makeDepthCube, cubeFaceViews, trs, type Mesh, type DepthCube } from "../../kit/gl/glx";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Omnidirectional shadows: the scene is rendered six times per frame from the
@@ -187,7 +188,7 @@ export function PointShadowFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPShadow_title", "Point Shadows — Six Faces per Frame")}
@@ -211,6 +212,6 @@ export function PointShadowFigure({ t }: { t?: TrackTranslations }) {
             : tx(t, "figPShadow_note", "The light flies around the room and every box casts shadows in all directions at once. Turn PCF off to see the raw, hard-edged result of a single lookup per fragment.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

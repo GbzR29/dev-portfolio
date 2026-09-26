@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useVisible } from "./kit/figure";
 import { claimContext, releaseContext } from "./kit/gl/context";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this widget is ───────────────────────────────────────────────────────
 // A real fragment shader running in WebGL. The body of main() is editable, the
@@ -331,7 +332,7 @@ export function InteractiveUV() {
     }`;
 
   return (
-    <div ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell as="div" ref={vis.ref}>
 
       {/* Header */}
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
@@ -535,6 +536,6 @@ export function InteractiveUV() {
 
         </div>
       </div>
-    </div>
+    </FigureShell>
   );
 }

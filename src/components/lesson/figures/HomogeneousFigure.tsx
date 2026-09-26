@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { useStepper, stepAmount, StepperControls } from "../kit/Stepper";
 import { Arrow, Label, pts } from "../kit/svg";
 import { type V3, makeProjector, useOrbit } from "../kit/scene3d";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The 2D version of the w trick. A 2D point (x, y) becomes (x, y, 1): the plane
@@ -96,7 +97,7 @@ export function HomogeneousFigure({ t }: { t?: TrackTranslations }) {
   );
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figHom_title", "Why w? Translation as a Shear")}
@@ -223,6 +224,6 @@ export function HomogeneousFigure({ t }: { t?: TrackTranslations }) {
       <div className="px-4 md:px-5 pb-4">
         <StepperControls s={st} />
       </div>
-    </figure>
+    </FigureShell>
   );
 }

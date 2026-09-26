@@ -7,6 +7,7 @@ import { mat4, compileProgram, boxMeshUV, loadTexture2D, forwardFrom, type Vec3 
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { mapUrl } from "../../kit/protoTexture";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A crate with three textures: a diffuse map (its colour), a specular map (how
@@ -177,7 +178,7 @@ export function LightingMapsFigure({ t }: { t?: TrackTranslations }) {
       : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figMaps_title", "Lighting Maps — Per-Texel Materials")}
@@ -217,6 +218,6 @@ vec3 emission = texture(material.emission, TexCoords).rgb;
 FragColor = vec4(ambient + diffuse + specular${emission ? " + emission" : ""}, 1.0);`}
         </pre>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

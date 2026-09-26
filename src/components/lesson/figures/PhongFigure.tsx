@@ -5,6 +5,7 @@ import { FigureIcon } from "../kit/protoTexture";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label, type P2 } from "../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Left: the textbook Phong diagram at one surface point — drag the light and the
@@ -199,7 +200,7 @@ export function PhongFigure({ t }: { t?: TrackTranslations }) {
   const lookDir = n2({ x: PNT.x - eye.x, y: PNT.y - eye.y });
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPhong_title", "Phong Lighting — The Vectors Behind the Shine")}
@@ -311,6 +312,6 @@ result  = (ambient + diffuse) * objectColor
           </p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

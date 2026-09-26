@@ -7,6 +7,7 @@ import { mat4, compileProgram, forwardFrom, type Mat4 } from "../../kit/gl/gl";
 import { GLView, type Look } from "../../kit/gl/GLView";
 import { ensureColorTarget, FULL_VS, drawFullscreen, floatTargets, type ColorTarget } from "../../kit/gl/glx";
 import { ROOM, LIT_VS, LIT_FS, SUN, sceneMeshes, roomCamera, clampRoomLook, type SceneMeshes } from "../post/scene";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A polished floor, reflected two ways:
@@ -268,7 +269,7 @@ export function SsrFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSsr_title", "A Polished Floor — Planar Reflection vs SSR")}
@@ -307,6 +308,6 @@ export function SsrFigure({ t }: { t?: TrackTranslations }) {
               : tx(t, "figSsr_noneNote", "The floor with no reflection: its only information about the room is the diffuse lighting.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

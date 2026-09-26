@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The three factors of the Cook-Torrance specular term, each plotted on its own:
@@ -72,7 +73,7 @@ export function BrdfTermsFigure({ t, initial = "D" }: { t?: TrackTranslations; i
   }).join(" ");
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figBrdf_title", "Cook-Torrance, One Factor at a Time")}
@@ -166,6 +167,6 @@ export function BrdfTermsFigure({ t, initial = "D" }: { t?: TrackTranslations; i
           {tab === "F" && <>F0 = ({F0S[mat].f0.map(c => c.toFixed(2)).join(", ")}) · F(60°) = ({F0S[mat].f0.map(c => fresnel(0.5, c).toFixed(2)).join(", ")}) · F(85°) = ({F0S[mat].f0.map(c => fresnel(Math.cos(deg(85)), c).toFixed(2)).join(", ")})</>}
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

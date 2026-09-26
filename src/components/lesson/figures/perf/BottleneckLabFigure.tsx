@@ -7,6 +7,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { cubePNUT, ensureColorTarget, FULL_VS, drawFullscreen, type ColorTarget } from "../../kit/gl/glx";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A real experiment, not a simulation. Every knob loads a different part of
@@ -210,7 +211,7 @@ export function BottleneckLabFigure({ t }: { t?: TrackTranslations }) {
   const fps = stats.frameMs ? 1000 / stats.frameMs : 0;
 
   return (
-    <figure ref={ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figBottle_title", "Bottleneck Lab — Load One Part at a Time")}
@@ -246,6 +247,6 @@ export function BottleneckLabFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figBottle_note", "Experiment like a profiler would. Raise the objects with draw per object until the frame time climbs, then switch to instanced: if it drops back, you were CPU bound on draw calls. Raise fragment work, then lower the resolution: if the frame time falls with the pixel count, you were fragment bound. Fill layers do almost no maths but read and write every pixel, which exposes bandwidth. While the frame stays pinned at 16.7 ms (or your screen's refresh), vsync hides everything, so push until it moves.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

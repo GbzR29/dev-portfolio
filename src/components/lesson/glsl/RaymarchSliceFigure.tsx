@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Label } from "../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Sphere tracing in a 2D slice. The scene is a signed distance function: at
@@ -88,7 +89,7 @@ export function RaymarchSliceFigure({ t: tr }: { t?: TrackTranslations }) {
   };
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(tr, "figMarch_title", "Sphere Tracing, One Step at a Time")}
@@ -141,6 +142,6 @@ export function RaymarchSliceFigure({ t: tr }: { t?: TrackTranslations }) {
           <div>t = {t.toFixed(1)} px</div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

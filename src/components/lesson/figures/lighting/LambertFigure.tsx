@@ -5,6 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label } from "../../kit/svg";
 import { Tex } from "../../Tex";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Why diffuse light is proportional to cos θ. A beam of fixed width carries a
@@ -43,7 +44,7 @@ export function LambertFigure({ t }: { t?: TrackTranslations }) {
   const bright = Math.round(40 + cos * 215);
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figLambert_title", "Lambert's Cosine Law — Same Light, Bigger Area")}
@@ -119,6 +120,6 @@ export function LambertFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figLambert_note2", " when both vectors have length 1.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

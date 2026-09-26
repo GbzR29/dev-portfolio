@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A model of light culling for many point lights. The camera looks over a
@@ -125,7 +126,7 @@ export function LightBinningFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figBin_title", "Light Culling — Lights Evaluated per Pixel")}
@@ -183,6 +184,6 @@ export function LightBinningFigure({ t }: { t?: TrackTranslations }) {
           <div>{mode === "clustered" ? `${stats.tiles * slices} clusters` : mode === "tiled" ? `${stats.tiles} tiles` : "—"}</div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

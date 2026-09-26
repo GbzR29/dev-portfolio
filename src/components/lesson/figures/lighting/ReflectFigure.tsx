@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label, type P2 } from "../../kit/svg";
 import { useStepper, stepAmount, StepperControls } from "../../kit/Stepper";
 import { Tex } from "../../Tex";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Deriving the reflection vector with nothing but a projection:
@@ -43,7 +44,7 @@ export function ReflectFigure({ t }: { t?: TrackTranslations }) {
   const current = Math.round(st.raw);
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figReflect_title", "Deriving the Reflection Vector — Step by Step")}
@@ -114,6 +115,6 @@ export function ReflectFigure({ t }: { t?: TrackTranslations }) {
       <div className="px-4 md:px-5 pb-4">
         <StepperControls s={st} />
       </div>
-    </figure>
+    </FigureShell>
   );
 }

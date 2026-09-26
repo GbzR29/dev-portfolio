@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import assets from "@/lib/generated/assets.json";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // BC1 (DXT1) block compression, encoded here in the browser. Every 4×4 block
@@ -124,7 +125,7 @@ export function Bc1Figure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figBc1_title", "BC1 Block Compression — 64 Bits per 4×4 Pixels")}
@@ -167,6 +168,6 @@ export function Bc1Figure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figBc1_note", "Top grid: the 16 original pixels. Bottom: what BC1 stores, each pixel replaced by one of four palette colours (numbers = 2-bit index). A block that really is a gradient between two colours survives almost perfectly. A block with three distinct hues, a tile edge between blue and white grout with a red accent, has to squeeze them onto one line, and loses one. Bounding-box endpoints are faster to find, but a diagonal of the RGB cube wastes palette entries on colours that are not in the block. The principal axis fits the actual spread. 6× smaller than RGB8, and GPUs decode it on the fly at full speed.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

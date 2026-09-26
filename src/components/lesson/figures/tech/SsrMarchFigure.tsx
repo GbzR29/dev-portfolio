@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Label } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Screen-space reflections in a side view. The camera (left) sees the scene
@@ -95,7 +96,7 @@ export function SsrMarchFigure({ t }: { t?: TrackTranslations }) {
   const stateCol = { front: "#22c55e", hit: "#ef4444", behind: "#64748b", off: "#a855f7" };
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSsrMarch_title", "Screen-Space Reflections — Marching the Depth Buffer")}
@@ -141,6 +142,6 @@ export function SsrMarchFigure({ t }: { t?: TrackTranslations }) {
           <div className={correct ? "text-[#22c55e]" : "text-red-400"}>{correct ? tx(t, "figSsrMarch_ok", "match") : tx(t, "figSsrMarch_bad", "wrong / missing")}</div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

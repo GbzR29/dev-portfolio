@@ -8,6 +8,7 @@ import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { ensureColorTarget, FULL_VS, drawFullscreen, type ColorTarget } from "../../kit/gl/glx";
 import { sceneMeshes, compileLit, drawRoom, roomCamera, clampRoomLook, ROOM_LOOK, SUN, type SceneMeshes } from "./scene";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A post-processing stack. The scene is rendered once into a texture; every
@@ -207,7 +208,7 @@ export function PostFxFigure({ t }: { t?: TrackTranslations }) {
   ];
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPostFx_title", "A Post-Processing Stack — One Texture, Many Fullscreen Passes")}
@@ -249,6 +250,6 @@ export function PostFxFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figPostFx_note", "The 3D scene is drawn only once per frame. Everything else — blur, grading, vignette, grain — is a fullscreen fragment shader reading that texture, so its cost depends on the number of pixels, not on how many objects are in the scene.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

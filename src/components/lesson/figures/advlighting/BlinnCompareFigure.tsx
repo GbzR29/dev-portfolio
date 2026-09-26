@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
 import { GLView, type Look } from "../../kit/gl/GLView";
 import { planePNUT, uploadMesh, trs, type Mesh } from "../../kit/gl/glx";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A floor lit by a light close to it, seen at a low angle — the situation
@@ -86,7 +87,7 @@ export function BlinnCompareFigure({ t }: { t?: TrackTranslations }) {
   };
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figBlinnC_title", "Phong vs Blinn-Phong — Side by Side")}
@@ -121,6 +122,6 @@ export function BlinnCompareFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figBlinnC_note", "With shininess 1–4 the Phong half shows a highlight that stops dead along a curve: past it r̂·v̂ is negative and the max() clamps it to zero. Blinn-Phong fades out naturally. Turn on the ×4 exponent and the two highlights become almost the same size.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

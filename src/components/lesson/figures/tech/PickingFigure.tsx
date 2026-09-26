@@ -8,6 +8,7 @@ import { GLView, type Look } from "../../kit/gl/GLView";
 import { trs } from "../../kit/gl/glx";
 import { invert } from "./mat4util";
 import { ROOM, LIT_VS, LIT_FS, SUN, sceneMeshes, roomCamera, clampRoomLook, ROOM_LOOK, type SceneMeshes } from "../post/scene";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Three ways to answer "what is under the mouse?":
@@ -180,7 +181,7 @@ export function PickingFigure({ t }: { t?: TrackTranslations }) {
   const disagree = result.ray !== result.id;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPick_title", "Picking — What Is Under the Mouse?")}
@@ -212,6 +213,6 @@ export function PickingFigure({ t }: { t?: TrackTranslations }) {
               : tx(t, "figPick_idNote", "The ID buffer renders the scene once more with each object's index as its colour, then reads back one pixel. It is exact for any shape, including alpha-tested leaves and skinned characters, because it is the rasteriser's own answer. The cost is an extra pass and a GPU→CPU readback, done asynchronously in a real engine (see Buffer Streaming & Sync).")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

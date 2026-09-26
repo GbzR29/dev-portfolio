@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, forwardFrom, norm, cross, type Vec3 } from "../../kit/gl/gl";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Rain as a CPU particle system with three pools:
@@ -391,7 +392,7 @@ export function RainFigure({ t }: { t?: TrackTranslations }) {
   ];
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figRain_title", "Rain — Streaks, Splashes and Ripples")}
@@ -428,6 +429,6 @@ export function RainFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figRain_note", "Walk forward with the volume shown: the box moves with you, and drops leaving one side re-enter on the other, so a few thousand particles fake rain over the whole city. Set the shutter to 0 and the streaks collapse into dots: the long lines are motion blur, not the shape of a drop. Untick the 1-pixel rule and look into the distance: thin far streaks break into flickering dashes.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

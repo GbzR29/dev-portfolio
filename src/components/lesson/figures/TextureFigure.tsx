@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Every pixel here is computed the way the GPU samples a texture:
@@ -353,7 +354,7 @@ export function TextureFigure({ t }: { t?: TrackTranslations }) {
     ["min", "figTex_tabMin", "Minification & mipmaps"],
   ];
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figTex_title", "Sampling a Texture")}
@@ -372,6 +373,6 @@ export function TextureFigure({ t }: { t?: TrackTranslations }) {
       <div className="p-4 md:p-5 pb-6">
         {tab === "wrap" ? <WrapPanel t={t} /> : tab === "mag" ? <MagnifyPanel t={t} /> : <MinifyPanel t={t} />}
       </div>
-    </figure>
+    </FigureShell>
   );
 }

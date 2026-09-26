@@ -5,6 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
 import { GLView, type Look } from "../../kit/gl/GLView";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A heightmap terrain split into 8×8 chunks. Every chunk has 4 meshes
@@ -194,7 +195,7 @@ export function TerrainFigure({ t }: { t?: TrackTranslations }) {
       : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)] hover:border-[var(--primary)]/40"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figTerr_title", "Terrain — Heightmap, Splatting and Chunk LOD")}</span>
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{tx(t, "figTerr_hint", "drag to orbit · scroll to zoom")}</span>
@@ -221,6 +222,6 @@ export function TerrainFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figTerr_note", "Red chunks use every heightmap sample, green every 2nd, blue every 4th and yellow every 8th. Each step down quarters the triangles. Zoom in and look along a border between two colours: the fine side has vertices the coarse side does not, so the surfaces disagree between them and slivers of sky show through. Tick skirts to hang a strip under every edge that fills those gaps.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

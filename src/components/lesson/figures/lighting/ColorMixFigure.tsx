@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { drawPhongSphere, rgbCss, type RGB } from "./sphere";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The colour we see is the light's colour multiplied, channel by channel, by
@@ -75,7 +76,7 @@ export function ColorMixFigure({ t }: { t?: TrackTranslations }) {
   );
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figColor_title", "Light × Surface — Where Colour Comes From")}
@@ -124,6 +125,6 @@ export function ColorMixFigure({ t }: { t?: TrackTranslations }) {
           </div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

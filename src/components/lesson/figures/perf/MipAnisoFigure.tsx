@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
 import { GLView, type Look } from "../../kit/gl/GLView";
 import { pickTexture, loadOption } from "../../glsl/textures";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A long textured floor seen at a grazing angle: the hardest case for texture
@@ -116,7 +117,7 @@ export function MipAnisoFigure({ t }: { t?: TrackTranslations }) {
   ];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figMip_title", "Texture Filtering at a Grazing Angle")}
@@ -145,6 +146,6 @@ export function MipAnisoFigure({ t }: { t?: TrackTranslations }) {
         </div>
         <p className="text-[12px] text-[var(--text-muted)] leading-relaxed">{notes[mode]} {maxAniso ? `(max anisotropy here: ×${maxAniso})` : ""}</p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

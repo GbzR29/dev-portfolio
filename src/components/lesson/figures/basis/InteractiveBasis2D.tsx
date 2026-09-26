@@ -11,6 +11,7 @@ import {
   type Pt, type Mat, type Handle, type View,
 } from "./basisScene";
 import { Basis2dPlot } from "./Basis2dPlot";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export function InteractiveBasis2D() {
@@ -300,7 +301,7 @@ export function InteractiveBasis2D() {
   const hint = PRESETS.find(p => p.id === presetId)?.hint;
 
   return (
-    <div className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell as="div">
 
       {/* Header */}
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
@@ -466,13 +467,17 @@ glm::vec2 r = M * glm::vec2(${fmt(vec.x)}f, ${fmt(vec.y)}f);
               <button onClick={() => setShow(s => ({ ...s, area: !s.area }))} className={btn(show.area)}>det area</button>
             </div>
             <p className="text-[9px] font-mono text-[var(--text-muted)] opacity-70 leading-relaxed">
-              drags snap to {SNAP} · <span className="text-[var(--primary)]">alt</span> free ·{" "}
-              <span className="text-[var(--primary)]">arrows</span> nudge selected ·{" "}
-              <span className="text-[var(--primary)]">shift</span> bigger step · dashed arrows = where î and ĵ started
+              drags snap to {SNAP} ·{" "}
+              <span data-mouse-only>
+                <span className="text-[var(--primary)]">alt</span> free ·{" "}
+                <span className="text-[var(--primary)]">arrows</span> nudge selected ·{" "}
+                <span className="text-[var(--primary)]">shift</span> bigger step ·{" "}
+              </span>
+              dashed arrows = where î and ĵ started
             </p>
           </div>
         </div>
       </div>
-    </div>
+    </FigureShell>
   );
 }

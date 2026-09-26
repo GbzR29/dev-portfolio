@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Label } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Three ways to advance x'' = −ω²x (a mass on a spring) by a fixed step dt,
@@ -50,7 +51,7 @@ export function IntegratorFigure({ t }: { t?: TrackTranslations }) {
   const E0 = 0.5 * w * w;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figInteg_title", "Integrators — Same Spring, Same dt, Different Futures")}
@@ -113,6 +114,6 @@ export function IntegratorFigure({ t }: { t?: TrackTranslations }) {
           <div className="text-[var(--code-muted)] mt-1">ω·dt = {(w * dt).toFixed(2)}</div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

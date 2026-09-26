@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Íñigo Quílez's cosine palette: color(t) = a + b · cos(2π (c·t + d)).
@@ -42,7 +43,7 @@ export function PaletteFigure({ t }: { t?: TrackTranslations }) {
   const labels: Record<keyof Pal, string> = { a: "a · centre", b: "b · amplitude", c: "c · frequency", d: "d · phase" };
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPal_title", "Cosine Palettes — Four vec3s, Endless Gradients")}
@@ -82,6 +83,6 @@ export function PaletteFigure({ t }: { t?: TrackTranslations }) {
         </div>
         <pre className="m-0 rounded-lg border border-[var(--code-border)] bg-[var(--code-bg)] p-3 font-mono text-[10.5px] leading-relaxed text-[var(--code-text)] overflow-x-auto">{glsl}</pre>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

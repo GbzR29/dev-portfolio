@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label } from "../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Where each row of the yaw/pitch direction vector comes from, in two flat
@@ -39,7 +40,7 @@ export function YawPitchFigure({ t }: { t?: TrackTranslations }) {
     }).join(" ");
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figYP_title", "Building d — Pitch From the Side, Yaw From Above")}
@@ -117,6 +118,6 @@ export function YawPitchFigure({ t }: { t?: TrackTranslations }) {
           <div className="text-[var(--code-muted)] mt-1">|d| = {Math.hypot(x, y, z).toFixed(3)}</div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

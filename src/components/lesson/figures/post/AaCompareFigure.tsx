@@ -8,6 +8,7 @@ import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { ensureColorTarget, FULL_VS, drawFullscreen, trs, type ColorTarget, type SceneItem } from "../../kit/gl/glx";
 import { sceneMeshes, compileLit, drawRoom, roomCamera, clampRoomLook, ROOM_LOOK, SUN, type SceneMeshes } from "./scene";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The same frame with four anti-aliasing strategies, rendered at a reduced
@@ -191,7 +192,7 @@ export function AaCompareFigure({ t }: { t?: TrackTranslations }) {
   const cost = ["1 sample, 1 shader run / pixel", `${samplesInfo} samples, ~1 shader run / pixel`, "4 samples, 4 shader runs / pixel", "1 sample + one fullscreen pass"][mode];
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figAa_title", "Anti-Aliasing Compared — Same Frame, Four Strategies")}
@@ -220,6 +221,6 @@ export function AaCompareFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figAa_note", "Watch the fence posts and the floor grid. Without AA, thin posts break into dotted lines and edges are staircases. MSAA smooths every geometric edge but the grid lines painted by the shader still alias. SSAA fixes both at 4× the shading cost. FXAA is almost free and smooths everything with contrast — including detail that should stay sharp, and it cannot bring back a post that fell between pixels.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

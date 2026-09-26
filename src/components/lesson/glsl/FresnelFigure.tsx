@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label } from "../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Left: a ray hitting the boundary between two media. Snell's law bends the
@@ -69,7 +70,7 @@ export function FresnelFigure({ t }: { t?: TrackTranslations }) {
   const sel = "bg-[var(--code-bg)] border border-[var(--border)] rounded px-1.5 py-1 text-[10px] font-mono text-[var(--text-main)]";
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figFresnel_title", "Snell's Law and the Fresnel Effect")}
@@ -138,6 +139,6 @@ export function FresnelFigure({ t }: { t?: TrackTranslations }) {
           {crit ? <div className="text-red-400">θ critical = {crit.toFixed(1)}°</div> : <div>θ Brewster = {brewster.toFixed(1)}°</div>}
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

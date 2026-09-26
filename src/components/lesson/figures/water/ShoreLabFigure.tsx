@@ -11,6 +11,7 @@ import { loadPhotos, bindPhotos, type PhotoList } from "./photoTextures";
 import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
 import { WATER_COLOURS } from "./waterShader";
 import { SHORE_FS, SHORE_PRESETS, DEFAULT_SHORE, shoreUniforms, applyShoreUniforms, type ShoreParams } from "./shoreShader";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Shallow water from above: colour by depth, cellular shore foam, contact
@@ -102,7 +103,7 @@ export function ShoreLabFigure({ t }: { t?: TrackTranslations }) {
   const note = notes[s.view];
 
   return (
-    <figure ref={figRef} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={figRef}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figShore_title", "Shore & Rain Lab")}
@@ -176,6 +177,6 @@ export function ShoreLabFigure({ t }: { t?: TrackTranslations }) {
           </div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

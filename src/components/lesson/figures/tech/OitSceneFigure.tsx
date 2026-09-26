@@ -7,6 +7,7 @@ import { mat4, compileProgram, forwardFrom, type Mat4, type Vec3 } from "../../k
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { uploadMesh, spherePNUT, planePNUT, wallPNUT, cubePNUT, trs, floatTargets, FULL_VS, drawFullscreen, type Mesh } from "../../kit/gl/glx";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Transparent geometry that no sort can fix: three coloured glass panes that
@@ -226,7 +227,7 @@ export function OitSceneFigure({ t }: { t?: TrackTranslations }) {
   ];
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figOitS_title", "Intersecting Glass — Sorting vs Weighted Blended OIT")}
@@ -251,6 +252,6 @@ export function OitSceneFigure({ t }: { t?: TrackTranslations }) {
         </label>
         <p className="text-[12px] text-[var(--text-muted)] leading-relaxed">{notes[mode]}</p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

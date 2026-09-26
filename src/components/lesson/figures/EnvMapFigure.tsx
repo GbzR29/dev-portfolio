@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, SKYBOX_CUBE, sphereMesh, boxMesh, forwardFrom } from "../kit/gl/gl";
 import { GLView, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "../kit/gl/GLView";
 import { Arrow, Label } from "../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Environment mapping: an object with no texture of its own, coloured entirely
@@ -181,7 +182,7 @@ export function EnvMapFigure({ t }: { t?: TrackTranslations }) {
     : `float F = f0 + (1.0 - f0) * pow(1.0 - dot(-I, N), 5.0);\nFragColor = mix(texture(uSkybox, T), texture(uSkybox, R), F);`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figEnv_title", "Environment Mapping — Mirror and Glass")}
@@ -230,6 +231,6 @@ export function EnvMapFigure({ t }: { t?: TrackTranslations }) {
           </p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

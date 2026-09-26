@@ -1,0 +1,115 @@
+/* =========================================================
+   FIGURE FRAME
+   Phone and touch behaviour of kit/FigureShell: the pinned
+   drawing, finger-sized controls and fullscreen. Desktop
+   with a mouse is untouched. Selectors carry an attribute
+   plus a class or element so they beat Tailwind utilities.
+========================================================= */
+
+/* Sticky needs clip: overflow hidden turns the frame into a scroll container */
+[data-figure].overflow-hidden { overflow: clip; }
+
+/* Hints that only make sense with a keyboard or mouse, and their touch versions */
+[data-figure] [data-touch-only] { display: none; }
+@media (pointer: coarse) {
+  [data-figure] [data-mouse-only] { display: none; }
+  [data-figure] [data-touch-only] { display: inline; }
+}
+
+/* ── Pinned drawing ────────────────────────────────────── */
+/* 81px = the sticky navbar (h-20 plus its border) */
+@media (max-width: 767px) {
+  [data-figure] [data-stage="pin"] {
+    position: sticky;
+    top: 81px;
+    z-index: 15;
+    box-shadow: 0 10px 16px -12px rgb(0 0 0 / 0.55);
+  }
+}
+
+/* ── Finger-sized controls ─────────────────────────────── */
+@media (pointer: coarse) {
+  [data-figure] :is(button, select, input[type="number"], input[type="text"]) { min-height: 36px; }
+  [data-figure] button { min-width: 36px; }
+  [data-figure] input[type="range"] { min-height: 32px; }
+}
+
+@media (max-width: 639px) {
+  /* Sliders: name and value on one line, the track full width below */
+  [data-figure] label:has(> input[type="range"]) { flex-wrap: wrap; row-gap: 0; }
+  [data-figure] label:has(> input[type="range"]) > input[type="range"] { order: 1; flex: 1 1 100%; margin-left: 0; }
+  [data-figure] label:has(> input[type="range"]) > span:first-child { width: auto; flex: 1 1 auto; }
+
+  /* Rows of three or more buttons slide sideways instead of wrapping */
+  [data-figure] .flex-wrap:has(> button ~ button ~ button) { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  [data-figure] .flex-wrap:has(> button ~ button ~ button)::-webkit-scrollbar { display: none; }
+  [data-figure] .flex-wrap:has(> button ~ button ~ button) > * { flex-shrink: 0; }
+}
+
+/* ── Fullscreen button ─────────────────────────────────── */
+[data-figure] > [data-fs-btn] { display: none; }
+
+@media (max-width: 767px), (pointer: coarse) {
+  [data-figure]:has([data-stage]) > [data-fs-btn] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    z-index: 20;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+  }
+  /* Keep the title bar's own content clear of the button */
+  [data-figure]:has([data-stage]) > :first-child:not([data-stage]) { padding-right: 48px; }
+}
+
+/* ── Fullscreen ────────────────────────────────────────── */
+[data-figure][data-fs] {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  margin: 0 !important;        /* beats the article's space-y-* sibling margins */
+  border: 0;
+  border-radius: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+[data-figure][data-fs] > [data-fs-btn] { position: fixed; top: 8px; right: 8px; }
+[data-figure][data-fs] [data-stage="pin"] { top: 0; }
+
+/* Landscape: drawing on the left, everything else on the right. The last row is
+   flexible so the tall drawing's extra height lands under the controls, not
+   between them. */
+@media (orientation: landscape) {
+  [data-figure][data-fs]:has(> [data-stage]) {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(250px, 2fr);
+    grid-template-rows: auto repeat(8, auto) 1fr;
+    align-items: start;
+  }
+  [data-figure][data-fs]:has(> [data-stage]) > * { grid-column: 2; }
+  [data-figure][data-fs]:has(> [data-stage]) > :first-child:not([data-stage]) { grid-column: 1 / -1; }
+  [data-figure][data-fs] > [data-stage] {
+    grid-column: 1;
+    grid-row: 2 / -1;
+    position: sticky;
+    top: 0;
+    border-bottom: 0;
+    border-right: 1px solid var(--border);
+  }
+
+  /* The side column is phone-narrow even though the screen is wide: undo the
+     widgets' own sm:/md: two-column layouts there, and wrap sliders as on phones */
+  [data-figure][data-fs]:has(> [data-stage]) > :not([data-stage]):is([class*="grid-cols-"]),
+  [data-figure][data-fs]:has(> [data-stage]) > :not([data-stage]) [class*="grid-cols-"] { grid-template-columns: minmax(0, 1fr); }
+  [data-figure][data-fs]:has(> [data-stage]) > :not([data-stage]) :is([class*="sm:flex-row"], [class*="md:flex-row"]) { flex-direction: column; }
+  [data-figure][data-fs] label:has(> input[type="range"]) { flex-wrap: wrap; row-gap: 0; }
+  [data-figure][data-fs] label:has(> input[type="range"]) > input[type="range"] { order: 1; flex: 1 1 100%; margin-left: 0; }
+  [data-figure][data-fs] label:has(> input[type="range"]) > span:first-child { width: auto; flex: 1 1 auto; }
+}

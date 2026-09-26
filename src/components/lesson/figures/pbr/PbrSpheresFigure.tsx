@@ -7,6 +7,7 @@ import { mat4, compileProgram, forwardFrom, SKYBOX_CUBE, SUN_DIR, type Vec3 } fr
 import { GLView, useSky, SkyPicker, type Look } from "../../kit/gl/GLView";
 import { uploadMesh, spherePNUT, trs, FULL_VS, drawFullscreen, type Mesh } from "../../kit/gl/glx";
 import { PBR_GLSL, buildIBL, disposeIBL, SKY_VS, SKY_FS, type IBL } from "./ibl";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The classic PBR test chart: a 7×7 grid of spheres, metallic rising bottom to
@@ -272,7 +273,7 @@ export function PbrSpheresFigure({ t, ibl = false }: { t?: TrackTranslations; ib
             : tx(t, "figPbr_note", "Bottom row: plastic-like dielectrics — coloured diffuse plus a white highlight. Top row: metals — no diffuse, a highlight tinted by the albedo. Left to right, the highlight spreads and dims as roughness grows, but the total energy stays the same.");
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{title}</span>
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{tx(t, "figPbr_hint", "drag to orbit · wheel to zoom")}</span>
@@ -326,6 +327,6 @@ export function PbrSpheresFigure({ t, ibl = false }: { t?: TrackTranslations; ib
         ))}
         <p className="text-[12px] text-[var(--text-muted)] leading-relaxed">{note}</p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

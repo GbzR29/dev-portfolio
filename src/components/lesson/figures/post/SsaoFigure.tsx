@@ -7,6 +7,7 @@ import { mat4, compileProgram, forwardFrom, type Mat4 } from "../../kit/gl/gl";
 import { GLView, type Look } from "../../kit/gl/GLView";
 import { ensureColorTarget, FULL_VS, drawFullscreen, floatTargets, type ColorTarget } from "../../kit/gl/glx";
 import { sceneMeshes, drawRoom, roomCamera, clampRoomLook, ROOM_LOOK, SUN, type SceneMeshes } from "./scene";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The whole SSAO pipeline, as in the chapter:
@@ -238,7 +239,7 @@ export function SsaoFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSsao_title", "SSAO — From G-Buffer to Soft Contact Shadows")}
@@ -274,6 +275,6 @@ export function SsaoFigure({ t }: { t?: TrackTranslations }) {
             : tx(t, "figSsao_note", "Compare final with no AO: the creases where the boxes meet the floor, the corner of the room and the underside of the sphere darken, and objects stop floating. Raise the radius and the shadows spread; turn off the range check and a dark halo appears on the wall behind the sphere and stairs.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Rasterisation up close. Each square is one pixel; the dots are the points
@@ -78,7 +79,7 @@ export function SamplePatternFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSamples_title", "Sample Patterns — Coverage vs Shading")}
@@ -135,6 +136,6 @@ export function SamplePatternFigure({ t }: { t?: TrackTranslations }) {
           <div className="text-[var(--code-muted)]">{tx(t, "figSamples_mem", "colour memory")}: {pts.length}× </div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

@@ -7,6 +7,7 @@ import { mat4, compileProgram, SKYBOX_CUBE, forwardFrom } from "../../kit/gl/gl"
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { PROC_SKY_FS, DEFAULT_SKY_PARAMS, setSkyUniforms, sunDirection, type SkyParams } from "./proceduralSky";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The chapter's procedural sky, one layer at a time. Every layer can be
@@ -135,7 +136,7 @@ export function ProceduralSkyFigure({ t }: { t?: TrackTranslations }) {
   const note = notes[codeKey];
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPSky_title", "A Procedural Sky, Layer by Layer")}
@@ -190,6 +191,6 @@ export function ProceduralSkyFigure({ t }: { t?: TrackTranslations }) {
           <p className="text-[12px] text-[var(--text-muted)] leading-relaxed">{tx(t, note[0], note[1])}</p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

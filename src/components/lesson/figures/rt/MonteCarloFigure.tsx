@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Monte Carlo integration of f(x) = π/2·sin(πx) on [0, 1] (exact value 1).
@@ -65,7 +66,7 @@ export function MonteCarloFigure({ t }: { t?: TrackTranslations }) {
       : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)] hover:border-[var(--primary)]/40"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figMC_title", "Monte Carlo — Integrating with Random Samples")}</span>
         <div className="flex gap-1.5">
@@ -103,6 +104,6 @@ export function MonteCarloFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figMC_note", "Each vertical line is one sample: a random x and the value f(x). With uniform samples, the estimate is just the average of f(x). The chart shows it wandering toward 1, inside a band that narrows like 1/√N: four times the samples for half the noise. Switch to importance sampling: x is drawn more often where f is large, each sample is divided by how likely it was, and the same N gives an estimate about ten times closer (σ drops from 0.48 to 0.05), which would take a hundred times more uniform samples.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

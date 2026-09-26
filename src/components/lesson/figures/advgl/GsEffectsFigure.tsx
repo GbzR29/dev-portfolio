@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, forwardFrom, cross, norm, sub, type Vec3 } from "../../kit/gl/gl";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The three textbook geometry-shader effects: explode (move each triangle along
@@ -225,7 +226,7 @@ export function GsEffectsFigure({ t }: { t?: TrackTranslations }) {
   const emitted = tris * 3 + (normals === "vertex" ? tris * 6 : normals === "face" ? tris * 2 : 0);
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figGsFx_title", "Explode, Shrink, Normals, Wireframe")}
@@ -267,6 +268,6 @@ export function GsEffectsFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figGsFx_note", "Explode needs the face normal, so every vertex of a triangle moves the same way. That is information only a stage that sees the whole triangle has. Vertex normals on the torus fan out smoothly; face normals sit at the centroids. Inside faces show orange when explode opens the mesh up. WebGL has no geometry stage, so this figure bakes the per-triangle values into the vertex buffer; the maths is the same.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

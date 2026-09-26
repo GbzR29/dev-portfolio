@@ -46,6 +46,31 @@ export function DocsLayout({
 
   useEffect(() => setIsDrawerOpen(false), [drawerKey]);
 
+  // The floating button shrinks to its icon while it would sit on a figure's controls.
+  const [overFigure, setOverFigure] = useState(false);
+  useEffect(() => {
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      const band = window.innerHeight - 96;            // the strip the button occupies
+      setOverFigure([...document.querySelectorAll("[data-figure]")].some(f => {
+        const r = f.getBoundingClientRect();
+        return r.top < window.innerHeight && r.bottom > band;
+      }));
+    };
+    const schedule = () => { if (!raf) raf = requestAnimationFrame(check); };
+    const late = setTimeout(schedule, 600);            // the chapter's figures load lazily
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(late);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [drawerKey]);
+
   useEffect(() => {
     try { setCollapsed(localStorage.getItem(STORAGE_KEY) === "1"); } catch { /* storage blocked */ }
     const id = requestAnimationFrame(() => setAnimate(true));
@@ -161,11 +186,14 @@ export function DocsLayout({
       {/* ── Mobile FAB — opens drawer ─────────────────────────────────── */}
       <button
         onClick={() => setIsDrawerOpen(true)}
-        className="fixed bottom-6 left-6 z-30 lg:hidden flex items-center gap-2 px-4 py-2.5 bg-[var(--primary)] text-white text-sm font-semibold rounded-full shadow-lg shadow-[var(--primary)]/25 hover:opacity-90 transition-opacity"
+        className={`fixed bottom-6 z-30 lg:hidden flex items-center gap-2 bg-[var(--primary)] text-white text-sm font-semibold rounded-full shadow-lg shadow-[var(--primary)]/25 hover:opacity-90 transition-opacity ${
+          overFigure ? "right-4 p-3" : "left-6 px-4 py-2.5"
+        }`}
         aria-label={drawerTitle}
+        title={drawerTitle}
       >
-        <BookOpen size={15} />
-        {drawerTitle}
+        <BookOpen size={overFigure ? 18 : 15} />
+        {!overFigure && drawerTitle}
       </button>
     </div>
   );

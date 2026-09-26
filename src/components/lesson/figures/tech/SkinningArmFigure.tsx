@@ -5,6 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Label } from "../../kit/svg";
 import { qAxis, toDual, dqBlendApply, qRotate, type V3 } from "./dq";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A 2D arm: two bones (upper arm from the shoulder, forearm from the elbow) and
@@ -84,7 +85,7 @@ export function SkinningArmFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSkinArm_title", "Skinning an Elbow — Rigid, Linear Blend, Dual Quaternion")}
@@ -137,6 +138,6 @@ export function SkinningArmFigure({ t }: { t?: TrackTranslations }) {
           <div className="mt-1">elbow = {elbow}°</div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

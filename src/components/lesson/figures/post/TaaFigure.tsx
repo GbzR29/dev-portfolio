@@ -7,6 +7,7 @@ import { compileProgram } from "../../kit/gl/gl";
 import { FULL_VS, drawFullscreen, makeColorTarget, type ColorTarget } from "../../kit/gl/glx";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Temporal anti-aliasing, one ingredient at a time, on a deliberately tiny
@@ -220,7 +221,7 @@ export function TaaFigure({ t }: { t?: TrackTranslations }) {
   ];
 
   return (
-    <figure ref={figRef} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={figRef}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figTaa_title", "Temporal Anti-Aliasing, Step by Step")}</span>
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{RW}×{RH} {tx(t, "figTaa_px", "pixels, magnified")}</span>
@@ -245,6 +246,6 @@ export function TaaFigure({ t }: { t?: TrackTranslations }) {
         </div>
         <p className="text-[12px] text-[var(--text-muted)] leading-relaxed">{tx(t, notes[mode][0], notes[mode][1])}</p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

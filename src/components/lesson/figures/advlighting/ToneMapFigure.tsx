@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Tone mapping operators side by side. Left: each curve's response to grey,
@@ -81,7 +82,7 @@ export function ToneMapFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figTone_title", "Tone Mappers — Curves, Hue Shifts and the Path to White")}
@@ -127,6 +128,6 @@ export function ToneMapFigure({ t }: { t?: TrackTranslations }) {
                 : tx(t, "figTone_note", "Applied per channel, a curve compresses the brightest channel more than the others, so saturated colours desaturate toward white as they brighten. That is the path to white, and it reads as \"very bright\". The side effect is hue skew: bright pure blue drifts purple, red drifts orange, green yellow. Look at the upper rows. The ACES fits have a pronounced shoulder and contrast; Hable is softer.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Whitted's recursion in 2D. One ray leaves the eye; every hit asks the light
@@ -99,7 +100,7 @@ export function RayTreeFigure({ t }: { t?: TrackTranslations }) {
   const counts = segs.reduce((m, s) => ({ ...m, [s.kind]: (m[s.kind] ?? 0) + 1 }), {} as Record<string, number>);
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figTree_title", "The Ray Tree — One Pixel, Traced")}</span>
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{tx(t, "figTree_hint", "drag the eye · aim with the slider")}</span>
@@ -148,6 +149,6 @@ export function RayTreeFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figTree_note", "Aim the ray at the glass ball and raise the depth: every glass hit splits into a reflected and a refracted ray, so the tree doubles at each level. Rays that stay inside the ball past the critical angle can only reflect (total internal reflection). The listing shows each ray's weight: the Fresnel share it passes on to the pixel. Branches with tiny weights are where a real renderer stops early.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

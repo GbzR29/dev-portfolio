@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // SSAO in a 2D slice. The camera looks straight down, so the depth buffer is
@@ -68,7 +69,7 @@ export function SsaoKernelFigure({ t }: { t?: TrackTranslations }) {
   const ground = [`M 0 ${H}`, ...Array.from({ length: W + 1 }, (_, x) => `L ${x} ${sy(height(x))}`), `L ${W} ${H} Z`].join(" ");
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSsaoK_title", "SSAO in a Slice — Samples Tested Against the Depth Buffer")}
@@ -131,6 +132,6 @@ export function SsaoKernelFigure({ t }: { t?: TrackTranslations }) {
           <div className="mt-1">AO = 1 − Σ occ / N = <span className="text-[var(--primary)]">{ao.toFixed(3)}</span></div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

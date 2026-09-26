@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // How much of an object survives the fog at distance d — the visibility
@@ -48,7 +49,7 @@ export function FogCurveFigure({ t }: { t?: TrackTranslations }) {
   const btn = (a: boolean, c: string) => ({ className: `px-2.5 py-1 text-[10px] font-mono rounded-lg border transition-all ${a ? "bg-[var(--primary-low)]" : "opacity-50"} border-[var(--border)]`, style: { color: c } });
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figFog_title", "Fog Curves — How Much Survives at Distance d")}
@@ -92,6 +93,6 @@ export function FogCurveFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figFog_note", "Linear fog has hard start and end points you can see as a line on the ground. Exponential fog is what a uniform medium really does: each metre absorbs the same fraction. Exp² keeps the foreground crisp and thickens quickly. Height fog is dense near the ground and thin above. Look up (raise the pitch) and the same distance crosses much less fog, which is how valleys fill with mist while mountain tops stay clear.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

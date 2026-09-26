@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Label } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Laying out a line of text by hand, the way a renderer does with FreeType.
@@ -54,7 +55,7 @@ export function GlyphMetricsFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figGlyph_title", "Glyph Metrics — Laying Out a Line by Hand")}
@@ -112,6 +113,6 @@ export function GlyphMetricsFigure({ t }: { t?: TrackTranslations }) {
           </div>
         )}
       </div>
-    </figure>
+    </FigureShell>
   );
 }

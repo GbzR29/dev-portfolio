@@ -12,6 +12,7 @@ import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
 import {
   WATER_FS, WATER_PRESETS, WATER_COLOURS, DEFAULT_WATER, MAX_WAVES, waterUniforms, applyUniforms, type WaterParams,
 } from "./waterShader";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The chapter's water, assembled: a traced Gerstner surface with every term
@@ -100,7 +101,7 @@ export function WaterLabFigure({ t }: { t?: TrackTranslations }) {
   const colourId = WATER_COLOURS.find(c => c.absorb.every((v, i) => v === w.absorb[i]))?.id;
 
   return (
-    <figure ref={figRef} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={figRef}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figWater_title", "Water Lab")}
@@ -191,6 +192,6 @@ export function WaterLabFigure({ t }: { t?: TrackTranslations }) {
           </div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

@@ -7,6 +7,7 @@ import {
   mat4, compileProgram, SKYBOX_CUBE, dirToFace, FACE_NAMES, FACE_FILES, forwardFrom, type Vec3,
 } from "../kit/gl/gl";
 import { GLView, rayDir, faceHref, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "../kit/gl/GLView";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // You stand inside a real samplerCube. Hover any pixel: the figure shows the
@@ -133,7 +134,7 @@ export function CubemapExplorerFigure({ t }: { t?: TrackTranslations }) {
   const axisName = "xyz"[major];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figCube_title", "Inside a Cubemap — Which Face, Which Texel")}
@@ -208,6 +209,6 @@ export function CubemapExplorerFigure({ t }: { t?: TrackTranslations }) {
           </p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

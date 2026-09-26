@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Shadow acne, in the light's own 2D view. The horizontal axis runs across the
@@ -37,7 +38,7 @@ export function ShadowAcneFigure({ t }: { t?: TrackTranslations }) {
   const maxNeeded = (slope * tw) / 2;           // half a texel's worth of slope
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figAcne_title", "Shadow Acne — Seen From the Light")}
@@ -89,6 +90,6 @@ export function ShadowAcneFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figAcne_note", "Yellow is lit, red failed the shadow test. Without bias, half of every texel is red — the stripes you see as acne. The steeper the surface, or the bigger the texels, the more bias it takes: half a texel's worth of slope. That is why the chapter's bias grows with 1 − n·l.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

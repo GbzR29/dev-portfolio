@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A tiny 8-bit stencil buffer and colour buffer, and two draw calls. Each draw
@@ -127,7 +128,7 @@ export function StencilOpsFigure({ t }: { t?: TrackTranslations }) {
   const cur = PRESETS.find(p => p.id === preset);
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figStencilOps_title", "The Stencil Test, Fragment by Fragment")}
@@ -210,6 +211,6 @@ export function StencilOpsFigure({ t }: { t?: TrackTranslations }) {
             : tx(t, "figStencilOps_custom", "Custom state. The middle op (dpfail) is fixed to KEEP because this figure has no depth test; in a real scene it decides what happens when the stencil passes but the depth test fails.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

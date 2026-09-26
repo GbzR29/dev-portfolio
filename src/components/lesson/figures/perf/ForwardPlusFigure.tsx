@@ -7,6 +7,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, forwardFrom, type Vec3 } from "../../kit/gl/gl";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { uploadMesh, cubePNUT, planePNUT, trs, type Mesh } from "../../kit/gl/glx";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Real tiled forward shading ("Forward+") with up to 1024 moving point lights.
@@ -230,7 +231,7 @@ export function ForwardPlusFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure ref={ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figFwdPlus_title", "Forward+ — Hundreds of Lights, Per-Tile Lists")}
@@ -266,6 +267,6 @@ export function ForwardPlusFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figFwdPlus_note", "Push the light count to 1024 and switch between per-tile lists and all lights: the image is identical, but the frame time is not. With lists, each pixel pays only for the handful of lights near it, so the cost follows light density, not light count. The heat view shows the lists: bright where many small lights overlap, dark far from any. Larger radii mean every light touches more tiles, and the lists grow fast.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

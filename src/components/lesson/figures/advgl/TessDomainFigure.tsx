@@ -5,6 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Label } from "../../kit/svg";
 import { tessQuad, tessTri, effective, type Spacing } from "./tessellator";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The fixed-function tessellator on its own: the abstract domain (a unit quad
@@ -57,7 +58,7 @@ export function TessDomainFigure({ t }: { t?: TrackTranslations }) {
   const segInfo = (l: number) => { const e = effective(l, spacing); return e.count; };
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figTessDom_title", "The Tessellator — Levels In, gl_TessCoord Out")}
@@ -116,6 +117,6 @@ export function TessDomainFigure({ t }: { t?: TrackTranslations }) {
             : tx(t, "figTessDom_fracNote", "Fractional spacing uses the real value. The edge gets n − 2 segments of length 1/level plus two shorter ones that grow smoothly from zero. Drag a level slowly and watch a new vertex pair slide out of a point instead of popping in. odd always has an odd segment count, even an even one.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

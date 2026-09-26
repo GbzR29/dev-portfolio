@@ -8,6 +8,7 @@ import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { uploadMesh, planePNUT, trs, type Mesh } from "../../kit/gl/glx";
 import { LIT_VS, LIT_FS, SUN } from "../post/scene";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A complete CPU particle system, the way the chapter builds it:
@@ -259,7 +260,7 @@ export function ParticlesFigure({ t }: { t?: TrackTranslations }) {
         : tx(t, "figPart_note", "Premultiplied alpha stores colour already multiplied by alpha, and blends with ONE, ONE_MINUS_SRC_ALPHA. With alpha = 1 it behaves like normal blending, with alpha = 0 like pure addition, so fire and smoke can share one draw call and one blend state.");
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figPart_title", "A Particle System — Pool, Simulation, Instanced Billboards")}
@@ -295,6 +296,6 @@ export function ParticlesFigure({ t }: { t?: TrackTranslations }) {
         </div>
         <p className="text-[12px] text-[var(--text-muted)] leading-relaxed">{note}</p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

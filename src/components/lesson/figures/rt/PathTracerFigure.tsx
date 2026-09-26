@@ -8,6 +8,7 @@ import { FULL_VS, drawFullscreen, makeColorTarget, deleteColorTarget, type Color
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { PATH_TRACE_FS, PATH_DISPLAY_FS, DEFAULT_PATH, type PathParams } from "./pathShader";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Progressive path tracing of a Cornell box. Every frame adds `spp` random
@@ -94,7 +95,7 @@ export function PathTracerFigure({ t }: { t?: TrackTranslations }) {
   );
 
   return (
-    <figure ref={figRef} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={figRef}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figPath_title", "A Progressive Path Tracer — Cornell Box")}</span>
         <span className="text-[9px] text-[var(--text-muted)] font-mono">{tx(t, "figPath_hint", "drag to orbit · any change restarts the average")}</span>
@@ -132,6 +133,6 @@ export function PathTracerFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figPath_note", "Watch the noise melt as samples accumulate. Things to try: switch to uniform sampling and see how much slower the noise clears. Turn off next event estimation and shrink the light: paths must now hit a tiny light by chance, and the image stays speckled far longer. Set the bounces to 0 for direct light only (no colour bleeding from the red and green walls), then 1, 2… each bounce adds one more generation of indirect light.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

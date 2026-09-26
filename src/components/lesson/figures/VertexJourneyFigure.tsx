@@ -11,6 +11,7 @@ import {
   lookAtBasis, viewTransform,
 } from "../kit/scene3d";
 import { TexturedFace, FigureIcon, useProtoTextures } from "../kit/protoTexture";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // One vertex on its way to the screen. Each step animates the whole scene into
@@ -157,7 +158,7 @@ export function VertexJourneyFigure({ t }: { t?: TrackTranslations }) {
   const vpRect: V3[] = [[-K * ASPECT, -K, NDC_Z], [K * ASPECT, -K, NDC_Z], [K * ASPECT, K, NDC_Z], [-K * ASPECT, K, NDC_Z]];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figJ_title", "A Vertex's Journey — Local to Screen")}
@@ -290,6 +291,6 @@ export function VertexJourneyFigure({ t }: { t?: TrackTranslations }) {
 
         <StepperControls s={st} />
       </div>
-    </figure>
+    </FigureShell>
   );
 }

@@ -29,6 +29,8 @@ src/components/lesson/Prose.tsx        Article, Lead, KeyIdeas — chapter page 
 src/components/lesson/Tex.tsx          Equation (KaTeX)
 src/components/lesson/kit/             widget INFRASTRUCTURE (no lesson content):
   figure.tsx      SVG figure blocks (Figure, Slider, plot, useDrag, useRaf, useVisible…)
+  FigureShell.tsx the frame of EVERY widget: phone pinning, fullscreen, touch hints (styles in src/styles/figure.css)
+  media.ts        useMediaQuery + PHONE / STACKED / TOUCH queries
   vec3.ts         the only 3D vector math (Vec3, add, cross, norm, rotY…)
   scene3d.tsx     SVG 3D: projector, orbit controls, boxFaces/frontFacing, lookAt
   svg.tsx, Stepper.tsx, protoTexture.tsx (Arrow/Label, step animations, textured quads)
@@ -61,6 +63,9 @@ from the `chapters` array — never hand-write them.
 
 ## Widget rules
 
+- Every widget's outer frame is `<FigureShell>` (kit `Figure` already uses it); never hand-write the
+  `my-6 rounded-xl …` card. It finds the drawing itself; mark keyboard/mouse-only hint text with
+  `data-mouse-only` (and a `data-touch-only` alternative if there is one).
 - Animated widgets pause off screen: `const vis = useVisible<HTMLElement>()`, `useAnimationTime(playing && vis.on)`, `<figure ref={vis.ref}>`.
 - WebGL widgets render through `GLView`; a widget that creates its own context must call `claimContext`/`releaseContext` (kit/gl/context.ts).
 - `boxFaces` faces wind CCW from outside (it fixes left-handed axes itself); `frontFacing` relies on that.
@@ -76,4 +81,3 @@ from the `chapters` array — never hand-write them.
 ## Still to do (agreed, one small step at a time)
 
 - Translations: PT is complete (all tracks + widgets). ES/ZH exist only for OpenGL and GLSL lessons; no ES/ZH widget text yet.
-- Widgets need a better mobile layout (design first).

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, type P2 } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A circle squashed by a non-uniform scale. Its tangents follow the model
@@ -39,7 +40,7 @@ export function NormalMatrixFigure({ t }: { t?: TrackTranslations }) {
     + (color ? "" : "");
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figNormalM_title", "Why Normals Need Their Own Matrix")}
@@ -87,6 +88,6 @@ export function NormalMatrixFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figNormalM_note", "Stretch the circle sideways. The red normals, multiplied by the model matrix, lean toward the stretch and stop being perpendicular — lighting computed with them is simply wrong. The green ones use the inverse-transpose and stay at 90° at every point. With a uniform scale (x = 1) both agree, which is why the bug often hides until a model gets squashed.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

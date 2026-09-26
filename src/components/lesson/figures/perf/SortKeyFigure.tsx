@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // One frame's draw list: each draw needs a pass, a shader program, a material
@@ -62,7 +63,7 @@ export function SortKeyFigure({ t }: { t?: TrackTranslations }) {
   const hd = hover !== null ? list[hover] : null;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSortKey_title", "One Frame's Draw List, Sorted Three Ways")}
@@ -128,6 +129,6 @@ export function SortKeyFigure({ t }: { t?: TrackTranslations }) {
           <div className="mt-1">{tx(t, "figSortKey_cost", "relative CPU cost")}: <span className="text-[var(--primary)]">{total}</span></div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

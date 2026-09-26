@@ -5,6 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { compileProgram } from "../../kit/gl/gl";
 import { GLView, type Look } from "../../kit/gl/GLView";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Two font atlases for printable ASCII, both built here in the browser:
@@ -229,7 +230,7 @@ export function SdfTextFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSdfText_title", "Same 32 px Atlas, Any Size — Bitmap vs Signed Distance Field")}
@@ -262,6 +263,6 @@ export function SdfTextFigure({ t }: { t?: TrackTranslations }) {
               : tx(t, "figSdfText_sdfNote", "The same 32 px budget, stored as distance. The shader thresholds the interpolated distance at 0.5 with a smoothstep one screen pixel wide, so the edge stays sharp at 400 px. Moving the threshold makes the text bolder or thinner; a second threshold draws an outline, a wide smooth band a glow, and a shifted lookup a shadow, all from one texture fetch or two. Very sharp corners round off slightly, which is what multi-channel SDFs fix.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

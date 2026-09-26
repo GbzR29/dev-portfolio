@@ -5,6 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { CROSS_CELLS, crossCellOf, dirToFace, dot, norm, FACE_NAMES, type Vec3, type TexImage } from "../../kit/gl/gl";
 import { useSky, SkyPicker, type SkyImages } from "../../kit/gl/GLView";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // One sky stored two ways: a 4×3 cross (six cube faces) and a 2:1 panorama.
@@ -157,7 +158,7 @@ export function SkyFormatsFigure({ t }: { t?: TrackTranslations }) {
   );
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSkyF_title", "One Sky, Two Files — Cross and Panorama")}
@@ -213,6 +214,6 @@ export function SkyFormatsFigure({ t }: { t?: TrackTranslations }) {
             "Point at either image. The yellow lines are the equator and longitude 0. On the cross the meridians bend as they cross face edges and all meet at the centre of +Y and −Y, which the panorama stretches into its whole top and bottom rows. The last two numbers give how much sky one texel covers here, relative to the largest texel of the same image: a cube map varies at most about 5× (face centre against corner), but a panorama's pixels shrink to nothing at the poles, which is why it wastes memory up there and why they sparkle when minified.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

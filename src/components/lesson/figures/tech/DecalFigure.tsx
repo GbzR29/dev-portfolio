@@ -8,6 +8,7 @@ import { GLView, type Look } from "../../kit/gl/GLView";
 import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
 import { LIT_VS, LIT_FS, SUN, sceneMeshes, drawRoom, roomCamera, clampRoomLook, ROOM_LOOK, type SceneMeshes } from "../post/scene";
 import { invert } from "./mat4util";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A projected ("deferred") decal. The room is rendered first, keeping its depth
@@ -200,7 +201,7 @@ export function DecalFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figDecal_title", "A Projected Decal — Reconstructed From the Depth Buffer")}
@@ -233,6 +234,6 @@ export function DecalFigure({ t }: { t?: TrackTranslations }) {
             : tx(t, "figDecal_note", "The decal lands on whatever the box contains: the floor, the wall and the boxes alike, with no knowledge of meshes. Tilt it toward the corner. On the floor it looks right, but on the wall, nearly parallel to the projection axis, one row of texels is smeared across the whole wall height. Turn on the angle fade. Moving objects inside the box would pick it up too, which is why engines mask decals with the stencil buffer or per-object flags.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

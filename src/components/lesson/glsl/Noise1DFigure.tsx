@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Noise in one dimension, where every piece is visible:
@@ -68,7 +69,7 @@ export function Noise1DFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figNoise1_title", "Noise in One Dimension — Built Piece by Piece")}
@@ -120,6 +121,6 @@ export function Noise1DFigure({ t }: { t?: TrackTranslations }) {
                 : tx(t, "figNoise1_fbmNote", "Fractal Brownian motion: add octaves of the same noise, each with the frequency multiplied by the lacunarity and the amplitude by the gain (purple: the individual octaves). Gain 0.5 gives the classic 1/f 'natural' look; higher gain is rougher, lower is smoother. Coastlines, clouds and mountains all look like this.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

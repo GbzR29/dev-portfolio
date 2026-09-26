@@ -9,6 +9,7 @@ import { useVisible } from "../../kit/figure";
 import { uploadMesh, planePNUT, cubePNUT, trs, type Mesh } from "../../kit/gl/glx";
 import { mapUrl } from "../../kit/protoTexture";
 import { makeBrickMaps } from "../../kit/gl/bricks";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A single flat quad on the floor, textured as bricks, rendered four ways:
@@ -166,7 +167,7 @@ export function ParallaxFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figParallax_title", "Parallax Mapping — Depth on a Flat Quad")}
@@ -201,6 +202,6 @@ export function ParallaxFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figParallax_note", "Drag down to look along the floor. With normal mapping only, the bricks are lit correctly but stay painted on. Plain parallax shifts them but smears at grazing angles; steep parallax shows layer slices when max layers is low; POM keeps the bricks solid and lets them hide the mortar behind them. It is still one flat quad — the silhouette gives it away.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

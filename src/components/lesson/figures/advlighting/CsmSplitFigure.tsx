@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Label } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The camera frustum seen from above (the sun straight overhead), cut into
@@ -66,7 +67,7 @@ export function CsmSplitFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figCsmSplit_title", "Splitting the Frustum — and What Each Texel Buys")}
@@ -134,6 +135,6 @@ export function CsmSplitFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figCsmSplit_note", "A single map (dashed) must stretch its texels over the whole view, so near the camera one texel covers many pixels. Each cascade restarts the curve with a smaller footprint, lifting the near range back toward 1. λ = 0 splits evenly (the first cascade is wasted on a huge range); λ = 1 splits logarithmically (near slices become tiny). Most engines use λ ≈ 0.5–0.9. The sphere fit is a little larger than the tight box but keeps the same size as the camera turns, which matters for stability.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

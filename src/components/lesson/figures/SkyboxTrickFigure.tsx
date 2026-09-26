@@ -5,6 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, SKYBOX_CUBE, boxMesh, forwardFrom, type Vec3 } from "../kit/gl/gl";
 import { GLView, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "../kit/gl/GLView";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A tiny scene with a real skybox, where each line of the skybox recipe is a
@@ -178,7 +179,7 @@ export function SkyboxTrickFigure({ t }: { t?: TrackTranslations }) {
   );
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSky_title", "The Skybox Trick — Break It to Understand It")}
@@ -219,6 +220,6 @@ export function SkyboxTrickFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, verdict.key, verdict.text)}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

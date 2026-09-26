@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Label, pts, type P2 } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A geometry shader runs once per input primitive and emits vertices one by one.
@@ -110,7 +111,7 @@ export function GsEmitFigure({ t }: { t?: TrackTranslations }) {
   const triColors = ["#3b82f6", "#a855f7", "#22c55e"];
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figGsEmit_title", "One Primitive In, New Primitives Out")}
@@ -177,6 +178,6 @@ export function GsEmitFigure({ t }: { t?: TrackTranslations }) {
               : tx(t, "figGsEmit_wireNote", "The output topology does not have to match the input. Here each triangle becomes a closed line strip of its three edges: four emits, since the first vertex repeats to close the loop.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

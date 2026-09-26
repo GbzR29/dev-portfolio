@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Point-light falloff F(d) = 1 / (Kc + Kl·d + Kq·d²), with the classic
@@ -44,7 +45,7 @@ export function AttenuationFigure({ t }: { t?: TrackTranslations }) {
   const pick = (i: number) => { setRow(i); setKl(TABLE[i][1]); setKq(TABLE[i][2]); };
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figAtt_title", "Attenuation — How a Point Light Fades")}
@@ -122,6 +123,6 @@ light.quadratic = ${kq.toFixed(4)};
           </p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

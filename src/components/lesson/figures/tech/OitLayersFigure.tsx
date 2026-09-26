@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Everything that happens at ONE pixel covered by four transparent surfaces.
@@ -68,7 +69,7 @@ export function OitLayersFigure({ t }: { t?: TrackTranslations }) {
   const Xz = (z: number) => 30 + (z / 11) * (SW - 50);
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figOitL_title", "One Pixel, Four Transparent Layers")}
@@ -119,6 +120,6 @@ export function OitLayersFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figOitL_note", "\"Over\" is not commutative: the last layer drawn covers the others by its α, so the draw order changes the colour unless it matches depth. WBOIT gets the total coverage exactly right (the background always shows through by Π(1 − αᵢ)) and only approximates how the layers' colours mix: a depth-weighted average in which nearer layers count more. With similar colours it is nearly perfect; with three strongly different glasses you can see its error. Additive never sorts either, but only suits light: fire, sparks, holograms.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

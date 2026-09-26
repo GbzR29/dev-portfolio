@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, SKYBOX_CUBE, makeTexture2D, forwardFrom, dot as dot3, FACE_NAMES, CROSS_CELLS, crossCellOf } from "../kit/gl/gl";
 import { GLView, rayDir, faceHref, useSky, skyTexture, SkyPicker, type Look, type SkyImages } from "../kit/gl/GLView";
 import { PROC_SKY_FS, DEFAULT_SKY_PARAMS, setSkyUniforms, sunDirection } from "./sky/proceduralSky";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Three ways to put a sky behind a scene, rendered by the same skybox cube:
@@ -161,7 +162,7 @@ vec3 c = sky(dir);   // scattering + sun + stars + clouds
 // built step by step in "A procedural sky" below`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figSkyT_title", "Three Kinds of Sky")}
@@ -261,6 +262,6 @@ vec3 c = sky(dir);   // scattering + sun + stars + clouds
           </p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

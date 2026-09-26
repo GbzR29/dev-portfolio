@@ -7,6 +7,7 @@ import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../../kit/g
 import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
 import { GLView, type Look } from "../../kit/gl/GLView";
 import { WHITTED_FS, DEFAULT_WHITTED, type WhittedParams } from "./whittedShader";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A classic (Whitted) ray tracer: primary rays, shadow rays, reflection and
@@ -52,7 +53,7 @@ export function WhittedFigure({ t }: { t?: TrackTranslations }) {
     : tx(t, "figWhit_note", "Every pixel sends one ray. At a matte surface it stops, after asking the light whether it is visible (a shadow ray). The mirror adds one reflected ray. Glass adds a reflected and a refracted ray, weighted by Fresnel. Switch each feature off to see what it adds, and set the depth to 1 to see a single bounce.");
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figWhit_title", "A Whitted Ray Tracer")}</span>
         <div className="flex gap-1.5 flex-wrap">{VIEWS.map((v, i) => <button key={v} className={btn(p.view === i)} onClick={() => set("view", i)}>{v}</button>)}</div>
@@ -78,6 +79,6 @@ export function WhittedFigure({ t }: { t?: TrackTranslations }) {
         </div>
         <p className="text-[12px] text-[var(--text-muted)] leading-relaxed">{note}</p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

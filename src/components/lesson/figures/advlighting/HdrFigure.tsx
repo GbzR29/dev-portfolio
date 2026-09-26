@@ -8,6 +8,7 @@ import { GLView, type Look } from "../../kit/gl/GLView";
 import {
   uploadMesh, cubePNUT, trs, ensureColorTarget, FULL_VS, drawFullscreen, type Mesh, type ColorTarget,
 } from "../../kit/gl/glx";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A corridor with a light far brighter than 1.0 at its end, rendered into a
@@ -140,7 +141,7 @@ export function HdrFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figHdr_title", "HDR and Tone Mapping — Light Beyond 1.0")}
@@ -182,6 +183,6 @@ export function HdrFigure({ t }: { t?: TrackTranslations }) {
           ))}
         </svg>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

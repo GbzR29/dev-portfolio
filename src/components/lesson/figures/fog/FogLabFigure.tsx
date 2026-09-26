@@ -9,6 +9,7 @@ import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
 import { FOG_FS, FOG_LAB_PRESETS, DEFAULT_FOG, fogUniforms, applyFogUniforms, type FogParams } from "./fogShader";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A valley with every kind of fog from the chapter. The layer modes keep the
@@ -78,7 +79,7 @@ export function FogLabFigure({ t }: { t?: TrackTranslations }) {
   const note = notes[p.mode];
 
   return (
-    <figure ref={figRef} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={figRef}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figFogL_title", "Fog Lab")}</span>
         <div className="flex gap-1.5 flex-wrap">
@@ -129,6 +130,6 @@ export function FogLabFigure({ t }: { t?: TrackTranslations }) {
           </div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

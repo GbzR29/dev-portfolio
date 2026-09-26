@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { mat4, compileProgram, forwardFrom, norm, type Vec3 } from "../../kit/gl/gl";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A field of rocks, each available at four levels of detail (icospheres with
@@ -212,7 +213,7 @@ export function LodFigure({ t }: { t?: TrackTranslations }) {
   const LOD_COLORS = ["#33cc59", "#408cff", "#ffbf33", "#ff4d4d"];
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figLod_title", "Level of Detail by Screen Size")}
@@ -253,6 +254,6 @@ export function LodFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figLod_note", "Turn the colours off and compare auto with LOD0: the difference is hard to see, yet auto draws a small fraction of the triangles. Distant rocks are a few pixels tall, and 1280 triangles there would be wasted, or worse: pixel-sized triangles shade inefficiently in 2×2 quads. Dolly the camera with hysteresis at 0 and watch the switch count and the popping; hysteresis cuts the flicker, and the dithered cross-fade dissolves one level into the next.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

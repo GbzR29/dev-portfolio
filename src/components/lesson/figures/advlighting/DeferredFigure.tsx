@@ -10,6 +10,7 @@ import {
   uploadMesh, cubePNUT, spherePNUT, planePNUT, trs, ensureColorTarget, FULL_VS, drawFullscreen,
   type Mesh, type ColorTarget,
 } from "../../kit/gl/glx";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Deferred shading. The geometry pass writes position, normal and colour into
@@ -191,7 +192,7 @@ export function DeferredFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figDeferred_title", "Deferred Shading — The G-Buffer")}
@@ -221,6 +222,6 @@ export function DeferredFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figDeferred_note", "Open 'all four' to see what the geometry pass stores: world position (as a repeating colour), the normal, the albedo and the specular strength. The lighting pass never touches a mesh — it only reads these textures, so overdraw no longer multiplies the lighting cost.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

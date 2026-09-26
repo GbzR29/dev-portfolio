@@ -8,6 +8,7 @@ import { Arrow, Label, pts, type P2 } from "../kit/svg";
 import { type V3, add, sub, scale, cross, norm, rotY, makeProjector } from "../kit/scene3d";
 import { useFigureSpeed, SpeedControl, scaledMs } from "../kit/Stepper";
 import { useVisible } from "../kit/figure";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // One triangle, defined once with its vertices in counter-clockwise order.
@@ -96,7 +97,7 @@ export function WindingFigure({ t }: { t?: TrackTranslations }) {
         : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <style>{`@keyframes wind-flow { to { stroke-dashoffset: -20; } }`}</style>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
@@ -202,6 +203,6 @@ glFrontFace(GL_${frontFace});`}
           </p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

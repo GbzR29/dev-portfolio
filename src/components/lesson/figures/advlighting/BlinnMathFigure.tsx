@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Arrow, Label, type P2 } from "../../kit/svg";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // When l̂, n̂ and v̂ lie in one plane, the angle between n̂ and the halfway
@@ -48,7 +49,7 @@ export function BlinnMathFigure({ t }: { t?: TrackTranslations }) {
   );
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figBlinnM_title", "Halfway Vector — Why Blinn Needs a Bigger Exponent")}
@@ -109,6 +110,6 @@ export function BlinnMathFigure({ t }: { t?: TrackTranslations }) {
           </p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

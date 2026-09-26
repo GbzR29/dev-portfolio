@@ -9,6 +9,7 @@ import {
   ortho, uploadMesh, cubePNUT, spherePNUT, planePNUT, makeDepthTarget, FULL_VS, drawFullscreen,
   SHADOW_SCENE, type Mesh, type DepthTarget,
 } from "../../kit/gl/glx";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Real two-pass shadow mapping. Pass 1 renders the scene's depth from the
@@ -195,7 +196,7 @@ export function ShadowMapFigure({ t }: { t?: TrackTranslations }) {
   );
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figShadow_title", "Shadow Mapping — Both Passes, Live")}
@@ -232,6 +233,6 @@ export function ShadowMapFigure({ t }: { t?: TrackTranslations }) {
           </p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

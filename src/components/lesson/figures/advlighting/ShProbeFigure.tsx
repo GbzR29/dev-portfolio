@@ -6,6 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { compileProgram, makeTexture2D, type TexImage, type Vec3 } from "../../kit/gl/gl";
 import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
 import { GLView, useSky, SkyPicker, type Look, type SkyImages } from "../../kit/gl/GLView";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A light probe in 9 numbers. The sky's radiance is projected onto the first
@@ -176,7 +177,7 @@ export function ShProbeFigure({ t }: { t?: TrackTranslations }) {
   };
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figSh_title", "A Light Probe in Nine Numbers")}</span>
         <SkyPicker sources={sky.sources} value={sky.id} onChange={sky.setId} busy={sky.busy} />
@@ -212,6 +213,6 @@ export function ShProbeFigure({ t }: { t?: TrackTranslations }) {
           {tx(t, "figSh_note", "One coefficient is the average colour of the sky: a flat, uniform ambient. Four add a direction: brighter on the side the light comes from. Nine add the difference between top, horizon and ground, and between opposite sides. With nine, the error sphere is nearly black for every sky: a matte object cannot tell those 27 numbers from the whole panorama. That is why games store light probes as spherical harmonics.")}
         </p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

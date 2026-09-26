@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A 3×3 convolution done by hand on a tiny greyscale image. Pick a pixel on
@@ -75,7 +76,7 @@ export function KernelFigure({ t }: { t?: TrackTranslations }) {
   const same = (p: typeof PRESETS[number]) => p.k.every((v, i) => v === k[i]) && (p.div ?? 1) === div;
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figKernel_title", "Convolution by Hand — One 3×3 Kernel, Every Pixel")}
@@ -146,6 +147,6 @@ export function KernelFigure({ t }: { t?: TrackTranslations }) {
           </p>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

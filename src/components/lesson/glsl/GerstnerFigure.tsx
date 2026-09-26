@@ -5,6 +5,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { useAnimationTime } from "../kit/gl/GLView";
 import { useVisible } from "../kit/figure";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A slice through a water surface. A sine wave only moves points up and down.
@@ -56,7 +57,7 @@ export function GerstnerFigure({ t }: { t?: TrackTranslations }) {
     ? "border-[var(--primary)]/50 text-[var(--primary)] bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`;
 
   return (
-    <figure ref={vis.ref} className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell ref={vis.ref}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figGerst_title", "Sine vs Gerstner — Points Move in Circles")}
@@ -114,6 +115,6 @@ export function GerstnerFigure({ t }: { t?: TrackTranslations }) {
           <div>{tx(t, "figGerst_period", "period")} T = {(2 * Math.PI / Math.sqrt(G * k0)).toFixed(2)} s</div>
         </div>
       </div>
-    </figure>
+    </FigureShell>
   );
 }

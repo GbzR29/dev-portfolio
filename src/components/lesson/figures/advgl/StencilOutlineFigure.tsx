@@ -7,6 +7,7 @@ import { mat4, compileProgram, forwardFrom, type Mat4 } from "../../kit/gl/gl";
 import { GLView, type Look } from "../../kit/gl/GLView";
 import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
 import { ROOM, LIT_FS, LIT_VS, SUN, sceneMeshes, roomCamera, clampRoomLook, ROOM_LOOK, type SceneMeshes } from "../post/scene";
+import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The classic stencil outline, run for real in an offscreen framebuffer with a
@@ -231,7 +232,7 @@ export function StencilOutlineFigure({ t }: { t?: TrackTranslations }) {
           : tx(t, "figStencilOut_pixelNote", "Extruding in clip space by N pixels gives the same width at any distance, which is what most games want. The cube corners still open slightly; games bake smoothed normals into a spare vertex channel for this.");
 
   return (
-    <figure className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-sm">
+    <FigureShell>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
           {tx(t, "figStencilOut_title", "Object Outlines with the Stencil Buffer")}
@@ -266,7 +267,7 @@ export function StencilOutlineFigure({ t }: { t?: TrackTranslations }) {
         </div>
         <p className="text-[12px] text-[var(--text-muted)] leading-relaxed">{note}</p>
       </div>
-    </figure>
+    </FigureShell>
   );
 }
 
