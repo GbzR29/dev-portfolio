@@ -37,6 +37,11 @@ export const mathChapters: Chapter[] = [
   { id: "triangles",       section: GEOMETRY, title: "Triangles & Congruence",    minRead: 18, load: () => import("./chapters/triangles").then((m) => m.TrianglesContent) },
   { id: "area",            section: GEOMETRY, title: "Perimeter & Area",          minRead: 18, load: () => import("./chapters/area").then((m) => m.AreaContent) },
   { id: "pythagoras",      section: GEOMETRY, title: "The Pythagorean Theorem",   minRead: 17, load: () => import("./chapters/pythagoras").then((m) => m.PythagorasContent) },
+  { id: "similarity",      section: GEOMETRY, title: "Similarity & Scale",        minRead: 17, load: () => import("./chapters/similarity").then((m) => m.SimilarityContent) },
+  { id: "circle",          section: GEOMETRY, title: "Circles & π",               minRead: 19, load: () => import("./chapters/circle").then((m) => m.CircleContent) },
+  { id: "volumes",         section: GEOMETRY, title: "Volume & Surface Area",     minRead: 18, load: () => import("./chapters/volumes").then((m) => m.VolumesContent) },
+  { id: "analytic",        section: GEOMETRY, title: "Coordinate Geometry & Conics", minRead: 20, load: () => import("./chapters/analytic").then((m) => m.AnalyticContent) },
+  { id: "transformations", section: GEOMETRY, title: "Transformations",           minRead: 17, load: () => import("./chapters/transformations").then((m) => m.TransformationsContent) },
 
   { id: "trig",      section: TRIGONOMETRY, title: "Trigonometry",              minRead: 17, load: () => import("./chapters/trig").then((m) => m.TrigContent) },
 
