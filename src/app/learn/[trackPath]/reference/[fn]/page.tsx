@@ -4,9 +4,10 @@
 import { Fragment, useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { AlertTriangle, AlignLeft, BookOpen, ChevronRight, ExternalLink } from "lucide-react";
+import { AlertTriangle, AlignLeft, BookOpen, ExternalLink } from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { DocsLayout } from "@/components/lesson/DocsLayout";
+import { trackCrumbs } from "@/lib/tracks/crumbs";
 import { CodeBlock } from "@/components/lesson/LessonComponents";
 import { ReferenceSidebar } from "@/components/reference/ReferenceSidebar";
 import { ReferenceProvider, RefToken } from "@/components/reference/RefToken";
@@ -22,8 +23,8 @@ import {
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section id={id} className="scroll-mt-28 mt-14 first:mt-0">
-      <h2 className="text-xl font-bold tracking-tight text-[var(--text-main)] pb-2 mb-5 border-b border-[var(--separator)]">
+    <section id={id} className="scroll-mt-[calc(var(--nav-h,81px)+24px)] mt-14 first:mt-0">
+      <h2 className="font-display text-[1.6rem] leading-tight text-[var(--text-main)] pb-2 mb-5 border-b border-[var(--border)]">
         {title}
       </h2>
       {children}
@@ -113,7 +114,7 @@ function ParamCard({ param, language, reference }: { param: RefParam; language: 
   const { t } = useLanguage();
   const tt = t as Record<string, string | undefined>;
   return (
-    <div id={`param-${param.name}`} className="scroll-mt-28 rounded-xl border border-[var(--border)] bg-[var(--card)] px-5 py-4">
+    <div id={`param-${param.name}`} className="scroll-mt-[calc(var(--nav-h,81px)+24px)] rounded-xl border border-[var(--border)] bg-[var(--card)] px-5 py-4">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
         <span className="font-mono text-[15px] font-semibold text-[var(--primary)]">{param.name}</span>
         <span className="font-mono text-[11px] text-[var(--text-muted)] rounded border border-[var(--border)] px-1.5 py-0.5">
@@ -125,10 +126,10 @@ function ParamCard({ param, language, reference }: { param: RefParam; language: 
       </div>
       {param.values && param.values.length > 0 && (
         <div className="mt-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)] mb-2">
+          <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)] mb-2">
             {tt.refAcceptedValues ?? "Common values"}
           </p>
-          <dl className="divide-y divide-[var(--separator)] rounded-lg border border-[var(--separator)] overflow-hidden">
+          <dl className="divide-y divide-[var(--separator)] rounded-lg border border-[var(--border)] overflow-hidden">
             {param.values.map((v) => (
               <div key={v.name} className="grid sm:grid-cols-[minmax(0,15rem)_1fr] gap-x-4 gap-y-0.5 px-3.5 py-2.5 bg-[var(--bg)]">
                 <dt className="font-mono text-[12px] text-[var(--text-main)] break-words">{v.name}</dt>
@@ -196,6 +197,11 @@ export default function ReferenceEntryPage() {
   return (
     <ReferenceProvider reference={reference}>
       <DocsLayout
+        crumbs={[
+          ...trackCrumbs(tt, trackPath),
+          { label: tt.refTitle ?? "Function reference", href: referenceHref(reference) },
+          { label: entry.name },
+        ]}
         drawerTitle={tt.refTitle ?? "Function reference"}
         drawerKey={fn}
         backHref={referenceHref(reference)}
@@ -203,11 +209,11 @@ export default function ReferenceEntryPage() {
         left={<ReferenceSidebar reference={reference} activeName={entry.name} />}
         right={
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--text-muted)] mb-4 flex items-center gap-1.5">
+            <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)] mb-4 flex items-center gap-1.5">
               <AlignLeft size={11} />
               {tt.refOnThisPage ?? "On this page"}
             </p>
-            <nav className="space-y-0.5 border-l border-[var(--separator)]">
+            <nav className="space-y-0.5 border-l border-[var(--border)]">
               {sections.map((s) => (
                 <Fragment key={s.id}>
                   <a
@@ -231,30 +237,12 @@ export default function ReferenceEntryPage() {
           </div>
         }
       >
-        {/* Breadcrumb */}
-        <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-muted)] font-mono mb-8">
-          <Link href={`/learn/${encodeURIComponent(trackPath)}`} className="hover:text-[var(--text-main)] transition-colors">
-            {reference.title}
-          </Link>
-          <ChevronRight size={12} className="opacity-40" />
-          <Link href={referenceHref(reference)} className="hover:text-[var(--text-main)] transition-colors">
-            {tt.refTitle ?? "Function reference"}
-          </Link>
-          {category && (
-            <>
-              <ChevronRight size={12} className="opacity-40" />
-              <Link href={`${referenceHref(reference)}#${category.id}`} className="hover:text-[var(--text-main)] transition-colors">
-                {loc(category.title, language)}
-              </Link>
-            </>
-          )}
-        </div>
 
         {/* Header */}
-        <header className="mb-12 pb-10 border-b border-[var(--separator)]">
+        <header className="mb-12 pb-10 border-b border-[var(--border)]">
           <div className="flex flex-wrap items-center gap-2 mb-4">
             {category && (
-              <span className="font-mono text-[11px] text-[var(--primary)] uppercase tracking-[0.25em]">
+              <span className="font-mono text-[12.5px] text-[var(--primary)] tracking-[0.04em]">
                 {loc(category.title, language)}
               </span>
             )}
@@ -264,7 +252,7 @@ export default function ReferenceEntryPage() {
               </span>
             )}
           </div>
-          <h1 className="font-mono text-3xl md:text-[2.4rem] font-bold tracking-tight mb-5 break-words">
+          <h1 className="font-mono text-3xl md:text-[2.3rem] font-medium tracking-tight mb-5 break-words">
             {entry.name}
           </h1>
           <p className="text-lg leading-relaxed text-[var(--text-main)]">

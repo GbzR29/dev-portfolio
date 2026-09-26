@@ -3,9 +3,9 @@
 // Geometry 5: similarity — scale factor and similar figures, scaling about a
 // centre, the similar-triangle tests (AA, SSS, SAS), solving with proportions,
 // the parallel-line cut and the midsegment, measuring heights with shadows,
-// k, k² and k³, perspective projection as similar triangles, and C++.
+// k, k² and k³, the pinhole camera as similar triangles, and map scales by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +19,7 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mSim_intro",
-          "A photo and its thumbnail, a map and the land it shows, a model car and the real one: each pair has the same shape at a different size. Geometry calls such shapes similar. The idea looks modest, but it is the reason a camera can turn a 3D world into a 2D picture, the reason trigonometry works at all, and the reason a character scaled up twice needs four times the texture and eight times the mass. This chapter builds it from the ratios chapter and the triangles chapter.")}
+          "A photo and its thumbnail, a map and the land it shows, a model car and the real one: each pair has the same shape at a different size. Geometry calls such shapes similar. The idea looks modest, but it is the reason a camera can turn a 3D world into a 2D picture, the reason trigonometry works at all, and the reason a statue built twice as tall needs four times the paint and eight times the bronze. This chapter builds it from the ratios chapter and the triangles chapter.")}
       </Lead>
 
       <H2>{tx(t, "mSim_defTitle", "Same shape: the scale factor")}</H2>
@@ -38,7 +38,7 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mSim_ratioBody",
-          "Equal ratios between the figures mean equal ratios inside each figure as well. If a'/a = b'/b, then a'/b' = a/b (multiply both sides by a/b'). So a 16 : 9 screenshot resized to any width stays 16 : 9, and a sprite scaled without distortion keeps its aspect ratio. That is the test for \"not stretched\": width divided by height must not change.")}
+          "Equal ratios between the figures mean equal ratios inside each figure as well. If a'/a = b'/b, then a'/b' = a/b (multiply both sides by a/b'). So a 3 : 2 photo enlarged to any width stays 3 : 2, and a poster scaled without distortion keeps its proportions. That is the test for \"not stretched\": width divided by height must not change.")}
       </p>
 
       <H2>{tx(t, "mSim_dilTitle", "Scaling about a centre")}</H2>
@@ -53,7 +53,7 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
           [r`x - o_x`, tx(t, "mSim_wOff", "how far the point is from the centre, horizontally; the vertical offset works the same way")],
           [r`(x', y')`, tx(t, "mSim_wPp", "where the point ends up")],
         ]}
-        note={tx(t, "mSim_dilNote", "Example: O = (1, 1), k = 3, P = (2, 3). Offset (1, 2), times 3 is (3, 6), plus O is (4, 7). With O at the origin the formula is simply (kx, ky). Scaling a sprite \"about its pivot\" means using the pivot as O.")}>
+        note={tx(t, "mSim_dilNote", "Example: O = (1, 1), k = 3, P = (2, 3). Offset (1, 2), times 3 is (3, 6), plus O is (4, 7). With O at the origin the formula is simply (kx, ky). A slide projector does exactly this, with O at the lamp: every point of the slide lands k times as far from it on the wall.")}>
         {r`x' = o_x + k\,(x - o_x) \qquad y' = o_y + k\,(y - o_y)`}
       </Equation>
 
@@ -133,29 +133,29 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
         ]}
       />
 
-      <H2>{tx(t, "mSim_projTitle", "How a camera draws: perspective")}</H2>
+      <H2>{tx(t, "mSim_projTitle", "How a camera sees: perspective")}</H2>
       <p>
         {tx(t, "mSim_projBody",
-          "Here is the most important use of similar triangles in graphics. Picture a pinhole camera from the side: the eye at the origin, looking along the depth axis z, and a flat screen at distance d in front of it. A point of the world at height y and depth z sends a ray of light to the eye; the ray crosses the screen at some height y'. The eye, the foot of the screen and the ray's crossing point form a small right triangle. The eye, the point's foot on the ground line and the point itself form a big one. They share the angle at the eye, and both have a right angle, so by AA they are similar. The third mode of the figure shows both.")}
+          "Why do far things look small? A pinhole camera, a dark box with a tiny hole, answers with similar triangles, and your eye works the same way. Picture it from the side, drawn the way painters and architects draw perspective: the eye (the pinhole) at the origin, looking along the depth axis z, and a flat picture plane, like a window you trace the view onto, at distance d in front of it. A point of the world at height y and depth z sends a ray of light to the eye; the ray crosses the screen at some height y'. The eye, the foot of the screen and the ray's crossing point form a small right triangle. The eye, the point's foot on the ground line and the point itself form a big one. They share the angle at the eye, and both have a right angle, so by AA they are similar. The third mode of the figure shows both.")}
       </p>
       <Equation label={tx(t, "mSim_eqProj", "Perspective projection")}
         where={[
           [r`y`, tx(t, "mSim_wY", "the height of the point in the world (the same holds for the sideways coordinate x)")],
           [r`z`, tx(t, "mSim_wZ", "its depth: its distance in front of the eye along the viewing direction")],
-          [r`d`, tx(t, "mSim_wD", "the distance from the eye to the screen")],
-          [r`y'`, tx(t, "mSim_wYp", "where the point lands on the screen")],
+          [r`d`, tx(t, "mSim_wD", "the distance from the eye to the picture plane")],
+          [r`y'`, tx(t, "mSim_wYp", "where the point lands on the picture plane")],
         ]}
-        note={tx(t, "mSim_projNote", "Example: d = 1, a 2 m tall tree 10 m away appears 1 · 2 / 10 = 0.2 units tall; the same tree 20 m away appears 0.1 units tall. Doubling the distance halves the size. Every 3D engine divides by depth like this, a step called the perspective divide.")}>
+        note={tx(t, "mSim_projNote", "Example: d = 1, a 2 m tall tree 10 m away appears 1 · 2 / 10 = 0.2 units tall; the same tree 20 m away appears 0.1 units tall. Doubling the distance halves the size, which is why the rails of a straight railway seem to meet at the horizon.")}>
         {r`\frac{y'}{d} = \frac{y}{z} \;\Rightarrow\; y' = \frac{d\,y}{z} \qquad x' = \frac{d\,x}{z}`}
       </Equation>
       <Callout type="tip" t={t}>
-        {tx(t, "mSim_projTip", "Similarity also explains why a camera cannot tell size from distance: a 1 m ball at 5 m and a 2 m ball at 10 m give exactly the same picture, since d · 1 / 5 = d · 2 / 10. Games exploit this with forced perspective and with far-away scenery that is really a small model or a flat image.")}
+        {tx(t, "mSim_projTip", "Similarity also explains why a camera cannot tell size from distance: a 1 m ball at 5 m and a 2 m ball at 10 m give exactly the same picture, since d · 1 / 5 = d · 2 / 10. Film-makers exploit this with forced perspective: a small model close to the camera passes for a huge building far away, and tourists do it when they \"hold up\" the Leaning Tower of Pisa in a photo.")}
       </Callout>
 
       <H2>{tx(t, "mSim_exTitle", "Worked examples")}</H2>
       <p>
         {tx(t, "mSim_ex1",
-          "1. A 1920 × 1080 image is shown in a 480 pixel wide thumbnail. k = 480 / 1920 = 0.25, so the height is 1080 · 0.25 = 270 pixels, and the thumbnail holds 0.25² = 1/16 of the pixels.")}
+          "1. A 10 cm × 15 cm photo is enlarged so that its short side becomes 40 cm. k = 40 / 10 = 4, so the long side becomes 15 · 4 = 60 cm, and the print needs 4² = 16 times as much paper: 40 · 60 = 2400 cm² against 10 · 15 = 150 cm², and 150 · 16 = 2400 ✓.")}
       </p>
       <p>
         {tx(t, "mSim_ex2",
@@ -166,36 +166,24 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
           "3. Triangles with sides 3, 5, 7 and 7.5, 12.5, 17.5. Sort both and divide: 7.5/3 = 2.5, 12.5/5 = 2.5, 17.5/7 = 2.5. Same ratio, so they are similar by SSS∼ with k = 2.5, and the bigger one has 2.5² = 6.25 times the area.")}
       </p>
 
-      <H2>{tx(t, "mSim_codeTitle", "Similarity in C++")}</H2>
+      <H2>{tx(t, "mSim_mapTitle", "Map and plan scales by hand")}</H2>
       <p>
-        {tx(t, "mSim_codeBody",
-          "Scaling about a pivot and projecting a point are one line each. The similarity test sorts both sets of sides so that the matching ones line up (shortest with shortest), then compares the ratios with a relative tolerance, because floats almost never divide to exactly equal numbers.")}
+        {tx(t, "mSim_mapBody",
+          "A map scale such as 1 : 25 000 is a scale factor written as a ratio: 1 cm on the map is 25 000 cm on the ground. To go from the map to the ground, multiply lengths by 25 000; to go back, divide. Areas follow the k² rule, so they are multiplied by 25 000², which is why areas measured on a map need the scale squared, never the scale itself.")}
       </p>
-      <CodeBlock lang="cpp" filename="similarity.hpp" t={t}>{`#include <algorithm>
-#include <cmath>
-
-struct Vec2 { float x, y; };
-
-// Dilation: move p along the ray from 'pivot' to k times its distance
-Vec2 scaleAbout(Vec2 p, Vec2 pivot, float k) {
-    return { pivot.x + k * (p.x - pivot.x), pivot.y + k * (p.y - pivot.y) };
-}
-
-// Pinhole projection: eye at the origin looking down +z, screen at distance d.
-// Only valid for points in front of the eye (z > 0).
-Vec2 project(float x, float y, float z, float d) {
-    return { d * x / z, d * y / z };             // similar triangles: x'/d = x/z
-}
-
-// Are two triangles (given by side lengths) similar? SSS~ test.
-bool similar(float a[3], float b[3], float eps = 1e-4f) {
-    std::sort(a, a + 3);                         // pair shortest with shortest...
-    std::sort(b, b + 3);
-    float k = b[0] / a[0];                       // candidate scale factor
-    for (int i = 1; i < 3; ++i)
-        if (std::abs(b[i] / a[i] - k) > eps * k) return false;
-    return true;
-}`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mSim_tQuestion", "Question"), tx(t, "mSim_tWork", "Working"), tx(t, "mSim_tAnswer", "Answer")]}
+        rows={[
+          [tx(t, "mSim_q1", "a trail 4.2 cm long on a 1 : 25 000 map"), "4.2 · 25 000 = 105 000 cm", "1050 m = 1.05 km"],
+          [tx(t, "mSim_q2", "a 3 km road, drawn on the same map"), "300 000 cm ÷ 25 000", "12 cm"],
+          [tx(t, "mSim_q3", "a lake covering 3 cm² of the map"), "3 · 25 000² = 1 875 000 000 cm²", tx(t, "mSim_a3", "187 500 m² = 18.75 ha")],
+          [tx(t, "mSim_q4", "a 4.8 m wall on a 1 : 50 house plan"), "480 cm ÷ 50", "9.6 cm"],
+        ]}
+      />
+      <p>
+        {tx(t, "mSim_mapCheck",
+          "The lake line, unit by unit: 1 m² = 100 cm × 100 cm = 10 000 cm², so 1 875 000 000 cm² ÷ 10 000 = 187 500 m², and a hectare is 100 m × 100 m = 10 000 m², giving 18.75 ha. Using 25 000 instead of 25 000² would have made the lake 10 000 times too small.")}
+      </p>
 
       <H2>{tx(t, "mSim_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -205,7 +193,7 @@ bool similar(float a[3], float b[3], float eps = 1e-4f) {
           [tx(t, "mSim_m2w", "adding to scale: 4 × 3 → 6 × 5"), tx(t, "mSim_m2r", "multiply: 4 × 3 → 6 × 4.5"), tx(t, "mSim_m2", "adding 2 to each side changes the shape")],
           [tx(t, "mSim_m3w", "area doubles when lengths double"), tx(t, "mSim_m3r", "area ×4, volume ×8"), tx(t, "mSim_m3", "areas scale by k², volumes by k³")],
           [tx(t, "mSim_m4w", "SSA or two sides alone prove similarity"), tx(t, "mSim_m4r", "use AA, SSS∼ or SAS∼"), tx(t, "mSim_m4", "the angle must be between the two sides")],
-          [tx(t, "mSim_m5w", "dividing by z when z ≤ 0"), tx(t, "mSim_m5r", "clip points behind the eye first"), tx(t, "mSim_m5", "z = 0 divides by zero; z < 0 flips the point upside down")],
+          [tx(t, "mSim_m5w", "map area = paper area × scale"), tx(t, "mSim_m5r", "multiply by the scale squared"), tx(t, "mSim_m5", "an area is a length times a length, so each is scaled")],
         ]}
       />
 
@@ -215,7 +203,8 @@ bool similar(float a[3], float b[3], float eps = 1e-4f) {
         "Triangles are similar by AA, SSS∼ or SAS∼; list matching corners in the same order.",
         "A line parallel to a side cuts the other two sides in the same ratio.",
         "Scaling by k multiplies lengths by k, areas by k², volumes by k³.",
-        "Perspective is similar triangles: y' = d·y / z.",
+        "Perspective is similar triangles: y' = d·y / z, so twice as far looks half as big.",
+        "Map scale 1 : n multiplies lengths by n and areas by n².",
       ]} />
     </Article>
   );

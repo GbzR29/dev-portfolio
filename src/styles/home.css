@@ -1,0 +1,393 @@
+/* =========================================================
+   HOME + BOOK PAGE
+   Light = "lab notebook" (grid paper, petrol ink).
+   Dark  = "dusk" (slate sky, peach accent, static stars).
+   Every token here is prefixed --hm- and scoped to .home, so
+   the global theme.css (used by /learn and the blog) is untouched.
+========================================================= */
+
+/* ── Tokens ─────────────────────────────────────────────── */
+
+.home {
+  --hm-bg: #f1f1eb;
+  --hm-surface: #fafaf6;
+  --hm-ink: #1d2427;
+  --hm-ink-soft: #3c4549;
+  --hm-muted: #6a7275;
+  --hm-accent: #2e6166;
+  --hm-line: #d8dad2;
+  --hm-line-strong: #bfc3b9;
+  --hm-grid: rgba(46, 97, 102, 0.055);
+  --hm-radius: 2px;
+  --hm-card-shadow: 3px 3px 0 var(--hm-line);
+
+  --hm-display: var(--font-spectral), Georgia, serif;
+  --hm-body: var(--font-plex-sans), system-ui, sans-serif;
+  --hm-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+.dark .home {
+  --hm-bg: #1a1c29;
+  --hm-surface: #212436;
+  --hm-ink: #e7e3ef;
+  --hm-ink-soft: #c5c1d3;
+  --hm-muted: #8f8ca6;
+  --hm-accent: #f1b39c;
+  --hm-line: #2f3247;
+  --hm-line-strong: #43465e;
+  --hm-radius: 4px;
+  --hm-card-shadow: none;
+}
+
+/* Overscroll and the scrollbar gutter match the Home background */
+html:has(.home),
+html:has(.home) body {
+  background-color: #f1f1eb;
+}
+html.dark:has(.home),
+html.dark:has(.home) body {
+  background-color: #1a1c29;
+}
+
+/* ── Page ───────────────────────────────────────────────── */
+
+.home {
+  min-height: 100vh;
+  background-color: var(--hm-bg);
+  color: var(--hm-ink);
+  font-family: var(--hm-body);
+  font-size: 16px;
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+/* Grid paper in light mode only */
+html:not(.dark) .home {
+  background-image:
+    linear-gradient(var(--hm-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hm-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.home a { color: inherit; text-decoration: none; }
+.home :focus-visible { outline: 2px solid var(--hm-accent); outline-offset: 2px; }
+
+.hm-in {
+  max-width: 920px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 5vw, 48px);
+  position: relative;
+}
+
+/* ── Navigation ─────────────────────────────────────────── */
+
+.hm-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px 24px;
+  padding-block: 22px;
+  border-bottom: 1px solid var(--hm-line);
+}
+.hm-brand { font-family: var(--hm-display); font-size: 19px; }
+.hm-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 20px;
+  font-family: var(--hm-mono);
+  font-size: 12.5px;
+  color: var(--hm-muted);
+}
+.hm-links a:hover { color: var(--hm-accent); }
+.hm-tools { display: flex; align-items: center; gap: 10px; }
+.hm-pill {
+  font-family: var(--hm-mono);
+  font-size: 12px;
+  color: var(--hm-muted);
+  background: none;
+  border: 1px solid var(--hm-line-strong);
+  border-radius: 999px;
+  padding: 3px 10px;
+  cursor: pointer;
+}
+.hm-pill:hover { color: var(--hm-accent); border-color: var(--hm-accent); }
+.hm-langs { display: flex; gap: 2px; }
+.hm-langs button {
+  font-family: var(--hm-mono);
+  font-size: 11.5px;
+  color: var(--hm-muted);
+  background: none;
+  border: 0;
+  padding: 3px 5px;
+  cursor: pointer;
+}
+.hm-langs button:hover { color: var(--hm-accent); }
+.hm-langs button[aria-pressed="true"] { color: var(--hm-ink); text-decoration: underline; text-underline-offset: 4px; }
+
+/* ── Hero ───────────────────────────────────────────────── */
+
+.hm-hero-wrap { position: relative; }
+.hm-stars { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; display: none; }
+.hm-horizon {
+  display: none;
+  position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--hm-accent) 30%, var(--hm-accent) 70%, transparent);
+  opacity: 0.35;
+}
+.dark .home .hm-stars,
+.dark .home .hm-horizon { display: block; }
+
+.hm-hero {
+  padding-block: clamp(48px, 9vw, 96px) clamp(48px, 8vw, 88px);
+  display: grid;
+  gap: 18px;
+}
+.hm-eyebrow { font-family: var(--hm-mono); font-size: 12.5px; letter-spacing: 0.06em; color: var(--hm-accent); }
+.hm-hero h1 {
+  font-family: var(--hm-display);
+  font-weight: 400;
+  font-size: clamp(40px, 7vw, 68px);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+.hm-lead { font-size: clamp(17px, 2vw, 19px); line-height: 1.6; max-width: 38em; margin: 0; color: var(--hm-ink-soft); }
+.hm-cta { display: flex; flex-wrap: wrap; gap: 10px 22px; font-family: var(--hm-mono); font-size: 13px; }
+.hm-cta a { border-bottom: 1px solid var(--hm-line-strong); padding-bottom: 2px; }
+.hm-cta a:hover { border-color: var(--hm-accent); color: var(--hm-accent); }
+.hm-status { font-family: var(--hm-mono); font-size: 12px; color: var(--hm-muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.hm-status em { font-style: normal; color: var(--hm-accent); }
+
+/* ── Sections ───────────────────────────────────────────── */
+
+.hm-sec {
+  padding-block: 40px;
+  border-top: 1px solid var(--hm-line);
+  display: grid;
+  gap: 22px;
+  scroll-margin-top: 16px;
+}
+.hm-sec > h2 {
+  font-family: var(--hm-mono);
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hm-muted);
+  margin: 0;
+}
+.hm-sec > h2 small { font-size: inherit; text-transform: none; letter-spacing: 0; }
+.hm-ph { color: var(--hm-muted); font-style: italic; }
+.hm-fig { font-family: var(--hm-mono); font-size: 11px; color: var(--hm-muted); }
+.home .hm-more { font-family: var(--hm-mono); font-size: 13px; color: var(--hm-accent); }
+.home .hm-more:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* About */
+.hm-about { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 28px 40px; align-items: start; }
+.hm-about-text { display: grid; gap: 14px; }
+.hm-about-text p { margin: 0; line-height: 1.7; color: var(--hm-ink-soft); max-width: 36em; }
+.hm-about-side { display: grid; gap: 18px; }
+.hm-photo {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  width: 100%;
+  max-width: 280px;
+  border: 1px solid var(--hm-line);
+  border-radius: var(--hm-radius);
+  overflow: hidden;
+  background: var(--hm-surface);
+}
+.hm-facts { margin: 0; font-family: var(--hm-mono); font-size: 12.5px; }
+.hm-facts div { display: grid; gap: 2px; padding-block: 10px; border-bottom: 1px solid var(--hm-line); }
+.hm-facts dt { color: var(--hm-muted); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+.hm-facts dd { margin: 0; color: var(--hm-ink); }
+
+/* Stack */
+.hm-stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 24px 32px; }
+.hm-group h3 { font-family: var(--hm-display); font-weight: 400; font-size: 18px; margin: 0 0 10px; }
+.hm-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.hm-group li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  margin-inline: -8px;
+  border-radius: var(--hm-radius);
+  color: var(--hm-ink-soft);
+  font-size: 15px;
+  transition: color 0.15s, background 0.15s;
+}
+.hm-group li svg { width: 18px; height: 18px; flex: none; color: var(--hm-muted); transition: color 0.15s; }
+.hm-group li:hover { background: var(--hm-surface); color: var(--hm-ink); }
+.hm-group li:hover svg { color: var(--brand, var(--hm-accent)); }
+.hm-tag {
+  margin-left: auto;
+  font-family: var(--hm-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: var(--hm-accent);
+  border: 1px solid var(--hm-line-strong);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+/* Now: book + tracks */
+.hm-now { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 18px; }
+.hm-card {
+  background: var(--hm-surface);
+  border: 1px solid var(--hm-line);
+  border-radius: var(--hm-radius);
+  box-shadow: var(--hm-card-shadow);
+  padding: 24px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.hm-kind { font-family: var(--hm-mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hm-accent); }
+.hm-card h3 { font-family: var(--hm-display); font-weight: 400; font-size: 28px; line-height: 1.1; margin: 0; }
+.hm-card p { margin: 0; line-height: 1.6; color: var(--hm-ink-soft); }
+.hm-meta { font-family: var(--hm-mono); font-size: 12px; color: var(--hm-muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.hm-bar { height: 4px; background: var(--hm-line); border-radius: 2px; overflow: hidden; }
+.hm-bar i { display: block; height: 100%; background: var(--hm-accent); }
+.hm-tracks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 18px;
+  font-family: var(--hm-mono);
+  font-size: 12.5px;
+}
+.hm-tracks a {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dotted var(--hm-line-strong);
+  padding-block: 3px;
+  color: var(--hm-ink-soft);
+}
+.hm-tracks a:hover { color: var(--hm-accent); }
+.hm-tracks b { font-weight: 500; color: var(--hm-ink); font-variant-numeric: tabular-nums; }
+
+/* Recent writing */
+.hm-posts { list-style: none; margin: 0; padding: 0; display: grid; }
+.hm-posts a {
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+  gap: 16px;
+  padding-block: 12px;
+  border-bottom: 1px solid var(--hm-line);
+  align-items: baseline;
+}
+.hm-posts time { font-family: var(--hm-mono); font-size: 12px; color: var(--hm-muted); font-variant-numeric: tabular-nums; }
+.hm-posts span { font-family: var(--hm-display); font-size: 19px; }
+.hm-posts a:hover span { color: var(--hm-accent); }
+
+/* Contact */
+.hm-contact { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px 48px; align-items: start; }
+.hm-contact h3 {
+  font-family: var(--hm-display);
+  font-weight: 400;
+  font-size: clamp(28px, 4vw, 38px);
+  line-height: 1.1;
+  margin: 0 0 12px;
+  text-wrap: balance;
+}
+.hm-contact p { margin: 0; color: var(--hm-ink-soft); line-height: 1.65; max-width: 34em; }
+.hm-mail { margin-top: 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.hm-mail code {
+  font-family: var(--hm-mono);
+  font-size: 15px;
+  color: var(--hm-ink);
+  background: var(--hm-surface);
+  border: 1px solid var(--hm-line);
+  border-radius: var(--hm-radius);
+  padding: 8px 12px;
+  user-select: all;
+  overflow-wrap: anywhere;
+}
+.hm-copy {
+  font-family: var(--hm-mono);
+  font-size: 12px;
+  color: var(--hm-accent);
+  background: none;
+  border: 1px solid var(--hm-line-strong);
+  border-radius: var(--hm-radius);
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.hm-rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hm-line); }
+.hm-rows a { display: flex; align-items: center; gap: 12px; padding-block: 14px; border-bottom: 1px solid var(--hm-line); color: var(--hm-ink); }
+.hm-rows svg { width: 18px; height: 18px; color: var(--hm-muted); flex: none; }
+.hm-rows small { margin-left: auto; font-family: var(--hm-mono); font-size: 12px; color: var(--hm-muted); }
+.hm-rows a:hover,
+.hm-rows a:hover svg,
+.hm-rows a:hover small { color: var(--hm-accent); }
+
+/* Footer */
+.hm-foot {
+  padding-block: 28px 36px;
+  border-top: 1px solid var(--hm-line);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--hm-mono);
+  font-size: 12px;
+  color: var(--hm-muted);
+}
+.hm-foot nav { display: flex; gap: 14px; }
+.hm-foot a:hover { color: var(--hm-accent); }
+
+/* ── Book page ──────────────────────────────────────────── */
+
+.hm-book { padding-block: clamp(40px, 8vw, 80px) 48px; display: grid; gap: 18px; }
+.hm-book h1 {
+  font-family: var(--hm-display);
+  font-weight: 400;
+  font-size: clamp(40px, 7vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.hm-book-body { display: grid; gap: 14px; max-width: 38em; }
+.hm-book-body p { margin: 0; line-height: 1.75; color: var(--hm-ink-soft); font-size: 17px; }
+
+/* ── /learn landing ─────────────────────────────────────── */
+
+.hm-links a[aria-current] { color: var(--hm-accent); }
+.hm-resume { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; font-family: var(--hm-mono); font-size: 12.5px; color: var(--hm-muted); }
+.home .hm-resume a { color: var(--hm-accent); border-bottom: 1px solid var(--hm-line-strong); padding-bottom: 1px; }
+.home .hm-resume a:hover { border-color: var(--hm-accent); }
+
+.hm-track-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 18px; }
+.hm-track { grid-template-rows: auto auto 1fr auto auto auto; padding: 22px 24px; gap: 10px; }
+.hm-track.soon { background: transparent; border-style: dashed; box-shadow: none; }
+.hm-track h3 { font-size: 26px; }
+.hm-track p { font-size: 14.5px; }
+.hm-level { display: flex; align-items: center; gap: 8px; font-family: var(--hm-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hm-muted); }
+.hm-level i { width: 8px; height: 8px; border-radius: 1px; background: var(--track); flex: none; }
+.hm-track .hm-meta { font-variant-numeric: tabular-nums; }
+.hm-prog { height: 3px; background: var(--hm-line); border-radius: 2px; overflow: hidden; }
+.hm-prog i { display: block; height: 100%; background: var(--hm-accent); }
+.hm-track-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 6px; }
+.home .hm-ref { font-family: var(--hm-mono); font-size: 12px; color: var(--hm-muted); }
+.home a.hm-ref:hover { color: var(--hm-accent); }
+
+.hm-how { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 18px 32px; }
+.hm-how h3 { font-family: var(--hm-display); font-weight: 400; font-size: 19px; margin: 0 0 6px; }
+.hm-how p { margin: 0; color: var(--hm-ink-soft); line-height: 1.6; font-size: 14.5px; }
+
+/* ── Narrow screens ─────────────────────────────────────── */
+
+@media (max-width: 680px) {
+  .hm-about,
+  .hm-contact { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .hm-posts a { grid-template-columns: 1fr; gap: 2px; }
+  .hm-tracks { grid-template-columns: 1fr; }
+}

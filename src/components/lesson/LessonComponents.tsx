@@ -4,7 +4,6 @@
 import { useMemo, useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { Prism as SyntaxHighlighter, createElement } from "react-syntax-highlighter";
-import { useTheme } from "@/components/providers/ThemeProvider";
 import { lessonSyntaxTheme } from "@/lib/syntaxTheme";
 import { RefToken, useReference, useRefEntry } from "@/components/reference/RefToken";
 import { referenceIndex, type RefEntry } from "@/lib/reference";
@@ -62,7 +61,6 @@ export function CodeBlock({
   t?: TrackTranslations;
 }) {
   const [copied, setCopied] = useState(false);
-  const { theme } = useTheme();
   const reference = useReference();
 
   const renderer = useMemo(() => {
@@ -91,18 +89,13 @@ export function CodeBlock({
 
   return (
     <div className="rounded-xl overflow-hidden border border-[var(--border)] !my-8">
-      <div className="flex items-center justify-between px-4 py-2.5 bg-[var(--surface)] border-b border-[var(--border)]">
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
-          <span className="ml-2 font-mono text-[11px] text-[var(--text-muted)]">
-            {filename ?? lang}
-          </span>
-        </div>
+      <div className="flex items-center justify-between px-4 py-1.5 bg-[var(--code-bg)] border-b border-[var(--border)]">
+        <span className="font-mono text-[11.5px] text-[var(--text-muted)]">
+          {filename ?? lang}
+        </span>
         <button
           onClick={handleCopy}
-          className="text-[10px] font-mono text-[var(--text-muted)] hover:text-[var(--text-main)] transition-colors px-2 py-1 rounded border border-transparent hover:border-[var(--border)]"
+          className="text-[11.5px] font-mono text-[var(--primary)] hover:underline underline-offset-4 px-1 py-1"
         >
           {copied ? tx(t, "codeCopied", "copied") : tx(t, "codeCopy", "copy")}
         </button>
@@ -110,7 +103,7 @@ export function CodeBlock({
       <div className="overflow-auto bg-[var(--code-bg)]">
         <SyntaxHighlighter
           language={lang}
-          style={lessonSyntaxTheme(theme)}
+          style={lessonSyntaxTheme()}
           showLineNumbers
           renderer={renderer as never}
           lineNumberStyle={{ color: "var(--code-gutter)", fontSize: "0.7rem", minWidth: "2.5em", userSelect: "none" }}
@@ -139,18 +132,20 @@ export function Callout({
   children: React.ReactNode;
   t?: TrackTranslations;
 }) {
+  // A rule down the left edge and a faint tint: note = the page accent,
+  // warning = amber, tip = green. Colours come from the theme tokens.
   const config = {
-    info: { border: "border-blue-500/30",   bg: "bg-blue-500/5",   labelKey: "calloutNote",    fallback: "NOTE",    color: "text-blue-400"   },
-    warn: { border: "border-yellow-500/30", bg: "bg-yellow-500/5", labelKey: "calloutWarning", fallback: "WARNING", color: "text-yellow-400" },
-    tip:  { border: "border-green-500/30",  bg: "bg-green-500/5",  labelKey: "calloutTip",     fallback: "TIP",     color: "text-green-400"  },
+    info: { tone: "var(--primary)",   tint: "var(--primary-low)",   labelKey: "calloutNote",    fallback: "NOTE"    },
+    warn: { tone: "var(--highlight)", tint: "var(--highlight-low)", labelKey: "calloutWarning", fallback: "WARNING" },
+    tip:  { tone: "var(--success)",   tint: "color-mix(in srgb, var(--success) 8%, transparent)", labelKey: "calloutTip", fallback: "TIP" },
   }[type];
 
   return (
-    <div className={`!my-8 p-5 rounded-xl border ${config.border} ${config.bg}`}>
-      <span className={`font-mono text-[10px] font-bold uppercase tracking-widest ${config.color} block mb-2`}>
+    <div className="!my-8 py-4 px-5 border-l-2" style={{ borderColor: config.tone, background: config.tint }}>
+      <span className="font-mono text-[11px] uppercase tracking-[0.08em] block mb-1.5" style={{ color: config.tone }}>
         {tx(t, config.labelKey, config.fallback)}
       </span>
-      <div className="text-[var(--text-muted)] text-sm leading-relaxed">{children}</div>
+      <div className="text-[var(--text-main)] opacity-90 text-[15px] leading-relaxed">{children}</div>
     </div>
   );
 }
@@ -159,22 +154,16 @@ export function Callout({
 
 export function IC({ children }: { children: string }) {
   const entry = useRefEntry(children);
-  if (entry) {
-    return (
-      <code className="bg-[var(--surface)] border border-[var(--border)] px-1.5 py-0.5 rounded text-[var(--primary)] font-mono text-[0.85em]">
-        <RefToken entry={entry}>{children}</RefToken>
-      </code>
-    );
-  }
+  const cls = "bg-[var(--primary-low)] px-1.5 py-0.5 rounded-sm text-[var(--text-main)] font-mono text-[0.85em]";
   return (
-    <code className="bg-[var(--surface)] border border-[var(--border)] px-1.5 py-0.5 rounded text-[var(--primary)] font-mono text-[0.85em]">
-      {children}
+    <code className={cls}>
+      {entry ? <RefToken entry={entry}>{children}</RefToken> : children}
     </code>
   );
 }
 
 // ─── H2 / H3 ─────────────────────────────────────────────────────────────────
-// scroll-mt-28 offsets the fixed navbar so headings aren't hidden when jumped to.
+// scroll-margin offsets the sticky top bar so headings aren't hidden when jumped to.
 
 function slug(text: React.ReactNode): string {
   return String(text)
@@ -188,7 +177,7 @@ export function H2({ children }: { children: React.ReactNode }) {
   return (
     <h2
       id={slug(children)}
-      className="text-2xl font-bold tracking-tight text-[var(--text-main)] !mt-16 pb-2 border-b border-[var(--separator)] scroll-mt-28"
+      className="font-display text-[1.85rem] leading-tight font-normal text-[var(--text-main)] !mt-16 scroll-mt-[calc(var(--nav-h,81px)+24px)] [text-wrap:balance]"
     >
       {children}
     </h2>
@@ -199,7 +188,7 @@ export function H3({ children }: { children: React.ReactNode }) {
   return (
     <h3
       id={slug(children)}
-      className="text-lg font-semibold text-[var(--text-main)] !mt-10 scroll-mt-28"
+      className="font-display text-[1.3rem] font-medium text-[var(--text-main)] !mt-10 scroll-mt-[calc(var(--nav-h,81px)+24px)]"
     >
       {children}
     </h3>
@@ -426,22 +415,22 @@ export function LessonTable({
   rows: (string | React.ReactNode)[][];
 }) {
   return (
-    <div className="rounded-xl border border-[var(--border)] overflow-hidden my-4">
+    <div className="overflow-x-auto my-6 border-t border-[var(--border-strong)]">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-[var(--border)] bg-[var(--surface)]">
+          <tr className="border-b border-[var(--border-strong)]">
             {headers.map((h, i) => (
-              <th key={i} className="text-left px-4 py-3 font-mono text-[11px] text-[var(--text-muted)] uppercase tracking-widest">
+              <th key={i} className="text-left pl-0 pr-4 pt-2.5 pb-2 font-mono font-medium text-[11px] text-[var(--text-muted)] uppercase tracking-[0.06em]">
                 {h}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-[var(--separator)]">
+        <tbody className="divide-y divide-[var(--border)] border-b border-[var(--border)]">
           {rows.map((row, i) => (
             <tr key={i}>
               {row.map((cell, j) => (
-                <td key={j} className={`px-4 py-3 text-xs ${j === 0 ? "font-mono text-[var(--primary)]" : "text-[var(--text-muted)]"}`}>
+                <td key={j} className={`pl-0 pr-4 py-2.5 text-[13.5px] align-baseline ${j === 0 ? "font-mono text-[var(--primary)]" : "text-[var(--text-main)] opacity-90"}`}>
                   {cell}
                 </td>
               ))}
@@ -468,12 +457,11 @@ export function MathBlock({
   glm?: string;
 }) {
   return (
-    <div className="my-5 rounded-xl border border-[var(--border)] overflow-hidden">
-      <div className="flex items-start gap-3 px-5 py-4 bg-[var(--surface)]">
-        <span className="text-[var(--primary)] font-mono text-base flex-shrink-0 mt-0.5 opacity-50 select-none">∑</span>
+    <div className="my-5 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-[var(--shadow-sm)] overflow-hidden">
+      <div className="flex items-start gap-3 px-5 py-4">
         <div className="min-w-0 flex-1">
           {label && (
-            <div className="text-[9px] font-mono uppercase tracking-widest text-[var(--text-muted)] mb-2">{label}</div>
+            <div className="text-[11px] font-mono uppercase tracking-[0.08em] text-[var(--text-muted)] mb-2">{label}</div>
           )}
           <div className="font-mono text-[var(--text-main)] text-sm leading-loose">{children}</div>
         </div>

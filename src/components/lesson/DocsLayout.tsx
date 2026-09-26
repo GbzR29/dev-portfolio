@@ -4,7 +4,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
-import Navbar from "@/components/navbar/Navbar";
+import { LearnTopBar, type Crumb } from "./LearnTopBar";
 
 /**
  * Documentation-style shell shared by lesson and reference pages.
@@ -20,16 +20,18 @@ import Navbar from "@/components/navbar/Navbar";
  * Below `lg` the left rail becomes a drawer opened by a floating button.
  */
 
-// Navbar is sticky, h-20 plus a 1px border.
-const RAIL = "sticky top-[81px] h-[calc(100vh-81px)] overscroll-contain";
+// The rails sit under the sticky top bar, whose height is --nav-h (learn.css).
+const RAIL = "sticky top-[var(--nav-h)] h-[calc(100vh-var(--nav-h))] overscroll-contain";
 const STORAGE_KEY = "docs-rail-collapsed";
 
 export function DocsLayout({
-  left, right, children, drawerTitle, drawerKey, backHref, backLabel = "Back",
+  left, right, children, crumbs, drawerTitle, drawerKey, backHref, backLabel = "Back",
 }: {
   left: ReactNode;
   right?: ReactNode;
   children: ReactNode;
+  /** The page's path, shown in the top bar. */
+  crumbs?: Crumb[];
   /** Label for the mobile drawer header and its opening button. */
   drawerTitle: string;
   /** The drawer closes whenever this value changes (e.g. the active chapter). */
@@ -99,12 +101,12 @@ export function DocsLayout({
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text-main)]">
-      <Navbar />
+    <div className="learn min-h-screen bg-[var(--bg)] text-[var(--text-main)]">
+      <LearnTopBar crumbs={crumbs} />
 
       {/* ── Mobile drawer ──────────────────────────────────────────── */}
       {isDrawerOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
+        <div className="fixed inset-0 z-50 lg:hidden">
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={() => setIsDrawerOpen(false)}
@@ -128,7 +130,7 @@ export function DocsLayout({
       <div className="flex items-start">
         {/* ── Left rail — pinned to the viewport edge, collapsible ─────── */}
         <aside
-          className={`hidden lg:flex flex-col flex-shrink-0 border-r border-[var(--border)] bg-[var(--card)] overflow-hidden ${RAIL} ${
+          className={`hidden lg:flex flex-col flex-shrink-0 border-r border-[var(--border)] overflow-hidden ${RAIL} ${
             animate ? "transition-[width] duration-300 ease-out" : ""
           } ${collapsed ? "w-14" : "w-72 xl:w-80"}`}
         >
@@ -186,7 +188,7 @@ export function DocsLayout({
       {/* ── Mobile FAB — opens drawer ─────────────────────────────────── */}
       <button
         onClick={() => setIsDrawerOpen(true)}
-        className={`fixed bottom-6 z-30 lg:hidden flex items-center gap-2 bg-[var(--primary)] text-white text-sm font-semibold rounded-full shadow-lg shadow-[var(--primary)]/25 hover:opacity-90 transition-opacity ${
+        className={`fixed bottom-6 z-30 lg:hidden flex items-center gap-2 bg-[var(--text-main)] text-[var(--bg)] font-mono text-[12.5px] rounded-full shadow-lg hover:opacity-90 transition-opacity ${
           overFigure ? "right-4 p-3" : "left-6 px-4 py-2.5"
         }`}
         aria-label={drawerTitle}

@@ -1,0 +1,181 @@
+/* =========================================================
+   LEARN (lessons + function reference)
+   The Home's two looks applied to the docs pages:
+   light = "lab notebook", dark = "dusk". Instead of new names,
+   the theme.css tokens get new values while a .learn page is
+   on screen, so every widget follows without being edited.
+   Data colours (axes, points, curves) are literals in the
+   widgets and stay as they are.
+========================================================= */
+
+/* ── Tokens ─────────────────────────────────────────────── */
+
+html:has(.learn) {
+  --bg: #f1f1eb;
+  --surface: #f5f5f0;
+  --surface-overlay: rgba(250, 250, 246, 0.96);
+  --card: #fafaf6;
+  --navbar-bg: rgba(241, 241, 235, 0.92);
+
+  --border: #d8dad2;
+  --border-strong: #bfc3b9;
+  --separator: rgba(29, 36, 39, 0.1);
+
+  /* muted stays ≥ 7:1 on the card, so it survives the widgets' extra opacity */
+  --text-main: #1d2427;
+  --text-muted: #4a5356;
+  --text-navbar: #1d2427;
+  --text-inverse: #fafaf6;
+
+  --primary: #2e6166;
+  --primary-hover: #234b4f;
+  --primary-low: rgba(46, 97, 102, 0.09);
+
+  --accent: #7a4e8a;
+  --success: #2f7d4f;
+  --error: #b3261e;
+  --highlight: #9a5b12;
+  --highlight-low: rgba(154, 91, 18, 0.08);
+
+  --code-bg: #f5f5ef;
+  --code-text: #1d2427;
+  --code-surface: rgba(29, 36, 39, 0.04);
+  --code-border: rgba(29, 36, 39, 0.12);
+  --code-line: rgba(29, 36, 39, 0.12);
+  --code-muted: rgba(29, 36, 39, 0.55);
+  --code-gutter: #8a908f;
+
+  --scrollbar-thumb: #bfc3b9;
+  --scrollbar-thumb-hover: #8f958c;
+  --scrollbar-thumb-active: #2e6166;
+
+  --radius-lg: 4px;
+  --radius-md: 3px;
+  --shadow-sm: 3px 3px 0 #d8dad2;
+
+  /* Code colours (src/lib/syntaxTheme.ts) */
+  --syn-comment: #737a78;
+  --syn-punct: #5b6366;
+  --syn-keyword: #2e6166;
+  --syn-type: #7a4e8a;
+  --syn-function: #1f4f7a;
+  --syn-string: #8a5a1e;
+  --syn-number: #a1452e;
+
+  /* Height of the sticky top bar; rails, pinned figures and anchors offset by it */
+  --nav-h: 49px;
+  --grid: rgba(46, 97, 102, 0.055);
+}
+
+html.dark:has(.learn) {
+  --bg: #1a1c29;
+  --surface: #1e2131;
+  --surface-overlay: rgba(33, 36, 54, 0.94);
+  --card: #212436;
+  --navbar-bg: rgba(26, 28, 41, 0.9);
+
+  --border: #2f3247;
+  --border-strong: #43465e;
+  --separator: rgba(231, 227, 239, 0.08);
+
+  --text-main: #e7e3ef;
+  --text-muted: #a3a0ba;
+  --text-navbar: #e7e3ef;
+  --text-inverse: #1a1c29;
+
+  --primary: #f1b39c;
+  --primary-hover: #f6c7b5;
+  --primary-low: rgba(241, 179, 156, 0.1);
+
+  --accent: #b9a7e8;
+  --success: #7fd1a0;
+  --error: #f28b82;
+  --highlight: #f0c987;
+  --highlight-low: rgba(240, 201, 135, 0.1);
+
+  --code-bg: #161824;
+  --code-text: #e7e3ef;
+  --code-surface: rgba(231, 227, 239, 0.03);
+  --code-border: rgba(231, 227, 239, 0.1);
+  --code-line: rgba(231, 227, 239, 0.12);
+  --code-muted: rgba(231, 227, 239, 0.4);
+  --code-gutter: #6f6c88;
+
+  --scrollbar-thumb: #43465e;
+  --scrollbar-thumb-hover: #5a5d78;
+  --scrollbar-thumb-active: #f1b39c;
+
+  --syn-comment: #7c7996;
+  --syn-punct: #a3a0ba;
+  --syn-keyword: #f1b39c;
+  --syn-type: #b9a7e8;
+  --syn-function: #9cc7e8;
+  --syn-string: #a9d3a4;
+  --syn-number: #f0c987;
+
+  --shadow-sm: none;
+}
+
+/* ── Type ───────────────────────────────────────────────── */
+
+.learn {
+  font-family: var(--font-plex-sans), system-ui, sans-serif;
+}
+.learn :is(.font-mono, code, kbd, pre, samp) {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+}
+.learn .font-display {
+  font-family: var(--font-spectral), Georgia, serif;
+}
+
+/* Grid paper behind the reading column in light mode */
+html:not(.dark) .learn {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* The Tailwind rounded-xl cards read as notebook boxes */
+.learn .rounded-xl { border-radius: var(--radius-lg); }
+.learn .rounded-2xl { border-radius: var(--radius-lg); }
+
+/* ── Figures ────────────────────────────────────────────────
+   Every figure opens with a title bar whose first span is its
+   title. It is set as a caption instead of a shouted label and
+   numbered per chapter ("fig. 3.2"); the number is written to
+   data-fig-no by lesson/focus/useChapterSteps.ts. */
+
+.learn .lesson-body [data-figure] { box-shadow: var(--shadow-sm); }
+
+.learn [data-figure] > :first-child:not([data-stage]) > span:first-child {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-main);
+}
+.learn .lesson-body [data-fig-no]::before {
+  content: "fig. " attr(data-fig-no) " — ";
+  color: var(--primary);
+}
+
+/* ── Focus mode ─────────────────────────────────────────────
+   One step (h2 section) at a time; see lesson/focus/. A step
+   fades in when it becomes visible (display restarts the
+   animation). */
+
+.learn .lesson-body [data-focus-off] { display: none !important; }
+
+@keyframes step-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+.learn .lesson-body[data-focus] article > [data-step] { animation: step-in 0.28s ease-out; }
+/* The step's heading opens the page, so it needs no top gap */
+.learn .lesson-body[data-focus] article > h2:not([data-focus-off]) { margin-top: 0 !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .learn .lesson-body[data-focus] article > [data-step] { animation: none; }
+}

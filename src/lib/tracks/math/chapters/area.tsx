@@ -4,9 +4,9 @@
 // parallelogram, triangle and trapezoid formulas with where they come from,
 // composite shapes, how scaling changes perimeter and area (k and k²), unit
 // conversion, the shoelace formula with signed area and winding order, and
-// polygon area in C++.
+// the area of a plot of land from its corner coordinates, by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -21,7 +21,7 @@ export function AreaContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mArea_intro",
-          "How much fence does a field need, and how much seed? The first question is about perimeter, the length around a shape; the second is about area, the amount of surface inside it. Games ask the same questions all the time: how long is a patrol route around a room, how big is a region on the map, how much memory does a texture take, which way does a triangle face. This chapter derives the area formulas for the basic shapes instead of just listing them, shows how area behaves when a shape is scaled, and ends with one formula that gives the area of any polygon from its corner coordinates.")}
+          "How much fence does a field need, and how much seed? The first question is about perimeter, the length around a shape; the second is about area, the amount of surface inside it. The same two questions come up when you skirt a room with trim, tile a floor, paint a wall or buy a plot of land. This chapter derives the area formulas for the basic shapes instead of just listing them, shows how area behaves when a shape is scaled, and ends with one formula that gives the area of any polygon from its corner coordinates.")}
       </Lead>
 
       <H2>{tx(t, "mArea_perimTitle", "Perimeter: the length around")}</H2>
@@ -99,7 +99,7 @@ export function AreaContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mArea_shoeTitle", "Any polygon: the shoelace formula")}</H2>
       <p>
         {tx(t, "mArea_shoeBody",
-          "For a polygon given by the coordinates of its corners (the way a game stores a region, a navmesh cell or a selection lasso) there is one formula that needs no cutting at all. List the corners in order around the outline, P₁ to Pₙ, and wrap around so that after Pₙ comes P₁ again. For each edge, multiply crosswise, xᵢ · yᵢ₊₁ − xᵢ₊₁ · yᵢ, and add up all these terms; the area is half the sum. The name comes from the criss-cross pattern of the multiplications when the coordinates are written in two columns, like the laces of a shoe.")}
+          "For a polygon given by the coordinates of its corners (the way a surveyor records a plot of land, as measured positions of its corner posts) there is one formula that needs no cutting at all. List the corners in order around the outline, P₁ to Pₙ, and wrap around so that after Pₙ comes P₁ again. For each edge, multiply crosswise, xᵢ · yᵢ₊₁ − xᵢ₊₁ · yᵢ, and add up all these terms; the area is half the sum. The name comes from the criss-cross pattern of the multiplications when the coordinates are written in two columns, like the laces of a shoe.")}
       </p>
       <Equation label={tx(t, "mArea_eqShoe", "The shoelace formula")}
         where={[
@@ -122,7 +122,7 @@ export function AreaContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mArea_windTitle", "The sign is a feature: winding order")}</H3>
       <p>
         {tx(t, "mArea_windBody",
-          "The sign of the shoelace sum tells you which way the corners go round: positive for anticlockwise, negative for clockwise (with y pointing up; on a screen where y points down, the signs swap). The order the corners are listed in is the winding order. GPUs use exactly this for backface culling: after projecting a triangle to the screen, the sign of its signed area says whether you are looking at its front or its back, and back faces of a closed model are skipped, which saves about half the work. The Linear Algebra section will meet the same crosswise term again as the 2D cross product.")}
+          "The sign of the shoelace sum tells you which way the corners go round: positive for anticlockwise, negative for clockwise (with the y axis pointing up, as on graph paper). The order the corners are listed in is called the winding order. So the formula answers two questions at once: its size is the area, and its sign says whether you walked round the outline anticlockwise or clockwise. For the area alone, take the absolute value. The Linear Algebra section will meet the same crosswise term again as the 2D cross product, where its sign tells left turns from right turns.")}
       </p>
 
       <H2>{tx(t, "mArea_exTitle", "Worked examples")}</H2>
@@ -132,43 +132,32 @@ export function AreaContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mArea_ex2",
-          "2. A game map is 1 km × 1 km and its fog-of-war texture stores one pixel per 2 m × 2 m cell: that is 500 × 500 = 250 000 pixels. Halving the cell size to 1 m doubles each side to 1000 pixels and quadruples the total to 1 000 000.")}
+          "2. A square hall 12 m × 12 m is tiled with 40 cm × 40 cm tiles. Along each wall fit 12 ÷ 0.4 = 30 tiles, so the floor takes 30 × 30 = 900 tiles. With 20 cm tiles each side halves, 60 tiles per wall, and the count quadruples to 3600: the area of one tile went down by a factor of 2² = 4.")}
       </p>
       <p>
         {tx(t, "mArea_ex3",
           "3. The triangle (1, 1), (5, 2), (2, 4) by shoelace: 1·2 − 5·1 = −3, 5·4 − 2·2 = 16, 2·1 − 1·4 = −2. Sum 11, signed area 5.5, positive, so the corners are listed anticlockwise.")}
       </p>
 
-      <H2>{tx(t, "mArea_codeTitle", "Polygon area in C++")}</H2>
+      <H2>{tx(t, "mArea_plotTitle", "A plot of land, by hand")}</H2>
       <p>
-        {tx(t, "mArea_codeBody",
-          "The shoelace formula is a single loop. The index (i + 1) % n implements the wrap-around from the last corner back to the first (the % remainder from the divisibility chapter). For a triangle it collapses to one expression, which is the standard way to get a triangle's signed area, and therefore its winding, in 2D.")}
+        {tx(t, "mArea_plotBody",
+          "A surveyor measures the four corner posts of a field, in metres from a reference post: P₁ = (0, 0), P₂ = (8, 0), P₃ = (10, 6), P₄ = (2, 5), listed in order around the edge. No side is parallel to another, so none of the basic formulas fits directly, but the shoelace formula does. Write one row per edge, including the closing edge from P₄ back to P₁, and compute the crosswise term xᵢ · yᵢ₊₁ − xᵢ₊₁ · yᵢ for each.")}
       </p>
-      <CodeBlock lang="cpp" filename="area.hpp" t={t}>{`#include <vector>
-#include <cmath>
-
-struct Vec2 { float x, y; };
-
-// Signed area: > 0 anticlockwise, < 0 clockwise (y up)
-float signedArea(const std::vector<Vec2>& p) {
-    float sum = 0.0f;
-    const size_t n = p.size();
-    for (size_t i = 0; i < n; ++i) {
-        const Vec2& a = p[i];
-        const Vec2& b = p[(i + 1) % n];      // wraps from the last corner to the first
-        sum += a.x * b.y - b.x * a.y;
-    }
-    return 0.5f * sum;
-}
-
-float area(const std::vector<Vec2>& p) { return std::abs(signedArea(p)); }
-
-// The same formula for three corners
-float triangleSignedArea(Vec2 a, Vec2 b, Vec2 c) {
-    return 0.5f * ((b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y));
-}
-
-bool isAnticlockwise(const std::vector<Vec2>& p) { return signedArea(p) > 0.0f; }`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mArea_tEdge", "Edge"), tx(t, "mArea_tCross", "xᵢ · yᵢ₊₁ − xᵢ₊₁ · yᵢ"), tx(t, "mArea_tTerm", "Term")]}
+        rows={[
+          ["P₁ → P₂", "0 · 0 − 8 · 0", "0"],
+          ["P₂ → P₃", "8 · 6 − 10 · 0", "48"],
+          ["P₃ → P₄", "10 · 5 − 2 · 6", "38"],
+          [tx(t, "mArea_closing", "P₄ → P₁ (closing edge)"), "2 · 0 − 0 · 5", "0"],
+          [tx(t, "mArea_sumRow", "sum"), "", "86"],
+        ]}
+      />
+      <p>
+        {tx(t, "mArea_plotResult",
+          "Half the sum is 86 ÷ 2 = 43, so the field covers 43 m², and the positive sign says the posts were listed anticlockwise. A check by cutting: draw the rectangle 0 ≤ x ≤ 10, 0 ≤ y ≤ 6 around the field; its area is 10 · 6 = 60 m². Three pieces of it lie outside the field. On the right, the triangle (8, 0), (10, 0), (10, 6) has area ½ · 2 · 6 = 6. On top, the triangle (2, 5), (10, 6), (2, 6) has area ½ · 8 · 1 = 4. On the left, the trapezoid (0, 0), (2, 5), (2, 6), (0, 6) has parallel sides 6 and 1 and width 2, so its area is ½ · (6 + 1) · 2 = 7. And 60 − 6 − 4 − 7 = 43 ✓. The cutting took three shapes and some care; the shoelace table took four multiplications per row. Listing the same posts clockwise (P₁, P₄, P₃, P₂) gives −86 and −43: the same area with the opposite sign.")}
+      </p>
       <Callout type="warn" t={t}>
         {tx(t, "mArea_crossWarn", "The shoelace formula assumes a simple polygon: an outline that never crosses itself. A figure-eight shape gives the difference of its two loops' areas (one counts as positive, the other as negative), which is not the area anyone wanted.")}
       </Callout>
@@ -182,7 +171,7 @@ bool isAnticlockwise(const std::vector<Vec2>& p) { return signedArea(p) > 0.0f; 
           [tx(t, "mArea_m3w", "1 m² = 100 cm²"), "1 m² = 10 000 cm²", tx(t, "mArea_m3", "convert both lengths: 100 × 100")],
           [tx(t, "mArea_m4w", "doubling size doubles area"), tx(t, "mArea_m4r", "it multiplies area by 4"), tx(t, "mArea_m4", "area scales with k²")],
           [tx(t, "mArea_m5w", "adding cut lines to the perimeter"), tx(t, "mArea_m5r", "only the outer boundary counts"), tx(t, "mArea_m5", "perimeter is the walk around the outside")],
-          [tx(t, "mArea_m6w", "forgetting the last edge Pₙ → P₁"), tx(t, "mArea_m6r", "wrap with (i + 1) % n"), tx(t, "mArea_m6", "the outline must be closed")],
+          [tx(t, "mArea_m6w", "forgetting the last edge Pₙ → P₁"), tx(t, "mArea_m6r", "always include the edge back to the start"), tx(t, "mArea_m6", "the outline must be closed")],
         ]}
       />
 
@@ -192,7 +181,7 @@ bool isAnticlockwise(const std::vector<Vec2>& p) { return signedArea(p) > 0.0f; 
         "The height is always perpendicular to the base.",
         "Composite shapes: add the pieces or subtract the missing parts.",
         "Scaling by k multiplies perimeter by k and area by k²; the same goes for unit conversions.",
-        "Shoelace: A = ½ Σ (xᵢyᵢ₊₁ − xᵢ₊₁yᵢ); its sign is the winding order, used for backface culling.",
+        "Shoelace: A = ½ Σ (xᵢyᵢ₊₁ − xᵢ₊₁yᵢ); its sign tells anticlockwise (+) from clockwise (−).",
       ]} />
     </Article>
   );

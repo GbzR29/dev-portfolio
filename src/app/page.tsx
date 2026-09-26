@@ -1,46 +1,52 @@
 // app/page.tsx
 
-import Navbar from "@/components/navbar/Navbar";
-import AboutSection from "@/components/sections/AboutSection";
-import HeroSection from "@/components/sections/HeroSection";
-import { ProjectsSection } from "@/components/sections/ProjectsSection";
-import { ContactSection } from "@/components/sections/ContactSection";
-import Footer from "@/components/footer/Footer";
-import TriangleParticles from "@/components/particles/TriangleParticles";
+import "@/styles/home.css";
+import { getPosts } from "@/services/postService";
+import Hero from "@/components/home/Hero";
+import About from "@/components/home/About";
+import Stack from "@/components/home/Stack";
+import Now from "@/components/home/Now";
+import RecentWriting from "@/components/home/RecentWriting";
+import Contact from "@/components/home/Contact";
+import HomeFooter from "@/components/home/HomeFooter";
 
 export const metadata = {
-  
-  title: 'Gabriel Carvalho | Game Dev & Graphics Programmer',
-  description: 'C++ game developer building a custom game engine with OpenGL/Vulkan. Exploring graphics programming, ECS, and low-level systems since 2016.',
-  
+  title: "Gabriel Carvalho | C++ & graphics programmer",
+  description:
+    "C++ programmer working with computer graphics and game engines. Interactive courses on OpenGL, GLSL, C++ and math.",
+
   openGraph: {
-    title: 'Gabriel Carvalho | Portfolio & Game Development',
-    description: 'Welcome to my digital corner!',
-    url: 'https://www.gabrielfrc.dev/',
-    siteName: 'gabrielfrc.dev',
+    title: "Gabriel Carvalho | C++ & graphics programmer",
+    description: "C++ programmer working with computer graphics and game engines.",
+    url: "https://www.gabrielfrc.dev/",
+    siteName: "gabrielfrc.dev",
     images: [
       {
-        url: '/logo.png',
+        url: "/logo.png",
         width: 600,
         height: 315,
-        alt: 'Banner preview',
+        alt: "Banner preview",
       },
     ],
-    locale: 'pt_BR',
-    type: 'website',
+    locale: "pt_BR",
+    type: "website",
   },
 };
 
-export default function Home() {
+export default async function Home() {
+  const posts = (await getPosts()).slice(0, 3);
+
   return (
-    <main className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text-main)]">
-      <TriangleParticles />
-      <Navbar />
-      <HeroSection />
-      <AboutSection />
-      <ProjectsSection />
-      <ContactSection />
-      <Footer />
-    </main>
+    <div className="home">
+      <Hero />
+      <main className="hm-in">
+        <About />
+        <Stack />
+        <Now />
+        <RecentWriting posts={posts} />
+        <Contact />
+        <HomeFooter />
+      </main>
+    </div>
   );
 }

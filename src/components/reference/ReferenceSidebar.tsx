@@ -37,10 +37,10 @@ export function ReferenceSidebar({ reference, activeName }: { reference: Referen
         </Link>
 
         <Link href={referenceHref(reference)} className="block">
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--primary)] mb-1">
+          <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--primary)] mb-1">
             {reference.title}
           </p>
-          <p className="text-base font-semibold text-[var(--text-main)]">
+          <p className="font-display text-[22px] leading-tight text-[var(--text-main)]">
             {tt.refTitle ?? "Function reference"}
           </p>
         </Link>
@@ -59,7 +59,7 @@ export function ReferenceSidebar({ reference, activeName }: { reference: Referen
       <nav className="px-3 space-y-5">
         {groups.map(({ cat, entries }) => (
           <div key={cat.id}>
-            <p className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--text-muted)]">
+            <p className="px-3 mb-1.5 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)]">
               {loc(cat.title, language)}
             </p>
             {entries.map((e) => {

@@ -3,9 +3,9 @@
 // Geometry 6: circles and π — the definition and the named parts, why C/d is
 // the same for every circle, π by unrolling and by Archimedes' polygons, the
 // area πr² by rearranging slices and by throwing darts (Monte Carlo), arcs and
-// sectors, tangents and the angle in a semicircle, and circle code in C++.
+// sectors, tangents and the angle in a semicircle, and measuring circles by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -21,7 +21,7 @@ export function CircleContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mCir_intro",
-          "Wheels, explosions, detection radii, round buttons, orbiting moons, the ripples on a pond: circles are everywhere in games. Measuring them needs one special number, π, which is not a formula anyone invented but a fact about every circle that exists. This chapter makes π visible four different ways (rolling a wheel, squeezing it between polygons, cutting a pizza, throwing darts) and then puts it to work.")}
+          "Wheels, clock faces, coins, round tables, orbiting moons, the ripples on a pond: circles are everywhere. Measuring them needs one special number, π, which is not a formula anyone invented but a fact about every circle that exists. This chapter makes π visible four different ways (rolling a wheel, squeezing it between polygons, cutting a pizza, throwing darts) and then puts it to work.")}
       </Lead>
 
       <H2>{tx(t, "mCir_defTitle", "What a circle is")}</H2>
@@ -103,7 +103,7 @@ export function CircleContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mCir_mcTitle", "Estimating π with random darts")}</H3>
       <p>
         {tx(t, "mCir_mcBody",
-          "The second mode of the figure uses the area in reverse. A circle of radius 1 sits in a 2 × 2 square. Throw darts that land anywhere in the square with equal chance. The fraction that land inside the circle tends to the fraction of the square the circle covers, π/4. Count, multiply by 4, and you have an estimate of π. A dart at (x, y) is inside when x² + y² ≤ 1, the squared-distance test from the Pythagoras chapter. This is a terrible way to compute π, since it improves very slowly, but a brilliant way to compute things that have no formula: renderers estimate the light reaching a pixel by averaging random rays in exactly this way.")}
+          "The second mode of the figure uses the area in reverse. A circle of radius 1 sits in a 2 × 2 square. Throw darts that land anywhere in the square with equal chance. The fraction that land inside the circle tends to the fraction of the square the circle covers, π/4. Count, multiply by 4, and you have an estimate of π. A dart at (x, y) is inside when x² + y² ≤ 1, the squared-distance test from the Pythagoras chapter. This is a terrible way to compute π, since it improves very slowly, but a brilliant way to measure things that have no formula: an ecologist can estimate the area of an irregular lake by dropping random points on a map and counting how many land in the water. The method is called Monte Carlo, after the casino.")}
       </p>
 
       <H2>{tx(t, "mCir_arcTitle", "Arcs and sectors")}</H2>
@@ -118,7 +118,7 @@ export function CircleContent({ t }: { t: TrackTranslations }) {
           [r`s`, tx(t, "mCir_wS", "the length of the arc")],
           [r`A_\text{sector}`, tx(t, "mCir_wAs", "the area of the slice")],
         ]}
-        note={tx(t, "mCir_secNote", "Example: an enemy sees 8 m ahead in a 90° cone. The cone is a quarter sector: its area is ¼ · π · 8² ≈ 50.3 m², and its curved edge is ¼ · 2π · 8 ≈ 12.6 m long.")}>
+        note={tx(t, "mCir_secNote", "Example: a lawn sprinkler set to a 90° arc throws water 8 m. The wet patch is a quarter sector: its area is ¼ · π · 8² ≈ 50.3 m², and its curved edge is ¼ · 2π · 8 ≈ 12.6 m long.")}>
         {r`s = \frac{\theta}{360} \cdot 2\pi r \qquad A_\text{sector} = \frac{\theta}{360} \cdot \pi r^2`}
       </Equation>
 
@@ -136,53 +136,32 @@ export function CircleContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mCir_exTitle", "Worked examples")}</H2>
       <p>
         {tx(t, "mCir_ex1",
-          "1. A car wheel has radius 0.3 m. How many turns per second at 20 m/s? One turn covers 2π · 0.3 ≈ 1.885 m, so 20 / 1.885 ≈ 10.6 turns per second. This is how a game spins wheel meshes so they match the car's speed instead of sliding.")}
+          "1. A car wheel has radius 0.3 m. How many turns per second at 20 m/s? One turn covers 2π · 0.3 ≈ 1.885 m, so 20 / 1.885 ≈ 10.6 turns per second, about 637 turns per minute. A speedometer runs this in reverse: it counts wheel turns and multiplies by the circumference.")}
       </p>
       <p>
         {tx(t, "mCir_ex2",
-          "2. An explosion's radius grows from 4 m to 6 m. Its area grows from 16π to 36π, a factor 36/16 = 2.25, because the radius factor 1.5 is squared (the k² law). An upgrade that says \"+50% radius\" is really +125% area.")}
+          "2. A pizzeria sells a 30 cm pizza and a 45 cm one. The radius grows from 15 to 22.5 cm, a factor 1.5, so the area grows from 225π to 506.25π, a factor 1.5² = 2.25 (the k² law). The big pizza is \"50% wider\" but has 125% more pizza, so it is the better deal unless it costs more than 2.25 times as much.")}
       </p>
       <p>
         {tx(t, "mCir_ex3",
-          "3. A round arena has a circumference of 100 m. Its radius is 100 / (2π) ≈ 15.9 m, and its area is π · 15.9² ≈ 796 m².")}
+          "3. A round pond has a circumference of 100 m. Its radius is 100 / (2π) ≈ 15.9 m, and its area is π · 15.9² ≈ 796 m².")}
       </p>
 
-      <H2>{tx(t, "mCir_codeTitle", "Circles in C++")}</H2>
+      <H2>{tx(t, "mCir_measureTitle", "Measuring circles by hand")}</H2>
       <p>
-        {tx(t, "mCir_codeBody",
-          "C++20 has π in <numbers> as std::numbers::pi (a double) and std::numbers::pi_v<float>. Before C++20, M_PI from <cmath> is common but not standard. The point test compares squared distances, so it never takes a square root; the Monte Carlo function is the darts figure in a few lines.")}
+        {tx(t, "mCir_measureBody",
+          "Every circle question starts by finding the radius, because every formula uses it. Often you cannot measure the radius directly (the centre of a tree trunk is inside the wood), but a tape around the outside gives the circumference, and r = C ÷ 2π. Keep π as a symbol until the last line, then round once: 8π cm is exact, 25.1 cm is rounded.")}
       </p>
-      <CodeBlock lang="cpp" filename="circle.hpp" t={t}>{`#include <numbers>
-#include <random>
-
-constexpr float PI = std::numbers::pi_v<float>;
-
-struct Vec2 { float x, y; };
-struct Circle { Vec2 c; float r; };
-
-float circumference(const Circle& k) { return 2.0f * PI * k.r; }
-float area(const Circle& k)          { return PI * k.r * k.r; }
-
-float arcLength(const Circle& k, float degrees)  { return degrees / 360.0f * 2.0f * PI * k.r; }
-float sectorArea(const Circle& k, float degrees) { return degrees / 360.0f * PI * k.r * k.r; }
-
-// Inside or on the circle? Squared distance against squared radius.
-bool contains(const Circle& k, Vec2 p) {
-    float dx = p.x - k.c.x, dy = p.y - k.c.y;
-    return dx * dx + dy * dy <= k.r * k.r;
-}
-
-// Estimate pi by throwing n random darts at the square [-1, 1] x [-1, 1]
-double estimatePi(int n, unsigned seed = 42) {
-    std::mt19937 rng(seed);
-    std::uniform_real_distribution<double> u(-1.0, 1.0);
-    int inside = 0;
-    for (int i = 0; i < n; ++i) {
-        double x = u(rng), y = u(rng);
-        if (x * x + y * y <= 1.0) ++inside;
-    }
-    return 4.0 * inside / n;                     // share inside -> pi/4
-}`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mCir_tQuestion", "Question"), tx(t, "mCir_tWork", "Working"), tx(t, "mCir_tAnswer", "Answer")]}
+        rows={[
+          [tx(t, "mCir_q1", "a tape round a tree trunk reads 157 cm; how thick is the tree?"), "d = C ÷ π = 157 ÷ π", "≈ 50 cm"],
+          [tx(t, "mCir_q2", "how far does the tip of a 12 cm minute hand travel in 20 minutes?"), tx(t, "mCir_w2", "20 min = 120° = ⅓ turn; ⅓ · 2π · 12"), "8π ≈ 25.1 cm"],
+          [tx(t, "mCir_q3", "a 30 cm pizza cut into 8 equal slices: area of one slice?"), tx(t, "mCir_w3", "r = 15; ⅛ · π · 15² = 225π ÷ 8"), "≈ 88.4 cm²"],
+          [tx(t, "mCir_q4", "…and the crust along one slice?"), tx(t, "mCir_w4", "⅛ · 2π · 15 = 30π ÷ 8"), "≈ 11.8 cm"],
+          [tx(t, "mCir_q5", "is the point (3, 4) inside a circle of radius 5 about the origin?"), "3² + 4² = 25 = 5²", tx(t, "mCir_a5", "exactly on the circle")],
+        ]}
+      />
 
       <H2>{tx(t, "mCir_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -192,8 +171,8 @@ double estimatePi(int n, unsigned seed = 42) {
           [tx(t, "mCir_m2w", "mixing up 2πr and πr²"), tx(t, "mCir_m2r", "length: 2πr, area: πr²"), tx(t, "mCir_m2", "an area has a squared length in it; the circumference does not")],
           [tx(t, "mCir_m3w", "double radius, double area"), tx(t, "mCir_m3r", "double radius, four times the area"), tx(t, "mCir_m3", "area scales with r², as with any shape")],
           [tx(t, "mCir_m4w", "πr² written as (πr)²"), tx(t, "mCir_m4r", "only r is squared"), tx(t, "mCir_m4", "order of operations: powers before multiplication")],
-          [tx(t, "mCir_m5w", "const float PI = 3.14;"), tx(t, "mCir_m5r", "std::numbers::pi_v<float>"), tx(t, "mCir_m5", "3.14 is wrong in the third decimal and errors pile up in long simulations")],
-          [tx(t, "mCir_m6w", "sqrt in a point-in-circle test"), tx(t, "mCir_m6r", "compare dx² + dy² with r²"), tx(t, "mCir_m6", "same answer, no square root")],
+          [tx(t, "mCir_m5w", "rounding π to 3.14 in the first line"), tx(t, "mCir_m5r", "keep π as a symbol, round once at the end"), tx(t, "mCir_m5", "3.14 is already off in the third decimal, and each rounded step adds error")],
+          [tx(t, "mCir_m6w", "taking a square root to test a point"), tx(t, "mCir_m6r", "compare dx² + dy² with r²"), tx(t, "mCir_m6", "same answer, no square root")],
         ]}
       />
 

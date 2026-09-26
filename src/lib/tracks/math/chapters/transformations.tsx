@@ -3,9 +3,10 @@
 // Geometry 9: transformations — translations, reflections and their effect on
 // winding, quarter-turn rotations and rotating about a pivot, rigid motions
 // and congruence, scaling (uniform and not) and shear with their effect on
-// area, composition and why order matters, symmetry, and C++.
+// area, composition and why order matters, symmetry, and following a shape
+// through several moves by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +20,7 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mTf_intro",
-          "Every object in a game has a transform: where it is, which way it faces, how big it is. Moving a character, mirroring a sprite to face left, spinning a coin and growing a power-up are all transformations, rules that take every point of a shape to a new point. This chapter writes each basic move as a rule on coordinates, shows what it keeps and what it changes, and explains why doing two of them in a different order gives a different result. The Linear Algebra section will later pack all of these into matrices.")}
+          "Sliding a sofa across a floor plan, seeing your face in a mirror, turning a key and enlarging a photo are all transformations: rules that take every point of a shape to a new point. Tiled floors, wallpaper and kaleidoscopes are built by repeating one shape with them. This chapter writes each basic move as a rule on coordinates, shows what it keeps and what it changes, and explains why doing two of them in a different order gives a different result. The Linear Algebra section will later pack all of these into matrices.")}
       </Lead>
 
       <H2>{tx(t, "mTf_whatTitle", "A transformation is a rule on points")}</H2>
@@ -40,7 +41,7 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
           [r`a`, tx(t, "mTf_wA", "the horizontal step; negative moves left")],
           [r`b`, tx(t, "mTf_wB", "the vertical step; negative moves down")],
         ]}
-        note={tx(t, "mTf_transNote", "Example: moving (2, 5) by (−3, 1) gives (−1, 6). A character walking at velocity v for a frame of dt seconds is translated by v · dt.")}>
+        note={tx(t, "mTf_transNote", "Example: moving (2, 5) by (−3, 1) gives (−1, 6). Someone walking due east at 1.5 m/s for 4 s is translated by (1.5 · 4, 0) = (6, 0) metres.")}>
         {r`(x, y) \mapsto (x + a,\ y + b)`}
       </Equation>
 
@@ -61,10 +62,10 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mTf_windTitle", "Reflections reverse the winding")}</H3>
       <p>
         {tx(t, "mTf_windBody",
-          "A reflection keeps lengths and angles but turns the shape into its mirror image. You can see it in the numbers: list the corners anticlockwise before the flip and they come out clockwise after it, so the shoelace formula from the area chapter gives the same area with the opposite sign. This matters a lot in 3D. GPUs decide which side of a triangle faces the camera from its winding, and discard the back faces. Mirror a model with a negative scale and every triangle's winding flips, the model turns inside out, and engines must swap their culling mode to compensate.")}
+          "A reflection keeps lengths and angles but turns the shape into its mirror image. You can see it in the numbers: list the corners anticlockwise before the flip and they come out clockwise after it, so the shoelace formula from the area chapter gives the same area with the opposite sign. That sign is why no amount of sliding and turning in the plane can undo a reflection: slides and turns never change the winding. It is the same reason a left glove cannot be turned into a right glove by moving it around on a table.")}
       </p>
       <Callout type="tip" t={t}>
-        {tx(t, "mTf_flipTip", "Flipping a 2D sprite to face left is a reflection across its own vertical centre line: x' = 2c − x with c the sprite's centre, or simply a horizontal scale of −1 about the centre. Flipping it back is the same reflection again, since reflecting twice across the same line returns every point home.")}
+        {tx(t, "mTf_flipTip", "To reflect across a vertical line x = c that is not the y-axis, use x' = 2c − x (y stays). The reason: the mirror line is halfway between a point and its image, so c = (x + x') / 2, and solving for x' gives 2c − x. Reflecting twice across the same line returns every point home.")}
       </Callout>
 
       <H2>{tx(t, "mTf_rotTitle", "Rotation: turn")}</H2>
@@ -130,7 +131,7 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mTf_compTitle", "Composition: order matters")}</H2>
       <p>
         {tx(t, "mTf_compBody",
-          "Applying one transformation and then another is a composition. Translations can be done in any order (moving 2 right then 1 up is the same as 1 up then 2 right), but mixing kinds usually cannot. In the order mode of the figure, turning the F a quarter turn about the origin and then moving it 3 to the left puts it somewhere else than moving it first and turning after: the turn is about the origin, and moving first changed where the F sits relative to the origin, so the turn swings it to a different place. Game engines therefore fix a standard order for an object's transform: scale first, then rotate, then translate. That way the object is scaled and turned about its own origin and only then placed in the world.")}
+          "Applying one transformation and then another is a composition. Translations can be done in any order (moving 2 right then 1 up is the same as 1 up then 2 right), but mixing kinds usually cannot. In the order mode of the figure, turning the F a quarter turn about the origin and then moving it 3 to the left puts it somewhere else than moving it first and turning after: the turn is about the origin, and moving first changed where the F sits relative to the origin, so the turn swings it to a different place. Directions in everyday life work the same way: \"turn left, then walk 10 m\" and \"walk 10 m, then turn left\" leave you in different places. So a description of several moves is incomplete without their order. A safe habit: scale and turn a shape while it sits at the origin, and move it to its final place last.")}
       </p>
       <Equation label={tx(t, "mTf_eqComp", "Two orders, two results")}
         notes={[
@@ -158,47 +159,30 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mTf_ex2",
-          "2. A sprite 32 pixels wide has its left edge at x = 100, so its centre is c = 116. Mirroring it to face left sends its left edge to 2 · 116 − 100 = 132 and its right edge, 132, to 100: it stays in the same place, facing the other way.")}
+          "2. A sign 32 cm wide has its left edge at x = 100 cm, so its centre line is x = 116. Reflecting it across that line sends its left edge to 2 · 116 − 100 = 132 and its right edge, 132, to 100: the sign stays in the same place but its lettering now reads backwards.")}
       </p>
       <p>
         {tx(t, "mTf_ex3",
           "3. A tile is scaled by (3, 2) and then moved by (10, 0). Its corner (1, 1) goes to (3, 2) and then to (13, 2). In the other order, (1, 1) → (11, 1) → (33, 2): the translation was scaled too.")}
       </p>
 
-      <H2>{tx(t, "mTf_codeTitle", "Transformations in C++")}</H2>
+      <H2>{tx(t, "mTf_trackTitle", "Following a shape through several moves")}</H2>
       <p>
-        {tx(t, "mTf_codeBody",
-          "Each rule is a small function on a point; a shape is transformed by applying the function to every vertex. The pivot helper shows the \"move there, do it, move back\" pattern, and applyTRS fixes the scale–rotate–translate order that engines use (with quarter turns only until the Trigonometry section provides any angle).")}
+        {tx(t, "mTf_trackBody",
+          "A shape is transformed by transforming its corners and joining them up again in the same order. Take the triangle A = (1, 0), B = (3, 0), C = (1, 2) and apply three moves in this order: reflect across the y-axis, (x, y) → (−x, y); turn a quarter turn anticlockwise about the origin, (x, y) → (−y, x); move by (4, 1). One row per corner, one column per move:")}
       </p>
-      <CodeBlock lang="cpp" filename="transform2d.hpp" t={t}>{`#include <vector>
-
-struct Vec2 { float x, y; };
-
-Vec2 translate(Vec2 p, Vec2 d)        { return { p.x + d.x, p.y + d.y }; }
-Vec2 reflectX(Vec2 p)                 { return { p.x, -p.y }; }         // across the x-axis
-Vec2 reflectVertical(Vec2 p, float c) { return { 2.0f * c - p.x, p.y }; } // across x = c
-Vec2 rot90(Vec2 p)                    { return { -p.y, p.x }; }         // quarter turn, anticlockwise
-Vec2 scale(Vec2 p, Vec2 s)            { return { p.x * s.x, p.y * s.y }; }
-Vec2 shearX(Vec2 p, float k)          { return { p.x + k * p.y, p.y }; }
-
-// Quarter turns about a pivot: move there, turn, move back
-Vec2 rot90About(Vec2 p, Vec2 pivot, int quarterTurns) {
-    Vec2 q = { p.x - pivot.x, p.y - pivot.y };
-    for (int i = 0; i < (quarterTurns & 3); ++i) q = rot90(q);
-    return { q.x + pivot.x, q.y + pivot.y };
-}
-
-// Scale, then rotate, then translate: the engine order
-void applyTRS(std::vector<Vec2>& shape, Vec2 s, int quarterTurns, Vec2 pos) {
-    for (Vec2& p : shape) {
-        p = scale(p, s);
-        for (int i = 0; i < (quarterTurns & 3); ++i) p = rot90(p);
-        p = translate(p, pos);
-    }
-}
-
-// One negative scale factor mirrors the shape and flips the winding: fix culling
-bool flipsWinding(Vec2 s) { return s.x * s.y < 0.0f; }`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mTf_tCorner", "Corner"), tx(t, "mTf_tReflect", "reflect in y-axis"), tx(t, "mTf_tTurn", "quarter turn"), tx(t, "mTf_tMove", "move (4, 1)")]}
+        rows={[
+          ["A (1, 0)", "(−1, 0)", "(0, −1)", "A' (4, 0)"],
+          ["B (3, 0)", "(−3, 0)", "(0, −3)", "B' (4, −2)"],
+          ["C (1, 2)", "(−1, 2)", "(−2, −1)", "C' (2, 0)"],
+        ]}
+      />
+      <p>
+        {tx(t, "mTf_trackCheck",
+          "Two checks catch almost every slip. Lengths: all three moves are rigid, so the sides must keep their lengths. AB = 2 and A'B' = |0 − (−2)| = 2; AC = 2 and A'C' = |4 − 2| = 2; BC = √(2² + 2²) = √8 and B'C' = √(2² + 2²) = √8 ✓. Winding: the moves include exactly one reflection, so the shoelace sign must flip. For ABC: 1·0 − 3·0 = 0, 3·2 − 1·0 = 6, 1·0 − 1·2 = −2, sum 4, so +2 (anticlockwise). For A'B'C': 4·(−2) − 4·0 = −8, 4·0 − 2·(−2) = 4, 2·0 − 4·0 = 0, sum −4, so −2 (clockwise) ✓. Same area 2, opposite sign.")}
+      </p>
 
       <H2>{tx(t, "mTf_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -206,8 +190,8 @@ bool flipsWinding(Vec2 s) { return s.x * s.y < 0.0f; }`}</CodeBlock>
         rows={[
           [tx(t, "mTf_m1w", "90° turn: (x, y) → (y, −x)"), "(−y, x)", tx(t, "mTf_m1", "(y, −x) is the clockwise turn, −90°")],
           [tx(t, "mTf_m2w", "rotating about a pivot with the origin rule"), tx(t, "mTf_m2r", "subtract the pivot, turn, add it back"), tx(t, "mTf_m2", "otherwise the shape swings around the origin")],
-          [tx(t, "mTf_m3w", "translate, then scale"), tx(t, "mTf_m3r", "scale, then rotate, then translate"), tx(t, "mTf_m3", "scaling after moving also scales the position")],
-          [tx(t, "mTf_m4w", "mirroring with scale −1 and nothing else"), tx(t, "mTf_m4r", "also flip the culling / winding"), tx(t, "mTf_m4", "the mirrored mesh would render inside out")],
+          [tx(t, "mTf_m3w", "translate, then scale about the origin"), tx(t, "mTf_m3r", "scale (and turn) at the origin, move last"), tx(t, "mTf_m3", "scaling after moving also scales the move")],
+          [tx(t, "mTf_m4w", "undoing a reflection with a rotation"), tx(t, "mTf_m4r", "only another reflection undoes it"), tx(t, "mTf_m4", "a reflection flips the winding; rotations never do")],
           [tx(t, "mTf_m5w", "stretching keeps the shape similar"), tx(t, "mTf_m5r", "only equal factors do"), tx(t, "mTf_m5", "sₓ ≠ s_y changes angles")],
         ]}
       />
@@ -219,7 +203,7 @@ bool flipsWinding(Vec2 s) { return s.x * s.y < 0.0f; }`}</CodeBlock>
         "Rigid motions keep lengths and angles; congruent means related by one.",
         "Reflections (and negative scales) reverse the winding order.",
         "Scale multiplies area by sₓ s_y; shear keeps area.",
-        "Order matters: engines scale, then rotate, then translate.",
+        "Order matters: scaling or turning after a move also changes where the shape ends up.",
       ]} />
     </Article>
   );

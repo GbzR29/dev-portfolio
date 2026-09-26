@@ -11,9 +11,9 @@ import { Figure, Choice, Row, Readout, Slider, C, T, Handle, plot, Grid, useDrag
 //            area scales by k².
 // parallel — a line parallel to one side of a triangle cuts off a smaller,
 //            similar triangle; the two other sides are cut in the same ratio.
-// project  — side view of a pinhole camera: the eye, a screen at distance d
-//            and an object at depth z form two similar triangles, so the
-//            object's height on screen is d · y / z.
+// project  — side view of a pinhole camera: the eye, a picture plane at
+//            distance d and an object at depth z form two similar triangles,
+//            so the object's height in the picture is d · y / z.
 
 type Mode = "scale" | "parallel" | "project";
 const W = 560, H = 300;
@@ -106,7 +106,7 @@ export function SimilarityFigure({ t }: { t?: TrackTranslations }) {
       <line x1={X(obj.x)} y1={Y(0)} x2={X(obj.x)} y2={Y(obj.y)} stroke={C.sky} strokeWidth={4} />
       <circle cx={X(0)} cy={Y(0)} r={5} fill={C.fg} />
       <T x={X(0)} y={Y(0) + 17} size={10} anchor="middle" color={C.fg} bold>{tx(t, "figSim_eye", "eye")}</T>
-      <T x={X(d)} y={Y(-4.5) + 14} size={9.5} anchor="middle" color={C.purple} bold>{tx(t, "figSim_screen", "screen")}</T>
+      <T x={X(d)} y={Y(-4.5) + 14} size={9.5} anchor="middle" color={C.purple} bold>{tx(t, "figSim_screen", "picture")}</T>
       <T x={X(d / 2)} y={Y(0) + 13} size={9.5} anchor="middle" color={C.purple}>{`d = ${n2(d)}`}</T>
       <T x={X(obj.x / 2 + d / 2)} y={Y(0) + 26} size={9.5} anchor="middle" color={C.sky}>{`z = ${n2(obj.x)}`}</T>
       <T x={X(obj.x) + 8} y={Y(obj.y / 2)} size={10} color={C.sky} bold>{`y = ${n2(obj.y)}`}</T>
@@ -114,13 +114,13 @@ export function SimilarityFigure({ t }: { t?: TrackTranslations }) {
       <Handle x={X(obj.x)} y={Y(obj.y)} color={C.sky} active={drag.dragging === "obj"} />
     </>;
     controls = <>
-      <Slider label={tx(t, "figSim_d", "screen distance d")} value={d} min={1} max={6} step={0.5} onChange={v => { setD(v); setObj(o => ({ ...o, x: Math.max(o.x, v + 1) })); }} fmt={n2} width="w-32" />
+      <Slider label={tx(t, "figSim_d", "picture distance d")} value={d} min={1} max={6} step={0.5} onChange={v => { setD(v); setObj(o => ({ ...o, x: Math.max(o.x, v + 1) })); }} fmt={n2} width="w-32" />
       <Row>
         <Readout>{`y'/d = y/z`}</Readout>
         <Readout color={C.amber}>{`y' = d · y / z = ${n2(d)} · ${n2(obj.y)} / ${n2(obj.x)} = ${n2(ys)}`}</Readout>
       </Row>
     </>;
-    note = tx(t, "figSim_noteJ", "Seen from the side, a ray of light goes from the top of the object to the eye and crosses the screen on the way. The small amber triangle and the big blue one share the angle at the eye and both have a right angle on the ground line, so they are similar: y' / d = y / z. Drag the object away (bigger z) and its image shrinks; that division by depth is perspective, the reason far things look small.");
+    note = tx(t, "figSim_noteJ", "Seen from the side, a ray of light goes from the top of the object to the eye and crosses the picture plane on the way. The small amber triangle and the big blue one share the angle at the eye and both have a right angle on the ground line, so they are similar: y' / d = y / z. Drag the object away (bigger z) and its image shrinks; that division by depth is perspective, the reason far things look small.");
   }
 
   return (

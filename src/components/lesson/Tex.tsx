@@ -1,6 +1,10 @@
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import type { ReactNode } from "react";
+import { useLanguage } from "@/components/providers/LanguageProvider";
+
+// The "where" heading of an equation's symbol list, per UI language
+const WHERE: Record<string, string> = { en: "where", pt: "onde", es: "donde", zh: "其中" };
 
 // ── LaTeX for lessons ─────────────────────────────────────────────────────────
 // Rendered to HTML on the server with KaTeX, so formulas appear with the page
@@ -57,21 +61,23 @@ export function Equation({ children, label, where, note, notes, glsl, glm }: {
   glsl?: string;
   glm?: string;
 }) {
+  const { language } = useLanguage();
+  const whereLabel = WHERE[language] ?? WHERE.en;
   return (
-    <div className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden">
+    <div className="my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-[var(--shadow-sm)] overflow-hidden">
       {label && (
-        <div className="px-4 pt-3 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
+        <div className="px-4 pt-3 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)]">
           {label}
         </div>
       )}
-      <div className="px-4 py-4 overflow-x-auto text-[var(--text-main)] text-[1.05rem]"
+      <div className="px-4 py-5 overflow-x-auto text-[var(--text-main)] text-[1.1rem]"
         dangerouslySetInnerHTML={{ __html: render(children, true) }} />
       {where && where.length > 0 && (
         <div className="px-4 pb-3.5 pt-1 border-t border-[var(--separator)] grid gap-x-4 gap-y-1.5 grid-cols-[auto_1fr] items-baseline text-[13px]">
-          <span className="col-span-2 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] pt-2">where</span>
+          <span className="col-span-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)] pt-2">{whereLabel}</span>
           {where.map(([sym, meaning], i) => (
             <div key={i} className="contents">
-              <span className="text-[var(--text-main)] whitespace-nowrap" dangerouslySetInnerHTML={{ __html: render(sym, false) }} />
+              <span className="text-[var(--primary)] whitespace-nowrap" dangerouslySetInnerHTML={{ __html: render(sym, false) }} />
               <span className="text-[var(--text-muted)] leading-snug">{meaning}</span>
             </div>
           ))}

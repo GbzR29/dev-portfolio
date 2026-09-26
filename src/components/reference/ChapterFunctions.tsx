@@ -19,9 +19,9 @@ export function ChapterFunctions({ reference, names }: { reference: Reference; n
   if (entries.length === 0) return null;
 
   return (
-    <section className="mt-20 pt-10 border-t border-[var(--separator)]">
+    <section className="mt-20 pt-10 border-t border-[var(--border)]">
       <div className="flex items-end justify-between gap-4 mb-2">
-        <h2 id="chapter-functions" className="scroll-mt-28 text-xl font-bold tracking-tight text-[var(--text-main)] flex items-center gap-2">
+        <h2 id="chapter-functions" className="scroll-mt-[calc(var(--nav-h,81px)+24px)] font-display text-[1.6rem] leading-tight text-[var(--text-main)] flex items-center gap-2">
           <BookMarked size={18} className="text-[var(--primary)]" />
           {tt.refUsedInChapter ?? "Functions used in this chapter"}
         </h2>

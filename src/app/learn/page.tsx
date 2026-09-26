@@ -1,163 +1,139 @@
 // app/learn/page.tsx
 "use client";
 
-import Navbar from "@/components/navbar/Navbar";
-import Footer from "@/components/footer/Footer";
-import TriangleParticles from "@/components/particles/TriangleParticles";
-import { MyButton } from "@/components/ui/Button";
-import { BookOpen, Code2, Cpu, Globe, Zap, ArrowRight, Lock, Triangle, Gamepad2, Sigma } from "lucide-react";
+import "@/styles/home.css";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import HomeNav from "@/components/home/HomeNav";
+import Stars from "@/components/home/Stars";
+import HomeFooter from "@/components/home/HomeFooter";
 import { getTrack } from "@/lib/tracks";
 import { TRACK_CATALOG, type TrackInfo } from "@/lib/tracks/catalog";
-import type { TrackTranslations } from "@/lib/tracks/types";
+import { getReference, referenceHref } from "@/lib/reference";
+import { readLastLesson, readVisited, type LastLesson } from "@/lib/tracks/progress";
+import { trackName } from "@/lib/tracks/crumbs";
 
-// Icons stay here (JSX); everything else about a track lives in the catalog.
-const TRACK_ICONS: Record<string, ReactNode> = {
-  cpp:     <Code2    size={26} />,
-  opengl:  <Zap      size={26} />,
-  glsl:    <Triangle size={26} />,
-  sdl3:    <Globe    size={26} />,
-  gamedev: <Gamepad2 size={26} />,
-  math:    <Sigma    size={26} />,
-  vulkan:  <Cpu      size={26} />,
-};
+type Strings = Record<string, string | undefined>;
 
-function TrackCard({ config, t }: { config: TrackInfo; t: NonNullable<TrackTranslations> }) {
-  const icon  = TRACK_ICONS[config.id];
-  const desc  = t[config.descKey]  ?? config.descFallback;
-  const level = t[config.levelKey] ?? config.levelFallback;
+const fill = (s: string, values: Record<string, number | string>) =>
+  s.replace(/\{(\w+)\}/g, (m, k) => (k in values ? String(values[k]) : m));
 
-  const isAvailable = config.status === "available";
-  // Read the real chapter count so the card can never drift from the content
-  const lessonsCount = getTrack(config.path)?.chapters.length ?? config.plannedLessons;
+// ── Totals, from the track registry ─────────────────────────────────────────
+
+const AVAILABLE = TRACK_CATALOG.filter((info) => getTrack(info.path));
+const TOTAL_LESSONS = AVAILABLE.reduce((n, info) => n + (getTrack(info.path)?.chapters.length ?? 0), 0);
+
+// ── Track card ───────────────────────────────────────────────────────────────
+
+function TrackCard({ info, t, visited }: { info: TrackInfo; t: Strings; visited: number }) {
+  const track = getTrack(info.path);
+  const reference = getReference(info.path);
+  const level = t[info.levelKey] ?? info.levelFallback;
+  const desc = t[info.descKey] ?? info.descFallback;
+  const href = `/learn/${encodeURIComponent(info.path)}`;
+
+  if (!track) {
+    return (
+      <article className="hm-card hm-track soon" style={{ "--track": info.accentColor } as React.CSSProperties}>
+        <div className="hm-level"><i />{level} · {t.learnSoon ?? "coming soon"}</div>
+        <h3>{trackName(t, info.path)}</h3>
+        <p>{desc}</p>
+        <div className="hm-meta"><span>{fill(t.learnPlannedN ?? "{n} lessons planned", { n: info.plannedLessons })}</span></div>
+        <div />
+        <div className="hm-track-foot"><span className="hm-ref">{t.learnInPrep ?? "in preparation"}</span></div>
+      </article>
+    );
+  }
+
+  const lessons = track.chapters.length;
+  const sections = new Set(track.chapters.map((c) => c.section).filter(Boolean)).size;
+  const pct = Math.round((visited / lessons) * 100);
 
   return (
-    <div className={`
-      group relative flex flex-col overflow-hidden rounded-2xl border transition-all duration-300
-      ${isAvailable
-        ? "border-[var(--border)] bg-[var(--card)] shadow-sm hover:border-[var(--border-strong)] hover:shadow-md"
-        : "border-[var(--border)] bg-[var(--card)] shadow-sm opacity-75"
-      }
-    `}>
-      {/* Top color accent bar */}
-      <div
-        className="h-0.5 w-full flex-shrink-0 opacity-70 group-hover:opacity-100 transition-opacity"
-        style={{ background: `linear-gradient(90deg, ${config.accentColor}, transparent)` }}
-      />
-
-      <div className="flex flex-col flex-grow p-6 sm:p-7">
-        {/* Row: icon + level badge + optional soon badge */}
-        <div className="flex items-start justify-between mb-5 gap-3">
-          {/* Icon */}
-          <div className="p-3 rounded-xl border flex-shrink-0"
-            style={{ background: `${config.accentColor}14`, borderColor: `${config.accentColor}28`, color: config.accentColor }}>
-            {icon}
-          </div>
-
-          {/* Right side: soon + level stacked vertically */}
-          <div className="flex flex-col items-end gap-1.5">
-            {!isAvailable && (
-              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[var(--surface)] border border-[var(--border)]">
-                <Lock size={9} className="text-[var(--text-muted)]" />
-                <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">Soon</span>
-              </div>
-            )}
-            <span className="text-[9px] font-bold uppercase tracking-[0.18em] px-2.5 py-1 rounded-full bg-[var(--surface)] border border-[var(--border)] text-[var(--text-muted)] whitespace-nowrap">
-              {level}
-            </span>
-          </div>
-        </div>
-
-        <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">{config.title}</h3>
-        <p className="text-[var(--text-muted)] text-sm leading-relaxed flex-grow mb-6">
-          {desc}
-        </p>
-
-        {/* Footer */}
-        <div className="flex items-center justify-between mt-auto">
-          <div className="flex items-center gap-1.5 text-[var(--text-muted)] text-xs font-mono">
-            <BookOpen size={13} style={{ color: config.accentColor }} />
-            <span>{lessonsCount} {t.lessons}</span>
-          </div>
-
-          {isAvailable ? (
-            <Link href={`/learn/${config.path}`}>
-              <button
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 group/btn"
-                style={{
-                  background: `${config.accentColor}15`,
-                  color: config.accentColor,
-                  border: `1px solid ${config.accentColor}28`,
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = `${config.accentColor}25`; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = `${config.accentColor}15`; }}
-              >
-                {t.startTrack}
-                <ArrowRight size={14} className="group-hover/btn:translate-x-0.5 transition-transform" />
-              </button>
-            </Link>
-          ) : (
-            <span className="text-xs text-[var(--text-muted)] font-mono opacity-50">{"// coming soon"}</span>
-          )}
-        </div>
+    <article className="hm-card hm-track" style={{ "--track": info.accentColor } as React.CSSProperties}>
+      <div className="hm-level"><i />{level}</div>
+      <h3>{trackName(t, info.path)}</h3>
+      <p>{desc}</p>
+      <div className="hm-meta">
+        <span>{fill(t.learnLessonsN ?? "{n} lessons", { n: lessons })}</span>
+        {sections > 1 && <span>{fill(t.learnSectionsN ?? "{n} sections", { n: sections })}</span>}
+        {visited > 0 && <span>{fill(t.learnReadN ?? "{n} read", { n: visited })}</span>}
       </div>
-    </div>
+      {visited > 0 ? <div className="hm-prog" aria-hidden="true"><i style={{ width: `${pct}%` }} /></div> : <div />}
+      <div className="hm-track-foot">
+        <Link className="hm-more" href={href}>{visited > 0 ? t.learnContinue ?? "Continue →" : t.learnStart ?? "Start →"}</Link>
+        {reference && <Link className="hm-ref" href={referenceHref(reference)}>{t.learnReference ?? "reference"}</Link>}
+      </div>
+    </article>
   );
 }
 
+// ── Page ─────────────────────────────────────────────────────────────────────
+
 export default function LearnPage() {
   const { t } = useLanguage();
-  if (!t) return null;
+  const ui = t as unknown as Strings;
+
+  // Progress lives in localStorage, so it is read after mount (the server has none)
+  const [visited, setVisited] = useState<Record<string, number>>({});
+  const [last, setLast] = useState<LastLesson | null>(null);
+  useEffect(() => {
+    setVisited(Object.fromEntries(AVAILABLE.map((info) => [info.id, readVisited(info.id).size])));
+    const l = readLastLesson();
+    setLast(l && getTrack(l.track) ? l : null);
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text-main)] transition-colors duration-300">
-      <TriangleParticles />
-      <Navbar />
-
-      <main className="flex-grow pt-28 pb-24">
-        <div className="max-w-6xl mx-auto px-6 lg:px-10 space-y-16">
-
-          <header className="space-y-5 max-w-2xl">
-            <div className="flex items-center gap-3">
-              <div className="h-px w-8 bg-[var(--primary)]" />
-              <span className="font-mono text-[10px] text-[var(--primary)] uppercase tracking-[0.3em]">
-                {"// gabrielfc.dev/learn"}
-              </span>
+    <div className="home">
+      <header className="hm-hero-wrap">
+        <Stars />
+        <div className="hm-in">
+          <HomeNav />
+          <div className="hm-hero">
+            <div className="hm-eyebrow">
+              {fill(ui.learnEyebrow ?? "learn · {lessons} lessons in {tracks} tracks", { lessons: TOTAL_LESSONS, tracks: AVAILABLE.length })}
             </div>
-            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight">
-              {t.learnTitle} <span className="text-[var(--primary)]">{t.learnEngine}</span>
-            </h1>
-            <p className="text-xl text-[var(--text-muted)] leading-relaxed">{t.learnSubtitle}</p>
-          </header>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {TRACK_CATALOG.map((config) => (
-              <TrackCard key={config.id} config={config} t={t} />
-            ))}
-          </div>
-
-          {/* AI banner */}
-          <div className="relative overflow-hidden rounded-2xl border border-[var(--primary)]/20 bg-[var(--card)] shadow-sm p-8 md:p-10">
-            <div className="absolute -right-16 -top-16 w-56 h-56 bg-[var(--primary)] opacity-5 blur-3xl rounded-full pointer-events-none" />
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-6 relative z-10">
-              <div className="flex-shrink-0 p-4 bg-[var(--primary)]/10 border border-[var(--primary)]/20 rounded-2xl text-[var(--primary)]">
-                <Zap size={26} />
+            <h1>{ui.learnHeroTitle ?? "Learn from scratch"}</h1>
+            <p className="hm-lead">{ui.learnLead}</p>
+            {last && (
+              <div className="hm-resume">
+                <span>{ui.learnResume ?? "where you left off:"}</span>
+                <Link href={`/learn/${encodeURIComponent(last.track)}?chapter=${encodeURIComponent(last.chapter)}`}>
+                  {trackName(ui, last.track)}
+                  {last.title && <> · {last.number ? `${last.number}. ` : ""}{last.title}</>} →
+                </Link>
               </div>
-              <div className="flex-1 text-center md:text-left">
-                <h4 className="text-xl font-bold text-[var(--text-main)] mb-2">{t.aiTitle}</h4>
-                <p className="text-[var(--text-muted)] max-w-xl">{t.aiDesc}</p>
-              </div>
-              <div className="md:ml-auto flex-shrink-0">
-                <MyButton text={t.notifyMe} variant="outline" />
-              </div>
-            </div>
+            )}
           </div>
         </div>
-      </main>
+        <div className="hm-horizon" aria-hidden="true" />
+      </header>
 
-      <Footer />
+      <main className="hm-in">
+        <section className="hm-sec">
+          <h2>{ui.learnTracks ?? "Tracks"}</h2>
+          <div className="hm-track-grid">
+            {TRACK_CATALOG.map((info) => (
+              <TrackCard key={info.id} info={info} t={ui} visited={visited[info.id] ?? 0} />
+            ))}
+          </div>
+        </section>
+
+        <section className="hm-sec">
+          <h2>{ui.learnHowTitle ?? "How the lessons work"}</h2>
+          <div className="hm-how">
+            {[1, 2, 3].map((i) => (
+              <div key={i}>
+                <h3>{ui[`learnHow${i}Title`]}</h3>
+                <p>{ui[`learnHow${i}Body`]}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <HomeFooter />
+      </main>
     </div>
   );
 }

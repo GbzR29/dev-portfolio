@@ -1,0 +1,56 @@
+"use client";
+
+// ── Home navigation ─────────────────────────────────────────────────────────
+// A quiet text bar for the Home, the book page and /learn: name, links, theme toggle
+// and the language switch. The rest of the site keeps components/navbar.
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTheme } from "@/components/providers/ThemeProvider";
+import { useLanguage } from "@/components/providers/LanguageProvider";
+import type { Language } from "@/lib/i18n";
+
+const LANGUAGES: Language[] = ["en", "pt", "es", "zh"];
+
+export default function HomeNav() {
+  const { theme, toggleTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
+  const pathname = usePathname();
+
+  const links = [
+    { href: "/#about", label: t.navAbout },
+    { href: "/learn", label: t.navLearn },
+    { href: "/the-weight-of-being", label: t.navBook },
+    { href: "/blog", label: t.navBlog },
+    { href: "/#contact", label: t.navContact },
+  ];
+
+  return (
+    <nav className="hm-nav" aria-label="Primary">
+      <Link className="hm-brand" href="/">Gabriel Carvalho</Link>
+      <div className="hm-links">
+        {links.map((l) => (
+          <Link key={l.href} href={l.href} aria-current={pathname === l.href ? "page" : undefined}>{l.label}</Link>
+        ))}
+        <div className="hm-tools">
+          <button type="button" className="hm-pill" onClick={toggleTheme}>
+            {theme === "dark" ? t.navLight : t.navDark}
+          </button>
+          <div className="hm-langs" role="group" aria-label={t.navLanguage}>
+            {LANGUAGES.map((code) => (
+              <button
+                key={code}
+                type="button"
+                lang={code}
+                aria-pressed={language === code}
+                onClick={() => setLanguage(code)}
+              >
+                {code.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}

@@ -4,9 +4,10 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowUpRight, ChevronRight, Search } from "lucide-react";
+import { ArrowUpRight, Search } from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { DocsLayout } from "@/components/lesson/DocsLayout";
+import { trackCrumbs } from "@/lib/tracks/crumbs";
 import { ReferenceSidebar } from "@/components/reference/ReferenceSidebar";
 import { getReference, loc, referenceHref } from "@/lib/reference";
 
@@ -45,16 +46,17 @@ export default function ReferenceIndexPage() {
 
   return (
     <DocsLayout
+      crumbs={[...trackCrumbs(tt, trackPath), { label: tt.refTitle ?? "Function reference" }]}
       drawerTitle={tt.refTitle ?? "Function reference"}
       backHref={`/learn/${encodeURIComponent(trackPath)}`}
       backLabel={reference.title ?? "Back"}
       left={<ReferenceSidebar reference={reference} />}
       right={
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[var(--text-muted)] mb-4">
+          <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)] mb-4">
             {tt.refCategories ?? "Categories"}
           </p>
-          <nav className="space-y-0.5 border-l border-[var(--separator)]">
+          <nav className="space-y-0.5 border-l border-[var(--border)]">
             {groups.map(({ cat, entries }) => (
               <a
                 key={cat.id}
@@ -69,21 +71,12 @@ export default function ReferenceIndexPage() {
         </div>
       }
     >
-      <div className="flex items-center gap-2 text-xs text-[var(--text-muted)] font-mono mb-8">
-        <Link href="/learn" className="hover:text-[var(--text-main)] transition-colors">Learn</Link>
-        <ChevronRight size={12} className="opacity-40" />
-        <Link href={`/learn/${encodeURIComponent(trackPath)}`} className="hover:text-[var(--text-main)] transition-colors">
-          {reference.title}
-        </Link>
-        <ChevronRight size={12} className="opacity-40" />
-        <span className="text-[var(--text-main)]">{tt.refTitle ?? "Function reference"}</span>
-      </div>
 
-      <header className="mb-12 pb-10 border-b border-[var(--separator)]">
-        <p className="font-mono text-[11px] text-[var(--primary)] uppercase tracking-[0.25em] mb-4">
+      <header className="mb-12 pb-10 border-b border-[var(--border)]">
+        <p className="font-mono text-[12.5px] text-[var(--primary)] tracking-[0.04em] mb-4">
           {reference.title}
         </p>
-        <h1 className="text-3xl md:text-[2.6rem] md:leading-[1.15] font-extrabold tracking-tight mb-5">
+        <h1 className="font-display text-[2.2rem] md:text-[2.9rem] leading-[1.08] tracking-[-0.01em] mb-5">
           {tt.refTitle ?? "Function reference"}
         </h1>
         <p className="text-lg leading-relaxed text-[var(--text-muted)] max-w-2xl">
@@ -107,8 +100,8 @@ export default function ReferenceIndexPage() {
 
       <div className="space-y-14">
         {groups.map(({ cat, entries }) => (
-          <section key={cat.id} id={cat.id} className="scroll-mt-28">
-            <h2 className="text-xl font-bold tracking-tight text-[var(--text-main)] mb-5">
+          <section key={cat.id} id={cat.id} className="scroll-mt-[calc(var(--nav-h,81px)+24px)]">
+            <h2 className="font-display text-[1.6rem] leading-tight text-[var(--text-main)] mb-5">
               {loc(cat.title, language)}
             </h2>
             <div className="grid gap-3 sm:grid-cols-2">

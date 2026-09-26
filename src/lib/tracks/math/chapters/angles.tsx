@@ -3,9 +3,9 @@
 // Geometry 1: points, lines and angles — the basic objects (point, line, ray,
 // segment, plane), what an angle measures and why a turn is 360°, the kinds of
 // angle, complementary/supplementary/vertical angles, perpendicular and
-// parallel lines, the angles a transversal makes, and headings in C++.
+// parallel lines, the angles a transversal makes, and compass bearings by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -20,7 +20,7 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mAng_intro",
-          "Geometry is the mathematics of shape, size and position. Everything a game draws is geometry: a character model is thousands of triangles, a level is walls and floors, a camera is a point that looks in a direction. This section builds that geometry from the ground up, and this first chapter sets out the smallest pieces: points, lines and the angles between them. Angles are how we describe direction and turning, which is what a turret, a steering wheel or a camera does all day.")}
+          "Geometry is the mathematics of shape, size and position. It began as land measurement (the name means \"earth measuring\"), and it is still what a carpenter, a surveyor or a sailor uses every day: a floor plan is rectangles, a roof is triangles, a route on a map is segments and turns. This section builds that geometry from the ground up, and this first chapter sets out the smallest pieces: points, lines and the angles between them. Angles are how we describe direction and turning, which is what a compass, a steering wheel or the hands of a clock do all day.")}
       </Lead>
 
       <H2>{tx(t, "mAng_objTitle", "Points, lines, rays and segments")}</H2>
@@ -29,18 +29,18 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
           "Geometry starts from a few objects that are described rather than defined. A point is an exact position with no size at all; we name points with capital letters, like A or P. A line is perfectly straight, has no thickness and goes on forever in both directions; any two different points lie on exactly one line. The parts of a line we actually draw have names too. A segment is the piece between two endpoints, and it has a length. A ray starts at one point and goes on forever in one direction, like a laser beam. A plane is a perfectly flat surface that goes on forever, like an endless sheet of paper. Everything in this section happens in a plane, which is the 2D world of the functions chapter's graphs.")}
       </p>
       <LessonTable
-        headers={[tx(t, "mAng_tObj", "Object"), tx(t, "mAng_tNotation", "Notation"), tx(t, "mAng_tMeaning", "What it is"), tx(t, "mAng_tGame", "In a game")]}
+        headers={[tx(t, "mAng_tObj", "Object"), tx(t, "mAng_tNotation", "Notation"), tx(t, "mAng_tMeaning", "What it is"), tx(t, "mAng_tEveryday", "Everyday picture")]}
         rows={[
-          [tx(t, "mAng_o1", "point"), "A", tx(t, "mAng_o1m", "a position, no size"), tx(t, "mAng_o1g", "a vertex of a mesh, a player's position")],
-          [tx(t, "mAng_o2", "line"), "AB ↔", tx(t, "mAng_o2m", "straight, endless both ways, through A and B"), tx(t, "mAng_o2g", "an infinite wall used for collision tests")],
-          [tx(t, "mAng_o3", "ray"), "AB →", tx(t, "mAng_o3m", "starts at A, passes through B, endless one way"), tx(t, "mAng_o3g", "a bullet's path, a line of sight, a ray tracer's ray")],
-          [tx(t, "mAng_o4", "segment"), "AB", tx(t, "mAng_o4m", "the part between A and B, with a length"), tx(t, "mAng_o4g", "an edge of a triangle, a laser with a range")],
-          [tx(t, "mAng_o5", "plane"), "—", tx(t, "mAng_o5m", "a flat surface, endless in every direction"), tx(t, "mAng_o5g", "the ground, a mirror, a clipping plane")],
+          [tx(t, "mAng_o1", "point"), "A", tx(t, "mAng_o1m", "a position, no size"), tx(t, "mAng_o1e", "a town on a map, the tip of a pencil")],
+          [tx(t, "mAng_o2", "line"), "AB ↔", tx(t, "mAng_o2m", "straight, endless both ways, through A and B"), tx(t, "mAng_o2e", "the equator, a road drawn straight off both edges of the map")],
+          [tx(t, "mAng_o3", "ray"), "AB →", tx(t, "mAng_o3m", "starts at A, passes through B, endless one way"), tx(t, "mAng_o3e", "a beam from a lighthouse, a line of sight")],
+          [tx(t, "mAng_o4", "segment"), "AB", tx(t, "mAng_o4m", "the part between A and B, with a length"), tx(t, "mAng_o4e", "the edge of a table, a straight fence")],
+          [tx(t, "mAng_o5", "plane"), "—", tx(t, "mAng_o5m", "a flat surface, endless in every direction"), tx(t, "mAng_o5e", "a calm lake, a sheet of paper that never ends")],
         ]}
       />
       <p>
         {tx(t, "mAng_collinear",
-          "Points that lie on one line are collinear. Two lines in a plane either cross at exactly one point, or never meet (they are parallel), or are the same line; the systems of equations chapter found those same three cases with algebra. A line drawn through a point splits the plane into two sides, the half-planes; which side a point is on is one of the most common questions in collision code.")}
+          "Points that lie on one line are collinear. Two lines in a plane either cross at exactly one point, or never meet (they are parallel), or are the same line; the systems of equations chapter found those same three cases with algebra. A line splits the plane into two sides, the half-planes, the way a river splits a map into a north bank and a south bank; every point not on the line is on exactly one side.")}
       </p>
 
       <H2>{tx(t, "mAng_angleTitle", "What an angle is")}</H2>
@@ -70,11 +70,11 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
       <LessonTable
         headers={[tx(t, "mAng_tName", "Name"), tx(t, "mAng_tSize", "Size"), tx(t, "mAng_tExample", "Example")]}
         rows={[
-          [tx(t, "mAng_k1", "acute"), "0° < θ < 90°", tx(t, "mAng_k1e", "the tip of a pizza slice, a narrow cone of vision")],
-          [tx(t, "mAng_k2", "right"), "θ = 90°", tx(t, "mAng_k2e", "the corner of a screen, a wall meeting the floor")],
-          [tx(t, "mAng_k3", "obtuse"), "90° < θ < 180°", tx(t, "mAng_k3e", "a reclined chair, a wide field of view")],
+          [tx(t, "mAng_k1", "acute"), "0° < θ < 90°", tx(t, "mAng_k1e", "the tip of a pizza slice, clock hands at 1 o'clock (30°)")],
+          [tx(t, "mAng_k2", "right"), "θ = 90°", tx(t, "mAng_k2e", "the corner of a page, a wall meeting the floor")],
+          [tx(t, "mAng_k3", "obtuse"), "90° < θ < 180°", tx(t, "mAng_k3e", "a reclined chair, clock hands at 5 o'clock (150°)")],
           [tx(t, "mAng_k4", "straight"), "θ = 180°", tx(t, "mAng_k4e", "turning to face backwards")],
-          [tx(t, "mAng_k5", "reflex"), "180° < θ < 360°", tx(t, "mAng_k5e", "the outside of a room's corner, Pac-Man's body")],
+          [tx(t, "mAng_k5", "reflex"), "180° < θ < 360°", tx(t, "mAng_k5e", "the outside of a room's corner, a pie with one slice taken")],
           [tx(t, "mAng_k6", "full"), "θ = 360°", tx(t, "mAng_k6e", "a complete spin, which faces the same way as 0°")],
         ]}
       />
@@ -140,35 +140,63 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
           "A road (the transversal) crosses two parallel railway tracks. At the first track, the angle above the track on the right of the road is 65°. Find all eight angles. At the first crossing: the angle next to it on the same line is 180° − 65° = 115° (supplementary). The vertical angles give the other two: 65° opposite 65°, and 115° opposite 115°. The second crossing is a copy of the first, because the tracks are parallel: the same four values in the same positions (corresponding angles). Check one co-interior pair: the angle below the first track on the right is 115°, the angle above the second track on the right is 65°, and 115° + 65° = 180° ✓. With parallel lines, one angle is enough to know all eight.")}
       </p>
 
-      <H2>{tx(t, "mAng_codeTitle", "Headings in C++")}</H2>
+      <H2>{tx(t, "mAng_bearTitle", "Compass bearings by hand")}</H2>
       <p>
-        {tx(t, "mAng_codeBody",
-          "Games often store a direction as a heading angle, for example a turret's rotation. Two problems come up at once. First, angles repeat every full turn: 370° faces the same way as 10°, and −90° the same as 270°, so headings must be wrapped into one standard range. Second, to turn towards a target you need the shortest turn, which is never more than 180° either way: from 350° to 10° is +20°, not −340°. Both come down to the remainder operation from the divisibility chapter, done with std::fmod for floats.")}
+        {tx(t, "mAng_bearBody",
+          "Sailors and hikers give a direction as a bearing: the angle measured clockwise from north, from 0° up to (but not including) 360°. North is 0°, east 90°, south 180°, west 270°. Two questions come up on every trip, and both are angle arithmetic you can do in your head.")}
       </p>
-      <CodeBlock lang="cpp" filename="heading.hpp" t={t}>{`#include <cmath>
-
-// Wraps any angle into [0, 360).  370 -> 10, -90 -> 270
-float wrap360(float deg) {
-    float r = std::fmod(deg, 360.0f);     // remainder, keeps the sign of deg
-    return r < 0.0f ? r + 360.0f : r;
-}
-
-// Shortest signed turn from 'from' to 'to', in (-180, 180].
-// Positive = anticlockwise.  from 350 to 10 -> +20
-float shortestTurn(float from, float to) {
-    float d = wrap360(to - from);          // 0 ... 360
-    return d > 180.0f ? d - 360.0f : d;    // the long way round becomes the short way
-}
-
-// Turns 'heading' towards 'target' by at most 'maxStep' degrees (one frame)
-float turnTowards(float heading, float target, float maxStep) {
-    float d = shortestTurn(heading, target);
-    if (std::abs(d) <= maxStep) return wrap360(target);
-    return wrap360(heading + (d > 0.0f ? maxStep : -maxStep));
-}`}</CodeBlock>
+      <H3>{tx(t, "mAng_wrapTitle", "Bringing an angle back into 0° – 360°")}</H3>
+      <p>
+        {tx(t, "mAng_wrapBody",
+          "Turning adds and subtracts degrees, and the result can leave the range: a walker facing 300° who turns 100° clockwise faces 300° + 100° = 400°. But a full turn changes nothing, so 400° faces the same way as 400° − 360° = 40°. The rule: add or subtract 360° until the angle lands in 0° ≤ θ < 360°. This is the clock arithmetic of the divisibility chapter with 360 in place of 12.")}
+      </p>
+      <Equation where={[
+        [r`\theta`, tx(t, "mAng_wWrapTheta", "the angle you got from adding or subtracting turns, in degrees")],
+        [r`k`, tx(t, "mAng_wWrapK", "a whole number of full turns, chosen so the result lands in the range; it can be negative")],
+        [r`360^\circ`, tx(t, "mAng_wWrap360", "one full turn, which leaves the direction unchanged")],
+      ]}>{r`\theta_{\text{wrapped}} = \theta - 360^\circ\cdot k, \qquad 0^\circ \le \theta_{\text{wrapped}} < 360^\circ`}</Equation>
+      <LessonTable
+        headers={[tx(t, "mAng_tStart", "Angle"), tx(t, "mAng_tStep", "Step"), tx(t, "mAng_tResult", "Bearing")]}
+        rows={[
+          ["400°", "400° − 360°", "40°"],
+          ["−90°", "−90° + 360°", "270°"],
+          ["1000°", tx(t, "mAng_wrap3", "1000 = 2 × 360 + 280, so subtract 2 turns"), "280°"],
+          ["−450°", "−450° + 2 × 360°", "270°"],
+        ]}
+      />
+      <H3>{tx(t, "mAng_shortTitle", "The shortest turn between two bearings")}</H3>
+      <p>
+        {tx(t, "mAng_shortBody",
+          "A ship on bearing 350° must change to 10°. Subtracting gives 10° − 350° = −340°, which would mean turning anticlockwise almost all the way round. The short way is 20° clockwise. The recipe: take the difference (new − old), bring it into 0° – 360°, and if it is more than 180°, subtract 360° to go the other way. A positive answer means turn clockwise, a negative one anticlockwise, and the answer is never more than 180° either way.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "mAng_tFromTo", "From → to"), tx(t, "mAng_tDiff", "new − old"), tx(t, "mAng_tWrapped", "into 0°–360°"), tx(t, "mAng_tTurn", "Shortest turn")]}
+        rows={[
+          ["350° → 10°", "−340°", "20°", tx(t, "mAng_turn1", "20° clockwise")],
+          ["10° → 350°", "340°", "340°", tx(t, "mAng_turn2", "340° − 360° = −20°: 20° anticlockwise")],
+          ["90° → 300°", "210°", "210°", tx(t, "mAng_turn3", "210° − 360° = −150°: 150° anticlockwise")],
+          ["45° → 180°", "135°", "135°", tx(t, "mAng_turn4", "135° clockwise")],
+        ]}
+      />
       <Callout type="tip" t={t}>
-        {tx(t, "mAng_codeTip", "Never compare headings with == or subtract them directly. Wrap first and use the shortest turn; otherwise a unit facing 359° that wants to face 1° will spin almost a full turn the long way round.")}
+        {tx(t, "mAng_bearTip", "Exactly 180° is the one tie: both ways are the same length, so either direction is correct.")}
       </Callout>
+
+      <H3>{tx(t, "mAng_clockTitle", "The angle between the hands of a clock")}</H3>
+      <p>
+        {tx(t, "mAng_clockBody",
+          "A classic puzzle that uses only degrees per unit of time. The minute hand goes round 360° in 60 minutes, so it moves 360 ÷ 60 = 6° per minute. The hour hand goes round in 12 hours: 360 ÷ 12 = 30° per hour, and since an hour is 60 minutes it also creeps 30 ÷ 60 = 0.5° per minute. Measure both from 12 o'clock and subtract.")}
+      </p>
+      <Equation where={[
+        [r`h`, tx(t, "mAng_wH", "the hour on a 12-hour dial (0 to 11; 12 o'clock counts as 0)")],
+        [r`m`, tx(t, "mAng_wM", "the minutes past the hour (0 to 59)")],
+        [r`30h + 0.5m`, tx(t, "mAng_wHour", "where the hour hand points: 30° for every whole hour plus 0.5° for every minute")],
+        [r`6m`, tx(t, "mAng_wMin", "where the minute hand points: 6° for every minute")],
+      ]}>{r`\text{angle} = \left|\,(30h + 0.5m) - 6m\,\right| = \left|\,30h - 5.5m\,\right|`}</Equation>
+      <p>
+        {tx(t, "mAng_clockEx",
+          "At 3:40: h = 3, m = 40. The hour hand is at 30 × 3 + 0.5 × 40 = 90 + 20 = 110°; the minute hand at 6 × 40 = 240°. The difference is |110 − 240| = 130°. If a result is more than 180°, the smaller angle between the hands is 360° minus it: at 9:00 the formula gives |270 − 0| = 270°, and the hands actually make 360° − 270° = 90°.")}
+      </p>
 
       <H2>{tx(t, "mAng_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -178,7 +206,7 @@ float turnTowards(float heading, float target, float maxStep) {
           [tx(t, "mAng_m2w", "∠ABC with the vertex at A"), tx(t, "mAng_m2r", "the middle letter is the vertex"), tx(t, "mAng_m2", "∠ABC is the angle at B")],
           [tx(t, "mAng_m3w", "mixing up complement and supplement"), tx(t, "mAng_m3r", "complement → 90°, supplement → 180°"), tx(t, "mAng_m3", "memory aid: C comes before S, and 90 before 180")],
           [tx(t, "mAng_m4w", "using the parallel rules on lines that are not parallel"), tx(t, "mAng_m4r", "check the lines are parallel first"), tx(t, "mAng_m4", "only vertical angles are equal for any lines")],
-          [tx(t, "mAng_m5w", "target − heading as the turn"), tx(t, "mAng_m5r", "wrap the difference into (−180°, 180°]"), tx(t, "mAng_m5", "angles repeat every 360°")],
+          [tx(t, "mAng_m5w", "new bearing − old bearing as the turn"), tx(t, "mAng_m5r", "wrap the difference into (−180°, 180°]"), tx(t, "mAng_m5", "angles repeat every 360°")],
         ]}
       />
 
@@ -189,7 +217,7 @@ float turnTowards(float heading, float target, float maxStep) {
         "Complementary angles add to 90°, supplementary to 180°, angles around a point to 360°.",
         "Vertical angles are always equal.",
         "With parallel lines, corresponding and alternate angles are equal and co-interior angles add to 180°.",
-        "Wrap headings into [0°, 360°) and turn by the shortest signed difference.",
+        "Bring bearings back into 0° – 360° by adding or subtracting full turns; the shortest turn is never more than 180°.",
       ]} />
     </Article>
   );

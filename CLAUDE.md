@@ -10,7 +10,10 @@ The build logs a MongoDB `ENOTFOUND` when offline — expected, the blog handles
 ## Where things live
 
 ```
-src/app/learn/page.tsx                 /learn landing — track cards (icons live here, data comes from the catalog)
+src/app/page.tsx, src/components/home/ Home (and the book page /the-weight-of-being); styles in src/styles/home.css (--hm-* tokens, .home scope)
+src/app/learn/page.tsx                 /learn landing — track cards on the Home look (HomeNav, home.css); data from the catalog + progress
+src/styles/learn.css                   /learn look: re-values the theme.css tokens while a .learn page is shown, syntax colours, figure numbering
+src/lib/tracks/progress.ts             reading progress + "last lesson" in localStorage (sidebar, /learn "resume")
 src/app/learn/[trackPath]/page.tsx     the ONE page that renders every lesson of every track
 src/app/learn/[trackPath]/reference/   function reference pages (src/lib/reference)
 src/lib/tracks/catalog.ts              THE list of tracks: id, route path, title, color, status, level/description keys
@@ -38,7 +41,7 @@ src/components/lesson/kit/             widget INFRASTRUCTURE (no lesson content)
   gl/gl.ts, gl/glx.ts, gl/context.ts   mat4, shaders, meshes, render targets, context release
 src/components/lesson/figures/         the widgets themselves, grouped by topic folder
 src/components/lesson/glsl/            ShaderPlayground + GLSL figures
-src/components/lesson/DocsLayout.tsx, src/components/sidebar/LessonSidebar.tsx   shared lesson layout
+src/components/lesson/DocsLayout.tsx, LearnTopBar.tsx, src/components/sidebar/LessonSidebar.tsx   shared lesson layout (slim top bar with breadcrumbs, height --nav-h)
 ```
 
 Sidebar, prev/next, numbering, progress and section headers are all generated
@@ -64,7 +67,10 @@ from the `chapters` array — never hand-write them.
 ## Widget rules
 
 - Every widget's outer frame is `<FigureShell>` (kit `Figure` already uses it); never hand-write the
-  `my-6 rounded-xl …` card. It finds the drawing itself; mark keyboard/mouse-only hint text with
+  `my-6 rounded-xl …` card. Its first child is the title bar and that bar's first `<span>` is the title:
+  learn.css numbers it automatically ("fig. 3.2 — title"), so keep that order.
+- Use theme tokens (`var(--primary)`, `var(--card)`, `var(--text-muted)`…) for chrome; literal colours only for data
+  (axes, points, curves), which stay the same in both themes. It finds the drawing itself; mark keyboard/mouse-only hint text with
   `data-mouse-only` (and a `data-touch-only` alternative if there is one).
 - Animated widgets pause off screen: `const vis = useVisible<HTMLElement>()`, `useAnimationTime(playing && vis.on)`, `<figure ref={vis.ref}>`.
 - WebGL widgets render through `GLView`; a widget that creates its own context must call `claimContext`/`releaseContext` (kit/gl/context.ts).

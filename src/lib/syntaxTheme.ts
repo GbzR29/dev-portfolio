@@ -1,54 +1,58 @@
 // src/lib/syntaxTheme.ts
 import type { CSSProperties } from "react";
-import {
-  okaidia, oneLight, vscDarkPlus, vs,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
 
 type PrismTheme = Record<string, CSSProperties>;
 
 /**
- * Prism themes paint the code background themselves — most with the `background`
- * shorthand, `vs` with the `backgroundColor` longhand. Two problems come from that:
- *
- *  1. Overriding it from `customStyle` mixes a shorthand with a longhand on the
- *     same element. React warns about it as soon as the value changes on a
- *     re-render, which is exactly what a theme toggle does.
- *  2. It paints over `--code-bg`, so the block ignores our own token. oneLight
- *     sets it on the inner <code> too, which `customStyle` cannot reach at all.
- *
- * Stripping both properties from the two container selectors solves both: the
- * element paints nothing and the container's `--code-bg` shows through.
+ * Syntax colours for lesson code blocks. Every colour is a --syn-* variable
+ * defined in src/styles/learn.css, so the same object serves both themes and
+ * a theme toggle needs no re-render. No background is set: the block's
+ * container paints --code-bg.
  */
-function stripBackground(theme: PrismTheme): PrismTheme {
-  const out: PrismTheme = { ...theme };
-  for (const selector of ['pre[class*="language-"]', 'code[class*="language-"]']) {
-    const rule = out[selector];
-    if (!rule) continue;
-    const cleaned: CSSProperties = { ...rule };
-    delete cleaned.background;
-    delete cleaned.backgroundColor;
-    out[selector] = cleaned;
-  }
-  return out;
-}
+const BASE: CSSProperties = {
+  color: "var(--code-text)",
+  fontFamily: "var(--font-plex-mono), ui-monospace, monospace",
+  textAlign: "left",
+  whiteSpace: "pre",
+  wordSpacing: "normal",
+  wordBreak: "normal",
+  tabSize: 4,
+  hyphens: "none",
+};
 
-/**
- * oneLight ships comments at ~64% lightness, which is too faint on our code
- * surface — and in these lessons the comments carry teaching content.
- */
-function readableComments(theme: PrismTheme): PrismTheme {
-  return { ...theme, comment: { ...theme.comment, color: "hsl(230, 6%, 45%)" } };
-}
-
-const LESSON_DARK  = stripBackground(okaidia as PrismTheme);
-const LESSON_LIGHT = readableComments(stripBackground(oneLight as PrismTheme));
-const MODAL_DARK   = stripBackground(vscDarkPlus as PrismTheme);
-const MODAL_LIGHT  = stripBackground(vs as PrismTheme);
+const LESSON: PrismTheme = {
+  'code[class*="language-"]': BASE,
+  'pre[class*="language-"]': { ...BASE, overflow: "auto" },
+  comment: { color: "var(--syn-comment)", fontStyle: "italic" },
+  prolog: { color: "var(--syn-comment)" },
+  doctype: { color: "var(--syn-comment)" },
+  cdata: { color: "var(--syn-comment)" },
+  punctuation: { color: "var(--syn-punct)" },
+  operator: { color: "var(--syn-punct)" },
+  keyword: { color: "var(--syn-keyword)" },
+  directive: { color: "var(--syn-keyword)" },
+  "directive-hash": { color: "var(--syn-keyword)" },
+  macro: { color: "var(--syn-keyword)" },
+  boolean: { color: "var(--syn-number)" },
+  number: { color: "var(--syn-number)" },
+  constant: { color: "var(--syn-number)" },
+  symbol: { color: "var(--syn-number)" },
+  string: { color: "var(--syn-string)" },
+  char: { color: "var(--syn-string)" },
+  "attr-value": { color: "var(--syn-string)" },
+  regex: { color: "var(--syn-string)" },
+  url: { color: "var(--syn-string)" },
+  "class-name": { color: "var(--syn-type)" },
+  builtin: { color: "var(--syn-type)" },
+  tag: { color: "var(--syn-type)" },
+  function: { color: "var(--syn-function)" },
+  property: { color: "var(--syn-function)" },
+  "attr-name": { color: "var(--syn-function)" },
+  variable: { color: "var(--code-text)" },
+  important: { fontWeight: "bold" },
+  bold: { fontWeight: "bold" },
+  italic: { fontStyle: "italic" },
+};
 
 /** Syntax colours for lesson code blocks. */
-export const lessonSyntaxTheme = (theme: "dark" | "light"): PrismTheme =>
-  theme === "dark" ? LESSON_DARK : LESSON_LIGHT;
-
-/** Syntax colours for the project modal's code tab. */
-export const modalSyntaxTheme = (theme: "dark" | "light"): PrismTheme =>
-  theme === "dark" ? MODAL_DARK : MODAL_LIGHT;
+export const lessonSyntaxTheme = (): PrismTheme => LESSON;

@@ -3,14 +3,8 @@
 export const learningTranslations = {
   en: {
     // ── Learn page ──────────────────────────────────────────────────────────
-    learnTitle:   "Learn the",
-    learnEngine:  "Engine.",
-    learnSubtitle:
-      "Free, practical tutorials on C++, OpenGL, Vulkan and game engine architecture — written from a developer who builds these systems from scratch.",
 
     // Track cards
-    lessons:      "lessons",
-    startTrack:   "Start →",
     beginner:     "Beginner",
     intermediate: "Intermediate",
     advanced:     "Advanced",
@@ -31,19 +25,52 @@ export const learningTranslations = {
       "Mathematics from the ground up: arithmetic, algebra, geometry, trigonometry, linear algebra and calculus, worked by hand — every formula explained, every idea interactive.",
 
     // AI banner
-    aiTitle: "AI-powered learning assistant — coming soon",
-    aiDesc:
-      "Ask any question about C++, graphics APIs, or engine architecture and get answers tailored to the content you're studying.",
-    notifyMe: "Notify me",
 
     // ── Lesson page ─────────────────────────────────────────────────────────
     lessonChapters:   "Chapters",
-    lessonOn:         "on",
-    lessonPrev:       "← Previous",
-    lessonNext:       "Next →",
-    lessonBackToLearn:"← Back to modules",
     lessonMinRead:    "min read",
     lessonProgress:   "Progress",
+
+    // ── Redesign (2026-09) ──────────────────────────────────────────────
+    trackName_cpp: "Modern C++",
+    trackName_opengl: "OpenGL 4.6",
+    trackName_glsl: "GLSL",
+    trackName_sdl3: "SDL3",
+    trackName_gamedev: "Game Dev",
+    trackName_math: "Math",
+    trackName_vulkan: "Vulkan",
+    learnCrumb: "learn",
+    lessonChapterOf: "chapter {n} of {total}",
+    lessonOnThisPage: "On this page",
+    lessonPrevShort: "previous",
+    lessonNextShort: "next",
+    lessonTrackDone: "track complete",
+    lessonAllTracks: "All tracks",
+    learnEyebrow: "learn · {lessons} lessons in {tracks} tracks",
+    learnHeroTitle: "Learn from scratch",
+    learnLead: "Hand-written courses on graphics, C++, game development and math. Every formula is explained term by term, and the figures run in your browser.",
+    learnResume: "where you left off:",
+    learnTracks: "Tracks",
+    learnContinue: "Continue →",
+    learnStart: "Start →",
+    learnReference: "reference",
+    learnLessonsN: "{n} lessons",
+    learnSectionsN: "{n} sections",
+    learnReadN: "read: {n}",
+    learnPlannedN: "{n} lessons planned",
+    learnSoon: "coming soon",
+    learnInPrep: "in preparation",
+    learnHowTitle: "How the lessons work",
+    learnHow1Title: "Every term explained",
+    learnHow1Body: "No formula appears without saying what each letter means, where each constant comes from and why each step is allowed.",
+    learnHow2Title: "Figures you can move",
+    learnHow2Body: "Drag points, move sliders and rotate 3D scenes. The figures run in the browser, on phones too.",
+    learnHow3Title: "Your progress stays here",
+    learnHow3Body: "Lessons you have read are marked in this browser, with no account and no sign-up.",
+    modeRead: "reading", modeFocus: "focus", modeTitle: "Reading mode",
+    focusIntro: "Introduction", focusStepOf: "{n} of {total}",
+    focusBack: "back", focusNext: "continue", focusNextChapter: "next lesson",
+    focusHintKeys: "← → move between steps", focusHintSwipe: "swipe sideways to move between steps",
 
     // ── Function reference ──────────────────────────────────────────────
     refTitle:             "Function reference",
@@ -77,13 +104,7 @@ export const learningTranslations = {
 
   pt: {
     // ── Learn page ──────────────────────────────────────────────────────────
-    learnTitle:   "Aprenda a",
-    learnEngine:  "Engine.",
-    learnSubtitle:
-      "Tutoriais práticos e gratuitos sobre C++, OpenGL, Vulkan e arquitetura de game engines — escritos por quem constrói esses sistemas do zero.",
 
-    lessons:      "lições",
-    startTrack:   "Começar →",
     beginner:     "Iniciante",
     intermediate: "Intermediário",
     advanced:     "Avançado",
@@ -102,19 +123,52 @@ export const learningTranslations = {
     trackMathDesc:
       "Matemática desde a base: aritmética, álgebra, geometria, trigonometria, álgebra linear e cálculo, feitos à mão — cada fórmula explicada, cada ideia interativa.",
 
-    aiTitle: "Assistente de aprendizado com IA — em breve",
-    aiDesc:
-      "Faça qualquer pergunta sobre C++, APIs gráficas ou arquitetura de engines e receba respostas adaptadas ao conteúdo que você está estudando.",
-    notifyMe: "Notifique-me",
 
     // ── Lesson page ─────────────────────────────────────────────────────────
     lessonChapters:    "Capítulos",
-    lessonOn:          "em",
-    lessonPrev:        "← Anterior",
-    lessonNext:        "Próximo →",
-    lessonBackToLearn: "← Voltar aos módulos",
     lessonMinRead:     "min de leitura",
     lessonProgress:    "Progresso",
+
+    // ── Redesign (2026-09) ──────────────────────────────────────────────
+    trackName_cpp: "C++ moderno",
+    trackName_opengl: "OpenGL 4.6",
+    trackName_glsl: "GLSL",
+    trackName_sdl3: "SDL3",
+    trackName_gamedev: "Game Dev",
+    trackName_math: "Matemática",
+    trackName_vulkan: "Vulkan",
+    learnCrumb: "aprender",
+    lessonChapterOf: "capítulo {n} de {total}",
+    lessonOnThisPage: "Nesta página",
+    lessonPrevShort: "anterior",
+    lessonNextShort: "próxima",
+    lessonTrackDone: "trilha concluída",
+    lessonAllTracks: "Todas as trilhas",
+    learnEyebrow: "aprender · {lessons} aulas em {tracks} trilhas",
+    learnHeroTitle: "Aprender do zero",
+    learnLead: "Cursos escritos à mão sobre gráficos, C++, desenvolvimento de jogos e matemática. Cada fórmula é explicada termo a termo, e as figuras rodam no seu navegador.",
+    learnResume: "de onde você parou:",
+    learnTracks: "Trilhas",
+    learnContinue: "Continuar →",
+    learnStart: "Começar →",
+    learnReference: "referência",
+    learnLessonsN: "{n} aulas",
+    learnSectionsN: "{n} seções",
+    learnReadN: "lidas: {n}",
+    learnPlannedN: "{n} aulas planejadas",
+    learnSoon: "em breve",
+    learnInPrep: "em preparação",
+    learnHowTitle: "Como as aulas funcionam",
+    learnHow1Title: "Cada termo explicado",
+    learnHow1Body: "Nenhuma fórmula aparece sem dizer o que cada letra significa, de onde vem cada constante e por que cada passo é permitido.",
+    learnHow2Title: "Figuras que você mexe",
+    learnHow2Body: "Arraste pontos, mova sliders e gire cenas 3D. As figuras rodam no navegador, também no celular.",
+    learnHow3Title: "Seu progresso fica aqui",
+    learnHow3Body: "As aulas lidas ficam marcadas neste navegador, sem conta e sem cadastro.",
+    modeRead: "leitura", modeFocus: "foco", modeTitle: "Modo de leitura",
+    focusIntro: "Introdução", focusStepOf: "{n} de {total}",
+    focusBack: "voltar", focusNext: "continuar", focusNextChapter: "próxima aula",
+    focusHintKeys: "← → para mudar de passo", focusHintSwipe: "deslize para os lados para mudar de passo",
 
     // ── Function reference ──────────────────────────────────────────────
     refTitle:             "Referência de funções",
@@ -148,13 +202,7 @@ export const learningTranslations = {
 
   es: {
     // ── Learn page ──────────────────────────────────────────────────────────
-    learnTitle:   "Aprende el",
-    learnEngine:  "Motor.",
-    learnSubtitle:
-      "Tutoriales prácticos y gratuitos sobre C++, OpenGL, Vulkan y arquitectura de motores de juegos — escritos por quien construye estos sistemas desde cero.",
 
-    lessons:      "lecciones",
-    startTrack:   "Comenzar →",
     beginner:     "Principiante",
     intermediate: "Intermedio",
     advanced:     "Avanzado",
@@ -173,18 +221,51 @@ export const learningTranslations = {
     trackMathDesc:
       "Matemáticas desde la base: aritmética, álgebra, geometría, trigonometría, álgebra lineal y cálculo, hechos a mano — cada fórmula explicada, cada idea interactiva.",
 
-    aiTitle: "Asistente de aprendizaje con IA — próximamente",
-    aiDesc:
-      "Haz cualquier pregunta sobre C++, APIs gráficas o arquitectura de motores y recibe respuestas adaptadas al contenido que estás estudiando.",
-    notifyMe: "Notificarme",
 
     lessonChapters:    "Capítulos",
-    lessonOn:          "en",
-    lessonPrev:        "← Anterior",
-    lessonNext:        "Siguiente →",
-    lessonBackToLearn: "← Volver a módulos",
     lessonMinRead:     "min de lectura",
     lessonProgress:    "Progreso",
+
+    // ── Redesign (2026-09) ──────────────────────────────────────────────
+    trackName_cpp: "C++ moderno",
+    trackName_opengl: "OpenGL 4.6",
+    trackName_glsl: "GLSL",
+    trackName_sdl3: "SDL3",
+    trackName_gamedev: "Game Dev",
+    trackName_math: "Matemáticas",
+    trackName_vulkan: "Vulkan",
+    learnCrumb: "aprender",
+    lessonChapterOf: "capítulo {n} de {total}",
+    lessonOnThisPage: "En esta página",
+    lessonPrevShort: "anterior",
+    lessonNextShort: "siguiente",
+    lessonTrackDone: "curso completado",
+    lessonAllTracks: "Todos los cursos",
+    learnEyebrow: "aprender · {lessons} lecciones en {tracks} cursos",
+    learnHeroTitle: "Aprender desde cero",
+    learnLead: "Cursos escritos a mano sobre gráficos, C++, desarrollo de juegos y matemáticas. Cada fórmula se explica término a término, y las figuras se ejecutan en tu navegador.",
+    learnResume: "donde lo dejaste:",
+    learnTracks: "Cursos",
+    learnContinue: "Continuar →",
+    learnStart: "Empezar →",
+    learnReference: "referencia",
+    learnLessonsN: "{n} lecciones",
+    learnSectionsN: "{n} secciones",
+    learnReadN: "leídas: {n}",
+    learnPlannedN: "{n} lecciones planeadas",
+    learnSoon: "próximamente",
+    learnInPrep: "en preparación",
+    learnHowTitle: "Cómo funcionan las lecciones",
+    learnHow1Title: "Cada término explicado",
+    learnHow1Body: "Ninguna fórmula aparece sin decir qué significa cada letra, de dónde sale cada constante y por qué cada paso está permitido.",
+    learnHow2Title: "Figuras que puedes mover",
+    learnHow2Body: "Arrastra puntos, mueve deslizadores y gira escenas 3D. Las figuras se ejecutan en el navegador, también en el móvil.",
+    learnHow3Title: "Tu progreso se queda aquí",
+    learnHow3Body: "Las lecciones leídas quedan marcadas en este navegador, sin cuenta ni registro.",
+    modeRead: "lectura", modeFocus: "enfoque", modeTitle: "Modo de lectura",
+    focusIntro: "Introducción", focusStepOf: "{n} de {total}",
+    focusBack: "atrás", focusNext: "continuar", focusNextChapter: "siguiente lección",
+    focusHintKeys: "← → para cambiar de paso", focusHintSwipe: "desliza hacia los lados para cambiar de paso",
 
     // ── Function reference ──────────────────────────────────────────────
     refTitle:             "Referencia de funciones",
@@ -218,13 +299,7 @@ export const learningTranslations = {
 
   zh: {
     // ── Learn page ──────────────────────────────────────────────────────────
-    learnTitle:   "学习",
-    learnEngine:  "引擎。",
-    learnSubtitle:
-      "关于C++、OpenGL、Vulkan和游戏引擎架构的免费实用教程——由从零开始构建这些系统的开发者编写。",
 
-    lessons:      "课时",
-    startTrack:   "开始 →",
     beginner:     "入门",
     intermediate: "中级",
     advanced:     "高级",
@@ -243,17 +318,50 @@ export const learningTranslations = {
     trackMathDesc:
       "从零开始的数学：算术、代数、几何、三角学、线性代数与微积分，全部手算推导——每个公式都有解释，每个概念都可交互。",
 
-    aiTitle: "AI学习助手——即将推出",
-    aiDesc:
-      "提出关于C++、图形API或引擎架构的任何问题，获得针对您所学内容量身定制的答案。",
-    notifyMe: "通知我",
 
     lessonChapters:    "章节",
-    lessonOn:          "在",
-    lessonPrev:        "← 上一节",
-    lessonNext:        "下一节 →",
-    lessonBackToLearn: "← 返回模块",
     lessonMinRead:     "分钟阅读",
     lessonProgress:    "进度",
+
+    // ── Redesign (2026-09) ──────────────────────────────────────────────
+    trackName_cpp: "现代 C++",
+    trackName_opengl: "OpenGL 4.6",
+    trackName_glsl: "GLSL",
+    trackName_sdl3: "SDL3",
+    trackName_gamedev: "游戏开发",
+    trackName_math: "数学",
+    trackName_vulkan: "Vulkan",
+    learnCrumb: "学习",
+    lessonChapterOf: "第 {n} 章，共 {total} 章",
+    lessonOnThisPage: "本页内容",
+    lessonPrevShort: "上一节",
+    lessonNextShort: "下一节",
+    lessonTrackDone: "课程完成",
+    lessonAllTracks: "全部课程",
+    learnEyebrow: "学习 · {tracks} 门课程，共 {lessons} 节",
+    learnHeroTitle: "从零开始学",
+    learnLead: "手写的图形学、C++、游戏开发与数学课程。每个公式都逐项讲解，交互图示直接在浏览器中运行。",
+    learnResume: "上次读到：",
+    learnTracks: "课程",
+    learnContinue: "继续 →",
+    learnStart: "开始 →",
+    learnReference: "参考",
+    learnLessonsN: "{n} 节",
+    learnSectionsN: "{n} 个部分",
+    learnReadN: "已读 {n}",
+    learnPlannedN: "计划 {n} 节",
+    learnSoon: "即将推出",
+    learnInPrep: "准备中",
+    learnHowTitle: "课程如何进行",
+    learnHow1Title: "每一项都讲清楚",
+    learnHow1Body: "每个公式都会说明每个字母的含义、每个常数的来源，以及每一步为何成立。",
+    learnHow2Title: "可以动手的图示",
+    learnHow2Body: "拖动点、移动滑块、旋转 3D 场景。图示在浏览器中运行，手机上也可以。",
+    learnHow3Title: "进度保存在本地",
+    learnHow3Body: "已读的课程会标记在此浏览器中，无需账号，无需注册。",
+    modeRead: "阅读", modeFocus: "专注", modeTitle: "阅读模式",
+    focusIntro: "引言", focusStepOf: "{n} / {total}",
+    focusBack: "返回", focusNext: "继续", focusNextChapter: "下一节",
+    focusHintKeys: "← → 切换步骤", focusHintSwipe: "左右滑动切换步骤",
   },
 };

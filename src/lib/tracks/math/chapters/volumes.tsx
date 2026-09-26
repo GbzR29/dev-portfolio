@@ -3,9 +3,9 @@
 // Geometry 7: volume and surface area — unit cubes and units, prisms and
 // cylinders (base × height), Cavalieri's principle, pyramids and cones (⅓),
 // the sphere by slicing, surface area from nets (box, cylinder, cone, sphere),
-// k³ and the surface-to-volume ratio, and C++.
+// k³ and the surface-to-volume ratio, and real objects built from simple solids.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -20,7 +20,7 @@ export function VolumesContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mVol_intro",
-          "Games are 3D, so sooner or later you need to know how much space a thing fills and how much skin it has. Volume gives a physics body its mass from its density, decides how much water a tank holds and how much a buoyant crate floats. Surface area decides how much texture a model needs, how fast something heats up or cools down, and how much paint a level artist's barrel would use. This chapter builds every standard formula from the area chapter, the circle chapter and one clever idea about slices.")}
+          "The world is 3D, so sooner or later you need to know how much space a thing fills and how much skin it has. Volume tells you how much water a tank holds, how much concrete a foundation needs and, with the density of the material, how heavy an object is. Surface area tells you how much paint a barrel needs, how much wrapping a gift takes and how fast something heats up or cools down. This chapter builds every standard formula from the area chapter, the circle chapter and one clever idea about slices.")}
       </Lead>
 
       <H2>{tx(t, "mVol_unitTitle", "Volume: counting unit cubes")}</H2>
@@ -131,7 +131,7 @@ export function VolumesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mVol_scaleTitle", "Scaling: k² for skin, k³ for bulk")}</H2>
       <p>
         {tx(t, "mVol_scaleBody",
-          "The similarity chapter's rule now has all its parts: scale a solid by k and its surface area is multiplied by k², its volume by k³. So the ratio of surface to volume is multiplied by k²/k³ = 1/k: bigger things have less skin for their bulk. A mouse loses heat much faster for its size than an elephant; crushed ice melts faster than one big block; small particles in a physics simulation need proportionally more surface forces (drag) than large ones. And a model scaled up 2× needs 4× the texture resolution to look as sharp but weighs 8× as much if its density stays the same.")}
+          "The similarity chapter's rule now has all its parts: scale a solid by k and its surface area is multiplied by k², its volume by k³. So the ratio of surface to volume is multiplied by k²/k³ = 1/k: bigger things have less skin for their bulk. A mouse loses heat much faster for its size than an elephant; crushed ice melts faster than one big block; flour dust burns far faster than a loaf. And a statue scaled up 2× needs 4× the paint but weighs 8× as much if it is made of the same material.")}
       </p>
       <LessonTable
         headers={[tx(t, "mVol_tSolid", "Solid"), tx(t, "mVol_tVol", "Volume"), tx(t, "mVol_tSurf", "Surface area")]}
@@ -149,7 +149,7 @@ export function VolumesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mVol_exTitle", "Worked examples")}</H2>
       <p>
         {tx(t, "mVol_ex1",
-          "1. A physics crate is 1 m × 0.8 m × 0.5 m and made of wood with density 600 kg/m³. V = 0.4 m³, so its mass is 600 · 0.4 = 240 kg. Engines like PhysX and Box2D compute mass this way when you give them a density instead of a mass.")}
+          "1. A solid wooden block is 1 m × 0.8 m × 0.5 m and the wood has density 600 kg/m³ (each cubic metre weighs 600 kg). V = 1 · 0.8 · 0.5 = 0.4 m³, so its mass is 600 · 0.4 = 240 kg. Mass = density × volume is how a builder weighs a load without a scale.")}
       </p>
       <p>
         {tx(t, "mVol_ex2",
@@ -157,39 +157,28 @@ export function VolumesContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mVol_ex3",
-          "3. A planet is shown as a sphere of radius 50 units. Its surface is 4π · 50² ≈ 31 416 square units. With one texel per square unit that is about a 256 × 128 texture's worth of texels (32 768), since an equirectangular map has a 2 : 1 shape.")}
+          "3. The Earth is nearly a sphere of radius 6371 km. Its surface is 4π · 6371² ≈ 4π · 40 590 000 ≈ 510 000 000 km², and since oceans cover about 71% of it, the land is roughly 0.29 · 510 million ≈ 148 million km².")}
       </p>
 
-      <H2>{tx(t, "mVol_codeTitle", "Volumes in C++")}</H2>
+      <H2>{tx(t, "mVol_realTitle", "Real objects from simple solids")}</H2>
       <p>
-        {tx(t, "mVol_codeBody",
-          "The formulas are one-liners. A useful pattern is to give each collider shape a volume function so that mass follows from a density, which keeps big and small objects of the same material physically consistent.")}
+        {tx(t, "mVol_realBody",
+          "Few real objects are a single textbook solid, but most are a few of them glued together, exactly like the composite shapes of the area chapter. Split the object, use one formula per piece, then add the volumes. For surfaces, add only the faces you can touch: where two pieces meet, the shared face is inside and does not count.")}
       </p>
-      <CodeBlock lang="cpp" filename="volume.hpp" t={t}>{`#include <cmath>
-#include <numbers>
-
-constexpr float PI = std::numbers::pi_v<float>;
-
-struct Box      { float a, b, c; };
-struct Cylinder { float r, h; };
-struct Cone     { float r, h; };
-struct Sphere   { float r; };
-
-float volume(const Box& s)      { return s.a * s.b * s.c; }
-float volume(const Cylinder& s) { return PI * s.r * s.r * s.h; }
-float volume(const Cone& s)     { return PI * s.r * s.r * s.h / 3.0f; }
-float volume(const Sphere& s)   { return 4.0f / 3.0f * PI * s.r * s.r * s.r; }
-
-float surface(const Box& s)      { return 2.0f * (s.a * s.b + s.b * s.c + s.c * s.a); }
-float surface(const Cylinder& s) { return 2.0f * PI * s.r * (s.r + s.h); }
-float surface(const Cone& s)     { return PI * s.r * (s.r + std::sqrt(s.r * s.r + s.h * s.h)); }
-float surface(const Sphere& s)   { return 4.0f * PI * s.r * s.r; }
-
-// Mass from density (kg/m^3) and any shape above
-template <class Shape>
-float mass(const Shape& s, float density) { return density * volume(s); }`}</CodeBlock>
+      <p>
+        {tx(t, "mVol_silo",
+          "A grain silo is a cylinder of radius 3 m and height 10 m with a cone roof 4 m tall. Volume: cylinder π · 3² · 10 = 90π, cone ⅓ · π · 3² · 4 = 12π, total 102π ≈ 320 m³. Paint for the outside (walls and roof, not the floor): the wall is 2π · 3 · 10 = 60π; for the roof you need the slant height l = √(3² + 4²) = 5 m (Pythagoras), so the roof is π · 3 · 5 = 15π. Total 75π ≈ 236 m². At 10 m² per litre of paint, that is about 24 L.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "mVol_tObject", "Object"), tx(t, "mVol_tPieces", "Pieces"), tx(t, "mVol_tWorking", "Working"), tx(t, "mVol_tResult", "Result")]}
+        rows={[
+          [tx(t, "mVol_o1", "ice-cream cone, r = 2.5 cm, cone 10 cm deep, filled with a scoop on top"), tx(t, "mVol_o1p", "cone + half sphere"), "⅓π · 2.5² · 10 + ½ · 4/3 π · 2.5³ = 20.83π + 10.42π", "31.25π ≈ 98 cm³"],
+          [tx(t, "mVol_o2", "steel ball, r = 5 cm, density 7.85 g/cm³"), tx(t, "mVol_o2p", "sphere"), "4/3 π · 125 ≈ 523.6 cm³; × 7.85", tx(t, "mVol_o2r", "≈ 4110 g ≈ 4.1 kg")],
+          [tx(t, "mVol_o3", "concrete slab 6 m × 4 m, 15 cm thick"), tx(t, "mVol_o3p", "box"), "6 · 4 · 0.15", "3.6 m³"],
+        ]}
+      />
       <Callout type="warn" t={t}>
-        {tx(t, "mVol_intWarn", "Write 4.0f / 3.0f, not 4 / 3. Between two integers, / is integer division in C++, so 4 / 3 is 1 and every sphere would come out 25% too small, with no warning.")}
+        {tx(t, "mVol_unitWarn", "Put every length in the same unit before multiplying. The slab's 15 cm must become 0.15 m; multiplying 6 · 4 · 15 gives 360, which is neither m³ nor cm³. And a density in g/cm³ needs a volume in cm³ to give grams.")}
       </Callout>
 
       <H2>{tx(t, "mVol_mistakesTitle", "Common mistakes")}</H2>
@@ -201,7 +190,7 @@ float mass(const Shape& s, float density) { return density * volume(s); }`}</Cod
           [tx(t, "mVol_m3w", "forgetting the ⅓ for cones and pyramids"), "⅓Bh", tx(t, "mVol_m3", "three of them fill the prism")],
           [tx(t, "mVol_m4w", "sphere surface 4πr³ or volume 4πr²"), tx(t, "mVol_m4r", "S = 4πr², V = 4/3 πr³"), tx(t, "mVol_m4", "an area has r², a volume r³")],
           [tx(t, "mVol_m5w", "double the size, double the mass"), tx(t, "mVol_m5r", "double the size, 8× the mass"), tx(t, "mVol_m5", "volume scales by k³")],
-          ["4 / 3 * PI * r*r*r", "4.0f / 3.0f * PI * r*r*r", tx(t, "mVol_m6", "integer division makes 4 / 3 equal 1")],
+          [tx(t, "mVol_m6w", "counting the face where two pieces meet"), tx(t, "mVol_m6r", "only outside faces count as surface"), tx(t, "mVol_m6", "a shared face is hidden inside the object")],
         ]}
       />
 

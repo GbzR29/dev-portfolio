@@ -115,7 +115,7 @@ export function TransformFigure({ t }: { t?: TrackTranslations }) {
       <Btn active={order === "rt"} onClick={() => setOrder("rt")}>{tx(t, "figTr_rtB", "turn, then move")}</Btn>
       <Btn active={order === "tr"} onClick={() => setOrder("tr")}>{tx(t, "figTr_trB", "move, then turn")}</Btn>
     </Row>;
-    note = tx(t, "figTr_noteC", "Doing two transformations one after the other is a composition, and the order matters. Turn the F a quarter turn about the origin and then move it 3 to the left, or move it first and then turn: the results (amber, and dashed for the other order) end up in different places, because the turn is about the origin and the move changed how far the shape was from it. In game code this is the difference between spinning an object in place and swinging it around the world's centre.");
+    note = tx(t, "figTr_noteC", "Doing two transformations one after the other is a composition, and the order matters. Turn the F a quarter turn about the origin and then move it 3 to the left, or move it first and then turn: the results (amber, and dashed for the other order) end up in different places, because the turn is about the origin and the move changed how far the shape was from it. It is the difference between a door turning on its hinge and a door carried around the room's centre.");
   }
 
   const a0 = shoelace(F), a1 = shoelace(img);

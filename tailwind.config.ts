@@ -9,11 +9,6 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        orbitron: ["var(--font-orbitron)"],
-        kanit: ["var(--font-kanit)"],
-        ubuntu: ["var(--font-ubuntu)"],
-      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

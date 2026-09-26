@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Orbitron, Kanit, Ubuntu } from "next/font/google";
+import { Geist, Geist_Mono, Spectral, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import "./globals.css";
@@ -15,22 +15,24 @@ const geistMono = Geist_Mono({
 });
 
 
-// Configuração das fontes
-const orbitron = Orbitron({
-  subsets: ['latin'],
-  variable: '--font-orbitron',
+// Home + book page type family (see src/styles/home.css)
+const spectral = Spectral({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
+  variable: "--font-spectral",
 });
 
-const kanit = Kanit({
-  subsets: ['latin'],
-  weight: ['400', '700'], // Peso normal e bold
-  variable: '--font-kanit',
+const plexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-plex-sans",
 });
 
-const ubuntu = Ubuntu({
-  subsets: ['latin'],
-  weight: ['400', '700'], // Peso normal e bold
-  variable: '--font-ubuntu',
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
 });
 
 
@@ -44,7 +46,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
 
   return (
     <html lang="pt-br">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} ${kanit.variable} ${ubuntu.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${spectral.variable} ${plexSans.variable} ${plexMono.variable} antialiased`}>
 
         <LanguageProvider>
           <ThemeProvider>

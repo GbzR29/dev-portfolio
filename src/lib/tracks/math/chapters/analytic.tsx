@@ -4,9 +4,9 @@
 // a segment, lines in point-slope and general form, parallel and
 // perpendicular slopes, the circle's equation and completing the square,
 // line against circle, and the conics (parabola, ellipse, hyperbola) from
-// their distance definitions, with eccentricity and C++.
+// their distance definitions, with eccentricity, and line against circle by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -21,7 +21,7 @@ export function AnalyticContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mAn_intro",
-          "In 1637 René Descartes joined the two halves of mathematics: put a grid on the plane, and every point becomes a pair of numbers and every shape an equation. Geometry questions (do these lines meet? is this point inside the circle?) become algebra questions that a computer can answer. That is exactly how a game engine sees its world. This chapter collects the tools: points between points, lines and their slopes, the circle as an equation, and the four curves the Greeks got by slicing a cone.")}
+          "In 1637 René Descartes joined the two halves of mathematics: put a grid on the plane, and every point becomes a pair of numbers and every shape an equation. Geometry questions (do these lines meet? is this point inside the circle?) become algebra questions you can settle with a pencil, and algebra gets pictures in return. This chapter collects the tools: points between points, lines and their slopes, the circle as an equation, and the four curves the Greeks got by slicing a cone.")}
       </Lead>
 
       <H2>{tx(t, "mAn_midTitle", "Points between points")}</H2>
@@ -163,13 +163,13 @@ export function AnalyticContent({ t }: { t: TrackTranslations }) {
         headers={[tx(t, "mAn_tCurve", "Curve"), tx(t, "mAn_tE", "Eccentricity"), tx(t, "mAn_tRule", "Distance rule"), tx(t, "mAn_tWhere", "Where you meet it")]}
         rows={[
           [tx(t, "mAn_c1", "circle"), "e = 0", tx(t, "mAn_c1r", "fixed distance to one point"), tx(t, "mAn_c1w", "wheels, radii, ripples")],
-          [tx(t, "mAn_c2", "ellipse"), "0 < e < 1", tx(t, "mAn_c2r", "sum to two foci is constant"), tx(t, "mAn_c2w", "orbits, circles seen at an angle, elliptical vision cones")],
+          [tx(t, "mAn_c2", "ellipse"), "0 < e < 1", tx(t, "mAn_c2r", "sum to two foci is constant"), tx(t, "mAn_c2w", "planet orbits, circles seen at an angle, whispering galleries")],
           [tx(t, "mAn_c3", "parabola"), "e = 1", tx(t, "mAn_c3r", "focus distance = directrix distance"), tx(t, "mAn_c3w", "thrown objects, dishes, headlights")],
           [tx(t, "mAn_c4", "hyperbola"), "e > 1", tx(t, "mAn_c4r", "difference to two foci is constant"), tx(t, "mAn_c4w", "fly-by trajectories, locating by time difference")],
         ]}
       />
       <Callout type="info" t={t}>
-        {tx(t, "mAn_circleInfo", "A circle seen at an angle looks like an ellipse. That is why round shadows, the rims of cups and the orbits in a tilted 3D view are drawn as ellipses, and why this chapter's figures draw the tops of cylinders that way.")}
+        {tx(t, "mAn_circleInfo", "A circle seen at an angle looks like an ellipse. That is why the rim of a cup, a round table in a photo and a coin tilted in your hand all look like ellipses, and why drawings of cylinders show their tops that way.")}
       </Callout>
 
       <H2>{tx(t, "mAn_exTitle", "Worked examples")}</H2>
@@ -179,46 +179,30 @@ export function AnalyticContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mAn_ex2",
-          "2. A guard sees 6 m ahead but only 3 m to each side. Model the view as an ellipse with a = 6 and b = 3, centred ahead of the guard. A point at (x, y) relative to that centre is seen when x²/36 + y²/9 ≤ 1.")}
+          "2. An oval flower bed is an ellipse 12 m long and 6 m wide, so a = 6 and b = 3. A point (x, y), measured from the centre of the bed, is inside when x²/36 + y²/9 ≤ 1. Is a sprinkler at (4, 2) inside? 16/36 + 4/9 = 4/9 + 4/9 = 8/9 ≤ 1, yes. At (5, 2): 25/36 + 16/36 = 41/36 > 1, just outside.")}
       </p>
       <p>
         {tx(t, "mAn_ex3",
           "3. A dish has the shape y = x²/8. Then 4p = 8, so p = 2: the receiver belongs 2 units above the bottom of the dish.")}
       </p>
 
-      <H2>{tx(t, "mAn_codeTitle", "Coordinate geometry in C++")}</H2>
+      <H2>{tx(t, "mAn_lcHandTitle", "Line against circle: the three cases by hand")}</H2>
       <p>
-        {tx(t, "mAn_codeBody",
-          "The line–circle intersection is a quadratic, solved as in the quadratics chapter; the function returns how many points it found. The ellipse test divides each coordinate by its semi-axis, turning the ellipse into a unit circle, and then uses the circle test.")}
+        {tx(t, "mAn_lcHandBody",
+          "Take the circle x² + y² = 25 (centre at the origin, radius 5) and three lines. The steps are the same every time: substitute the line's y into the circle, expand, collect everything on one side to get a quadratic ax² + bx + c = 0, and look at its discriminant b² − 4ac. Positive means two crossings, zero means the line just touches (a tangent), negative means it misses.")}
       </p>
-      <CodeBlock lang="cpp" filename="coords.hpp" t={t}>{`#include <cmath>
-
-struct Vec2 { float x, y; };
-
-Vec2 midpoint(Vec2 a, Vec2 b)      { return { (a.x + b.x) * 0.5f, (a.y + b.y) * 0.5f }; }
-Vec2 along(Vec2 a, Vec2 b, float t) { return { a.x + t * (b.x - a.x), a.y + t * (b.y - a.y) }; }
-
-// Line y = m x + b against circle (x - h)^2 + (y - k)^2 = r^2.
-// Writes up to two points to out[], returns how many there are.
-int lineCircle(float m, float b, Vec2 c, float r, Vec2 out[2]) {
-    float e  = b - c.y;                          // intercept measured from the centre
-    float qa = 1.0f + m * m;
-    float qb = 2.0f * (m * e - c.x);
-    float qc = c.x * c.x + e * e - r * r;
-    float disc = qb * qb - 4.0f * qa * qc;
-    if (disc < 0.0f) return 0;                   // the line misses
-    float s = std::sqrt(disc);
-    float x1 = (-qb - s) / (2.0f * qa), x2 = (-qb + s) / (2.0f * qa);
-    out[0] = { x1, m * x1 + b };
-    out[1] = { x2, m * x2 + b };
-    return disc == 0.0f ? 1 : 2;                 // 1 = tangent
-}
-
-// Inside an axis-aligned ellipse with semi-axes a, b centred at c?
-bool insideEllipse(Vec2 p, Vec2 c, float a, float b) {
-    float u = (p.x - c.x) / a, v = (p.y - c.y) / b;   // squash to a unit circle
-    return u * u + v * v <= 1.0f;
-}`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mAn_tLine", "Line"), tx(t, "mAn_tSub", "Substitute and collect"), tx(t, "mAn_tDisc", "b² − 4ac"), tx(t, "mAn_tMeet", "Meeting points")]}
+        rows={[
+          ["y = x + 1", "x² + (x + 1)² = 25 → 2x² + 2x − 24 = 0 → x² + x − 12 = 0", "1 + 48 = 49 > 0", tx(t, "mAn_meet1", "(x + 4)(x − 3) = 0: (3, 4) and (−4, −3)")],
+          ["y = 5", "x² + 25 = 25 → x² = 0", "0", tx(t, "mAn_meet2", "one point, (0, 5): the line is tangent")],
+          ["y = x + 10", "x² + (x + 10)² = 25 → 2x² + 20x + 75 = 0", "400 − 600 = −200 < 0", tx(t, "mAn_meet3", "none: the line passes outside")],
+        ]}
+      />
+      <p>
+        {tx(t, "mAn_lcHandCheck",
+          "Always check an answer in both equations. (3, 4): 3² + 4² = 9 + 16 = 25 ✓ and 4 = 3 + 1 ✓. (−4, −3): 16 + 9 = 25 ✓ and −3 = −4 + 1 ✓. The tangent case also matches the tangent rule from the circle chapter: the radius to (0, 5) is vertical and the line y = 5 is horizontal, so they are perpendicular.")}
+      </p>
 
       <H2>{tx(t, "mAn_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable

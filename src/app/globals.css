@@ -1,5 +1,6 @@
 @import "../styles/theme.css";
 @import "../styles/figure.css";
+@import "../styles/learn.css";
 
 @tailwind base;
 @tailwind components;
@@ -139,52 +140,6 @@ html:not(.dark) [class*="text-[var(--text-muted)]"]:is(.opacity-50, .opacity-55,
 html:not(.dark) [class*="text-[var(--text-muted)]"]:is(.opacity-25, .opacity-35) { opacity: 0.55; }
 
 
-/* =========================================================
-   ===================== GLITCH EFFECT =====================
-========================================================= */
-
-@keyframes glitch-shift {
-
-  0%,
-  90%,
-  100% {
-    transform: translate(0);
-  }
-
-  92% {
-    transform: translate(-3px, 1px);
-  }
-
-  94% {
-    transform: translate(3px, -1px);
-  }
-
-  96% {
-    transform: translate(-2px, 2px);
-  }
-}
-
-@keyframes glitch-slice {
-
-  0%,
-  90%,
-  100% {
-    clip-path: inset(0 0 0 0);
-  }
-
-  92% {
-    clip-path: inset(10% 0 70% 0);
-  }
-
-  94% {
-    clip-path: inset(60% 0 20% 0);
-  }
-
-  96% {
-    clip-path: inset(30% 0 40% 0);
-  }
-}
-
 
 /* =========================================================
    UTILITIES
@@ -194,43 +149,6 @@ html:not(.dark) [class*="text-[var(--text-muted)]"]:is(.opacity-25, .opacity-35)
 
 
 @layer utilities {
-
-  /* ================= GLITCH ================= */
-
-  .binary-glitch {
-    position: relative;
-    display: inline-flex;
-    white-space: nowrap;
-    font-family: monospace;
-
-    opacity: 0.20;
-    filter: blur(0.5px);
-  }
-
-  .binary-glitch span {
-    position: absolute;
-    inset: 0;
-  }
-
-  .glitch-base {
-    /* Garante que ele use a cor definida no h1 ou no container */
-    color: inherit;
-    position: relative;
-  }
-
-  .glitch-red {
-    color: #f00; /* Cor fixa do efeito vermelho */
-    mix-blend-mode: screen;
-    animation: glitch-shift 3s infinite;
-  }
-
-  .glitch-cyan {
-    color: #0ff; /* Cor fixa do efeito cyan */
-    mix-blend-mode: screen;
-    animation: glitch-shift 3s infinite reverse;
-  }
-
-
 
   /* ================= INPUT GLOW ================= */
 

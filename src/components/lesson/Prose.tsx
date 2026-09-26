@@ -10,15 +10,15 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 
 export function KeyIdeas({ t, id, items }: { t: TrackTranslations; id: string; items: string[] }) {
   return (
-    <div className="my-8 rounded-xl border border-[var(--primary)]/30 bg-[var(--primary-low)] p-5">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--primary)] mb-3">{tx(t, "keyIdeas", "Key ideas")}</p>
-      <ul className="space-y-2">
+    <div className="my-8 rounded-xl border border-[var(--border)] px-5 py-4">
+      <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)] mb-3">{tx(t, "keyIdeas", "Key ideas")}</p>
+      <ol className="space-y-2 list-decimal pl-5 marker:font-mono marker:text-[12px] marker:text-[var(--primary)]">
         {items.map((it, i) => (
-          <li key={i} className="flex gap-2.5 text-[15px] leading-relaxed text-[var(--text-main)]">
-            <span className="text-[var(--primary)] font-bold">→</span><span>{tx(t, `${id}_key${i}`, it)}</span>
+          <li key={i} className="pl-1 text-[15px] leading-relaxed text-[var(--text-main)]">
+            {tx(t, `${id}_key${i}`, it)}
           </li>
         ))}
-      </ul>
+      </ol>
     </div>
   );
 }

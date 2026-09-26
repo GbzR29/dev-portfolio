@@ -17,11 +17,11 @@
 }
 
 /* ── Pinned drawing ────────────────────────────────────── */
-/* 81px = the sticky navbar (h-20 plus its border) */
+/* --nav-h: the sticky navbar (81px site-wide, the slim bar on /learn) */
 @media (max-width: 767px) {
   [data-figure] [data-stage="pin"] {
     position: sticky;
-    top: 81px;
+    top: var(--nav-h, 81px);
     z-index: 15;
     box-shadow: 0 10px 16px -12px rgb(0 0 0 / 0.55);
   }

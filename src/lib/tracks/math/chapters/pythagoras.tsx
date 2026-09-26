@@ -3,9 +3,10 @@
 // Geometry 4: the Pythagorean theorem — the statement with every term, two
 // proofs (rearrangement and algebra), finding a missing side, Pythagorean
 // triples, the converse and classifying triangles by their sides, the
-// distance formula in 2D and 3D, squared distances, and distance code in C++.
+// distance formula in 2D and 3D, comparing distances without square roots,
+// and worked examples that classify triangles from their sides.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +20,7 @@ export function PythagorasContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mPy_intro",
-          "If a game had to keep only one formula, it would keep this one. How far is the enemy? How long is this vector? Is the player inside the explosion radius? How long is the diagonal of the screen? Each is the Pythagorean theorem, a 2500-year-old fact about right triangles. This chapter states it precisely, proves it in two ways (one of them you can slide around with your mouse), and turns it into the distance formula that the rest of this track, and nearly every game engine, runs thousands of times per frame.")}
+          "How long a ladder do you need to reach a window? How far apart are two towns on a map drawn on a grid? Is this corner of a new wall really square? What does \"a 55-inch TV\" actually measure? Each is the Pythagorean theorem, a 2500-year-old fact about right triangles. This chapter states it precisely, proves it in two ways (one of them you can slide around with your mouse), and turns it into the distance formula that the rest of this track uses in almost every chapter.")}
       </Lead>
 
       <H2>{tx(t, "mPy_stmtTitle", "The statement")}</H2>
@@ -72,7 +73,7 @@ export function PythagorasContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mPy_findEx",
-          "Examples. A 1920 × 1080 screen has a diagonal of √(1920² + 1080²) = √(3 686 400 + 1 166 400) = √4 852 800 ≈ 2203 pixels. A 5 m ladder with its foot 3 m from a wall reaches √(5² − 3²) = √(25 − 9) = √16 = 4 m up the wall. A square with side 1 has a diagonal of √(1 + 1) = √2 ≈ 1.414, which is why moving diagonally on a grid covers about 41% more distance than moving straight, and why games that add the x and y inputs without normalising let players run faster diagonally.")}
+          "Examples. A TV is sold by its diagonal: a screen 48 inches wide and 27 inches tall has a diagonal of √(48² + 27²) = √(2304 + 729) = √3033 ≈ 55.1, so it is a \"55-inch\" TV. A 5 m ladder with its foot 3 m from a wall reaches √(5² − 3²) = √(25 − 9) = √16 = 4 m up the wall. A square with side 1 has a diagonal of √(1 + 1) = √2 ≈ 1.414, so cutting diagonally across a square park with 100 m sides is about 141 m of walking instead of 200 m along two edges.")}
       </p>
 
       <H2>{tx(t, "mPy_triplesTitle", "Pythagorean triples")}</H2>
@@ -134,52 +135,34 @@ export function PythagorasContent({ t }: { t: TrackTranslations }) {
         {r`d = \sqrt{\left(\sqrt{\Delta x^2 + \Delta y^2}\right)^2 + \Delta z^2} = \sqrt{\Delta x^2 + \Delta y^2 + \Delta z^2}`}
       </Equation>
 
-      <H2>{tx(t, "mPy_sqTitle", "Skip the square root when you can")}</H2>
+      <H2>{tx(t, "mPy_sqTitle", "Comparing distances without square roots")}</H2>
       <p>
         {tx(t, "mPy_sqBody",
-          "A square root costs much more than a multiplication. Many questions only compare distances: is the enemy within 10 m, which pickup is closest? For lengths (never negative), d < r exactly when d² < r², because squaring keeps the order of positive numbers. So compare the squared distance with the squared range and never take a root. Engines provide lengthSquared or distanceSquared functions for exactly this reason. The root is needed only when the actual distance is used as a number, for example to move 3 m towards a target or to show \"42 m\" on screen.")}
+          "Square roots are the slow part of working by hand, and many questions only compare distances: is a point within 8 km of the town hall, which of two wells is closer? For lengths (never negative), d < r exactly when d² < r², because squaring keeps the order of positive numbers: if 0 ≤ d < r, multiplying d < r by d (which is 0 or positive) gives d² ≤ dr, and multiplying it by r (positive) gives dr < r², so d² < r². So compare the squared distance with the squared limit and skip the root. Is the point (7, 4) within 8 of the origin? 7² + 4² = 49 + 16 = 65 and 8² = 64; since 65 > 64, no, just outside. Taking the root is needed only when the distance itself is the answer.")}
       </p>
       <Callout type="tip" t={t}>
-        {tx(t, "mPy_sqTip", "Square the threshold once, outside the loop: const float r2 = range * range; then inside it compare dx*dx + dy*dy < r2. That is three multiplications, one addition and one comparison per object.")}
+        {tx(t, "mPy_sqTip", "Which is closer to the origin, (5, 5) or (1, 7)? 25 + 25 = 50 and 1 + 49 = 50: exactly the same distance, √50 ≈ 7.07, found without computing a single root.")}
       </Callout>
 
-      <H2>{tx(t, "mPy_codeTitle", "Distances in C++")}</H2>
+      <H2>{tx(t, "mPy_exTitle", "Worked examples: from three sides to the angles")}</H2>
       <p>
-        {tx(t, "mPy_codeBody",
-          "The formulas become a few short functions. std::hypot computes √(x² + y²) while avoiding overflow for very large values (the squares of big floats can exceed the float range even when the distance does not); for the everyday sizes in a game, the direct formula is fine and faster. The classifier puts the triangles chapter and this one together.")}
+        {tx(t, "mPy_exBody",
+          "This finishes the job begun in the triangles chapter: check that the lengths form a triangle, then compare the square of the longest side with the sum of the other two squares. A carpenter uses the same test to check a corner: measure 3 units along one wall, 4 along the other, and the diagonal must be exactly 5.")}
       </p>
-      <CodeBlock lang="cpp" filename="distance.hpp" t={t}>{`#include <cmath>
-#include <algorithm>
-
-struct Vec2 { float x, y; };
-struct Vec3 { float x, y, z; };
-
-float distanceSq(Vec2 p, Vec2 q) {
-    float dx = q.x - p.x, dy = q.y - p.y;
-    return dx * dx + dy * dy;                    // no root: for comparisons
-}
-float distance(Vec2 p, Vec2 q) { return std::sqrt(distanceSq(p, q)); }
-
-float distance(Vec3 p, Vec3 q) {
-    float dx = q.x - p.x, dy = q.y - p.y, dz = q.z - p.z;
-    return std::sqrt(dx * dx + dy * dy + dz * dz);
-}
-
-// Is q within 'range' of p?  Squared on both sides, no sqrt.
-bool withinRange(Vec2 p, Vec2 q, float range) {
-    return distanceSq(p, q) <= range * range;
-}
-
-enum class ByAngles { Acute, Right, Obtuse };
-
-// Sides must already form a triangle (see isTriangle in the triangles chapter)
-ByAngles classifyAngles(float a, float b, float c, float eps = 1e-4f) {
-    float s[3] = { a, b, c };
-    std::sort(s, s + 3);                         // s[2] is the longest side
-    float lhs = s[0] * s[0] + s[1] * s[1], rhs = s[2] * s[2];
-    if (std::abs(lhs - rhs) <= eps * rhs) return ByAngles::Right;   // relative tolerance
-    return rhs < lhs ? ByAngles::Acute : ByAngles::Obtuse;
-}`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mPy_tSides", "Sides (sorted)"), tx(t, "mPy_tShort", "a² + b²"), tx(t, "mPy_tLong", "c²"), tx(t, "mPy_tKind", "The triangle is")]}
+        rows={[
+          ["6, 8, 10", "36 + 64 = 100", "100", tx(t, "mPy_k1", "right: the corner opposite 10 is 90°")],
+          ["4, 6, 7", "16 + 36 = 52", "49", tx(t, "mPy_k2", "acute: 49 < 52")],
+          ["5, 6, 9", "25 + 36 = 61", "81", tx(t, "mPy_k3", "obtuse: 81 > 61")],
+          ["8, 15, 17", "64 + 225 = 289", "289", tx(t, "mPy_k4", "right (a Pythagorean triple)")],
+          ["2, 3, 6", "—", "—", tx(t, "mPy_k5", "not a triangle at all: 2 + 3 < 6, test that first")],
+        ]}
+      />
+      <p>
+        {tx(t, "mPy_exBox",
+          "In three dimensions: a box 3 × 4 × 12 has a floor diagonal of √(9 + 16) = 5 and a space diagonal (corner to opposite corner) of √(5² + 12²) = √169 = 13. The longest pole that fits in the box is 13 units long.")}
+      </p>
 
       <H2>{tx(t, "mPy_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -189,8 +172,8 @@ ByAngles classifyAngles(float a, float b, float c, float eps = 1e-4f) {
           ["√(a² + b²) = a + b", tx(t, "mPy_m2r", "the root does not split over +"), tx(t, "mPy_m2", "√(9 + 16) = 5, but 3 + 4 = 7")],
           [tx(t, "mPy_m3w", "a² + c² = b² with c a leg"), tx(t, "mPy_m3r", "c is the side opposite the right angle"), tx(t, "mPy_m3", "the hypotenuse is always alone on its side")],
           [tx(t, "mPy_m4w", "using it on a triangle without a right angle"), tx(t, "mPy_m4r", "check for the 90° corner first"), tx(t, "mPy_m4", "otherwise use the law of cosines (Trigonometry)")],
-          [tx(t, "mPy_m5w", "sqrt in every range check"), tx(t, "mPy_m5r", "compare squared distances"), tx(t, "mPy_m5", "same answer, much cheaper")],
-          [tx(t, "mPy_m6w", "adding x and y input for diagonal movement"), tx(t, "mPy_m6r", "scale the combined direction back to length 1"), tx(t, "mPy_m6", "otherwise diagonals are √2 ≈ 1.41 times faster")],
+          [tx(t, "mPy_m5w", "taking roots just to compare two distances"), tx(t, "mPy_m5r", "compare the squared distances"), tx(t, "mPy_m5", "squaring keeps the order of non-negative numbers")],
+          [tx(t, "mPy_m6w", "Δx² with a negative Δx gives a negative"), tx(t, "mPy_m6r", "(−7)² = +49"), tx(t, "mPy_m6", "a square is never negative; the direction does not matter")],
         ]}
       />
 
@@ -201,7 +184,7 @@ ByAngles classifyAngles(float a, float b, float c, float eps = 1e-4f) {
         "Triples like 3-4-5 have whole-number sides; the converse tests for a right angle.",
         "Longest side c: c² < a² + b² acute, = right, > obtuse.",
         "Distance: d = √(Δx² + Δy²), and in 3D add Δz².",
-        "Compare squared distances to avoid square roots.",
+        "To compare distances, compare their squares; no root is needed.",
       ]} />
     </Article>
   );

@@ -3,9 +3,9 @@
 // Geometry 2: triangles — parts and naming, the 180° angle sum and its proof,
 // the exterior angle, naming by sides and by angles, isosceles base angles,
 // the triangle inequality, congruence (SSS, SAS, ASA, AAS, RHS) and why
-// meshes are made of triangles, the centroid, and a C++ triangle check.
+// frames are built from triangles, the centroid, and checking three lengths by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +19,7 @@ export function TrianglesContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mTri_intro",
-          "A GPU draws only three things: points, lines and triangles. Every sphere, face and blade of grass on screen is chopped into triangles first. There is a reason: the triangle is the simplest shape that encloses an area, it is always flat, and its three sides fix its shape completely. This chapter covers what every triangle has in common: its angles always add up to 180°, its sides obey the triangle inequality, and a few measurements are enough to pin it down exactly.")}
+          "Surveyors map whole countries by splitting the land into triangles, and roof trusses, bridges and bicycle frames are built from them. There is a reason: the triangle is the simplest shape that encloses an area, it is always flat, and its three sides fix its shape completely. This chapter covers what every triangle has in common: its angles always add up to 180°, its sides obey the triangle inequality, and a few measurements are enough to pin it down exactly.")}
       </Lead>
 
       <H2>{tx(t, "mTri_partsTitle", "Parts and names")}</H2>
@@ -119,16 +119,16 @@ export function TrianglesContent({ t }: { t: TrackTranslations }) {
       <Callout type="warn" t={t}>
         {tx(t, "mTri_congWarn", "Two combinations do not work. AAA (three equal angles) fixes the shape but not the size: a small and a big equilateral triangle have the same angles. Those triangles are similar, not congruent, and a later chapter is about them. SSA (two sides and an angle that is not between them) can allow two different triangles, so it proves nothing.")}
       </Callout>
-      <H3>{tx(t, "mTri_rigidTitle", "Why meshes are made of triangles")}</H3>
+      <H3>{tx(t, "mTri_rigidTitle", "Why frames are built from triangles")}</H3>
       <p>
         {tx(t, "mTri_rigidBody",
-          "SSS has a physical meaning: a triangle made of three rigid bars cannot change shape, while a square frame of four bars folds into a rhombus at the lightest push. That is why bridges, cranes and roof trusses are full of triangles. Graphics likes triangles for related reasons. Three points always lie in one plane, so a triangle is always flat and has one well-defined facing direction, while four points can be bent (a quad can be folded along its diagonal). Every polygon can be cut into triangles. And a point inside a triangle can be described as a mix of its three corners, which is how the GPU blends colours and texture coordinates across it (barycentric coordinates, in the Linear Algebra section).")}
+          "SSS has a physical meaning: a triangle made of three rigid bars cannot change shape, because three fixed lengths allow only one triangle. A square frame of four bars has no such rule and folds into a rhombus at the lightest push. That is why bridges, cranes, gates and roof trusses are full of triangles, and why a wobbly bookshelf is fixed with one diagonal brace: the brace cuts the rectangle into two triangles. Two more facts make triangles the basic building block of geometry itself. Three points always lie in one plane, so a triangle is always flat, while four points need not be (a sheet of card with four corners can be bent along a diagonal). And every polygon, however many sides it has, can be cut into triangles by drawing diagonals, which is how the next chapter finds the area of any polygon.")}
       </p>
 
       <H2>{tx(t, "mTri_centroidTitle", "The centroid")}</H2>
       <p>
         {tx(t, "mTri_centroidBody",
-          "A median is the segment from a vertex to the midpoint of the opposite side. The three medians of any triangle meet at one point, the centroid. It is the triangle's balance point: cut a triangle out of card and it balances on a pin at the centroid. With coordinates it is simply the average of the three corners, computed separately for x and for y. Games use it as the \"position\" of a triangle, for example to sort transparent triangles by distance or to place a label in the middle of a region.")}
+          "A median is the segment from a vertex to the midpoint of the opposite side. The three medians of any triangle meet at one point, the centroid. It is the triangle's balance point: cut a triangle out of card and it balances on a pin at the centroid. With coordinates it is simply the average of the three corners, computed separately for x and for y. That is also why it is the balance point: each corner pulls with the same weight, and the average is where those pulls cancel.")}
       </p>
       <Equation label={tx(t, "mTri_eqCentroid", "The centroid of a triangle")}
         where={[
@@ -153,40 +153,24 @@ export function TrianglesContent({ t }: { t: TrackTranslations }) {
           "3. Can 4, 7 and 12 be the sides of a triangle? The longest side is 12, and 4 + 7 = 11 < 12, so no: the two short sides cannot reach each other. With 4, 8 and 12 we get 4 + 8 = 12, a flat, degenerate triangle. With 5, 8 and 12, 5 + 8 = 13 > 12, so yes.")}
       </p>
 
-      <H2>{tx(t, "mTri_codeTitle", "Checking triangles in C++")}</H2>
+      <H2>{tx(t, "mTri_checkTitle", "Checking three lengths by hand")}</H2>
       <p>
-        {tx(t, "mTri_codeBody",
-          "Level editors and procedural generators receive side lengths or vertex lists from users and algorithms, and a degenerate triangle (flat, zero area) breaks things later: it has no facing direction and makes some divisions divide by zero. Sorting the sides first means only the longest one needs checking. The tolerance again replaces an exact comparison, because rounding makes \"exactly equal\" unreliable with floats.")}
+        {tx(t, "mTri_checkBody",
+          "Given three lengths, say for a triangular garden bed or a frame you are about to cut, three questions settle everything the side lengths can tell you. Do them in this order. First, write the lengths from shortest to longest; then only the last one needs testing. Second, apply the triangle inequality to the longest side: add the two shorter ones and compare. Third, count equal lengths to name the triangle by its sides.")}
       </p>
-      <CodeBlock lang="cpp" filename="triangle.hpp" t={t}>{`#include <algorithm>
-#include <cmath>
-
-struct Vec2 { float x, y; };
-
-// True if three lengths form a real (non-flat) triangle
-bool isTriangle(float a, float b, float c, float eps = 1e-6f) {
-    if (a <= 0 || b <= 0 || c <= 0) return false;
-    float s[3] = { a, b, c };
-    std::sort(s, s + 3);                   // s[2] is the longest side
-    return s[0] + s[1] > s[2] + eps;       // longest < sum of the other two
-}
-
-enum class BySides { Equilateral, Isosceles, Scalene };
-
-BySides classifySides(float a, float b, float c, float eps = 1e-6f) {
-    bool ab = std::abs(a - b) < eps, bc = std::abs(b - c) < eps, ca = std::abs(c - a) < eps;
-    if (ab && bc) return BySides::Equilateral;
-    if (ab || bc || ca) return BySides::Isosceles;
-    return BySides::Scalene;
-}
-
-// The balance point: the average of the three corners
-Vec2 centroid(Vec2 A, Vec2 B, Vec2 C) {
-    return { (A.x + B.x + C.x) / 3.0f, (A.y + B.y + C.y) / 3.0f };
-}`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mTri_tLengths", "Lengths"), tx(t, "mTri_tSorted", "Sorted"), tx(t, "mTri_tTest", "Two short ones vs longest"), tx(t, "mTri_tVerdict", "Verdict")]}
+        rows={[
+          ["9, 4, 6", "4, 6, 9", "4 + 6 = 10 > 9", tx(t, "mTri_v1", "a triangle; all different, so scalene")],
+          ["5, 8, 5", "5, 5, 8", "5 + 5 = 10 > 8", tx(t, "mTri_v2", "a triangle; two equal, so isosceles")],
+          ["3, 12, 8", "3, 8, 12", "3 + 8 = 11 < 12", tx(t, "mTri_v3", "no triangle: the short sides cannot meet")],
+          ["2.5, 7, 4.5", "2.5, 4.5, 7", "2.5 + 4.5 = 7 = 7", tx(t, "mTri_v4", "flat (degenerate): the corners lie on one line")],
+          ["6, 6, 6", "6, 6, 6", "6 + 6 = 12 > 6", tx(t, "mTri_v5", "a triangle; all equal, so equilateral, 60° each")],
+        ]}
+      />
       <p>
-        {tx(t, "mTri_codeNext",
-          "Classifying by angles from the three sides needs one more tool, the Pythagorean theorem, and it is the example at the end of that chapter.")}
+        {tx(t, "mTri_checkNext",
+          "Naming the triangle by its angles (acute, right or obtuse) from the three sides needs one more tool, the Pythagorean theorem; it is the last worked example of that chapter.")}
       </p>
 
       <H2>{tx(t, "mTri_mistakesTitle", "Common mistakes")}</H2>
@@ -197,7 +181,7 @@ Vec2 centroid(Vec2 A, Vec2 B, Vec2 C) {
           [tx(t, "mTri_m2w", "a triangle with two right angles"), tx(t, "mTri_m2r", "at most one angle ≥ 90°"), tx(t, "mTri_m2", "two of them already use up 180°")],
           [tx(t, "mTri_m3w", "checking only a + b > c for a random c"), tx(t, "mTri_m3r", "check the longest side"), tx(t, "mTri_m3", "a short side always passes")],
           [tx(t, "mTri_m4w", "AAA proves congruence"), tx(t, "mTri_m4r", "AAA only proves the same shape"), tx(t, "mTri_m4", "the size can still differ")],
-          [tx(t, "mTri_m5w", "any three vertices make a usable triangle"), tx(t, "mTri_m5r", "reject collinear (flat) ones"), tx(t, "mTri_m5", "zero area: no facing direction, divisions by zero")],
+          [tx(t, "mTri_m5w", "any three points make a triangle"), tx(t, "mTri_m5r", "three points on one line do not"), tx(t, "mTri_m5", "collinear points enclose no area: the \"triangle\" is flat")],
         ]}
       />
 
