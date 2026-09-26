@@ -1,7 +1,8 @@
 "use client";
 
-// Foundations 1: number sets, the laws of arithmetic, integer division and
-// modulo, binary and two's complement, and IEEE 754 floating point.
+// Arithmetic (last): numbers inside the computer — integer division and
+// modulo, fixed-width integers and two's complement, and IEEE 754 floating
+// point. Binary itself is taught in the bases chapter just before.
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
@@ -17,42 +18,8 @@ export function NumbersContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mNum_intro",
-          "Every shader, physics step and transform in a game ends up as additions and multiplications on numbers stored in a fixed number of bits. That storage has consequences: integers that wrap around, divisions that round the \"wrong\" way for negative numbers, and decimals that are never quite exact. This chapter starts from the kinds of numbers there are, reviews the rules of arithmetic you will use in every later chapter, and ends inside a 32-bit float.")}
+          "The previous chapters worked with ideal numbers: as many digits as needed, no limits. A computer stores every number in a fixed number of bits, and that has consequences: integers that wrap around, divisions that round the \"wrong\" way for negative numbers, and decimals that are never quite exact. This chapter looks at how integers and real numbers are really stored, and ends inside a 32-bit float.")}
       </Lead>
-
-      <H2>{tx(t, "mNum_setsTitle", "Kinds of numbers")}</H2>
-      <p>
-        {tx(t, "mNum_setsBody",
-          "Mathematicians group numbers into nested sets, each one adding what the previous one could not express. Counting gives the natural numbers. Subtraction can go below zero, which needs the integers. Division needs fractions, the rationals. Some lengths, like the diagonal of a unit square (√2) or a circle's circumference divided by its diameter (π), cannot be written as any fraction; including them gives the real numbers, the continuous number line. Computers cannot store most real numbers exactly, which is the source of the floating-point surprises later in this chapter.")}
-      </p>
-      <LessonTable
-        headers={[tx(t, "mNum_tSet", "Set"), tx(t, "mNum_tSym", "Symbol"), tx(t, "mNum_tEx", "Examples"), tx(t, "mNum_tUse", "In games")]}
-        rows={[
-          [tx(t, "mNum_n", "Natural numbers"), "ℕ", "0, 1, 2, 3, …", tx(t, "mNum_nU", "counts, array indices, frame numbers")],
-          [tx(t, "mNum_z", "Integers"), "ℤ", "…, −2, −1, 0, 1, 2, …", tx(t, "mNum_zU", "tile coordinates, score changes, offsets")],
-          [tx(t, "mNum_q", "Rationals"), "ℚ", "1/2, −3/4, 0.125, 16/9", tx(t, "mNum_qU", "aspect ratios, probabilities, scale factors")],
-          [tx(t, "mNum_r", "Reals"), "ℝ", "√2, π, e, −0.1", tx(t, "mNum_rU", "positions, angles, time, colours (approximated by floats)")],
-        ]}
-      />
-
-      <H2>{tx(t, "mNum_lawsTitle", "The laws of arithmetic")}</H2>
-      <p>
-        {tx(t, "mNum_lawsBody",
-          "Almost every algebraic manipulation in this track uses three laws. Commutativity: the order of two numbers does not matter for + and ×. Associativity: how you group a chain of + or × does not matter. Distributivity: multiplying a sum is the same as multiplying each term and adding. Read the distributive law right to left and it is factoring: pulling a common factor out of a sum, which often turns two multiplications into one.")}
-      </p>
-      <Equation label={tx(t, "mNum_eqLaws", "Commutative, associative, distributive")}
-        where={[
-          [r`a + b = b + a,\ \ ab = ba`, tx(t, "mNum_wComm", "commutative: swap the operands freely. Subtraction and division are not: 5 − 2 ≠ 2 − 5")],
-          [r`(a + b) + c = a + (b + c)`, tx(t, "mNum_wAssoc", "associative: regroup freely; the same holds for ×")],
-          [r`a\,(b + c) = ab + ac`, tx(t, "mNum_wDist", "distributive: multiplication spreads over addition. Example: 3·x + 3·y = 3(x + y), one multiply instead of two")],
-        ]}
-        note={tx(t, "mNum_eqLawsNote", "Floating-point addition is commutative but not associative: (a + b) + c can differ from a + (b + c) in the last bits, because each addition rounds. That is why summing the same numbers in a different order (for example on different threads) can give slightly different totals.")}>
-        {r`a(b + c) = ab + ac`}
-      </Equation>
-      <p>
-        {tx(t, "mNum_orderBody",
-          "The order of operations is: parentheses first, then powers, then multiplication and division from left to right, then addition and subtraction from left to right. So 2 + 3 × 4² = 2 + 3 × 16 = 50. When in doubt in code, add parentheses: they cost nothing and make intent explicit.")}
-      </p>
 
       <H2>{tx(t, "mNum_divTitle", "Integer division and the modulo trap")}</H2>
       <p>
@@ -73,19 +40,11 @@ int wrap(int a, int n)     { return ((a % n) + n) % n; }      // result in [0, n
 int tileX = int(std::floor(worldX / tileSize));   // floats: std::floor, never a cast
 int prev  = wrap(i - 1, count);                   // i = 0 → count - 1`}</CodeBlock>
 
-      <H2>{tx(t, "mNum_binTitle", "Binary and integers in memory")}</H2>
+      <H2>{tx(t, "mNum_intTitle", "Integers in memory")}</H2>
       <p>
-        {tx(t, "mNum_binBody",
-          "Our number system is positional in base 10: in 347, the 3 means three hundreds, 3 × 10². Computers use base 2, with digits (bits) 0 and 1. Each position is worth twice the one to its right. Hexadecimal (base 16, digits 0–9 and A–F) is a compact way to write binary, because each hex digit is exactly four bits: 0xFF = 1111 1111 = 255. That is why colours are written as #RRGGBB: each pair of hex digits is one byte, 0–255, per channel.")}
+        {tx(t, "mNum_intBody",
+          "An unsigned integer is stored as its plain binary digits, as in the previous chapter: n bits hold 0 … 2ⁿ − 1, which is 0–255 for 8 bits, 0–65 535 for 16 and about 4.29 billion for 32. Types have fixed widths (uint8_t, int32_t, uint64_t), and every result is cut back to that width. Negative numbers need a way to store the sign.")}
       </p>
-      <Equation label={tx(t, "mNum_eqPlace", "Positional notation")}
-        where={[
-          [r`d_k`, tx(t, "mNum_wDigit", "the digit in position k, counting from 0 at the right")],
-          [r`B`, tx(t, "mNum_wBase", "the base: 10 for decimal, 2 for binary, 16 for hexadecimal")],
-        ]}
-        note={tx(t, "mNum_eqPlaceNote", "Example: 1011₂ = 1·8 + 0·4 + 1·2 + 1·1 = 11. With n bits, an unsigned integer ranges over 0 … 2ⁿ − 1: 0–255 for 8 bits, 0–65 535 for 16, about 4.29 billion for 32.")}>
-        {r`d_{n-1}\cdots d_1 d_0 \;=\; \sum_{k=0}^{n-1} d_k\,B^k`}
-      </Equation>
       <p>
         {tx(t, "mNum_twosBody",
           "Negative integers use two's complement: the highest bit counts as −2ⁿ⁻¹ instead of +2ⁿ⁻¹. For 8 bits, 1111 1111 is −128 + 127 = −1, and the range is −128 … 127. Its great property is that addition works identically for positive and negative numbers, so the hardware needs only one adder. To negate, flip all the bits and add one: −x = ~x + 1. When a result goes past the largest value it wraps around to the smallest: 127 + 1 = −128 in 8 bits. For unsigned integers that wrap-around is well defined; for signed integers in C++ it is undefined behaviour, and the compiler may assume it never happens.")}
@@ -161,22 +120,7 @@ bool nearlyEqual(float a, float b, float rel = 1e-5f, float abs = 1e-8f) {
         {tx(t, "mNum_cancelTip", "Subtracting two nearly equal numbers loses precision (catastrophic cancellation): 1.0000001 − 1.0000000 keeps only the one or two digits in which they differ. Rearranging a formula often avoids it. For example 1 − cos x for a tiny angle x is 0 in float, but the equal expression 2 sin²(x/2) is accurate. The same idea gives the numerically stable quadratic formula in the next chapter.")}
       </Callout>
 
-      <H2>{tx(t, "mNum_trackTitle", "How this track is organised")}</H2>
-      <p>
-        {tx(t, "mNum_trackBody",
-          "This track builds, from arithmetic upward, the mathematics that computer graphics and game programming actually use. Each chapter explains the idea first, then gives every formula with a legend for each symbol, an interactive figure, and code. The later chapters of the OpenGL, GLSL and Game Dev tracks link back here whenever they rely on a result.")}
-      </p>
-      <LessonTable
-        headers={[tx(t, "mNum_tSection", "Section"), tx(t, "mNum_tTopics", "Topics")]}
-        rows={[
-          [tx(t, "mNum_s1t", "Foundations"), tx(t, "mNum_s1d", "numbers and floating point, algebra and functions, exponents and logarithms, trigonometry")],
-          [tx(t, "mNum_s2t", "Vectors"), tx(t, "mNum_s2d", "vector operations, the dot product, the cross product")],
-          [tx(t, "mNum_s3t", "Coming next"), tx(t, "mNum_s3d", "matrices and linear transformations, determinants and inverses, homogeneous coordinates, complex numbers and quaternions, curves and splines (Bézier, Catmull–Rom), calculus (derivatives, integrals, gradients, the Jacobian), differential equations and numerical integration, probability and Monte Carlo, signals and the Fourier transform, eigenvectors and the SVD")],
-        ]}
-      />
-
       <KeyIdeas t={t} id="mNum" items={[
-        "ℕ ⊂ ℤ ⊂ ℚ ⊂ ℝ; computers store integers exactly (within a range) and reals approximately.",
         "C++ integer / and % truncate toward zero; use floor division and ((a % n) + n) % n for grids and wrapping.",
         "n bits hold 2ⁿ values; signed integers use two's complement; unsigned overflow wraps.",
         "float = sign × 1.fraction × 2^(exponent − 127): 24 significant bits, ~7 decimal digits.",
