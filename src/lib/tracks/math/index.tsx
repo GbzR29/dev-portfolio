@@ -53,4 +53,10 @@ export const mathChapters: Chapter[] = [
   { id: "vectors",   section: LINEAR_ALGEBRA, title: "Vectors",                   minRead: 13, load: () => import("./chapters/vectors").then((m) => m.VectorsContent) },
   { id: "dot",       section: LINEAR_ALGEBRA, title: "The Dot Product",           minRead: 14, load: () => import("./chapters/vectors").then((m) => m.DotContent) },
   { id: "cross",     section: LINEAR_ALGEBRA, title: "The Cross Product",         minRead: 14, load: () => import("./chapters/vectors").then((m) => m.CrossContent) },
+  { id: "matrices",    section: LINEAR_ALGEBRA, title: "Matrices & Linear Maps",    minRead: 20, load: () => import("./chapters/matrices").then((m) => m.MatricesContent) },
+  { id: "determinant", section: LINEAR_ALGEBRA, title: "The Determinant",           minRead: 18, load: () => import("./chapters/determinant").then((m) => m.DeterminantContent) },
+  { id: "inverse",     section: LINEAR_ALGEBRA, title: "Inverses & Linear Systems", minRead: 19, load: () => import("./chapters/inverse").then((m) => m.InverseContent) },
+  { id: "eigen",       section: LINEAR_ALGEBRA, title: "Eigenvalues & Eigenvectors", minRead: 18, load: () => import("./chapters/eigen").then((m) => m.EigenContent) },
+  { id: "complex",     section: LINEAR_ALGEBRA, title: "Complex Numbers",           minRead: 19, load: () => import("./chapters/complex").then((m) => m.ComplexContent) },
+  { id: "quaternions", section: LINEAR_ALGEBRA, title: "Quaternions & 3D Rotation", minRead: 20, load: () => import("./chapters/quaternions").then((m) => m.QuaternionsContent) },
 ];

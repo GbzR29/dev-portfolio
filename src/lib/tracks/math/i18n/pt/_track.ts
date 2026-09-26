@@ -37,6 +37,12 @@ const track = {
     vectors: "Vetores",
     dot: "O produto escalar",
     cross: "O produto vetorial",
+    matrices: "Matrizes e transformações lineares",
+    determinant: "O determinante",
+    inverse: "Matriz inversa e sistemas lineares",
+    eigen: "Autovalores e autovetores",
+    complex: "Números complexos",
+    quaternions: "Quatérnios e rotação 3D",
   } as Record<string, string>,
   sections: {
     Arithmetic: "Aritmética",
