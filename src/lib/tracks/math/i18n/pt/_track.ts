@@ -57,6 +57,11 @@ const track = {
     probability: "Noções de probabilidade",
     conditional: "Probabilidade condicional e Bayes",
     "random-variables": "Variáveis aleatórias",
+    expectation: "Esperança e variância",
+    distributions: "Distribuições comuns",
+    "descriptive-stats": "Estatística descritiva",
+    sampling: "Amostragem e inferência",
+    regression: "Correlação e regressão linear",
   } as Record<string, string>,
   sections: {
     Arithmetic: "Aritmética",

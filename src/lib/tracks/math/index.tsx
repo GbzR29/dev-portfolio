@@ -76,4 +76,9 @@ export const mathChapters: Chapter[] = [
   { id: "probability",      section: PROBABILITY, title: "Probability Basics",              minRead: 19, load: () => import("./chapters/probability").then((m) => m.ProbabilityContent) },
   { id: "conditional",      section: PROBABILITY, title: "Conditional Probability & Bayes", minRead: 21, load: () => import("./chapters/conditional").then((m) => m.ConditionalContent) },
   { id: "random-variables", section: PROBABILITY, title: "Random Variables",                minRead: 20, load: () => import("./chapters/random-variables").then((m) => m.RandomVariablesContent) },
+  { id: "expectation",       section: PROBABILITY, title: "Expectation & Variance",          minRead: 22, load: () => import("./chapters/expectation").then((m) => m.ExpectationContent) },
+  { id: "distributions",     section: PROBABILITY, title: "Common Distributions",            minRead: 24, load: () => import("./chapters/distributions").then((m) => m.DistributionsContent) },
+  { id: "descriptive-stats", section: PROBABILITY, title: "Descriptive Statistics",          minRead: 20, load: () => import("./chapters/descriptive-stats").then((m) => m.DescriptiveStatsContent) },
+  { id: "sampling",          section: PROBABILITY, title: "Sampling & Inference",            minRead: 23, load: () => import("./chapters/sampling").then((m) => m.SamplingContent) },
+  { id: "regression",        section: PROBABILITY, title: "Correlation & Linear Regression", minRead: 21, load: () => import("./chapters/regression").then((m) => m.RegressionContent) },
 ];
