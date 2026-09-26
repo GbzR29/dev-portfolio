@@ -12,6 +12,7 @@ import { cppChapters }    from "./cpp";
 import { sdl3Chapters }   from "./sdl3";
 import { gameDevChapters } from "./gamedev";
 import { mathChapters }   from "./math";
+import { algorithmsChapters } from "./algorithms";
 
 // Keyed by catalog id.
 const CHAPTERS: Record<string, Chapter[]> = {
@@ -21,6 +22,7 @@ const CHAPTERS: Record<string, Chapter[]> = {
   sdl3:    sdl3Chapters,
   gamedev: gameDevChapters,
   math:    mathChapters,
+  algorithms: algorithmsChapters,
 };
 
 // Keyed by route segment (/learn/[trackPath]). Built once, so every lookup of

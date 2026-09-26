@@ -23,6 +23,8 @@ export const learningTranslations = {
       "Game loops and fixed timesteps, easing and springs, randomness and Perlin noise, collision detection and the patterns behind fast game code — with interactive figures.",
     trackMathDesc:
       "Mathematics from the ground up: arithmetic, algebra, geometry, trigonometry, linear algebra and calculus, worked by hand — every formula explained, every idea interactive.",
+    trackAlgoDesc:
+      "Algorithms and data structures built from scratch in C++: memory and Big-O, recursion, sorting and searching, lists, hash tables, trees, heaps and graphs — every step traced in an interactive figure.",
 
     // AI banner
 
@@ -38,6 +40,7 @@ export const learningTranslations = {
     trackName_sdl3: "SDL3",
     trackName_gamedev: "Game Dev",
     trackName_math: "Math",
+    trackName_algorithms: "Algorithms",
     trackName_vulkan: "Vulkan",
     learnCrumb: "learn",
     lessonChapterOf: "chapter {n} of {total}",
@@ -122,6 +125,8 @@ export const learningTranslations = {
       "Game loop e timestep fixo, easing e molas, aleatoriedade e Perlin noise, detecção de colisão e os padrões por trás de código de jogo rápido — com figuras interativas.",
     trackMathDesc:
       "Matemática desde a base: aritmética, álgebra, geometria, trigonometria, álgebra linear e cálculo, feitos à mão — cada fórmula explicada, cada ideia interativa.",
+    trackAlgoDesc:
+      "Algoritmos e estruturas de dados construídos do zero em C++: memória e Big-O, recursão, ordenação e busca, listas, tabelas hash, árvores, heaps e grafos — cada passo acompanhado numa figura interativa.",
 
 
     // ── Lesson page ─────────────────────────────────────────────────────────
@@ -136,6 +141,7 @@ export const learningTranslations = {
     trackName_sdl3: "SDL3",
     trackName_gamedev: "Game Dev",
     trackName_math: "Matemática",
+    trackName_algorithms: "Algoritmos",
     trackName_vulkan: "Vulkan",
     learnCrumb: "aprender",
     lessonChapterOf: "capítulo {n} de {total}",
@@ -220,6 +226,8 @@ export const learningTranslations = {
       "Game loop y timestep fijo, easing y muelles, aleatoriedad y ruido Perlin, detección de colisiones y los patrones detrás del código de juego rápido — con figuras interactivas.",
     trackMathDesc:
       "Matemáticas desde la base: aritmética, álgebra, geometría, trigonometría, álgebra lineal y cálculo, hechos a mano — cada fórmula explicada, cada idea interactiva.",
+    trackAlgoDesc:
+      "Algoritmos y estructuras de datos construidos desde cero en C++: memoria y Big-O, recursión, ordenación y búsqueda, listas, tablas hash, árboles, heaps y grafos — cada paso seguido en una figura interactiva.",
 
 
     lessonChapters:    "Capítulos",
@@ -233,6 +241,7 @@ export const learningTranslations = {
     trackName_sdl3: "SDL3",
     trackName_gamedev: "Game Dev",
     trackName_math: "Matemáticas",
+    trackName_algorithms: "Algoritmos",
     trackName_vulkan: "Vulkan",
     learnCrumb: "aprender",
     lessonChapterOf: "capítulo {n} de {total}",
@@ -317,6 +326,8 @@ export const learningTranslations = {
       "游戏循环与固定时间步长、缓动与弹簧、随机数与Perlin噪声、碰撞检测，以及高效游戏代码背后的设计模式——配有交互式图示。",
     trackMathDesc:
       "从零开始的数学：算术、代数、几何、三角学、线性代数与微积分，全部手算推导——每个公式都有解释，每个概念都可交互。",
+    trackAlgoDesc:
+      "用 C++ 从零实现算法与数据结构：内存与大 O、递归、排序与查找、链表、哈希表、树、堆和图——每一步都能在交互图中逐步查看。",
 
 
     lessonChapters:    "章节",
@@ -330,6 +341,7 @@ export const learningTranslations = {
     trackName_sdl3: "SDL3",
     trackName_gamedev: "游戏开发",
     trackName_math: "数学",
+    trackName_algorithms: "算法",
     trackName_vulkan: "Vulkan",
     learnCrumb: "学习",
     lessonChapterOf: "第 {n} 章，共 {total} 章",

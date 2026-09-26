@@ -52,6 +52,11 @@ export const TRACK_CATALOG: TrackInfo[] = [
     descKey: "trackMathDesc", descFallback: "Mathematics from the ground up: arithmetic, algebra, geometry, trigonometry, linear algebra and calculus, worked by hand — every formula explained, every idea interactive.",
   },
   {
+    id: "algorithms", path: "Algorithms", title: "Algorithms & Data Structures", accentColor: "#ca8a04", status: "available", plannedLessons: 24,
+    levelKey: "begAdv", levelFallback: "Beginner → Advanced",
+    descKey: "trackAlgoDesc", descFallback: "Algorithms and data structures built from scratch in C++: memory and Big-O, recursion, sorting and searching, lists, hash tables, trees, heaps and graphs — every step traced in an interactive figure.",
+  },
+  {
     id: "vulkan", path: "Vulkan", title: "Vulkan API", accentColor: "#ef4444", status: "coming-soon", plannedLessons: 12,
     levelKey: "advanced", descKey: "trackVulkanDesc",
   },
