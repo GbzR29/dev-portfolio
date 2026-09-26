@@ -3,18 +3,18 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Figure, Btn, Choice, Row, Readout, Slider, Sliders, C, T, f2 } from "@/components/lesson/kit/figure";
+import { Figure, Btn, Choice, Row, Readout, Slider, Sliders, C, T } from "@/components/lesson/kit/figure";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // bits    — one byte as eight clickable bits with their place values 128 … 1.
 //           The value is the sum of the place values that are on; each nibble
-//           is one hex digit. +1 shows carrying, << and >> show ×2 and ÷2.
+//           is one hex digit. +1 shows carrying; ×2 appends a 0, ÷2 drops the last digit.
 // convert — decimal to base B by repeated division: the remainders, read from
 //           the last one up, are the digits.
-// color   — #RRGGBB: three bytes, each as two hex digits, eight bits and the
-//           0–1 float a shader sees.
+// add     — column addition of two binary numbers, with the carries shown
+//           above the columns they go into.
 
-type Mode = "bits" | "convert" | "color";
+type Mode = "bits" | "convert" | "add";
 const W = 560;
 const HEX = "0123456789ABCDEF";
 const DIGIT_COLS = [C.sky, C.amber, C.green, C.purple, C.pink, C.teal, C.orange, C.red, C.blue, C.sky];
@@ -26,7 +26,7 @@ export function BaseFigure({ t }: { t?: TrackTranslations }) {
   const [byte, setByte] = useState(214);
   const [n, setN] = useState(214);
   const [base, setBase] = useState<"2" | "3" | "8" | "16">("2");
-  const [rgb, setRgb] = useState<[number, number, number]>([255, 136, 0]);
+  const [addA, setAddA] = useState(107), [addB, setAddB] = useState(54);
 
   let svg: React.ReactNode, H = 150, controls: React.ReactNode, note: string;
 
@@ -58,18 +58,18 @@ export function BaseFigure({ t }: { t?: TrackTranslations }) {
       <Row>
         <Btn onClick={() => setByte((byte + 1) & 255)}>+1</Btn>
         <Btn onClick={() => setByte((byte - 1) & 255)}>−1</Btn>
-        <Btn onClick={() => setByte((byte << 1) & 255)}>{"<< 1  (×2)"}</Btn>
-        <Btn onClick={() => setByte(byte >> 1)}>{">> 1  (÷2)"}</Btn>
+        <Btn onClick={() => setByte((byte << 1) & 255)}>{tx(t, "figBase_times2", "×2 (append 0)")}</Btn>
+        <Btn onClick={() => setByte(byte >> 1)}>{tx(t, "figBase_div2", "÷2 (drop last digit)")}</Btn>
         <Btn onClick={() => setByte(0)}>{tx(t, "figBase_clear", "clear")}</Btn>
       </Row>
       <Row>
         <Readout color={C.sky}>{bin8(byte).slice(0, 4)} {bin8(byte).slice(4)}₂</Readout>
         <Readout>= {parts.length ? parts.join(" + ") : "0"} = {byte}</Readout>
         <Readout color={C.amber}>= 0x{toBase(byte, 16).padStart(2, "0")}</Readout>
-        <Readout color={C.muted}>= 0{toBase(byte, 8)}₈</Readout>
+        <Readout color={C.muted}>= {toBase(byte, 8)}₈</Readout>
       </Row>
     </>;
-    note = tx(t, "figBase_noteBits", "Click the bits. Each one is worth the power of two above it, and the byte's value is the sum of the ones that are on; with all eight on it is 255 = 2⁸ − 1. Press +1 repeatedly and watch the carry ripple left whenever a 1 turns into 0, exactly like 199 + 1 in decimal; 255 + 1 wraps to 0 because a ninth bit does not exist. Shifting left doubles (the top bit falls off), shifting right halves and drops the ones bit. Each group of four bits is one hex digit.");
+    note = tx(t, "figBase_noteBits", "Click the bits. Each one is worth the power of two above it, and the byte's value is the sum of the ones that are on; with all eight on it is 255 = 2⁸ − 1. Press +1 repeatedly and watch the carry ripple left whenever a 1 turns into 0, exactly like 199 + 1 in decimal. The display has only eight places, so 255 + 1 rolls over to 0, like a car's odometer going from 999 to 000. ×2 appends a 0 on the right (the top digit falls off the display); ÷2 drops the last digit, which is the remainder. Each group of four bits is one hex digit.");
   } else if (mode === "convert") {
     const B = +base;
     const rows: [number, number, number][] = [];
@@ -111,43 +111,50 @@ export function BaseFigure({ t }: { t?: TrackTranslations }) {
     </>;
     note = tx(t, "figBase_noteConvert", "Pick a number and a base. Each row divides by the base and keeps the remainder, always between 0 and base − 1, so it is a valid digit. The first remainder is the last digit: it is what is left after taking out every full group of B, the ones. The next row does the same with the groups themselves, and so on until nothing is left. Read the remainders upward, as the arrow shows; the readout multiplies each digit by its place value to check the result.");
   } else {
-    const [R, G, Bc] = rgb, hex = "#" + rgb.map(v => v.toString(16).toUpperCase().padStart(2, "0")).join("");
-    const names = [tx(t, "figBase_red", "red"), tx(t, "figBase_green", "green"), tx(t, "figBase_blue", "blue")];
-    const cols = [C.red, C.green, C.blue];
-    H = 130;
+    // Column addition: cols[p] holds bit p of a, of b, the carry into p and the sum bit
+    const sum = addA + addB, cw = 42, ox = 118, NB = 9;
+    const X = (p: number) => ox + (NB - 1 - p) * cw;             // bit 8 on the left, bit 0 on the right
+    const bit = (v: number, p: number) => (v >> p) & 1;
+    const carry: number[] = [0];
+    for (let p = 0; p < NB; p++) carry.push((bit(addA, p) + bit(addB, p) + carry[p]) >> 1);
+    const rows: [string, number, number][] = [[tx(t, "figBase_carry", "carry"), 24, 0], ["a", 52, 1], ["+ b", 78, 2], ["=", 112, 3]];
+    H = 146;
     svg = <>
-      <rect x={24} y={14} width={130} height={100} rx={8} fill={`rgb(${R},${G},${Bc})`} stroke={C.axis} />
-      <T x={89} y={126} size={11} anchor="middle" color={C.fg} bold>{hex}</T>
-      {rgb.map((v, i) => {
-        const x0 = 190 + i * 120;
-        return <g key={i}>
-          <T x={x0} y={24} size={9} color={cols[i]} bold>{names[i]}</T>
-          <T x={x0} y={48} size={16} color={C.fg} bold>{v.toString(16).toUpperCase().padStart(2, "0")}</T>
-          <T x={x0 + 34} y={48} size={10} color={C.muted}>{`= ${v}`}</T>
-          <T x={x0} y={70} size={10} color={C.sky}>{`${bin8(v).slice(0, 4)} ${bin8(v).slice(4)}`}</T>
-          <T x={x0} y={92} size={10} color={C.amber}>{`${v}/255 = ${f2(v / 255, 3)}`}</T>
-          <rect x={x0} y={102} width={100} height={6} rx={3} fill={C.grid} />
-          <rect x={x0} y={102} width={(v / 255) * 100} height={6} rx={3} fill={cols[i]} />
+      {rows.map(([lbl, y, k]) => <T key={k} x={ox - 18} y={y} size={k === 0 ? 9 : 11} anchor="end" color={k === 0 ? C.amber : k === 3 ? C.green : C.sky} bold={k !== 0}>{lbl}</T>)}
+      <line x1={ox - 12} x2={X(0) + cw - 8} y1={90} y2={90} stroke={C.axis} strokeWidth={1.4} />
+      {Array.from({ length: NB }, (_, p) => {
+        const x = X(p) + cw / 2, lead = (v: number) => v < 1 << p;   // digit left of the number's first 1
+        return <g key={p}>
+          {carry[p] === 1 && <>
+            <rect x={x - 9} y={12} width={18} height={16} rx={4} fill={C.amber} fillOpacity={0.18} />
+            <T x={x} y={24} size={10} anchor="middle" color={C.amber} bold>1</T>
+          </>}
+          {p < 8 && <T x={x} y={52} size={15} anchor="middle" color={lead(addA) && p > 0 ? C.axis : C.fg} bold>{String(bit(addA, p))}</T>}
+          {p < 8 && <T x={x} y={78} size={15} anchor="middle" color={lead(addB) && p > 0 ? C.axis : C.fg} bold>{String(bit(addB, p))}</T>}
+          <T x={x} y={112} size={15} anchor="middle" color={lead(sum) && p > 0 ? C.axis : C.green} bold>{String(bit(sum, p))}</T>
+          <T x={x} y={136} size={8} anchor="middle" color={C.muted}>{String(1 << p)}</T>
         </g>;
       })}
     </>;
-    const set = (i: number) => (v: number) => setRgb(rgb.map((c, j) => (j === i ? v : c)) as [number, number, number]);
+    const nCarry = carry.filter(c => c === 1).length;
     controls = <>
       <Sliders>
-        {rgb.map((v, i) => <Slider key={i} label={names[i]} value={v} min={0} max={255} step={1} onChange={set(i)} fmt={x => String(x)} />)}
+        <Slider label="a" value={addA} min={0} max={255} step={1} onChange={setAddA} fmt={v => String(v)} />
+        <Slider label="b" value={addB} min={0} max={255} step={1} onChange={setAddB} fmt={v => String(v)} />
       </Sliders>
       <Row>
-        <Readout>0x{hex.slice(1)} = {R}·65536 + {G}·256 + {Bc} = {(R << 16) + (G << 8) + Bc}</Readout>
-        <Readout color={C.amber}>vec3({f2(R / 255, 3)}, {f2(G / 255, 3)}, {f2(Bc / 255, 3)})</Readout>
+        <Readout color={C.sky}>{toBase(addA, 2)}₂ + {toBase(addB, 2)}₂ = {toBase(sum, 2)}₂</Readout>
+        <Readout color={C.green}>{addA} + {addB} = {sum}</Readout>
+        <Readout color={C.amber}>{tx(t, "figBase_carries", "carries")}: {nCarry}</Readout>
       </Row>
     </>;
-    note = tx(t, "figBase_noteColor", "A web colour is three bytes. Each byte is written as two hex digits, the first counting sixteens and the second ones, so FF = 15 × 16 + 15 = 255 and 88 = 8 × 16 + 8 = 136. The binary row shows why two hex digits are exactly one byte: one digit per nibble. Packed into one integer, red is worth 256² because it sits two bytes up. Shaders divide each byte by 255 to get a channel between 0 and 1.");
+    note = tx(t, "figBase_noteAdd", "Pick two numbers. Each column adds its two digits plus the carry coming from the column on its right. 1 + 1 = 10₂: write 0 and carry 1 (amber) into the next column; 1 + 1 + 1 = 11₂: write 1 and carry 1. It is the same procedure as column addition in decimal, only a column carries when it reaches 2 instead of 10. The small numbers underneath are the place values, and the decimal readout checks the result.");
   }
 
   return (
     <Figure
       title={tx(t, "figBase_title", "Bits, bases and hex")}
-      head={<Choice value={mode} onChange={setMode} options={[["bits", tx(t, "figBase_bits", "bits")], ["convert", tx(t, "figBase_convert", "convert")], ["color", tx(t, "figBase_color", "hex colour")]] as const} />}
+      head={<Choice value={mode} onChange={setMode} options={[["bits", tx(t, "figBase_bits", "bits")], ["convert", tx(t, "figBase_convert", "convert")], ["add", tx(t, "figBase_add", "addition")]] as const} />}
       controls={controls}
       note={note}
     >

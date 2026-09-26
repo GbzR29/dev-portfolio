@@ -1,9 +1,8 @@
 // src/lib/tracks/math/index.tsx
 "use client";
 
-// The Math track: the mathematics behind computer graphics and game
-// programming, from arithmetic and floating point upward, each topic with
-// interactive figures.
+// The Math track: pure mathematics from arithmetic upward, worked by hand,
+// each topic with interactive figures. The programming tracks link back here.
 
 import type { Chapter } from "@/lib/tracks/types";
 
@@ -21,8 +20,7 @@ export const mathChapters: Chapter[] = [
   { id: "ratios",              section: ARITHMETIC, title: "Ratios, Proportion & Percent", minRead: 16, load: () => import("./chapters/ratios").then((m) => m.RatiosContent) },
   { id: "divisibility",        section: ARITHMETIC, title: "Divisibility, Primes, GCD & LCM", minRead: 17, load: () => import("./chapters/divisibility").then((m) => m.DivisibilityContent) },
   { id: "powers",              section: ARITHMETIC, title: "Powers & Roots",               minRead: 17, load: () => import("./chapters/powers").then((m) => m.PowersContent) },
-  { id: "bases",               section: ARITHMETIC, title: "Number Bases & Bits",          minRead: 16, load: () => import("./chapters/bases").then((m) => m.BasesContent) },
-  { id: "numbers",             section: ARITHMETIC, title: "Integers & Floating Point",    minRead: 13, load: () => import("./chapters/numbers").then((m) => m.NumbersContent) },
+  { id: "bases",               section: ARITHMETIC, title: "Number Bases",                 minRead: 15, load: () => import("./chapters/bases").then((m) => m.BasesContent) },
 
   { id: "expressions",      section: ALGEBRA, title: "Expressions",               minRead: 15, load: () => import("./chapters/expressions").then((m) => m.ExpressionsContent) },
   { id: "linear-equations", section: ALGEBRA, title: "Linear Equations",          minRead: 17, load: () => import("./chapters/linear-equations").then((m) => m.LinearEquationsContent) },

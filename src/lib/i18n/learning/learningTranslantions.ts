@@ -28,7 +28,7 @@ export const learningTranslations = {
     trackGameDevDesc:
       "Game loops and fixed timesteps, easing and springs, randomness and Perlin noise, collision detection and the patterns behind fast game code — with interactive figures.",
     trackMathDesc:
-      "The mathematics of graphics and games, from arithmetic and floating point to vectors, trigonometry and beyond — every formula explained, every idea interactive.",
+      "Mathematics from the ground up: arithmetic, algebra, geometry, trigonometry, linear algebra and calculus, worked by hand — every formula explained, every idea interactive.",
 
     // AI banner
     aiTitle: "AI-powered learning assistant — coming soon",
@@ -100,7 +100,7 @@ export const learningTranslations = {
     trackGameDevDesc:
       "Game loop e timestep fixo, easing e molas, aleatoriedade e Perlin noise, detecção de colisão e os padrões por trás de código de jogo rápido — com figuras interativas.",
     trackMathDesc:
-      "A matemática da computação gráfica e dos jogos, da aritmética e ponto flutuante a vetores, trigonometria e além — cada fórmula explicada, cada ideia interativa.",
+      "Matemática desde a base: aritmética, álgebra, geometria, trigonometria, álgebra linear e cálculo, feitos à mão — cada fórmula explicada, cada ideia interativa.",
 
     aiTitle: "Assistente de aprendizado com IA — em breve",
     aiDesc:
@@ -171,7 +171,7 @@ export const learningTranslations = {
     trackGameDevDesc:
       "Game loop y timestep fijo, easing y muelles, aleatoriedad y ruido Perlin, detección de colisiones y los patrones detrás del código de juego rápido — con figuras interactivas.",
     trackMathDesc:
-      "Las matemáticas de los gráficos y los juegos, desde la aritmética y el punto flotante hasta vectores, trigonometría y más — cada fórmula explicada, cada idea interactiva.",
+      "Matemáticas desde la base: aritmética, álgebra, geometría, trigonometría, álgebra lineal y cálculo, hechos a mano — cada fórmula explicada, cada idea interactiva.",
 
     aiTitle: "Asistente de aprendizaje con IA — próximamente",
     aiDesc:
@@ -241,7 +241,7 @@ export const learningTranslations = {
     trackGameDevDesc:
       "游戏循环与固定时间步长、缓动与弹簧、随机数与Perlin噪声、碰撞检测，以及高效游戏代码背后的设计模式——配有交互式图示。",
     trackMathDesc:
-      "图形与游戏背后的数学：从算术和浮点数到向量、三角学及更多——每个公式都有解释，每个概念都可交互。",
+      "从零开始的数学：算术、代数、几何、三角学、线性代数与微积分，全部手算推导——每个公式都有解释，每个概念都可交互。",
 
     aiTitle: "AI学习助手——即将推出",
     aiDesc:

@@ -5,7 +5,7 @@
 // decimals as fractions over powers of ten, terminating and repeating
 // expansions, and rounding.
 
-import { CodeBlock, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -20,7 +20,7 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mFrac_intro",
-          "Whole numbers count things; fractions measure the parts in between. Half a second of invulnerability, three quarters of a health bar, a texture coordinate of 0.25, an aspect ratio of 16/9: games are full of quantities that are not whole. This chapter builds fractions from the idea of cutting a whole into equal parts, derives every rule for computing with them from pictures rather than memorising them, and then shows how decimals are just fractions in disguise, including why some of them never end.")}
+          "Whole numbers count things; fractions measure the parts in between. Half an hour, three quarters of a cup of flour, a quarter of a pizza, a price of 2.35: everyday life is full of quantities that are not whole. This chapter builds fractions from the idea of cutting a whole into equal parts, derives every rule for computing with them from pictures rather than memorising them, and then shows how decimals are just fractions in disguise, including why some of them never end.")}
       </Lead>
 
       <H2>{tx(t, "mFrac_whatTitle", "What a fraction is")}</H2>
@@ -62,7 +62,7 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
           [r`a \cdot d`, tx(t, "mFrac_wAd", "the numerator of a/b rewritten over b·d")],
           [r`c \cdot b`, tx(t, "mFrac_wCb", "the numerator of c/d rewritten over b·d")],
         ]}
-        note={tx(t, "mFrac_eqCmpNote", "Is 5/7 bigger than 2/3? 5 · 3 = 15 and 2 · 7 = 14, so 5/7 > 2/3 (15/21 against 14/21). The comparison uses only integer multiplication, so in code it is exact, with no rounding. It needs positive denominators: multiplying by a negative number would flip the comparison.")}>
+        note={tx(t, "mFrac_eqCmpNote", "Is 5/7 bigger than 2/3? 5 · 3 = 15 and 2 · 7 = 14, so 5/7 > 2/3 (15/21 against 14/21). The comparison uses only whole-number multiplication, so it is exact: no decimals, no rounding. It needs positive denominators: multiplying by a negative number would flip the comparison.")}>
         {r`\frac{a}{b} < \frac{c}{d} \iff a\,d < c\,b`}
       </Equation>
 
@@ -91,7 +91,7 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
           [r`a\,c`, tx(t, "mFrac_wAc", "the number of cells in the overlap of a columns and c rows")],
           [r`b\,d`, tx(t, "mFrac_wBd2", "the number of cells the whole is cut into")],
         ]}
-        note={tx(t, "mFrac_eqMulNote", "Simplify before multiplying when you can: in 2/3 × 3/4 the 3 on top and the 3 below cancel, and the 2 and the 4 share a 2, leaving 1/2. A whole number n is the fraction n/1, so 5 × 2/3 = 10/3. Multiplying by a fraction smaller than 1 makes a number smaller, which is exactly how scaling by 0.5 works.")}>
+        note={tx(t, "mFrac_eqMulNote", "Simplify before multiplying when you can: in 2/3 × 3/4 the 3 on top and the 3 below cancel, and the 2 and the 4 share a 2, leaving 1/2. A whole number n is the fraction n/1, so 5 × 2/3 = 10/3. Multiplying by a fraction smaller than 1 makes a number smaller: half of something is less than the whole of it.")}>
         {r`\frac{a}{b} \times \frac{c}{d} = \frac{a\,c}{b\,d}`}
       </Equation>
 
@@ -131,7 +131,7 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mFrac_convRule",
-          "Which fractions end? A decimal that ends is n/10ᵏ, and 10 = 2 × 5, so its denominator can only contain the prime factors 2 and 5. Reduce the fraction to lowest terms and look at the denominator: if it is built only from 2s and 5s (like 8 = 2³ or 20 = 2² × 5), the decimal ends; any other prime factor (3, 7, 11 …) makes it repeat. The same rule in base 2, with only the factor 2 allowed, is why 1/10 cannot be stored exactly in a computer: switch the figure to base 2.")}
+          "Which fractions end? A decimal that ends is n/10ᵏ, and 10 = 2 × 5, so its denominator can only contain the prime factors 2 and 5. Reduce the fraction to lowest terms and look at the denominator: if it is built only from 2s and 5s (like 8 = 2³ or 20 = 2² × 5), the decimal ends; any other prime factor (3, 7, 11 …) makes it repeat. The same reasoning works in any base. In base 2 (number bases get their own chapter later in this section) only the prime 2 is allowed, so 1/10, which ends in decimal, repeats forever in binary: switch the figure to base 2.")}
       </p>
 
       <DecimalFigure t={t} />
@@ -150,60 +150,54 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mFrac_roundTitle", "Rounding")}</H2>
       <p>
         {tx(t, "mFrac_roundBody",
-          "A repeating or very long decimal has to be cut off somewhere, and so does any measured or computed quantity you show to a player. Rounding to a given number of decimal places keeps that many digits and looks at the next one: 5 or more rounds up, less than 5 rounds down. 2.346 to two places is 2.35; 2.344 is 2.34. Truncating instead simply drops the extra digits, always toward zero: 2.349 truncates to 2.34. Programs offer several kinds of rounding, and picking the wrong one is a classic off-by-one.")}
+          "A repeating or very long decimal has to be cut off somewhere, and so does any measured quantity: a ruler, a scale or a stopwatch only shows so many digits. Rounding to a given number of decimal places keeps that many digits and looks at the next one: 5 or more rounds up, less than 5 rounds down. 2.346 to two places is 2.35; 2.344 is 2.34. Truncating instead simply drops the extra digits, always toward zero: 2.349 truncates to 2.34. Several rounding rules exist, and for negative numbers and exact halves they give different answers, so it matters which one a question asks for.")}
       </p>
       <LessonTable
-        headers={[tx(t, "mFrac_tFn", "C++"), tx(t, "mFrac_tRule", "Rule"), "2.5", "−2.5", "2.7", "−2.7"]}
+        headers={[tx(t, "mFrac_tFn", "Name"), tx(t, "mFrac_tRule", "Rule"), "2.5", "−2.5", "2.7", "−2.7"]}
         rows={[
-          ["std::floor", tx(t, "mFrac_floor", "down, toward −∞"), "2", "−3", "2", "−3"],
-          ["std::ceil", tx(t, "mFrac_ceil", "up, toward +∞"), "3", "−2", "3", "−2"],
-          ["std::trunc, (int)x", tx(t, "mFrac_trunc", "toward 0: drop the fraction"), "2", "−2", "2", "−2"],
-          ["std::round", tx(t, "mFrac_round", "nearest; halves away from 0"), "3", "−3", "3", "−3"],
-          ["std::nearbyint", tx(t, "mFrac_rint", "nearest; halves to the even neighbour (the default rounding mode)"), "2", "−2", "3", "−3"],
+          [tx(t, "mFrac_floorN", "floor ⌊x⌋"), tx(t, "mFrac_floor", "down, toward −∞: the nearest whole number to the left"), "2", "−3", "2", "−3"],
+          [tx(t, "mFrac_ceilN", "ceiling ⌈x⌉"), tx(t, "mFrac_ceil", "up, toward +∞: the nearest whole number to the right"), "3", "−2", "3", "−2"],
+          [tx(t, "mFrac_truncN", "truncate"), tx(t, "mFrac_trunc", "toward 0: drop the digits"), "2", "−2", "2", "−2"],
+          [tx(t, "mFrac_roundN", "round half up"), tx(t, "mFrac_round", "nearest; exact halves away from 0 (the school rule)"), "3", "−3", "3", "−3"],
+          [tx(t, "mFrac_rintN", "round half to even"), tx(t, "mFrac_rint", "nearest; exact halves to the even neighbour, so that halves do not push long sums upward (used in statistics and banking)"), "2", "−2", "3", "−3"],
         ]}
       />
       <p>
         {tx(t, "mFrac_roundPlaces",
-          "To round to k decimal places, scale, round and scale back: round(x × 10ᵏ) / 10ᵏ. For display, prefer the formatting functions (std::format(\"{:.2f}\", x)), because the scaled result is itself stored in binary and may print as 2.3500000000000001.")}
+          "Rounding up can carry, just like adding 1: 3.996 to two decimal places looks at the third digit, 6, and rounds the 99 up, giving 4.00. Keep the trailing zeros: 4.00 says the value is known to the hundredth, while 4 says much less. Sometimes a question asks for significant figures instead of decimal places: count digits from the first one that is not 0. 0.004 567 to two significant figures is 0.0046, and 83 250 to two significant figures is 83 000. Round only once, at the end: rounding 2.346 first to 2.35 and then to 2.4 gives a different answer from rounding 2.346 straight to one place, which is 2.3.")}
       </p>
 
       <H2>{tx(t, "mFrac_exTitle", "Worked examples")}</H2>
-      <H3>{tx(t, "mFrac_ex1T", "Frame budget")}</H3>
+      <H3>{tx(t, "mFrac_ex1T", "Planning a day")}</H3>
       <p>
         {tx(t, "mFrac_ex1",
-          "At 60 frames per second each frame gets 1/60 of a second. Physics takes 1/4 of that and rendering 1/2. What is left for everything else? 1 − 1/4 − 1/2 = 4/4 − 1/4 − 2/4 = 1/4 of the frame, and 1/4 × 1/60 = 1/240 s ≈ 4.17 ms.")}
+          "Sleep takes 1/3 of a day, work 1/4 and meals 1/12. What fraction is left? The lcm of 3, 4 and 12 is 12, so write everything in twelfths: 1 − 1/3 − 1/4 − 1/12 = 12/12 − 4/12 − 3/12 − 1/12 = 4/12 = 1/3. A third of 24 hours is 1/3 × 24 = 24/3 = 8 hours.")}
       </p>
-      <H3>{tx(t, "mFrac_ex2T", "How many bullets fit?")}</H3>
+      <H3>{tx(t, "mFrac_ex2T", "How many glasses?")}</H3>
       <p>
         {tx(t, "mFrac_ex2",
-          "A magazine holds 7/2 seconds of fire and each burst lasts 3/8 s. 7/2 ÷ 3/8 = 7/2 × 8/3 = 56/6 = 28/3 = 9⅓: nine full bursts, and a third of one more.")}
+          "A jug holds 7/2 litres and a glass holds 3/8 of a litre. 7/2 ÷ 3/8 = 7/2 × 8/3 = 56/6 = 28/3. As a mixed number, 28 ÷ 3 = 9 remainder 1, so 28/3 = 9⅓: nine full glasses, and a third of one more.")}
       </p>
-      <H3>{tx(t, "mFrac_ex3T", "Exact comparison in code")}</H3>
+      <H3>{tx(t, "mFrac_ex3T", "Which score is better?")}</H3>
       <p>
         {tx(t, "mFrac_ex3",
-          "Two players have win ratios 13/20 and 21/32. As decimals they are 0.65 and 0.65625, but in code you can compare them exactly with integers: 13 · 32 = 416 < 21 · 20 = 420, so the second player is ahead.")}
+          "One student answered 13 of 20 questions correctly, another 21 of 32. Cross-multiply: 13 · 32 = 416 and 21 · 20 = 420. Since 416 < 420, 13/20 < 21/32 and the second student did slightly better. As decimals the scores are 0.65 and 0.65625, which agrees.")}
       </p>
 
-      <CodeBlock lang="cpp" filename="fraction.hpp" t={t}>{`#include <numeric>   // std::gcd, std::lcm (C++17)
-
-struct Fraction {
-    long long num, den;   // invariant: den > 0 and gcd(num, den) == 1
-    Fraction(long long n, long long d = 1) : num(n), den(d) {
-        if (den < 0) { num = -num; den = -den; }        // keep the sign on top
-        long long g = std::gcd(num, den);               // gcd(0, d) = d, so 0 becomes 0/1
-        if (g > 1) { num /= g; den /= g; }
-    }
-};
-Fraction operator+(Fraction a, Fraction b) { return { a.num * b.den + b.num * a.den, a.den * b.den }; }
-Fraction operator-(Fraction a, Fraction b) { return { a.num * b.den - b.num * a.den, a.den * b.den }; }
-Fraction operator*(Fraction a, Fraction b) { return { a.num * b.num, a.den * b.den }; }
-Fraction operator/(Fraction a, Fraction b) { return { a.num * b.den, a.den * b.num }; }   // b must not be 0
-bool operator<(Fraction a, Fraction b)     { return a.num * b.den < b.num * a.den; }     // cross-multiply
-double toDouble(Fraction f)                { return double(f.num) / double(f.den); }
-
-// The integer-division trap: both operands are ints, so the fraction is thrown away
-float half  = 1 / 2;      // 0.0f !
-float half2 = 1.0f / 2;   // 0.5f: one float operand makes it a float division`}</CodeBlock>
+      <H3>{tx(t, "mFrac_ex4T", "Mixed numbers, step by step")}</H3>
+      <Equation label={tx(t, "mFrac_eqMixed", "2¾ + 1⅚")}
+        notes={[
+          tx(t, "mFrac_mix1", "turn each mixed number into an improper fraction: 2¾ is 2 wholes of 4 quarters plus 3 more, 2 × 4 + 3 = 11 quarters; 1⅚ is 1 × 6 + 5 = 11 sixths"),
+          tx(t, "mFrac_mix2", "common denominator: lcm(4, 6) = 12. Multiply 11/4 top and bottom by 3, and 11/6 by 2"),
+          tx(t, "mFrac_mix3", "add the numerators: 33 + 22 = 55 twelfths"),
+          tx(t, "mFrac_mix4", "back to a mixed number: 55 ÷ 12 = 4 remainder 7, so 4 wholes and 7/12. Check: 4 × 12 + 7 = 55"),
+        ]}>
+        {r`2\tfrac{3}{4} + 1\tfrac{5}{6} = \frac{11}{4} + \frac{11}{6} = \frac{33}{12} + \frac{22}{12} = \frac{55}{12} = 4\tfrac{7}{12}`}
+      </Equation>
+      <p>
+        {tx(t, "mFrac_ex4Body",
+          "A quick estimate catches mistakes: 2¾ is almost 3 and 1⅚ is almost 2, so the sum should be a bit under 5, and 4 7/12 is. For multiplying or dividing mixed numbers the first step is the same, convert to improper fractions, but never multiply the whole parts and the fractional parts separately: 2½ × 2½ is 5/2 × 5/2 = 25/4 = 6¼, not 4¼.")}
+      </p>
 
       <H2>{tx(t, "mFrac_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -212,8 +206,8 @@ float half2 = 1.0f / 2;   // 0.5f: one float operand makes it a float division`}
           ["1/2 + 1/3 = 2/5", "1/2 + 1/3 = 5/6", tx(t, "mFrac_m1", "denominators name the slice size; they are never added")],
           ["(2 + 3)/3 = 2 + 1", "(2 + 3)/3 = 5/3", tx(t, "mFrac_m2", "you may only cancel factors of the whole top and bottom, not a term of a sum")],
           ["3 ÷ ½ = 1.5", "3 ÷ ½ = 6", tx(t, "mFrac_m3", "dividing by ½ asks how many halves fit into 3; it is multiplying by the reciprocal, 2 (halving would be × ½)")],
-          ["0.1 × 3 == 0.3 in code", tx(t, "mFrac_m4r", "compare with a tolerance"), tx(t, "mFrac_m4", "0.1 repeats in binary, so it is stored rounded")],
-          ["float x = 3 / 4;", "float x = 3.0f / 4;", tx(t, "mFrac_m5", "int / int is integer division: 3 / 4 is 0")],
+          ["0.3 × 0.2 = 0.6", "0.3 × 0.2 = 0.06", tx(t, "mFrac_m4", "tenths times tenths are hundredths: 3/10 × 2/10 = 6/100. Count the decimal places of both factors")],
+          ["2.96 → 2.10 (2 places)", "2.96 → 3.0 (1 place)", tx(t, "mFrac_m5", "rounding a 9 up carries into the digit before it, as 29 + 1 = 30")],
         ]}
       />
 
@@ -223,8 +217,8 @@ float half2 = 1.0f / 2;   // 0.5f: one float operand makes it a float division`}
         "Add and subtract over a common denominator; multiply tops and bottoms; divide by multiplying by the reciprocal.",
         "Compare a/b and c/d (b, d > 0) exactly with integers: a·d versus c·b.",
         "A decimal is a fraction over a power of ten; a/b ends only if the reduced denominator has no primes but 2 and 5, otherwise it repeats.",
-        "In base 2 only denominators that are powers of 2 end, which is why 0.1 is inexact in a float.",
-        "In C++, int / int discards the fraction; know which rounding function you need.",
+        "The same rule holds in any base: in base 2 only denominators that are powers of 2 end, so 1/10 repeats in binary.",
+        "Round by looking at the next digit, and only once, at the end; floor, ceiling and truncation differ for negative numbers.",
       ]} />
     </Article>
   );

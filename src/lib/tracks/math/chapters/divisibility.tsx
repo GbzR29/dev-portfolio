@@ -2,9 +2,9 @@
 
 // Arithmetic 5: division with remainder, divisibility and its quick tests,
 // primes and the sieve of Eratosthenes, prime factorisation, the gcd by
-// Euclid's algorithm, the lcm, and where they show up in game code.
+// Euclid's algorithm, the lcm, and remainders as clock arithmetic.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -18,22 +18,22 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mDiv_intro",
-          "Some questions about whole numbers have nothing to do with size and everything to do with how they split: can 36 enemies be shared evenly between 5 spawn points? What is the biggest square tile that covers a 48 × 36 room exactly? After how many frames do a 6-frame and an 8-frame animation line up again? The answers come from divisibility, prime numbers, the greatest common divisor and the least common multiple. This chapter builds all four from ordinary division, and they are used immediately: the gcd reduces fractions, the lcm finds common denominators.")}
+          "Some questions about whole numbers have nothing to do with size and everything to do with how they split: can 36 chairs be set out in 5 equal rows? What is the biggest square tile that covers a 48 × 36 floor exactly? Two lighthouses flash every 6 and every 8 seconds; after how long do they flash together again? The answers come from divisibility, prime numbers, the greatest common divisor and the least common multiple. This chapter builds all four from ordinary division, and they are used immediately: the gcd reduces fractions, the lcm finds common denominators.")}
       </Lead>
 
       <H2>{tx(t, "mDiv_remTitle", "Division with remainder")}</H2>
       <p>
         {tx(t, "mDiv_remBody",
-          "Before fractions, division of whole numbers already had an answer: 17 sweets shared between 5 children gives each child 3, and 2 are left over. The 3 is the quotient, the 2 the remainder. The remainder is always smaller than the divisor, otherwise every child could have been given one more. This \"how many whole times, and what is left\" is exactly what the integer operators / and % compute in code, for non-negative numbers.")}
+          "Before fractions, division of whole numbers already had an answer: 17 sweets shared between 5 children gives each child 3, and 2 are left over. The 3 is the quotient, the 2 the remainder. The remainder is always smaller than the divisor, otherwise every child could have been given one more. This \"how many whole times, and what is left\" is the starting point of the whole chapter.")}
       </p>
       <Equation label={tx(t, "mDiv_eqRem", "Division with remainder")}
         where={[
           [r`a`, tx(t, "mDiv_wA", "the dividend: the number being divided (17)")],
           [r`b`, tx(t, "mDiv_wB", "the divisor, a whole number greater than 0 (5)")],
-          [r`q`, tx(t, "mDiv_wQ", "the quotient: how many whole times b fits into a (3). In C++, a / b for non-negative integers")],
-          [r`r`, tx(t, "mDiv_wR", "the remainder: what is left, always 0 ≤ r < b (2). In C++, a % b")],
+          [r`q`, tx(t, "mDiv_wQ", "the quotient: how many whole times b fits into a (3)")],
+          [r`r`, tx(t, "mDiv_wR", "the remainder: what is left, always 0 ≤ r < b (2)")],
         ]}
-        note={tx(t, "mDiv_eqRemNote", "For every a ≥ 0 and b > 0 there is exactly one such pair q, r. Check: 3 × 5 + 2 = 17. Negative numbers need care, because C++ truncates toward zero and can return a negative remainder; the chapter on integers in the computer explains the trap and its fix.")}>
+        note={tx(t, "mDiv_eqRemNote", "For every whole number a and every b > 0 there is exactly one such pair q, r. Check: 3 × 5 + 2 = 17. The rule 0 ≤ r < b also settles negative dividends: −17 = (−4) × 5 + 3, so the quotient is −4 and the remainder 3. The quotient is the whole number just below −17/5 = −3.4 (rounded down, toward −∞), which keeps the remainder positive.")}>
         {r`a = q \cdot b + r \qquad 0 \le r < b`}
       </Equation>
 
@@ -50,7 +50,7 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mDiv_testTitle", "Quick tests")}</H3>
       <p>
         {tx(t, "mDiv_testBody",
-          "In code you just test a % b == 0. On paper, a few tests save the division. They work because of place value: 10, 100, 1000 … are all multiples of 2 and 5, so only the last digit matters for them; and 10 = 9 + 1, 100 = 99 + 1, so each power of ten leaves remainder 1 when divided by 9 (or by 3), which makes the remainder of the whole number equal to the remainder of its digit sum.")}
+          "A few tests decide divisibility without doing the division. They work because of place value: 10, 100, 1000 … are all multiples of 2 and 5, so only the last digit matters for them; and 10 = 9 + 1, 100 = 99 + 1, so each power of ten leaves remainder 1 when divided by 9 (or by 3), which makes the remainder of the whole number equal to the remainder of its digit sum.")}
       </p>
       <LessonTable
         headers={[tx(t, "mDiv_tBy", "Divisible by"), tx(t, "mDiv_tWhen", "When"), tx(t, "mDiv_tEx", "Example")]}
@@ -102,11 +102,11 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mDiv_gcdFact",
-          "With both factorisations in hand, the gcd takes each shared prime with the smaller of its two exponents: 48 = 2⁴ × 3 and 36 = 2² × 3², so gcd = 2² × 3 = 12. But factorising large numbers is slow. Euclid's algorithm, over 2300 years old and still what std::gcd does, needs no factorisation at all.")}
+          "With both factorisations in hand, the gcd takes each shared prime with the smaller of its two exponents: 48 = 2⁴ × 3 and 36 = 2² × 3², so gcd = 2² × 3 = 12. But factorising large numbers is slow. Euclid's algorithm, over 2300 years old and still the fastest method by hand, needs no factorisation at all.")}
       </p>
       <Equation label={tx(t, "mDiv_eqEuclid", "Euclid's algorithm")}
         where={[
-          [r`a \bmod b`, tx(t, "mDiv_wMod", "the remainder of a divided by b, a % b in code")],
+          [r`a \bmod b`, tx(t, "mDiv_wMod", "a mod b, read \"a modulo b\": the remainder r when a is divided by b")],
           [r`\gcd(a, 0) = a`, tx(t, "mDiv_wStop", "the stopping rule: every number divides 0, so the largest common divisor of a and 0 is a itself")],
         ]}
         note={tx(t, "mDiv_eqEuclidNote", "Why it works: a = q·b + r. Any number that divides a and b also divides r = a − q·b, and any number that divides b and r also divides a = q·b + r. So the pair (a, b) and the pair (b, r) have exactly the same common divisors, hence the same gcd, and the numbers shrink every step. gcd(48, 36) = gcd(36, 12) = gcd(12, 0) = 12. Geometrically: cut the biggest possible squares off a 48 × 36 rectangle; the leftover strip is 12 × 36; cut squares off that; the last square size that fits exactly is the gcd. The figure draws this.")}>
@@ -116,54 +116,34 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mDiv_lcmTitle", "The least common multiple")}</H2>
       <p>
         {tx(t, "mDiv_lcmBody",
-          "The least common multiple lcm(a, b) is the smallest positive number that both a and b divide. lcm(6, 8) = 24: the multiples of 6 are 6, 12, 18, 24 …, the multiples of 8 are 8, 16, 24 …, and 24 is the first one on both lists. It answers every \"when do they line up again\" question: a light blinking every 6 frames and one blinking every 8 frames blink together every 24 frames. It is also the least common denominator when adding fractions: 1/6 + 1/8 = 4/24 + 3/24 = 7/24.")}
+          "The least common multiple lcm(a, b) is the smallest positive number that both a and b divide. lcm(6, 8) = 24: the multiples of 6 are 6, 12, 18, 24 …, the multiples of 8 are 8, 16, 24 …, and 24 is the first one on both lists. It answers every \"when do they line up again\" question: two lighthouses flashing every 6 and every 8 seconds, starting together, flash together again every 24 seconds. It is also the least common denominator when adding fractions: 1/6 + 1/8 = 4/24 + 3/24 = 7/24.")}
       </p>
       <Equation label={tx(t, "mDiv_eqLcm", "The lcm from the gcd")}
         where={[
           [r`\operatorname{lcm}(a, b)`, tx(t, "mDiv_wLcm", "the least common multiple of positive whole numbers a and b")],
           [r`\gcd(a, b)`, tx(t, "mDiv_wGcd", "their greatest common divisor, from Euclid's algorithm")],
         ]}
-        note={tx(t, "mDiv_eqLcmNote", "In factorisations, the lcm takes each prime with the larger of its two exponents, the gcd with the smaller, and between them they use every copy exactly once, which is why gcd × lcm = a × b. Example: gcd(6, 8) = 2, so lcm(6, 8) = 6 × 8 / 2 = 24. In code, divide first, a / gcd(a, b) * b, so the intermediate product cannot overflow.")}>
+        note={tx(t, "mDiv_eqLcmNote", "In factorisations, the lcm takes each prime with the larger of its two exponents, the gcd with the smaller, and between them they use every copy exactly once, which is why gcd × lcm = a × b. Example: gcd(6, 8) = 2, so lcm(6, 8) = 6 × 8 / 2 = 24. By hand, divide first to keep the numbers small: 6 ÷ 2 × 8 = 3 × 8 = 24.")}>
         {r`\operatorname{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}`}
       </Equation>
 
-      <H2>{tx(t, "mDiv_gamesTitle", "Where this shows up in games")}</H2>
+      <H2>{tx(t, "mDiv_clockTitle", "Remainders as clock arithmetic")}</H2>
       <p>
-        {tx(t, "mDiv_gamesBody",
-          "Stepping through n slots by a fixed stride k, i → (i + k) mod n, visits every slot before repeating exactly when gcd(k, n) = 1. That is how to walk a spawn table or a level list in a scrambled but complete order, and it is why many simple random number generators and hash tables use a prime size: every stride except multiples of the size is then coprime to it. When cycles of different lengths run together (animation loops, patrol routes, day/night and weather cycles) the combined pattern repeats every lcm of the lengths, so lengths that are coprime, such as 7 and 11 frames, make the repetition hard to notice (77 frames) while 8 and 12 repeat after only 24.")}
+        {tx(t, "mDiv_clockBody",
+          "A clock face counts hours modulo 12: 5 hours after 9 o'clock it is 2 o'clock, because 9 + 5 = 14 and 14 mod 12 = 2. Whenever a quantity goes round in a cycle of length n, only the remainder mod n matters. What day of the week is it 100 days after a Monday? 100 = 14 × 7 + 2, so 100 whole weeks bring you back to Monday 14 times and 2 more days remain: Wednesday. Going backwards works the same way with a negative number and a remainder kept between 0 and n − 1: 10 days before a Monday is −10 = (−2) × 7 + 4, four days after Monday, a Friday.")}
       </p>
-      <CodeBlock lang="cpp" filename="divisibility.hpp" t={t}>{`#include <numeric>   // std::gcd, std::lcm (C++17) do the same as below
-#include <vector>
-
-long long gcd(long long a, long long b) {        // Euclid; a, b >= 0
-    while (b != 0) { long long r = a % b; a = b; b = r; }
-    return a;
-}
-long long lcm(long long a, long long b) { return a / gcd(a, b) * b; }   // divide first: no overflow
-
-bool isPrime(long long n) {                      // trial division up to sqrt(n)
-    if (n < 2) return false;
-    for (long long d = 2; d * d <= n; ++d)
-        if (n % d == 0) return false;
-    return true;
-}
-
-std::vector<long long> factor(long long n) {     // 360 -> {2, 2, 2, 3, 3, 5}
-    std::vector<long long> f;
-    for (long long d = 2; d * d <= n; ++d)
-        while (n % d == 0) { f.push_back(d); n /= d; }
-    if (n > 1) f.push_back(n);                   // what is left is prime
-    return f;
-}
-
-std::vector<bool> sieve(int N) {                 // prime[i] for 0..N
-    std::vector<bool> prime(N + 1, true);
-    prime[0] = false; if (N >= 1) prime[1] = false;
-    for (int p = 2; p * p <= N; ++p)
-        if (prime[p])
-            for (int m = p * p; m <= N; m += p) prime[m] = false;
-    return prime;
-}`}</CodeBlock>
+      <Equation label={tx(t, "mDiv_eqCong", "Congruence: same remainder")}
+        where={[
+          [r`a \equiv b \pmod{n}`, tx(t, "mDiv_wCong", "\"a is congruent to b modulo n\": a and b leave the same remainder when divided by n, which is the same as saying n divides a − b. 14 ≡ 2 (mod 12)")],
+          [r`n`, tx(t, "mDiv_wN", "the modulus, the length of the cycle: 12 for hours, 7 for weekdays, 10 for the last digit of a number")],
+        ]}
+        note={tx(t, "mDiv_eqCongNote", "Sums and products can be reduced at any step: to find the last digit of 37 × 58, only the last digits matter, 7 × 8 = 56, so the answer ends in 6 (37 × 58 = 2146). The divisibility test for 9 is this rule too: 10 ≡ 1 (mod 9), so every power of ten is ≡ 1 and a number is ≡ its digit sum.")}>
+        {r`a \equiv b \pmod{n} \iff n \mid (a - b)`}
+      </Equation>
+      <p>
+        {tx(t, "mDiv_strideBody",
+          "The gcd decides what happens when you walk round a cycle in fixed steps. On a 12-hour clock, jumping 5 hours at a time from 12 visits 5, 10, 3, 8, 1, 6, 11, 4, 9, 2, 7, 12: every hour, because gcd(5, 12) = 1. Jumping 4 at a time visits only 4, 8, 12, because gcd(4, 12) = 4 and the walk can only land on multiples of 4. In general, steps of k round a cycle of n positions visit n / gcd(k, n) different positions, so all of them exactly when k and n are coprime. When two cycles run side by side, such as the two lighthouses, the combined pattern repeats after the lcm of their lengths.")}
+      </p>
 
       <H2>{tx(t, "mDiv_exTitle", "Worked examples")}</H2>
       <H3>{tx(t, "mDiv_ex1T", "Reducing a fraction")}</H3>
@@ -174,12 +154,18 @@ std::vector<bool> sieve(int N) {                 // prime[i] for 0..N
       <H3>{tx(t, "mDiv_ex2T", "Tiling a room")}</H3>
       <p>
         {tx(t, "mDiv_ex2",
-          "A room is 48 × 36 units and must be covered by equal square tiles with no cutting. The tile side must divide both 48 and 36, and the largest such side is gcd(48, 36) = 12. That gives 48/12 × 36/12 = 4 × 3 = 12 tiles. Any common divisor (1, 2, 3, 4, 6, 12) also works, with more, smaller tiles.")}
+          "A floor is 48 dm × 36 dm and must be covered by equal square tiles with no cutting. The tile side must divide both 48 and 36, and the largest such side is gcd(48, 36) = 12. That gives 48/12 × 36/12 = 4 × 3 = 12 tiles. Any common divisor (1, 2, 3, 4, 6, 12) also works, with more, smaller tiles.")}
       </p>
-      <H3>{tx(t, "mDiv_ex3T", "Syncing three cycles")}</H3>
+      <H3>{tx(t, "mDiv_ex3T", "Three bus lines")}</H3>
       <p>
         {tx(t, "mDiv_ex3",
-          "Three torches flicker with loops of 4, 6 and 10 frames, all starting together. They next start together after lcm(4, 6, 10) frames. Take them two at a time: lcm(4, 6) = 24/2 = 12, then lcm(12, 10) = 120/2 = 60. At 60 FPS the whole pattern repeats once a second, which players will notice; changing the 10 to 11 makes it lcm(12, 11) = 132 frames.")}
+          "Buses on three lines leave the station every 4, 6 and 10 minutes, and all three leave together at 8:00. They next leave together after lcm(4, 6, 10) minutes. Take the numbers two at a time: gcd(4, 6) = 2, so lcm(4, 6) = 4 × 6 / 2 = 12; then gcd(12, 10) = 2, so lcm(12, 10) = 120/2 = 60. They meet again at 9:00. By factorisation: 4 = 2², 6 = 2 × 3, 10 = 2 × 5, and the largest exponents give 2² × 3 × 5 = 60. If the third line ran every 11 minutes instead, lcm(12, 11) = 132 minutes, and they would meet at 10:12.")}
+      </p>
+
+      <H3>{tx(t, "mDiv_ex4T", "Is 221 prime?")}</H3>
+      <p>
+        {tx(t, "mDiv_ex4",
+          "Only primes up to √221 need testing, and √221 is a little under 15 (15² = 225). 221 is odd, so not 2. Digit sum 2 + 2 + 1 = 5, so not 3. It does not end in 0 or 5, so not 5. 221 = 31 × 7 + 4, so not 7. 221 = 20 × 11 + 1, so not 11. 221 = 17 × 13 exactly. So 221 is composite, 13 × 17, even though none of the quick tests caught it. Had every prime up to 13 failed, 221 would have been proven prime.")}
       </p>
 
       <H2>{tx(t, "mDiv_mistakesTitle", "Common mistakes")}</H2>
@@ -188,8 +174,8 @@ std::vector<bool> sieve(int N) {                 // prime[i] for 0..N
         rows={[
           [tx(t, "mDiv_m1w", "1 is prime"), tx(t, "mDiv_m1r", "1 is neither prime nor composite"), tx(t, "mDiv_m1", "a prime has exactly two divisors; 1 has one")],
           ["lcm(a, b) = a × b", "a × b / gcd(a, b)", tx(t, "mDiv_m2", "a × b is a common multiple, but only the least one when a and b are coprime")],
-          ["a * b / gcd(a, b)", "a / gcd(a, b) * b", tx(t, "mDiv_m3", "the product a × b can overflow even when the lcm fits")],
-          ["for (d = 2; d < n; ++d)", "for (d = 2; d * d <= n; ++d)", tx(t, "mDiv_m4", "divisors pair up around √n; testing past it is wasted work")],
+          ["gcd(12, 18) = 36", "gcd = 6, lcm = 36", tx(t, "mDiv_m3", "the gcd divides both numbers, so it is never bigger than the smaller one; 36 is the lcm")],
+          [tx(t, "mDiv_m4w", "test 97 by 2, 3, 4 … 96"), tx(t, "mDiv_m4r", "test by 2, 3, 5, 7 only"), tx(t, "mDiv_m4", "divisors pair up around √97 ≈ 9.8, and only primes need testing: if 4 divided it, 2 would too")],
           [tx(t, "mDiv_m5w", "coprime means both prime"), tx(t, "mDiv_m5r", "gcd = 1"), tx(t, "mDiv_m5", "8 and 15 share no factor, so they are coprime though neither is prime; 3 and 6 are not coprime")],
         ]}
       />
@@ -200,7 +186,7 @@ std::vector<bool> sieve(int N) {                 // prime[i] for 0..N
         "A prime has exactly two divisors, 1 and itself; every n > 1 factors into primes in exactly one way.",
         "gcd(a, b) = gcd(b, a mod b), gcd(a, 0) = a: Euclid's algorithm, no factoring needed.",
         "lcm(a, b) = a / gcd(a, b) × b; gcd is \"largest equal pieces\", lcm is \"when do they line up\".",
-        "A stride k visits all n slots exactly when gcd(k, n) = 1.",
+        "Remainders are clock arithmetic: steps of k round a cycle of n visit every position exactly when gcd(k, n) = 1.",
       ]} />
     </Article>
   );

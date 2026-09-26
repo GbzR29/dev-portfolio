@@ -7,7 +7,6 @@ import linearSystems from "./linear-systems";
 import quadratics from "./quadratics";
 import exponents from "./exponents";
 import sequences from "./sequences";
-import numbers from "./numbers";
 import trig from "./trig";
 import unitCircle from "./unit-circle";
 import triangleLaws from "./triangle-laws";
@@ -17,7 +16,7 @@ import waves from "./waves";
 import vectors from "./vectors";
 
 const bundle: LessonText = {
-  strings: { ...functions, ...linearSystems, ...quadratics, ...exponents, ...sequences, ...numbers, ...trig, ...unitCircle, ...triangleLaws, ...identities, ...polar, ...waves, ...vectors },
+  strings: { ...functions, ...linearSystems, ...quadratics, ...exponents, ...sequences, ...trig, ...unitCircle, ...triangleLaws, ...identities, ...polar, ...waves, ...vectors },
   titles: track.titles,
   sections: track.sections,
 };

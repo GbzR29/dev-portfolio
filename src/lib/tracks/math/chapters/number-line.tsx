@@ -5,7 +5,7 @@
 // distance, and the laws every later manipulation relies on. Also the map of
 // the whole track, since this is its first chapter.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -25,7 +25,7 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mNL_countTitle", "Counting and zero")}</H2>
       <p>
         {tx(t, "mNL_countBody",
-          "Numbers start as answers to \"how many?\": how many enemies are left, how many frames have been drawn, how many coins are in the purse. Those answers are 0, 1, 2, 3 and so on, and they are called the natural numbers. Zero is the answer when there are none, and it is a number like any other: you can add it, compare it and store it. (Some books start the natural numbers at 1; programmers almost always start at 0, because the first element of an array has index 0.)")}
+          "Numbers start as answers to \"how many?\": how many apples are in the bowl, how many people are in the room, how many coins are in the purse. Those answers are 0, 1, 2, 3 and so on, and they are called the natural numbers. Zero is the answer when there are none, and it is a number like any other: you can add it, compare it and store it. (Some books start the natural numbers at 1; this track includes 0, since \"none\" is a perfectly good answer to \"how many?\".)")}
       </p>
       <p>
         {tx(t, "mNL_placeBody",
@@ -44,7 +44,7 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
           [r`a \le b`, tx(t, "mNL_wLe", "a is less than or equal to b: to the left of b or exactly on it")],
           [r`a \ge b`, tx(t, "mNL_wGe", "a is greater than or equal to b")],
         ]}
-        note={tx(t, "mNL_eqOrderNote", "For any two numbers exactly one of a < b, a = b, a > b is true. Chains are allowed: 0 ≤ t ≤ 1 means t is somewhere between 0 and 1, ends included. In code that is (0 <= t && t <= 1); C++ does not understand 0 <= t <= 1 the way mathematics does.")}>
+        note={tx(t, "mNL_eqOrderNote", "For any two numbers exactly one of a < b, a = b, a > b is true. Chains are allowed: 0 ≤ t ≤ 1 means t is somewhere between 0 and 1, ends included. A chain must point one way: 1 < x < 5 is fine, but 1 < x > 5 says nothing useful and should be split into two separate statements.")}>
         {r`-3 < -1 < 0 < 2 < 5`}
       </Equation>
 
@@ -54,12 +54,12 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
           "Each time an operation produces an answer the existing numbers cannot express, mathematics adds new numbers. Subtracting a bigger number from a smaller one (2 − 5) needs the negative numbers; together with the naturals they form the integers. Sharing 1 cake between 3 people needs fractions; all numbers that can be written as one integer divided by another (not zero) are the rational numbers. Some lengths are not even fractions: the diagonal of a square with side 1 is √2, and no fraction squared gives exactly 2. Filling in every such gap gives the real numbers, one for every point of the number line.")}
       </p>
       <LessonTable
-        headers={[tx(t, "mNL_tSet", "Set"), tx(t, "mNL_tSym", "Symbol"), tx(t, "mNL_tEx", "Examples"), tx(t, "mNL_tAdds", "Adds"), tx(t, "mNL_tUse", "In games")]}
+        headers={[tx(t, "mNL_tSet", "Set"), tx(t, "mNL_tSym", "Symbol"), tx(t, "mNL_tEx", "Examples"), tx(t, "mNL_tAdds", "Adds"), tx(t, "mNL_tUse", "Everyday use")]}
         rows={[
-          [tx(t, "mNL_n", "Natural numbers"), "ℕ", "0, 1, 2, 3, …", tx(t, "mNL_nA", "counting"), tx(t, "mNL_nU", "counts, array indices, frame numbers")],
-          [tx(t, "mNL_z", "Integers"), "ℤ", "…, −2, −1, 0, 1, 2, …", tx(t, "mNL_zA", "negatives: subtraction always works"), tx(t, "mNL_zU", "tile coordinates, score changes, offsets")],
-          [tx(t, "mNL_q", "Rationals"), "ℚ", "1/2, −3/4, 0.125, 16/9", tx(t, "mNL_qA", "fractions: division (except by 0) always works"), tx(t, "mNL_qU", "aspect ratios, probabilities, scale factors")],
-          [tx(t, "mNL_r", "Reals"), "ℝ", "√2, π, e, −0.1", tx(t, "mNL_rA", "the gaps: every point of the line"), tx(t, "mNL_rU", "positions, angles, time, colours (stored approximately as floats)")],
+          [tx(t, "mNL_n", "Natural numbers"), "ℕ", "0, 1, 2, 3, …", tx(t, "mNL_nA", "counting"), tx(t, "mNL_nU", "counting people, pages, steps")],
+          [tx(t, "mNL_z", "Integers"), "ℤ", "…, −2, −1, 0, 1, 2, …", tx(t, "mNL_zA", "negatives: subtraction always works"), tx(t, "mNL_zU", "temperatures below zero, floors below ground, debts")],
+          [tx(t, "mNL_q", "Rationals"), "ℚ", "1/2, −3/4, 0.125, 16/9", tx(t, "mNL_qA", "fractions: division (except by 0) always works"), tx(t, "mNL_qU", "half a pizza, ¾ of an hour, a price of 2.35")],
+          [tx(t, "mNL_r", "Reals"), "ℝ", "√2, π, e, −0.1", tx(t, "mNL_rA", "the gaps: every point of the line"), tx(t, "mNL_rU", "lengths, areas, time, any measurement")],
         ]}
       />
       <Equation label={tx(t, "mNL_eqNest", "Each set contains the previous one")}
@@ -67,7 +67,7 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
           [r`\subset`, tx(t, "mNL_wSub", "\"is contained in\": every natural number is also an integer, every integer is also a rational (5 = 5/1), every rational is also a real")],
           [r`\in`, tx(t, "mNL_wIn", "\"is an element of\": −3 ∈ ℤ reads \"−3 is an integer\"; −3 ∉ ℕ reads \"−3 is not a natural number\"")],
         ]}
-        note={tx(t, "mNL_eqNestNote", "Reals that are not rational are called irrational: √2, π, e. Their decimal expansions go on forever without repeating. A computer has a fixed number of bits, so it stores integers exactly (within a range) and most reals only approximately. The last chapter of this section is about exactly that.")}>
+        note={tx(t, "mNL_eqNestNote", "Reals that are not rational are called irrational: √2, π, e. Their decimal expansions go on forever without repeating. In practice we write them rounded (√2 ≈ 1.414, π ≈ 3.1416), where ≈ means \"approximately equal to\". The exact value is the point on the line; the digits are only an address that gets more precise the more of them you write.")}>
         {r`\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} \subset \mathbb{R}`}
       </Equation>
 
@@ -86,7 +86,7 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
         ]}
       />
       <Callout type="warn" t={t}>
-        {tx(t, "mNL_div0", "Division by zero is not defined. 12 ÷ 0 would have to be a number that gives 12 when multiplied by 0, and no number does, because anything times 0 is 0. And 0 ÷ 0 fails the other way: every number times 0 gives 0, so no single answer exists. In C++, dividing an integer by 0 is undefined behaviour (usually a crash); dividing a float by 0 gives infinity or NaN, which then silently spreads through every later calculation. Guard divisions whose divisor can reach 0: normalising a zero-length vector and computing a speed over zero elapsed time are the usual suspects.")}
+        {tx(t, "mNL_div0", "Division by zero is not defined. 12 ÷ 0 would have to be a number that gives 12 when multiplied by 0, and no number does, because anything times 0 is 0. And 0 ÷ 0 fails the other way: every number times 0 gives 0, so no single answer exists. Zero divided by a number is fine, though: 0 ÷ 4 = 0, because 0 × 4 = 0. When a letter appears in a divisor, note which values make the divisor 0 and exclude them: 12 ÷ (x − 3) makes sense for every x except 3.")}
       </Callout>
 
       <H2>{tx(t, "mNL_negTitle", "Negative numbers and the sign rules")}</H2>
@@ -102,6 +102,20 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mNL_eqSubNote", "Examples: 3 − 5 = 3 + (−5) = −2. 3 − (−5) = 3 + 5 = 8: removing a debt of 5 is the same as receiving 5. −3 − 5 = −3 + (−5) = −8: already 3 left of zero, walk 5 further left.")}>
         {r`a - b = a + (-b)`}
       </Equation>
+      <H3>{tx(t, "mNL_addRuleTitle", "Adding signed numbers by hand")}</H3>
+      <p>
+        {tx(t, "mNL_addRuleBody",
+          "Walking along the line always works, but for bigger numbers two rules are faster. Same signs: add the sizes and keep the common sign, so −8 + (−5) = −13 (two debts make a bigger debt). Different signs: subtract the smaller size from the larger and give the result the sign of the number with the larger size, so −8 + 5 = −3 (8 − 5 = 3, and −8 has the larger size) and 8 + (−5) = 3. For a subtraction, first rewrite it as adding the opposite, then apply these rules.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "mNL_tCalc", "Calculation"), tx(t, "mNL_tRewrite", "Rewritten as a sum"), tx(t, "mNL_tRule", "Rule used"), tx(t, "mNL_tResult", "Result")]}
+        rows={[
+          ["−12 − 7", "−12 + (−7)", tx(t, "mNL_r1", "same signs: 12 + 7 = 19, keep −"), "−19"],
+          ["−12 − (−7)", "−12 + 7", tx(t, "mNL_r2", "different signs: 12 − 7 = 5, sign of −12"), "−5"],
+          ["4 − 15", "4 + (−15)", tx(t, "mNL_r3", "different signs: 15 − 4 = 11, sign of −15"), "−11"],
+          ["−3 + 9 − 10", "(−3 + 9) + (−10)", tx(t, "mNL_r4", "left to right: −3 + 9 = 6, then 6 + (−10) = −4"), "−4"],
+        ]}
+      />
       <p>
         {tx(t, "mNL_signBody",
           "For multiplication, think of multiplying by a negative number as stretching and then flipping to the other side of 0. A positive times a positive stays positive. One flip makes the result negative. Two flips bring it back: a negative times a negative is positive. Division follows the same rules, since it is multiplication by a reciprocal. A handy check: count the minus signs in a product; an even number gives a positive result, an odd number a negative one.")}
@@ -119,7 +133,7 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mNL_absTitle", "Absolute value and distance")}</H2>
       <p>
         {tx(t, "mNL_absBody",
-          "Often only the size of a number matters, not its side: how far is the player from the checkpoint, how big was the error, how fast is something moving regardless of direction. The absolute value |x| keeps the size and drops the sign: it is the distance from x to 0. From it comes the distance between any two numbers, which is the length of the gap between their points, and is never negative.")}
+          "Often only the size of a number matters, not its side: how far apart two towns on a straight road are, how big a measuring error was, how fast a car is moving regardless of direction. The absolute value |x| keeps the size and drops the sign: it is the distance from x to 0. From it comes the distance between any two numbers, which is the length of the gap between their points, and is never negative.")}
       </p>
       <Equation label={tx(t, "mNL_eqAbs", "Absolute value and distance on the line")}
         where={[
@@ -129,18 +143,10 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mNL_eqAbsNote", "Two properties you will use: |a · b| = |a| · |b| (sizes multiply), and |a + b| ≤ |a| + |b|, the triangle inequality: the size of a sum is at most the sum of the sizes, equal only when a and b have the same sign. In 2D and 3D the same idea becomes the length of a vector.")}>
         {r`|x| = \begin{cases} x & \text{if } x \ge 0 \\ -x & \text{if } x < 0 \end{cases} \qquad d(a, b) = |a - b|`}
       </Equation>
-      <CodeBlock lang="cpp" filename="line.hpp" t={t}>{`#include <cmath>     // std::abs, std::fabs
-#include <algorithm> // std::clamp
-
-float distance1D(float a, float b) { return std::fabs(a - b); }       // never negative
-
-// -1, 0 or +1: which side of 0 x is on. |x| * sign(x) == x
-int sign(float x) { return (x > 0.f) - (x < 0.f); }
-
-// Is x within 'range' of target?  Compare the distance, not x itself.
-bool near(float x, float target, float range) { return std::fabs(x - target) <= range; }
-
-float t = std::clamp(value, 0.f, 1.f);   // push a number back onto the segment [0, 1]`}</CodeBlock>
+      <p>
+        {tx(t, "mNL_absUse",
+          "Distance also turns \"close to\" into a precise statement. \"x is within 2 of 10\" means |x − 10| ≤ 2, which is every x from 8 to 12. A thermostat set to 20 °C that tolerates 1.5 degrees either way is satisfied exactly when |T − 20| ≤ 1.5, that is, for temperatures from 18.5 °C to 21.5 °C.")}
+      </p>
 
       <H2>{tx(t, "mNL_lawsTitle", "The laws of arithmetic")}</H2>
       <p>
@@ -159,17 +165,17 @@ float t = std::clamp(value, 0.f, 1.f);   // push a number back onto the segment 
         {r`a(b + c) = ab + ac`}
       </Equation>
       <Callout type="info" t={t}>
-        {tx(t, "mNL_floatLaws", "Computer floats obey the commutative laws but not quite the associative and distributive ones: every operation rounds its result, so (a + b) + c and a + (b + c) can differ in the last digits. Summing the same numbers in a different order, for example on several threads, can give slightly different totals. The last chapter of this section explains why.")}
+        {tx(t, "mNL_lawsTip", "The laws are what \"allowed\" means. A step that is one of these laws, or follows from them, never changes the value; a step that is not, such as swapping the two sides of a subtraction or regrouping a division, can. When unsure whether a rearrangement is legal, test it with small numbers first: if it fails for 8, 4 and 2, it is not a law.")}
       </Callout>
 
       <H2>{tx(t, "mNL_exTitle", "Worked examples")}</H2>
       <H3>{tx(t, "mNL_ex1T", "A temperature drop")}</H3>
       <p>
-        {tx(t, "mNL_ex1", "A level starts at 4 °C and gets 11 degrees colder. 4 − 11 = 4 + (−11). Walk 4 units left to reach 0, then the remaining 7: the result is −7 °C. The change was −11, and the size of the change is |−11| = 11.")}
+        {tx(t, "mNL_ex1", "The morning starts at 4 °C and gets 11 degrees colder. 4 − 11 = 4 + (−11). Walk 4 units left to reach 0, then the remaining 7: the result is −7 °C. The change was −11, and the size of the change is |−11| = 11.")}
       </p>
-      <H3>{tx(t, "mNL_ex2T", "Distance between two tiles")}</H3>
+      <H3>{tx(t, "mNL_ex2T", "Distance between two floors")}</H3>
       <p>
-        {tx(t, "mNL_ex2", "A player is on column −3 and an item on column 6. The distance along the row is |6 − (−3)| = |6 + 3| = 9 columns. Computed the other way, |−3 − 6| = |−9| = 9: the same, as it must be.")}
+        {tx(t, "mNL_ex2", "A lift goes from floor −3 (three levels below ground) to floor 6. It travels |6 − (−3)| = |6 + 3| = 9 floors. Computed the other way, |−3 − 6| = |−9| = 9: the same, as it must be.")}
       </p>
       <H3>{tx(t, "mNL_ex3T", "Signs in a product")}</H3>
       <p>
@@ -183,7 +189,7 @@ float t = std::clamp(value, 0.f, 1.f);   // push a number back onto the segment 
           ["−5 > −2", "−5 < −2", tx(t, "mNL_m1", "−5 is further left on the line; the bigger size does not make it bigger")],
           ["3 − (−2) = 1", "3 − (−2) = 5", tx(t, "mNL_m2", "subtracting a negative is adding its opposite: 3 + 2")],
           ["|a − b| = |a| − |b|", "|−3 − 2| = 5, |−3| − |2| = 1", tx(t, "mNL_m3", "absolute value does not distribute over subtraction (or addition)")],
-          ["x ÷ 0 = 0", tx(t, "mNL_m4r", "undefined"), tx(t, "mNL_m4", "no number times 0 gives x; guard the division instead")],
+          ["x ÷ 0 = 0", tx(t, "mNL_m4r", "undefined"), tx(t, "mNL_m4", "no number times 0 gives x; exclude the values that make a divisor 0")],
           ["2 − 5 = 5 − 2", "2 − 5 = −(5 − 2)", tx(t, "mNL_m5", "swapping a subtraction flips the sign of the result")],
         ]}
       />
@@ -191,12 +197,12 @@ float t = std::clamp(value, 0.f, 1.f);   // push a number back onto the segment 
       <H2>{tx(t, "mNL_trackTitle", "How this track is organised")}</H2>
       <p>
         {tx(t, "mNL_trackBody",
-          "This track builds, from arithmetic upward, the mathematics that computer graphics, game programming and AI actually use. Every chapter follows the same pattern: the intuition first, then a precise definition with every symbol explained, an interactive figure, worked examples, common mistakes, and C++ code where it helps. The OpenGL, GLSL and Game Dev tracks link back here whenever they rely on a result.")}
+          "This track builds mathematics from arithmetic upward, the way it is done on paper: what each idea means, which steps are allowed, and how to calculate by hand. Every chapter follows the same pattern: the intuition first, then a precise definition with every symbol explained, an interactive figure, worked examples, common mistakes and the key ideas. The programming tracks (OpenGL, GLSL, Game Dev) show how these results are used in code and link back here for the mathematics.")}
       </p>
       <LessonTable
         headers={[tx(t, "mNL_tSection", "Section"), tx(t, "mNL_tTopics", "Topics")]}
         rows={[
-          [tx(t, "mNL_s1t", "Arithmetic"), tx(t, "mNL_s1d", "the number line, order of operations, fractions and decimals, ratios and percentages, divisibility and primes, powers and roots, number bases, integers and floating point")],
+          [tx(t, "mNL_s1t", "Arithmetic"), tx(t, "mNL_s1d", "the number line, order of operations, fractions and decimals, ratios and percentages, divisibility and primes, powers and roots, number bases")],
           [tx(t, "mNL_s2t", "Algebra"), tx(t, "mNL_s2d", "expressions, linear equations and inequalities, systems, quadratics, polynomials, functions, exponentials and logarithms, sequences")],
           [tx(t, "mNL_s3t", "Geometry and trigonometry"), tx(t, "mNL_s3d", "angles, triangles, Pythagoras, similarity, areas and volumes, circles, analytic geometry, transformations, the unit circle, identities, polar coordinates, waves")],
           [tx(t, "mNL_s4t", "Linear algebra"), tx(t, "mNL_s4d", "vectors, the dot and cross products, matrices, determinants, inverses, eigenvectors, complex numbers, quaternions")],
@@ -211,7 +217,7 @@ float t = std::clamp(value, 0.f, 1.f);   // push a number back onto the segment 
         "Subtracting is adding the opposite: a − b = a + (−b). An odd number of minus signs in a product makes it negative.",
         "|x| is the distance from x to 0; |a − b| is the distance between a and b, and is never negative.",
         "Commutative, associative and distributive laws let you rearrange + and ×, never − or ÷.",
-        "Division by zero is undefined; guard it in code.",
+        "Division by zero is undefined; 0 divided by a nonzero number is 0.",
       ]} />
     </Article>
   );

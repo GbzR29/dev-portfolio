@@ -2,9 +2,9 @@
 
 // Arithmetic 2: the order of operations — why a convention is needed, the
 // precedence levels, left-to-right chains, powers and the minus sign,
-// expressions as trees, and how C++ applies (and extends) the same rules.
+// expressions as trees, and nested brackets worked from the inside out.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -18,7 +18,7 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mOrd_intro",
-          "What is 2 + 3 × 4? Working left to right gives 5 × 4 = 20; doing the multiplication first gives 2 + 12 = 14. Both readings are reasonable, so mathematics needs an agreement about which one is meant, and everyone, from textbooks to calculators to the C++ compiler, uses the same one: the answer is 14. This chapter explains that agreement, where it comes from, how to see any expression as a tree that makes the order obvious, and the places where code adds rules of its own.")}
+          "What is 2 + 3 × 4? Working left to right gives 5 × 4 = 20; doing the multiplication first gives 2 + 12 = 14. Both readings are reasonable, so mathematics needs an agreement about which one is meant, and everyone, from textbooks to calculators, uses the same one: the answer is 14. This chapter explains that agreement, where it comes from, how to see any expression as a tree that makes the order obvious, and how to work through long expressions with nested brackets by hand without losing track.")}
       </Lead>
 
       <H2>{tx(t, "mOrd_whyTitle", "Why a convention is needed")}</H2>
@@ -72,7 +72,7 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mOrd_hiddenTitle", "Hidden parentheses")}</H3>
       <p>
         {tx(t, "mOrd_hiddenBody",
-          "Some notations group without printing parentheses. A fraction bar groups everything above it and everything below it: (2 + 4)/(1 + 2) written as a stacked fraction is 6/3 = 2. A root sign groups everything under it: √(9 + 16) = √25 = 5, not √9 + √16 = 7. An exponent written raised groups everything in the raised position: 2 to the power (x + 1). When you type such formulas into code or a calculator on one line, you must add those parentheses yourself, and forgetting them is one of the most common bugs.")}
+          "Some notations group without printing parentheses. A fraction bar groups everything above it and everything below it: (2 + 4)/(1 + 2) written as a stacked fraction is 6/3 = 2. A root sign groups everything under it: √(9 + 16) = √25 = 5, not √9 + √16 = 7. An exponent written raised groups everything in the raised position: 2 to the power (x + 1). When you type such formulas into a calculator or a spreadsheet on one line, you must add those parentheses yourself, and forgetting them is one of the most common errors.")}
       </p>
       <Equation label={tx(t, "mOrd_eqBar", "A fraction bar is a pair of parentheses")}
         where={[
@@ -85,14 +85,14 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mOrd_treeTitle", "Expressions are trees")}</H2>
       <p>
         {tx(t, "mOrd_treeBody",
-          "The clearest way to see what an expression means is to draw it as a tree. Each operation is a node with its two operands hanging below it; plain numbers are the leaves. The operation evaluated last sits at the top (the root), and the ones that bind tightest sit lowest. Evaluating means working from the leaves upward: an operation can be done as soon as both of its operands are numbers. This is not just a picture. Compilers and calculators really do parse expressions into such trees (called syntax trees) and then evaluate or translate them bottom-up.")}
+          "The clearest way to see what an expression means is to draw it as a tree. Each operation is a node with its two operands hanging below it; plain numbers are the leaves. The operation evaluated last sits at the top (the root), and the ones that bind tightest sit lowest. Evaluating means working from the leaves upward: an operation can be done as soon as both of its operands are numbers. This is not just a picture: a scientific calculator really does turn what you type into such a tree before computing anything.")}
       </p>
 
       <ExpressionTreeFigure t={t} />
 
       <p>
         {tx(t, "mOrd_treeBody2",
-          "Parentheses change the shape of the tree, and that is all they do. In 2 + 3 × 4 the × node sits under the + node; in (2 + 3) × 4 it is the other way round. The rules of precedence are simply the rules for building the tree from a flat line of symbols. When the tree is unclear to you, it is unclear to the next reader of your code too: add the parentheses.")}
+          "Parentheses change the shape of the tree, and that is all they do. In 2 + 3 × 4 the × node sits under the + node; in (2 + 3) × 4 it is the other way round. The rules of precedence are simply the rules for building the tree from a flat line of symbols. When the tree is unclear to you, it will be unclear to anyone reading your work too: add the parentheses.")}
       </p>
 
       <H2>{tx(t, "mOrd_exTitle", "Worked examples")}</H2>
@@ -110,10 +110,10 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mOrd_ex1Body",
           "The trick for long expressions: first find the terms, the pieces separated by + and − at the top level (outside every parenthesis). Here they are 20, 5 × 2 and (7 − 3)² ÷ 8 × 3. Compute each term on its own, then add and subtract them from left to right: 20 − 10 + 6 = 16.")}
       </p>
-      <H3>{tx(t, "mOrd_ex2T", "Damage with a multiplier")}</H3>
+      <H3>{tx(t, "mOrd_ex2T", "Buying for two")}</H3>
       <p>
         {tx(t, "mOrd_ex2",
-          "A sword deals a base 10 damage plus 4 from strength, and a critical hit doubles the damage. Written as 10 + 4 × 2 the result is 18: only the strength bonus was doubled. The designer meant (10 + 4) × 2 = 28. Whenever a multiplier should apply to a sum, the sum needs parentheses.")}
+          "A concert ticket costs 10 plus a booking fee of 4, and you buy two. Written as 10 + 4 × 2 the result is 18: only the fee was doubled. What was meant is (10 + 4) × 2 = 14 × 2 = 28. Whenever a multiplier should apply to a sum, the sum needs parentheses. The distributive law gives the same total another way: 10 × 2 + 4 × 2 = 20 + 8 = 28.")}
       </p>
       <H3>{tx(t, "mOrd_ex3T", "An average")}</H3>
       <p>
@@ -121,27 +121,23 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
           "The average of 4, 8 and 9 is (4 + 8 + 9) ÷ 3 = 21 ÷ 3 = 7. Typed as 4 + 8 + 9 / 3 it becomes 4 + 8 + 3 = 15, because the division only takes the 9. On paper the fraction bar hid the parentheses; on one line you must write them.")}
       </p>
 
-      <H2>{tx(t, "mOrd_codeTitle", "Order of operations in C++")}</H2>
+      <H3>{tx(t, "mOrd_ex4T", "Nested brackets, from the inside out")}</H3>
       <p>
-        {tx(t, "mOrd_codeBody",
-          "C++ uses the same order for the arithmetic operators: *, / and % bind tighter than + and −, and each level is left to right. It has no power operator: ^ is bitwise XOR, so 2 ^ 3 is 1, not 8. Powers are written std::pow(2.0, 3.0) or, for small integer powers, x * x. C++ also has many operators mathematics does not, and some of their precedences surprise people: the comparison == binds tighter than the bitwise &, and << (shift) binds looser than +.")}
+        {tx(t, "mOrd_nestBody",
+          "When brackets sit inside brackets, textbooks often vary their shape, ( ) inside [ ] inside { }, so the pairs are easy to match. The shapes mean exactly the same thing. Always start with the innermost pair, the one that contains no other bracket, and replace it by its value. That makes the next pair innermost, and so on outward. Rewrite the whole line after each step instead of keeping partial results in your head: it takes a little longer and removes almost every slip.")}
       </p>
-      <CodeBlock lang="cpp" filename="precedence.cpp" t={t}>{`int a = 2 + 3 * 4;         // 14: * before +
-int b = (2 + 3) * 4;       // 20
-int c = 12 / 3 * 2;        // 8:  left to right, (12 / 3) * 2
-int d = 2 ^ 3;             // 1!  ^ is XOR, not a power
-double e = std::pow(2.0, 3.0);   // 8.0
-float  sq = x * x;         // x², faster and exact for small powers
-
-float avg = (a + b + c) / 3.0f;   // parentheses: the fraction bar is not there in code
-
-// Precedence traps outside arithmetic
-if (flags & MASK == MASK)  { }    // parsed as flags & (MASK == MASK): wrong
-if ((flags & MASK) == MASK) { }   // what was meant
-int k = 1 << 2 + 1;               // 1 << 3 = 8, because + binds tighter than <<
-bool ok = x > 0 && y > 0 || z;    // && before ||: (x > 0 && y > 0) || z`}</CodeBlock>
+      <Equation label={tx(t, "mOrd_eqNest", "Innermost bracket first, one line per step")}
+        notes={[
+          tx(t, "mOrd_nest1", "innermost ( ): 9 − 5 = 4"),
+          tx(t, "mOrd_nest2", "inside [ ], the power first: 4² = 16"),
+          tx(t, "mOrd_nest3", "finish the [ ]: 16 − 6 = 10"),
+          tx(t, "mOrd_nest4", "inside { }, × before +: 3 × 10 = 30, then 2 + 30 = 32"),
+          tx(t, "mOrd_nest5", "outside: 32 ÷ 4 = 8, and last the subtraction 8 − 1 = 7"),
+        ]}>
+        {r`\{2 + 3 \times [(9 - 5)^2 - 6]\} \div 4 - 1 = \{2 + 3 \times [16 - 6]\} \div 4 - 1 = \{2 + 30\} \div 4 - 1 = 7`}
+      </Equation>
       <Callout type="tip" t={t}>
-        {tx(t, "mOrd_tip", "Nobody remembers all 17 levels of C++ precedence, and nobody should have to. The rule professionals follow: rely on precedence only for the arithmetic everyone learned in school (× before +). For anything else, bitwise operators, shifts, mixing && with ||, add parentheses. Compilers even warn about some of these (GCC and Clang's -Wparentheses).")}
+        {tx(t, "mOrd_tip", "Two habits catch most errors. Before starting, count the brackets: every opening one needs a closing partner, and an expression with an unmatched bracket has no meaning. After finishing, estimate: if the pieces are about 30 and 4, an answer near 8 is plausible and an answer of 800 is not. Checking with a calculator works only if you type every hidden parenthesis, including those of fraction bars and root signs.")}
       </Callout>
 
       <H2>{tx(t, "mOrd_mistakesTitle", "Common mistakes")}</H2>
@@ -152,12 +148,12 @@ bool ok = x > 0 && y > 0 || z;    // && before ||: (x > 0 && y > 0) || z`}</Code
           ["12 ÷ 3 × 2 = 2", "12 ÷ 3 × 2 = 8", tx(t, "mOrd_m2", "× and ÷ share a level: left to right")],
           ["−3² = 9", "−3² = −9", tx(t, "mOrd_m3", "the power applies to 3 only; write (−3)² to square −3")],
           ["a + b / 2", "(a + b) / 2", tx(t, "mOrd_m4", "the midpoint needs the sum computed first")],
-          ["2 ^ 10 == 1024", "(1 << 10) == 1024", tx(t, "mOrd_m5", "in C++ ^ is XOR; powers of two are shifts or std::pow")],
+          ["2(3 + 4) = 6 + 4", "2(3 + 4) = 6 + 8 = 14", tx(t, "mOrd_m5", "a factor in front of a bracket multiplies every term inside it")],
           ["√(a² + b²) = a + b", "√(3² + 4²) = 5 ≠ 7", tx(t, "mOrd_m6", "a root sign groups its whole contents; roots do not split over +")],
         ]}
       />
       <Callout type="info" t={t}>
-        {tx(t, "mOrd_viral", "The viral puzzles like 6 ÷ 2(1 + 2) are ambiguous on purpose. By the strict rules, 2(1 + 2) is 2 × (1 + 2), and left to right gives 6 ÷ 2 × 3 = 9. But many people, and some calculators, treat a multiplication written without a sign as binding tighter, giving 6 ÷ 6 = 1. The lesson is not which answer is right. It is that well-written mathematics, and well-written code, never depends on that question: write 6 / (2 × 3) or (6 / 2) × 3.")}
+        {tx(t, "mOrd_viral", "The viral puzzles like 6 ÷ 2(1 + 2) are ambiguous on purpose. By the strict rules, 2(1 + 2) is 2 × (1 + 2), and left to right gives 6 ÷ 2 × 3 = 9. But many people, and some calculators, treat a multiplication written without a sign as binding tighter, giving 6 ÷ 6 = 1. The lesson is not which answer is right. It is that well-written mathematics never depends on that question: write 6 ÷ (2 × 3) or (6 ÷ 2) × 3.")}
       </Callout>
 
       <KeyIdeas t={t} id="mOrd" items={[
@@ -166,7 +162,7 @@ bool ok = x > 0 && y > 0 || z;    // && before ||: (x > 0 && y > 0) || z`}</Code
         "A power binds only to what is directly before it: −3² = −9, (−3)² = 9.",
         "Fraction bars and root signs are invisible parentheses; add real ones when writing on one line.",
         "Every expression is a tree; evaluation goes from the leaves up, and parentheses change the tree.",
-        "In C++, ^ is XOR, and bitwise and logical operators have surprising precedence: parenthesise.",
+        "Nested brackets are worked from the innermost pair outward, rewriting the line after every step.",
       ]} />
     </Article>
   );

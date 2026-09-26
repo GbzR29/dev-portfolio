@@ -5,7 +5,7 @@
 // notation, square and n-th roots, simplifying and estimating roots, and
 // Heron's method for computing a square root.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +19,7 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mPow_intro",
-          "Multiplication is repeated addition; a power is repeated multiplication. Powers measure how areas and volumes grow with size, how brightness falls off with distance, how fast experience curves climb, and they are the only sane way to write the size of a galaxy or the time a GPU instruction takes. Roots run powers backwards, and the square root in particular is inside every distance and every vector length in graphics. This chapter covers whole-number exponents and roots; the Exponents & Logarithms chapter in the Algebra section extends exponents to every real number and introduces logarithms.")}
+          "Multiplication is repeated addition; a power is repeated multiplication. Powers measure how areas and volumes grow with size, how brightness falls off with distance, how fast savings with compound interest climb, and they are the only sane way to write the size of a galaxy or of an atom. Roots run powers backwards, and the square root in particular is inside every distance formula. This chapter covers whole-number exponents and roots; the Exponents & Logarithms chapter in the Algebra section extends exponents to every real number and introduces logarithms.")}
       </Lead>
 
       <H2>{tx(t, "mPow_powTitle", "Powers as repeated multiplication")}</H2>
@@ -38,7 +38,7 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mPow_growBody",
-          "Powers grow fast, and the exponent matters more than the base. Scale a sprite, a room or a creature by 2 in every direction and its lengths double, its area goes up 2² = 4 times and its volume (and so its weight, if it is solid) 2³ = 8 times. That is why a giant cannot simply be a scaled-up human: its weight grows as the cube of its size but the strength of its legs, which depends on their cross-section area, only as the square.")}
+          "Powers grow fast, and the exponent matters more than the base. Scale a model, a room or an animal by 2 in every direction and its lengths double, its area goes up 2² = 4 times and its volume (and so its weight, if it is solid) 2³ = 8 times. That is why a giant cannot simply be a scaled-up human: its weight grows as the cube of its size but the strength of its legs, which depends on their cross-section area, only as the square.")}
       </p>
 
       <H2>{tx(t, "mPow_lawsTitle", "The laws of exponents")}</H2>
@@ -64,7 +64,7 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mPow_eqNeg", "Zero and negative exponents")}
         where={[
-          [r`b^0 = 1`, tx(t, "mPow_wZero", "for any b ≠ 0: the empty product, like an empty sum is 0. By convention 0⁰ = 1 too (std::pow(0, 0) returns 1)")],
+          [r`b^0 = 1`, tx(t, "mPow_wZero", "for any b ≠ 0: the empty product, just as an empty sum is 0. By convention 0⁰ = 1 too, which keeps formulas such as the binomial theorem working")],
           [r`b^{-n} = \frac{1}{b^n}`, tx(t, "mPow_wNeg", "a negative exponent means \"divide by that many copies\": the reciprocal. It does not make the number negative: 2⁻³ = 1/8 = 0.125")],
         ]}
         note={tx(t, "mPow_eqNegNote", "So 10⁻³ = 1/1000 = 0.001, a thousandth, and 2⁻¹⁰ = 1/1024. Dividing by a power and multiplying by the negative power are the same operation, which is how x / 8 can be written x · 2⁻³.")}>
@@ -74,21 +74,21 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mPow_sciTitle", "Powers of ten and scientific notation")}</H2>
       <p>
         {tx(t, "mPow_sciBody",
-          "Multiplying by 10ⁿ moves the decimal point n places to the right; multiplying by 10⁻ⁿ moves it n places to the left. Scientific notation uses that to write any number as a value between 1 and 10 times a power of ten: the speed of light is 3 × 10⁸ m/s, a nanosecond is 1 × 10⁻⁹ s. The exponent tells you the size at a glance, the first part gives the digits. Multiplying two such numbers multiplies the first parts and adds the exponents: (3 × 10⁸) × (2 × 10⁻⁹) = 6 × 10⁻¹. Code writes 10ⁿ as en: 3e8, 1e-9f.")}
+          "Multiplying by 10ⁿ moves the decimal point n places to the right; multiplying by 10⁻ⁿ moves it n places to the left. Scientific notation uses that to write any number as a value between 1 and 10 times a power of ten: the speed of light is 3 × 10⁸ m/s, a nanosecond is 1 × 10⁻⁹ s. The exponent tells you the size at a glance, the first part gives the digits. Multiplying two such numbers multiplies the first parts and adds the exponents: (3 × 10⁸) × (2 × 10⁻⁹) = 6 × 10⁻¹. Calculators display 3 × 10⁸ as 3E8.")}
       </p>
       <Equation label={tx(t, "mPow_eqSci", "Scientific notation")}
         where={[
           [r`m`, tx(t, "mPow_wM", "the significand, 1 ≤ m < 10: the significant digits. 0.00042 has significand 4.2")],
           [r`k`, tx(t, "mPow_wK", "the exponent, a whole number: how many places the point moved. Left for large numbers (k > 0), right for small ones (k < 0): 0.00042 = 4.2 × 10⁻⁴")],
         ]}
-        note={tx(t, "mPow_eqSciNote", "The metric prefixes are named powers of ten: kilo 10³, mega 10⁶, giga 10⁹; milli 10⁻³, micro 10⁻⁶, nano 10⁻⁹. A frame at 60 FPS lasts 16.7 ms = 1.67 × 10⁻² s. A floating-point number, as the last chapter of this section shows, is scientific notation done in base 2.")}>
+        note={tx(t, "mPow_eqSciNote", "The metric prefixes are named powers of ten: kilo 10³, mega 10⁶, giga 10⁹; milli 10⁻³, micro 10⁻⁶, nano 10⁻⁹. A red blood cell is about 8 micrometres = 8 × 10⁻⁶ m across; the Earth is about 1.27 × 10⁷ m across. Dividing, (1.27 × 10⁷)/(8 × 10⁻⁶) ≈ 0.16 × 10¹³ = 1.6 × 10¹²: the Earth is over a trillion blood cells wide. When the significand leaves [1, 10), shift the point and adjust the exponent to match.")}>
         {r`x = m \times 10^{k} \qquad 1 \le m < 10`}
       </Equation>
 
       <H2>{tx(t, "mPow_rootTitle", "Square roots")}</H2>
       <p>
         {tx(t, "mPow_rootBody",
-          "Squaring turns a side into an area; the square root turns an area back into a side. √49 = 7 because 7² = 49: a square of area 49 has side 7. Every positive number has two numbers that square to it, 7 and −7, and the symbol √ means the non-negative one, the principal root. That makes √(x²) = |x|, not x: √((−7)²) = √49 = 7. Negative numbers have no real square root, because no real number squared is negative; in code std::sqrt(−1.f) returns NaN.")}
+          "Squaring turns a side into an area; the square root turns an area back into a side. √49 = 7 because 7² = 49: a square of area 49 has side 7. Every positive number has two numbers that square to it, 7 and −7, and the symbol √ means the non-negative one, the principal root. That makes √(x²) = |x|, not x: √((−7)²) = √49 = 7. Negative numbers have no real square root, because no real number squared is negative (the Complex Numbers chapter, in the Linear Algebra section, invents numbers that do).")}
       </p>
       <Equation label={tx(t, "mPow_eqRoot", "The square root")}
         where={[
@@ -126,33 +126,24 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mPow_eqHeronNote", "For √10 from g₀ = 3: g₁ = (3 + 10/3)/2 = 3.1667, g₂ = (3.1667 + 3.1579)/2 = 3.16228, already correct to five decimals (√10 = 3.162278…). Geometrically, each step reshapes a rectangle of area x to be more square; the side of the final square is √x. It is Newton's method, from the calculus chapters, applied to g² − x = 0.")}>
         {r`g_{k+1} = \frac{1}{2}\left(g_k + \frac{x}{g_k}\right)`}
       </Equation>
-      <CodeBlock lang="cpp" filename="roots.hpp" t={t}>{`#include <cmath>   // std::sqrt, std::cbrt, std::pow
+      <H2>{tx(t, "mPow_squaringTitle", "Big powers by hand: repeated squaring")}</H2>
+      <p>
+        {tx(t, "mPow_squaringBody",
+          "Computing 3⁸ as 3 × 3 × 3 × 3 × 3 × 3 × 3 × 3 takes seven multiplications. The power-of-a-power law gives a shortcut: 3⁸ = ((3²)²)², so square three times, 3² = 9, 9² = 81, 81² = 6561. For an exponent that is not a power of two, split it into powers of two with the product law: 3¹³ = 3⁸ · 3⁴ · 3¹, because 13 = 8 + 4 + 1, and 3⁴ and 3⁸ were already on the way. Five multiplications instead of twelve.")}
+      </p>
+      <Equation label={tx(t, "mPow_eqSquaring", "2¹⁰ by squaring")}
+        notes={[
+          tx(t, "mPow_sq1", "10 = 8 + 2, so 2¹⁰ = 2⁸ · 2²"),
+          tx(t, "mPow_sq2", "square repeatedly: 2² = 4, 4² = 16 = 2⁴, 16² = 256 = 2⁸"),
+          tx(t, "mPow_sq3", "multiply the pieces you need: 256 × 4 = 1024"),
+        ]}>
+        {r`2^{10} = 2^{8} \cdot 2^{2} = \left((2^2)^2\right)^2 \cdot 2^2 = 256 \cdot 4 = 1024`}
+      </Equation>
 
-double heronSqrt(double x) {                    // x > 0; std::sqrt is faster and exact
-    double g = x > 1 ? x : 1;                   // any positive start converges
-    for (int i = 0; i < 60; ++i) {
-        double next = 0.5 * (g + x / g);
-        if (next >= g) break;                   // from above, the guesses only fall; stop when they don't
-        g = next;
-    }
-    return g;
-}
-
-long long ipow(long long b, unsigned n) {       // b^n by repeated squaring: ~log2(n) multiplies
-    long long r = 1;
-    while (n) { if (n & 1) r *= b; b *= b; n >>= 1; }
-    return r;
-}
-
-float sq(float x) { return x * x; }             // cheaper and exact, prefer it to std::pow(x, 2)
-
-// Compare squared distances: no square root needed
-bool inRange(float dx, float dy, float range) { return dx * dx + dy * dy <= range * range; }`}</CodeBlock>
-
-      <H2>{tx(t, "mPow_gamesTitle", "Where this shows up in games")}</H2>
+      <H2>{tx(t, "mPow_gamesTitle", "Squares and roots in the world")}</H2>
       <p>
         {tx(t, "mPow_gamesBody",
-          "The distance between two points is a square root: √(dx² + dy²), from Pythagoras (Geometry section). Square roots cost more than multiplications, and \"is the enemy within 10 metres?\" does not need the distance itself: both sides are non-negative, so compare dx² + dy² with 10² = 100 instead. Point lights fade with the inverse square of distance, 1/d², because the same light spreads over a sphere whose area grows as d². Progression curves often use powers: experience needed = 100 × level² makes each level a little harder than the last, while level³ makes it much harder.")}
+          "The distance between two points is a square root, √(dx² + dy²), by Pythagoras (Geometry section). To decide which of two distances is bigger you do not need the roots: for non-negative numbers, a < b exactly when a² < b², so comparing the squares gives the same answer. A lamp's light fades with the inverse square of distance, 1/d², because the same light spreads over a sphere whose surface area grows as d². And a square field of 1 hectare = 10 000 m² has side √10 000 = 100 m, while a field of 2 hectares has side √20 000 ≈ 141 m, not 200 m: doubling an area multiplies the side only by √2.")}
       </p>
 
       <H2>{tx(t, "mPow_exTitle", "Worked examples")}</H2>
@@ -164,7 +155,7 @@ bool inRange(float dx, float dy, float range) { return dx * dx + dy * dy <= rang
       <H3>{tx(t, "mPow_ex2T", "A light three times as far")}</H3>
       <p>
         {tx(t, "mPow_ex2",
-          "A light gives brightness 1 at 2 m. At 6 m the distance is 3 times larger, so the brightness is 1/3² = 1/9 of it, about 0.11. To get the brightness back to 1 at 6 m the light would need to be 9 times stronger.")}
+          "A lamp gives brightness 1 at 2 m. At 6 m the distance is 3 times larger, so the brightness is 1/3² = 1/9 of it, about 0.11. To get the brightness back to 1 at 6 m the light would need to be 9 times stronger.")}
       </p>
       <H3>{tx(t, "mPow_ex3T", "Simplifying and estimating a root")}</H3>
       <p>
@@ -181,8 +172,8 @@ bool inRange(float dx, float dy, float range) { return dx * dx + dy * dy <= rang
           ["2⁻³ = −8", "2⁻³ = 1/8", tx(t, "mPow_m3", "a negative exponent is a reciprocal, not a negative number")],
           ["2³ · 2⁴ = 2¹²", "2³ · 2⁴ = 2⁷", tx(t, "mPow_m4", "multiplying powers adds exponents; multiplying exponents is a power of a power")],
           ["√(x²) = x", "√(x²) = |x|", tx(t, "mPow_m5", "√ always returns the non-negative root")],
-          ["std::pow(x, 2)", "x * x", tx(t, "mPow_m6", "a general power function is slower; small integer powers are plain multiplications")],
-          ["dist(a, b) < r", "distSq(a, b) < r * r", tx(t, "mPow_m7", "comparisons do not need the square root")],
+          ["(2³)² = 2⁹", "(2³)² = 2⁶", tx(t, "mPow_m6", "a power of a power multiplies exponents; 2 to the power 3² = 2⁹ is a different expression")],
+          ["0.1² = 0.2", "0.1² = 0.01", tx(t, "mPow_m7", "squaring multiplies, it does not double; a number between 0 and 1 gets smaller when squared")],
         ]}
       />
       <Callout type="tip" t={t}>
@@ -193,9 +184,9 @@ bool inRange(float dx, float dy, float range) { return dx * dx + dy * dy <= rang
         "bⁿ is n copies of b multiplied; area scales with the square of size, volume with the cube.",
         "Same base: multiply → add exponents, divide → subtract, power of a power → multiply.",
         "b⁰ = 1 and b⁻ⁿ = 1/bⁿ keep those laws working; a negative exponent is a reciprocal.",
-        "Scientific notation m × 10ᵏ, 1 ≤ m < 10, writes any size compactly; code writes 1e-9.",
+        "Scientific notation m × 10ᵏ, 1 ≤ m < 10, writes any size compactly; to multiply, multiply the m parts and add the exponents.",
         "√x is the non-negative number whose square is x; √(ab) = √a√b but √(a + b) ≠ √a + √b.",
-        "Heron: average g and x/g repeatedly. In games, compare squared distances to skip the root.",
+        "Heron: average g and x/g repeatedly. Big powers: square repeatedly. For non-negative numbers, comparing squares is comparing the numbers.",
       ]} />
     </Article>
   );

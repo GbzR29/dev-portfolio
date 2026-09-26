@@ -49,7 +49,7 @@ export const TRACK_CATALOG: TrackInfo[] = [
   {
     id: "math", path: "Math", title: "Math for Graphics", accentColor: "#14b8a6", status: "available", plannedLessons: 7,
     levelKey: "begAdv", levelFallback: "Beginner → Advanced",
-    descKey: "trackMathDesc", descFallback: "The mathematics of graphics and games, from arithmetic and floating point to vectors, trigonometry and beyond — every formula explained, every idea interactive.",
+    descKey: "trackMathDesc", descFallback: "Mathematics from the ground up: arithmetic, algebra, geometry, trigonometry, linear algebra and calculus, worked by hand — every formula explained, every idea interactive.",
   },
   {
     id: "vulkan", path: "Vulkan", title: "Vulkan API", accentColor: "#ef4444", status: "coming-soon", plannedLessons: 12,
