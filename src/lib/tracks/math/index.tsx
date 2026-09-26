@@ -8,6 +8,7 @@
 import type { Chapter } from "@/lib/tracks/types";
 
 const ARITHMETIC = "Arithmetic";
+const ALGEBRA = "Algebra";
 const FOUNDATIONS = "Foundations";
 const VECTORS = "Vectors";
 
@@ -21,8 +22,12 @@ export const mathChapters: Chapter[] = [
   { id: "bases",               section: ARITHMETIC, title: "Number Bases & Bits",          minRead: 16, load: () => import("./chapters/bases").then((m) => m.BasesContent) },
   { id: "numbers",             section: ARITHMETIC, title: "Integers & Floating Point",    minRead: 13, load: () => import("./chapters/numbers").then((m) => m.NumbersContent) },
 
-  { id: "algebra",   section: FOUNDATIONS, title: "Algebra & Functions",       minRead: 17, load: () => import("./chapters/algebra").then((m) => m.AlgebraContent) },
-  { id: "exponents", section: FOUNDATIONS, title: "Exponents & Logarithms",    minRead: 13, load: () => import("./chapters/algebra").then((m) => m.ExpLogContent) },
+  { id: "expressions",      section: ALGEBRA, title: "Expressions",               minRead: 15, load: () => import("./chapters/expressions").then((m) => m.ExpressionsContent) },
+  { id: "linear-equations", section: ALGEBRA, title: "Linear Equations",          minRead: 17, load: () => import("./chapters/linear-equations").then((m) => m.LinearEquationsContent) },
+  { id: "inequalities",     section: ALGEBRA, title: "Inequalities",              minRead: 15, load: () => import("./chapters/inequalities").then((m) => m.InequalitiesContent) },
+  { id: "algebra",          section: ALGEBRA, title: "Algebra & Functions",       minRead: 17, load: () => import("./chapters/functions").then((m) => m.AlgebraContent) },
+  { id: "exponents",        section: ALGEBRA, title: "Exponents & Logarithms",    minRead: 13, load: () => import("./chapters/exponents").then((m) => m.ExpLogContent) },
+
   { id: "trig",      section: FOUNDATIONS, title: "Trigonometry",              minRead: 17, load: () => import("./chapters/trig").then((m) => m.TrigContent) },
 
   { id: "vectors",   section: VECTORS,     title: "Vectors",                   minRead: 13, load: () => import("./chapters/vectors").then((m) => m.VectorsContent) },

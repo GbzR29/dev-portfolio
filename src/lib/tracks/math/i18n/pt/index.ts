@@ -2,13 +2,14 @@
 
 import type { LessonText } from "@/lib/i18n/lessons";
 import track from "./_track";
-import algebra from "./algebra";
+import functions from "./functions";
+import exponents from "./exponents";
 import numbers from "./numbers";
 import trig from "./trig";
 import vectors from "./vectors";
 
 const bundle: LessonText = {
-  strings: { ...algebra, ...numbers, ...trig, ...vectors },
+  strings: { ...functions, ...exponents, ...numbers, ...trig, ...vectors },
   titles: track.titles,
   sections: track.sections,
 };

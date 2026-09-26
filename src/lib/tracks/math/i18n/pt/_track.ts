@@ -10,6 +10,9 @@ const track = {
     powers: "Potências e raízes",
     bases: "Bases numéricas e bits",
     numbers: "Inteiros e ponto flutuante",
+    expressions: "Expressões",
+    "linear-equations": "Equações do primeiro grau",
+    inequalities: "Inequações",
     algebra: "Álgebra e funções",
     exponents: "Expoentes e logaritmos",
     trig: "Trigonometria",
@@ -19,6 +22,7 @@ const track = {
   } as Record<string, string>,
   sections: {
     Arithmetic: "Aritmética",
+    Algebra: "Álgebra",
     Foundations: "Fundamentos",
     Vectors: "Vetores",
   } as Record<string, string>,
