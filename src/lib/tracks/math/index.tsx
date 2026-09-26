@@ -43,7 +43,12 @@ export const mathChapters: Chapter[] = [
   { id: "analytic",        section: GEOMETRY, title: "Coordinate Geometry & Conics", minRead: 20, load: () => import("./chapters/analytic").then((m) => m.AnalyticContent) },
   { id: "transformations", section: GEOMETRY, title: "Transformations",           minRead: 17, load: () => import("./chapters/transformations").then((m) => m.TransformationsContent) },
 
-  { id: "trig",      section: TRIGONOMETRY, title: "Trigonometry",              minRead: 17, load: () => import("./chapters/trig").then((m) => m.TrigContent) },
+  { id: "trig",          section: TRIGONOMETRY, title: "Right-Triangle Trigonometry",  minRead: 18, load: () => import("./chapters/trig").then((m) => m.TrigContent) },
+  { id: "unit-circle",   section: TRIGONOMETRY, title: "Radians & the Unit Circle",    minRead: 17, load: () => import("./chapters/unit-circle").then((m) => m.UnitCircleContent) },
+  { id: "triangle-laws", section: TRIGONOMETRY, title: "Laws of Sines & Cosines",      minRead: 18, load: () => import("./chapters/triangle-laws").then((m) => m.TriangleLawsContent) },
+  { id: "identities",    section: TRIGONOMETRY, title: "Identities & Rotation",        minRead: 17, load: () => import("./chapters/identities").then((m) => m.IdentitiesContent) },
+  { id: "polar",         section: TRIGONOMETRY, title: "Polar Coordinates & atan2",    minRead: 16, load: () => import("./chapters/polar").then((m) => m.PolarContent) },
+  { id: "waves",         section: TRIGONOMETRY, title: "Waves & Oscillation",          minRead: 17, load: () => import("./chapters/waves").then((m) => m.WavesContent) },
 
   { id: "vectors",   section: LINEAR_ALGEBRA, title: "Vectors",                   minRead: 13, load: () => import("./chapters/vectors").then((m) => m.VectorsContent) },
   { id: "dot",       section: LINEAR_ALGEBRA, title: "The Dot Product",           minRead: 14, load: () => import("./chapters/vectors").then((m) => m.DotContent) },

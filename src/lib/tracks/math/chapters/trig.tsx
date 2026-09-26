@@ -1,17 +1,17 @@
 "use client";
 
-// Trigonometry 1: trigonometry — angles and radians, right triangles, the unit
-// circle, identities, the rotation formula, polar coordinates and atan2,
-// waves, and the law of cosines.
+// Trigonometry 1: right-triangle trigonometry — naming the sides, why the
+// ratios depend only on the angle (similarity), sine, cosine and tangent,
+// complementary angles, the exact 30°/45°/60° values, solving right
+// triangles, inverse functions, tangent as slope, heights and the field of
+// view, and C++.
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
-import { UnitCircleFigure } from "@/components/lesson/figures/math/UnitCircleFigure";
-import { Atan2Figure } from "@/components/lesson/figures/math/Atan2Figure";
-import { WaveFigure } from "@/components/lesson/figures/math/WaveFigure";
+import { RightTriangleFigure } from "@/components/lesson/figures/math/RightTriangleFigure";
 
 const r = String.raw;
 
@@ -19,187 +19,191 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
   return (
     <Article>
       <Lead>
-        {tx(t, "mTrig_intro",
-          "Trigonometry began as the study of triangles, for surveying land and navigating by the stars. For graphics it is the bridge between angles and coordinates: turning \"face 30° to the left\" into a direction vector, turning a mouse position into an aiming angle, rotating a sprite, making things bob, pulse and orbit. Everything here comes from one picture, a point moving around a circle.")}
+        {tx(t, "mRt_intro",
+          "Trigonometry began as the study of triangles, for surveying land and navigating by the stars. For graphics it is the bridge between angles and lengths: turning \"face 30° to the left\" into a direction, turning a mouse position into an aiming angle, finding how high a camera sees at a given distance. The whole subject grows from one observation about right triangles, which this chapter makes precise. The following chapters extend it to every angle, to any triangle, to rotation and to waves.")}
       </Lead>
 
-      <H2>{tx(t, "mTrig_radTitle", "Degrees and radians")}</H2>
+      <H2>{tx(t, "mRt_sidesTitle", "Naming the sides from an angle")}</H2>
       <p>
-        {tx(t, "mTrig_radBody",
-          "Degrees split a full turn into 360 parts, a number the Babylonians liked because it divides evenly by so many others. Radians measure an angle by the arc it cuts out of a circle: the arc length divided by the radius. On a circle of radius 1, an angle of θ radians cuts an arc exactly θ long. A full turn is the whole circumference, 2π ≈ 6.283 radians. Every trigonometric function in C++, GLSL and every other programming language takes radians, and radians make the calculus of sine and cosine clean (for small angles, sin θ ≈ θ only in radians).")}
+        {tx(t, "mRt_sidesBody",
+          "Take a right triangle and pick one of its two sharp (acute) angles; call it θ, the Greek letter theta. The sides get names relative to that angle. The hypotenuse is the longest side, opposite the right angle, as in the Pythagoras chapter. The opposite side is the one across from θ, not touching it. The adjacent side is the other side that touches θ (\"adjacent\" means \"next to\"). If you pick the other acute angle instead, opposite and adjacent swap places, while the hypotenuse stays the same.")}
       </p>
-      <Equation label={tx(t, "mTrig_eqRad", "Radians")}
+
+      <H2>{tx(t, "mRt_whyTitle", "The ratios depend only on the angle")}</H2>
+      <p>
+        {tx(t, "mRt_whyBody",
+          "Here is the key fact. Any two right triangles with the same angle θ have two equal angles (θ and the right angle), so by the AA test of the similarity chapter they are similar: one is a scaled copy of the other. Scaling multiplies every side by the same factor k, so the ratio of any two sides, such as opposite divided by hypotenuse, does not change: k cancels. The ratios are therefore properties of the angle alone, not of the particular triangle. Each of the three useful ratios has a name.")}
+      </p>
+      <Equation label={tx(t, "mRt_eqSoh", "Sine, cosine and tangent")}
         where={[
-          [r`\theta`, tx(t, "mTrig_wTheta", "the angle in radians")],
-          [r`s`, tx(t, "mTrig_wS", "the length of the arc between the two sides of the angle")],
-          [r`\rho`, tx(t, "mTrig_wRho", "the radius of the circle. Because s grows in proportion to ρ, the ratio does not depend on the circle's size")],
+          [r`\theta`, tx(t, "mRt_wTheta", "one of the acute angles of a right triangle")],
+          [r`\text{opp}`, tx(t, "mRt_wOpp", "the side opposite θ")],
+          [r`\text{adj}`, tx(t, "mRt_wAdj", "the side next to θ that is not the hypotenuse")],
+          [r`\text{hyp}`, tx(t, "mRt_wHyp", "the hypotenuse, opposite the right angle")],
         ]}
-        note={tx(t, "mTrig_eqRadNote", "Useful values: 90° = π/2, 180° = π, 360° = 2π, 1 rad ≈ 57.3°. Keep angles in radians inside code and convert only at the edges (UI, level files).")}>
-        {r`\theta = \frac{s}{\rho} \qquad \theta_{\text{rad}} = \theta_{\text{deg}}\cdot\frac{\pi}{180}`}
+        note={tx(t, "mRt_sohNote", "The mnemonic SOH-CAH-TOA lists them: Sine = Opposite/Hypotenuse, Cosine = Adjacent/Hypotenuse, Tangent = Opposite/Adjacent. Dividing the first by the second, the hypotenuses cancel: tan θ = sin θ / cos θ.")}>
+        {r`\sin\theta = \frac{\text{opp}}{\text{hyp}} \qquad \cos\theta = \frac{\text{adj}}{\text{hyp}} \qquad \tan\theta = \frac{\text{opp}}{\text{adj}} = \frac{\sin\theta}{\cos\theta}`}
       </Equation>
 
-      <H2>{tx(t, "mTrig_triTitle", "Right triangles")}</H2>
+      <RightTriangleFigure t={t} />
+
       <p>
-        {tx(t, "mTrig_triBody",
-          "In a triangle with one 90° corner, the side opposite that corner is the longest, the hypotenuse. Pick one of the other angles, θ. The side touching θ (not the hypotenuse) is the adjacent side, the side across from it is the opposite side. Because all right triangles with the same θ have the same shape (only the size differs), the ratios between their sides depend only on θ. Those ratios are sine, cosine and tangent. The mnemonic SOH-CAH-TOA lists them.")}
+        {tx(t, "mRt_unitBody",
+          "The small purple triangle in the figure is the one worth remembering. With hypotenuse 1, the definitions say that the adjacent side is exactly cos θ and the opposite side exactly sin θ. Any other right triangle with the angle θ is that one scaled by its hypotenuse: its sides are hyp · cos θ and hyp · sin θ. Since the legs are shorter than the hypotenuse, sine and cosine of an acute angle are always between 0 and 1; the tangent can be any positive number, growing without limit as θ approaches 90°.")}
       </p>
-      <Equation label={tx(t, "mTrig_eqSoh", "Sine, cosine, tangent and Pythagoras")}
+      <Equation label={tx(t, "mRt_eqPyth", "Pythagoras in trigonometric form")}
         where={[
-          [r`\text{opp},\ \text{adj},\ \text{hyp}`, tx(t, "mTrig_wSides", "the opposite side, the adjacent side and the hypotenuse, relative to the angle θ")],
-          [r`a^2 + b^2 = c^2`, tx(t, "mTrig_wPyth", "Pythagoras: the squares on the two short sides add up to the square on the hypotenuse. It is how every length and distance in this track is computed")],
-        ]}>
-        {r`\sin\theta = \frac{\text{opp}}{\text{hyp}} \qquad \cos\theta = \frac{\text{adj}}{\text{hyp}} \qquad \tan\theta = \frac{\text{opp}}{\text{adj}} = \frac{\sin\theta}{\cos\theta} \qquad a^2 + b^2 = c^2`}
+          [r`\sin^2\theta`, tx(t, "mRt_wSq", "short for (sin θ)², the square of the sine")],
+        ]}
+        note={tx(t, "mRt_pythNote", "Apply Pythagoras to the triangle with hypotenuse 1: its legs are cos θ and sin θ. Knowing one of the two gives the other: if sin θ = 0.6, then cos θ = √(1 − 0.36) = 0.8.")}>
+        {r`\cos^2\theta + \sin^2\theta = 1`}
       </Equation>
 
-      <H2>{tx(t, "mTrig_unitTitle", "The unit circle")}</H2>
+      <H3>{tx(t, "mRt_coTitle", "Complementary angles: the \"co\" in cosine")}</H3>
       <p>
-        {tx(t, "mTrig_unitBody",
-          "Triangles only give angles up to 90°. The unit circle extends the definitions to every angle. Place a circle of radius 1 at the origin and walk counter-clockwise from the point (1, 0) through an angle θ. The point you reach has coordinates (cos θ, sin θ). For angles below 90° this is the triangle definition with hyp = 1, and for larger or negative angles it simply keeps going around the circle, with signs that follow the quadrant.")}
+        {tx(t, "mRt_coBody",
+          "The two acute angles of a right triangle add up to 90°, since all three add up to 180°. Angles that add up to 90° are complementary. The side opposite one of them is adjacent to the other, so the sine of one angle is the cosine of the other. That is where the name comes from: cosine is the \"complement's sine\".")}
       </p>
+      <Equation label={tx(t, "mRt_eqCo", "Complementary angles")}
+        where={[
+          [r`90^\circ - \theta`, tx(t, "mRt_wComp", "the other acute angle of the same right triangle")],
+        ]}>
+        {r`\sin\theta = \cos(90^\circ - \theta) \qquad \cos\theta = \sin(90^\circ - \theta)`}
+      </Equation>
 
-      <UnitCircleFigure t={t} />
-
+      <H2>{tx(t, "mRt_specialTitle", "Exact values: 30°, 45° and 60°")}</H2>
+      <p>
+        {tx(t, "mRt_specialBody",
+          "For most angles the ratios are irrational numbers that a computer approximates. Three angles have exact values, read off two simple triangles (the special-angles mode of the figure). Half of a unit square, cut along its diagonal, has two 45° angles, legs 1 and hypotenuse √2. Half of an equilateral triangle with side 2 has angles 30°, 60° and 90°, sides 1 and 2, and height √(2² − 1²) = √3. The table also includes 0° and 90° as the limits of a triangle squashed flat.")}
+      </p>
       <LessonTable
-        headers={["θ", "0", "30° = π/6", "45° = π/4", "60° = π/3", "90° = π/2"]}
+        headers={["θ", "0°", "30°", "45°", "60°", "90°"]}
         rows={[
           ["sin θ", "0", "1/2", "√2/2 ≈ 0.707", "√3/2 ≈ 0.866", "1"],
           ["cos θ", "1", "√3/2 ≈ 0.866", "√2/2 ≈ 0.707", "1/2", "0"],
-          ["tan θ", "0", "√3/3 ≈ 0.577", "1", "√3 ≈ 1.732", tx(t, "mTrig_undef", "undefined")],
+          ["tan θ", "0", "1/√3 ≈ 0.577", "1", "√3 ≈ 1.732", tx(t, "mTrig_undef", "undefined")],
         ]}
       />
-      <p>
-        {tx(t, "mTrig_dirBody",
-          "The most common use in games follows directly: a direction at angle θ is the vector (cos θ, sin θ), with length 1. A sprite facing 30° moves along (cos 30°, sin 30°) · speed. Points on a circle of radius R around a centre c are c + R(cos θ, sin θ), which is how you place enemies in a ring, draw a circle with line segments or make a moon orbit.")}
-      </p>
-
-      <H2>{tx(t, "mTrig_idTitle", "The identities you actually need")}</H2>
-      <Equation label={tx(t, "mTrig_eqIds", "Core identities")}
-        where={[
-          [r`\sin^2\theta + \cos^2\theta = 1`, tx(t, "mTrig_wPyth2", "Pythagoras on the unit circle: the point is at distance 1 from the origin")],
-          [r`\sin(-\theta) = -\sin\theta,\ \cos(-\theta) = \cos\theta`, tx(t, "mTrig_wSym", "mirroring the angle below the x axis flips the y coordinate only")],
-          [r`\sin(\theta + \tfrac{\pi}{2}) = \cos\theta`, tx(t, "mTrig_wShift", "cosine is sine a quarter turn ahead: the same wave, shifted")],
-          [r`\cos(\alpha + \beta),\ \sin(\alpha + \beta)`, tx(t, "mTrig_wSum", "the angle-sum formulas, which give the rotation formula below")],
-        ]}>
-        {r`\cos(\alpha+\beta) = \cos\alpha\cos\beta - \sin\alpha\sin\beta \qquad \sin(\alpha+\beta) = \sin\alpha\cos\beta + \cos\alpha\sin\beta`}
-      </Equation>
-
-      <H3>{tx(t, "mTrig_rotTitle", "Rotating a point")}</H3>
-      <p>
-        {tx(t, "mTrig_rotBody",
-          "Any point (x, y) can be written by its distance ρ from the origin and its angle φ: (ρ cos φ, ρ sin φ). Rotating it by θ around the origin keeps ρ and adds θ to the angle: (ρ cos(φ + θ), ρ sin(φ + θ)). Expanding with the angle-sum formulas and replacing ρ cos φ by x and ρ sin φ by y gives the rotation formula, without any angle φ left in it. That formula, written as a matrix, is the 2D rotation matrix of every graphics API.")}
-      </p>
-      <Equation label={tx(t, "mTrig_eqRot", "Rotation by θ around the origin")}
-        where={[
-          [r`(x, y)`, tx(t, "mTrig_wXY", "the original point")],
-          [r`(x', y')`, tx(t, "mTrig_wXY2", "the rotated point")],
-          [r`\theta`, tx(t, "mTrig_wRotTheta", "the rotation angle, counter-clockwise for positive θ (with y pointing up)")],
-        ]}
-        note={tx(t, "mTrig_eqRotNote", "To rotate around another point c, subtract c, rotate, add c back. Check θ = 90°: (1, 0) goes to (0, 1). With y pointing down, as in most 2D screen coordinates, the same formula turns clockwise on screen.")}>
-        {r`x' = x\cos\theta - y\sin\theta \qquad y' = x\sin\theta + y\cos\theta`}
-      </Equation>
-
-      <H2>{tx(t, "mTrig_polarTitle", "From coordinates back to angles: atan2")}</H2>
-      <p>
-        {tx(t, "mTrig_polarBody",
-          "The reverse question is at least as common: the mouse is at (x, y) relative to the turret, which angle should it face? The inverse functions asin, acos and atan return angles, but each only covers half the circle. atan(y/x) is the classic trap: y/x is the same for (1, 1) and (−1, −1), so it cannot tell opposite directions apart, and it divides by zero straight up. atan2(y, x) takes the two coordinates separately, looks at their signs to find the quadrant, and returns the full angle in (−π, π].")}
-      </p>
-
-      <Atan2Figure t={t} />
-
-      <Equation label={tx(t, "mTrig_eqPolar", "Polar coordinates")}
-        where={[
-          [r`\rho`, tx(t, "mTrig_wR", "the distance from the origin (the length of the vector)")],
-          [r`\theta`, tx(t, "mTrig_wPolarTheta", "the angle from the positive x axis, from atan2; note the argument order, y first")],
-        ]}>
-        {r`\rho = \sqrt{x^2 + y^2}, \quad \theta = \operatorname{atan2}(y, x) \qquad\Longleftrightarrow\qquad x = \rho\cos\theta, \quad y = \rho\sin\theta`}
-      </Equation>
-      <CodeBlock lang="cpp" filename="angles.hpp" t={t}>{`constexpr float PI = 3.14159265358979f;
-
-// Wrap any angle into (-π, π]
-float wrapAngle(float a) {
-    a = std::fmod(a + PI, 2 * PI);
-    if (a < 0) a += 2 * PI;
-    return a - PI;
-}
-
-// Turn 'current' toward 'target' by at most maxStep radians, the short way round
-float rotateToward(float current, float target, float maxStep) {
-    float diff = wrapAngle(target - current);            // signed, in (-π, π]
-    return current + std::clamp(diff, -maxStep, maxStep);
-}
-
-// A turret aiming at the mouse at 3 radians per second
-float want = std::atan2(mouse.y - turret.y, mouse.x - turret.x);
-turret.angle = rotateToward(turret.angle, want, 3.0f * dt);`}</CodeBlock>
-      <Callout type="warn" t={t}>
-        {tx(t, "mTrig_wrapWarn", "Angles wrap: 350° and −10° are the same direction, and the difference between 350° and 10° is 20°, not 340°. Always wrap a difference into (−π, π] before using it to turn, interpolate or compare, or objects will spin the long way round.")}
-      </Callout>
-
-      <H2>{tx(t, "mTrig_waveTitle", "Waves")}</H2>
-      <p>
-        {tx(t, "mTrig_waveBody",
-          "Unroll the unit circle over time and the height of the moving point traces a sine wave: the smoothest possible back-and-forth motion. Four numbers shape it, the same four as the function transformations of the Functions & Graphs chapter: amplitude (how far), frequency (how often), phase (where in the cycle it starts) and offset (around which value).")}
-      </p>
-      <Equation label={tx(t, "mTrig_eqWave", "A sinusoid")}
-        where={[
-          [r`A`, tx(t, "mTrig_wA", "the amplitude: the wave goes from C − A to C + A")],
-          [r`f`, tx(t, "mTrig_wF", "the frequency in cycles per second (Hz). The period, the duration of one cycle, is T = 1/f")],
-          [r`2\pi f`, tx(t, "mTrig_wOmega", "the angular frequency ω, in radians per second: it converts seconds into an angle so that one period is one full turn")],
-          [r`\varphi`, tx(t, "mTrig_wPhi", "the phase: a head start along the cycle, in radians. Giving each object a different φ keeps a row of bobbing coins from moving in lockstep")],
-          [r`C`, tx(t, "mTrig_wC", "the offset: the centre line")],
-        ]}>
-        {r`y(t) = A\,\sin(2\pi f\,t + \varphi) + C`}
-      </Equation>
-
-      <WaveFigure t={t} />
-
-      <p>
-        {tx(t, "mTrig_waveUses",
-          "Uses are everywhere: a hovering pickup bobs with A = 0.1 m and f = 0.5 Hz, a warning light pulses its brightness, a day–night cycle drives the sun's height with a period of 20 minutes, water surfaces sum several sines of different directions and frequencies (Gerstner waves in the GLSL track), and an idle character breathes by scaling its chest. Adding sines with unrelated frequencies gives motion that never visibly repeats, a cheap alternative to noise.")}
-      </p>
       <Callout type="tip" t={t}>
-        {tx(t, "mTrig_timeTip", "sin(time · ω) with a float time that keeps growing loses precision after hours: at time = 100 000 s, float time has a resolution of about 8 ms, and fast waves stutter. Wrap the phase instead: phase = fmod(phase + ω·dt, 2π).")}
+        {tx(t, "mRt_tableTip", "A pattern to remember the sine row: √0/2, √1/2, √2/2, √3/2, √4/2. The cosine row is the same backwards, because cos θ = sin(90° − θ).")}
       </Callout>
 
-      <H2>{tx(t, "mTrig_cosLawTitle", "Any triangle: the law of cosines")}</H2>
+      <H2>{tx(t, "mRt_solveTitle", "Solving a right triangle")}</H2>
       <p>
-        {tx(t, "mTrig_cosLawBody",
-          "Pythagoras only works with a 90° corner. The law of cosines generalises it to any triangle, with a correction term that vanishes when the angle is 90° (cos 90° = 0). Its most famous game use is two-bone inverse kinematics: given the upper-arm length, the forearm length and the distance from shoulder to the hand's target, it gives the elbow angle directly.")}
+        {tx(t, "mRt_solveBody",
+          "To solve a triangle means to find every side and angle from the ones you know. For a right triangle, one side and one acute angle, or two sides, are enough. With an angle and a side, pick the ratio that links the side you know to the side you want, and rearrange it. With two sides you need the angle itself, which means running a ratio backwards: that is the job of the inverse functions.")}
       </p>
-      <Equation label={tx(t, "mTrig_eqCosLaw", "Law of cosines")}
+      <Equation label={tx(t, "mRt_eqSolve", "Sides from an angle")}
         where={[
-          [r`a, b`, tx(t, "mTrig_wAB", "two sides of the triangle (upper arm and forearm)")],
-          [r`c`, tx(t, "mTrig_wCside", "the third side, opposite the angle γ (shoulder-to-target distance)")],
-          [r`\gamma`, tx(t, "mTrig_wGamma", "the angle between a and b (the elbow). Solving for it: cos γ = (a² + b² − c²) / 2ab")],
+          [r`\text{hyp}\cdot\sin\theta`, tx(t, "mRt_wHs", "the opposite side, from sin θ = opp / hyp multiplied by hyp")],
+          [r`\text{adj}\cdot\tan\theta`, tx(t, "mRt_wAt", "the opposite side from the adjacent one")],
         ]}
-        note={tx(t, "mTrig_eqCosLawNote", "If c > a + b the target is out of reach and the fraction falls below −1: clamp it to [−1, 1] before calling acos, or the result is NaN.")}>
-        {r`c^2 = a^2 + b^2 - 2ab\cos\gamma \qquad\Longrightarrow\qquad \gamma = \arccos\frac{a^2 + b^2 - c^2}{2ab}`}
+        note={tx(t, "mRt_solveNote", "Example: a 4 m ladder leans at 70° to the ground. Its top is 4 · sin 70° ≈ 3.76 m up the wall and its foot 4 · cos 70° ≈ 1.37 m out from it.")}>
+        {r`\text{opp} = \text{hyp}\cdot\sin\theta \qquad \text{adj} = \text{hyp}\cdot\cos\theta \qquad \text{opp} = \text{adj}\cdot\tan\theta`}
+      </Equation>
+      <H3>{tx(t, "mRt_invTitle", "Inverse functions: from a ratio back to the angle")}</H3>
+      <p>
+        {tx(t, "mRt_invBody",
+          "The functions chapter introduced inverses: a function that undoes another. arcsin (written asin in code, or sin⁻¹ on calculators) takes a ratio and returns the angle with that sine; arccos and arctan do the same for cosine and tangent. For right triangles the answer is always an acute angle, so there is no ambiguity. The Polar Coordinates chapter deals with the full circle, where the question \"which angle has this tangent?\" has more than one answer.")}
+      </p>
+      <Equation label={tx(t, "mRt_eqInv", "Angles from sides")}
+        where={[
+          [r`\arcsin`, tx(t, "mRt_wAsin", "the inverse of sine; its input must be between −1 and 1")],
+          [r`\arctan`, tx(t, "mRt_wAtan", "the inverse of tangent; any input works")],
+        ]}
+        note={tx(t, "mRt_invNote", "Example: a ramp rises 1 m over a run of 4 m. Its angle is arctan(1/4) ≈ 14.0°. The notation sin⁻¹ means the inverse function, not 1/sin; the reciprocal 1/sin θ has its own name, the cosecant, which games rarely need.")}>
+        {r`\theta = \arcsin\frac{\text{opp}}{\text{hyp}} = \arccos\frac{\text{adj}}{\text{hyp}} = \arctan\frac{\text{opp}}{\text{adj}}`}
       </Equation>
 
+      <H2>{tx(t, "mRt_slopeTitle", "Tangent is slope")}</H2>
+      <p>
+        {tx(t, "mRt_slopeBody",
+          "A line that climbs at an angle θ above the horizontal makes a right triangle with any horizontal run: the run is adjacent to θ and the rise is opposite it. So the line's slope, rise over run from the functions chapter, is exactly tan θ. A 45° line has slope 1; a road with a 10% grade (slope 0.1) climbs at arctan 0.1 ≈ 5.7°. Games use this to decide whether a character can walk up a slope: compare the ground's angle with a maximum, or equivalently its slope with tan of that maximum.")}
+      </p>
+      <Equation label={tx(t, "mRt_eqSlope", "Slope and angle")}
+        where={[
+          [r`m`, tx(t, "mRt_wM", "the slope of the line, rise over run")],
+          [r`\theta`, tx(t, "mRt_wIncl", "the angle between the line and the horizontal")],
+        ]}>
+        {r`m = \frac{\text{rise}}{\text{run}} = \tan\theta \qquad \theta = \arctan m`}
+      </Equation>
+
+      <H2>{tx(t, "mRt_heightTitle", "Heights and distances you cannot measure")}</H2>
+      <p>
+        {tx(t, "mRt_heightBody",
+          "The third mode of the figure is the surveyor's trick. From a known distance d, measure the angle up to the top of something tall; then h = d · tan θ. It also runs backwards: an archer on a 10 m wall sees a target at an angle of 20° below the horizontal, so the target is 10 / tan 20° ≈ 27.5 m away along the ground.")}
+      </p>
       <H3>{tx(t, "mTrig_fovTitle", "Tangent and the field of view")}</H3>
       <p>
         {tx(t, "mTrig_fovBody",
           "A perspective camera with a vertical field of view θ sees, at distance d in front of it, a slab of height 2d·tan(θ/2): the half-angle and the distance form a right triangle with the half-height as the opposite side. That is why tan(fov/2) appears in every projection matrix, and why doubling the distance doubles the visible height.")}
       </p>
 
+      <H2>{tx(t, "mRt_exTitle", "Worked examples")}</H2>
+      <p>
+        {tx(t, "mRt_ex1",
+          "1. A right triangle has legs 5 and 12. The hypotenuse is 13 (a Pythagorean triple). The angle opposite the 5 is arctan(5/12) ≈ 22.6°, and the other acute angle is 90° − 22.6° = 67.4°.")}
+      </p>
+      <p>
+        {tx(t, "mRt_ex2",
+          "2. A camera with a 60° vertical field of view looks at a wall 10 m away. The visible height is 2 · 10 · tan 30° ≈ 11.5 m. To fit a 20 m tall building, the camera must be 20 / (2 tan 30°) ≈ 17.3 m away.")}
+      </p>
+      <p>
+        {tx(t, "mRt_ex3",
+          "3. A character's maximum walkable slope is 45°. A ground triangle rising 0.8 m over 1 m of run has slope 0.8 < tan 45° = 1, so it is walkable; its angle is arctan 0.8 ≈ 38.7°.")}
+      </p>
+
+      <H2>{tx(t, "mRt_codeTitle", "Right triangles in C++")}</H2>
+      <p>
+        {tx(t, "mRt_codeBody",
+          "The C++ functions std::sin, std::cos, std::tan and their inverses std::asin, std::acos, std::atan measure angles in radians, a different unit explained in the next chapter. Until then, convert degrees with the factor π/180 on the way in and 180/π on the way out.")}
+      </p>
+      <CodeBlock lang="cpp" filename="right_triangle.hpp" t={t}>{`#include <algorithm>
+#include <cmath>
+#include <numbers>
+
+constexpr float PI = std::numbers::pi_v<float>;
+float radians(float deg) { return deg * PI / 180.0f; }
+float degrees(float rad) { return rad * 180.0f / PI; }
+
+// Legs of a right triangle from the hypotenuse and one acute angle (degrees)
+float oppositeSide(float hyp, float deg) { return hyp * std::sin(radians(deg)); }
+float adjacentSide(float hyp, float deg) { return hyp * std::cos(radians(deg)); }
+
+// Acute angle (degrees) from the two legs
+float angleFromLegs(float opp, float adj) { return degrees(std::atan(opp / adj)); }
+
+// asin/acos return NaN outside [-1, 1]; rounding can push a ratio just past 1
+float safeAsinDeg(float ratio) { return degrees(std::asin(std::clamp(ratio, -1.0f, 1.0f))); }
+
+// Visible height at distance d for a vertical field of view (degrees)
+float visibleHeight(float fovDeg, float d) { return 2.0f * d * std::tan(radians(fovDeg) / 2.0f); }
+
+// Can a character walk up ground that rises 'rise' over 'run'?
+bool walkable(float rise, float run, float maxDeg) {
+    return rise <= run * std::tan(radians(maxDeg));    // compare slopes, no atan needed
+}`}</CodeBlock>
+
+      <H2>{tx(t, "mRt_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
-        headers={[tx(t, "mTrig_tSym", "Symptom"), tx(t, "mTrig_tCause", "Cause"), tx(t, "mTrig_tFix", "Fix")]}
+        headers={[tx(t, "mRt_tWrong", "Wrong"), tx(t, "mRt_tRight", "Right"), tx(t, "mRt_tWhy", "Why")]}
         rows={[
-          [tx(t, "mTrig_b1", "Rotations about 57 times too big"), tx(t, "mTrig_c1", "degrees passed to sin/cos"), tx(t, "mTrig_f1", "convert with π/180 (or glm::radians)")],
-          [tx(t, "mTrig_b2", "Turret aims backwards on one side"), tx(t, "mTrig_c2", "atan(y/x) instead of atan2(y, x)"), tx(t, "mTrig_f2", "atan2, with y first")],
-          [tx(t, "mTrig_b3", "Object spins the long way round"), tx(t, "mTrig_c3", "raw angle difference"), tx(t, "mTrig_f3", "wrap the difference into (−π, π]")],
-          [tx(t, "mTrig_b4", "NaN from acos or asin"), tx(t, "mTrig_c4", "argument slightly outside [−1, 1] after rounding"), tx(t, "mTrig_f4", "clamp the argument first")],
-          [tx(t, "mTrig_b5", "Rotation goes the wrong direction"), tx(t, "mTrig_c5", "screen y points down"), tx(t, "mTrig_f5", "negate θ, or flip y at the boundary between world and screen")],
+          [tx(t, "mRt_m1w", "std::sin(30) expecting 0.5"), "std::sin(radians(30))", tx(t, "mRt_m1", "C++ takes radians; sin of 30 radians is about −0.99")],
+          [tx(t, "mRt_m2w", "calling the hypotenuse \"adjacent\""), tx(t, "mRt_m2r", "adjacent is the leg next to θ"), tx(t, "mRt_m2", "the hypotenuse touches θ too, but it has its own name")],
+          [tx(t, "mRt_m3w", "sin⁻¹ x = 1 / sin x"), tx(t, "mRt_m3r", "sin⁻¹ is the inverse function, arcsin"), tx(t, "mRt_m3", "the −1 means \"undo\", not a power")],
+          [tx(t, "mRt_m4w", "asin(1.0000001) in code"), tx(t, "mRt_m4r", "clamp to [−1, 1] first"), tx(t, "mRt_m4", "no angle has a sine above 1; the result is NaN")],
+          [tx(t, "mRt_m5w", "using SOH-CAH-TOA without a right angle"), tx(t, "mRt_m5r", "use the laws of sines and cosines"), tx(t, "mRt_m5", "the ratios are defined in right triangles")],
         ]}
       />
 
-      <KeyIdeas t={t} id="mTrig" items={[
-        "Radians = arc length on a unit circle; 2π = 360°. Code always uses radians.",
-        "The point at angle θ on the unit circle is (cos θ, sin θ): a unit direction.",
-        "Rotation: x' = x cos θ − y sin θ, y' = x sin θ + y cos θ.",
-        "atan2(y, x) recovers the full angle; wrap differences into (−π, π].",
-        "A sin(2πft + φ) + C: amplitude, frequency, phase, offset.",
-        "Law of cosines: c² = a² + b² − 2ab cos γ (two-bone IK).",
+      <KeyIdeas t={t} id="mRt" items={[
+        "Right triangles with the same angle are similar, so their side ratios depend only on the angle.",
+        "sin = opp/hyp, cos = adj/hyp, tan = opp/adj = sin/cos.",
+        "With hypotenuse 1 the legs are cos θ and sin θ, so cos²θ + sin²θ = 1.",
+        "sin θ = cos(90° − θ); exact values come from half a square and half an equilateral triangle.",
+        "arcsin, arccos, arctan turn a ratio back into an angle.",
+        "The slope of a line is the tangent of its angle; h = d · tan θ.",
+        "C++ trig functions take radians.",
       ]} />
     </Article>
   );
