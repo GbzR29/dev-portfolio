@@ -169,7 +169,7 @@ int solveQuadratic(float a, float b, float c, float& x0, float& x1) {
       <H3>{tx(t, "mQuad_rayTitle", "Ray against sphere")}</H3>
       <p>
         {tx(t, "mQuad_rayBody",
-          "A ray starts at a point O and moves in direction D: its points are O + tD for t ≥ 0. A sphere with centre C and radius R is every point at distance R from C. Requiring a ray point to lie on the sphere, |O + tD − C|² = R², and expanding with the dot product gives a quadratic in t: (D·D)t² + 2(D·(O − C))t + (|O − C|² − R²) = 0. The discriminant decides whether the ray misses (Δ < 0), grazes (Δ = 0) or hits (Δ > 0), and the smaller positive root is the nearest hit. The vectors section explains the dot product; the algebra is exactly this chapter's.")}
+          "A ray starts at a point O and moves in direction D: its points are O + tD for t ≥ 0. A sphere with centre C and radius R is every point at distance R from C. Requiring a ray point to lie on the sphere, |O + tD − C|² = R², and expanding with the dot product gives a quadratic in t: (D·D)t² + 2(D·(O − C))t + (|O − C|² − R²) = 0. The discriminant decides whether the ray misses (Δ < 0), grazes (Δ = 0) or hits (Δ > 0), and the smaller positive root is the nearest hit. The Linear Algebra section explains the dot product; the algebra is exactly this chapter's.")}
       </p>
 
       <H2>{tx(t, "mQuad_mistakesTitle", "Common mistakes")}</H2>

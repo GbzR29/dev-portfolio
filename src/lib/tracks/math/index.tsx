@@ -9,8 +9,9 @@ import type { Chapter } from "@/lib/tracks/types";
 
 const ARITHMETIC = "Arithmetic";
 const ALGEBRA = "Algebra";
-const FOUNDATIONS = "Foundations";
-const VECTORS = "Vectors";
+const GEOMETRY = "Geometry";
+const TRIGONOMETRY = "Trigonometry";
+const LINEAR_ALGEBRA = "Linear Algebra";
 
 export const mathChapters: Chapter[] = [
   { id: "number-line",         section: ARITHMETIC, title: "Numbers & the Number Line",    minRead: 16, load: () => import("./chapters/number-line").then((m) => m.NumberLineContent) },
@@ -32,9 +33,14 @@ export const mathChapters: Chapter[] = [
   { id: "exponents",        section: ALGEBRA, title: "Exponents & Logarithms",    minRead: 13, load: () => import("./chapters/exponents").then((m) => m.ExpLogContent) },
   { id: "sequences",        section: ALGEBRA, title: "Sequences & Series",        minRead: 17, load: () => import("./chapters/sequences").then((m) => m.SequencesContent) },
 
-  { id: "trig",      section: FOUNDATIONS, title: "Trigonometry",              minRead: 17, load: () => import("./chapters/trig").then((m) => m.TrigContent) },
+  { id: "angles",          section: GEOMETRY, title: "Points, Lines & Angles",    minRead: 17, load: () => import("./chapters/angles").then((m) => m.AnglesContent) },
+  { id: "triangles",       section: GEOMETRY, title: "Triangles & Congruence",    minRead: 18, load: () => import("./chapters/triangles").then((m) => m.TrianglesContent) },
+  { id: "area",            section: GEOMETRY, title: "Perimeter & Area",          minRead: 18, load: () => import("./chapters/area").then((m) => m.AreaContent) },
+  { id: "pythagoras",      section: GEOMETRY, title: "The Pythagorean Theorem",   minRead: 17, load: () => import("./chapters/pythagoras").then((m) => m.PythagorasContent) },
 
-  { id: "vectors",   section: VECTORS,     title: "Vectors",                   minRead: 13, load: () => import("./chapters/vectors").then((m) => m.VectorsContent) },
-  { id: "dot",       section: VECTORS,     title: "The Dot Product",           minRead: 14, load: () => import("./chapters/vectors").then((m) => m.DotContent) },
-  { id: "cross",     section: VECTORS,     title: "The Cross Product",         minRead: 14, load: () => import("./chapters/vectors").then((m) => m.CrossContent) },
+  { id: "trig",      section: TRIGONOMETRY, title: "Trigonometry",              minRead: 17, load: () => import("./chapters/trig").then((m) => m.TrigContent) },
+
+  { id: "vectors",   section: LINEAR_ALGEBRA, title: "Vectors",                   minRead: 13, load: () => import("./chapters/vectors").then((m) => m.VectorsContent) },
+  { id: "dot",       section: LINEAR_ALGEBRA, title: "The Dot Product",           minRead: 14, load: () => import("./chapters/vectors").then((m) => m.DotContent) },
+  { id: "cross",     section: LINEAR_ALGEBRA, title: "The Cross Product",         minRead: 14, load: () => import("./chapters/vectors").then((m) => m.CrossContent) },
 ];

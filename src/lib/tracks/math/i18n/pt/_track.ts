@@ -19,6 +19,10 @@ const track = {
     polynomials: "Polinômios",
     exponents: "Expoentes e logaritmos",
     sequences: "Sequências e séries",
+    angles: "Pontos, retas e ângulos",
+    triangles: "Triângulos e congruência",
+    area: "Perímetro e área",
+    pythagoras: "O teorema de Pitágoras",
     trig: "Trigonometria",
     vectors: "Vetores",
     dot: "O produto escalar",
@@ -27,8 +31,9 @@ const track = {
   sections: {
     Arithmetic: "Aritmética",
     Algebra: "Álgebra",
-    Foundations: "Fundamentos",
-    Vectors: "Vetores",
+    Geometry: "Geometria",
+    Trigonometry: "Trigonometria",
+    "Linear Algebra": "Álgebra linear",
   } as Record<string, string>,
 };
 

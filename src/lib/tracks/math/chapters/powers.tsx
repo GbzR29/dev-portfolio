@@ -19,7 +19,7 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mPow_intro",
-          "Multiplication is repeated addition; a power is repeated multiplication. Powers measure how areas and volumes grow with size, how brightness falls off with distance, how fast experience curves climb, and they are the only sane way to write the size of a galaxy or the time a GPU instruction takes. Roots run powers backwards, and the square root in particular is inside every distance and every vector length in graphics. This chapter covers whole-number exponents and roots; the Foundations section extends exponents to every real number and introduces logarithms.")}
+          "Multiplication is repeated addition; a power is repeated multiplication. Powers measure how areas and volumes grow with size, how brightness falls off with distance, how fast experience curves climb, and they are the only sane way to write the size of a galaxy or the time a GPU instruction takes. Roots run powers backwards, and the square root in particular is inside every distance and every vector length in graphics. This chapter covers whole-number exponents and roots; the Exponents & Logarithms chapter in the Algebra section extends exponents to every real number and introduces logarithms.")}
       </Lead>
 
       <H2>{tx(t, "mPow_powTitle", "Powers as repeated multiplication")}</H2>
@@ -107,7 +107,7 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mPow_nthTitle", "Cube roots and n-th roots")}</H3>
       <p>
         {tx(t, "mPow_nthBody",
-          "The cube root ∛x is the number whose cube is x: ∛125 = 5, the side of a cube with volume 125. In general the n-th root ⁿ√x undoes the n-th power. Odd roots exist for negative numbers too, because an odd power keeps the sign: ∛(−8) = −2. Even roots of negative numbers do not exist among the real numbers. The Foundations section shows that a root is itself a power, with a fractional exponent: √x = x^(1/2) and ⁿ√x = x^(1/n).")}
+          "The cube root ∛x is the number whose cube is x: ∛125 = 5, the side of a cube with volume 125. In general the n-th root ⁿ√x undoes the n-th power. Odd roots exist for negative numbers too, because an odd power keeps the sign: ∛(−8) = −2. Even roots of negative numbers do not exist among the real numbers. The Exponents & Logarithms chapter shows that a root is itself a power, with a fractional exponent: √x = x^(1/2) and ⁿ√x = x^(1/n).")}
       </p>
 
       <PowerFigure t={t} />

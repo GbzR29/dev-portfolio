@@ -1,6 +1,6 @@
 "use client";
 
-// Foundations 4: trigonometry — angles and radians, right triangles, the unit
+// Trigonometry 1: trigonometry — angles and radians, right triangles, the unit
 // circle, identities, the rotation formula, polar coordinates and atan2,
 // waves, and the law of cosines.
 
