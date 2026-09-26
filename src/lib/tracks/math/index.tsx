@@ -65,4 +65,9 @@ export const mathChapters: Chapter[] = [
   { id: "derivative-uses",  section: CALCULUS, title: "Using Derivatives",           minRead: 21, load: () => import("./chapters/derivative-uses").then((m) => m.DerivativeUsesContent) },
   { id: "integrals",        section: CALCULUS, title: "Integrals: Area by Strips",   minRead: 19, load: () => import("./chapters/integrals").then((m) => m.IntegralsContent) },
   { id: "ftc",              section: CALCULUS, title: "The Fundamental Theorem",     minRead: 18, load: () => import("./chapters/ftc").then((m) => m.FtcContent) },
+  { id: "integration-techniques", section: CALCULUS, title: "Techniques of Integration", minRead: 22, load: () => import("./chapters/integration-techniques").then((m) => m.IntegrationTechniquesContent) },
+  { id: "series",                 section: CALCULUS, title: "Taylor Series",             minRead: 21, load: () => import("./chapters/series").then((m) => m.SeriesContent) },
+  { id: "partial-derivatives",    section: CALCULUS, title: "Partial Derivatives & the Gradient", minRead: 21, load: () => import("./chapters/partial-derivatives").then((m) => m.PartialDerivativesContent) },
+  { id: "multiple-integrals",     section: CALCULUS, title: "Multiple Integrals",        minRead: 20, load: () => import("./chapters/multiple-integrals").then((m) => m.MultipleIntegralsContent) },
+  { id: "differential-equations", section: CALCULUS, title: "Differential Equations",    minRead: 22, load: () => import("./chapters/differential-equations").then((m) => m.DifferentialEquationsContent) },
 ];

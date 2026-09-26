@@ -48,6 +48,11 @@ const track = {
     "derivative-uses": "Aplicações da derivada",
     integrals: "Integrais: área por faixas",
     ftc: "O teorema fundamental",
+    "integration-techniques": "Técnicas de integração",
+    series: "Séries de Taylor",
+    "partial-derivatives": "Derivadas parciais e o gradiente",
+    "multiple-integrals": "Integrais múltiplas",
+    "differential-equations": "Equações diferenciais",
   } as Record<string, string>,
   sections: {
     Arithmetic: "Aritmética",

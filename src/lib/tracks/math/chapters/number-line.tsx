@@ -206,7 +206,7 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mNL_s2t", "Algebra"), tx(t, "mNL_s2d", "expressions, linear equations and inequalities, systems, quadratics, polynomials, functions, exponentials and logarithms, sequences")],
           [tx(t, "mNL_s3t", "Geometry and trigonometry"), tx(t, "mNL_s3d", "angles, triangles, Pythagoras, similarity, areas and volumes, circles, analytic geometry, transformations, the unit circle, identities, polar coordinates, waves")],
           [tx(t, "mNL_s4t", "Linear algebra"), tx(t, "mNL_s4d", "vectors, the dot and cross products, matrices, determinants, inverses, eigenvectors, complex numbers, quaternions")],
-          [tx(t, "mNL_s5t", "Calculus"), tx(t, "mNL_s5d", "limits, derivatives and their rules, integrals, the fundamental theorem, series, partial derivatives and gradients, differential equations")],
+          [tx(t, "mNL_s5t", "Calculus"), tx(t, "mNL_s5d", "limits, derivatives and their rules, integrals, the fundamental theorem, integration techniques, Taylor series, partial derivatives and gradients, multiple integrals, differential equations")],
           [tx(t, "mNL_s6t", "Probability and statistics"), tx(t, "mNL_s6d", "counting, probability, Bayes, random variables and distributions, expectation and variance, sampling, regression")],
         ]}
       />
