@@ -47,7 +47,7 @@ export const TRACK_CATALOG: TrackInfo[] = [
     descKey: "trackGameDevDesc", descFallback: "Game loops and fixed timesteps, easing and springs, randomness and Perlin noise, collision detection and the patterns behind fast game code — with interactive figures.",
   },
   {
-    id: "math", path: "Math", title: "Math for Graphics", accentColor: "#14b8a6", status: "available", plannedLessons: 7,
+    id: "math", path: "Math", title: "Math", accentColor: "#14b8a6", status: "available", plannedLessons: 7,
     levelKey: "begAdv", levelFallback: "Beginner → Advanced",
     descKey: "trackMathDesc", descFallback: "Mathematics from the ground up: arithmetic, algebra, geometry, trigonometry, linear algebra and calculus, worked by hand — every formula explained, every idea interactive.",
   },
