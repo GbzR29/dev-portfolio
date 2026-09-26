@@ -12,6 +12,7 @@ const GEOMETRY = "Geometry";
 const TRIGONOMETRY = "Trigonometry";
 const LINEAR_ALGEBRA = "Linear Algebra";
 const CALCULUS = "Calculus";
+const PROBABILITY = "Probability & Statistics";
 
 export const mathChapters: Chapter[] = [
   { id: "number-line",         section: ARITHMETIC, title: "Numbers & the Number Line",    minRead: 16, load: () => import("./chapters/number-line").then((m) => m.NumberLineContent) },
@@ -70,4 +71,9 @@ export const mathChapters: Chapter[] = [
   { id: "partial-derivatives",    section: CALCULUS, title: "Partial Derivatives & the Gradient", minRead: 21, load: () => import("./chapters/partial-derivatives").then((m) => m.PartialDerivativesContent) },
   { id: "multiple-integrals",     section: CALCULUS, title: "Multiple Integrals",        minRead: 20, load: () => import("./chapters/multiple-integrals").then((m) => m.MultipleIntegralsContent) },
   { id: "differential-equations", section: CALCULUS, title: "Differential Equations",    minRead: 22, load: () => import("./chapters/differential-equations").then((m) => m.DifferentialEquationsContent) },
+
+  { id: "counting",         section: PROBABILITY, title: "Counting: Permutations & Combinations", minRead: 20, load: () => import("./chapters/counting").then((m) => m.CountingContent) },
+  { id: "probability",      section: PROBABILITY, title: "Probability Basics",              minRead: 19, load: () => import("./chapters/probability").then((m) => m.ProbabilityContent) },
+  { id: "conditional",      section: PROBABILITY, title: "Conditional Probability & Bayes", minRead: 21, load: () => import("./chapters/conditional").then((m) => m.ConditionalContent) },
+  { id: "random-variables", section: PROBABILITY, title: "Random Variables",                minRead: 20, load: () => import("./chapters/random-variables").then((m) => m.RandomVariablesContent) },
 ];

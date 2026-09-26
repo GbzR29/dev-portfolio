@@ -53,6 +53,10 @@ const track = {
     "partial-derivatives": "Derivadas parciais e o gradiente",
     "multiple-integrals": "Integrais múltiplas",
     "differential-equations": "Equações diferenciais",
+    counting: "Contagem: permutações e combinações",
+    probability: "Noções de probabilidade",
+    conditional: "Probabilidade condicional e Bayes",
+    "random-variables": "Variáveis aleatórias",
   } as Record<string, string>,
   sections: {
     Arithmetic: "Aritmética",
@@ -61,6 +65,7 @@ const track = {
     Trigonometry: "Trigonometria",
     "Linear Algebra": "Álgebra linear",
     Calculus: "Cálculo",
+    "Probability & Statistics": "Probabilidade e estatística",
   } as Record<string, string>,
 };
 
