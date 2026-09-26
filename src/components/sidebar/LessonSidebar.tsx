@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
-  Aperture, BookMarked, Boxes, Braces, CheckCircle2, ChevronRight, Clock, Crosshair, Divide, DraftingCompass, Gauge, Hash, Layers, Mountain, MoveUpRight, Puzzle, Radar, Shapes, Timer, TriangleRight, Variable, Wand, Waves, Lightbulb, Move3d, Rocket, Sparkles, Wrench,
+  Aperture, BookMarked, Boxes, Braces, ChartSpline, CheckCircle2, ChevronRight, Clock, Crosshair, Divide, DraftingCompass, Gauge, Hash, Layers, Mountain, MoveUpRight, Puzzle, Radar, Shapes, Timer, TriangleRight, Variable, Wand, Waves, Lightbulb, Move3d, Rocket, Sparkles, Wrench,
   type LucideIcon,
 } from "lucide-react";
 import type { Chapter, Track } from "@/lib/tracks/types";
@@ -52,7 +52,7 @@ const SECTION_ICONS: [RegExp, LucideIcon][] = [
 ];
 /** Section names that mean something different per track ("Foundations" in C++ vs Math). */
 const TRACK_SECTION_ICONS: Record<string, [RegExp, LucideIcon][]> = {
-  math: [[/arithmetic/i, Divide], [/algebra/i, Variable], [/geometry/i, DraftingCompass], [/trigonometry/i, TriangleRight], [/linear algebra|vector/i, MoveUpRight]],
+  math: [[/arithmetic/i, Divide], [/^algebra/i, Variable], [/geometry/i, DraftingCompass], [/trigonometry/i, TriangleRight], [/linear algebra|vector/i, MoveUpRight], [/calculus/i, ChartSpline]],
 };
 const sectionIcon = (title: string, trackId: string) =>
   (TRACK_SECTION_ICONS[trackId] ?? []).concat(SECTION_ICONS).find(([re]) => re.test(title))?.[1] ?? Hash;

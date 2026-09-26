@@ -43,6 +43,12 @@ const track = {
     eigen: "Autovalores e autovetores",
     complex: "Números complexos",
     quaternions: "Quatérnios e rotação 3D",
+    limits: "Limites e continuidade",
+    derivatives: "A derivada",
+    "derivative-rules": "Regras de derivação",
+    "derivative-uses": "Aplicações da derivada",
+    integrals: "Integrais: área por faixas",
+    ftc: "O teorema fundamental",
   } as Record<string, string>,
   sections: {
     Arithmetic: "Aritmética",
@@ -50,6 +56,7 @@ const track = {
     Geometry: "Geometria",
     Trigonometry: "Trigonometria",
     "Linear Algebra": "Álgebra linear",
+    Calculus: "Cálculo",
   } as Record<string, string>,
 };
 

@@ -12,6 +12,7 @@ const ALGEBRA = "Algebra";
 const GEOMETRY = "Geometry";
 const TRIGONOMETRY = "Trigonometry";
 const LINEAR_ALGEBRA = "Linear Algebra";
+const CALCULUS = "Calculus";
 
 export const mathChapters: Chapter[] = [
   { id: "number-line",         section: ARITHMETIC, title: "Numbers & the Number Line",    minRead: 16, load: () => import("./chapters/number-line").then((m) => m.NumberLineContent) },
@@ -59,4 +60,11 @@ export const mathChapters: Chapter[] = [
   { id: "eigen",       section: LINEAR_ALGEBRA, title: "Eigenvalues & Eigenvectors", minRead: 18, load: () => import("./chapters/eigen").then((m) => m.EigenContent) },
   { id: "complex",     section: LINEAR_ALGEBRA, title: "Complex Numbers",           minRead: 19, load: () => import("./chapters/complex").then((m) => m.ComplexContent) },
   { id: "quaternions", section: LINEAR_ALGEBRA, title: "Quaternions & 3D Rotation", minRead: 20, load: () => import("./chapters/quaternions").then((m) => m.QuaternionsContent) },
+
+  { id: "limits",           section: CALCULUS, title: "Limits & Continuity",         minRead: 19, load: () => import("./chapters/limits").then((m) => m.LimitsContent) },
+  { id: "derivatives",      section: CALCULUS, title: "The Derivative",              minRead: 19, load: () => import("./chapters/derivatives").then((m) => m.DerivativesContent) },
+  { id: "derivative-rules", section: CALCULUS, title: "Rules of Differentiation",    minRead: 20, load: () => import("./chapters/derivative-rules").then((m) => m.DerivativeRulesContent) },
+  { id: "derivative-uses",  section: CALCULUS, title: "Using Derivatives",           minRead: 21, load: () => import("./chapters/derivative-uses").then((m) => m.DerivativeUsesContent) },
+  { id: "integrals",        section: CALCULUS, title: "Integrals: Area by Strips",   minRead: 19, load: () => import("./chapters/integrals").then((m) => m.IntegralsContent) },
+  { id: "ftc",              section: CALCULUS, title: "The Fundamental Theorem",     minRead: 18, load: () => import("./chapters/ftc").then((m) => m.FtcContent) },
 ];
