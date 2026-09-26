@@ -138,7 +138,7 @@ turret.angle = rotateToward(turret.angle, want, 3.0f * dt);`}</CodeBlock>
       <H2>{tx(t, "mTrig_waveTitle", "Waves")}</H2>
       <p>
         {tx(t, "mTrig_waveBody",
-          "Unroll the unit circle over time and the height of the moving point traces a sine wave: the smoothest possible back-and-forth motion. Four numbers shape it, the same four as the function transformations of the algebra chapter: amplitude (how far), frequency (how often), phase (where in the cycle it starts) and offset (around which value).")}
+          "Unroll the unit circle over time and the height of the moving point traces a sine wave: the smoothest possible back-and-forth motion. Four numbers shape it, the same four as the function transformations of the Functions & Graphs chapter: amplitude (how far), frequency (how often), phase (where in the cycle it starts) and offset (around which value).")}
       </p>
       <Equation label={tx(t, "mTrig_eqWave", "A sinusoid")}
         where={[

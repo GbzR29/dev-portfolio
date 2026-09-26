@@ -25,8 +25,12 @@ export const mathChapters: Chapter[] = [
   { id: "expressions",      section: ALGEBRA, title: "Expressions",               minRead: 15, load: () => import("./chapters/expressions").then((m) => m.ExpressionsContent) },
   { id: "linear-equations", section: ALGEBRA, title: "Linear Equations",          minRead: 17, load: () => import("./chapters/linear-equations").then((m) => m.LinearEquationsContent) },
   { id: "inequalities",     section: ALGEBRA, title: "Inequalities",              minRead: 15, load: () => import("./chapters/inequalities").then((m) => m.InequalitiesContent) },
-  { id: "algebra",          section: ALGEBRA, title: "Algebra & Functions",       minRead: 17, load: () => import("./chapters/functions").then((m) => m.AlgebraContent) },
+  { id: "algebra",          section: ALGEBRA, title: "Functions & Graphs",        minRead: 17, load: () => import("./chapters/functions").then((m) => m.AlgebraContent) },
+  { id: "linear-systems",   section: ALGEBRA, title: "Systems of Equations",      minRead: 16, load: () => import("./chapters/linear-systems").then((m) => m.LinearSystemsContent) },
+  { id: "quadratics",       section: ALGEBRA, title: "Quadratics",                minRead: 19, load: () => import("./chapters/quadratics").then((m) => m.QuadraticsContent) },
+  { id: "polynomials",      section: ALGEBRA, title: "Polynomials",               minRead: 18, load: () => import("./chapters/polynomials").then((m) => m.PolynomialsContent) },
   { id: "exponents",        section: ALGEBRA, title: "Exponents & Logarithms",    minRead: 13, load: () => import("./chapters/exponents").then((m) => m.ExpLogContent) },
+  { id: "sequences",        section: ALGEBRA, title: "Sequences & Series",        minRead: 17, load: () => import("./chapters/sequences").then((m) => m.SequencesContent) },
 
   { id: "trig",      section: FOUNDATIONS, title: "Trigonometry",              minRead: 17, load: () => import("./chapters/trig").then((m) => m.TrigContent) },
 

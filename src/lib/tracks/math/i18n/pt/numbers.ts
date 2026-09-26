@@ -48,7 +48,7 @@ const text: Record<string, string> = {
   mNum_s0: "e = 0, m ≠ 0",
   mNum_s1: "números abaixo de 2⁻¹²⁶ ≈ 1,2 × 10⁻³⁸",
   mNum_s2: "podem ser de 10 a 100× mais lentos em algumas CPUs; código de áudio e de física muitas vezes liga o flush-to-zero",
-  mNum_cancelTip: "Subtrair dois números quase iguais perde precisão (cancelamento catastrófico): 1,0000001 − 1,0000000 guarda só o dígito ou os dois dígitos em que eles diferem. Reorganizar a fórmula muitas vezes evita isso. Por exemplo, 1 − cos x para um ângulo x minúsculo dá 0 em float, mas a expressão equivalente 2 sen²(x/2) é precisa. A mesma ideia dá a fórmula quadrática numericamente estável do próximo capítulo.",
+  mNum_cancelTip: "Subtrair dois números quase iguais perde precisão (cancelamento catastrófico): 1,0000001 − 1,0000000 guarda só o dígito ou os dois dígitos em que eles diferem. Reorganizar a fórmula muitas vezes evita isso. Por exemplo, 1 − cos x para um ângulo x minúsculo dá 0 em float, mas a expressão equivalente 2 sen²(x/2) é precisa. A mesma ideia dá a fórmula quadrática numericamente estável do capítulo de equações do segundo grau.",
   mNum_key0: "Em C++, / e % entre inteiros truncam em direção a zero; use divisão com piso e ((a % n) + n) % n para grades e voltas.",
   mNum_key1: "n bits guardam 2ⁿ valores; inteiros com sinal usam complemento de dois; o overflow sem sinal dá a volta.",
   mNum_key2: "float = sinal × 1,fração × 2^(expoente − 127): 24 bits significativos, ~7 dígitos decimais.",

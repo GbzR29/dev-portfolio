@@ -117,7 +117,7 @@ bool nearlyEqual(float a, float b, float rel = 1e-5f, float abs = 1e-8f) {
         ]}
       />
       <Callout type="tip" t={t}>
-        {tx(t, "mNum_cancelTip", "Subtracting two nearly equal numbers loses precision (catastrophic cancellation): 1.0000001 − 1.0000000 keeps only the one or two digits in which they differ. Rearranging a formula often avoids it. For example 1 − cos x for a tiny angle x is 0 in float, but the equal expression 2 sin²(x/2) is accurate. The same idea gives the numerically stable quadratic formula in the next chapter.")}
+        {tx(t, "mNum_cancelTip", "Subtracting two nearly equal numbers loses precision (catastrophic cancellation): 1.0000001 − 1.0000000 keeps only the one or two digits in which they differ. Rearranging a formula often avoids it. For example 1 − cos x for a tiny angle x is 0 in float, but the equal expression 2 sin²(x/2) is accurate. The same idea gives the numerically stable quadratic formula in the Quadratics chapter.")}
       </Callout>
 
       <KeyIdeas t={t} id="mNum" items={[

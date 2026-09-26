@@ -38,7 +38,7 @@ const text: Record<string, string> = {
   mTrig_wPolarTheta: "o ângulo a partir do eixo x positivo, via atan2; repare na ordem dos argumentos, y primeiro",
   mTrig_wrapWarn: "Ângulos dão a volta: 350° e −10° são a mesma direção, e a diferença entre 350° e 10° é 20°, não 340°. Sempre leve uma diferença para (−π, π] antes de usá-la para girar, interpolar ou comparar, senão os objetos giram pelo caminho mais longo.",
   mTrig_waveTitle: "Ondas",
-  mTrig_waveBody: "Desenrole o círculo unitário ao longo do tempo e a altura do ponto que gira traça uma senoide: o movimento de vaivém mais suave possível. Quatro números lhe dão forma, os mesmos quatro das transformações de função do capítulo de álgebra: amplitude (quão longe), frequência (com que frequência), fase (em que ponto do ciclo começa) e deslocamento (em torno de qual valor).",
+  mTrig_waveBody: "Desenrole o círculo unitário ao longo do tempo e a altura do ponto que gira traça uma senoide: o movimento de vaivém mais suave possível. Quatro números lhe dão forma, os mesmos quatro das transformações de função do capítulo de funções e gráficos: amplitude (quão longe), frequência (com que frequência), fase (em que ponto do ciclo começa) e deslocamento (em torno de qual valor).",
   mTrig_eqWave: "Uma senoide",
   mTrig_wA: "a amplitude: a onda vai de C − A a C + A",
   mTrig_wF: "a frequência em ciclos por segundo (Hz). O período, a duração de um ciclo, é T = 1/f",
