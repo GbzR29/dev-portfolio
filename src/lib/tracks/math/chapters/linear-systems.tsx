@@ -3,9 +3,9 @@
 // Algebra 5: systems of linear equations — what a solution of a system is,
 // the graphical view as crossing lines, substitution, elimination, the three
 // possible outcomes, Cramer's rule and the determinant, three unknowns, and
-// line intersection in C++.
+// worked word and line problems.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +19,7 @@ export function LinearSystemsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mSys_intro",
-          "One equation can pin down one unknown. Real problems often have several unknowns tied together by several conditions: where do two paths cross, what mix of two potions gives exactly the effect you want, which point lies on two walls at once. A set of equations that must all be true at the same time is a system. This chapter solves systems of two linear equations in two unknowns in three ways (by graph, substitution and elimination), shows why some have no solution or infinitely many, and turns it all into a formula and into code.")}
+          "One equation can pin down one unknown. Real problems often have several unknowns tied together by several conditions: where do two roads cross, what mix of two coffees gives exactly the price you want, which line passes through two given points. A set of equations that must all be true at the same time is a system. This chapter solves systems of two linear equations in two unknowns in three ways (by graph, substitution and elimination), shows why some have no solution or infinitely many, and turns it all into one formula.")}
       </Lead>
 
       <H2>{tx(t, "mSys_whatTitle", "What a system is")}</H2>
@@ -125,35 +125,22 @@ export function LinearSystemsContent({ t }: { t: TrackTranslations }) {
         {r`\begin{cases} x + y + z = 6 \\ 2x - z = 3 \\ 2x + 3y + z = 14 \end{cases} \;\Rightarrow\; (x, y, z) = (2, 3, 1)`}
       </Equation>
 
-      <H2>{tx(t, "mSys_exTitle", "Worked example: a word problem")}</H2>
+      <H2>{tx(t, "mSys_exTitle", "Worked examples")}</H2>
       <p>
         {tx(t, "mSys_ex1",
-          "A shop sells small potions for 3 gold and large ones for 8 gold. A player bought 11 potions for 58 gold. How many of each? Let s be the number of small and l the number of large potions. Counting potions: s + l = 11. Counting gold: 3s + 8l = 58. Substitute s = 11 − l into the second: 33 − 3l + 8l = 58, so 5l = 25, l = 5 and s = 6. Check: 6 + 5 = 11 ✓ and 18 + 40 = 58 ✓. Two unknowns needed two independent facts; with only the total count, the problem would have had many answers.")}
+          "A café sells small coffees for 3 and large ones for 8. One morning it sold 11 coffees for 58 in total. How many of each? Let s be the number of small and l the number of large coffees. Counting cups: s + l = 11. Counting money: 3s + 8l = 58. Substitute s = 11 − l into the second: 33 − 3l + 8l = 58, so 5l = 25, l = 5 and s = 6. Check: 6 + 5 = 11 ✓ and 18 + 40 = 58 ✓. Two unknowns needed two independent facts; with only the total count, the problem would have had many answers.")}
       </p>
 
-      <H2>{tx(t, "mSys_codeTitle", "Intersecting lines in C++")}</H2>
+      <H3>{tx(t, "mSys_ex2T", "The line through two points")}</H3>
       <p>
-        {tx(t, "mSys_codeBody",
-          "Line–line intersection is one of the most common geometry routines in games: laser beams against walls, mouse picking in 2D, clipping. Written with Cramer's rule, it is a handful of multiplications, with one check for the parallel case. The tolerance compares the determinant to a small number instead of exactly 0, because floats almost never produce an exact zero.")}
+        {tx(t, "mSys_ex2",
+          "Which line y = mx + b passes through (1, 5) and (3, 11)? Here the unknowns are not x and y but the slope m and the intercept b. Each point that lies on the line gives one equation: putting x = 1, y = 5 into y = mx + b gives m + b = 5, and putting x = 3, y = 11 gives 3m + b = 11. Subtract the first equation from the second to eliminate b: 2m = 6, so m = 3. Back-substitute: 3 + b = 5, so b = 2. The line is y = 3x + 2. Check both points: 3 · 1 + 2 = 5 ✓ and 3 · 3 + 2 = 11 ✓.")}
       </p>
-      <CodeBlock lang="cpp" filename="lines.hpp" t={t}>{`#include <optional>
-#include <cmath>
-
-struct Vec2 { float x, y; };
-
-// Solves  a·x + b·y = e,  c·x + d·y = f.  No value if the lines are parallel.
-std::optional<Vec2> solve2x2(float a, float b, float c, float d, float e, float f) {
-    float det = a * d - b * c;
-    if (std::abs(det) < 1e-8f) return std::nullopt;   // parallel or the same line
-    return Vec2{ (e * d - b * f) / det, (a * f - e * c) / det };
-}
-
-// Line through p1, p2 as  a·x + b·y = e  (a normal vector (a, b) and a constant)
-void lineOf(Vec2 p1, Vec2 p2, float& a, float& b, float& e) {
-    a = p2.y - p1.y;
-    b = p1.x - p2.x;
-    e = a * p1.x + b * p1.y;
-}`}</CodeBlock>
+      <H3>{tx(t, "mSys_ex3T", "Where two roads cross")}</H3>
+      <p>
+        {tx(t, "mSys_ex3",
+          "On a map, one road follows 2x + y = 10 and another follows x − y = 2. Adding the equations eliminates y at once: 3x = 12, so x = 4. Then 4 − y = 2 gives y = 2. The crossing is (4, 2). With Cramer's rule instead: a = 2, b = 1, c = 1, d = −1, e = 10, f = 2, so ad − bc = −2 − 1 = −3, x = (ed − bf)/(−3) = (−10 − 2)/(−3) = 4 and y = (af − ec)/(−3) = (4 − 10)/(−3) = 2. Same point, as it must be.")}
+      </p>
 
       <H2>{tx(t, "mSys_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -163,7 +150,7 @@ void lineOf(Vec2 p1, Vec2 p2, float& a, float& b, float& e) {
           [tx(t, "mSys_m2w", "multiplying only one side of an equation"), tx(t, "mSys_m2r", "multiply every term on both sides"), tx(t, "mSys_m2", "otherwise it is a different equation")],
           [tx(t, "mSys_m3w", "adding equations without matching coefficients"), tx(t, "mSys_m3r", "scale first so one unknown cancels"), tx(t, "mSys_m3", "nothing is eliminated otherwise")],
           [tx(t, "mSys_m4w", "checking in only one equation"), tx(t, "mSys_m4r", "check in both"), tx(t, "mSys_m4", "every point on one line satisfies that equation")],
-          ["det == 0.0f", "abs(det) < ε", tx(t, "mSys_m5", "rounding makes nearly parallel lines give a tiny, non-zero determinant and a huge, useless answer")],
+          [tx(t, "mSys_m5w", "using Cramer's rule when ad − bc = 0"), tx(t, "mSys_m5r", "compute ad − bc first"), tx(t, "mSys_m5", "it would divide by zero: the lines are parallel or the same, so there is no single answer")],
         ]}
       />
 

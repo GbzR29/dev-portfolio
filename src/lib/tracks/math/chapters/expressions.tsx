@@ -2,9 +2,9 @@
 
 // Algebra 1: expressions — variables, terms and coefficients, evaluating by
 // substitution, combining like terms, the distributive law and expanding two
-// brackets, factoring out a common factor, and expressions as C++ code.
+// brackets, factoring out a common factor, and evaluating cleverly by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -28,7 +28,7 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mExpr_varBody2",
-          "Programmers already think this way. In float speed = distance / time; the names are variables, and the line is a rule that works for whatever values they hold when it runs. The difference is that in code a variable always has a current value, while in algebra we are allowed to reason about it before choosing one.")}
+          "You already use variables in everyday formulas. \"Cost = price per kilogram × kilograms\" is an expression with two variables: it works for apples at 4 per kg and for cheese at 30 per kg, for 1 kg or 2.5 kg. Writing it as c = p × m only shortens the words. The power of algebra is that we may reason about p and m, rearrange the rule, compare it with another rule, before anybody tells us which numbers they are.")}
       </p>
 
       <H2>{tx(t, "mExpr_partsTitle", "The parts of an expression")}</H2>
@@ -154,34 +154,41 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
         ]}>
         {r`4(x - 2) - (x - 5) = 4x - 8 - x + 5 = 3x - 3`}
       </Equation>
-      <H3>{tx(t, "mExpr_ex2T", "A game formula")}</H3>
+      <H3>{tx(t, "mExpr_ex2T", "A price formula")}</H3>
       <p>
         {tx(t, "mExpr_ex2",
-          "A shop sells a sword for 50 gold plus 20 gold per upgrade level L, with a 10% discount on the whole price: 0.9(50 + 20L). Expanded, that is 45 + 18L: the base price after discount is 45, and each level adds 18. Both forms give the same price, 0.9 × 110 = 99 and 45 + 54 = 99 for L = 3, but the expanded one says directly what each level costs.")}
+          "A plumber charges a 50 call-out fee plus 20 per hour h, and gives a 10% discount on the whole bill: 0.9(50 + 20h). Expanded, that is 45 + 18h: the call-out fee after discount is 45, and each hour adds 18. Both forms give the same bill, 0.9 × 110 = 99 and 45 + 54 = 99 for h = 3, but the expanded one says directly what each extra hour costs.")}
       </p>
       <H3>{tx(t, "mExpr_ex3T", "The midpoint")}</H3>
       <p>
         {tx(t, "mExpr_ex3",
-          "The midpoint of a and b is (a + b)/2. Rewrite it as a + (b − a)/2: expand the second form, a + b/2 − a/2 = a/2 + b/2 = (a + b)/2. Same value, but the second form never adds a and b together, so for large integers it cannot overflow. That is why binary search implementations use lo + (hi − lo)/2. Rewriting expressions into equal but safer forms is everyday programming work.")}
+          "The midpoint of a and b is (a + b)/2. Rewrite it as a + (b − a)/2: expand the second form, a + b/2 − a/2 = a/2 + b/2 = (a + b)/2. Same value, but the two forms tell different stories. The first says \"add them and share equally\". The second says \"start at a and walk half the distance to b\". With a = 2 and b = 10 both give 6: 12/2 = 6 and 2 + 8/2 = 6. Choosing the form that matches the question is half of doing algebra well.")}
       </p>
 
-      <H2>{tx(t, "mExpr_codeTitle", "Expressions in C++")}</H2>
+      <H2>{tx(t, "mExpr_hornerTitle", "Evaluating cleverly: nesting")}</H2>
       <p>
-        {tx(t, "mExpr_codeBody",
-          "A C++ expression is an algebraic expression with a type. Every rule above holds for exact integers (until they overflow), but floating-point numbers are rounded after each operation, so rewrites that are equal on paper can give slightly different results. The compiler knows this and, by default, will not reorder float arithmetic for you.")}
+        {tx(t, "mExpr_hornerBody",
+          "Rewriting is not only about looking simpler; it can also save work. Take 2x² − 5x + 1. The first two terms share a factor x, so factor it out: 2x² − 5x = (2x − 5)·x. The expression becomes (2x − 5)·x + 1. This nested form is called Horner's form. It has the same value for every x, but it needs one multiplication fewer, and every step keeps the numbers small.")}
       </p>
-      <CodeBlock lang="cpp" filename="expressions.cpp" t={t}>{`// 2x² − 5x + 1 — "evaluate by substitution" is just calling the function
-float poly(float x) { return 2 * x * x - 5 * x + 1; }
-
-// Same value, fewer multiplications: factor x out of the first two terms (Horner's form)
-float polyHorner(float x) { return (2 * x - 5) * x + 1; }
-
-// Integers: equal on paper, different in code
-int midBad  = (lo + hi) / 2;        // lo + hi can overflow int
-int midGood = lo + (hi - lo) / 2;   // same value, never overflows
-
-// Floats: (a + b) + c and a + (b + c) can differ in the last bits,
-// so the compiler keeps your order unless you allow -ffast-math.`}</CodeBlock>
+      <Equation label={tx(t, "mExpr_eqHorner", "Horner's form of 2x² − 5x + 1")}
+        where={[
+          [r`2x - 5`, tx(t, "mExpr_wH1", "the inner bracket: what is left of 2x² − 5x after taking out one x")],
+          [r`(\ldots)\cdot x + 1`, tx(t, "mExpr_wH2", "multiply that by x, then add the constant term")],
+        ]}>
+        {r`2x^2 - 5x + 1 = (2x - 5)\,x + 1`}
+      </Equation>
+      <Equation label={tx(t, "mExpr_eqHornerEx", "Both forms at x = 7")}
+        notes={[
+          tx(t, "mExpr_hEx1", "expanded form: 2 · 49 = 98, 5 · 7 = 35, so 98 − 35 + 1 = 64"),
+          tx(t, "mExpr_hEx2", "nested form: 2 · 7 − 5 = 9, then 9 · 7 = 63, then 63 + 1 = 64"),
+          tx(t, "mExpr_hEx3", "same answer; the nested one never needed 7² and only multiplied twice"),
+        ]}>
+        {r`2\cdot 7^2 - 5\cdot 7 + 1 = (2\cdot 7 - 5)\cdot 7 + 1 = 64`}
+      </Equation>
+      <p>
+        {tx(t, "mExpr_hornerBody2",
+          "The idea works for longer expressions too: 3x³ + 2x² − x + 4 = ((3x + 2)x − 1)x + 4. Read it from the inside out: start with the first coefficient, then repeatedly \"multiply by x, add the next coefficient\". The Polynomials chapter turns this into a tidy table for dividing polynomials.")}
+      </p>
       <Callout type="tip" t={t}>
         {tx(t, "mExpr_checkTip", "The fastest way to catch an algebra slip: pick an easy value (x = 1, x = 2, never x = 0 alone, because it hides mistakes in the x terms) and evaluate both the original and your rewritten expression. If they differ, the rewrite is wrong. If they agree for two or three values, it is very probably right.")}
       </Callout>

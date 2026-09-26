@@ -5,7 +5,7 @@
 // brackets and fractions, checking, the three possible outcomes, rearranging
 // formulas, and word problems turned into equations.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +19,7 @@ export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mLin_intro",
-          "An expression is a value; an equation is a claim: two expressions are equal. \"2x + 3 = 11\" claims that doubling some number and adding 3 gives 11, and solving it means finding every x for which the claim is true. Linear equations, where the unknown appears only to the first power, are the simplest kind and by far the most common: when will the projectile reach the wall, how many coins buy this item, where does the camera have to be. This chapter builds the one rule behind all of them and applies it until it is automatic.")}
+          "An expression is a value; an equation is a claim: two expressions are equal. \"2x + 3 = 11\" claims that doubling some number and adding 3 gives 11, and solving it means finding every x for which the claim is true. Linear equations, where the unknown appears only to the first power, are the simplest kind and by far the most common: when will the train catch up, how many tickets does the budget buy, what is 30 °C in Fahrenheit. This chapter builds the one rule behind all of them and applies it until it is automatic.")}
       </Lead>
 
       <H2>{tx(t, "mLin_whatTitle", "What an equation says")}</H2>
@@ -144,7 +144,7 @@ export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
           [r`t`, tx(t, "mLin_wT", "the time, now the unknown")],
           [r`v`, tx(t, "mLin_wV", "the speed after time t")],
         ]}
-        note={tx(t, "mLin_eqRearrNote", "Subtract u from both sides: v − u = a·t. Divide both sides by a (assuming a ≠ 0): t = (v − u)/a. A negative t means the target speed was in the past; code must decide what that means for the game.")}>
+        note={tx(t, "mLin_eqRearrNote", "Subtract u from both sides: v − u = a·t. Divide both sides by a (assuming a ≠ 0): t = (v − u)/a. A negative t means the target speed was reached before the clock started: check that an answer makes sense for the question, not just for the algebra.")}>
         {r`v = u + a\,t \;\;\Longrightarrow\;\; t = \frac{v - u}{a}`}
       </Equation>
 
@@ -161,30 +161,19 @@ export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mLin_w2T", "Budget")}</H3>
       <p>
         {tx(t, "mLin_w2",
-          "A player has 500 gold, buys a 140-gold shield, and wants to spend the rest on potions at 45 gold each. Let p be the number of potions: 140 + 45p = 500, so 45p = 360 and p = 8. Check: 140 + 360 = 500 ✓. Had the answer been 8.4, the equation would be telling you that only 8 whole potions fit; a real-world answer must still make sense in the real world.")}
+          "Ana has 500 to spend. She buys a 140 jacket and wants to spend the rest on shirts at 45 each. Let p be the number of shirts: 140 + 45p = 500, so 45p = 360 and p = 8. Check: 140 + 360 = 500 ✓. Had the answer been 8.4, the equation would be telling you that only 8 whole shirts fit; a real-world answer must still make sense in the real world.")}
       </p>
 
-      <H2>{tx(t, "mLin_codeTitle", "Linear equations in code")}</H2>
+      <H3>{tx(t, "mLin_w3T", "Mixing")}</H3>
       <p>
-        {tx(t, "mLin_codeBody",
-          "Code rarely solves equations symbolically; instead you solve them once on paper and write the resulting formula, guarding the cases the algebra excluded. Ray tracing, collision tests and animation timing are full of such pre-solved linear equations.")}
+        {tx(t, "mLin_w3",
+          "How many litres of pure juice must be added to 6 litres of a drink that is 20% juice to make a drink that is 50% juice? Let x be the litres of juice added. Count the juice, not the drink: before there is 20% of 6 = 1.2 L, we add x L, so the juice is 1.2 + x. The total volume is 6 + x, and half of it must be juice: 1.2 + x = 0.5(6 + x). Expand: 1.2 + x = 3 + 0.5x. Subtract 0.5x and 1.2 from both sides: 0.5x = 1.8, so x = 3.6 L. Check: 1.2 + 3.6 = 4.8 L of juice in 9.6 L of drink, and 4.8/9.6 = 0.5 ✓.")}
       </p>
-      <CodeBlock lang="cpp" filename="linear.hpp" t={t}>{`#include <optional>
-#include <cmath>
-
-// Solves a·x + b = 0. No value when there is no single solution (a == 0).
-std::optional<float> solveLinear(float a, float b) {
-    if (std::abs(a) < 1e-8f) return std::nullopt;   // 0 = −b: none or every x
-    return -b / a;
-}
-
-// When does a point moving at speed v, starting at x0, reach the wall at xw?
-// x0 + v·t = xw  →  t = (xw − x0) / v, valid only for v ≠ 0 and t ≥ 0.
-std::optional<float> timeToWall(float x0, float v, float xw) {
-    auto t = solveLinear(v, x0 - xw);
-    if (!t || *t < 0) return std::nullopt;          // never, or it was in the past
-    return t;
-}`}</CodeBlock>
+      <H3>{tx(t, "mLin_w4T", "Working together")}</H3>
+      <p>
+        {tx(t, "mLin_w4",
+          "One tap fills a tank in 6 hours, another in 3 hours. How long do they take together? Work with rates: the first tap fills 1/6 of the tank per hour, the second 1/3. Together, in t hours they fill t/6 + t/3, and the tank is full when that equals 1: t/6 + t/3 = 1. Clear the fractions by multiplying every term by the LCM, 6: t + 2t = 6, so 3t = 6 and t = 2 hours. Check: in 2 hours the first tap fills 2/6 = 1/3 and the second 2/3, and 1/3 + 2/3 = 1 ✓. Notice the answer is less than either tap alone, as it must be.")}
+      </p>
 
       <H2>{tx(t, "mLin_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable

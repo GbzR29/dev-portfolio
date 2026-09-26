@@ -2,10 +2,10 @@
 
 // Algebra 6: quadratics — the parabola and what a, b, c do, vertex form,
 // solving by square roots, by factoring and by completing the square, the
-// quadratic formula and the discriminant, sum and product of the roots, a
-// numerically stable solver, and projectile and ray–sphere applications.
+// quadratic formula and the discriminant, sum and product of the roots,
+// building a quadratic from its roots, and projectile and area problems.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -20,7 +20,7 @@ export function QuadraticsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mQuad_intro",
-          "Linear equations describe things that change at a constant rate. The moment something accelerates, a thrown ball, a falling character, a car braking, the unknown appears squared, and you have a quadratic. Quadratics are also what you get when you ask where a ray hits a sphere, which makes their formula one of the most executed lines of code in any ray tracer. This chapter explains the shape of their graphs, three ways to solve them, where the famous formula comes from, and how to compute it without losing precision.")}
+          "Linear equations describe things that change at a constant rate. The moment something accelerates, a thrown ball, a falling stone, a car braking, the unknown appears squared, and you have a quadratic. Quadratics also appear whenever two unknown lengths multiply, as in the area of a rectangle. This chapter explains the shape of their graphs, three ways to solve them, where the famous formula comes from, and how the roots are tied to the coefficients.")}
       </Lead>
 
       <H2>{tx(t, "mQuad_formTitle", "The standard form and the parabola")}</H2>
@@ -134,7 +134,7 @@ export function QuadraticsContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mQuad_vietaTitle", "Sum and product of the roots")}</H3>
       <p>
         {tx(t, "mQuad_vietaBody",
-          "Adding the two roots of the formula cancels the ± parts: x₁ + x₂ = −b/a. Multiplying them gives x₁ · x₂ = c/a (the difference of squares from the expressions chapter does the work). These relations, named after François Viète, are a quick check of any answer, and they are the key to the stable way of computing the roots below.")}
+          "Adding the two roots of the formula cancels the ± parts: x₁ + x₂ = −b/a. Multiplying them gives x₁ · x₂ = c/a (the difference of squares from the expressions chapter does the work). These relations, named after François Viète, are a quick check of any answer, and they let you run the solving process backwards, as the next section shows.")}
       </p>
       <Equation label={tx(t, "mQuad_eqVieta", "Viète's formulas")}
         where={[
@@ -144,21 +144,20 @@ export function QuadraticsContent({ t }: { t: TrackTranslations }) {
         {r`x_1 + x_2 = -\frac{b}{a} \qquad x_1\,x_2 = \frac{c}{a}`}
       </Equation>
 
-      <H2>{tx(t, "mAlg_stableTitle", "The formula in floating point")}</H2>
+      <H3>{tx(t, "mQuad_buildTitle", "From the roots back to the equation")}</H3>
       <p>
-        {tx(t, "mQuad_stableBody",
-          "When b² is much larger than 4ac, √Δ is almost equal to |b|, and one of the two roots computes −b + √Δ, a subtraction of nearly equal numbers that loses most of its digits (the cancellation from the Integers & Floating Point chapter). The fix uses the fact that the two roots multiply to c/a. Compute the root without cancellation first (the one where −b and ∓√Δ have the same sign), then get the other by division.")}
+        {tx(t, "mQuad_buildBody",
+          "Viète's formulas work in both directions. If you want a quadratic whose roots are 3 and 4, multiply out (x − 3)(x − 4): x² − 4x − 3x + 12 = x² − 7x + 12. The middle coefficient is minus the sum of the roots, 3 + 4 = 7, and the constant is their product, 3 · 4 = 12. Read the other way, this is the fastest way to factor by hand when a = 1: to factor x² − 7x + 12, look for two numbers whose sum is 7 and whose product is 12. The pairs that multiply to 12 are 1 · 12, 2 · 6 and 3 · 4, and only 3 + 4 = 7.")}
       </p>
-      <CodeBlock lang="cpp" filename="quadratic.hpp" t={t}>{`// Solves a·x² + b·x + c = 0. Returns the number of real roots, sorted x0 ≤ x1.
-int solveQuadratic(float a, float b, float c, float& x0, float& x1) {
-    float disc = b * b - 4 * a * c;
-    if (disc < 0) return 0;
-    float q = -0.5f * (b + std::copysign(std::sqrt(disc), b));  // b and √Δ same sign: no cancellation
-    x0 = q / a;
-    x1 = (q != 0) ? c / q : x0;      // x0 · x1 = c / a  →  x1 = c / q
-    if (x0 > x1) std::swap(x0, x1);
-    return disc == 0 ? 1 : 2;
-}`}</CodeBlock>
+      <Equation label={tx(t, "mQuad_eqBuild", "A monic quadratic from its roots")}
+        where={[
+          [r`x_1, x_2`, tx(t, "mQuad_wRoots", "the two roots you want")],
+          [r`x_1 + x_2`, tx(t, "mQuad_wS", "their sum, which appears with a minus sign as the x coefficient")],
+          [r`x_1\,x_2`, tx(t, "mQuad_wP", "their product, the constant term")],
+        ]}
+        note={tx(t, "mQuad_eqBuildNote", "Example: x² + x − 12. The product −12 is negative, so the roots have opposite signs; the sum is −1, so the negative one is bigger in size: −4 and 3. Check: −4 + 3 = −1 and −4 · 3 = −12 ✓, so x² + x − 12 = (x + 4)(x − 3).")}>
+        {r`(x - x_1)(x - x_2) = x^2 - (x_1 + x_2)\,x + x_1 x_2`}
+      </Equation>
 
       <H2>{tx(t, "mQuad_appTitle", "Where quadratics show up")}</H2>
       <H3>{tx(t, "mQuad_projTitle", "When does the ball land?")}</H3>
@@ -166,10 +165,10 @@ int solveQuadratic(float a, float b, float c, float& x0, float& x1) {
         {tx(t, "mQuad_projBody",
           "A ball thrown upward from a height of 2 m at 12 m/s, with gravity g = 9.8 m/s², has height h(t) = 2 + 12t − 4.9t² (the ½gt² term is what makes it quadratic). It lands when h(t) = 0: a = −4.9, b = 12, c = 2. Δ = 144 + 39.2 = 183.2, √Δ ≈ 13.54, so t = (−12 ± 13.54)/(−9.8): t ≈ −0.16 or t ≈ 2.60. The negative root is a moment before the throw, meaningless here; the ball lands after about 2.6 s. Its highest point is the vertex, at t = −b/(2a) ≈ 1.22 s.")}
       </p>
-      <H3>{tx(t, "mQuad_rayTitle", "Ray against sphere")}</H3>
+      <H3>{tx(t, "mQuad_rayTitle", "A fence and a garden")}</H3>
       <p>
         {tx(t, "mQuad_rayBody",
-          "A ray starts at a point O and moves in direction D: its points are O + tD for t ≥ 0. A sphere with centre C and radius R is every point at distance R from C. Requiring a ray point to lie on the sphere, |O + tD − C|² = R², and expanding with the dot product gives a quadratic in t: (D·D)t² + 2(D·(O − C))t + (|O − C|² − R²) = 0. The discriminant decides whether the ray misses (Δ < 0), grazes (Δ = 0) or hits (Δ > 0), and the smaller positive root is the nearest hit. The Linear Algebra section explains the dot product; the algebra is exactly this chapter's.")}
+          "A rectangular garden is enclosed by 40 m of fence and must have an area of 96 m². What are its sides? Let one side be x. The perimeter is 2x + 2y = 40, so the other side is y = 20 − x. The area condition is x(20 − x) = 96. Expand and move everything to one side: x² − 20x + 96 = 0. Two numbers with sum 20 and product 96 are 8 and 12, so (x − 8)(x − 12) = 0 and x = 8 or x = 12. Both roots describe the same garden, 8 m by 12 m, just turned. Check: 2 · 8 + 2 · 12 = 40 ✓ and 8 · 12 = 96 ✓. What about an area of 120 m²? Then x² − 20x + 120 = 0 has Δ = 400 − 480 < 0: no such garden exists. The largest possible area is at the vertex, x = 10, a 10 × 10 square of 100 m².")}
       </p>
 
       <H2>{tx(t, "mQuad_mistakesTitle", "Common mistakes")}</H2>
@@ -179,7 +178,7 @@ int solveQuadratic(float a, float b, float c, float& x0, float& x1) {
           ["x² = 9 → x = 3", "x = ±3", tx(t, "mQuad_m1", "both 3 and −3 square to 9")],
           ["x² = 3x → x = 3", "x = 0 or x = 3", tx(t, "mQuad_m2", "dividing by x loses x = 0; factor instead")],
           ["x² − 5x + 6 = 0, c = 6, b = 5", "b = −5", tx(t, "mQuad_m3", "the sign in front of a term belongs to its coefficient")],
-          ["−b ± √(b² − 4ac) / 2a", "(−b ± √(b² − 4ac)) / (2a)", tx(t, "mQuad_m4", "the whole numerator is divided by the whole 2a; parenthesise in code")],
+          ["−b ± √(b² − 4ac) / 2a", "(−b ± √(b² − 4ac)) / (2a)", tx(t, "mQuad_m4", "the whole numerator is divided by the whole 2a; draw the fraction bar under everything")],
           ["(x + 3)² = x² + 9", "x² + 6x + 9", tx(t, "mQuad_m5", "the middle term 2 · 3 · x is always there")],
           [tx(t, "mQuad_m6w", "keeping the negative time"), tx(t, "mQuad_m6r", "choose the root that makes sense"), tx(t, "mQuad_m6", "both roots solve the equation; only some solve the problem")],
         ]}
@@ -191,7 +190,7 @@ int solveQuadratic(float a, float b, float c, float& x0, float& x1) {
         "Square roots give ± two answers; the zero-product rule turns factors into roots.",
         "Completing the square adds (b/2)² to make a perfect square; it proves the formula.",
         "x = (−b ± √(b² − 4ac)) / (2a); Δ = b² − 4ac counts the real roots.",
-        "x₁ + x₂ = −b/a, x₁x₂ = c/a: a check, and the trick for a stable float solver.",
+        "x₁ + x₂ = −b/a, x₁x₂ = c/a: a check, and a fast way to factor by hand.",
       ]} />
     </Article>
   );

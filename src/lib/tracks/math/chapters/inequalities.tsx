@@ -3,9 +3,9 @@
 // Algebra 3: inequalities — the four order symbols, solution sets on the
 // number line and in interval notation, the moves that keep an inequality,
 // why multiplying by a negative flips it, compound inequalities, absolute
-// value inequalities, and range checks and clamping in C++.
+// value inequalities, and checking a solution with test points.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +19,7 @@ export function InequalitiesContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mIneq_intro",
-          "Many questions are not \"exactly how much?\" but \"how much is enough?\" or \"which values are allowed?\". Is the enemy within attack range? How many hits until the boss's health drops below zero? Which frame times keep the game above 60 fps? Those are inequalities. Their answers are not single numbers but whole ranges of numbers, and solving them uses almost exactly the same moves as equations, with one important exception that this chapter explains until it is obvious.")}
+          "Many questions are not \"exactly how much?\" but \"how much is enough?\" or \"which values are allowed?\". Is the house within walking distance of the school? How many boxes can the lift carry before it is overloaded? What speeds keep a trip under two hours? Those are inequalities. Their answers are not single numbers but whole ranges of numbers, and solving them uses almost exactly the same moves as equations, with one important exception that this chapter explains until it is obvious.")}
       </Lead>
 
       <H2>{tx(t, "mIneq_symTitle", "The four order symbols")}</H2>
@@ -105,7 +105,7 @@ export function InequalitiesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mIneq_compTitle", "Compound inequalities")}</H2>
       <p>
         {tx(t, "mIneq_compBody",
-          "Often a value must stay between two limits: 0 ≤ health ≤ 100. Such a double inequality means both conditions hold at once (an \"and\"), and its solution is a segment, the overlap of two rays. Solve it by applying each move to all three parts at once. An \"or\" condition, like x < −2 or x > 2, is the opposite: the union of two separate rays, the values outside a segment.")}
+          "Often a value must stay between two limits: a room temperature between 18 °C and 24 °C, 18 ≤ T ≤ 24. Such a double inequality means both conditions hold at once (an \"and\"), and its solution is a segment, the overlap of two rays. Solve it by applying each move to all three parts at once. An \"or\" condition, like x < −2 or x > 2, is the opposite: the union of two separate rays, the values outside a segment.")}
       </p>
       <Equation label={tx(t, "mIneq_eqComp", "Solving −3 < 2x + 1 ≤ 9")}
         notes={[
@@ -118,7 +118,7 @@ export function InequalitiesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mIneq_absTitle", "Absolute value: within a distance")}</H2>
       <p>
         {tx(t, "mIneq_absBody",
-          "|x − c| is the distance between x and c. So |x − c| < r says \"x is less than r away from c\": a segment centred on c with half-width r. And |x − c| > r says \"x is more than r away\": everything outside that segment. This is the one-dimensional version of \"inside a circle\", and it is how every range check in a game is written.")}
+          "|x − c| is the distance between x and c. So |x − c| < r says \"x is less than r away from c\": a segment centred on c with half-width r. And |x − c| > r says \"x is more than r away\": everything outside that segment. This is the one-dimensional version of \"inside a circle\", and the natural way to write a tolerance: \"10 cm, give or take 2 mm\" is |x − 100| ≤ 2 in millimetres.")}
       </p>
       <Equation label={tx(t, "mIneq_eqAbs", "Absolute value inequalities")}
         where={[
@@ -127,42 +127,36 @@ export function InequalitiesContent({ t }: { t: TrackTranslations }) {
           [r`|x - c| < r`, tx(t, "mIneq_wIn", "inside: c − r < x < c + r, an \"and\"")],
           [r`|x - c| > r`, tx(t, "mIneq_wOut", "outside: x < c − r or x > c + r, an \"or\"")],
         ]}
-        note={tx(t, "mIneq_eqAbsNote", "Example: an enemy at x = 12 attacks when the player is within 3 units: |x − 12| ≤ 3 means 9 ≤ x ≤ 15.")}>
+        note={tx(t, "mIneq_eqAbsNote", "Example: a bus stop at kilometre 12 serves everyone living within 3 km of it: |x − 12| ≤ 3 means 9 ≤ x ≤ 15.")}>
         {r`|x - c| < r \;\iff\; c - r < x < c + r`}
       </Equation>
 
       <H2>{tx(t, "mIneq_exTitle", "Worked examples")}</H2>
-      <H3>{tx(t, "mIneq_ex1T", "How many hits?")}</H3>
+      <H3>{tx(t, "mIneq_ex1T", "How many trips?")}</H3>
       <p>
         {tx(t, "mIneq_ex1",
-          "A boss has 250 health and each hit deals 35 damage. How many hits n bring it to zero or below? 250 − 35n ≤ 0. Add 35n to both sides: 250 ≤ 35n. Divide by 35 (positive): n ≥ 7.14…. Hits come in whole numbers, so the smallest n that works is 8. Check: 250 − 35 · 7 = 5 is still alive, 250 − 35 · 8 = −30 is not ✓. In code, that is the rounding-up division (250 + 35 − 1) / 35 = 8.")}
+          "A pile of 250 bricks must be moved, and a wheelbarrow carries 35 bricks per trip. How many trips n leave no bricks behind? 250 − 35n ≤ 0. Add 35n to both sides: 250 ≤ 35n. Divide by 35 (positive): n ≥ 7.14…. Trips come in whole numbers, so the smallest n that works is 8. Check: after 7 trips 250 − 35 · 7 = 5 bricks are still there, after 8 trips 250 − 35 · 8 = −30, so none are ✓. Rounding up, not to the nearest whole number, is what the inequality demands.")}
       </p>
-      <H3>{tx(t, "mIneq_ex2T", "A frame budget")}</H3>
+      <H3>{tx(t, "mIneq_ex2T", "A phone plan")}</H3>
       <p>
         {tx(t, "mIneq_ex2",
-          "A frame takes 4 ms of fixed work plus 0.02 ms per particle. To stay above 60 fps a frame must take at most 1000/60 ≈ 16.67 ms: 4 + 0.02p ≤ 16.67. Subtract 4: 0.02p ≤ 12.67. Divide by 0.02: p ≤ 633. You can afford at most 633 particles.")}
+          "Plan A costs 30 per month plus 0.10 per minute of calls; plan B costs a flat 55. For how many minutes m is plan A cheaper? 30 + 0.10m < 55. Subtract 30: 0.10m < 25. Divide by 0.10 (positive, so the symbol stays): m < 250. Below 250 minutes plan A wins; at exactly 250 both cost 55; above it plan B wins.")}
       </p>
 
-      <H2>{tx(t, "mIneq_codeTitle", "Inequalities in C++")}</H2>
+      <H2>{tx(t, "mIneq_testTitle", "Checking with test points")}</H2>
       <p>
-        {tx(t, "mIneq_codeBody",
-          "Comparisons are inequalities that the program evaluates for one particular value, returning true or false. Two things differ from paper. First, C++ has no chained comparison: 0 <= x <= 10 is parsed as (0 <= x) <= 10, compares a bool with 10, and is always true. Write both halves joined by &&. Second, clamping, keeping a value inside an interval, is so common that it has its own function.")}
+        {tx(t, "mIneq_testBody",
+          "An inequality has infinitely many solutions, so you cannot check them all. You do not need to. The boundary value, where the two sides are equal, splits the number line into pieces, and on each piece the inequality is either always true or always false. So pick one easy test point on each side of the boundary, plus the boundary itself, and substitute into the original inequality. If the pieces that pass are exactly the ones in your answer, the answer is right.")}
       </p>
-      <CodeBlock lang="cpp" filename="range.cpp" t={t}>{`// "0 ≤ x ≤ 10" — both halves, joined by &&
-bool inRange = 0 <= x && x <= 10;
-bool bad     = 0 <= x <= 10;         // always true: (0 <= x) is 0 or 1, and both are <= 10
-
-// |x − c| ≤ r : within r of c
-bool inAttackRange = std::abs(playerX - enemyX) <= range;
-
-// Keep a value in [lo, hi]
-health = std::clamp(health, 0, maxHealth);            // C++17, <algorithm>
-
-// Smallest whole n with 250 − 35n ≤ 0: integer division rounding up
-int hits = (250 + 35 - 1) / 35;                        // 8`}</CodeBlock>
-      <Callout type="warn" t={t}>
-        {tx(t, "mIneq_floatWarn", "With floating-point numbers, prefer < and > over == at a boundary, and remember NaN: every comparison with NaN is false, so both x < 5 and x >= 5 can be false at the same time. A range check written as !(x < lo || x > hi) accepts NaN, while lo <= x && x <= hi rejects it.")}
-      </Callout>
+      <Equation label={tx(t, "mIneq_eqTest", "Checking −2x + 5 ≥ 1, answer x ≤ 2")}
+        notes={[
+          tx(t, "mIneq_t1", "boundary x = 2: −4 + 5 = 1 ≥ 1 is true, so 2 belongs to the answer (the dot is filled)"),
+          tx(t, "mIneq_t2", "left of it, x = 0: 0 + 5 = 5 ≥ 1 is true, so the left side is in"),
+          tx(t, "mIneq_t3", "right of it, x = 3: −6 + 5 = −1 ≥ 1 is false, so the right side is out"),
+          tx(t, "mIneq_t4", "exactly the ray x ≤ 2 ✓; had you forgotten to flip the symbol you would have written x ≥ 2, and x = 3 would have caught it"),
+        ]}>
+        {r`-2x + 5 \ge 1 \;\to\; -2x \ge -4 \;\to\; x \le 2`}
+      </Equation>
 
       <H2>{tx(t, "mIneq_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -172,7 +166,7 @@ int hits = (250 + 35 - 1) / 35;                        // 8`}</CodeBlock>
           ["x < 3 → [−∞, 3]", "(−∞, 3)", tx(t, "mIneq_m2", "∞ is never included, and < excludes 3")],
           ["−5 > −2", "−5 < −2", tx(t, "mIneq_m3", "−5 is further left")],
           ["|x| < 4 → x < ±4", "−4 < x < 4", tx(t, "mIneq_m4", "the distance to 0 is below 4 on both sides")],
-          ["0 <= x <= 10 (C++)", "0 <= x && x <= 10", tx(t, "mIneq_m5", "C++ does not chain comparisons")],
+          ["3 < x > 7", tx(t, "mIneq_m5r", "x > 7"), tx(t, "mIneq_m5", "a chain must point one way; \"greater than 3 and greater than 7\" is simply x > 7")],
           ["n ≥ 7.14 → n = 7", "n = 8", tx(t, "mIneq_m6", "7 does not satisfy n ≥ 7.14; round towards the solution set")],
         ]}
       />
@@ -184,7 +178,7 @@ int hits = (250 + 35 - 1) / 35;                        // 8`}</CodeBlock>
         "Multiplying or dividing by a negative number mirrors the line: flip the symbol.",
         "Double inequalities are \"and\" (a segment); apply each move to all three parts.",
         "|x − c| < r means c − r < x < c + r: within r of c.",
-        "In C++, write 0 <= x && x <= 10, never 0 <= x <= 10; use std::clamp to stay in range.",
+        "Check an answer with one test point on each side of the boundary, and the boundary itself.",
       ]} />
     </Article>
   );

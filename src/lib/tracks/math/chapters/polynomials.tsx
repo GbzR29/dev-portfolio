@@ -3,9 +3,9 @@
 // Algebra 7: polynomials — terms, degree and leading coefficient, adding and
 // multiplying, evaluating with Horner's method, division and the remainder
 // and factor theorems, roots and multiplicity, end behaviour, factoring
-// techniques, and the polynomials graphics code is built from.
+// techniques, and polynomials in geometry and everyday formulas.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +19,7 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mPoly_intro",
-          "Linear expressions (x to the first power) and quadratics (up to x²) are the first two members of a family: polynomials, sums of whole-number powers of x. They are the functions a computer evaluates most easily, using only multiplication and addition, which is why so much of graphics is built from them. Smoothstep is a cubic polynomial, Bézier curves are polynomials, easing curves are polynomials, and sin, exp and log are computed inside math libraries by carefully chosen polynomials. This chapter covers how to work with them, how their roots shape their graphs, and how to evaluate them efficiently.")}
+          "Linear expressions (x to the first power) and quadratics (up to x²) are the first two members of a family: polynomials, sums of whole-number powers of x. They are the functions you can evaluate with nothing but multiplication and addition, which makes them the easiest to calculate by hand. They also appear on their own: the volume of a box is a product of three lengths, the distance a stone falls grows with t², and money earning interest for n years grows by a polynomial in the rate. This chapter covers how to work with them, how their roots shape their graphs, and how to evaluate them efficiently.")}
       </Lead>
 
       <H2>{tx(t, "mPoly_defTitle", "What a polynomial is")}</H2>
@@ -66,7 +66,7 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mPoly_hornerTitle", "Evaluating: Horner's method")}</H2>
       <p>
         {tx(t, "mPoly_hornerBody",
-          "Evaluating term by term recomputes powers again and again. Factoring x out repeatedly, from the inside, gives a nested form that uses one multiplication and one addition per coefficient: for degree n, n multiplications instead of about n²/2. It is also more accurate in floating point, and it is how every math library evaluates its polynomial approximations. On the GPU each step is a single fused multiply-add (fma) instruction.")}
+          "Evaluating term by term recomputes powers again and again. Factoring x out repeatedly, from the inside, gives a nested form that uses one multiplication and one addition per coefficient: for degree n, n multiplications instead of about n²/2. By hand this matters: you never compute a large power like 3⁵, and every intermediate number stays small. The same pattern, written as a table, is synthetic division below.")}
       </p>
       <Equation label={tx(t, "mPoly_eqHorner", "Horner's form")}
         where={[
@@ -76,18 +76,6 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mPoly_eqHornerNote", "At x = 3: 2 → 2·3 − 6 = 0 → 0·3 + 2 = 2 → 2·3 − 1 = 5. Check: 54 − 54 + 6 − 1 = 5 ✓.")}>
         {r`2x^3 - 6x^2 + 2x - 1 = \big((2x - 6)\,x + 2\big)\,x - 1`}
       </Equation>
-      <CodeBlock lang="cpp" filename="horner.hpp" t={t}>{`#include <vector>
-#include <cmath>
-
-// Coefficients from the highest power down: {2, -6, 2, -1} is 2x³ − 6x² + 2x − 1
-float evalPoly(const std::vector<float>& c, float x) {
-    float y = 0;
-    for (float a : c) y = std::fma(y, x, a);   // y = y·x + a, rounded once
-    return y;
-}
-
-// smoothstep's cubic, 3t² − 2t³, in Horner form
-float smooth(float t) { return t * t * (3 - 2 * t); }`}</CodeBlock>
 
       <H2>{tx(t, "mPoly_divTitle", "Division, remainders and factors")}</H2>
       <p>
@@ -155,15 +143,15 @@ float smooth(float t) { return t * t * (3 - 2 * t); }`}</CodeBlock>
         {tx(t, "mPoly_orderTip", "A good order to try: first pull out any common factor, then look for a special pattern (difference of squares, perfect square, cubes), then try grouping or a small whole-number root. Always check by multiplying back out, or by plugging a value into both forms.")}
       </Callout>
 
-      <H2>{tx(t, "mPoly_gfxTitle", "Polynomials in graphics")}</H2>
+      <H2>{tx(t, "mPoly_whereTitle", "Where polynomials show up")}</H2>
       <LessonTable
         headers={[tx(t, "mPoly_tWhere", "Where"), tx(t, "mPoly_tPoly", "Polynomial"), tx(t, "mPoly_tWhy", "Why")]}
         rows={[
-          ["smoothstep", "3t² − 2t³", tx(t, "mPoly_u1", "the cubic with value 0 and 1 at the ends and zero slope at both: a smooth start and stop")],
-          ["smootherstep", "6t⁵ − 15t⁴ + 10t³", tx(t, "mPoly_u2", "a quintic that also has zero curvature at the ends; Perlin noise uses it")],
-          [tx(t, "mPoly_u3w", "easing"), "t², t³, 1 − (1 − t)³", tx(t, "mPoly_u3", "ease-in and ease-out curves from the Game Dev track")],
-          [tx(t, "mPoly_u4w", "Bézier curves"), "(1 − t)³P₀ + 3(1 − t)²tP₁ + …", tx(t, "mPoly_u4", "every coordinate of a cubic Bézier is a cubic in t")],
-          [tx(t, "mPoly_u5w", "sin, exp in libraries"), "x − x³/6 + x⁵/120 …", tx(t, "mPoly_u5", "polynomials fitted on a small range, evaluated with Horner (series come in the calculus section)")],
+          [tx(t, "mPoly_u1w", "open box"), "x(20 − 2x)(30 − 2x)", tx(t, "mPoly_u1", "cut squares of side x from the corners of a 20 × 30 sheet and fold up the sides: height x times the shrunken base. Expanded it is a cubic, 4x³ − 100x² + 600x")],
+          [tx(t, "mPoly_u2w", "falling stone"), "4.9t²", tx(t, "mPoly_u2", "metres fallen after t seconds, ignoring air: a degree-2 polynomial in time")],
+          [tx(t, "mPoly_u3w", "interest"), "P(1 + r)² = P + 2Pr + Pr²", tx(t, "mPoly_u3", "two years of interest at rate r: the r² term is interest earned on interest")],
+          [tx(t, "mPoly_u4w", "sums of whole numbers"), "1 + 2 + … + n = n²/2 + n/2", tx(t, "mPoly_u4", "a quadratic in n (proved in the Sequences chapter)")],
+          [tx(t, "mPoly_u5w", "a square frame"), "(x + 2w)² − x² = 4wx + 4w²", tx(t, "mPoly_u5", "the area of a frame of width w around an x × x picture; the x² terms cancel")],
         ]}
       />
 

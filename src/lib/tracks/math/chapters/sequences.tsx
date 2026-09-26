@@ -2,10 +2,10 @@
 
 // Algebra 9: sequences and series — terms and indices, explicit and
 // recursive rules, arithmetic and geometric sequences, sigma notation, the
-// two closed-form sums, infinite geometric series, recurrences in games, and
-// the loops that compute them.
+// two closed-form sums, infinite geometric series, and sequences in
+// everyday life and nature.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,18 +19,18 @@ export function SequencesContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mSeq_intro",
-          "Games are full of lists of numbers that follow a rule: the experience needed for each level, the damage of each combo hit, the amplitude of each octave of noise, the position of a smoothed camera frame after frame. Those lists are sequences, and adding their terms up gives series. This chapter shows the two basic kinds, arithmetic (add the same step) and geometric (multiply by the same factor), how to jump straight to any term without computing all the ones before it, and how to add many terms, even infinitely many, with a single formula.")}
+          "Everyday life is full of lists of numbers that follow a rule: the seat numbers in each row of a theatre, the balance of a savings account year after year, the height of each bounce of a dropped ball, the rabbits in a field generation after generation. Those lists are sequences, and adding their terms up gives series. This chapter shows the two basic kinds, arithmetic (add the same step) and geometric (multiply by the same factor), how to jump straight to any term without computing all the ones before it, and how to add many terms, even infinitely many, with a single formula.")}
       </Lead>
 
       <H2>{tx(t, "mSeq_whatTitle", "Terms and indices")}</H2>
       <p>
         {tx(t, "mSeq_whatBody",
-          "A sequence is an ordered list of numbers: a₁, a₂, a₃, …. Each number is a term, and the small number below is its index, the term's position in the list. aₙ means \"the n-th term\", for a general n. Mathematics usually starts counting at 1; code usually starts at 0, so when translating, check which one a formula assumes. A sequence can be given in two ways, and it helps to be able to switch between them.")}
+          "A sequence is an ordered list of numbers: a₁, a₂, a₃, …. Each number is a term, and the small number below is its index, the term's position in the list. aₙ means \"the n-th term\", for a general n. Most books start counting at 1, but some start at a₀; before using a formula, check which one it assumes. A sequence can be given in two ways, and it helps to be able to switch between them.")}
       </p>
       <Equation label={tx(t, "mSeq_eqTwo", "Two ways to describe a sequence")}
         where={[
           [r`a_n = 2n + 1`, tx(t, "mSeq_wExplicit", "explicit rule: a formula in n that gives any term directly. a₁₀₀ = 201, without computing the 99 before it")],
-          [r`a_1 = 3,\ a_{n+1} = a_n + 2`, tx(t, "mSeq_wRecursive", "recursive rule: a starting term and how to get each term from the previous one. It describes the same list, 3, 5, 7, 9, …, and is exactly how a loop or a per-frame update computes it")],
+          [r`a_1 = 3,\ a_{n+1} = a_n + 2`, tx(t, "mSeq_wRecursive", "recursive rule: a starting term and how to get each term from the previous one. It describes the same list, 3, 5, 7, 9, …, and is how you would continue the list by hand, one term at a time")],
         ]}>
         {r`3,\ 5,\ 7,\ 9,\ 11,\ \dots`}
       </Equation>
@@ -70,7 +70,7 @@ export function SequencesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mAlg_sumTitle", "Sums: reading Σ")}</H2>
       <p>
         {tx(t, "mAlg_sumBody",
-          "The capital Greek letter sigma, Σ, is shorthand for a loop that adds. Below it, the loop variable and where it starts; above it, where it stops; to its right, what to add each time. Two sums have closed forms worth knowing. The arithmetic series 1 + 2 + … + n: pairing the first and last terms (1 + n), the second and second-to-last (2 + n − 1), and so on gives n/2 pairs of n + 1. The geometric series, where each term is r times the previous one, appears in fractal noise (each octave has gain times the amplitude of the last), in compound growth and in the exponential smoothing of the Game Dev track.")}
+          "The capital Greek letter sigma, Σ, is shorthand for \"add up all of these\". Below it, the index variable and where it starts; above it, where it stops; to its right, what to add each time. Two sums have closed forms worth knowing. The arithmetic series 1 + 2 + … + n: pairing the first and last terms (1 + n), the second and second-to-last (2 + n − 1), and so on gives n/2 pairs of n + 1. The geometric series, where each term is r times the previous one, appears in compound growth, in repeated halving and in bouncing balls.")}
       </p>
       <Equation label={tx(t, "mSeq_eqSigma", "Reading sigma notation")}
         where={[
@@ -80,9 +80,6 @@ export function SequencesContent({ t }: { t: TrackTranslations }) {
         ]}>
         {r`\sum_{k=1}^{4} k^2 = 1^2 + 2^2 + 3^2 + 4^2 = 30`}
       </Equation>
-      <CodeBlock lang="cpp" filename="sigma.cpp" t={t}>{`// Σ_{k=1}^{n} f(k) is just this loop:
-float sum = 0;
-for (int k = 1; k <= n; ++k) sum += f(k);`}</CodeBlock>
 
       <H3>{tx(t, "mSeq_arithSumTitle", "Adding an arithmetic sequence")}</H3>
       <p>
@@ -106,9 +103,9 @@ for (int k = 1; k <= n; ++k) sum += f(k);`}</CodeBlock>
       </p>
       <Equation label={tx(t, "mAlg_eqSums", "Sigma notation and two closed forms")}
         where={[
-          [r`\textstyle\sum_{k=1}^{n} k`, tx(t, "mAlg_wArith", "the arithmetic series: n(n + 1)/2. The total XP for levels 1…100 at 1 XP × level is 5050")],
+          [r`\textstyle\sum_{k=1}^{n} k`, tx(t, "mAlg_wArith", "the arithmetic series: n(n + 1)/2. A stack of logs with 1 on top, 2 below, … 20 at the bottom holds 20 · 21/2 = 210 logs")],
           [r`\textstyle\sum_{k=0}^{n-1} r^k`, tx(t, "mAlg_wGeo", "the geometric series: (1 − rⁿ)/(1 − r) for r ≠ 1. Multiply the sum S by r and subtract: S − rS = 1 − rⁿ, since all the middle terms cancel")],
-          [r`\tfrac{1}{1 - r}`, tx(t, "mAlg_wInf", "the limit of the geometric series as n → ∞, when |r| < 1. With r = ½: 1 + ½ + ¼ + … = 2. That is why fBm with gain 0.5 never exceeds twice its first octave")],
+          [r`\tfrac{1}{1 - r}`, tx(t, "mAlg_wInf", "the limit of the geometric series as n → ∞, when |r| < 1. With r = ½: 1 + ½ + ¼ + … = 2. Each term is half the previous one, and together they never exceed twice the first")],
         ]}>
         {r`\sum_{k=1}^{n} k = \frac{n(n+1)}{2} \qquad \sum_{k=0}^{n-1} r^k = \frac{1 - r^n}{1 - r}`}
       </Equation>
@@ -127,31 +124,20 @@ for (int k = 1; k <= n; ++k) sum += f(k);`}</CodeBlock>
         {r`a + ar + ar^2 + \dots = \frac{a}{1 - r} \qquad (|r| < 1)`}
       </Equation>
 
-      <H2>{tx(t, "mSeq_gameTitle", "Sequences in games")}</H2>
+      <H2>{tx(t, "mSeq_gameTitle", "Sequences around you")}</H2>
       <LessonTable
         headers={[tx(t, "mSeq_tWhere", "Where"), tx(t, "mSeq_tSeq", "Sequence"), tx(t, "mSeq_tNote", "What the maths tells you")]}
         rows={[
-          [tx(t, "mSeq_g1", "linear XP curve"), "aₙ = 100n", tx(t, "mSeq_g1n", "total to reach level n is 100 · n(n + 1)/2: quadratic growth overall")],
-          [tx(t, "mSeq_g2", "exponential XP curve"), "aₙ = 100 · 1.15ⁿ⁻¹", tx(t, "mSeq_g2n", "each level costs 15% more; totals are a geometric sum")],
-          [tx(t, "mSeq_g3", "fBm noise octaves"), tx(t, "mSeq_g3s", "amplitudes 1, g, g², …"), tx(t, "mSeq_g3n", "the maximum value is (1 − gⁿ)/(1 − g): divide by it to normalise")],
-          [tx(t, "mSeq_g4", "smoothing: x += (target − x)·k"), tx(t, "mSeq_g4s", "the gap shrinks by (1 − k) each frame"), tx(t, "mSeq_g4n", "a geometric sequence: after n frames the gap is gap₀ · (1 − k)ⁿ")],
+          [tx(t, "mSeq_g1", "theatre seats"), "aₙ = 20 + 2(n − 1)", tx(t, "mSeq_g1n", "20 seats in the first row, 2 more in each row behind: 30 rows hold 30 · (20 + 78)/2 = 1470 seats")],
+          [tx(t, "mSeq_g2", "savings account"), "aₙ = 1000 · 1.04ⁿ", tx(t, "mSeq_g2n", "4% interest multiplies the balance by 1.04 every year: after 10 years 1000 · 1.04¹⁰ ≈ 1480")],
+          [tx(t, "mSeq_g3", "regular deposits"), tx(t, "mSeq_g3s", "100 + 100 · 1.04 + … + 100 · 1.04⁹"), tx(t, "mSeq_g3n", "100 saved each year for 10 years: a geometric sum, 100 · (1.04¹⁰ − 1)/0.04 ≈ 1201")],
+          [tx(t, "mSeq_g4", "medicine in the body"), tx(t, "mSeq_g4s", "the amount left falls to (1 − k) each day"), tx(t, "mSeq_g4n", "a geometric sequence: after n days the amount is dose · (1 − k)ⁿ")],
           [tx(t, "mSeq_g5", "bouncing ball"), tx(t, "mSeq_g5s", "heights h, hr, hr², …"), tx(t, "mSeq_g5n", "total distance travelled is finite: h + 2hr/(1 − r)")],
-          [tx(t, "mSeq_g6", "Fibonacci"), "1, 1, 2, 3, 5, 8, …", tx(t, "mSeq_g6n", "recursive: aₙ₊₁ = aₙ + aₙ₋₁; the ratio of neighbours tends to the golden ratio ≈ 1.618 (used for spreading points evenly)")],
+          [tx(t, "mSeq_g6", "Fibonacci"), "1, 1, 2, 3, 5, 8, …", tx(t, "mSeq_g6n", "recursive: aₙ₊₁ = aₙ + aₙ₋₁; the ratio of neighbours tends to the golden ratio ≈ 1.618, and sunflower spirals come in Fibonacci numbers")],
         ]}
       />
-      <CodeBlock lang="cpp" filename="sequences.cpp" t={t}>{`// Recursive rule = a loop (or one step per frame)
-float gap = 10.0f;
-for (int frame = 0; frame < 30; ++frame) gap *= 0.9f;   // gap = 10 · 0.9^30 ≈ 0.42
-
-// Explicit rule = jump straight to any term
-float gapAt(int n) { return 10.0f * std::pow(0.9f, float(n)); }
-
-// Normalising fBm: divide by the geometric sum of the amplitudes
-float fbmMax(float gain, int octaves) {
-    return (1 - std::pow(gain, float(octaves))) / (1 - gain);   // gain ≠ 1
-}`}</CodeBlock>
       <Callout type="info" t={t}>
-        {tx(t, "mSeq_indexInfo", "Index conventions are the classic source of off-by-one errors. Formulas here start at a₁; C++ arrays start at 0. If you store a₁ in element [0], element [i] holds a_(i+1) = a₁ + i·d, with no \"− 1\". Decide on one convention, write it in a comment, and test the first and last terms.")}
+        {tx(t, "mSeq_indexInfo", "Index conventions are the classic source of off-by-one errors. If a list starts at a₀ instead of a₁, the n-th term of an arithmetic sequence is a₀ + n·d, with no \"− 1\", and the terms up to aₙ number n + 1, not n. Decide on one convention, write it down, and test your formula on the first and last terms.")}
       </Callout>
 
       <H2>{tx(t, "mSeq_mistakesTitle", "Common mistakes")}</H2>
@@ -170,9 +156,9 @@ float fbmMax(float gain, int octaves) {
         "A sequence is an ordered list a₁, a₂, …; explicit rules jump to any term, recursive rules step from the previous one.",
         "Arithmetic: add d each step, aₙ = a₁ + (n − 1)d; the terms lie on a line.",
         "Geometric: multiply by r each step, aₙ = a₁ · rⁿ⁻¹; the terms grow or decay exponentially.",
-        "Σ is a loop that adds; 1 + … + n = n(n + 1)/2 and Sₙ = n(a₁ + aₙ)/2.",
+        "Σ means \"add all of these\"; 1 + … + n = n(n + 1)/2 and Sₙ = n(a₁ + aₙ)/2.",
         "Geometric sum: a(1 − rⁿ)/(1 − r); with |r| < 1 the infinite sum is a/(1 − r).",
-        "Per-frame multiply updates are geometric sequences: use the formula to predict them.",
+        "Repeated growth or decay by the same factor is a geometric sequence: use the formula to predict it.",
       ]} />
     </Article>
   );

@@ -7,7 +7,6 @@ const text: Record<string, string> = {
   mAlg_wDisc: "o discriminante. Δ > 0: duas soluções reais; Δ = 0: uma (a parábola toca o eixo); Δ < 0: nenhuma, porque nenhum número real ao quadrado dá negativo",
   mAlg_wVertex: "o x do vértice, o ponto de virada da parábola. As raízes ficam simétricas em torno dele",
   mAlg_wSpread: "a distância de cada raiz até o vértice",
-  mAlg_stableTitle: "A fórmula em ponto flutuante",
 };
 
 export default text;
