@@ -3,10 +3,10 @@
 // Trigonometry 1: right-triangle trigonometry — naming the sides, why the
 // ratios depend only on the angle (similarity), sine, cosine and tangent,
 // complementary angles, the exact 30°/45°/60° values, solving right
-// triangles, inverse functions, tangent as slope, heights and the field of
-// view, and C++.
+// triangles, inverse functions, tangent as slope, heights and distances,
+// and a step-by-step method for solving by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -20,7 +20,7 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mRt_intro",
-          "Trigonometry began as the study of triangles, for surveying land and navigating by the stars. For graphics it is the bridge between angles and lengths: turning \"face 30° to the left\" into a direction, turning a mouse position into an aiming angle, finding how high a camera sees at a given distance. The whole subject grows from one observation about right triangles, which this chapter makes precise. The following chapters extend it to every angle, to any triangle, to rotation and to waves.")}
+          "Trigonometry began as the study of triangles, for surveying land and navigating by the stars. It is the bridge between angles and lengths: from the angle of a ladder, how high it reaches; from the angle to a hilltop, how tall the hill is; from the steepness of a road, the angle it climbs at. The whole subject grows from one observation about right triangles, which this chapter makes precise. The following chapters extend it to every angle, to any triangle, to rotation and to waves.")}
       </Lead>
 
       <H2>{tx(t, "mRt_sidesTitle", "Naming the sides from an angle")}</H2>
@@ -104,21 +104,21 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mRt_invTitle", "Inverse functions: from a ratio back to the angle")}</H3>
       <p>
         {tx(t, "mRt_invBody",
-          "The functions chapter introduced inverses: a function that undoes another. arcsin (written asin in code, or sin⁻¹ on calculators) takes a ratio and returns the angle with that sine; arccos and arctan do the same for cosine and tangent. For right triangles the answer is always an acute angle, so there is no ambiguity. The Polar Coordinates chapter deals with the full circle, where the question \"which angle has this tangent?\" has more than one answer.")}
+          "The functions chapter introduced inverses: a function that undoes another. arcsin (written sin⁻¹ on calculators) takes a ratio and returns the angle with that sine; arccos and arctan do the same for cosine and tangent. For right triangles the answer is always an acute angle, so there is no ambiguity. The Polar Coordinates chapter deals with the full circle, where the question \"which angle has this tangent?\" has more than one answer.")}
       </p>
       <Equation label={tx(t, "mRt_eqInv", "Angles from sides")}
         where={[
           [r`\arcsin`, tx(t, "mRt_wAsin", "the inverse of sine; its input must be between −1 and 1")],
           [r`\arctan`, tx(t, "mRt_wAtan", "the inverse of tangent; any input works")],
         ]}
-        note={tx(t, "mRt_invNote", "Example: a ramp rises 1 m over a run of 4 m. Its angle is arctan(1/4) ≈ 14.0°. The notation sin⁻¹ means the inverse function, not 1/sin; the reciprocal 1/sin θ has its own name, the cosecant, which games rarely need.")}>
+        note={tx(t, "mRt_invNote", "Example: a ramp rises 1 m over a run of 4 m. Its angle is arctan(1/4) ≈ 14.0°. The notation sin⁻¹ means the inverse function, not 1/sin; the reciprocal 1/sin θ has its own name, the cosecant, and this course rarely needs it.")}>
         {r`\theta = \arcsin\frac{\text{opp}}{\text{hyp}} = \arccos\frac{\text{adj}}{\text{hyp}} = \arctan\frac{\text{opp}}{\text{adj}}`}
       </Equation>
 
       <H2>{tx(t, "mRt_slopeTitle", "Tangent is slope")}</H2>
       <p>
         {tx(t, "mRt_slopeBody",
-          "A line that climbs at an angle θ above the horizontal makes a right triangle with any horizontal run: the run is adjacent to θ and the rise is opposite it. So the line's slope, rise over run from the functions chapter, is exactly tan θ. A 45° line has slope 1; a road with a 10% grade (slope 0.1) climbs at arctan 0.1 ≈ 5.7°. Games use this to decide whether a character can walk up a slope: compare the ground's angle with a maximum, or equivalently its slope with tan of that maximum.")}
+          "A line that climbs at an angle θ above the horizontal makes a right triangle with any horizontal run: the run is adjacent to θ and the rise is opposite it. So the line's slope, rise over run from the functions chapter, is exactly tan θ. A 45° line has slope 1; a road with a 10% grade (slope 0.1) climbs at arctan 0.1 ≈ 5.7°. Building codes use the same link: a wheelchair ramp may rise at most 1 m for every 12 m of run, a slope of 1/12, so its angle is at most arctan(1/12) ≈ 4.8°. Comparing slopes or comparing angles gives the same answer, because a steeper angle always has a bigger tangent.")}
       </p>
       <Equation label={tx(t, "mRt_eqSlope", "Slope and angle")}
         where={[
@@ -133,11 +133,21 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mRt_heightBody",
           "The third mode of the figure is the surveyor's trick. From a known distance d, measure the angle up to the top of something tall; then h = d · tan θ. It also runs backwards: an archer on a 10 m wall sees a target at an angle of 20° below the horizontal, so the target is 10 / tan 20° ≈ 27.5 m away along the ground.")}
       </p>
-      <H3>{tx(t, "mTrig_fovTitle", "Tangent and the field of view")}</H3>
+      <H3>{tx(t, "mRt_twoTitle", "When you cannot reach the foot: two angles")}</H3>
       <p>
-        {tx(t, "mTrig_fovBody",
-          "A perspective camera with a vertical field of view θ sees, at distance d in front of it, a slab of height 2d·tan(θ/2): the half-angle and the distance form a right triangle with the half-height as the opposite side. That is why tan(fov/2) appears in every projection matrix, and why doubling the distance doubles the visible height.")}
+        {tx(t, "mRt_twoBody",
+          "Often the distance to the foot of a mountain is unknown, because the foot is across a river or inside a forest. Measure the angle of elevation twice instead: α from a first point, then walk d closer along a straight line and measure a larger angle β. Call the unknown height h and the unknown remaining distance x. The two right triangles give h = x · tan β and h = (x + d) · tan α. Both equal h, so x · tan β = (x + d) · tan α. Expand: x · tan β = x · tan α + d · tan α. Collect the x terms: x (tan β − tan α) = d · tan α, so x = d · tan α / (tan β − tan α), and then h = x · tan β.")}
       </p>
+      <Equation label={tx(t, "mRt_eqTwo", "Height from two angles of elevation")}
+        where={[
+          [r`lpha`, tx(t, "mRt_wAlpha", "the angle of elevation from the farther point")],
+          [r`eta`, tx(t, "mRt_wBeta", "the angle from the nearer point, which is larger")],
+          [r`d`, tx(t, "mRt_wD", "the distance walked between the two measurements")],
+          [r`h`, tx(t, "mRt_wH", "the height of the top above eye level")],
+        ]}
+        note={tx(t, "mRt_twoNote", "Numbers: α = 30°, β = 45°, d = 100 m. tan 30° ≈ 0.577 and tan 45° = 1, so x = 100 · 0.577 / (1 − 0.577) ≈ 136.6 m and h ≈ 136.6 · 1 = 136.6 m.")}>
+        {r`h = \frac{d\,\tan\alpha\,\tan\beta}{\tan\beta - \tan\alpha}`}
+      </Equation>
 
       <H2>{tx(t, "mRt_exTitle", "Worked examples")}</H2>
       <p>
@@ -146,52 +156,40 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mRt_ex2",
-          "2. A camera with a 60° vertical field of view looks at a wall 10 m away. The visible height is 2 · 10 · tan 30° ≈ 11.5 m. To fit a 20 m tall building, the camera must be 20 / (2 tan 30°) ≈ 17.3 m away.")}
+          "2. A kite string 50 m long makes 35° with the ground, held 1.5 m above it. The kite is 50 · sin 35° ≈ 50 · 0.574 = 28.7 m above the hand, so 28.7 + 1.5 = 30.2 m above the ground, and 50 · cos 35° ≈ 41.0 m away horizontally.")}
       </p>
       <p>
         {tx(t, "mRt_ex3",
-          "3. A character's maximum walkable slope is 45°. A ground triangle rising 0.8 m over 1 m of run has slope 0.8 < tan 45° = 1, so it is walkable; its angle is arctan 0.8 ≈ 38.7°.")}
+          "3. A ramp must climb 0.6 m and may not be steeper than 4.8° (slope 1/12). Its horizontal run must be at least 0.6 / tan 4.8° ≈ 0.6 / 0.084 ≈ 7.1 m, which matches 12 · 0.6 = 7.2 m from the 1 : 12 rule; the small difference is rounding.")}
       </p>
 
-      <H2>{tx(t, "mRt_codeTitle", "Right triangles in C++")}</H2>
+      <H2>{tx(t, "mRt_methodTitle", "Solving step by step")}</H2>
       <p>
-        {tx(t, "mRt_codeBody",
-          "The C++ functions std::sin, std::cos, std::tan and their inverses std::asin, std::acos, std::atan measure angles in radians, a different unit explained in the next chapter. Until then, convert degrees with the factor π/180 on the way in and 180/π on the way out.")}
+        {tx(t, "mRt_methodBody",
+          "Every right-triangle problem is solved by the same five steps. (1) Draw the triangle and mark the right angle. (2) Write down what you know and put a question mark on what you want. (3) Name the sides relative to the angle you are using: opposite, adjacent, hypotenuse. (4) Pick the one ratio that contains the known side and the wanted side, and nothing else unknown. (5) Rearrange and compute, then check the answer against something you know is true.")}
       </p>
-      <CodeBlock lang="cpp" filename="right_triangle.hpp" t={t}>{`#include <algorithm>
-#include <cmath>
-#include <numbers>
-
-constexpr float PI = std::numbers::pi_v<float>;
-float radians(float deg) { return deg * PI / 180.0f; }
-float degrees(float rad) { return rad * 180.0f / PI; }
-
-// Legs of a right triangle from the hypotenuse and one acute angle (degrees)
-float oppositeSide(float hyp, float deg) { return hyp * std::sin(radians(deg)); }
-float adjacentSide(float hyp, float deg) { return hyp * std::cos(radians(deg)); }
-
-// Acute angle (degrees) from the two legs
-float angleFromLegs(float opp, float adj) { return degrees(std::atan(opp / adj)); }
-
-// asin/acos return NaN outside [-1, 1]; rounding can push a ratio just past 1
-float safeAsinDeg(float ratio) { return degrees(std::asin(std::clamp(ratio, -1.0f, 1.0f))); }
-
-// Visible height at distance d for a vertical field of view (degrees)
-float visibleHeight(float fovDeg, float d) { return 2.0f * d * std::tan(radians(fovDeg) / 2.0f); }
-
-// Can a character walk up ground that rises 'rise' over 'run'?
-bool walkable(float rise, float run, float maxDeg) {
-    return rise <= run * std::tan(radians(maxDeg));    // compare slopes, no atan needed
-}`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mRt_tStep", "Step"), tx(t, "mRt_tDo", "Ladder problem: 5 m ladder, foot 1.5 m from the wall")]}
+        rows={[
+          ["1–2", tx(t, "mRt_s1", "hyp = 5 (the ladder), adj = 1.5 (the gap at the foot); wanted: the angle θ at the ground and the height h")],
+          ["3", tx(t, "mRt_s2", "from θ, the gap is adjacent, the wall height is opposite, the ladder is the hypotenuse")],
+          ["4", tx(t, "mRt_s3", "adj and hyp are known → cosine: cos θ = 1.5 / 5 = 0.3")],
+          ["5", tx(t, "mRt_s4", "θ = arccos 0.3 ≈ 72.5°; h = 5 · sin 72.5° ≈ 5 · 0.954 ≈ 4.77 m")],
+          [tx(t, "mRt_sCheck", "check"), tx(t, "mRt_s5", "Pythagoras: √(5² − 1.5²) = √(25 − 2.25) = √22.75 ≈ 4.77 ✓; the other angle is 90° − 72.5° = 17.5°")],
+        ]}
+      />
+      <Callout type="tip" t={t}>
+        {tx(t, "mRt_calcTip", "Before pressing sin on a calculator, check that it shows DEG. In RAD mode it expects radians, a unit met in the next chapter, and sin 30 comes out as about −0.99 instead of 0.5.")}
+      </Callout>
 
       <H2>{tx(t, "mRt_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
         headers={[tx(t, "mRt_tWrong", "Wrong"), tx(t, "mRt_tRight", "Right"), tx(t, "mRt_tWhy", "Why")]}
         rows={[
-          [tx(t, "mRt_m1w", "std::sin(30) expecting 0.5"), "std::sin(radians(30))", tx(t, "mRt_m1", "C++ takes radians; sin of 30 radians is about −0.99")],
+          [tx(t, "mRt_m1w", "sin 30 = −0.99 on the calculator"), tx(t, "mRt_m1r", "switch the calculator to DEG"), tx(t, "mRt_m1", "in RAD mode 30 means 30 radians, about 1719°")],
           [tx(t, "mRt_m2w", "calling the hypotenuse \"adjacent\""), tx(t, "mRt_m2r", "adjacent is the leg next to θ"), tx(t, "mRt_m2", "the hypotenuse touches θ too, but it has its own name")],
           [tx(t, "mRt_m3w", "sin⁻¹ x = 1 / sin x"), tx(t, "mRt_m3r", "sin⁻¹ is the inverse function, arcsin"), tx(t, "mRt_m3", "the −1 means \"undo\", not a power")],
-          [tx(t, "mRt_m4w", "asin(1.0000001) in code"), tx(t, "mRt_m4r", "clamp to [−1, 1] first"), tx(t, "mRt_m4", "no angle has a sine above 1; the result is NaN")],
+          [tx(t, "mRt_m4w", "arcsin(6/5) = error, so try again"), tx(t, "mRt_m4r", "recheck which side is the hypotenuse"), tx(t, "mRt_m4", "a leg can never be longer than the hypotenuse, so sin and cos never pass 1")],
           [tx(t, "mRt_m5w", "using SOH-CAH-TOA without a right angle"), tx(t, "mRt_m5r", "use the laws of sines and cosines"), tx(t, "mRt_m5", "the ratios are defined in right triangles")],
         ]}
       />
@@ -203,7 +201,7 @@ bool walkable(float rise, float run, float maxDeg) {
         "sin θ = cos(90° − θ); exact values come from half a square and half an equilateral triangle.",
         "arcsin, arccos, arctan turn a ratio back into an angle.",
         "The slope of a line is the tangent of its angle; h = d · tan θ.",
-        "C++ trig functions take radians.",
+        "Solve in steps: draw, label, pick the ratio with one unknown, rearrange, check with Pythagoras.",
       ]} />
     </Article>
   );

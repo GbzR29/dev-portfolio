@@ -4,10 +4,10 @@
 // the instantaneous rate as the limit of the difference quotient; the tangent
 // line; derivatives of x², x³, 1/x and √x straight from the definition; the
 // derivative as a function; notation and units; higher derivatives (velocity,
-// acceleration, jerk); where derivatives fail; numerical derivatives and the
-// right step size in floating point; C++.
+// acceleration, jerk); where derivatives fail; estimating derivatives from a
+// table of measurements.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -114,7 +114,7 @@ export function DerivativesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mDer_higherTitle", "Derivatives of derivatives")}</H2>
       <p>
         {tx(t, "mDer_higherBody",
-          "The derivative of f′ is the second derivative f″ (or d²y/dx²): the rate at which the slope itself changes. Motion is the classic chain. Position s(t); its derivative is velocity v = s′ (how fast the position changes); the derivative of velocity is acceleration a = v′ = s″ (how fast the velocity changes); the next one, rarely named in school but important in games and robotics, is jerk, the rate of change of acceleration. For the ball, s = t², v = 2t, a = 2: a constant acceleration of 2 m/s², which is what a ball on a ramp does. A camera or elevator whose acceleration jumps suddenly feels like a kick even when the velocity is continuous; easing curves are designed to keep jerk small.")}
+          "The derivative of f′ is the second derivative f″ (or d²y/dx²): the rate at which the slope itself changes. Motion is the classic chain. Position s(t); its derivative is velocity v = s′ (how fast the position changes); the derivative of velocity is acceleration a = v′ = s″ (how fast the velocity changes); the next one, rarely named in school but important in engineering, is jerk, the rate of change of acceleration. For the ball, s = t², v = 2t, a = 2: a constant acceleration of 2 m/s², which is what a ball on a ramp does. A lift or a train whose acceleration jumps suddenly feels like a kick even when the velocity is continuous, which is why their controls are designed to keep the jerk small.")}
       </p>
       <Equation label={tx(t, "mDer_eqMotion", "Position, velocity, acceleration")}
         where={[
@@ -131,10 +131,10 @@ export function DerivativesContent({ t }: { t: TrackTranslations }) {
           "The limit in the definition can fail in three typical ways. At a corner, such as |x| at 0, secants from the right have slope +1 and from the left −1; no single tangent fits (try it in the figure). At a vertical tangent, such as the cube root ∛x at 0, the secants get steeper without bound and the slope would be infinite. At a break, a jump or a hole, there is no well-defined point to be tangent to. Every differentiable function is continuous (a jump would make the rise stay large while the run shrinks), but a continuous function may still have corners, so differentiable is the stronger demand.")}
       </p>
 
-      <H2>{tx(t, "mDer_numTitle", "Derivatives by computer")}</H2>
+      <H2>{tx(t, "mDer_numTitle", "Estimating derivatives from data")}</H2>
       <p>
         {tx(t, "mDer_numBody",
-          "When a function is only available as code (a noise function, a terrain lookup, a physics simulation), its derivative can be estimated by taking the definition with a small but finite h. The forward difference is exactly the difference quotient. The central difference steps half-way in both directions and is far more accurate: its errors from the two sides cancel, so its error shrinks like h² instead of h. Halving h cuts the forward difference's error in half but the central difference's to a quarter.")}
+          "When a function is only known from measurements (positions read off a stopwatch, temperatures every hour, heights along a path), its derivative can be estimated by taking the definition with a small but finite h, the spacing of the data. The forward difference is exactly the difference quotient. The central difference steps half-way in both directions and is far more accurate: its errors from the two sides cancel, so its error shrinks like h² instead of h. Halving h cuts the forward difference's error in half but the central difference's to a quarter.")}
       </p>
       <Equation label={tx(t, "mDer_eqNum", "Forward and central differences")}
         where={[
@@ -145,43 +145,24 @@ export function DerivativesContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mDer_numBody2",
-          "Why not take h = 10⁻²⁰? Because of the cancellation described at the end of the limits chapter. f(x + h) and f(x) agree in almost all their digits, so their difference keeps only a few meaningful ones, and dividing by a tiny h magnifies the rounding error. There is a sweet spot where the formula's own error and the rounding error balance: for the central difference about h ≈ 0.005 in 32-bit floats and h ≈ 0.000006 in 64-bit doubles (roughly the cube root of the machine epsilon), for the forward difference about 0.0003 and 0.00000001 (its square root). Scale h with the size of x when x is large.")}
+          "How small should h be? With measured data there is no choice: h is the time or distance between readings. With a formula and a calculator, a smaller h is better only up to a point. The limits chapter showed that subtracting two nearly equal numbers throws away digits, and dividing by a tiny h magnifies what is left; on a 10-digit calculator, h around 0.001 is a good compromise. Measurements also carry small errors, and differences magnify those too, so a derivative estimated from rough data is always rougher than the data.")}
       </p>
-      <CodeBlock lang="cpp" filename="numeric_derivative.hpp" t={t}>{`#include <cmath>
-
-// Central difference: error ~ h^2. For doubles, h ~ 6e-6 * max(1, |x|) balances
-// the formula's error against rounding error; for floats use h ~ 5e-3 instead.
-template <class F>
-double derivative(F f, double x) {
-    double h = 6e-6 * std::fmax(1.0, std::fabs(x));
-    return (f(x + h) - f(x - h)) / (2 * h);
-}
-
-// Second derivative from the same three samples: (f(x+h) - 2 f(x) + f(x-h)) / h^2
-template <class F>
-double secondDerivative(F f, double x) {
-    double h = 1e-4 * std::fmax(1.0, std::fabs(x));
-    return (f(x + h) - 2 * f(x) + f(x - h)) / (h * h);
-}
-
-// Terrain normal from a height map: the slopes along x and z by central differences.
-struct Vec3 { float x, y, z; };
-template <class Height>
-Vec3 terrainNormal(Height height, float x, float z, float h = 0.5f /* one grid cell */) {
-    float dhdx = (height(x + h, z) - height(x - h, z)) / (2 * h);
-    float dhdz = (height(x, z + h) - height(x, z - h)) / (2 * h);
-    Vec3 n = { -dhdx, 1.0f, -dhdz };                  // perpendicular to both slope directions
-    float len = std::sqrt(n.x * n.x + n.y * n.y + n.z * n.z);
-    return { n.x / len, n.y / len, n.z / len };
-}`}</CodeBlock>
+      <LessonTable
+        headers={["t (s)", "0", "1", "2", "3", "4"]}
+        rows={[[tx(t, "mDer_tPos", "position s (m)"), "0", "3", "12", "27", "48"]]}
+      />
+      <p>
+        {tx(t, "mDer_tableBody",
+          "A car's position is read every second (the readings happen to follow s = 3t²). Its speed at t = 2 s: the forward difference gives (27 − 12)/1 = 15 m/s, the backward difference (12 − 3)/1 = 9 m/s, and the central difference (27 − 3)/2 = 12 m/s. The exact speed is s′ = 6t = 12 m/s: the central difference hits it, because for a parabola its errors from the two sides cancel completely.")}
+      </p>
       <Callout type="info" t={t}>
-        {tx(t, "mDer_gpuTip", "GPUs compute derivatives this way for free. A fragment shader's dFdx(v) and dFdy(v) are the differences of v between neighbouring pixels, forward differences with h = one pixel. Texture sampling uses them to choose a mipmap level, and they are how screen-space normals and anti-aliased procedural patterns are made. The terrain normal above takes one slope along x and one along z; why the normal is (−dh/dx, 1, −dh/dz) will be clearer after the partial derivatives chapter.")}
+        {tx(t, "mDer_secondTip", "The same three readings give the second derivative: (f(x + h) − 2f(x) + f(x − h))/h², the change between the slope on the right and the slope on the left, divided by h. For the car: (27 − 2 · 12 + 3)/1² = 6 m/s², exactly s″ = 6.")}
       </Callout>
 
       <H2>{tx(t, "mDer_exTitle", "Worked examples")}</H2>
       <p>{tx(t, "mDer_ex1", "1. f(x) = 3x² from the definition: (3(x + h)² − 3x²)/h = (6xh + 3h²)/h = 6x + 3h → 6x. At x = 2 the slope is 12.")}</p>
       <p>{tx(t, "mDer_ex2", "2. Tangent to y = x³ at x = 1: f(1) = 1, f′(1) = 3 · 1² = 3, so y = 1 + 3(x − 1) = 3x − 2. At x = 1.1 the curve gives 1.331 and the tangent 1.3: close, because the point is near.")}</p>
-      <p>{tx(t, "mDer_ex3", "3. A drone's height is h(t) = 20t − 5t² metres. Velocity h′(t) = 20 − 10t m/s (differentiate each term, using the table). It stops rising when 20 − 10t = 0, at t = 2 s, at a height of 20 m. Acceleration h″ = −10 m/s²: gravity, pointing down.")}</p>
+      <p>{tx(t, "mDer_ex3", "3. A ball thrown straight up has height h(t) = 20t − 5t² metres. Velocity h′(t) = 20 − 10t m/s (differentiate each term, using the table). It stops rising when 20 − 10t = 0, at t = 2 s, at a height of 20 m. Acceleration h″ = −10 m/s²: gravity, pointing down.")}</p>
       <H3>{tx(t, "mDer_ex4Title", "A numeric check")}</H3>
       <p>{tx(t, "mDer_ex4", "4. Estimate the slope of sin x at x = 1 with h = 0.01. Forward: (sin 1.01 − sin 1)/0.01 = 0.53609. Central: (sin 1.01 − sin 0.99)/0.02 = 0.54029. The exact value, as the next chapter shows, is cos 1 = 0.54030. The central difference is right to four digits; the forward one only to one.")}</p>
 
@@ -192,7 +173,7 @@ Vec3 terrainNormal(Height height, float x, float z, float h = 0.5f /* one grid c
           [tx(t, "mDer_m1w", "setting h = 0 in the quotient"), tx(t, "mDer_m1r", "simplify first, then let h → 0"), tx(t, "mDer_m1", "h = 0 gives 0/0")],
           [tx(t, "mDer_m2w", "f′(a) is the slope of any line through (a, f(a))"), tx(t, "mDer_m2r", "only the tangent's slope"), tx(t, "mDer_m2", "secants give average rates, not the rate at a point")],
           [tx(t, "mDer_m3w", "continuous means differentiable"), tx(t, "mDer_m3r", "corners are continuous but not differentiable"), tx(t, "mDer_m3", "|x| at 0")],
-          [tx(t, "mDer_m4w", "tiny h for accuracy"), tx(t, "mDer_m4r", "h near the sweet spot, central differences"), tx(t, "mDer_m4", "rounding error grows as h shrinks")],
+          [tx(t, "mDer_m4w", "the tiniest h the calculator allows"), tx(t, "mDer_m4r", "a moderate h, central differences"), tx(t, "mDer_m4", "rounding error grows as h shrinks")],
           [tx(t, "mDer_m5w", "forgetting units"), tx(t, "mDer_m5r", "output units per input unit"), tx(t, "mDer_m5", "m per s, not m")],
         ]}
       />
@@ -204,7 +185,7 @@ Vec3 terrainNormal(Height height, float x, float z, float h = 0.5f /* one grid c
         "f′ is a function: x² → 2x, x³ → 3x², 1/x → −1/x², √x → 1/(2√x).",
         "Position → velocity → acceleration → jerk: each is the derivative of the one before.",
         "No derivative at corners, vertical tangents or breaks.",
-        "Numerically, prefer the central difference with a moderate h; too small an h is ruined by rounding.",
+        "From data, use the central difference (f(x + h) − f(x − h))/2h; its error shrinks like h².",
       ]} />
     </Article>
   );

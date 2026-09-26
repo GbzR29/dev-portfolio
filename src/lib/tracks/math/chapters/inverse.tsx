@@ -3,10 +3,10 @@
 // Linear Algebra 6: inverse matrices and linear systems — undoing a matrix,
 // the inverses of the basic moves, the 2 × 2 formula, (AB)⁻¹ = B⁻¹A⁻¹,
 // rotations (inverse = transpose), systems as Ax = b, Gaussian and
-// Gauss–Jordan elimination with pivoting, change of basis (world ↔ local,
-// the view matrix), ill-conditioning, and C++.
+// Gauss–Jordan elimination with pivoting, change of basis (map ↔ local
+// coordinates), ill-conditioning, and a 3 × 3 inverse by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -20,7 +20,7 @@ export function InverseContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mInv_intro",
-          "A matrix moves points. Very often you need to go back: from a point on screen to the point in the world it came from, from the world into a character's own space, from the effect to the cause. The matrix that undoes another is its inverse. Finding it is the same problem as solving a system of linear equations, the problem of the systems chapter, now with any number of unknowns. This chapter covers both, and the elimination method that solves them.")}
+          "A matrix moves points. Very often you need to go back: from a point on a map back to the place on the ground, from a coded message back to the plain one, from the effect to the cause. The matrix that undoes another is its inverse. Finding it is the same problem as solving a system of linear equations, the problem of the systems chapter, now with any number of unknowns. This chapter covers both, and the elimination method that solves them.")}
       </Lead>
 
       <H2>{tx(t, "mInv_whatTitle", "What an inverse is")}</H2>
@@ -106,7 +106,7 @@ export function InverseContent({ t }: { t: TrackTranslations }) {
         {r`\begin{aligned} 2x + y - z &= 8 \\ -3x - y + 2z &= -11 \\ -2x + y + 2z &= -3 \end{aligned} \qquad \left[\begin{array}{rrr|r} 2 & 1 & -1 & 8 \\ -3 & -1 & 2 & -11 \\ -2 & 1 & 2 & -3 \end{array}\right]`}
       </Equation>
       <Callout type="warn" t={t}>
-        {tx(t, "mInv_pivotWarn", "If a pivot is 0 you cannot divide by it: swap in a lower row whose entry in that column is not 0. If every candidate is 0, the matrix is singular. With floats, a tiny pivot is almost as bad as a zero one, because dividing by it magnifies rounding errors. Partial pivoting fixes this: before clearing each column, swap up the row whose entry in that column is largest in size.")}
+        {tx(t, "mInv_pivotWarn", "If a pivot is 0 you cannot divide by it: swap in a lower row whose entry in that column is not 0. If every candidate is 0, the matrix is singular. When working with rounded decimals, a tiny pivot is almost as bad as a zero one, because dividing by it magnifies the rounding errors. Partial pivoting fixes this: before clearing each column, swap up the row whose entry in that column is largest in size.")}
       </Callout>
 
       <H3>{tx(t, "mInv_gjTitle", "Finding A⁻¹ by elimination")}</H3>
@@ -116,17 +116,17 @@ export function InverseContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mInv_solveVsInv",
-          "In code, if you only need to solve Ax = b once, eliminate on [A | b] directly; computing A⁻¹ first takes about three times the work and loses more accuracy. Computing the inverse pays off when the same matrix must be undone for many vectors, such as every vertex or every mouse click.")}
+          "If you only need to solve Ax = b once, eliminate on [A | b] directly; computing A⁻¹ first takes about three times the work. The inverse pays off when the same matrix must be undone for many right-hand sides: the same three mixtures combined to reach one target amount, then another, then another. Each new target then costs only one matrix–vector product.")}
       </p>
 
-      <H2>{tx(t, "mInv_basisTitle", "Change of basis: world and local space")}</H2>
+      <H2>{tx(t, "mInv_basisTitle", "Change of basis: map and local coordinates")}</H2>
       <p>
         {tx(t, "mInv_basisBody",
-          "A character's model matrix M takes points from its own local space (where its feet are at the origin and its nose points along +z) into the world. The columns of M's linear part are the character's right, up and forward directions in world coordinates, and the translation column is its position. The inverse goes the other way: M⁻¹ takes a world point into the character's local space. Want to know if an enemy is in front of the character, and how far to the left? Transform the enemy's position by M⁻¹ and read its local z and x.")}
+          "A surveyor sets up local axes on a plot of land: the origin at a corner post, the first axis along the fence, the second perpendicular to it. A matrix M (in the homogeneous form of the matrices chapter) takes local coordinates to map coordinates: the columns of its linear part are the two local axes written in map coordinates, and its translation column is the corner post. The inverse goes the other way: M⁻¹ takes a map point into local coordinates. How far along the fence does a tree stand, and how far from it? Transform the tree's map position by M⁻¹ and read the two numbers.")}
       </p>
       <p>
         {tx(t, "mInv_viewBody",
-          "The camera is the same idea. The camera has a model matrix like any object: where it is and which way it faces. The view matrix, which every vertex goes through before projection, is the inverse of that matrix: it moves the world so the camera sits at the origin looking down its axis. For a rigid transform (rotation R plus translation t) the inverse is cheap: rotations invert by transposing, and undoing \"rotate, then move by t\" means moving back by t first, then rotating back.")}
+          "When the local axes are perpendicular unit vectors, M is a rigid transform, a rotation plus a translation, and nothing is stretched. For a rigid transform (rotation R plus translation t) the inverse is cheap: rotations invert by transposing, and undoing \"rotate, then move by t\" means moving back by t first, then rotating back.")}
       </p>
       <Equation label={tx(t, "mInv_eqRigid", "Inverse of a rotation plus translation")}
         where={[
@@ -134,14 +134,14 @@ export function InverseContent({ t }: { t: TrackTranslations }) {
           [r`\mathbf{t}`, tx(t, "mInv_wT", "the translation, the object's position")],
           [r`-R^{\mathsf T}\mathbf{t}`, tx(t, "mInv_wNewT", "the new translation: move back by t, expressed in the rotated axes")],
         ]}
-        note={tx(t, "mInv_rigidNote", "Check: applying the forward transform gives Rp + t; the inverse turns that into Rᵀ(Rp + t) − Rᵀt = p. ✓ This is how look-at functions build the view matrix: the camera's right, up and forward vectors become the rows (transpose) and the position enters as −Rᵀ·position.")}>
+        note={tx(t, "mInv_rigidNote", "Check: applying the forward transform gives Rp + t; the inverse turns that into Rᵀ(Rp + t) − Rᵀt = p. ✓ In words: the local axes become the rows of the inverse, and the corner post enters as −Rᵀt.")}>
         {r`\begin{bmatrix} R & \mathbf{t} \\ \mathbf{0}^{\mathsf T} & 1 \end{bmatrix}^{-1} = \begin{bmatrix} R^{\mathsf T} & -R^{\mathsf T}\mathbf{t} \\ \mathbf{0}^{\mathsf T} & 1 \end{bmatrix}`}
       </Equation>
 
       <H2>{tx(t, "mInv_condTitle", "Nearly singular matrices")}</H2>
       <p>
         {tx(t, "mInv_condBody",
-          "When det A is close to 0 the inverse exists but has huge entries, since it divides by det. The columns are nearly parallel, so the warped grid is a set of long thin cells, and a tiny change in b (a rounding error, a jittery mouse) moves the solution a long way along them. Such a matrix is called ill-conditioned. In practice: compare the determinant (or the pivot) against a small tolerance rather than 0, and treat \"nearly singular\" as \"singular\" when the answer would be meaningless, like intersecting two almost parallel lines.")}
+          "When det A is close to 0 the inverse exists but has huge entries, since it divides by det. The columns are nearly parallel, so the warped grid is a set of long thin cells, and a tiny change in b (a rounding error, a slightly wrong measurement) moves the solution a long way along them. Such a matrix is called ill-conditioned. In practice: when det A is tiny compared with the entries, distrust the answer, and treat \"nearly singular\" as \"singular\" when the answer would be meaningless, like the crossing point of two almost parallel lines.")}
       </p>
 
       <H2>{tx(t, "mInv_exTitle", "Worked examples")}</H2>
@@ -151,57 +151,30 @@ export function InverseContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mInv_ex2",
-          "2. A camera at (5, 0) facing along −x (a turn of 180°) sees the world point (2, 1). Local coordinates: R = rotation by 180° = −I, so Rᵀ = −I and p_local = Rᵀ(p − t) = −(2 − 5, 1 − 0) = (3, −1). The point is 3 units ahead along the camera's own x-axis and 1 unit to its side.")}
+          "2. A plot's local axes are the map axes turned by 180°, with the corner post at (5, 0). A tree stands at the map point (2, 1). Local coordinates: R = rotation by 180° = −I, so Rᵀ = −I and p_local = Rᵀ(p − t) = −(2 − 5, 1 − 0) = (3, −1). The tree is 3 m along the fence and 1 m to the negative side of it.")}
       </p>
       <p>
         {tx(t, "mInv_ex3",
           "3. Solve x + 2y = 5, 3x + 6y = 10 with the formula: det = 6 − 6 = 0. No inverse: the first equation times 3 says 3x + 6y = 15, contradicting 10, so there is no solution at all (parallel lines).")}
       </p>
 
-      <H2>{tx(t, "mInv_codeTitle", "Inverses and solving in C++")}</H2>
+      <H2>{tx(t, "mInv_handTitle", "A 3 × 3 inverse by hand")}</H2>
       <p>
-        {tx(t, "mInv_codeBody",
-          "inverse2 is the 2 × 2 formula with a tolerance check. solve3 is Gaussian elimination with partial pivoting on the augmented 3 × 4 table, followed by back substitution; the same loop works for any n.")}
+        {tx(t, "mInv_handBody",
+          "Invert A = [[1, 0, 2], [0, 1, 0], [1, 0, 3]] with [A | I]. First check that it can be done: expanding along the middle row, det A = 1 · (1 · 3 − 2 · 1) = 1, not 0. Then clear the columns one at a time, writing down each row operation.")}
       </p>
-      <CodeBlock lang="cpp" filename="solve.hpp" t={t}>{`#include <cmath>
-#include <array>
-#include <optional>
-#include <utility>
-
-struct Mat2 { float a, b, c, d; };            // row by row: [a b; c d]
-
-std::optional<Mat2> inverse2(Mat2 m, float eps = 1e-8f) {
-    float det = m.a * m.d - m.b * m.c;
-    if (std::abs(det) < eps) return std::nullopt;   // singular (or nearly)
-    float k = 1.0f / det;
-    return Mat2{ m.d * k, -m.b * k, -m.c * k, m.a * k };
-}
-
-// Solve A x = b for 3 unknowns. M is the augmented matrix [A | b].
-std::optional<std::array<float, 3>> solve3(float M[3][4], float eps = 1e-8f) {
-    for (int col = 0; col < 3; ++col) {
-        // Partial pivoting: bring up the row with the largest entry
-        int best = col;
-        for (int r = col + 1; r < 3; ++r)
-            if (std::abs(M[r][col]) > std::abs(M[best][col])) best = r;
-        if (std::abs(M[best][col]) < eps) return std::nullopt;
-        for (int j = 0; j < 4; ++j) std::swap(M[col][j], M[best][j]);
-
-        // Clear the column below the pivot: R_r <- R_r - k * R_col
-        for (int r = col + 1; r < 3; ++r) {
-            float k = M[r][col] / M[col][col];
-            for (int j = col; j < 4; ++j) M[r][j] -= k * M[col][j];
-        }
-    }
-    // Back substitution, last unknown first
-    std::array<float, 3> x{};
-    for (int r = 2; r >= 0; --r) {
-        float s = M[r][3];
-        for (int j = r + 1; j < 3; ++j) s -= M[r][j] * x[j];
-        x[r] = s / M[r][r];
-    }
-    return x;
-}`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mInv_tOp", "Operation"), tx(t, "mInv_tTable", "[A | I] afterwards, row by row")]}
+        rows={[
+          [tx(t, "mInv_h0", "start"), "[1 0 2 | 1 0 0]   [0 1 0 | 0 1 0]   [1 0 3 | 0 0 1]"],
+          ["R₃ ← R₃ − R₁", "[1 0 2 | 1 0 0]   [0 1 0 | 0 1 0]   [0 0 1 | −1 0 1]"],
+          ["R₁ ← R₁ − 2R₃", "[1 0 0 | 3 0 −2]   [0 1 0 | 0 1 0]   [0 0 1 | −1 0 1]"],
+        ]}
+      />
+      <p>
+        {tx(t, "mInv_handCheck",
+          "The left half is I, so A⁻¹ = [[3, 0, −2], [0, 1, 0], [−1, 0, 1]]. Check two entries of AA⁻¹: row 1 of A with column 1 of A⁻¹ is 1 · 3 + 0 + 2 · (−1) = 1 ✓, and row 3 with column 3 is 1 · (−2) + 0 + 3 · 1 = 1 ✓. Now any system with this matrix is one product away. For Ax = (4, 5, 7): x = A⁻¹(4, 5, 7) = (12 − 14, 5, −4 + 7) = (−2, 5, 3). Check the first equation: −2 + 0 + 2 · 3 = 4 ✓.")}
+      </p>
 
       <H2>{tx(t, "mInv_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -209,10 +182,10 @@ std::optional<std::array<float, 3>> solve3(float M[3][4], float eps = 1e-8f) {
         rows={[
           ["(AB)⁻¹ = A⁻¹B⁻¹", "(AB)⁻¹ = B⁻¹A⁻¹", tx(t, "mInv_m1", "undo the last move first")],
           ["x = b / A", "x = A⁻¹b", tx(t, "mInv_m2", "there is no matrix division; and A⁻¹ goes on the left")],
-          [tx(t, "mInv_m3w", "inverting a rotation with the general formula"), tx(t, "mInv_m3r", "transpose it"), tx(t, "mInv_m3", "same result, far cheaper and more accurate")],
+          [tx(t, "mInv_m3w", "inverting a rotation with the general formula"), tx(t, "mInv_m3r", "transpose it"), tx(t, "mInv_m3", "same result, with no arithmetic at all")],
           [tx(t, "mInv_m4w", "forgetting to negate b and c (2 × 2)"), "[d −b; −c a] / det", tx(t, "mInv_m4", "only the diagonal is swapped; the others change sign")],
           [tx(t, "mInv_m5w", "dividing by a zero or tiny pivot"), tx(t, "mInv_m5r", "swap rows first (pivoting)"), tx(t, "mInv_m5", "a small pivot magnifies rounding errors")],
-          [tx(t, "mInv_m6w", "using the model matrix as the view matrix"), tx(t, "mInv_m6r", "view = inverse of the camera's model matrix"), tx(t, "mInv_m6", "the world must move opposite to the camera")],
+          [tx(t, "mInv_m6w", "no zero entries, so A⁻¹ exists"), tx(t, "mInv_m6r", "A⁻¹ exists exactly when det A ≠ 0"), tx(t, "mInv_m6", "[[1, 2], [2, 4]] has no zeros, but det = 4 − 4 = 0")],
         ]}
       />
 
@@ -222,7 +195,7 @@ std::optional<std::array<float, 3>> solve3(float M[3][4], float eps = 1e-8f) {
         "(AB)⁻¹ = B⁻¹A⁻¹; a rotation's inverse is its transpose.",
         "A system is Ax = b; its solution is x = A⁻¹b, the recipe of columns that reaches b.",
         "Elimination with row operations and pivoting solves any size; [A | I] → [I | A⁻¹].",
-        "World → local and the view matrix are inverses of model matrices.",
+        "Map → local coordinates is M⁻¹; a rigid inverse is Rᵀ with translation −Rᵀt.",
       ]} />
     </Article>
   );

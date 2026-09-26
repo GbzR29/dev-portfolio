@@ -4,9 +4,9 @@
 // A(x); part 1, A′ = f, by the thin-strip argument; antiderivatives and the
 // constant C; part 2, ∫ f = F(b) − F(a); a table of antiderivatives; the net
 // change theorem; motion from acceleration (constant-gravity formulas and
-// aiming a projectile); functions with no formula antiderivative; C++.
+// where a thrown ball lands); functions with no formula antiderivative.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -123,7 +123,7 @@ export function FtcContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mFtc_motionTitle", "Motion from acceleration")}</H2>
       <p>
         {tx(t, "mFtc_motionBody",
-          "Run the derivative chain of motion backwards. With a constant acceleration a (gravity, a rocket's thrust), the velocity is an antiderivative of a: v(t) = at + C₁. At t = 0 the velocity is the starting velocity v₀, so C₁ = v₀. The position is an antiderivative of v: s(t) = ½at² + v₀t + C₂, and at t = 0 it is the starting position s₀, so C₂ = s₀. Each constant of integration is an initial condition. These are the formulas every projectile in every game follows, derived rather than memorised.")}
+          "Run the derivative chain of motion backwards. With a constant acceleration a (gravity, a rocket's thrust), the velocity is an antiderivative of a: v(t) = at + C₁. At t = 0 the velocity is the starting velocity v₀, so C₁ = v₀. The position is an antiderivative of v: s(t) = ½at² + v₀t + C₂, and at t = 0 it is the starting position s₀, so C₂ = s₀. Each constant of integration is an initial condition. These are the formulas of every thrown ball and every falling stone, derived rather than memorised.")}
       </p>
       <Equation label={tx(t, "mFtc_eqMotion", "Constant acceleration")}
         where={[
@@ -133,33 +133,13 @@ export function FtcContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mFtc_motionNote", "In 2D or 3D the same formulas hold for each coordinate separately, with vectors: p(t) = p₀ + v₀t + ½at².")}>
         {r`v(t) = v_0 + a\,t \qquad s(t) = s_0 + v_0\,t + \tfrac12 a\,t^2`}
       </Equation>
-      <H3>{tx(t, "mFtc_aimTitle", "Aiming: when does it land?")}</H3>
+      <H3>{tx(t, "mFtc_aimTitle", "When does it land?")}</H3>
       <p>
         {tx(t, "mFtc_aimBody",
-          "A grenade is thrown from height 1.5 m with upward speed 8 m/s and sideways speed 6 m/s. Its height is y(t) = 1.5 + 8t − 4.9t². It lands when y = 0, a quadratic: 4.9t² − 8t − 1.5 = 0, so t = (8 + √(64 + 29.4))/9.8 = (8 + 9.66)/9.8 ≈ 1.80 s (the other root is negative, before the throw). Sideways it travels 6 · 1.80 ≈ 10.8 m. The top of the arc is where the velocity 8 − 9.8t is 0: t ≈ 0.82 s, height 1.5 + 8 · 0.82 − 4.9 · 0.82² ≈ 4.77 m. A trajectory preview in a game draws exactly this curve.")}
+          "A ball is thrown from height 1.5 m with upward speed 8 m/s and sideways speed 6 m/s. Its height is y(t) = 1.5 + 8t − 4.9t². It lands when y = 0, a quadratic: 4.9t² − 8t − 1.5 = 0, so t = (8 + √(64 + 29.4))/9.8 = (8 + 9.66)/9.8 ≈ 1.80 s (the other root is negative, before the throw). Sideways it travels 6 · 1.80 ≈ 10.8 m. The top of the arc is where the velocity 8 − 9.8t is 0: t ≈ 0.82 s, height 1.5 + 8 · 0.82 − 4.9 · 0.82² ≈ 4.77 m. Its path is a parabola: x grows steadily with t while y follows a quadratic.")}
       </p>
-      <CodeBlock lang="cpp" filename="projectile.hpp" t={t}>{`#include <cmath>
-
-struct Vec2 { float x, y; };
-
-// Exact position under constant acceleration: the integral of the integral of a.
-Vec2 projectile(Vec2 p0, Vec2 v0, Vec2 a, float t) {
-    return { p0.x + v0.x * t + 0.5f * a.x * t * t,
-             p0.y + v0.y * t + 0.5f * a.y * t * t };
-}
-
-// Time at which the height returns to groundY (larger root of the quadratic), or -1.
-float landingTime(float y0, float vy, float ay /* negative */, float groundY = 0) {
-    // 0.5*ay*t^2 + vy*t + (y0 - groundY) = 0
-    float A = 0.5f * ay, B = vy, Cc = y0 - groundY;
-    float disc = B * B - 4 * A * Cc;
-    if (disc < 0) return -1;                          // never reaches that height
-    return (-B - std::sqrt(disc)) / (2 * A);          // A < 0, so this is the later root
-}
-
-// landingTime(1.5f, 8, -9.8f)  ->  1.80 s`}</CodeBlock>
       <Callout type="tip" t={t}>
-        {tx(t, "mFtc_exactTip", "When the forces are this simple, the exact formula beats step-by-step integration: it has no dt error, gives the same result at any frame rate, and can jump straight to any time (for prediction, replays or network catch-up). Step-by-step methods are still needed as soon as forces depend on position or velocity (drag, springs, collisions), which is where the differential equations chapter comes in.")}
+        {tx(t, "mFtc_exactTip", "Integrating twice worked because the acceleration was a known function of time, here a constant. As soon as the force depends on where the object is or how fast it moves (air drag, a spring, a pendulum), the acceleration is no longer known in advance, and integrating it directly is impossible. That situation is a differential equation, the subject of a later chapter.")}
       </Callout>
 
       <H2>{tx(t, "mFtc_exTitle", "Worked examples")}</H2>
@@ -168,7 +148,7 @@ float landingTime(float y0, float vy, float ay /* negative */, float groundY = 0
       <p>{tx(t, "mFtc_ex3", "3. ∫₀^(π/2) cos x dx = sin(π/2) − sin 0 = 1.")}</p>
       <p>{tx(t, "mFtc_ex4", "4. ∫ (4x³ − 1/x + 2) dx = x⁴ − ln|x| + 2x + C. Check: 4x³ − 1/x + 2 ✓.")}</p>
       <p>{tx(t, "mFtc_ex5", "5. d/dx ∫₀ˣ √(1 + t³) dt = √(1 + x³), by part 1, even though this antiderivative has no simple formula.")}</p>
-      <p>{tx(t, "mFtc_ex6", "6. A health regeneration rate of r(t) = 10 e^(−0.5t) HP per second after a potion. Total healed over the first 4 s: ∫₀⁴ 10e^(−0.5t) dt = [−20e^(−0.5t)]₀⁴ = −20e^(−2) + 20 ≈ 17.3 HP. Over all time it approaches 20 HP.")}</p>
+      <p>{tx(t, "mFtc_ex6", "6. Water flows into a tank at r(t) = 10 e^(−0.5t) litres per minute as a valve slowly closes. Total over the first 4 minutes: ∫₀⁴ 10e^(−0.5t) dt = [−20e^(−0.5t)]₀⁴ = −20e^(−2) + 20 ≈ 17.3 L. Over all time it approaches 20 L.")}</p>
 
       <H2>{tx(t, "mFtc_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable

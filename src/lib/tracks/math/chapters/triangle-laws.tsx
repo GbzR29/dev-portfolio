@@ -3,9 +3,9 @@
 // Trigonometry 3: solving any triangle — naming sides and angles, the law of
 // cosines (derived from a height and Pythagoras), the law of sines and the
 // circumscribed circle, the area ½ab·sin C, which law for which data, the
-// ambiguous SSA case, two-bone inverse kinematics, and C++.
+// ambiguous SSA case, a two-segment arm, and a full solution by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +19,7 @@ export function TriangleLawsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mTl_intro",
-          "SOH-CAH-TOA needs a right angle, and most triangles do not have one: the triangle between a player, an enemy and a wall, the two bones of an arm and the target it reaches for, three GPS satellites. Two laws handle every triangle. The law of cosines is Pythagoras with a correction term; the law of sines links each side to the angle facing it. Both come from a single trick: cut the triangle into two right triangles with a height.")}
+          "SOH-CAH-TOA needs a right angle, and most triangles do not have one: the triangle between two lighthouses and a ship, the two parts of an arm and the point it reaches for, three towns on a map. Two laws handle every triangle. The law of cosines is Pythagoras with a correction term; the law of sines links each side to the angle facing it. Both come from a single trick: cut the triangle into two right triangles with a height.")}
       </Lead>
 
       <H2>{tx(t, "mTl_namesTitle", "Naming the parts")}</H2>
@@ -105,13 +105,13 @@ export function TriangleLawsContent({ t }: { t: TrackTranslations }) {
           "Knowing b, the angle A and the side a that faces it is not always enough. Corner B has to lie on the ray from A at angle A, and at distance a from C, so on a circle of radius a around C. The distance from C to the ray is b sin A. If a is smaller, the circle misses the ray: no triangle. If a equals it, the circle just touches: one right triangle. If a is between b sin A and b, it cuts the ray twice: two triangles, one acute and one obtuse at B. If a is at least b, one of the crossings is behind A, so one triangle. The law of sines reflects this: sin B = b sin A / a can have two angles between 0° and 180° with that sine, B and 180° − B.")}
       </p>
       <Callout type="warn" t={t}>
-        {tx(t, "mTl_asinWarn", "asin only ever returns the acute angle. When solving SSA with the law of sines, check whether 180° − B also fits (it does when the angles still add up to less than 180°), or you will silently miss the second triangle.")}
+        {tx(t, "mTl_asinWarn", "The sin⁻¹ key of a calculator only ever returns the acute angle. When solving SSA with the law of sines, check whether 180° − B also fits (it does when the angles still add up to less than 180°), or you will silently miss the second triangle.")}
       </Callout>
 
-      <H2>{tx(t, "mTl_ikTitle", "Two-bone inverse kinematics")}</H2>
+      <H2>{tx(t, "mTl_ikTitle", "A two-segment arm")}</H2>
       <p>
         {tx(t, "mTl_ikBody",
-          "Animation often has to work backwards: the hand must touch the door handle, so what should the shoulder and elbow do? That is inverse kinematics (IK). For a limb with two bones, upper arm l₁ and forearm l₂, the shoulder, the elbow and the target form a triangle whose three sides are known: l₁, l₂ and the shoulder-to-target distance d. SSS, so the law of cosines gives all of it. The elbow angle comes straight from the formula; the shoulder turns towards the target and then lifts by the triangle's angle at the shoulder. The last mode of the figure is a working arm.")}
+          "Your arm, a desk lamp and a crane all have two straight segments joined at a hinge. To put the hand on a given point you have to work backwards: which angle at the elbow, and how high to raise the upper arm? Call the upper arm l₁, the forearm l₂ and the distance from the shoulder to the point d. The shoulder, the elbow and the point form a triangle whose three sides are all known, the SSS case, so the law of cosines gives every angle. The angle at the elbow comes straight from the formula; the angle at the shoulder says how far above the straight line to the point the upper arm must be raised. The last mode of the figure is such an arm.")}
       </p>
       <Equation label={tx(t, "mTrig_eqCosLaw", "Law of cosines")}
         where={[
@@ -119,7 +119,7 @@ export function TriangleLawsContent({ t }: { t: TrackTranslations }) {
           [r`c`, tx(t, "mTrig_wCside", "the third side, opposite the angle γ (shoulder-to-target distance)")],
           [r`\gamma`, tx(t, "mTrig_wGamma", "the angle between a and b (the elbow). Solving for it: cos γ = (a² + b² − c²) / 2ab")],
         ]}
-        note={tx(t, "mTrig_eqCosLawNote", "If c > a + b the target is out of reach and the fraction falls below −1: clamp it to [−1, 1] before calling acos, or the result is NaN.")}>
+        note={tx(t, "mTrig_eqCosLawNote", "If c > a + b the point is out of reach and the fraction falls below −1. No angle has a cosine below −1, and that is the formula saying that no such triangle exists (the triangle inequality of the triangles chapter).")}>
         {r`c^2 = a^2 + b^2 - 2ab\cos\gamma \qquad\Longrightarrow\qquad \gamma = \arccos\frac{a^2 + b^2 - c^2}{2ab}`}
       </Equation>
 
@@ -130,50 +130,31 @@ export function TriangleLawsContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mTl_ex2",
-          "2. A player sees a tower at 35° left of straight ahead, walks 100 m straight ahead and now sees it at 80°. In the triangle (start, end, tower) the angle at the start is 35°, at the end 180° − 80° = 100°, at the tower 45°. By the law of sines the distance from the end point to the tower is 100 · sin 35° / sin 45° ≈ 81.1 m.")}
+          "2. A hiker sees a tower at 35° left of straight ahead, walks 100 m straight ahead and now sees it at 80°. In the triangle (start, end, tower) the angle at the start is 35°, at the end 180° − 80° = 100°, at the tower 45°. By the law of sines the distance from the end point to the tower is 100 · sin 35° / sin 45° ≈ 81.1 m.")}
       </p>
       <p>
         {tx(t, "mTl_ex3",
           "3. An arm with l₁ = 0.3 m and l₂ = 0.25 m reaches for a point 0.4 m from the shoulder. cos(elbow) = (0.09 + 0.0625 − 0.16)/(2 · 0.3 · 0.25) = −0.0075/0.15 = −0.05, so the elbow is at about 92.9°.")}
       </p>
 
-      <H2>{tx(t, "mTl_codeTitle", "Solving triangles in C++")}</H2>
+      <H2>{tx(t, "mTl_handTitle", "A whole triangle by hand")}</H2>
       <p>
-        {tx(t, "mTl_codeBody",
-          "Every acos argument is clamped, because rounding can push a fraction to 1.0000001 for a flat triangle and turn the result into NaN. The IK function returns the two joint angles in radians, measured anticlockwise, with the elbow bent to one side (negate the bend for the other).")}
+        {tx(t, "mTl_handBody",
+          "Solve the triangle with sides a = 7, b = 8, c = 9 completely, then check the answer two independent ways. Start with the largest side's angle or any angle: the law of cosines never gives a wrong quadrant, because arccos returns angles from 0° to 180°, which is every angle a triangle can have. After two angles, the third follows from the angle sum.")}
       </p>
-      <CodeBlock lang="cpp" filename="triangle_laws.hpp" t={t}>{`#include <algorithm>
-#include <cmath>
-
-// Angle C (radians) opposite side c, from three sides: law of cosines
-float angleFromSides(float a, float b, float c) {
-    float cosC = (a * a + b * b - c * c) / (2.0f * a * b);
-    return std::acos(std::clamp(cosC, -1.0f, 1.0f));
-}
-
-// Third side from two sides and the angle between them (SAS)
-float sideFromSAS(float a, float b, float C) {
-    return std::sqrt(a * a + b * b - 2.0f * a * b * std::cos(C));
-}
-
-// Side facing angle B, given side a facing angle A (law of sines)
-float sideFromSines(float a, float A, float B) { return a * std::sin(B) / std::sin(A); }
-
-float triangleArea(float a, float b, float C) { return 0.5f * a * b * std::sin(C); }
-
-// Two-bone IK in 2D. Shoulder at (sx, sy), target at (tx, ty).
-// Outputs the upper arm's world angle and the elbow's interior angle.
-void twoBoneIK(float sx, float sy, float tx, float ty, float l1, float l2,
-               float& shoulder, float& elbow) {
-    float dx = tx - sx, dy = ty - sy;
-    float d = std::sqrt(dx * dx + dy * dy);
-    d = std::clamp(d, std::abs(l1 - l2) + 1e-4f, l1 + l2 - 1e-4f);  // stay a real triangle
-    float toTarget = std::atan2(dy, dx);           // direction to the target
-    shoulder = toTarget + angleFromSides(l1, d, l2);  // lift by the angle at the shoulder
-    elbow    = angleFromSides(l1, l2, d);          // interior angle at the elbow
-}`}</CodeBlock>
-      <Callout type="info" t={t}>
-        {tx(t, "mTl_atan2Info", "The IK code uses atan2 to find the direction to the target; the Polar Coordinates chapter explains it. For now read it as \"the angle of the line from the shoulder to the target\".")}
+      <LessonTable
+        headers={[tx(t, "mTl_tStep", "Step"), tx(t, "mTl_tWork", "Working")]}
+        rows={[
+          [tx(t, "mTl_h1a", "angle A (faces 7)"), tx(t, "mTl_h1", "cos A = (8² + 9² − 7²) / (2 · 8 · 9) = (64 + 81 − 49) / 144 = 96/144 ≈ 0.6667, so A ≈ 48.19°")],
+          [tx(t, "mTl_h2a", "angle B (faces 8)"), tx(t, "mTl_h2", "cos B = (7² + 9² − 8²) / (2 · 7 · 9) = (49 + 81 − 64) / 126 = 66/126 ≈ 0.5238, so B ≈ 58.41°")],
+          [tx(t, "mTl_h3a", "angle C"), tx(t, "mTl_h3", "C = 180° − 48.19° − 58.41° = 73.40°")],
+          [tx(t, "mTl_h4a", "check 1: cosines"), tx(t, "mTl_h4", "cos C = (49 + 64 − 81) / 112 = 32/112 ≈ 0.2857, and arccos 0.2857 ≈ 73.40° ✓")],
+          [tx(t, "mTl_h5a", "check 2: sines"), tx(t, "mTl_h5", "7 / sin 48.19° ≈ 7 / 0.7454 ≈ 9.39 and 9 / sin 73.40° ≈ 9 / 0.9583 ≈ 9.39 ✓ (so 2R ≈ 9.39)")],
+          [tx(t, "mTl_h6a", "area"), tx(t, "mTl_h6", "½ · 7 · 8 · sin 73.40° ≈ 28 · 0.9583 ≈ 26.8")],
+        ]}
+      />
+      <Callout type="tip" t={t}>
+        {tx(t, "mTl_orderTip", "The largest angle always faces the longest side and the smallest angle the shortest side. Here 48° < 58° < 73° faces 7 < 8 < 9: a quick sanity check on any solution.")}
       </Callout>
 
       <H2>{tx(t, "mTl_mistakesTitle", "Common mistakes")}</H2>
@@ -183,7 +164,7 @@ void twoBoneIK(float sx, float sy, float tx, float ty, float l1, float l2,
           [tx(t, "mTl_m1w", "pairing a with angle B"), tx(t, "mTl_m1r", "a faces A, b faces B"), tx(t, "mTl_m1", "both laws pair each side with the opposite angle")],
           [tx(t, "mTl_m2w", "c² = a² + b² − 2ab cos C with C not between a and b"), tx(t, "mTl_m2r", "C must be the angle where a and b meet"), tx(t, "mTl_m2", "the derivation drops the height from that corner")],
           [tx(t, "mTl_m3w", "trusting a single asin in the SSA case"), tx(t, "mTl_m3r", "also test 180° − B"), tx(t, "mTl_m3", "two triangles can fit the data")],
-          [tx(t, "mTl_m4w", "acos of an unclamped fraction"), tx(t, "mTl_m4r", "clamp to [−1, 1]"), tx(t, "mTl_m4", "rounding or an unreachable target gives NaN")],
+          [tx(t, "mTl_m4w", "arccos(1.3) = calculator error, so a typo"), tx(t, "mTl_m4r", "check the triangle inequality first"), tx(t, "mTl_m4", "sides like 2, 3, 6 cannot close up; no triangle exists")],
           [tx(t, "mTl_m5w", "area = ½ab for any triangle"), tx(t, "mTl_m5r", "½ab · sin C"), tx(t, "mTl_m5", "½ab is right only when C = 90°")],
         ]}
       />
@@ -194,7 +175,8 @@ void twoBoneIK(float sx, float sy, float tx, float ty, float l1, float l2,
         "Law of sines: a/sin A = b/sin B = c/sin C = 2R.",
         "Area = ½ab sin C from two sides and the angle between them.",
         "SSS and SAS: cosines; ASA and AAS: sines; SSA can give 0, 1 or 2 triangles.",
-        "Two-bone IK is an SSS triangle solved with the law of cosines.",
+        "A two-segment arm reaching a point is an SSS triangle: the law of cosines gives both joint angles.",
+        "Check a solution: angles sum to 180°, and the biggest angle faces the longest side.",
       ]} />
     </Article>
   );

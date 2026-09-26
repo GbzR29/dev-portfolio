@@ -3,9 +3,10 @@
 // Trigonometry 4: identities and rotation — what an identity is, the
 // Pythagorean identity and symmetries, rotating a point by any angle (from
 // the turned unit steps), rotating about a pivot, the angle-sum and
-// difference formulas, double and half angles, composing rotations, and C++.
+// difference formulas, double and half angles, composing rotations, and
+// exact values and proofs by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -19,7 +20,7 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mId_intro",
-          "The transformations chapter could only turn shapes by quarter turns, because anything else needed sine and cosine. Now they are available, and this chapter finishes the job: one formula rotates a point by any angle. Out of that formula fall the angle-sum identities, the handful of trigonometric facts that game and shader code actually relies on. Everything is derived, nothing is to be memorised blindly.")}
+          "The transformations chapter could only turn shapes by quarter turns, because anything else needed sine and cosine. Now they are available, and this chapter finishes the job: one formula rotates a point by any angle. Out of that formula fall the angle-sum identities, the handful of trigonometric facts that the rest of mathematics, from calculus to complex numbers, keeps relying on. Everything is derived, nothing is to be memorised blindly.")}
       </Lead>
 
       <H2>{tx(t, "mId_whatTitle", "What an identity is")}</H2>
@@ -48,7 +49,7 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
           [r`(x', y')`, tx(t, "mTrig_wXY2", "the rotated point")],
           [r`\theta`, tx(t, "mTrig_wRotTheta", "the rotation angle, counter-clockwise for positive θ (with y pointing up)")],
         ]}
-        note={tx(t, "mTrig_eqRotNote", "To rotate around another point c, subtract c, rotate, add c back. Check θ = 90°: (1, 0) goes to (0, 1). With y pointing down, as in most 2D screen coordinates, the same formula turns clockwise on screen.")}>
+        note={tx(t, "mTrig_eqRotNote", "To rotate around another point c, subtract c, rotate, add c back. Check θ = 90°: (1, 0) goes to (0, 1). Check θ = 180°: every point (x, y) goes to (−x, −y), the half turn of the transformations chapter.")}>
         {r`x' = x\cos\theta - y\sin\theta \qquad y' = x\sin\theta + y\cos\theta`}
       </Equation>
 
@@ -88,7 +89,7 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mId_doubleTitle", "Double and half angles")}</H3>
       <p>
         {tx(t, "mId_doubleBody",
-          "Set β = α in the sum formulas. Then cos 2α = cos² α − sin² α and sin 2α = 2 sin α cos α. Using cos² α + sin² α = 1 to remove one of the squares gives two more forms of cos 2α, and solving those for cos² α and sin² α gives the half-angle formulas. They turn a square into a plain cosine, which is why they show up in lighting and sampling code, and in the Calculus section when integrating sin².")}
+          "Set β = α in the sum formulas. Then cos 2α = cos² α − sin² α and sin 2α = 2 sin α cos α. Using cos² α + sin² α = 1 to remove one of the squares gives two more forms of cos 2α, and solving those for cos² α and sin² α gives the half-angle formulas. They turn a square into a plain cosine, which is why they show up in physics (a ball thrown at speed v and angle α lands v² · 2 sin α cos α / g = v² sin 2α / g away, farthest at 2α = 90°, that is α = 45°) and in the Calculus section when integrating sin².")}
       </p>
       <Equation label={tx(t, "mId_eqDouble", "Double angle and squares")}
         where={[
@@ -102,7 +103,7 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mId_pivotTitle", "Rotating about a pivot and chaining rotations")}</H2>
       <p>
         {tx(t, "mId_pivotBody",
-          "To rotate about a pivot c instead of the origin, use the transformations chapter's pattern: subtract c, rotate, add c back. Rotating by α and then by β is the same as rotating once by α + β; the sum formulas are exactly the statement that the two rotation formulas, applied in turn, collapse into one. So rotations in 2D can be done in either order. An object that spins every frame can therefore store its total angle and rotate once from its original shape, instead of rotating the already-rotated shape again and again, which would slowly pile up rounding errors and distort it.")}
+          "To rotate about a pivot c instead of the origin, use the transformations chapter's pattern: subtract c, rotate, add c back. Rotating by α and then by β is the same as rotating once by α + β; the sum formulas are exactly the statement that the two rotation formulas, applied in turn, collapse into one. So rotations in 2D can be done in either order, and a chain of turns can be added up first and applied once: turning by 20°, then 25°, then 45° is a single turn of 90°, which is exact and quick to do, while three separate rotations with rounded sines and cosines pile up rounding errors.")}
       </p>
       <Equation label={tx(t, "mId_eqPivot", "Rotation by θ about a pivot c")}
         where={[
@@ -112,7 +113,7 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
         {r`x' = c_x + (x - c_x)\cos\theta - (y - c_y)\sin\theta \qquad y' = c_y + (x - c_x)\sin\theta + (y - c_y)\cos\theta`}
       </Equation>
       <Callout type="tip" t={t}>
-        {tx(t, "mId_perfTip", "Rotating many points by the same angle? Compute cos θ and sin θ once, outside the loop; each point then costs four multiplications and two additions. And a small steady turn per frame can be applied with a precomputed pair, rotating by the same small angle again and again, as long as you renormalise (rescale to length 1) now and then to stop rounding from growing or shrinking the vectors.")}
+        {tx(t, "mId_perfTip", "Rotating several points by the same angle by hand? Work out cos θ and sin θ once, write them down and reuse them; each point then needs four multiplications and two additions. Check every result: its distance from the pivot must be the same as before the turn.")}
       </Callout>
 
       <H2>{tx(t, "mId_exTitle", "Worked examples")}</H2>
@@ -122,43 +123,45 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mId_ex2",
-          "2. A turret at (10, 5) has its barrel tip at (12, 5). After turning 90° about the turret the tip is at (10 + 0 − 0, 5 + 2 + 0) = (10, 7): offset (2, 0), rotated to (0, 2), added back.")}
+          "2. A gate 2 m wide is hinged at (10, 5) and its free end is at (12, 5). After swinging open 90° about the hinge the end is at (10 + 0 − 0, 5 + 2 + 0) = (10, 7): offset (2, 0), rotated to (0, 2), added back.")}
       </p>
       <p>
         {tx(t, "mId_ex3",
           "3. sin 75° = sin(45° + 30°) = (√2/2)(√3/2) + (√2/2)(1/2) = (√6 + √2)/4 ≈ 0.966. It equals cos 15°, as the complementary-angle rule says it must.")}
       </p>
 
-      <H2>{tx(t, "mId_codeTitle", "Rotation in C++")}</H2>
+      <H2>{tx(t, "mId_handTitle", "Identities by hand")}</H2>
+      <H3>{tx(t, "mId_exactTitle", "New exact values")}</H3>
       <p>
-        {tx(t, "mId_codeBody",
-          "The rotate function is the rotation formula line for line. The Rot struct stores a precomputed cosine and sine so a whole mesh can be turned without calling std::cos and std::sin per vertex; combining two Rots uses the angle-sum formulas directly, with no angles involved.")}
+        {tx(t, "mId_exactBody",
+          "The sum, difference and half-angle formulas build exact values for angles the special triangles do not give directly. Write the angle as a sum, difference or half of 30°, 45° and 60°, substitute the known values, and simplify the radicals.")}
       </p>
-      <CodeBlock lang="cpp" filename="rotate2d.hpp" t={t}>{`#include <cmath>
-
-struct Vec2 { float x, y; };
-
-// Rotate p by angle a (radians, anticlockwise) about the origin
-Vec2 rotate(Vec2 p, float a) {
-    float c = std::cos(a), s = std::sin(a);
-    return { p.x * c - p.y * s, p.x * s + p.y * c };
-}
-
-// ... about a pivot: subtract, rotate, add back
-Vec2 rotateAbout(Vec2 p, Vec2 pivot, float a) {
-    Vec2 r = rotate({ p.x - pivot.x, p.y - pivot.y }, a);
-    return { r.x + pivot.x, r.y + pivot.y };
-}
-
-// A rotation stored as (cos, sin): no trig calls when applying it
-struct Rot {
-    float c = 1, s = 0;                          // identity: angle 0
-    static Rot fromAngle(float a) { return { std::cos(a), std::sin(a) }; }
-    Vec2 apply(Vec2 p) const { return { p.x * c - p.y * s, p.x * s + p.y * c }; }
-    // Rotate by 'this' then by 'o': the angle-sum formulas
-    Rot then(Rot o) const { return { c * o.c - s * o.s, s * o.c + c * o.s }; }
-    void renormalize() { float l = std::sqrt(c * c + s * s); c /= l; s /= l; }
-};`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mId_tAngle", "Angle"), tx(t, "mId_tHow", "How"), tx(t, "mId_tVal", "Exact value")]}
+        rows={[
+          ["cos 15°", "cos(45° − 30°) = (√2/2)(√3/2) + (√2/2)(1/2)", "(√6 + √2)/4 ≈ 0.966"],
+          ["sin 15°", "sin(45° − 30°) = (√2/2)(√3/2) − (√2/2)(1/2)", "(√6 − √2)/4 ≈ 0.259"],
+          ["cos 22.5°", "√((1 + cos 45°)/2) = √((2 + √2)/4)", "√(2 + √2)/2 ≈ 0.924"],
+          ["cos 105°", "cos(60° + 45°) = (1/2)(√2/2) − (√3/2)(√2/2)", "(√2 − √6)/4 ≈ −0.259"],
+        ]}
+      />
+      <H3>{tx(t, "mId_tanTitle", "The tangent of a sum")}</H3>
+      <p>
+        {tx(t, "mId_tanBody",
+          "Divide sin(α + β) by cos(α + β), then divide the top and the bottom by cos α cos β. Each term becomes a tangent: the top turns into tan α + tan β, and the bottom into 1 − tan α tan β. Check with α = β = 45°: (1 + 1)/(1 − 1) divides by zero, and indeed tan 90° is undefined.")}
+      </p>
+      <Equation label={tx(t, "mId_eqTan", "Tangent of a sum")}
+        where={[
+          [r`\tan\alpha,\ \tan\beta`, tx(t, "mId_wTans", "the tangents of the two angles being added")],
+        ]}
+        note={tx(t, "mId_tanNote", "Example: tan 75° = tan(45° + 30°) = (1 + 1/√3)/(1 − 1/√3). Multiply top and bottom by √3: (√3 + 1)/(√3 − 1) ≈ 2.732/0.732 ≈ 3.732 = 2 + √3.")}>
+        {r`\tan(\alpha + \beta) = \frac{\tan\alpha + \tan\beta}{1 - \tan\alpha\tan\beta}`}
+      </Equation>
+      <H3>{tx(t, "mId_proveTitle", "Proving an identity")}</H3>
+      <p>
+        {tx(t, "mId_proveBody",
+          "To prove that an identity holds, start from one side and transform it, step by step with known rules, until it becomes the other side. Do not move terms across the = sign as when solving an equation: that assumes the very equality you want to show. Example: (sin x + cos x)² = 1 + sin 2x. Expand the left side with (a + b)² = a² + 2ab + b²: sin² x + 2 sin x cos x + cos² x. Regroup: (sin² x + cos² x) + 2 sin x cos x. The bracket is 1 by Pythagoras and the rest is sin 2x by the double-angle formula, so the left side equals 1 + sin 2x. Testing one angle, say x = 30°, is a good check but not a proof.")}
+      </p>
 
       <H2>{tx(t, "mId_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -166,9 +169,9 @@ struct Rot {
         rows={[
           ["sin(α + β) = sin α + sin β", "sin α cos β + cos α sin β", tx(t, "mId_m1", "sine is not linear: sin 60° ≠ sin 30° + sin 30° = 1")],
           ["x' = x cos θ + y sin θ", "x' = x cos θ − y sin θ", tx(t, "mId_m2", "the plus version rotates the other way (by −θ)")],
-          [tx(t, "mId_m3w", "updating x, then using the new x for y"), tx(t, "mId_m3r", "compute both from the old x and y"), tx(t, "mId_m3", "x = x*c - y*s; y = x*s + y*c uses the rotated x by mistake")],
+          [tx(t, "mId_m3w", "using the new x' when working out y'"), tx(t, "mId_m3r", "compute both from the old x and y"), tx(t, "mId_m3", "y' = x sin θ + y cos θ needs the original x")],
           [tx(t, "mId_m4w", "rotating about the origin when you meant the pivot"), tx(t, "mId_m4r", "subtract the pivot first"), tx(t, "mId_m4", "otherwise the object swings around the world's centre")],
-          [tx(t, "mId_m5w", "rotating the rotated shape every frame"), tx(t, "mId_m5r", "store the angle and rotate the original"), tx(t, "mId_m5", "rounding errors accumulate and the shape drifts")],
+          ["cos 2α = 2 cos α", "cos 2α = cos² α − sin² α", tx(t, "mId_m5", "doubling the angle does not double the cosine: cos 60° = 0.5, but 2 cos 30° ≈ 1.73")],
         ]}
       />
 
@@ -178,7 +181,8 @@ struct Rot {
         "x' = x cos θ − y sin θ, y' = x sin θ + y cos θ; about a pivot, subtract and add it back.",
         "Rotating (cos α, sin α) by β gives the angle-sum formulas.",
         "sin 2α = 2 sin α cos α; cos² α = (1 + cos 2α)/2.",
-        "2D rotations add their angles, so store the angle and rotate once.",
+        "2D rotations add their angles, so a chain of turns is one turn.",
+        "Prove an identity by transforming one side into the other, never by moving terms across =.",
       ]} />
     </Article>
   );

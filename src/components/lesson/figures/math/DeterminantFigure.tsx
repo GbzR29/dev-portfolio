@@ -13,7 +13,7 @@ import { type M2, apply, det, rot, n2, F_SHAPE } from "./mat2";
 // bary — a point P in a triangle splits it into three smaller triangles. Each
 //        one's share of the total signed area is P's weight for the opposite
 //        corner; all three weights ≥ 0 exactly when P is inside. The dot at P
-//        is the three corner colours mixed with those weights, as a GPU does.
+//        is the three corner colours mixed with those weights.
 
 type Mode = "area" | "bary";
 type Key = "i" | "j" | "P" | "A" | "B" | "C";
@@ -114,7 +114,7 @@ export function DeterminantFigure({ t }: { t?: TrackTranslations }) {
       <Readout>{`u + v + w = ${n2(u + v + w)}`}</Readout>
       <Readout color={inside ? C.green : C.pink}>{inside ? tx(t, "figDet_in", "all ≥ 0: P is inside") : tx(t, "figDet_out", "a weight < 0: P is outside")}</Readout>
     </Row>;
-    note = tx(t, "figDet_noteB", "Drag P (and the corners). P cuts the triangle into three smaller ones, each opposite one corner. Its share of the whole area is P's weight for that corner: u for A (red), v for B (green), w for C (blue). The weights always add up to 1, and P = uA + vB + wC. Move P outside and one small triangle turns inside out, so its signed area and weight go negative. The circle at P is red, green and blue mixed in those amounts, which is exactly how a GPU blends the colours of a triangle's three corners.");
+    note = tx(t, "figDet_noteB", "Drag P (and the corners). P cuts the triangle into three smaller ones, each opposite one corner. Its share of the whole area is P's weight for that corner: u for A (red), v for B (green), w for C (blue). The weights always add up to 1, and P = uA + vB + wC. Move P outside and one small triangle turns inside out, so its signed area and weight go negative. The circle at P is red, green and blue mixed in those amounts, a weighted average of the three corner colours.");
   }
 
   return (

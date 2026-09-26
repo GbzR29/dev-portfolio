@@ -4,11 +4,10 @@
 // critical points and the first-derivative test; the second derivative,
 // concavity and inflection; the mean value theorem and its consequences;
 // optimisation (fence, box, closest point, why squared distance); linear
-// approximation and error propagation; Newton's method (Heron's method and
-// the fast inverse square root as special cases); related rates;
-// L'Hôpital's rule; C++.
+// approximation and error propagation; Newton's method (Heron's square roots
+// as a special case) worked by hand; related rates; L'Hôpital's rule.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -96,7 +95,7 @@ export function DerivativeUsesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mUse_linTitle", "Linear approximation")}</H2>
       <p>
         {tx(t, "mUse_linBody",
-          "Near a, the tangent line is a good stand-in for the curve. So a function's value a little way from a known point is approximately the known value plus slope times step. This is how you estimate without a calculator, how physics engines advance by small steps, and how errors spread through a calculation.")}
+          "Near a, the tangent line is a good stand-in for the curve. So a function's value a little way from a known point is approximately the known value plus slope times step. This is how you estimate without a calculator, how a motion is advanced in small steps of time, and how errors spread through a calculation.")}
       </p>
       <Equation label={tx(t, "mUse_eqLin", "Linear approximation")}
         where={[
@@ -137,37 +136,24 @@ export function DerivativeUsesContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mUse_heronBody",
-          "For f(x) = x² − 2 the step is x − (x² − 2)/(2x) = (x + 2/x)/2: exactly Heron's square-root method from the powers chapter, now explained. From x₀ = 3 the guesses are 1.8333, 1.46212, 1.4149984, 1.41421378, 1.414213562373: the number of correct digits roughly doubles each step once close (quadratic convergence), because the error of the tangent approximation shrinks with the square of the distance. Newton's method can also fail: a flat tangent (f′ ≈ 0) throws the next guess far away, a start near the wrong root finds that root instead, and some starts cycle, as x³ − 2x + 2 from 0 does in the figure. Robust code combines it with bisection: take Newton's step when it stays inside a known bracket, otherwise halve.")}
+          "For f(x) = x² − 2 the step is x − (x² − 2)/(2x) = (x + 2/x)/2: exactly Heron's square-root method from the powers chapter, now explained. From x₀ = 3 the guesses are 1.8333, 1.46212, 1.4149984, 1.41421378, 1.414213562373: the number of correct digits roughly doubles each step once close (quadratic convergence), because the error of the tangent approximation shrinks with the square of the distance. Newton's method can also fail: a flat tangent (f′ ≈ 0) throws the next guess far away, a start near the wrong root finds that root instead, and some starts cycle, as x³ − 2x + 2 from 0 does in the figure. A safe strategy combines it with bisection: take Newton's step when it stays inside a bracket known to hold the root, otherwise halve the bracket.")}
       </p>
-      <CodeBlock lang="cpp" filename="newton.hpp" t={t}>{`#include <cmath>
-#include <cstdint>
-#include <cstring>
-
-// Newton's method with a fallback: gives up (returns NaN) if the slope vanishes
-// or it has not converged after maxIter steps.
-template <class F, class DF>
-double newton(F f, DF df, double x, double tol = 1e-12, int maxIter = 50) {
-    for (int i = 0; i < maxIter; ++i) {
-        double fx = f(x), d = df(x);
-        if (std::fabs(d) < 1e-15) break;            // flat tangent: no crossing
-        double next = x - fx / d;
-        if (std::fabs(next - x) < tol) return next;
-        x = next;
-    }
-    return NAN;
-}
-
-// 1/sqrt(x): a rough first guess from the float's bit pattern, then one Newton step
-// for f(y) = 1/y^2 - x. Here f'(y) = -2/y^3, so y - f/f' = y * (1.5 - 0.5 * x * y * y).
-float invSqrt(float x) {
-    std::uint32_t i; std::memcpy(&i, &x, 4);
-    i = 0x5f3759df - (i >> 1);                      // halves and negates the exponent
-    float y; std::memcpy(&y, &i, 4);
-    return y * (1.5f - 0.5f * x * y * y);           // Newton step: ~0.2% error
-}`}</CodeBlock>
-      <Callout type="info" t={t}>
-        {tx(t, "mUse_quakeTip", "invSqrt is the famous \"fast inverse square root\" from the Quake III source. The magic constant produces a guess within a few percent by treating the float's bits as a logarithm (see the floating-point chapter); the last line is one Newton step, which squares the error. Modern CPUs have a hardware instruction for it, but the method is still a perfect example of Newton's method.")}
-      </Callout>
+      <p>
+        {tx(t, "mUse_cubeBody",
+          "By hand: the cube root of 10 is the root of f(x) = x³ − 10, with f′(x) = 3x². Start from x₀ = 2, since 2³ = 8 is close to 10. Each row computes f and f′ at the current guess and moves to x − f/f′.")}
+      </p>
+      <LessonTable
+        headers={["n", "xₙ", "f(xₙ) = xₙ³ − 10", "f′(xₙ) = 3xₙ²", "xₙ₊₁ = xₙ − f/f′"]}
+        rows={[
+          ["0", "2", "−2", "12", "2 + 2/12 ≈ 2.16667"],
+          ["1", "2.16667", "0.17130", "14.0833", "2.16667 − 0.01216 ≈ 2.15450"],
+          ["2", "2.15450", "0.00091", "13.926", "2.15450 − 0.000065 ≈ 2.154435"],
+        ]}
+      />
+      <p>
+        {tx(t, "mUse_cubeCheck",
+          "The true value is 2.1544347…: three steps give six correct digits. Watch the size of f: −2, then 0.17, then 0.0009. Each step roughly squares the error, which is what \"the number of correct digits doubles\" means.")}
+      </p>
 
       <H2>{tx(t, "mUse_relTitle", "Related rates")}</H2>
       <p>

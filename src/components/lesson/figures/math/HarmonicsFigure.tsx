@@ -12,7 +12,7 @@ import { Figure, Choice, Row, Readout, Slider, Sliders, Btn, C, T, plot, Grid, f
 // lissajous — x = sin(a·t), y = sin(b·t + φ): two oscillations at right
 //             angles. Whole-number ratios a : b give closed figures.
 // damped    — A·e^(−λt)·sin(2πft): a sine whose amplitude decays
-//             exponentially, the shape of a screen shake or a plucked string.
+//             exponentially, the shape of a plucked string or a swing coming to rest.
 
 type Mode = "harmonics" | "lissajous" | "damped";
 type Shape = "square" | "saw";
@@ -78,7 +78,7 @@ export function HarmonicsFigure({ t }: { t?: TrackTranslations }) {
       </Sliders>
       <Row><Readout color={C.sky}>{`x = sin(${la}t), y = sin(${lb}t + ${n2(lph / Math.PI)}π)`}</Readout></Row>
     </>;
-    note = tx(t, "figHar_noteL", "The amber point moves left and right as sin(a·t) (red tick) and up and down as sin(b·t + φ) (green tick), two independent oscillations at right angles. Its path is a Lissajous figure. When a : b is a ratio of whole numbers the path closes; a = b gives an ellipse (or a line, or a circle when φ = π/2), and 1 : 2 gives a figure eight. Games use these for idle camera sway, hovering drones and patrol loops that look organic but repeat exactly.");
+    note = tx(t, "figHar_noteL", "The amber point moves left and right as sin(a·t) (red tick) and up and down as sin(b·t + φ) (green tick), two independent oscillations at right angles. Its path is a Lissajous figure. When a : b is a ratio of whole numbers the path closes; a = b gives an ellipse (or a line, or a circle when φ = π/2), and 1 : 2 gives a figure eight. An oscilloscope draws exactly these when it compares two electrical signals.");
   } else {
     const p = plot({ W, H, x0: 0, x1: 3, y0: -1.4, y1: 1.4 });
     const A = 1.1;
@@ -106,7 +106,7 @@ export function HarmonicsFigure({ t }: { t?: TrackTranslations }) {
         <Readout color={C.pink}>{`${tx(t, "figHar_halfLife", "half-life")} ln 2 / λ = ${lam > 0 ? n2(half) + " s" : "∞"}`}</Readout>
       </Row>
     </>;
-    note = tx(t, "figHar_noteD", "Multiply a sine by a shrinking exponential (the exponents chapter's e^(−λt)) and the wave dies away inside the dashed envelope. λ sets how fast: the amplitude halves every ln 2 / λ seconds. With λ = 0 it rings forever. This is the shape of a plucked string, a door spring settling, and the screen shake of a game: a big jolt that quickly calms down.");
+    note = tx(t, "figHar_noteD", "Multiply a sine by a shrinking exponential (the exponents chapter's e^(−λt)) and the wave dies away inside the dashed envelope. λ sets how fast: the amplitude halves every ln 2 / λ seconds. With λ = 0 it rings forever. This is the shape of a plucked string, a door spring settling and a car's suspension after a bump: a big jolt that quickly calms down.");
   }
 
   return (

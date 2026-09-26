@@ -3,9 +3,9 @@
 // Trigonometry 2: radians and the unit circle — radians, arc length and
 // angular speed, sine and cosine of every angle, directions and points on a
 // circle, quadrant signs and reference angles, periodicity and symmetry, the
-// graphs of sin, cos and tan, and C++.
+// graphs of sin, cos and tan, and the exact values round the whole circle.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -20,13 +20,13 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mUc_intro",
-          "A right triangle only has angles up to 90°, but a game character can face any direction: 135°, 270°, or −30° after turning right. This chapter frees sine and cosine from the triangle by putting them on a circle, where they work for every angle, including negative ones and ones past a full turn. On the way it introduces the radian, the unit every programming language uses for angles.")}
+          "A right triangle only has angles up to 90°, but angles in the world go further: a clock hand sweeps through 135° and 270°, a door swings back to −30°, a wheel turns through thousands of degrees. This chapter frees sine and cosine from the triangle by putting them on a circle, where they work for every angle, including negative ones and ones past a full turn. On the way it introduces the radian, the unit of angle that mathematics and physics prefer.")}
       </Lead>
 
       <H2>{tx(t, "mTrig_radTitle", "Degrees and radians")}</H2>
       <p>
         {tx(t, "mTrig_radBody",
-          "Degrees split a full turn into 360 parts, a number the Babylonians liked because it divides evenly by so many others. Radians measure an angle by the arc it cuts out of a circle: the arc length divided by the radius. On a circle of radius 1, an angle of θ radians cuts an arc exactly θ long. A full turn is the whole circumference, 2π ≈ 6.283 radians. Every trigonometric function in C++, GLSL and every other programming language takes radians, and radians make the calculus of sine and cosine clean (for small angles, sin θ ≈ θ only in radians).")}
+          "Degrees split a full turn into 360 parts, a number the Babylonians liked because it divides evenly by so many others. Radians measure an angle by the arc it cuts out of a circle: the arc length divided by the radius. On a circle of radius 1, an angle of θ radians cuts an arc exactly θ long. A full turn is the whole circumference, 2π ≈ 6.283 radians. Radians turn arc lengths and turning speeds into plain multiplications, as the next section shows, and they make the calculus of sine and cosine clean (for small angles, sin θ ≈ θ only in radians).")}
       </p>
       <Equation label={tx(t, "mTrig_eqRad", "Radians")}
         where={[
@@ -34,7 +34,7 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
           [r`s`, tx(t, "mTrig_wS", "the length of the arc between the two sides of the angle")],
           [r`\rho`, tx(t, "mTrig_wRho", "the radius of the circle. Because s grows in proportion to ρ, the ratio does not depend on the circle's size")],
         ]}
-        note={tx(t, "mTrig_eqRadNote", "Useful values: 90° = π/2, 180° = π, 360° = 2π, 1 rad ≈ 57.3°. Keep angles in radians inside code and convert only at the edges (UI, level files).")}>
+        note={tx(t, "mTrig_eqRadNote", "Useful values: 90° = π/2, 180° = π, 360° = 2π, 1 rad ≈ 57.3°. Scientific calculators have a DEG/RAD switch: it decides which unit the sin key expects.")}>
         {r`\theta = \frac{s}{\rho} \qquad \theta_{\text{rad}} = \theta_{\text{deg}}\cdot\frac{\pi}{180}`}
       </Equation>
       <p>
@@ -57,7 +57,7 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
           [r`\omega`, tx(t, "mUc_wOmega", "the angular speed, in radians per second")],
           [r`v = \omega r`, tx(t, "mUc_wV", "the speed of a point at distance r from the centre")],
         ]}
-        note={tx(t, "mUc_arcNote", "Example: a 0.35 m wheel turning at 20 rad/s moves the car at 20 · 0.35 = 7 m/s. A turret barrel 2 m long turning at 3 rad/s sweeps its tip at 6 m/s.")}>
+        note={tx(t, "mUc_arcNote", "Example: a 0.35 m wheel turning at 20 rad/s moves the car at 20 · 0.35 = 7 m/s. The minute hand of a clock, 12 cm long, turns 2π rad per hour, so its tip travels 2π · 12 ≈ 75.4 cm every hour.")}>
         {r`s = r\,\theta \qquad A = \tfrac12\,r^2\,\theta \qquad v = \omega\,r`}
       </Equation>
 
@@ -79,7 +79,7 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
 
       <p>
         {tx(t, "mTrig_dirBody",
-          "The most common use in games follows directly: a direction at angle θ is the vector (cos θ, sin θ), with length 1. A sprite facing 30° moves along (cos 30°, sin 30°) · speed. Points on a circle of radius R around a centre c are c + R(cos θ, sin θ), which is how you place enemies in a ring, draw a circle with line segments or make a moon orbit.")}
+          "Scaling and shifting gives every other circle. On a circle of radius R the point at angle θ is R(cos θ, sin θ), because the whole unit-circle picture is stretched by R. If the centre is c = (c₁, c₂) instead of the origin, add it: (c₁ + R cos θ, c₂ + R sin θ). That is how the positions of the seats of a Ferris wheel, the hour marks of a clock face or the corners of a regular polygon are worked out.")}
       </p>
 
       <H2>{tx(t, "mUc_signTitle", "Signs, quadrants and reference angles")}</H2>
@@ -115,9 +115,11 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mUc_graphBody",
           "Plotting the height of the moving point against the angle gives the sine wave; plotting its x gives the cosine wave, the same shape a quarter turn (π/2) ahead. Both stay between −1 and 1. The tangent graph looks different: it climbs from −∞ to +∞ on every stretch of length π and jumps at the angles where the cosine is zero (π/2, 3π/2, …), where the radius is vertical and its slope does not exist. The graphs mode of the figure shows all three. The Waves chapter stretches and shifts the sine wave to make motion.")}
       </p>
-      <Callout type="info" t={t}>
-        {tx(t, "mUc_screenInfo", "In most 2D screen coordinates y points down. The same formulas then turn clockwise on screen: angle 90° points down, not up. Either flip y when converting between world and screen, or accept that positive angles go clockwise in that space, but never mix the two conventions.")}
-      </Callout>
+      <H3>{tx(t, "mUc_bearTitle", "Compass bearings turn the other way")}</H3>
+      <p>
+        {tx(t, "mUc_bearBody",
+          "Maps and navigation measure a direction as a bearing: the angle from north, turning clockwise, so east is 090°, south 180° and west 270°. Mathematics measures from the positive x-axis (east) turning anticlockwise. The two start a quarter turn apart and turn in opposite directions, so θ = 90° − bearing (add 360° if the result is negative). Example: a ship sails 20 km on bearing 120°. Its maths angle is 90° − 120° = −30°, so it moves 20 cos(−30°) ≈ 17.3 km east and 20 sin(−30°) = −10 km, that is 10 km south.")}
+      </p>
 
       <H2>{tx(t, "mUc_exTitle", "Worked examples")}</H2>
       <p>
@@ -126,62 +128,46 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mUc_ex2",
-          "2. Eight enemies stand in a ring of radius 5 around (10, 3). Enemy i is at angle i · 2π/8 = i · π/4, so enemy 3 is at (10 + 5 cos(3π/4), 3 + 5 sin(3π/4)) = (10 − 3.54, 3 + 3.54) = (6.46, 6.54).")}
+          "2. A Ferris wheel of radius 5 m has its centre 6 m above the ground and 8 cabins spaced evenly. Cabin i is at angle i · 2π/8 = i · π/4, so cabin 3 is at 3π/4 = 135°: 5 cos 135° ≈ −3.54 m sideways from the centre and 6 + 5 sin 135° ≈ 6 + 3.54 = 9.54 m above the ground.")}
       </p>
       <p>
         {tx(t, "mUc_ex3",
           "3. What is sin 330°? Quadrant IV, reference angle 30°, sine negative there: −0.5. And cos(−60°) = cos 60° = 0.5, because cosine is even.")}
       </p>
 
-      <H2>{tx(t, "mUc_codeTitle", "Circles of points in C++")}</H2>
+      <H2>{tx(t, "mUc_tableTitle", "Exact values round the whole circle")}</H2>
       <p>
-        {tx(t, "mUc_codeBody",
-          "Angles stay in radians throughout. The ring function is the workhorse: it places objects around a centre, draws a circle with line segments or spawns particles in every direction. The wrap function keeps a growing angle in [0, 2π) so it does not lose float precision after many turns.")}
+        {tx(t, "mUc_tableBody",
+          "The reference angle turns the three exact triangles of the previous chapter into exact values for sixteen angles. For each angle: find its quadrant, find its reference angle, look up 30°, 45° or 60°, and attach the signs of that quadrant. A short way to remember the signs is the phrase \"All Students Take Calculus\", read from quadrant I anticlockwise: All positive, then Sine, then Tangent, then Cosine are the positive ones.")}
       </p>
-      <CodeBlock lang="cpp" filename="circle_points.hpp" t={t}>{`#include <cmath>
-#include <numbers>
-#include <vector>
-
-constexpr float PI  = std::numbers::pi_v<float>;
-constexpr float TAU = 2.0f * PI;                 // one full turn in radians
-
-struct Vec2 { float x, y; };
-
-// Unit direction at angle a (radians, anticlockwise from +x)
-Vec2 direction(float a) { return { std::cos(a), std::sin(a) }; }
-
-// n points evenly spaced on a circle of radius r around c
-std::vector<Vec2> ring(Vec2 c, float r, int n, float start = 0.0f) {
-    std::vector<Vec2> pts;
-    pts.reserve(n);
-    for (int i = 0; i < n; ++i) {
-        float a = start + i * TAU / n;
-        pts.push_back({ c.x + r * std::cos(a), c.y + r * std::sin(a) });
-    }
-    return pts;
-}
-
-// Keep an ever-growing angle inside [0, 2π)
-float wrap0To2Pi(float a) {
-    a = std::fmod(a, TAU);
-    return a < 0.0f ? a + TAU : a;
-}
-
-// A moon orbiting a planet at w radians per second
-struct Orbit { float angle = 0, w = 0.5f, r = 4; };
-Vec2 step(Orbit& o, Vec2 planet, float dt) {
-    o.angle = wrap0To2Pi(o.angle + o.w * dt);
-    return { planet.x + o.r * std::cos(o.angle), planet.y + o.r * std::sin(o.angle) };
-}`}</CodeBlock>
+      <LessonTable
+        headers={["θ", tx(t, "mUc_tQuad", "quadrant"), tx(t, "mUc_tRefA", "ref."), "cos θ", "sin θ", "tan θ"]}
+        rows={[
+          ["120° = 2π/3", "II", "60°", "−1/2", "√3/2", "−√3"],
+          ["135° = 3π/4", "II", "45°", "−√2/2", "√2/2", "−1"],
+          ["150° = 5π/6", "II", "30°", "−√3/2", "1/2", "−1/√3"],
+          ["180° = π", "—", "0°", "−1", "0", "0"],
+          ["210° = 7π/6", "III", "30°", "−√3/2", "−1/2", "1/√3"],
+          ["225° = 5π/4", "III", "45°", "−√2/2", "−√2/2", "1"],
+          ["240° = 4π/3", "III", "60°", "−1/2", "−√3/2", "√3"],
+          ["270° = 3π/2", "—", "90°", "0", "−1", tx(t, "mTrig_undef", "undefined")],
+          ["300° = 5π/3", "IV", "60°", "1/2", "−√3/2", "−√3"],
+          ["315° = 7π/4", "IV", "45°", "√2/2", "−√2/2", "−1"],
+          ["330° = 11π/6", "IV", "30°", "√3/2", "−1/2", "−1/√3"],
+        ]}
+      />
+      <Callout type="tip" t={t}>
+        {tx(t, "mUc_bigTip", "For an angle beyond a full turn, subtract 360° (or 2π) as many times as needed first. 1110° − 3 · 360° = 30°, so sin 1110° = 1/2. For a negative angle, add 360°: −45° + 360° = 315°.")}
+      </Callout>
 
       <H2>{tx(t, "mUc_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
         headers={[tx(t, "mUc_tWrong", "Wrong"), tx(t, "mUc_tRight", "Right"), tx(t, "mUc_tWhy", "Why")]}
         rows={[
-          [tx(t, "mUc_m1w", "degrees passed to sin/cos"), tx(t, "mUc_m1r", "multiply by π/180 first"), tx(t, "mUc_m1", "rotations come out about 57 times too big")],
+          [tx(t, "mUc_m1w", "quadrant II at the bottom left"), tx(t, "mUc_m1r", "I, II, III, IV run anticlockwise from the top right"), tx(t, "mUc_m1", "they follow the direction in which angles grow")],
           [tx(t, "mUc_m2w", "sin 150° = −0.5"), "sin 150° = +0.5", tx(t, "mUc_m2", "quadrant II has positive sine; only the cosine is negative")],
-          [tx(t, "mUc_m3w", "tan 90° = a very big number"), tx(t, "mUc_m3r", "tan 90° is undefined"), tx(t, "mUc_m3", "it divides by cos 90° = 0; in floats you get a huge, meaningless value")],
-          [tx(t, "mUc_m4w", "angle += w * dt forever"), tx(t, "mUc_m4r", "wrap it into [0, 2π)"), tx(t, "mUc_m4", "a large float angle loses precision and motion stutters")],
+          [tx(t, "mUc_m3w", "tan 90° = a very big number"), tx(t, "mUc_m3r", "tan 90° is undefined"), tx(t, "mUc_m3", "it divides by cos 90° = 0; a calculator shows an error")],
+          [tx(t, "mUc_m4w", "cos(−60°) = −1/2"), "cos(−60°) = 1/2", tx(t, "mUc_m4", "turning backwards mirrors the point in the x-axis; its x does not change")],
           [tx(t, "mUc_m5w", "arc = r · θ with θ in degrees"), tx(t, "mUc_m5r", "θ must be in radians"), tx(t, "mUc_m5", "s = rθ is the definition of the radian")],
         ]}
       />
@@ -192,7 +178,8 @@ Vec2 step(Orbit& o, Vec2 planet, float dt) {
         "On the unit circle the point at angle θ is (cos θ, sin θ), for every θ.",
         "Signs follow the quadrant; sizes come from the reference angle.",
         "sin and cos repeat every 2π, tan every π; sin is odd, cos is even.",
-        "c + r(cos θ, sin θ) places a point on a circle; it is how games build rings and orbits.",
+        "(c₁ + R cos θ, c₂ + R sin θ) is the point at angle θ on a circle of radius R around c.",
+        "Bearings run clockwise from north: θ = 90° − bearing.",
       ]} />
     </Article>
   );

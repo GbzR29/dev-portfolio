@@ -56,7 +56,7 @@ export function Cross2DFigure({ t }: { t?: TrackTranslations }) {
       </Row>}
       note={mode === "side"
         ? tx(t, "figCross2_noteSide", "Drag A, B and P. The number (B − A) × (P − A) is the signed area of the parallelogram built on the two arrows from A. Walking from A to B, it is positive when P is on your left, negative on your right and zero exactly on the line. Games use this constantly: is the target left or right of me (to turn toward it), which side of a wall is the player on, has a car crossed the finish line (the sign changed between two frames)?")
-        : tx(t, "figCross2_noteTri", "Drag the corners. The sign of (B − A) × (C − A) tells the winding: positive when A → B → C turns counter-clockwise, which is exactly how OpenGL decides whether a triangle faces the camera (after projection). Half its absolute value is the triangle's area. Move P: it is inside when it is on the same side of all three edges, walked in order, so the three edge tests share a sign. That is the core of how a GPU rasteriser decides which pixels a triangle covers.")}
+        : tx(t, "figCross2_noteTri", "Drag the corners. The sign of (B − A) × (C − A) tells the winding: positive when A → B → C turns counter-clockwise, negative when it turns clockwise. Half its absolute value is the triangle's area. Move P: it is inside when it is on the same side of all three edges, walked in order, so the three edge tests share a sign.")}
     >
       <svg ref={drag.ref} {...drag.handlers} viewBox={`0 0 ${p.W} ${p.H}`} className="w-full h-auto cursor-grab">
         {mode === "side" && (() => {

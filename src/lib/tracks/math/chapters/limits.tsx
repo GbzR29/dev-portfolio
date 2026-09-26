@@ -4,9 +4,10 @@
 // as "what f(x) approaches"; one-sided, infinite and at-infinity limits; the
 // ε–δ definition; limit laws and the plug-in-then-simplify strategy; the
 // squeeze theorem and sin x / x → 1; continuity and its three failures; the
-// intermediate value theorem and bisection; floating-point cancellation; C++.
+// intermediate value theorem and bisection by hand; limits from tables of
+// values and why they can mislead.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -147,7 +148,7 @@ export function LimitsContent({ t }: { t: TrackTranslations }) {
         {r`\lim_{x \to a} f(x) = f(a)`}
       </Equation>
       <Callout type="tip" t={t}>
-        {tx(t, "mLim_contTip", "Continuity matters in games more than it seems. An animation curve with a jump makes a character teleport; one whose slope jumps (continuous, but with a corner) makes motion visibly jerk. The derivative chapter measures slopes, and \"smooth\" curves are the ones whose slopes are continuous too.")}
+        {tx(t, "mLim_contTip", "Continuity is built into the physical world. A car's position cannot jump, and neither can its speed: a sudden change of speed would need an infinite force. A road whose direction changes abruptly, a corner, jolts the passengers, which is why road and railway designers join straight stretches and curves so that even the bending changes gradually. The derivative chapter measures slopes, and \"smooth\" curves are the ones whose slopes are continuous too.")}
       </Callout>
 
       <H2>{tx(t, "mLim_ivtTitle", "The intermediate value theorem and bisection")}</H2>
@@ -155,30 +156,29 @@ export function LimitsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mLim_ivtBody",
           "If f is continuous on [a, b] (every point from a to b, ends included), it takes every value between f(a) and f(b) somewhere in between. If you walk from sea level to a hilltop without teleporting, you pass every height on the way. The most useful case: if f(a) < 0 and f(b) > 0, then f(c) = 0 for some c between them. That gives the simplest root-finder, bisection, the figure's third mode: test the midpoint, keep the half whose ends still have opposite signs, repeat. Each step halves the interval, so 20 steps shrink it by a factor of 2²⁰ ≈ one million. It is slow compared with the Newton's method of a later chapter, but it cannot fail as long as the function is continuous and the signs differ.")}
       </p>
-      <CodeBlock lang="cpp" filename="bisect.hpp" t={t}>{`#include <functional>
-
-// Root of a continuous f on [lo, hi], given f(lo) and f(hi) have opposite signs.
-// Each iteration halves the bracket; stop when it is narrower than tol.
-double bisect(const std::function<double(double)>& f, double lo, double hi, double tol = 1e-9) {
-    double flo = f(lo);
-    while (hi - lo > tol) {
-        double mid = 0.5 * (lo + hi), fmid = f(mid);
-        if ((flo < 0) == (fmid < 0)) { lo = mid; flo = fmid; }   // same sign: root is in [mid, hi]
-        else                         { hi = mid; }                // sign change in [lo, mid]
-    }
-    return 0.5 * (lo + hi);
-}
-
-// Example: bisect([](double x) { return x * x * x - x - 1; }, 1, 2)  ->  1.3247179...`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mLim_tInt", "interval"), tx(t, "mLim_tMid", "midpoint m"), "f(m) = m³ − m − 1", tx(t, "mLim_tKeep", "keep")]}
+        rows={[
+          ["[1, 2]", "1.5", "3.375 − 1.5 − 1 = 0.875 > 0", "[1, 1.5]"],
+          ["[1, 1.5]", "1.25", "1.953 − 1.25 − 1 = −0.297 < 0", "[1.25, 1.5]"],
+          ["[1.25, 1.5]", "1.375", "2.600 − 1.375 − 1 = 0.225 > 0", "[1.25, 1.375]"],
+          ["[1.25, 1.375]", "1.3125", "2.261 − 1.3125 − 1 = −0.052 < 0", "[1.3125, 1.375]"],
+          ["[1.3125, 1.375]", "1.34375", "2.426 − 1.344 − 1 = 0.083 > 0", "[1.3125, 1.34375]"],
+        ]}
+      />
+      <p>
+        {tx(t, "mLim_bisectNote",
+          "The table finds the root of x³ − x − 1 = 0, a cubic with no simple formula for its root. It starts from f(1) = −1 < 0 and f(2) = 5 > 0, so a root lies between 1 and 2. Each row tests the midpoint and keeps the half whose ends still have opposite signs. After five steps the root is known to lie in an interval of width 1/32 ≈ 0.03 around 1.33; the true value is 1.3247…")}
+      </p>
       <p>
         {tx(t, "mLim_ivtUse",
-          "Games use this idea to find the exact moment of a collision between two frames: at the start of the frame the objects are apart (distance > 0), at the end they overlap (distance < 0), so bisecting the time step finds the moment of contact. Sphere tracing and other ray-marching techniques use the same bracket-and-refine pattern to find where a ray meets a surface.")}
+          "The theorem also answers questions about the real world. A water tank that was full at 8:00 and empty at 9:00 was exactly half full at some moment in between, because the level changes continuously; halving the time interval again and again narrows that moment down. And a surprising consequence: at any instant, some two opposite points of the equator have exactly the same temperature. Walk the difference \"temperature here minus temperature opposite\" half way round: it changes sign, so it passes through 0.")}
       </p>
 
-      <H2>{tx(t, "mLim_floatTitle", "Limits meet floating point")}</H2>
+      <H2>{tx(t, "mLim_floatTitle", "Limits from a table of values")}</H2>
       <p>
         {tx(t, "mLim_floatBody",
-          "A computer cannot take a limit; it can only try smaller and smaller numbers, and floating point (from the Arithmetic section) punishes going too far. The limit of (1 − cos x)/x² as x → 0 is ½ (multiply by (1 + cos x)/(1 + cos x) as above to see it). In 64-bit doubles, x = 0.01 gives 0.4999958, x = 0.0001 gives 0.49999999696, a better answer. But x = 0.000001 gives 0.50004, x = 0.0000001 gives 0.4996, and x = 0.00000001 gives exactly 0. The reason: cos x is then so close to 1 that 1 − cos x subtracts two nearly equal numbers, the matching leading digits cancel, and what is left is mostly rounding error (and eventually cos x rounds to exactly 1). This catastrophic cancellation is why numerical derivatives, in the next chapter, must not use a step that is too small.")}
+          "A quick way to guess a limit is to try values of x closer and closer to a. For (1 − cos x)/x² as x → 0: x = 0.1 gives 0.49958 and x = 0.01 gives 0.4999958, which suggests ½, and multiplying by (1 + cos x)/(1 + cos x) as above proves it. But a table only suggests; it never proves, and going too far misleads. On a calculator that keeps 10 digits, x = 0.00001 gives cos x = 0.99999999995, which is rounded to 1.000000000, and the calculator answers 0. Subtracting two nearly equal numbers throws away exactly the digits that matter. So take a few moderate values to guess, and then let the algebra decide.")}
       </p>
 
       <H2>{tx(t, "mLim_exTitle", "Worked examples")}</H2>

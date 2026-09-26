@@ -4,9 +4,9 @@
 // matrix–vector product (row and column views), columns as the images of the
 // unit steps, a gallery of 2 × 2 maps, what "linear" means, multiplication as
 // composition and why order matters, the transpose, 3 × 3 rotations, and
-// homogeneous coordinates for translation. C++ Mat2/Mat3.
+// homogeneous coordinates for translation, and products of any size by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -20,7 +20,7 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mMat_intro",
-          "The transformations chapter wrote each move as its own rule, and the identities chapter found the rule for rotation by any angle. Look at those rules side by side and they all have the same shape: the new x is some amount of the old x plus some amount of the old y, and likewise for the new y. Four numbers decide everything. Written as a small grid, those four numbers are a matrix, the object that every graphics API uses to move, turn, scale and project geometry. This chapter builds matrices from that one observation.")}
+          "The transformations chapter wrote each move as its own rule, and the identities chapter found the rule for rotation by any angle. Look at those rules side by side and they all have the same shape: the new x is some amount of the old x plus some amount of the old y, and likewise for the new y. Four numbers decide everything. Written as a small grid, those four numbers are a matrix, one of the central objects of mathematics, used wherever quantities are mixed in straight proportion. This chapter builds matrices from that one observation.")}
       </Lead>
 
       <H2>{tx(t, "mMat_shapeTitle", "One shape for every rule")}</H2>
@@ -48,7 +48,7 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mMat_prodTitle", "Two ways to read matrix × vector")}</H2>
       <p>
         {tx(t, "mMat_rowView",
-          "Row view: each entry of the result is one row of the matrix dotted with the vector. The first output is (a, b) · (x, y) = ax + by, the second is (c, d) · (x, y) = cx + dy. This is how you compute it by hand, and how a GPU computes it: one dot product per output.")}
+          "Row view: each entry of the result is one row of the matrix dotted with the vector. The first output is (a, b) · (x, y) = ax + by, the second is (c, d) · (x, y) = cx + dy. This is how you compute it by hand: one dot product per output.")}
       </p>
       <p>
         {tx(t, "mMat_colView",
@@ -112,7 +112,7 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mMat_orderBody",
-          "Three rules come with it. Order matters: AB is usually not BA (the figure's second mode shows a turn and a shear disagreeing). The matrix written last is applied first, because (AB)v = A(Bv): read a product right to left. Grouping does not matter: (AB)C = A(BC), so a long chain can be multiplied out once and reused for every vertex. And the identity I changes nothing: AI = IA = A. Sizes must fit: an m × n matrix can multiply an n × p one (the rows of the first are as long as the columns of the second), giving an m × p result.")}
+          "Three rules come with it. Order matters: AB is usually not BA (the figure's second mode shows a turn and a shear disagreeing). The matrix written last is applied first, because (AB)v = A(Bv): read a product right to left. Grouping does not matter: (AB)C = A(BC), so a long chain can be multiplied out once and then applied to every point. And the identity I changes nothing: AI = IA = A. Sizes must fit: an m × n matrix can multiply an n × p one (the rows of the first are as long as the columns of the second), giving an m × p result.")}
       </p>
 
       <H2>{tx(t, "mMat_tTitle", "The transpose")}</H2>
@@ -138,7 +138,7 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mMat_homTitle", "Translation with one extra coordinate")}</H2>
       <p>
         {tx(t, "mMat_homBody",
-          "Here is the trick. Give every 2D point a third coordinate that is always 1: (x, y) becomes (x, y, 1). Now use a 3 × 3 matrix whose last column holds the offset (tx, ty). Multiplying out, the new x is 1·x + 0·y + tx·1 = x + tx: the constant 1 picks up the offset. The 2 × 2 corner of the matrix can still rotate, scale and shear, so a single 3 × 3 matrix does any of those plus a translation. These are homogeneous coordinates. In 3D the same trick uses 4 × 4 matrices and points (x, y, z, 1), which is why every graphics API is built on 4 × 4 matrices.")}
+          "Here is the trick. Give every 2D point a third coordinate that is always 1: (x, y) becomes (x, y, 1). Now use a 3 × 3 matrix whose last column holds the offset (tx, ty). Multiplying out, the new x is 1·x + 0·y + tx·1 = x + tx: the constant 1 picks up the offset. The 2 × 2 corner of the matrix can still rotate, scale and shear, so a single 3 × 3 matrix does any of those plus a translation. These are homogeneous coordinates. In 3D the same trick uses 4 × 4 matrices and points (x, y, z, 1), which is why 4 × 4 matrices are the standard way to describe where an object sits and how it is turned in space, from robotics to surveying.")}
       </p>
       <Equation label={tx(t, "mMat_eqHom", "A 2D rotation or scale plus a translation, as one 3 × 3 matrix")}
         where={[
@@ -146,12 +146,12 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
           [r`(t_x, t_y)`, tx(t, "mMat_wT", "the translation, in the last column")],
           [r`w`, tx(t, "mMat_wW", "the extra coordinate: 1 for a point, 0 for a direction")],
         ]}
-        note={tx(t, "mMat_homNote", "With w = 0 the offset is multiplied by 0 and ignored. That is exactly right for directions: moving a spaceship does not change which way its velocity points. So points get w = 1 and vectors w = 0, the distinction from the vectors chapter made precise.")}>
+        note={tx(t, "mMat_homNote", "With w = 0 the offset is multiplied by 0 and ignored. That is exactly right for directions: carrying a compass to another town does not change which way north is. So points get w = 1 and vectors w = 0, the distinction from the vectors chapter made precise.")}>
         {r`\begin{bmatrix} a & b & t_x \\ c & d & t_y \\ 0 & 0 & 1 \end{bmatrix}\begin{bmatrix} x \\ y \\ w \end{bmatrix} = \begin{bmatrix} ax + by + t_x w \\ cx + dy + t_y w \\ w \end{bmatrix}`}
       </Equation>
       <p>
         {tx(t, "mMat_trsBody",
-          "A typical object's matrix is built as M = T · R · S: scale first (in the object's own space, around its own centre), then rotate, then translate into the world. Read right to left, as always. Putting T first would scale and rotate the offset too, flinging the object away from where you placed it.")}
+          "Placing a shape on a plan is usually done as M = T · R · S: scale first (around the shape's own centre, at the origin), then rotate, then translate into place. Read right to left, as always. Putting T first would scale and rotate the offset too, moving the shape away from where you meant to put it.")}
       </p>
 
       <H2>{tx(t, "mMat_exTitle", "Worked examples")}</H2>
@@ -168,37 +168,25 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
           "3. Rotate the point (2, 0) by 90° about (1, 1) with one matrix: translate by (−1, −1), rotate, translate by (1, 1). M = T(1, 1) · R(90°) · T(−1, −1) = [[0, −1, 2], [1, 0, 0], [0, 0, 1]]. M(2, 0, 1) = (0 − 0 + 2, 2 + 0 + 0, 1) = (2, 2). By hand: offset (1, −1), turned to (1, 1), plus the pivot is (2, 2). ✓")}
       </p>
 
-      <H2>{tx(t, "mMat_codeTitle", "Matrices in C++")}</H2>
+      <H2>{tx(t, "mMat_handTitle", "Multiplying by hand, any size")}</H2>
       <p>
-        {tx(t, "mMat_codeBody",
-          "A 2 × 2 matrix is four floats. This one stores its columns, the layout OpenGL and GLM use (column-major), so m.c[0] is where î lands. The product with a vector is the column view; the product of two matrices applies the left one to each column of the right one, exactly as derived above.")}
+        {tx(t, "mMat_handBody",
+          "Matrices need not be square. An m × n matrix has m rows and n columns, and the rule is the same as for 2 × 2: the entry in row i, column j of AB is row i of A dotted with column j of B. A neat way to lay it out is to write B above and to the right of A; each entry of the product then sits exactly where its row of A and its column of B cross. Take A (2 × 3) and B (3 × 2):")}
       </p>
-      <CodeBlock lang="cpp" filename="mat2.hpp" t={t}>{`#include <cmath>
-
-struct Vec2 { float x, y; };
-Vec2 operator+(Vec2 a, Vec2 b) { return { a.x + b.x, a.y + b.y }; }
-Vec2 operator*(float k, Vec2 v) { return { k * v.x, k * v.y }; }
-
-// Column-major: c[0] is the image of (1, 0), c[1] the image of (0, 1)
-struct Mat2 {
-    Vec2 c[2] = { {1, 0}, {0, 1} };             // identity by default
-
-    static Mat2 rotation(float a) {
-        float co = std::cos(a), s = std::sin(a);
-        return { { { co, s }, { -s, co } } };
-    }
-    static Mat2 scale(float sx, float sy) { return { { { sx, 0 }, { 0, sy } } }; }
-
-    // Column view: x steps along column 0, y steps along column 1
-    Vec2 operator*(Vec2 v) const { return v.x * c[0] + v.y * c[1]; }
-
-    // (A*B) applies B first: its columns are A times B's columns
-    Mat2 operator*(const Mat2& b) const { return { { *this * b.c[0], *this * b.c[1] } }; }
-};
-
-// Usage: turn by 30 degrees, then stretch x by 2
-// Mat2 m = Mat2::scale(2, 1) * Mat2::rotation(0.5236f);
-// Vec2 p = m * Vec2{ 1, 0 };`}</CodeBlock>
+      <Equation label={tx(t, "mMat_eqRect", "A 2 × 3 matrix times a 3 × 2 matrix")}
+        where={[
+          [r`2 = 1 \cdot 2 + 2 \cdot 0 + 0 \cdot 1`, tx(t, "mMat_wR1", "row 1 of A dotted with column 1 of B")],
+          [r`3 = 1 \cdot 1 + 2 \cdot 1 + 0 \cdot 0`, tx(t, "mMat_wR2", "row 1 with column 2")],
+          [r`3 = 0 \cdot 2 + 1 \cdot 0 + 3 \cdot 1`, tx(t, "mMat_wR3", "row 2 with column 1")],
+          [r`1 = 0 \cdot 1 + 1 \cdot 1 + 3 \cdot 0`, tx(t, "mMat_wR4", "row 2 with column 2")],
+        ]}
+        note={tx(t, "mMat_rectNote", "The other order, BA, is a 3 × 3 matrix: [[2, 5, 3], [0, 1, 3], [1, 2, 0]]. So AB and BA need not even have the same size.")}>
+        {r`\begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 3 \end{bmatrix}\begin{bmatrix} 2 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix} = \begin{bmatrix} 2 & 3 \\ 3 & 1 \end{bmatrix}`}
+      </Equation>
+      <p>
+        {tx(t, "mMat_shopBody",
+          "Matrix products appear wherever amounts are combined with rates. Two friends shop for bread, milk and eggs: Ana buys 2, 1 and 0, Bruno 1, 2 and 3. Shop X charges 3, 4 and 1 per item, shop Y charges 2, 5 and 1. Put the purchases as rows of Q (2 × 3) and the prices of each shop as columns of P (3 × 2). Then QP (2 × 2) lists what each friend pays in each shop: Ana in X pays 2 · 3 + 1 · 4 + 0 · 1 = 10, in Y 2 · 2 + 1 · 5 + 0 = 9; Bruno in X pays 3 + 8 + 3 = 14, in Y 2 + 10 + 3 = 15. Each entry is a row of amounts dotted with a column of prices.")}
+      </p>
 
       <H2>{tx(t, "mMat_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -208,7 +196,7 @@ struct Mat2 {
           [tx(t, "mMat_m2w", "reading A·B·v left to right"), tx(t, "mMat_m2r", "B acts first, then A"), tx(t, "mMat_m2", "(AB)v = A(Bv): the matrix nearest the vector goes first")],
           [tx(t, "mMat_m3w", "putting î's image in a row"), tx(t, "mMat_m3r", "it is a column"), tx(t, "mMat_m3", "A(1, 0) returns the first column; rows give the transpose")],
           ["M = S · R · T", "M = T · R · S", tx(t, "mMat_m4", "translating first means the rotation and scale also swing the offset")],
-          [tx(t, "mMat_m5w", "w = 1 for normals and velocities"), tx(t, "mMat_m5r", "w = 0 for directions"), tx(t, "mMat_m5", "a direction must not be moved by the translation")],
+          [tx(t, "mMat_m5w", "w = 1 for a velocity or a direction"), tx(t, "mMat_m5r", "w = 0 for directions"), tx(t, "mMat_m5", "a direction must not be moved by the translation")],
           [tx(t, "mMat_m6w", "multiplying a 2 × 3 by a 2 × 3"), tx(t, "mMat_m6r", "inner sizes must match"), tx(t, "mMat_m6", "(m × n)(n × p): each row must be as long as each column")],
         ]}
       />

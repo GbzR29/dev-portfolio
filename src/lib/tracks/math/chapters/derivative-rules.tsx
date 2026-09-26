@@ -5,9 +5,9 @@
 // growing rectangle; chain rule as multiplied stretch factors; quotient rule
 // from the two; sin and cos from the turning radius; eˣ as its own derivative;
 // aˣ and ln x; implicit differentiation on the circle; a derivative table;
-// forward-mode automatic differentiation with dual numbers in C++.
+// differentiating a layered formula step by step, from the outside in.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -96,7 +96,7 @@ export function DerivativeRulesContent({ t }: { t: TrackTranslations }) {
       />
       <p>
         {tx(t, "mRule_chainTime",
-          "The chain rule is also how rates convert. If a function depends on position and position depends on time, its rate of change in time is (rate per metre) · (metres per second). A sound whose volume falls with distance d as V(d), heard by a player running away at d′(t) = 5 m/s, changes in volume at V′(d) · 5 per second.")}
+          "The chain rule is also how rates convert. If a function depends on position and position depends on time, its rate of change in time is (rate per metre) · (metres per second). A sound whose volume falls with distance d as V(d), heard by a person running away at d′(t) = 5 m/s, changes in volume at V′(d) · 5 per second.")}
       </p>
 
       <H2>{tx(t, "mRule_quotTitle", "The quotient rule")}</H2>
@@ -180,38 +180,29 @@ export function DerivativeRulesContent({ t }: { t: TrackTranslations }) {
       />
 
       <H2>{tx(t, "mRule_exTitle", "Worked examples")}</H2>
-      <p>{tx(t, "mRule_ex1", "1. Smoothstep, the easing curve s(x) = 3x² − 2x³ on [0, 1]. s′(x) = 6x − 6x² = 6x(1 − x). At x = 0 and x = 1 the slope is 0: the motion starts and stops gently, which is exactly why smoothstep looks smooth. The fastest point is the middle, s′(½) = 1.5.")}</p>
+      <p>{tx(t, "mRule_ex1", "1. The curve s(x) = 3x² − 2x³ rises from 0 at x = 0 to 1 at x = 1. s′(x) = 6x − 6x² = 6x(1 − x). At x = 0 and x = 1 the slope is 0: a change that follows this curve starts and stops gently, with no sudden kick at either end. The fastest point is the middle, s′(½) = 1.5.")}</p>
       <p>{tx(t, "mRule_ex2", "2. A damped spring: x(t) = e^(−2t) cos(10t). Product rule plus chain rule: x′ = −2e^(−2t) cos(10t) + e^(−2t) · (−10 sin(10t)) = −e^(−2t)(2 cos 10t + 10 sin 10t). This is the spring's velocity.")}</p>
       <p>{tx(t, "mRule_ex3", "3. Distance from the origin, d(x) = √(x² + 9), as x changes: d′ = x/√(x² + 9). At x = 4, d = 5 and d′ = 4/5: moving 1 unit along x changes the distance by only 0.8, because the motion is partly sideways.")}</p>
       <p>{tx(t, "mRule_ex4", "4. f(x) = ln(x² + 1). Chain rule: 1/(x² + 1) · 2x = 2x/(x² + 1).")}</p>
 
-      <H2>{tx(t, "mRule_codeTitle", "Letting the computer apply the rules")}</H2>
+      <H2>{tx(t, "mRule_drillTitle", "Differentiating step by step")}</H2>
       <p>
-        {tx(t, "mRule_codeBody",
-          "The rules are mechanical enough for a program to apply them while it computes. Carry every number together with its derivative, a pair (value, slope), called a dual number. Adding two pairs adds both parts (sum rule); multiplying applies the product rule to the slope; sin applies the chain rule with cos. Start with x = (x, 1), since dx/dx = 1, and any formula built from these operations returns its exact derivative alongside its value, with no h and no rounding trouble. This is forward-mode automatic differentiation; its reverse-mode cousin, backpropagation, trains every neural network, and the AI track builds it from scratch.")}
+        {tx(t, "mRule_drillBody",
+          "A long formula is a set of layers. Work from the outside in: name the operation that is done last, apply its rule, and only then differentiate the pieces it needs, each with its own rule. Take y = (x² + 1)³ · e^(2x).")}
       </p>
-      <CodeBlock lang="cpp" filename="dual.hpp" t={t}>{`#include <cmath>
-
-// A number together with its derivative: v + d·ε, where ε² = 0.
-struct Dual { double v, d; };
-
-Dual operator+(Dual a, Dual b) { return { a.v + b.v, a.d + b.d }; }            // sum rule
-Dual operator-(Dual a, Dual b) { return { a.v - b.v, a.d - b.d }; }
-Dual operator*(Dual a, Dual b) { return { a.v * b.v, a.d * b.v + a.v * b.d }; } // product rule
-Dual operator/(Dual a, Dual b) { return { a.v / b.v, (a.d * b.v - a.v * b.d) / (b.v * b.v) }; } // quotient rule
-Dual operator*(double c, Dual a) { return { c * a.v, c * a.d }; }
-
-// Chain rule: outer derivative at the inner value, times the inner derivative.
-Dual sin(Dual a) { return { std::sin(a.v),  std::cos(a.v) * a.d }; }
-Dual cos(Dual a) { return { std::cos(a.v), -std::sin(a.v) * a.d }; }
-Dual exp(Dual a) { double e = std::exp(a.v); return { e, e * a.d }; }
-Dual log(Dual a) { return { std::log(a.v), a.d / a.v }; }
-
-// f(x) = e^(-2x) cos(10x); seed x with derivative 1.
-Dual spring(Dual x) { return exp(-2.0 * x) * cos(10.0 * x); }
-// Dual r = spring({0.3, 1.0});   r.v = position, r.d = velocity, exactly`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mRule_tStep", "Step"), tx(t, "mRule_tWork", "Working")]}
+        rows={[
+          [tx(t, "mRule_d1a", "outermost operation"), tx(t, "mRule_d1", "a product u · v with u = (x² + 1)³ and v = e^(2x), so y′ = u′v + uv′")],
+          [tx(t, "mRule_d2a", "u′ (chain rule)"), tx(t, "mRule_d2", "outer: (…)³ → 3(…)²; inner: x² + 1 → 2x. So u′ = 3(x² + 1)² · 2x = 6x(x² + 1)²")],
+          [tx(t, "mRule_d3a", "v′ (chain rule)"), tx(t, "mRule_d3", "outer: e^(…) → e^(…); inner: 2x → 2. So v′ = 2e^(2x)")],
+          [tx(t, "mRule_d4a", "assemble"), tx(t, "mRule_d4", "y′ = 6x(x² + 1)² e^(2x) + 2(x² + 1)³ e^(2x)")],
+          [tx(t, "mRule_d5a", "tidy up"), tx(t, "mRule_d5", "take out the common factor 2(x² + 1)² e^(2x): y′ = 2(x² + 1)² e^(2x) (3x + x² + 1) = 2(x² + 1)² e^(2x) (x² + 3x + 1)")],
+          [tx(t, "mRule_d6a", "check"), tx(t, "mRule_d6", "at x = 0 the formula gives 2 · 1 · 1 · 1 = 2. Numerically, (y(0.001) − y(−0.001))/0.002 ≈ (1.002005 − 0.998005)/0.002 = 2.000 ✓")],
+        ]}
+      />
       <Callout type="tip" t={t}>
-        {tx(t, "mRule_codeTip", "Adding a function (sqrt, pow, tan…) takes one line using its row of the table above: the value part calls the ordinary function, and the derivative part is that row's derivative at a.v, multiplied by a.d. That final factor a.d is the chain rule at work. Dual numbers are also a handy way to check a derivative worked out by hand.")}
+        {tx(t, "mRule_drillTip", "Because every step applies a fixed rule to a smaller piece, differentiation is completely mechanical: no insight is needed, only care. That is why the numerical check in the last row is worth the minute it takes; it catches a forgotten inner derivative at once.")}
       </Callout>
 
       <H2>{tx(t, "mRule_mistakesTitle", "Common mistakes")}</H2>
@@ -234,7 +225,7 @@ Dual spring(Dual x) { return exp(-2.0 * x) * cos(10.0 * x); }
         "Chain rule: outer derivative at the inside, times the inner derivative. Rates multiply.",
         "Quotient rule: (u′v − uv′)/v².",
         "sin′ = cos, cos′ = −sin (radians); (eˣ)′ = eˣ; (ln x)′ = 1/x.",
-        "Dual numbers apply the rules automatically and give exact derivatives in code.",
+        "Work from the outside in: name the last operation, apply its rule, then differentiate the pieces.",
       ]} />
     </Article>
   );

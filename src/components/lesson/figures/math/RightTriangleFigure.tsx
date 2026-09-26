@@ -123,7 +123,7 @@ export function RightTriangleFigure({ t }: { t?: TrackTranslations }) {
         <Readout color={C.green}>{`h = d · tan θ = ${n2(d)} · ${n3(Math.tan(el * DEG))} = ${n2(h)} m`}</Readout>
       </Row>
     </>;
-    note = tx(t, "figRt_noteH", "Stand a distance d from a tower and measure the angle up to its top. The ground, the tower and your line of sight make a right triangle: d is the side adjacent to the angle and the height h is the side opposite it, so tan θ = h/d and h = d · tan θ. Surveyors measure mountains this way; games use the same triangle to aim a turret up at a flying target.");
+    note = tx(t, "figRt_noteH", "Stand a distance d from a tower and measure the angle up to its top. The ground, the tower and your line of sight make a right triangle: d is the side adjacent to the angle and the height h is the side opposite it, so tan θ = h/d and h = d · tan θ. Surveyors measure mountains this way, and sailors the height of cliffs.");
   }
 
   return (

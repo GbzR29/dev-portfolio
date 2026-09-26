@@ -4,10 +4,10 @@
 // sums (left, right, midpoint) and Σ notation; the definite integral as their
 // limit; the exact area under x² via the sum of squares (and the ⅓ in the cone
 // formula); signed area and the properties of integrals; trapezoid and
-// Simpson's rules and their error orders; average value; Euler integration
-// in games as a Riemann sum; C++.
+// Simpson's rules and their error orders; average value; distance from a
+// table of speedometer readings.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -21,7 +21,7 @@ export function IntegralsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mInt_intro",
-          "The derivative takes something apart into rates. The integral puts it back together: it adds up a quantity that keeps changing, by cutting it into pieces so thin that each one is almost constant. Distance from a changing speed, area under a curve, volume of a shape, total damage from a poison that wears off: all are integrals. This chapter defines the integral as a limit of sums and computes one exactly; the next shows the shortcut that connects integrals to derivatives.")}
+          "The derivative takes something apart into rates. The integral puts it back together: it adds up a quantity that keeps changing, by cutting it into pieces so thin that each one is almost constant. Distance from a changing speed, area under a curve, volume of a shape, total rain from a storm that slowly eases off: all are integrals. This chapter defines the integral as a limit of sums and computes one exactly; the next shows the shortcut that connects integrals to derivatives.")}
       </Lead>
 
       <H2>{tx(t, "mInt_distTitle", "Distance from speed")}</H2>
@@ -120,30 +120,10 @@ export function IntegralsContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mInt_r4", "Simpson (n even)"), "Δx/3 · (f₀ + 4f₁ + 2f₂ + 4f₃ + … + 4fₙ₋₁ + fₙ)", "Δx⁴"],
         ]}
       />
-      <CodeBlock lang="cpp" filename="integrate.hpp" t={t}>{`// Numerical integration of f over [a, b] with n strips.
-
-template <class F>
-double midpoint(F f, double a, double b, int n) {
-    double dx = (b - a) / n, sum = 0;
-    for (int k = 0; k < n; ++k) sum += f(a + (k + 0.5) * dx);   // centre of strip k
-    return sum * dx;
-}
-
-template <class F>
-double trapezoid(F f, double a, double b, int n) {
-    double dx = (b - a) / n, sum = 0.5 * (f(a) + f(b));        // the two ends count half
-    for (int k = 1; k < n; ++k) sum += f(a + k * dx);
-    return sum * dx;
-}
-
-template <class F>
-double simpson(F f, double a, double b, int n /* even */) {
-    double dx = (b - a) / n, sum = f(a) + f(b);
-    for (int k = 1; k < n; ++k) sum += (k % 2 ? 4 : 2) * f(a + k * dx);   // 4, 2, 4, 2, ...
-    return sum * dx / 3;
-}
-
-// simpson([](double x) { return x * x; }, 0, 2, 2)  ->  2.6666... = 8/3 exactly`}</CodeBlock>
+      <p>
+        {tx(t, "mInt_simpsonHand",
+          "Simpson by hand on ∫₀² x² dx with n = 2 strips: Δx = 1 and the heights are f(0) = 0, f(1) = 1, f(2) = 4. The estimate is (1/3)(0 + 4 · 1 + 4) = 8/3, exactly the true value found above with the sum of squares. It has to be: x² is a parabola, and Simpson's rule fits parabolas.")}
+      </p>
 
       <H2>{tx(t, "mInt_avgTitle", "Average value")}</H2>
       <p>
@@ -158,22 +138,26 @@ double simpson(F f, double a, double b, int n /* even */) {
         {r`\bar{f} = \frac{1}{b - a}\int_a^b f(x)\,dx`}
       </Equation>
 
-      <H2>{tx(t, "mInt_gameTitle", "Every game loop is a Riemann sum")}</H2>
+      <H2>{tx(t, "mInt_gameTitle", "Distance from speedometer readings")}</H2>
       <p>
         {tx(t, "mInt_gameBody",
-          "A physics update position += velocity * dt adds one strip of width dt and height velocity per frame: the position is a Riemann sum of the velocity. Which sample point is used depends on the order of the two lines. Take a stone falling from rest, v(t) = 9.8t, for one second at 60 frames per second. The exact distance is the triangle ½ · 1 · 9.8 = 4.9 m. Updating the position before the velocity (explicit Euler) uses the old velocity, the left sum: 4.818 m. Updating the velocity first (semi-implicit Euler, the usual choice in games) uses the new one, the right sum: 4.982 m. Averaging old and new velocity is the trapezoid rule, exact here: 4.9 m.")}
+          "Often the rate is known only from readings, and a Riemann sum is then the only way to the total. A car's speedometer is read every 10 seconds as it pulls away. Each reading, times 10 s, is one strip; the rules differ only in which heights they use.")}
       </p>
-      <CodeBlock lang="cpp" filename="falling.cpp" t={t}>{`// One second of free fall at 60 fps, three ways.
-const float g = 9.8f, dt = 1.0f / 60.0f;
-float yE = 0, vE = 0, yS = 0, vS = 0, yT = 0, vT = 0;
-for (int i = 0; i < 60; ++i) {
-    yE += vE * dt;  vE += g * dt;                    // explicit Euler: left sum        -> 4.818
-    vS += g * dt;   yS += vS * dt;                   // semi-implicit Euler: right sum  -> 4.982
-    float v0 = vT;  vT += g * dt;
-    yT += 0.5f * (v0 + vT) * dt;                     // trapezoid                       -> 4.900
-}`}</CodeBlock>
-      <Callout type="warn" t={t}>
-        {tx(t, "mInt_fpsWarn", "Because the error depends on Δx, a game whose physics uses the frame time as dt behaves slightly differently at 30 and at 144 frames per second: jumps reach different heights. That is one reason engines step physics with a fixed dt, as the game-loop chapter of the Game Dev track explains.")}
+      <LessonTable
+        headers={["t (s)", "0", "10", "20", "30", "40"]}
+        rows={[[tx(t, "mInt_tSpeed", "speed (m/s)"), "0", "10", "16", "20", "22"]]}
+      />
+      <LessonTable
+        headers={[tx(t, "mInt_tRule", "Rule"), tx(t, "mInt_tWorking", "Working"), tx(t, "mInt_tDist", "Distance")]}
+        rows={[
+          [tx(t, "mInt_r1l", "left sum"), "10 · (0 + 10 + 16 + 20)", "460 m"],
+          [tx(t, "mInt_r1r", "right sum"), "10 · (10 + 16 + 20 + 22)", "680 m"],
+          [tx(t, "mInt_r3", "trapezoid"), "10 · (0/2 + 10 + 16 + 20 + 22/2)", "570 m"],
+          [tx(t, "mInt_r4", "Simpson (n even)"), "(10/3) · (0 + 4 · 10 + 2 · 16 + 4 · 20 + 22)", "580 m"],
+        ]}
+      />
+      <Callout type="tip" t={t}>
+        {tx(t, "mInt_fpsWarn", "While the speed keeps rising, the left sum uses the lowest speed of each strip and the right sum the highest, so the true distance is trapped between them, here between 460 m and 680 m: a guarantee, not just an estimate. The trapezoid and Simpson values, 570 m and 580 m, are the realistic guesses.")}
       </Callout>
 
       <H2>{tx(t, "mInt_exTitle", "Worked examples")}</H2>
@@ -192,7 +176,7 @@ for (int i = 0; i < 60; ++i) {
           [tx(t, "mInt_m2w", "displacement = distance travelled"), tx(t, "mInt_m2r", "distance is ∫|v| dt"), tx(t, "mInt_m2", "moving back cancels moving forward in ∫v")],
           [tx(t, "mInt_m3w", "dropping the dx"), tx(t, "mInt_m3r", "keep it"), tx(t, "mInt_m3", "it names the variable and is the strip width; substitution needs it")],
           [tx(t, "mInt_m4w", "Simpson with an odd n"), tx(t, "mInt_m4r", "n must be even"), tx(t, "mInt_m4", "it fits one parabola per pair of strips")],
-          [tx(t, "mInt_m5w", "tiny dt fixes Euler integration"), tx(t, "mInt_m5r", "use a better rule or a fixed step"), tx(t, "mInt_m5", "error only shrinks like dt, and rounding grows")],
+          [tx(t, "mInt_m5w", "more strips always rescue a crude rule"), tx(t, "mInt_m5r", "use a better rule"), tx(t, "mInt_m5", "doubling the strips halves a left sum's error but cuts Simpson's 16-fold")],
         ]}
       />
 
@@ -203,7 +187,7 @@ for (int i = 0; i < 60; ++i) {
         "∫₀ᵇ x² dx = b³/3, from the sum of squares; the same ⅓ as in the cone.",
         "Integrals are linear, split at any point, and change sign when reversed.",
         "Left/right: error ~ Δx; midpoint/trapezoid ~ Δx²; Simpson ~ Δx⁴.",
-        "position += velocity · dt is a Riemann sum; the update order picks the sample point.",
+        "From readings, a total is a sum of rate × width strips; left and right sums bracket a rising rate.",
       ]} />
     </Article>
   );

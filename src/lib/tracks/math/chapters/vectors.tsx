@@ -4,7 +4,7 @@
 // combinations; the dot product (projection, angles, facing, reflection,
 // planes); the cross product (normals, handedness, bases, 2D orientation).
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -25,17 +25,17 @@ export function VectorsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mVec_intro",
-          "A number can say how fast; it cannot say which way. A vector carries both: a magnitude and a direction, stored as one number per axis. Velocities, forces, offsets, surface normals, light directions and colours are all vectors, and almost every line of graphics and physics code manipulates them. This chapter builds the operations from their geometric meaning, so that each line of vector code draws a picture in your head.")}
+          "A number can say how fast; it cannot say which way. A vector carries both: a magnitude and a direction, stored as one number per axis. Velocities, forces, displacements, winds and currents are all vectors, and geometry and physics are full of them. This chapter builds every operation from its geometric meaning and then computes it by hand, so that each formula draws a picture in your head.")}
       </Lead>
 
       <H2>{tx(t, "mVec_whatTitle", "Arrows and components")}</H2>
       <p>
         {tx(t, "mVec_whatBody",
-          "Picture a vector as an arrow: its length is the magnitude, its heading is the direction, and where you draw it does not matter. An arrow 3 units right and 1 up is the same vector wherever it starts. To compute with it, write down how far it goes along each axis, its components: v = (3, 1) in 2D, v = (3, 1, −2) in 3D. The component form is what code stores; the arrow is what you should imagine.")}
+          "Picture a vector as an arrow: its length is the magnitude, its heading is the direction, and where you draw it does not matter. An arrow 3 units right and 1 up is the same vector wherever it starts. To compute with it, write down how far it goes along each axis, its components: v = (3, 1) in 2D, v = (3, 1, −2) in 3D. The component form is what you calculate with; the arrow is what you should imagine.")}
       </p>
       <p>
         {tx(t, "mVec_pointsBody",
-          "Points and vectors are both stored as a list of coordinates, but they are different things. A point is a location, a vector is a displacement. Their arithmetic reflects that: point − point = the vector from one to the other; point + vector = a point moved by the vector; vector + vector = the combined displacement. Adding two points (Paris + London) means nothing, with one exception: a weighted average whose weights sum to 1, such as the midpoint ½A + ½B, is again a point. Graphics makes the distinction explicit with the homogeneous coordinate w (1 for points, 0 for vectors), covered in the matrices chapters.")}
+          "Points and vectors are both stored as a list of coordinates, but they are different things. A point is a location, a vector is a displacement. Their arithmetic reflects that: point − point = the vector from one to the other; point + vector = a point moved by the vector; vector + vector = the combined displacement. Adding two points (Paris + London) means nothing, with one exception: a weighted average whose weights sum to 1, such as the midpoint ½A + ½B, is again a point. The matrices chapter makes the distinction explicit with one extra coordinate, 1 for points and 0 for vectors.")}
       </p>
 
       <H2>{tx(t, "mVec_opsTitle", "Adding, subtracting and scaling")}</H2>
@@ -63,7 +63,7 @@ export function VectorsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\lVert\mathbf v\rVert`, tx(t, "mVec_wNorm", "the length of v; also written |v|")],
           [r`\lVert\mathbf b - \mathbf a\rVert`, tx(t, "mVec_wDist", "the distance between points a and b")],
-          [r`\lVert\mathbf v\rVert^2`, tx(t, "mVec_wSq", "the squared length, with no square root. To compare distances (\"is the enemy within 10 m?\"), compare squared values: d² < 100. Squaring preserves order for non-negative numbers, and it saves a square root per test")],
+          [r`\lVert\mathbf v\rVert^2`, tx(t, "mVec_wSq", "the squared length, with no square root. To compare distances (\"is the boat within 10 km of the port?\"), compare squared values: d² < 100. Squaring preserves order for non-negative numbers, and it saves working out a square root")],
         ]}>
         {r`\lVert\mathbf v\rVert = \sqrt{v_x^2 + v_y^2 + v_z^2}`}
       </Equation>
@@ -71,64 +71,57 @@ export function VectorsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mVec_normTitle", "Unit vectors and normalising")}</H2>
       <p>
         {tx(t, "mVec_normBody",
-          "Often only the direction matters: which way is the player facing, which way is the light coming from, which way does this surface point? A vector of length 1, a unit vector, represents a pure direction; it is written with a hat, v̂. Dividing any non-zero vector by its length gives the unit vector with the same direction. Unit vectors are what make the dot product in the next chapter meaningful as an angle.")}
+          "Often only the direction matters: which way is the wind blowing, which way does this road head, which way does this slope face? A vector of length 1, a unit vector, represents a pure direction; it is written with a hat, v̂. Dividing any non-zero vector by its length gives the unit vector with the same direction. Unit vectors are what make the dot product in the next chapter meaningful as an angle.")}
       </p>
       <Equation label={tx(t, "mVec_eqNorm", "Normalising")}
         where={[
           [r`\hat{\mathbf v}`, tx(t, "mVec_wHat", "the unit vector in the direction of v")],
-          [r`\lVert\mathbf v\rVert \neq 0`, tx(t, "mVec_wNonZero", "the zero vector has no direction; dividing by its zero length produces NaN")],
+          [r`\lVert\mathbf v\rVert \neq 0`, tx(t, "mVec_wNonZero", "the zero vector has no direction; dividing by its zero length is undefined")],
         ]}>
         {r`\hat{\mathbf v} = \frac{\mathbf v}{\lVert\mathbf v\rVert}`}
       </Equation>
-      <CodeBlock lang="cpp" filename="vec2.hpp" t={t}>{`struct Vec2 {
-    float x = 0, y = 0;
-    Vec2 operator+(Vec2 o) const { return { x + o.x, y + o.y }; }
-    Vec2 operator-(Vec2 o) const { return { x - o.x, y - o.y }; }
-    Vec2 operator*(float k) const { return { x * k, y * k }; }
-};
-float lengthSq(Vec2 v) { return v.x * v.x + v.y * v.y; }
-float length(Vec2 v)   { return std::sqrt(lengthSq(v)); }
-
-Vec2 normalizeOr(Vec2 v, Vec2 fallback) {          // never divide by (almost) zero
-    float l2 = lengthSq(v);
-    return l2 > 1e-12f ? v * (1.0f / std::sqrt(l2)) : fallback;
-}
-
-// Move toward a target at 'speed' units/s, without overshooting it
-Vec2 moveTowards(Vec2 pos, Vec2 target, float speed, float dt) {
-    Vec2 d = target - pos;
-    float dist = length(d), step = speed * dt;
-    if (dist <= step) return target;               // arrives this frame
-    return pos + d * (step / dist);                // d / dist is the direction
-}`}</CodeBlock>
+      <p>
+        {tx(t, "mVec_normEx",
+          "By hand: v = (3, 4) has length √(9 + 16) = 5, so v̂ = (3/5, 4/5) = (0.6, 0.8). Check: 0.6² + 0.8² = 0.36 + 0.64 = 1 ✓. Unit vectors make \"go a given distance in a given direction\" easy. To walk 4 km from A = (1, 2) towards B = (7, 10): the offset is B − A = (6, 8), its length is 10, its direction is (0.6, 0.8), and 4 km along it lands at A + 4 · (0.6, 0.8) = (1 + 2.4, 2 + 3.2) = (3.4, 5.2).")}
+      </p>
 
       <H2>{tx(t, "mVec_combTitle", "Linear combinations and bases")}</H2>
       <p>
         {tx(t, "mVec_combBody",
-          "Every 2D vector is a mix of two special vectors: î = (1, 0), one step along x, and ĵ = (0, 1), one step along y. The vector (3, 1) literally means 3î + 1ĵ. A pair of vectors that can build every vector this way is a basis, and the components are the recipe. Nothing forces the basis to be î and ĵ: any two non-parallel vectors work, and the same arrow then has a different recipe. Changing basis is what a transformation matrix does, and what converting between world space, a character's local space and the camera's space means. The matrices chapters start from exactly this idea.")}
+          "Every 2D vector is a mix of two special vectors: î = (1, 0), one step along x, and ĵ = (0, 1), one step along y. The vector (3, 1) literally means 3î + 1ĵ. A pair of vectors that can build every vector this way is a basis, and the components are the recipe. Nothing forces the basis to be î and ĵ: any two non-parallel vectors work, and the same arrow then has a different recipe. Changing basis is what a transformation matrix does, and it is how \"3 km east, 4 km north\" becomes \"so far along the river, so far across it\". The matrices chapters start from exactly this idea.")}
       </p>
       <Equation label={tx(t, "mVec_eqBasis", "A vector as a linear combination")}
         where={[
           [r`\hat{\mathbf i},\ \hat{\mathbf j}`, tx(t, "mVec_wIJ", "the standard basis vectors along x and y")],
-          [r`\mathbf e_1,\ \mathbf e_2`, tx(t, "mVec_wE", "any other basis, for example a character's right and forward directions")],
-          [r`c_1, c_2`, tx(t, "mVec_wC", "the components of the same vector in that basis: \"2 steps right, 3 forward\" relative to the character")],
+          [r`\mathbf e_1,\ \mathbf e_2`, tx(t, "mVec_wE", "any other basis, for example the directions along and across a river")],
+          [r`c_1, c_2`, tx(t, "mVec_wC", "the components of the same vector in that basis: \"2 along the river, 3 across it\"")],
         ]}>
         {r`\mathbf v = v_x\,\hat{\mathbf i} + v_y\,\hat{\mathbf j} = c_1\,\mathbf e_1 + c_2\,\mathbf e_2`}
       </Equation>
 
-      <H2>{tx(t, "mVec_codeTitle", "Vectors in real code")}</H2>
+      <H2>{tx(t, "mVec_exTitle", "Worked examples")}</H2>
       <p>
-        {tx(t, "mVec_codeBody",
-          "In practice you will use a library: GLM in C++ (whose types match GLSL: glm::vec2, vec3, vec4), Unity's Vector3, Godot's Vector3, DirectXMath on Windows. They add swizzling (v.xy), component-wise multiplication (a * b multiplies x by x, y by y, useful for colours and scales) and SIMD versions that process four floats in one instruction. Everything in this chapter maps one-to-one onto those APIs.")}
+        {tx(t, "mVec_ex1",
+          "1. A hiker walks 3 km east and then 4 km north. The two displacements add tip to tail: (3, 0) + (0, 4) = (3, 4). She ends √(3² + 4²) = 5 km from the start, although she walked 7 km: lengths do not add unless the arrows point the same way.")}
       </p>
+      <p>
+        {tx(t, "mVec_ex2",
+          "2. The distance between the points (1, 2, 2) and (4, 6, 14): the difference is (3, 4, 12), and √(9 + 16 + 144) = √169 = 13.")}
+      </p>
+      <p>
+        {tx(t, "mVec_ex3",
+          "3. Write v = (4, 1) in the basis e₁ = (1, 1), e₂ = (1, −1). We need c₁(1, 1) + c₂(1, −1) = (4, 1), that is c₁ + c₂ = 4 and c₁ − c₂ = 1. Adding the two equations gives 2c₁ = 5, so c₁ = 2.5 and c₂ = 1.5. Check: 2.5 · (1, 1) + 1.5 · (1, −1) = (2.5 + 1.5, 2.5 − 1.5) = (4, 1) ✓.")}
+      </p>
+
+      <H2>{tx(t, "mVec_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
-        headers={[tx(t, "mVec_tSym", "Symptom"), tx(t, "mVec_tCause", "Cause"), tx(t, "mVec_tFix", "Fix")]}
+        headers={[tx(t, "mVec_tWrong", "Wrong"), tx(t, "mVec_tRight", "Right"), tx(t, "mVec_tWhy", "Why")]}
         rows={[
-          [tx(t, "mVec_b1", "NaN positions after a collision"), tx(t, "mVec_c1", "normalising a zero-length vector"), tx(t, "mVec_f1", "guard with a length check and a fallback direction")],
-          [tx(t, "mVec_b2", "Diagonal movement is faster"), tx(t, "mVec_c2", "input (1, 1) has length √2 ≈ 1.41"), tx(t, "mVec_f2", "normalise the input direction (or clamp its length to 1 for analog sticks)")],
-          [tx(t, "mVec_b3", "Enemy rushes when far, crawls when close"), tx(t, "mVec_c3", "velocity = (target − pos) · speed, not normalised"), tx(t, "mVec_f3", "normalise the direction, then multiply by speed")],
-          [tx(t, "mVec_b4", "Slow distance checks in a hot loop"), tx(t, "mVec_c4", "a square root per comparison"), tx(t, "mVec_f4", "compare squared lengths")],
-          [tx(t, "mVec_b5", "Directions slowly stop being unit length"), tx(t, "mVec_c5", "rounding drift after many rotations"), tx(t, "mVec_f5", "renormalise occasionally")],
+          ["|(3, 4)| = 3 + 4 = 7", "|(3, 4)| = √(9 + 16) = 5", tx(t, "mVec_m1", "the components are the legs of a right triangle; the length is its hypotenuse")],
+          [tx(t, "mVec_m2w", "B − A goes from B to A"), tx(t, "mVec_m2r", "B − A goes from A to B"), tx(t, "mVec_m2", "\"to minus from\": A + (B − A) = B")],
+          ["|a + b| = |a| + |b|", "|a + b| ≤ |a| + |b|", tx(t, "mVec_m3", "equal only when a and b point the same way; otherwise the detour is longer")],
+          [tx(t, "mVec_m4w", "normalising (0, 0)"), tx(t, "mVec_m4r", "the zero vector has no direction"), tx(t, "mVec_m4", "its length is 0, and dividing by 0 is undefined")],
+          [tx(t, "mVec_m5w", "adding two points"), tx(t, "mVec_m5r", "subtract them, or average with weights summing to 1"), tx(t, "mVec_m5", "a sum of places depends on where the origin is; a difference does not")],
         ]}
       />
 
@@ -152,13 +145,13 @@ export function DotContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mDot_intro",
-          "If you learn one vector operation well, make it the dot product. It turns two vectors into a single number that measures how much they point the same way. From that one number come angles, projections, \"is it in front of me?\", \"can the guard see me?\", diffuse lighting, reflections, sliding along walls and the distance to a plane.")}
+          "If you learn one vector operation well, make it the dot product. It turns two vectors into a single number that measures how much they point the same way. From that one number come angles, the test for perpendicular lines, projections, the work done by a force, reflections and the distance from a point to a plane.")}
       </Lead>
 
       <H2>{tx(t, "mDot_defTitle", "Two definitions, one number")}</H2>
       <p>
         {tx(t, "mDot_defBody",
-          "The algebraic definition is what the computer does: multiply matching components and add the products. The geometric definition is what it means: the product of the two lengths and the cosine of the angle between them. That these two are equal is not obvious. It follows from the law of cosines from the trigonometry chapter: the triangle formed by a, b and b − a has sides |a|, |b| and |b − a|, so |b − a|² = |a|² + |b|² − 2|a||b|cos θ. Expanding |b − a|² in components gives |a|² + |b|² − 2(aₓbₓ + a_yb_y). Comparing the two lines, aₓbₓ + a_yb_y = |a||b|cos θ.")}
+          "The algebraic definition is how you compute it: multiply matching components and add the products. The geometric definition is what it means: the product of the two lengths and the cosine of the angle between them. That these two are equal is not obvious. It follows from the law of cosines from the trigonometry chapter: the triangle formed by a, b and b − a has sides |a|, |b| and |b − a|, so |b − a|² = |a|² + |b|² − 2|a||b|cos θ. Expanding |b − a|² in components gives |a|² + |b|² − 2(aₓbₓ + a_yb_y). Comparing the two lines, aₓbₓ + a_yb_y = |a||b|cos θ.")}
       </p>
       <Equation label={tx(t, "mDot_eqDef", "The dot product")}
         where={[
@@ -172,16 +165,16 @@ export function DotContent({ t }: { t: TrackTranslations }) {
       <LessonTable
         headers={[tx(t, "mDot_tSign", "a · b"), tx(t, "mDot_tAngle", "Angle"), tx(t, "mDot_tMeaning", "Meaning")]}
         rows={[
-          ["> 0", "< 90°", tx(t, "mDot_m1", "roughly the same direction: in front, facing, lit")],
-          ["= 0", "= 90°", tx(t, "mDot_m2", "perpendicular (orthogonal): a sideways relation")],
-          ["< 0", "> 90°", tx(t, "mDot_m3", "roughly opposite: behind, facing away, in shadow")],
+          ["> 0", "< 90°", tx(t, "mDot_m1", "roughly the same direction: the angle between them is acute")],
+          ["= 0", "= 90°", tx(t, "mDot_m2", "perpendicular (orthogonal): a right angle")],
+          ["< 0", "> 90°", tx(t, "mDot_m3", "roughly opposite: the angle is obtuse")],
         ]}
       />
 
       <H2>{tx(t, "mDot_projTitle", "Projection: the shadow of one vector on another")}</H2>
       <p>
         {tx(t, "mDot_projBody",
-          "Shine a light perpendicular to a onto b: the shadow b casts on the line of a is its projection. Its signed length is |b| cos θ, which is the dot product with a unit vector along a. Multiplying that length by â gives the projection as a vector. Subtracting it from b leaves the part of b perpendicular to a. Splitting a vector into \"along\" and \"across\" parts this way is one of the most-used tricks in game physics.")}
+          "Shine a light perpendicular to a onto b: the shadow b casts on the line of a is its projection. Its signed length is |b| cos θ, which is the dot product with a unit vector along a. Multiplying that length by â gives the projection as a vector. Subtracting it from b leaves the part of b perpendicular to a. Splitting a vector into \"along\" and \"across\" parts this way is one of the most-used tricks in physics: the weight of a box on a ramp splits into a part along the ramp, which makes it slide, and a part pressing into it.")}
       </p>
       <Equation label={tx(t, "mDot_eqProj", "Scalar and vector projection")}
         where={[
@@ -190,39 +183,27 @@ export function DotContent({ t }: { t: TrackTranslations }) {
           [r`(\mathbf b\cdot\hat{\mathbf a})\,\hat{\mathbf a}`, tx(t, "mDot_wVector", "the vector projection b∥: the shadow as an arrow along a")],
           [r`\mathbf b_\perp = \mathbf b - \mathbf b_\parallel`, tx(t, "mDot_wPerp", "the rest of b, perpendicular to a")],
         ]}
-        note={tx(t, "mDot_eqProjNote", "Sliding along a wall is exactly this: remove the part of the velocity along the wall's normal n̂, v − (v · n̂)n̂, and the character slides along the wall instead of stopping dead.")}>
+        note={tx(t, "mDot_eqProjNote", "Example: b = (2, 4) projected on a = (3, 4). a · b = 6 + 16 = 22 and a · a = 25, so b∥ = (22/25)(3, 4) = (2.64, 3.52) and b⊥ = (2, 4) − (2.64, 3.52) = (−0.64, 0.48). Check: b⊥ · a = −1.92 + 1.92 = 0 ✓.")}>
         {r`\mathbf b_\parallel = (\mathbf b\cdot\hat{\mathbf a})\,\hat{\mathbf a} = \frac{\mathbf a\cdot\mathbf b}{\mathbf a\cdot\mathbf a}\,\mathbf a \qquad \mathbf b_\perp = \mathbf b - \mathbf b_\parallel`}
       </Equation>
 
       <DotFigure t={t} />
 
-      <H2>{tx(t, "mDot_angleTitle", "Angles, and when not to compute them")}</H2>
+      <H2>{tx(t, "mDot_angleTitle", "Angles between vectors")}</H2>
       <p>
         {tx(t, "mDot_angleBody",
-          "Solving the geometric definition for θ gives the angle between two vectors: θ = acos(a · b / (|a||b|)). Two cautions. Rounding can push the fraction to 1.0000001 for parallel vectors, and acos of anything outside [−1, 1] is NaN, so clamp it. And most of the time you do not need the angle at all. To check whether something is within 30° of the forward direction, compare the dot product of the unit vectors with cos 30° ≈ 0.866: a larger cosine means a smaller angle. The cosine is a constant you compute once; acos per test is wasted work.")}
+          "Solving the geometric definition for θ gives the angle between two vectors: θ = arccos(a · b / (|a||b|)). Example: a = (1, 0, 1) and b = (0, 1, 1). a · b = 0 + 0 + 1 = 1 and |a| = |b| = √2, so cos θ = 1/2 and θ = 60°. Often the angle itself is not needed. Whether it is acute, right or obtuse is just the sign of a · b. And to know whether it is below 30°, compare the cosine with cos 30° ≈ 0.866: on [0°, 180°] the cosine falls as the angle grows, so a larger cosine means a smaller angle.")}
       </p>
-      <CodeBlock lang="cpp" filename="dot_uses.cpp" t={t}>{`// Is the target in front of me? (no normalisation needed: only the sign matters)
-bool inFront = dot(forward, target - pos) > 0;
+      <H3>{tx(t, "mDot_workTitle", "Work done by a force")}</H3>
+      <p>
+        {tx(t, "mDot_workBody",
+          "In physics, a force F moving an object through a displacement d does work W = F · d (in joules, with F in newtons and d in metres). Only the part of the force along the motion counts: pulling a sled 50 m along flat ground with a rope that pulls with 100 N at 30° above the horizontal does W = 100 · 50 · cos 30° ≈ 4330 J. In components, F = (100 cos 30°, 100 sin 30°) ≈ (86.6, 50) and d = (50, 0), so F · d = 86.6 · 50 + 50 · 0 = 4330 J: the upward part of the pull does no work, because the sled does not move up.")}
+      </p>
 
-// Can the guard see the player? Field of view 'fov', maximum range 'range'
-bool canSee(Vec3 guardPos, Vec3 guardForward /*unit*/, Vec3 playerPos, float fov, float range) {
-    Vec3  to   = playerPos - guardPos;
-    float d2   = dot(to, to);                         // squared distance: a dot product too
-    if (d2 > range * range) return false;
-    float cosLimit = std::cos(fov * 0.5f);            // compute once per guard in real code
-    return dot(guardForward, to) >= cosLimit * std::sqrt(d2);   // avoids normalising 'to'
-}
-
-// Angle between two directions, safely
-float angleBetween(Vec3 a, Vec3 b) {
-    float c = dot(a, b) / std::sqrt(dot(a, a) * dot(b, b));
-    return std::acos(std::clamp(c, -1.0f, 1.0f));
-}`}</CodeBlock>
-
-      <H2>{tx(t, "mDot_lightTitle", "Lighting and reflection")}</H2>
+      <H2>{tx(t, "mDot_lightTitle", "Sunlight and reflection")}</H2>
       <p>
         {tx(t, "mDot_lightBody",
-          "The brightness of a matte surface depends on how directly light hits it: a beam hitting at an angle spreads its energy over a larger area. That spreading factor is exactly the cosine between the surface normal n̂ and the direction to the light l̂, so diffuse lighting is max(n̂ · l̂, 0) (Lambert's cosine law; the OpenGL track's lighting chapters build on it). Reflection comes from the projection above: to bounce a direction d off a surface, keep the part along the surface and reverse the part along the normal. Reversing a part means subtracting it twice.")}
+          "Sunlight falling on the ground at a slant spreads its energy over a larger area than light falling straight down; that is why winter sunshine warms so little. The fraction that arrives per square metre is the cosine between the surface normal n̂ (the unit vector sticking straight out of the surface) and the unit direction towards the sun l̂: it is n̂ · l̂ when that is positive, and 0 when the sun is behind the surface. This is Lambert's cosine law. Reflection comes from the projection above: a ball bouncing off a wall, or a light ray off a mirror, keeps the part of its direction along the surface and reverses the part along the normal. Reversing a part means subtracting it twice.")}
       </p>
       <Equation label={tx(t, "mDot_eqReflect", "Reflection")}
         where={[
@@ -230,14 +211,14 @@ float angleBetween(Vec3 a, Vec3 b) {
           [r`\hat{\mathbf n}`, tx(t, "mDot_wN", "the unit surface normal")],
           [r`(\mathbf d\cdot\hat{\mathbf n})\,\hat{\mathbf n}`, tx(t, "mDot_wDn", "the part of d along the normal; it points into the surface, since d·n̂ < 0")],
         ]}
-        note={tx(t, "mDot_eqReflectNote", "This is GLSL's reflect(d, n). With a restitution factor it becomes the bounce formula of the Game Dev collision chapter: v − (1 + e)(v · n̂)n̂.")}>
+        note={tx(t, "mDot_eqReflectNote", "Example: a ray d = (3, −4) hits a floor with n̂ = (0, 1). d · n̂ = −4, so r = (3, −4) − 2 · (−4) · (0, 1) = (3, −4) + (0, 8) = (3, 4): the sideways part is kept, the downward part becomes upward, and the angle of incidence equals the angle of reflection.")}>
         {r`\mathbf r = \mathbf d - 2\,(\mathbf d\cdot\hat{\mathbf n})\,\hat{\mathbf n}`}
       </Equation>
 
       <H2>{tx(t, "mDot_planeTitle", "Planes and distances")}</H2>
       <p>
         {tx(t, "mDot_planeBody",
-          "A plane is all the points whose projection onto a unit normal n̂ has the same value k: the floor is every point with (0, 1, 0) · p = 0, a wall is every point with (1, 0, 0) · p = 5. For any point p, n̂ · p − k is then its signed distance to the plane: positive on the side the normal points to, negative behind it. That one dot product is how frustum culling decides whether an object is inside the camera's view (six planes), how a character knows whether it is above the water line, and how BSP trees split levels.")}
+          "A plane is all the points whose projection onto a unit normal n̂ has the same value k: the floor is every point with (0, 1, 0) · p = 0, a wall is every point with (1, 0, 0) · p = 5. For any point p, n̂ · p − k is then its signed distance to the plane: positive on the side the normal points to, negative behind it. Example: the plane x + 2y + 2z = 6. Its normal (1, 2, 2) has length 3, so dividing the whole equation by 3 gives n̂ = (1/3, 2/3, 2/3) and k = 2. The point p = (4, 4, 1) has n̂ · p = (4 + 8 + 2)/3 = 14/3, so it lies 14/3 − 2 = 8/3 ≈ 2.67 units from the plane, on the side the normal points to.")}
       </p>
       <Equation label={tx(t, "mDot_eqPlane", "A plane and the signed distance to it")}
         where={[
@@ -256,7 +237,7 @@ float angleBetween(Vec3 a, Vec3 b) {
           ["a · (b + c) = a · b + a · c", tx(t, "mDot_p2", "projections of a sum are the sum of projections")],
           ["(k a) · b = k (a · b)", tx(t, "mDot_p3", "scaling one vector scales the result")],
           ["a · a = |a|²", tx(t, "mDot_p4", "squared length for free: the cheapest way to compute it")],
-          ["a · b = 0 ⇔ a ⊥ b", tx(t, "mDot_p5", "the test for perpendicular vectors (with a tolerance in floats)")],
+          ["a · b = 0 ⇔ a ⊥ b", tx(t, "mDot_p5", "the test for perpendicular vectors (the zero vector counts as perpendicular to every vector)")],
         ]}
       />
 
@@ -264,8 +245,8 @@ float angleBetween(Vec3 a, Vec3 b) {
         "a · b = Σ aᵢbᵢ = |a||b| cos θ: how much two vectors agree.",
         "Sign: > 0 same side, 0 perpendicular, < 0 opposite. Often the sign is all you need.",
         "b · â is the shadow of b on a; b − (b · â)â is the part across a (sliding).",
-        "Compare cosines instead of angles: dot(f̂, d̂) ≥ cos(fov/2).",
-        "Lambert: max(n̂ · l̂, 0). Reflection: d − 2(d · n̂)n̂. Plane distance: n̂ · p − k.",
+        "θ = arccos(a · b / (|a||b|)); to compare angles, compare their cosines.",
+        "Work: F · d. Sunlight: n̂ · l̂. Reflection: d − 2(d · n̂)n̂. Plane distance: n̂ · p − k.",
       ]} />
     </Article>
   );
@@ -280,7 +261,7 @@ export function CrossContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mCross_intro",
-          "The dot product measures how much two vectors agree. The cross product builds something new: a third vector perpendicular to both. That is exactly what you need for the normal of a triangle, the \"right\" direction of a camera, the axis of a rotation or the torque of a force. Its 2D cousin, a single number, answers \"left or right?\" and \"clockwise or counter-clockwise?\", the basis of rasterisers and robust geometry code.")}
+          "The dot product measures how much two vectors agree. The cross product builds something new: a third vector perpendicular to both. That is exactly what you need for the plane through three points, the area of a triangle in space, the axis of a rotation or the torque of a force. Its 2D cousin, a single number, answers \"left or right?\" and \"clockwise or counter-clockwise?\".")}
       </Lead>
 
       <H2>{tx(t, "mCross_defTitle", "Definition")}</H2>
@@ -299,7 +280,7 @@ export function CrossContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mCross_dirBody",
-          "Two directions are perpendicular to both a and b: a × b and its opposite. Which one you get is fixed by the right-hand rule: point the fingers of your right hand along a, curl them toward b, and your thumb points along a × b. Consequently the order matters: b × a = −(a × b). In OpenGL's right-handed coordinates (x right, y up, z toward the viewer), x × y = z.")}
+          "Two directions are perpendicular to both a and b: a × b and its opposite. Which one you get is fixed by the right-hand rule: point the fingers of your right hand along a, curl them toward b, and your thumb points along a × b. Consequently the order matters: b × a = −(a × b). In the usual right-handed axes (x right, y up, z towards you), x × y = z.")}
       </p>
 
       <CrossFigure t={t} />
@@ -317,28 +298,26 @@ export function CrossContent({ t }: { t: TrackTranslations }) {
       />
 
       <H2>{tx(t, "mCross_usesTitle", "What it is used for")}</H2>
-      <H3>{tx(t, "mCross_normalTitle", "Triangle normals")}</H3>
+      <H3>{tx(t, "mCross_normalTitle", "The plane through three points")}</H3>
       <p>
         {tx(t, "mCross_normalBody",
-          "Two edges of a triangle, B − A and C − A, both lie in its plane, so their cross product is perpendicular to the triangle: its normal. The order of the corners decides which side it points to. With counter-clockwise corners (seen from the front), (B − A) × (C − A) points toward the viewer, which is why winding order decides front faces in OpenGL. Its length is twice the triangle's area, so normalising it after summing over the triangles around a vertex gives an area-weighted vertex normal for free.")}
+          "Two edges of a triangle, B − A and C − A, both lie in its plane, so their cross product is perpendicular to the triangle: its normal. The order of the corners decides which side it points to: if the corners run anticlockwise as seen from one side, (B − A) × (C − A) points towards that side. Its length is the area of the parallelogram on the two edges, which is twice the triangle's area. And once the normal n is known, the plane's equation follows: every point x of the plane satisfies n · x = n · A.")}
       </p>
-      <CodeBlock lang="cpp" filename="normals.cpp" t={t}>{`glm::vec3 faceNormal(glm::vec3 a, glm::vec3 b, glm::vec3 c) {
-    return glm::normalize(glm::cross(b - a, c - a));   // counter-clockwise = front
-}
-float triangleArea(glm::vec3 a, glm::vec3 b, glm::vec3 c) {
-    return 0.5f * glm::length(glm::cross(b - a, c - a));
-}`}</CodeBlock>
-      <H3>{tx(t, "mCross_basisTitle", "Building a basis: the camera")}</H3>
+      <p>
+        {tx(t, "mCross_normalEx",
+          "By hand, for A = (1, 0, 0), B = (0, 2, 0), C = (0, 0, 3). The edges are B − A = (−1, 2, 0) and C − A = (−1, 0, 3). Their cross product, component by component: x = 2 · 3 − 0 · 0 = 6, y = 0 · (−1) − (−1) · 3 = 3, z = (−1) · 0 − 2 · (−1) = 2, so n = (6, 3, 2). Its length is √(36 + 9 + 4) = 7, so the triangle's area is 7/2 = 3.5. The plane: n · A = 6, so 6x + 3y + 2z = 6. Check B: 0 + 6 + 0 = 6 ✓; C: 0 + 0 + 6 = 6 ✓.")}
+      </p>
+      <H3>{tx(t, "mCross_basisTitle", "Completing a set of perpendicular axes")}</H3>
       <p>
         {tx(t, "mCross_basisBody",
-          "A camera needs three perpendicular unit vectors: forward, right and up. You only know forward (toward the target) and roughly which way is up in the world. Crossing forward with world-up gives right, perpendicular to both; crossing right with forward gives the camera's true up. This is exactly what glm::lookAt does (see the OpenGL camera chapter). It fails when forward is parallel to world-up (looking straight up or down): the cross product is zero and there is no \"right\". Cameras avoid it by clamping the pitch below 90°.")}
+          "Often one direction is given and two more are needed to make three perpendicular axes: a surveyor looking along a sloping road wants the directions \"to the right of the road\" and \"up from the road\". Only the road's direction f is known, plus the rough vertical. Crossing f with the vertical gives a direction perpendicular to both, the right; crossing the right with f gives the true up, perpendicular to the road. It fails when f itself is vertical: the cross product is then zero and \"right\" has no meaning.")}
       </p>
       <Equation label={tx(t, "mCross_eqBasis", "An orthonormal basis from two directions")}
         where={[
-          [r`\hat{\mathbf f}`, tx(t, "mCross_wF", "forward, the normalised direction to the target")],
-          [r`\mathbf u_{\text{world}}`, tx(t, "mCross_wUw", "the world's up, usually (0, 1, 0)")],
-          [r`\hat{\mathbf r}`, tx(t, "mCross_wR", "right: perpendicular to forward and to world-up; normalise it, since f and u_world are not perpendicular in general")],
-          [r`\hat{\mathbf u}`, tx(t, "mCross_wU", "the camera's up: already unit length, because r̂ and f̂ are perpendicular unit vectors")],
+          [r`\hat{\mathbf f}`, tx(t, "mCross_wF", "the given direction, normalised")],
+          [r`\mathbf u_{\text{world}}`, tx(t, "mCross_wUw", "a rough up direction, usually the vertical (0, 1, 0)")],
+          [r`\hat{\mathbf r}`, tx(t, "mCross_wR", "right: perpendicular to f and to the vertical; normalise it, since f and the vertical are not perpendicular in general")],
+          [r`\hat{\mathbf u}`, tx(t, "mCross_wU", "the corrected up: already unit length, because r̂ and f̂ are perpendicular unit vectors")],
         ]}>
         {r`\hat{\mathbf r} = \frac{\hat{\mathbf f}\times\mathbf u_{\text{world}}}{\lVert\hat{\mathbf f}\times\mathbf u_{\text{world}}\rVert} \qquad \hat{\mathbf u} = \hat{\mathbf r}\times\hat{\mathbf f}`}
       </Equation>
@@ -365,22 +344,12 @@ float triangleArea(glm::vec3 a, glm::vec3 b, glm::vec3 c) {
 
       <p>
         {tx(t, "mCross_2dUses",
-          "The orientation test \"is P left or right of the line A → B?\" is the sign of (B − A) × (P − A). With it: a triangle's winding is the sign of (B − A) × (C − A); a point is inside a triangle when it is on the same side of all three edges (the edge functions a GPU rasteriser evaluates for every pixel); two segments cross when each one's endpoints are on opposite sides of the other; a convex polygon's corners all turn the same way. The steering question \"should I turn left or right to face the target?\" is the sign of forward × toTarget.")}
+          "The orientation test \"is P left or right of the line A → B?\" is the sign of (B − A) × (P − A). With it: a triangle's winding is the sign of (B − A) × (C − A); a point is inside a triangle when it is on the same side of all three edges; two segments cross when each one's endpoints are on opposite sides of the other; a convex polygon's corners all turn the same way. A helmsman's question \"do I turn left or right to head for the buoy?\" is the sign of heading × toBuoy.")}
       </p>
-      <CodeBlock lang="cpp" filename="orient.hpp" t={t}>{`float cross2(Vec2 a, Vec2 b) { return a.x * b.y - a.y * b.x; }
-
-// > 0: P left of A→B, < 0: right, 0: on the line
-float orient(Vec2 A, Vec2 B, Vec2 P) { return cross2(B - A, P - A); }
-
-bool pointInTriangle(Vec2 P, Vec2 A, Vec2 B, Vec2 C) {
-    float d1 = orient(A, B, P), d2 = orient(B, C, P), d3 = orient(C, A, P);
-    bool hasNeg = d1 < 0 || d2 < 0 || d3 < 0, hasPos = d1 > 0 || d2 > 0 || d3 > 0;
-    return !(hasNeg && hasPos);                       // all the same sign (or on an edge)
-}
-
-bool segmentsCross(Vec2 a, Vec2 b, Vec2 c, Vec2 d) {  // proper crossings only
-    return orient(a, b, c) * orient(a, b, d) < 0 && orient(c, d, a) * orient(c, d, b) < 0;
-}`}</CodeBlock>
+      <p>
+        {tx(t, "mCross_2dEx",
+          "By hand: is P = (1, 3) inside the triangle A = (0, 0), B = (4, 1), C = (1, 4)? Edge A → B: (4, 1) × (1, 3) = 4 · 3 − 1 · 1 = 11 > 0, left. Edge B → C: (C − B) × (P − B) = (−3, 3) × (−3, 2) = (−3) · 2 − 3 · (−3) = −6 + 9 = 3 > 0, left. Edge C → A: (A − C) × (P − C) = (−1, −4) × (0, −1) = (−1)(−1) − (−4) · 0 = 1 > 0, left. All three positive, so P is inside, and the triangle runs anticlockwise.")}
+      </p>
 
       <H2>{tx(t, "mCross_tripleTitle", "The scalar triple product")}</H2>
       <p>
@@ -388,14 +357,14 @@ bool segmentsCross(Vec2 a, Vec2 b, Vec2 c, Vec2 d) {  // proper crossings only
           "Combining both products, a · (b × c) is the signed volume of the slanted box (parallelepiped) spanned by the three vectors: b × c is the area of its base times the base's normal, and dotting with a multiplies by the height. It is zero when the three vectors lie in one plane, and its sign tells whether they form a right-handed or left-handed set. It is also the determinant of the 3 × 3 matrix with a, b, c as rows: the first hint of what determinants measure, the subject of the matrices chapters.")}
       </p>
       <Callout type="warn" t={t}>
-        {tx(t, "mCross_handWarn", "Handedness conventions differ. OpenGL, Blender and most maths texts are right-handed; DirectX, Unity and Unreal are left-handed (Unreal and Blender also use z as up). The cross product formula is the same everywhere, but the picture changes: in a left-handed system a × b follows the left-hand rule. When porting normals, winding orders or camera code between engines, expect exactly one sign to flip.")}
+        {tx(t, "mCross_handWarn", "Mathematics and physics use right-handed axes. A mirror image of those axes, with z pointing the other way, is left-handed. The cross product formula stays the same in both, but the picture changes: in left-handed axes a × b follows the left-hand rule. When comparing drawings or data from different sources, check which way z points before trusting the direction of a cross product.")}
       </Callout>
 
       <KeyIdeas t={t} id="mCross" items={[
         "a × b is perpendicular to a and b, with length |a||b| sin θ (parallelogram area).",
         "Right-hand rule; order matters: b × a = −(a × b); parallel vectors give zero.",
-        "Triangle normal: (B − A) × (C − A); winding decides which side it points to.",
-        "Camera basis: right = f × up, up = right × f; degenerate when looking straight up.",
+        "Plane through A, B, C: n = (B − A) × (C − A), then n · x = n · A.",
+        "Perpendicular axes: right = f × up, up = right × f; this fails when f is vertical.",
         "2D: aₓb_y − a_ybₓ; its sign answers left/right and clockwise/counter-clockwise.",
       ]} />
     </Article>

@@ -4,9 +4,10 @@
 // angles and gimbal lock, matrices, axis–angle), Hamilton's i, j, k, the
 // product in scalar–vector form (dot and cross), conjugate and inverse, the
 // rotation q v q* and why the angle is halved, composing, the double cover,
-// nlerp and slerp, conversion to a matrix, a comparison table, and C++.
+// nlerp and slerp, conversion to a matrix, a comparison table, and a
+// rotation worked by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -20,14 +21,14 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mQuat_intro",
-          "In 2D an orientation is one angle, and the complex numbers chapter showed that a unit complex number stores it perfectly: multiply to rotate, multiply to combine. 3D is harder. Every engine needs to store which way a camera, a bone or a spaceship is facing, combine rotations, and blend smoothly between two orientations. Three angles break down, matrices are bulky and drift. Quaternions, four numbers invented by William Rowan Hamilton in 1843, do the job best, and are what Unity, Unreal and every animation system use. This chapter builds them from the complex numbers and the dot and cross products.")}
+          "In 2D an orientation is one angle, and the complex numbers chapter showed that a unit complex number stores it perfectly: multiply to rotate, multiply to combine. 3D is harder. Describing which way an aircraft, a satellite or a spinning top is facing, combining two turns into one, and finding the orientation halfway between two others are all surprisingly awkward. Three angles break down, matrices are bulky and drift. Quaternions, four numbers invented by William Rowan Hamilton in 1843, do the job best, and spacecraft attitude control and robotics rely on them. This chapter builds them from the complex numbers and the dot and cross products.")}
       </Lead>
 
       <H2>{tx(t, "mQuat_optionsTitle", "Three ways that almost work")}</H2>
       <H3>{tx(t, "mQuat_eulerTitle", "Euler angles and gimbal lock")}</H3>
       <p>
         {tx(t, "mQuat_eulerBody",
-          "The obvious way to describe an orientation is three angles: yaw (turn left or right about the vertical axis), pitch (tilt the nose up or down) and roll (tip about the nose), applied in that order. These are Euler angles, and they are great for a human typing values into an editor or for a first-person camera that only yaws and pitches. But each turn happens about an axis that the previous turns have already moved. Pitch the nose straight up (90°) and the roll axis, the nose, now points along the yaw axis. Yaw and roll then do the same thing, and one of the three ways of turning is gone. This is gimbal lock, named after the nested rings (gimbals) of a gyroscope, which physically jam in the same way. Near that pose, small changes in orientation need huge jumps in the angles, and blending two sets of angles takes odd, curving routes.")}
+          "The obvious way to describe an orientation is three angles: yaw (turn left or right about the vertical axis), pitch (tilt the nose up or down) and roll (tip about the nose), applied in that order. These are Euler angles, and they are easy to picture: pilots describe an aircraft's attitude with exactly these three angles. But each turn happens about an axis that the previous turns have already moved. Pitch the nose straight up (90°) and the roll axis, the nose, now points along the yaw axis. Yaw and roll then do the same thing, and one of the three ways of turning is gone. This is gimbal lock, named after the nested rings (gimbals) of a gyroscope, which physically jam in the same way. Near that pose, small changes in orientation need huge jumps in the angles, and blending two sets of angles takes odd, curving routes.")}
       </p>
       <H3>{tx(t, "mQuat_matTitle", "Rotation matrices")}</H3>
       <p>
@@ -98,7 +99,7 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mQuat_fastBody",
-          "Expanding the sandwich once and for all gives a faster formula that needs no quaternion products at all, just two cross products. With q = (w, u): v' = v + 2w (u × v) + 2 u × (u × v). This is what game engines actually run per vertex or per bone.")}
+          "Expanding the sandwich once and for all gives a faster formula that needs no quaternion products at all, just two cross products. With q = (w, u): v' = v + 2w (u × v) + 2 u × (u × v). It is also the quickest way to rotate a vector by hand, as the last section shows.")}
       </p>
 
       <H2>{tx(t, "mQuat_combTitle", "Combining and undoing rotations")}</H2>
@@ -113,7 +114,7 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mQuat_blendTitle", "Blending orientations: nlerp and slerp")}</H2>
       <p>
         {tx(t, "mQuat_blendBody",
-          "Animation constantly needs the orientation \"t of the way\" from A to B: between two key frames, when a turret tracks a target, when a camera eases around. Unit quaternions live on the surface of a four-dimensional sphere, and the best path between two of them is the great-circle arc, the 4D version of the shortest route between two cities on a globe. Moving along it at constant speed is slerp (spherical linear interpolation). Its formula weights the two ends by sines, just as a point on an ordinary circle arc is made of the two ends weighted by sines of the angle to each.")}
+          "Often the orientation \"t of the way\" from A to B is needed: a telescope or a satellite turning smoothly from one star to another, a robot's wrist moving between two poses. Unit quaternions live on the surface of a four-dimensional sphere, and the best path between two of them is the great-circle arc, the 4D version of the shortest route between two cities on a globe. Moving along it at constant speed is slerp (spherical linear interpolation). Its formula weights the two ends by sines, just as a point on an ordinary circle arc is made of the two ends weighted by sines of the angle to each.")}
       </p>
       <Equation label={tx(t, "mQuat_eqSlerp", "Spherical linear interpolation")}
         where={[
@@ -126,13 +127,13 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mQuat_nlerpBody",
-          "A cheaper alternative, nlerp, blends the four components as a straight line, (1 − t)q_a + t q_b, and divides by the length. It follows the same arc and ends at the same place, but its speed is slightly uneven (fastest in the middle). For small steps, such as blending animation poses frame by frame, the difference is invisible and nlerp is widely used; for long, even turns use slerp. The figure's third mode compares slerp with blending Euler angles.")}
+          "A cheaper alternative, nlerp, blends the four components as a straight line, (1 − t)q_a + t q_b, and divides by the length. It follows the same arc and ends at the same place, but its speed is slightly uneven (fastest in the middle). For small steps the difference is negligible and nlerp is often used; for long, even turns use slerp. The figure's third mode compares slerp with blending Euler angles.")}
       </p>
 
       <H2>{tx(t, "mQuat_matConvTitle", "From quaternion to matrix")}</H2>
       <p>
         {tx(t, "mQuat_matConvBody",
-          "The GPU still wants a 4 × 4 matrix, so engines keep orientations as quaternions and convert once per object per frame. The columns of the matrix are the rotated axes, q î q*, q ĵ q* and q k̂ q*; working them out with the fast formula gives the following.")}
+          "To rotate many vectors, one matrix product each is quicker than a sandwich each, so a quaternion is often converted into a matrix first. The columns of the matrix are the rotated axes, q î q*, q ĵ q* and q k̂ q*; working them out with the fast formula gives the following.")}
       </p>
       <Equation label={tx(t, "mQuat_eqMat", "Rotation matrix of the unit quaternion (w, x, y, z)")}
         where={[
@@ -147,8 +148,8 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
       <LessonTable
         headers={[tx(t, "mQuat_tRep", "Representation"), tx(t, "mQuat_tNum", "Numbers"), tx(t, "mQuat_tGood", "Good for"), tx(t, "mQuat_tBad", "Weak at")]}
         rows={[
-          [tx(t, "mQuat_cEuler", "Euler angles"), "3", tx(t, "mQuat_cEulerG", "editors, FPS cameras (yaw + pitch only)"), tx(t, "mQuat_cEulerB", "gimbal lock, blending, combining")],
-          [tx(t, "mQuat_cMat", "3 × 3 matrix"), "9", tx(t, "mQuat_cMatG", "transforming many vectors, the GPU"), tx(t, "mQuat_cMatB", "drift, blending, memory")],
+          [tx(t, "mQuat_cEuler", "Euler angles"), "3", tx(t, "mQuat_cEulerG", "describing an attitude to a person (yaw, pitch, roll)"), tx(t, "mQuat_cEulerB", "gimbal lock, blending, combining")],
+          [tx(t, "mQuat_cMat", "3 × 3 matrix"), "9", tx(t, "mQuat_cMatG", "transforming many vectors"), tx(t, "mQuat_cMatB", "drift, blending, memory")],
           [tx(t, "mQuat_cAA", "axis–angle"), "4", tx(t, "mQuat_cAAG", "describing a turn, angular velocity"), tx(t, "mQuat_cAAB", "combining")],
           [tx(t, "mQuat_cQuat", "unit quaternion"), "4", tx(t, "mQuat_cQuatG", "storing, combining, blending orientations"), tx(t, "mQuat_cQuatB", "not human-readable")],
         ]}
@@ -168,63 +169,25 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
           "3. Halfway between no rotation (1, 0, 0, 0) and 90° about y (0.707, 0, 0.707, 0): cos Ω = 0.707, Ω = 45°, weights sin 22.5°/sin 45° = 0.541 each, giving (0.924, 0, 0.383, 0) = (cos 22.5°, sin 22.5° · ŷ): exactly 45° about y. ✓")}
       </p>
 
-      <H2>{tx(t, "mQuat_codeTitle", "Quaternions in C++")}</H2>
+      <H2>{tx(t, "mQuat_handTitle", "A rotation by hand")}</H2>
       <p>
-        {tx(t, "mQuat_codeBody",
-          "Everything in this chapter fits in one small struct: the product in scalar–vector form, construction from axis and angle, the fast rotation formula, slerp with the shortest-path and small-angle checks, and normalisation.")}
+        {tx(t, "mQuat_handBody",
+          "Rotate v = (1, 0, 0) by 90° about the z-axis with the fast formula v' = v + 2w (u × v) + 2 u × (u × v). The half angle is 45°, so q = (w, u) with w = cos 45° = √2/2 and u = sin 45° · (0, 0, 1) = (0, 0, √2/2). Write s = √2/2; then 2s² = 1 and 2ws = 2s² = 1, which keeps the numbers exact.")}
       </p>
-      <CodeBlock lang="cpp" filename="quat.hpp" t={t}>{`#include <cmath>
-
-struct Vec3 { float x, y, z; };
-Vec3  operator+(Vec3 a, Vec3 b) { return { a.x + b.x, a.y + b.y, a.z + b.z }; }
-Vec3  operator*(float k, Vec3 v) { return { k * v.x, k * v.y, k * v.z }; }
-float dot(Vec3 a, Vec3 b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-Vec3  cross(Vec3 a, Vec3 b) { return { a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x }; }
-
-struct Quat {
-    float w = 1; Vec3 v = { 0, 0, 0 };         // identity: no rotation
-
-    static Quat axisAngle(Vec3 n, float theta) {  // n must be unit length
-        float h = theta * 0.5f;
-        return { std::cos(h), std::sin(h) * n };
-    }
-    // (w1, v1)(w2, v2) = (w1 w2 - v1.v2, w1 v2 + w2 v1 + v1 x v2)
-    Quat operator*(const Quat& q) const {
-        return { w * q.w - dot(v, q.v), w * q.v + q.w * v + cross(v, q.v) };
-    }
-    Quat conj() const { return { w, -1.0f * v }; }   // inverse, for unit quaternions
-
-    // v' = q v q*, expanded: v + 2w(u x v) + 2u x (u x v)
-    Vec3 rotate(Vec3 p) const {
-        Vec3 t = 2.0f * cross(v, p);
-        return p + w * t + cross(v, t);
-    }
-    void normalize() {
-        float l = std::sqrt(w * w + dot(v, v));
-        w /= l; v = (1.0f / l) * v;
-    }
-};
-
-float dot(const Quat& a, const Quat& b) { return a.w * b.w + dot(a.v, b.v); }
-
-Quat slerp(Quat a, Quat b, float t) {
-    float d = dot(a, b);
-    if (d < 0) { b = { -b.w, -1.0f * b.v }; d = -d; }   // same rotation, shorter way
-    float ka, kb;
-    if (d > 0.9995f) { ka = 1 - t; kb = t; }            // nearly equal: nlerp
-    else {
-        float om = std::acos(d), s = std::sin(om);
-        ka = std::sin((1 - t) * om) / s;
-        kb = std::sin(t * om) / s;
-    }
-    Quat q = { ka * a.w + kb * b.w, ka * a.v + kb * b.v };
-    q.normalize();
-    return q;
-}
-
-// Usage: turn a bone 30 degrees about its local x axis every second
-// bone.rot = Quat::axisAngle({1, 0, 0}, 0.5236f * dt) * bone.rot;
-// bone.rot.normalize();`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mQuat_tStep", "Step"), tx(t, "mQuat_tWork", "Working")]}
+        rows={[
+          ["u × v", "(0, 0, s) × (1, 0, 0) = (0 · 0 − s · 0, s · 1 − 0 · 0, 0 · 0 − 0 · 1) = (0, s, 0)"],
+          ["2w (u × v)", "2ws · (0, 1, 0) = (0, 1, 0)"],
+          ["u × (u × v)", "(0, 0, s) × (0, s, 0) = (0 · 0 − s · s, s · 0 − 0 · 0, 0 · s − 0 · 0) = (−s², 0, 0)"],
+          ["2 u × (u × v)", "(−2s², 0, 0) = (−1, 0, 0)"],
+          ["v'", "(1, 0, 0) + (0, 1, 0) + (−1, 0, 0) = (0, 1, 0)"],
+        ]}
+      />
+      <p>
+        {tx(t, "mQuat_handCheck",
+          "The x-axis has turned onto the y-axis, exactly what a quarter turn anticlockwise about z should do, and it agrees with the first column of the matrix in the previous section. The length is still 1, as it must be for a rotation.")}
+      </p>
 
       <H2>{tx(t, "mQuat_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -235,7 +198,7 @@ Quat slerp(Quat a, Quat b, float t) {
           ["q₁q₂ = q₂q₁", tx(t, "mQuat_m3r", "order matters"), tx(t, "mQuat_m3", "q₂q₁ means q₁ first, like matrices")],
           [tx(t, "mQuat_m4w", "slerp without checking the sign"), tx(t, "mQuat_m4r", "negate b if a · b < 0"), tx(t, "mQuat_m4", "otherwise the blend can spin the long way round")],
           [tx(t, "mQuat_m5w", "never renormalising"), tx(t, "mQuat_m5r", "divide by |q| now and then"), tx(t, "mQuat_m5", "rounding slowly turns rotations into rotate-and-scale")],
-          [tx(t, "mQuat_m6w", "mixing (w, x, y, z) and (x, y, z, w) order"), tx(t, "mQuat_m6r", "check the library's convention"), tx(t, "mQuat_m6", "GLM's constructor takes w first; Unity and many engines put it last")],
+          [tx(t, "mQuat_m6w", "mixing (w, x, y, z) and (x, y, z, w) order"), tx(t, "mQuat_m6r", "check each source's convention"), tx(t, "mQuat_m6", "books and tables differ: some write the scalar part w first, others last")],
         ]}
       />
 

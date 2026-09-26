@@ -3,9 +3,9 @@
 // Trigonometry 6: waves and oscillation — circular motion seen from the side,
 // the sinusoid and its four parameters, period, frequency and phase, adding
 // waves (same frequency, beats, harmonics and Fourier), damped oscillation,
-// Lissajous figures, and oscillators in C++.
+// Lissajous figures, and reading and building waves by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -20,7 +20,7 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mWv_intro",
-          "Things that go back and forth are everywhere in games: a coin bobbing, a torch flickering, a flag waving, the sun rising and setting, water, sound, screen shake. Almost all of them are built from one shape, the sine wave, stretched, shifted and added together. This chapter shows where the wave comes from, what each of its numbers controls, and how combining waves gives square waves, beats, figure eights and motion that dies down.")}
+          "Things that go back and forth are everywhere: a swing, a pendulum clock, a guitar string, the tides, the length of the day over a year, sound, the alternating current in a wall socket. Almost all of them are built from one shape, the sine wave, stretched, shifted and added together. This chapter shows where the wave comes from, what each of its numbers controls, and how combining waves gives square waves, beats, figure eights and motion that dies down.")}
       </Lead>
 
       <H2>{tx(t, "mWv_circTitle", "A circle seen from the side")}</H2>
@@ -39,7 +39,7 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
           [r`A`, tx(t, "mTrig_wA", "the amplitude: the wave goes from C − A to C + A")],
           [r`f`, tx(t, "mTrig_wF", "the frequency in cycles per second (Hz). The period, the duration of one cycle, is T = 1/f")],
           [r`2\pi f`, tx(t, "mTrig_wOmega", "the angular frequency ω, in radians per second: it converts seconds into an angle so that one period is one full turn")],
-          [r`\varphi`, tx(t, "mTrig_wPhi", "the phase: a head start along the cycle, in radians. Giving each object a different φ keeps a row of bobbing coins from moving in lockstep")],
+          [r`\varphi`, tx(t, "mTrig_wPhi", "the phase: a head start along the cycle, in radians. Two pendulums with the same A and f but different φ swing with the same rhythm, one ahead of the other")],
           [r`C`, tx(t, "mTrig_wC", "the offset: the centre line")],
         ]}>
         {r`y(t) = A\,\sin(2\pi f\,t + \varphi) + C`}
@@ -63,10 +63,10 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mTrig_waveUses",
-          "Uses are everywhere: a hovering pickup bobs with A = 0.1 m and f = 0.5 Hz, a warning light pulses its brightness, a day–night cycle drives the sun's height with a period of 20 minutes, water surfaces sum several sines of different directions and frequencies (Gerstner waves in the GLSL track), and an idle character breathes by scaling its chest. Adding sines with unrelated frequencies gives motion that never visibly repeats, a cheap alternative to noise.")}
+          "Sinusoids describe a surprising amount of the world. The tide rises and falls with a period of about 12.4 hours. The voltage in a wall socket swings with f = 50 or 60 Hz, depending on the country. The note A above middle C is air pressure oscillating at 440 Hz. The length of the day follows a sinusoid with a period of one year. In each case the four numbers carry a physical meaning: A how strong, f how often, φ when it starts, C the average level.")}
       </p>
       <Callout type="tip" t={t}>
-        {tx(t, "mTrig_timeTip", "sin(time · ω) with a float time that keeps growing loses precision after hours: at time = 100 000 s, float time has a resolution of about 8 ms, and fast waves stutter. Wrap the phase instead: phase = fmod(phase + ω·dt, 2π).")}
+        {tx(t, "mTrig_timeTip", "Reading a wave off its graph: the offset C is halfway between the highest and the lowest value, the amplitude A is half the distance between them, and the period T is the time from one peak to the next.")}
       </Callout>
 
       <H2>{tx(t, "mWv_addTitle", "Adding waves")}</H2>
@@ -101,7 +101,7 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mWv_dampTitle", "Damped oscillation")}</H2>
       <p>
         {tx(t, "mWv_dampBody",
-          "Real oscillations lose energy and die down. Multiplying a sine by a decaying exponential, from the exponents chapter, gives exactly that: the sine keeps its rhythm while its amplitude shrinks by the same fraction every second. The decay rate λ (lambda) controls how quickly; the amplitude halves every ln 2 / λ seconds. This is the classic screen shake: offset the camera by a damped sine each frame after an explosion, with a new random phase per axis so it does not shake along a line.")}
+          "Real oscillations lose energy and die down. Multiplying a sine by a decaying exponential, from the exponents chapter, gives exactly that: the sine keeps its rhythm while its amplitude shrinks by the same fraction every second. The decay rate λ (lambda) controls how quickly; the amplitude halves every ln 2 / λ seconds. A swing left alone, a car's suspension after a bump and a plucked guitar string all move like this.")}
       </p>
       <Equation label={tx(t, "mWv_eqDamp", "Damped sine")}
         where={[
@@ -109,76 +109,64 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
           [r`e^{-\lambda t}`, tx(t, "mWv_wEnv", "the envelope: 1 at t = 0, shrinking towards 0")],
           [r`\lambda`, tx(t, "mWv_wLam", "the decay rate per second; 0 means no damping")],
         ]}
-        note={tx(t, "mWv_dampNote", "Example: a shake with A = 0.5 m and λ = 4/s is down to 0.5 · e^(−2) ≈ 0.07 m after half a second, and its amplitude halves every ln 2 / 4 ≈ 0.17 s.")}>
+        note={tx(t, "mWv_dampNote", "Example: a car body bouncing with A = 5 cm and λ = 4 per second is down to 5 · e^(−2) ≈ 0.68 cm after half a second (λt = 4 · 0.5 = 2), and its amplitude halves every ln 2 / 4 ≈ 0.17 s.")}>
         {r`y(t) = A\,e^{-\lambda t}\,\sin(2\pi f t + \varphi)`}
       </Equation>
 
       <H2>{tx(t, "mWv_lissTitle", "Two directions at once: Lissajous figures")}</H2>
       <p>
         {tx(t, "mWv_lissBody",
-          "Give the x and the y of a point their own oscillations: x = sin(at), y = sin(bt + φ). With a = b the point goes round an ellipse, which becomes the unit circle when φ = π/2, because then y = cos(at) and the point is (sin, cos) again. Other whole-number ratios trace closed knots: 1 : 2 a figure eight, 3 : 2 a pretzel. The Lissajous mode of the figure draws them. They make cheap organic paths: a hovering drone, an idle camera sway or a firefly that never quite retraces itself if the ratio is not a whole number.")}
+          "Give the x and the y of a point their own oscillations: x = sin(at), y = sin(bt + φ). With a = b the point goes round an ellipse, which becomes the unit circle when φ = π/2, because then y = cos(at) and the point is (sin, cos) again. Other whole-number ratios trace closed knots: 1 : 2 a figure eight, 3 : 2 a pretzel. The Lissajous mode of the figure draws them. They appear on an oscilloscope when two electrical signals are compared, and a pendulum free to swing in two directions draws them in sand. When the ratio is not a fraction of whole numbers the curve never closes and slowly fills a rectangle.")}
       </p>
 
       <H2>{tx(t, "mWv_exTitle", "Worked examples")}</H2>
       <p>
         {tx(t, "mWv_ex1",
-          "1. A coin should bob 0.2 m above and below a height of 1 m, once every 2 s. So A = 0.2, C = 1, T = 2 s, f = 0.5 Hz, ω = π: y(t) = 0.2 sin(πt) + 1. A row of coins with phase φ = 0.5 · i for coin i makes a travelling ripple.")}
+          "1. A buoy bobs 0.2 m above and below its rest height of 1 m, once every 2 s. So A = 0.2, C = 1, T = 2 s, f = 0.5 Hz, ω = 2π/2 = π: y(t) = 0.2 sin(πt) + 1. At t = 0.5 s, a quarter period, y = 0.2 · sin(π/2) + 1 = 1.2 m, the top.")}
       </p>
       <p>
         {tx(t, "mWv_ex2",
-          "2. A day in the game lasts 20 minutes (1200 s) and the sun's height should be sin of the time of day, highest at noon. ω = 2π / 1200 ≈ 0.00524 rad/s; start at sunrise with φ = 0, so noon comes at t = 300 s, a quarter period, where the sine is 1.")}
+          "2. In a certain city the day lasts between 10 h and 14 h over the year, longest on day 172 (21 June). So C = 12 h, A = 2 h, T = 365 days. A plain sine peaks a quarter period after it starts, at 365/4 = 91.25 days, so the wave must be delayed by d = 172 − 91.25 = 80.75 days: L(t) = 2 sin(2π(t − 80.75)/365) + 12. Check day 172: 2π · 91.25/365 = π/2, sin = 1, L = 14 h ✓.")}
       </p>
       <p>
         {tx(t, "mWv_ex3",
-          "3. Two engines hum at 100 Hz and 103 Hz. Together they swell and fade 3 times per second, the beat frequency |103 − 100|.")}
+          "3. Two tuning forks ring at 440 Hz and 443 Hz. Together they swell and fade 3 times per second, the beat frequency |443 − 440|. Piano tuners listen for these beats and adjust the string until they slow down and stop.")}
       </p>
 
-      <H2>{tx(t, "mWv_codeTitle", "Oscillators in C++")}</H2>
+      <H2>{tx(t, "mWv_handTitle", "Waves by hand")}</H2>
+      <H3>{tx(t, "mWv_sketchTitle", "Sketching from quarter periods")}</H3>
       <p>
-        {tx(t, "mWv_codeBody",
-          "The Oscillator keeps its own phase and wraps it, so it stays precise however long the game runs, and changing its frequency does not make it jump. The Shake is a damped sine per axis with random phases, triggered by an impact.")}
+        {tx(t, "mWv_sketchBody",
+          "A sine passes through five landmarks in each cycle, one every quarter period: the centre line going up, the top, the centre line going down, the bottom, the centre line again. To sketch y = A sin(ω(t − d)) + C, start at t = d, step by T/4, and plot C, C + A, C, C − A, C; then join them with a smooth wave. For y = 3 sin(πt) + 4: T = 2π/π = 2, so the steps are 0.5 apart.")}
       </p>
-      <CodeBlock lang="cpp" filename="oscillators.hpp" t={t}>{`#include <cmath>
-#include <numbers>
-
-constexpr float TAU = 2.0f * std::numbers::pi_v<float>;
-
-struct Oscillator {
-    float amplitude = 1, frequency = 1, offset = 0;    // A, f (Hz), C
-    float phase = 0;                                   // radians, kept in [0, 2π)
-    float update(float dt) {
-        phase = std::fmod(phase + TAU * frequency * dt, TAU);   // wrap: no precision loss
-        return amplitude * std::sin(phase) + offset;
-    }
-};
-
-// Damped screen shake: A e^(-λt) sin(2πft + φ) on each axis
-struct Shake {
-    float amplitude = 0, decay = 4, frequency = 18, t = 0, phaseX = 0, phaseY = 1.7f;
-    void trigger(float strength, float randomPhase) { amplitude = strength; t = 0; phaseX = randomPhase; }
-    void offset(float dt, float& dx, float& dy) {
-        t += dt;
-        float env = amplitude * std::exp(-decay * t);    // the shrinking envelope
-        dx = env * std::sin(TAU * frequency * t + phaseX);
-        dy = env * std::sin(TAU * frequency * 1.3f * t + phaseY);  // different rate per axis
-    }
-};
-
-// A point on a Lissajous path: x = sin(a t), y = sin(b t + φ), scaled by size
-void lissajous(float t, float a, float b, float phi, float size, float& x, float& y) {
-    x = size * std::sin(a * t);
-    y = size * std::sin(b * t + phi);
-}`}</CodeBlock>
+      <LessonTable
+        headers={["t", "0", "0.5", "1", "1.5", "2"]}
+        rows={[
+          ["πt", "0", "π/2", "π", "3π/2", "2π"],
+          ["sin(πt)", "0", "1", "0", "−1", "0"],
+          ["y = 3 sin(πt) + 4", "4", "7", "4", "1", "4"],
+        ]}
+      />
+      <H3>{tx(t, "mWv_fitTitle", "Finding the equation from measurements")}</H3>
+      <p>
+        {tx(t, "mWv_fitBody",
+          "Reverse the sketch. Measurements of a wave show a highest value of 7, a lowest of 1, and peaks at t = 0.5 s and t = 2.5 s. Then C = (7 + 1)/2 = 4 and A = (7 − 1)/2 = 3. The peaks are 2 s apart, so T = 2 s and ω = 2π/T = π. A plain sine peaks a quarter period (0.5 s) after it starts; here the peak is at 0.5 s, so the wave starts at t = 0 and d = 0. Result: y = 3 sin(πt) + 4, the wave of the table above.")}
+      </p>
+      <H3>{tx(t, "mWv_combTitle", "Combining a sine and a cosine, step by step")}</H3>
+      <p>
+        {tx(t, "mWv_combBody",
+          "Write 3 sin t + 4 cos t as one wave R sin(t + φ). (1) Expand the target with the angle-sum formula: R sin t cos φ + R cos t sin φ. (2) Match the coefficients: R cos φ = 3 and R sin φ = 4. (3) Square and add: R² (cos² φ + sin² φ) = 9 + 16, so R² = 25 and R = 5. (4) Divide: tan φ = 4/3, and since both cos φ and sin φ are positive, φ is in quadrant I: φ = arctan(4/3) ≈ 53.1°. So 3 sin t + 4 cos t = 5 sin(t + 53.1°); its largest value is 5, reached when t + 53.1° = 90°, at t = 36.9°.")}
+      </p>
 
       <H2>{tx(t, "mWv_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
         headers={[tx(t, "mWv_tWrong", "Wrong"), tx(t, "mWv_tRight", "Right"), tx(t, "mWv_tWhy", "Why")]}
         rows={[
-          ["sin(f * t)", "sin(2π * f * t)", tx(t, "mWv_m1", "without 2π, f = 1 gives one cycle every 6.28 s, not every second")],
-          [tx(t, "mWv_m2w", "changing f while computing sin(2πf · time)"), tx(t, "mWv_m2r", "accumulate the phase: phase += 2πf · dt"), tx(t, "mWv_m2", "a new f with the same large time jumps to a different point of the cycle")],
-          [tx(t, "mWv_m3w", "all objects share one sin(time)"), tx(t, "mWv_m3r", "give each its own phase"), tx(t, "mWv_m3", "identical timing looks mechanical")],
+          ["sin(f t)", "sin(2π f t)", tx(t, "mWv_m1", "without 2π, f = 1 gives one cycle every 6.28 s, not every second")],
+          [tx(t, "mWv_m2w", "\"f = 2 s\""), tx(t, "mWv_m2r", "T = 2 s, so f = 0.5 Hz"), tx(t, "mWv_m2", "the period counts seconds per cycle; the frequency counts cycles per second")],
+          [tx(t, "mWv_m3w", "A = max − min"), tx(t, "mWv_m3r", "A = (max − min)/2"), tx(t, "mWv_m3", "the amplitude is measured from the centre line, not from bottom to top")],
           [tx(t, "mWv_m4w", "phase in degrees"), tx(t, "mWv_m4r", "phase in radians"), tx(t, "mWv_m4", "sin takes radians, including the phase")],
-          [tx(t, "mWv_m5w", "screen shake with a plain sine"), tx(t, "mWv_m5r", "damp it with e^(−λt)"), tx(t, "mWv_m5", "an undamped shake never stops")],
+          [tx(t, "mWv_m5w", "damping with e^(λt)"), tx(t, "mWv_m5r", "e^(−λt), with the minus sign"), tx(t, "mWv_m5", "without it the swing grows instead of dying away")],
         ]}
       />
 
@@ -187,8 +175,8 @@ void lissajous(float t, float a, float b, float phi, float size, float& x, float
         "A sin(2πft + φ) + C: amplitude, frequency, phase, offset; T = 1/f, ω = 2πf.",
         "a sin ωt + b cos ωt is one wave with amplitude √(a² + b²) and phase atan2(b, a).",
         "Close frequencies beat; harmonics added together build square and sawtooth waves.",
-        "A e^(−λt) sin(…) dies away: screen shake, springs, plucked strings.",
-        "Wrap the phase instead of feeding an ever-growing time into sin.",
+        "A e^(−λt) sin(…) dies away: swings, springs, plucked strings.",
+        "From a graph: C = (max + min)/2, A = (max − min)/2, T = peak to peak.",
       ]} />
     </Article>
   );

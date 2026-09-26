@@ -4,9 +4,9 @@
 // stretches; examples read off the basic moves; the characteristic equation
 // det(A − λI) = 0 as a quadratic; trace and determinant; real, repeated and
 // complex cases; symmetric matrices; repeated application and power
-// iteration; the rotation axis of a 3D rotation; uses; C++.
+// iteration; the rotation axis of a 3D rotation; uses; power iteration by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -121,7 +121,7 @@ export function EigenContent({ t }: { t: TrackTranslations }) {
         {r`A^n(c_1\mathbf{v}_1 + c_2\mathbf{v}_2) = c_1\lambda_1^n\,\mathbf{v}_1 + c_2\lambda_2^n\,\mathbf{v}_2`}
       </Equation>
       <Callout type="tip" t={t}>
-        {tx(t, "mEig_stabTip", "This is also why some physics simulations blow up. One step of a simple integrator is a matrix applied to (position, velocity). If a spring is stiff or the time step too big, that matrix gets an eigenvalue larger than 1 in size, and every frame multiplies the error by it. The Calculus section returns to this when it covers numerical integration.")}
+        {tx(t, "mEig_stabTip", "Populations work this way. If each year's young animals and adults depend linearly on last year's, one year is a matrix applied to (young, adults). If its largest eigenvalue is above 1 the population grows, if it is below 1 the population dies out, and the matching eigenvector gives the ratio of young to adults that the population settles into. The Calculus section meets the same question, settle or explode, for differential equations.")}
       </Callout>
 
       <H2>{tx(t, "mEig_3dTitle", "In 3D: the axis of a rotation")}</H2>
@@ -133,7 +133,7 @@ export function EigenContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mEig_usesTitle", "Where eigenvectors are used")}</H2>
       <p>
         {tx(t, "mEig_usesBody",
-          "Tight bounding boxes: the covariance matrix of a mesh's vertices (a symmetric matrix measuring how the points spread in each pair of directions) has eigenvectors along the directions of greatest and least spread; a box aligned to them fits a rotated object far better than an axis-aligned one. This is principal component analysis (PCA), also used to compress data and in machine learning. Rigid-body physics: the inertia tensor's eigenvectors are the principal axes a body spins about smoothly. Vibration: the eigenvectors of a system of springs are its modes, the shapes in which it can wobble. And Google's original PageRank was the dominant eigenvector of the web's link matrix, found by power iteration.")}
+          "Statistics: the covariance matrix of a cloud of measurements (a symmetric matrix measuring how the points spread in each pair of directions) has eigenvectors along the directions of greatest and least spread. This is principal component analysis (PCA), which finds the main trends hidden in data with many variables. Mechanics: the inertia tensor's eigenvectors are the principal axes a body spins about smoothly; a tossed book spins steadily about its longest and shortest axes, but tumbles about the middle one. Vibration: the eigenvectors of a system of springs are its modes, the shapes in which it can wobble. And Google's original PageRank was the dominant eigenvector of the web's link matrix, found by power iteration.")}
       </p>
 
       <H2>{tx(t, "mEig_moreTitle", "Worked examples")}</H2>
@@ -150,49 +150,25 @@ export function EigenContent({ t }: { t: TrackTranslations }) {
           "3. A = [[3, 0], [0, 3]] = 3I. λ² − 6λ + 9 = (λ − 3)², one repeated eigenvalue 3, and every vector is an eigenvector: a uniform scale turns nothing.")}
       </p>
 
-      <H2>{tx(t, "mEig_codeTitle", "Eigenvalues in C++")}</H2>
+      <H2>{tx(t, "mEig_handTitle", "Power iteration by hand")}</H2>
       <p>
-        {tx(t, "mEig_codeBody",
-          "eigen2 solves the characteristic quadratic and reports whether the roots are real. powerIteration finds the dominant eigenvector of any matrix by applying it repeatedly and renormalising, then reads the eigenvalue as v · Av (for a unit v with Av = λv, v · Av = λ).")}
+        {tx(t, "mEig_handBody",
+          "Take A = [[4, 1], [2, 3]] from example 1 (eigenvalues 5 and 2) and start from x = (1, 0), which is not an eigenvector. Multiply by A again and again. Two things settle down: the ratio y/x of the vector's components approaches 1, the slope of the eigenvector (1, 1); and the factor by which the first component grows each step approaches 5, the dominant eigenvalue.")}
       </p>
-      <CodeBlock lang="cpp" filename="eigen2.hpp" t={t}>{`#include <cmath>
-
-struct Vec2 { float x, y; };
-struct Mat2 { float a, b, c, d; };                  // [a b; c d]
-
-Vec2 mul(Mat2 m, Vec2 v) { return { m.a * v.x + m.b * v.y, m.c * v.x + m.d * v.y }; }
-
-// Roots of  l^2 - tr*l + det = 0. Returns false if they are complex.
-bool eigen2(Mat2 m, float& l1, float& l2) {
-    float tr = m.a + m.d, det = m.a * m.d - m.b * m.c;
-    float disc = tr * tr - 4 * det;
-    if (disc < 0) return false;                      // a rotation-like matrix
-    float s = std::sqrt(disc);
-    l1 = (tr + s) / 2;  l2 = (tr - s) / 2;
-    return true;
-}
-
-// Eigenvector for a known eigenvalue l: perpendicular to a row of (A - l I)
-Vec2 eigvec(Mat2 m, float l) {
-    Vec2 v = { m.b, l - m.a };
-    if (std::abs(v.x) + std::abs(v.y) < 1e-6f) v = { l - m.d, m.c };
-    if (std::abs(v.x) + std::abs(v.y) < 1e-6f) v = { 1, 0 };   // A = l I
-    float n = std::sqrt(v.x * v.x + v.y * v.y);
-    return { v.x / n, v.y / n };
-}
-
-// Dominant eigenvector by repeated application; lambda = v . Av
-Vec2 powerIteration(Mat2 m, float& lambda, int steps = 50) {
-    Vec2 v = { 1, 0.3f };                            // any start not on the other eigenvector
-    for (int i = 0; i < steps; ++i) {
-        Vec2 w = mul(m, v);
-        float n = std::sqrt(w.x * w.x + w.y * w.y);
-        v = { w.x / n, w.y / n };
-    }
-    Vec2 w = mul(m, v);
-    lambda = v.x * w.x + v.y * w.y;
-    return v;
-}`}</CodeBlock>
+      <LessonTable
+        headers={["n", "Aⁿx", tx(t, "mEig_tRatio", "y / x"), tx(t, "mEig_tGrowth", "growth of x")]}
+        rows={[
+          ["0", "(1, 0)", "0", "—"],
+          ["1", "(4, 2)", "0.5", "4"],
+          ["2", "(18, 14)", "0.778", "4.5"],
+          ["3", "(86, 78)", "0.907", "4.78"],
+          ["4", "(422, 406)", "0.962", "4.91"],
+        ]}
+      />
+      <p>
+        {tx(t, "mEig_handWhy",
+          "Why so fast? Write the start as a mix of the eigenvectors: (1, 0) = (2/3)(1, 1) + (1/3)(1, −2). After n steps the first part has grown by 5ⁿ and the second only by 2ⁿ, so the second part's share shrinks like (2/5)ⁿ: to 40% of its size, then 16%, then 6.4%. The closer the two eigenvalues are in size, the slower the method.")}
+      </p>
 
       <H2>{tx(t, "mEig_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable

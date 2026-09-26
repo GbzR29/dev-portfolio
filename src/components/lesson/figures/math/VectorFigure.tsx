@@ -11,7 +11,7 @@ import { Figure, Choice, Row, Readout, Slider, C, T, Vec, Handle, plot, Grid, us
 //   subtract  b − a: the arrow from a's tip to b's tip ("from a to b")
 //   scale     k·a: same line, length × |k|, flipped when k < 0
 //   normalize a / |a|: same direction, length 1 (on the unit circle)
-//   target    an enemy moving toward the player: direction = normalize(P − E)
+//   target    a walker heading for a goal: direction = normalize(G − W)
 
 type Mode = "add" | "sub" | "scale" | "norm" | "target";
 
@@ -36,7 +36,7 @@ export function VectorFigure({ t }: { t?: TrackTranslations }) {
   const add = { x: a.x + b.x, y: a.y + b.y }, sub = { x: b.x - a.x, y: b.y - a.y };
   const sc = { x: a.x * k, y: a.y * k };
   const la = len(a), nrm = la > 1e-9 ? { x: a.x / la, y: a.y / la } : { x: 0, y: 0 };
-  // target mode: a = enemy position, b = player position
+  // target mode: a = walker position, b = goal position
   const toP = { x: b.x - a.x, y: b.y - a.y }, dist = len(toP);
   const dir = dist > 1e-9 ? { x: toP.x / dist, y: toP.y / dist } : { x: 0, y: 0 };
 
@@ -66,8 +66,8 @@ export function VectorFigure({ t }: { t?: TrackTranslations }) {
         add: tx(t, "figVec_noteAdd", "Drag the tips. To add, put b's tail on a's tip: the sum goes from the start of a to the end of b. Doing it the other way round (a on b's tip, dashed) lands in the same place: the two paths form a parallelogram whose diagonal is a + b. In components it is just (aₓ + bₓ, a_y + b_y). Note |a + b| ≤ |a| + |b|: a detour is never shorter."),
         sub: tx(t, "figVec_noteSub", "b − a is the arrow that goes from the tip of a to the tip of b: \"where b is, seen from a\". If a and b are positions, b − a is the displacement between them and its length is their distance. Remember the order: \"to minus from\"."),
         scale: tx(t, "figVec_noteScale", "Multiplying by a number k (a scalar) stretches the vector along its own line: k = 2 doubles it, k = 0.5 halves it, k = −1 reverses it, k = 0 collapses it to the zero vector. Both components are multiplied by k, so the direction (the ratio between them) is kept."),
-        norm: tx(t, "figVec_noteNorm", "Dividing a vector by its own length gives a unit vector: same direction, length exactly 1, so its tip is on the unit circle. Unit vectors (written with a hat, â) represent pure directions: facing, surface normals, light directions. Drag a to the origin: the zero vector has no direction and normalising it divides by zero, the most common source of NaN in game code."),
-        target: tx(t, "figVec_noteTarget", "The red dot is an enemy E, the blue one the player P. P − E points from the enemy to the player; its length is the distance. Normalising it keeps only the direction, and multiplying by the speed gives a velocity that is the same wherever the player is. Without the normalisation, the enemy would rush when far away and crawl when close."),
+        norm: tx(t, "figVec_noteNorm", "Dividing a vector by its own length gives a unit vector: same direction, length exactly 1, so its tip is on the unit circle. Unit vectors (written with a hat, â) represent pure directions: which way something faces, which way a surface points, which way light travels. Drag a to the origin: the zero vector has no direction, and normalising it would mean dividing by zero."),
+        target: tx(t, "figVec_noteTarget", "The red dot is a walker W, the blue one a goal G. G − W points from the walker to the goal; its length is the distance. Normalising it keeps only the direction, and multiplying by the speed gives a velocity with the same speed wherever the goal is. Without the normalisation, the walker would rush when far away and crawl when close."),
       }[mode]}
     >
       <svg ref={drag.ref} {...drag.handlers} viewBox={`0 0 ${p.W} ${p.H}`} className="w-full h-auto cursor-grab">
@@ -104,8 +104,8 @@ export function VectorFigure({ t }: { t?: TrackTranslations }) {
           <Vec a={S(a)} b={S({ x: a.x + dir.x * speed, y: a.y + dir.y * speed })} color={C.green} w={3} />
           <circle cx={S(b).x} cy={S(b).y} r={9} fill={C.sky} />
           <circle cx={S(a).x} cy={S(a).y} r={9} fill={C.red} />
-          <T x={S(b).x + 12} y={S(b).y + 4} size={10} bold color={C.sky}>P</T>
-          <T x={S(a).x + 12} y={S(a).y + 4} size={10} bold color={C.red}>E</T>
+          <T x={S(b).x + 12} y={S(b).y + 4} size={10} bold color={C.sky}>G</T>
+          <T x={S(a).x + 12} y={S(a).y + 4} size={10} bold color={C.red}>W</T>
         </>}
         {mode !== "target" && handles.map(([id, v]) => <Handle key={id} x={S(v).x} y={S(v).y} color={id === "a" ? C.red : C.sky} r={4.5} />)}
         {mode !== "target" && <T x={S(a).x + 8} y={S(a).y + 14} size={10} bold color={C.red}>a</T>}

@@ -13,7 +13,7 @@ import { Figure, Choice, Row, Readout, Slider, Sliders, C, T, Handle, plot, Grid
 //           by the sine of the opposite angle is the circle's diameter 2R.
 // ssa     — two sides and an angle not between them: the circle of radius a
 //           around C can cut the ray from A twice, once or never.
-// ik      — a two-bone arm (upper arm, forearm) reaching for a draggable
+// ik      — a two-segment arm (upper arm, forearm) reaching for a draggable
 //           target; the law of cosines gives the elbow and shoulder angles.
 
 type Mode = "cosines" | "sines" | "ssa" | "ik";
@@ -188,7 +188,7 @@ export function TriangleLawFigure({ t }: { t?: TrackTranslations }) {
         {out && <Readout color={C.red}>{tx(t, "figTl_out", "out of reach: arm stretched")}</Readout>}
       </Row>
     </>;
-    note = tx(t, "figTl_noteK", "Drag the target. Upper arm, forearm and the line from shoulder to target form a triangle with three known sides, so the law of cosines gives every angle: the elbow angle directly, and the shoulder angle as the angle between the target line and the upper arm. When the target is further than l₁ + l₂ (outside the dashed circle) no triangle exists; the code clamps the distance so the arm simply stretches towards it instead of producing NaN.");
+    note = tx(t, "figTl_noteK", "Drag the target point. Upper arm, forearm and the line from shoulder to target form a triangle with three known sides, so the law of cosines gives every angle: the elbow angle directly, and the shoulder angle as the angle between the target line and the upper arm. When the target is further than l₁ + l₂ (outside the dashed circle) no triangle exists: the cosine would have to be below −1, and the arm can only stretch out straight towards it.");
   }
 
   return (
@@ -198,7 +198,7 @@ export function TriangleLawFigure({ t }: { t?: TrackTranslations }) {
         ["cosines", tx(t, "figTl_mCos", "law of cosines")],
         ["sines", tx(t, "figTl_mSin", "law of sines")],
         ["ssa", tx(t, "figTl_mSsa", "ambiguous case")],
-        ["ik", tx(t, "figTl_mIk", "two-bone IK")],
+        ["ik", tx(t, "figTl_mIk", "two-segment arm")],
       ] as const} />}
       controls={controls}
       note={note}

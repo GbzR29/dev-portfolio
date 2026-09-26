@@ -8,9 +8,9 @@ import { Figure, Choice, Row, Readout, Slider, C, T, Vec, Handle, plot, Grid, us
 // ── What this figure shows ────────────────────────────────────────────────────
 // projection — a·b = |a||b|cos θ: the signed length of b's shadow on a, times
 //              |a|. The background is split by the sign of x·a.
-// facing     — a guard sees the player if the angle between its facing and the
-//              direction to the player is within half its field of view:
-//              f̂ · normalize(P − G) ≥ cos(fov / 2). No angles are computed.
+// facing     — an observer sees a point if the angle between its facing and the
+//              direction to the point is within half its field of view:
+//              f̂ · normalize(P − O) ≥ cos(fov / 2). No angles are computed.
 // reflect    — a ray bouncing off a surface: r = d − 2(d·n̂)n̂. The dot product
 //              splits d into the part along the normal (flipped) and the part
 //              along the surface (kept).
@@ -92,8 +92,8 @@ export function DotFigure({ t }: { t?: TrackTranslations }) {
       </>}
       note={{
         proj: tx(t, "figDot_noteProj", "Drag a and b. Drop a perpendicular from b's tip onto the line of a: the green segment is b's shadow on a, and a·b is that shadow's signed length times |a|. The sign alone is already useful: positive when b points into a's half of the plane (green background), zero when they are perpendicular, negative when b points away. With unit vectors the dot product is just cos θ, a similarity score from −1 (opposite) to 1 (same direction)."),
-        facing: tx(t, "figDot_noteFacing", "Drag the guard's facing handle and the player. The guard sees the player when the angle between its facing and the direction to the player is at most half the field of view. Instead of computing that angle with acos, compare cosines: both vectors are unit length, so their dot product is the cosine of the angle, and a larger cosine means a smaller angle. cos(fov/2) is a constant you compute once. Past 180° the cone wraps behind the guard and the limit becomes negative: it still works."),
-        reflect: tx(t, "figDot_noteReflect", "Drag the light's source. The incoming direction d is split into two parts: (d·n̂)n̂ along the surface normal, and the rest along the surface. A mirror keeps the part along the surface and reverses the part along the normal. Subtracting the normal part twice (once to cancel it, once to reverse it) gives r = d − 2(d·n̂)n̂, which is exactly GLSL's reflect(). The same formula bounces balls and ricochets bullets."),
+        facing: tx(t, "figDot_noteFacing", "Drag the observer's facing handle and the point P. The observer sees P when the angle between the facing and the direction to P is at most half the field of view (a person sees about 180° side to side). Instead of working out that angle with arccos, compare cosines: both vectors are unit length, so their dot product is the cosine of the angle, and a larger cosine means a smaller angle. Past 180° the cone wraps behind the observer and the limit cos(fov/2) becomes negative: the test still works."),
+        reflect: tx(t, "figDot_noteReflect", "Drag the light's source. The incoming direction d is split into two parts: (d·n̂)n̂ along the surface normal, and the rest along the surface. A mirror keeps the part along the surface and reverses the part along the normal. Subtracting the normal part twice (once to cancel it, once to reverse it) gives r = d − 2(d·n̂)n̂, the law of reflection. The same formula bounces a ball off a wall."),
       }[mode]}
     >
       <svg ref={drag.ref} {...drag.handlers} viewBox={`0 0 ${p.W} ${p.H}`} className="w-full h-auto cursor-grab">

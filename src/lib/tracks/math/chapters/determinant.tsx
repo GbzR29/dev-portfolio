@@ -6,7 +6,7 @@
 // of the basic moves; 3 × 3 by cofactor expansion and the triple product; and
 // the everyday uses: orientation tests, winding, barycentric coordinates.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -100,7 +100,7 @@ export function DeterminantContent({ t }: { t: TrackTranslations }) {
       <H3>{tx(t, "mDet_orientTitle", "Which side of a line? The orientation test")}</H3>
       <p>
         {tx(t, "mDet_orientBody",
-          "Given a line from A to B and a point P, the determinant of the two columns B − A and P − A is positive if P is to the left of the line (walking from A to B), negative if to the right, and zero if P is on the line. It is twice the signed area of triangle ABP. This one test, called orient2d, is the core of convex hulls, polygon triangulation, segment intersection and the GPU's rasteriser, which runs it for every pixel against a triangle's three edges.")}
+          "Given a line from A to B and a point P, the determinant of the two columns B − A and P − A is positive if P is to the left of the line (walking from A to B), negative if to the right, and zero if P is on the line. It is twice the signed area of triangle ABP. It is the same number as the 2D cross product of the vectors chapter, and it answers many geometric questions: whether a polygon is convex, whether two segments cross, which way a path turns.")}
       </p>
       <Equation label={tx(t, "mDet_eqOrient", "Orientation of three points")}
         where={[
@@ -112,7 +112,7 @@ export function DeterminantContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mDet_windBody",
-          "Apply it to the three corners of a triangle and you get its winding: positive for anticlockwise, negative for clockwise. That is backface culling. It also explains a classic bug: a model scaled by −1 on one axis has a transform with negative determinant, which reverses the winding of every triangle, so the GPU culls the front faces instead of the back ones. Engines check the sign of the determinant and flip the culling mode when it is negative.")}
+          "Apply it to the three corners of a triangle and you get its winding: positive for anticlockwise, negative for clockwise. It also shows what a mirror does: a map with a negative determinant reverses the winding of every triangle, turning anticlockwise corners into clockwise ones, the way a mirror turns a left glove into a right glove. So the sign of the determinant alone tells whether a transformation includes a reflection.")}
       </p>
 
       <H3>{tx(t, "mDet_baryTitle", "Barycentric coordinates")}</H3>
@@ -131,16 +131,16 @@ export function DeterminantContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "mDet_gpuBody",
-          "This is how a GPU fills a triangle. For every pixel it computes u, v, w (the three edge tests it already runs, divided by the total). If one is negative the pixel is outside and skipped. Otherwise every value attached to the corners, colour, texture coordinates, normals, depth, is blended with the same weights: colour = u · colourA + v · colourB + w · colourC. The figure's second mode shows that blend.")}
+          "The weights blend anything attached to the corners. Suppose the corners of a triangular field have measured heights of 10 m at A, 14 m at B and 12 m at C. The height at P = (1, 1) of the example is estimated as u · 10 + v · 14 + w · 12 = 0.5 · 10 + 0.25 · 14 + 0.25 · 12 = 5 + 3.5 + 3 = 11.5 m. The figure's second mode shows the same blend with colours at the corners.")}
       </p>
       <Callout type="tip" t={t}>
-        {tx(t, "mDet_epsTip", "Use the signs of the orientation determinants, not the areas' sizes, for inside tests, and be careful at exactly 0: a pixel on an edge shared by two triangles must be drawn by one of them only. GPUs use a \"top-left rule\" to decide ties, so shared edges never get drawn twice or left out.")}
+        {tx(t, "mDet_epsTip", "For an inside test only the signs matter: P is inside when u, v and w are all at least 0. If one of them is 0, P lies on an edge; if two are 0, P is a corner. The centroid, where the three medians meet, is the point with u = v = w = 1/3.")}
       </Callout>
 
       <H2>{tx(t, "mDet_exTitle", "Worked examples")}</H2>
       <p>
         {tx(t, "mDet_ex1",
-          "1. A sprite is drawn with the matrix [[2, 1], [0, 1.5]]. det = 2·1.5 − 1·0 = 3. A 16 × 16 sprite (area 256 pixels²) covers 768 pixels² on screen, and it is not mirrored, since det > 0.")}
+          "1. A drawing is transformed by the matrix [[2, 1], [0, 1.5]]. det = 2·1.5 − 1·0 = 3. A 16 cm × 16 cm square in it (area 256 cm²) becomes a parallelogram of 3 · 256 = 768 cm², and it is not mirrored, since det > 0.")}
       </p>
       <p>
         {tx(t, "mDet_ex2",
@@ -151,42 +151,20 @@ export function DeterminantContent({ t }: { t: TrackTranslations }) {
           "3. Is P = (3, 1) left or right of the line from A = (0, 0) to B = (4, 4)? orient = (4 − 0)(1 − 0) − (3 − 0)(4 − 0) = 4 − 12 = −8 < 0: to the right, which fits, since P is below the diagonal y = x.")}
       </p>
 
-      <H2>{tx(t, "mDet_codeTitle", "Determinants in C++")}</H2>
+      <H2>{tx(t, "mDet_handTitle", "3 × 3 determinants by hand")}</H2>
       <p>
-        {tx(t, "mDet_codeBody",
-          "Each function is one formula from this chapter. barycentric returns false when the triangle has no area (its determinant is 0), because dividing by it would produce infinities.")}
+        {tx(t, "mDet_handBody",
+          "Expand along the first row: each entry times the 2 × 2 determinant left after deleting its row and column, with signs + − +. For A = [[2, 0, 1], [1, 3, 2], [1, 1, 1]]: the first term is 2 · (3 · 1 − 2 · 1) = 2 · 1 = 2; the second is − 0 · (…) = 0, with no need to work out its minor; the third is + 1 · (1 · 1 − 3 · 1) = −2. Total: 2 + 0 − 2 = 0. So this matrix squashes space flat, and indeed its columns lie in one plane: column 3, (1, 2, 1), is half of column 1, (2, 1, 1), plus half of column 2, (0, 3, 1).")}
       </p>
-      <CodeBlock lang="cpp" filename="det.hpp" t={t}>{`struct Vec2 { float x, y; };
-struct Vec3 { float x, y, z; };
-
-float det2(float a, float b, float c, float d) { return a * d - b * c; }
-
-// Columns c0, c1, c2 of a 3x3 matrix: expansion along the first row
-float det3(Vec3 c0, Vec3 c1, Vec3 c2) {
-    return c0.x * det2(c1.y, c2.y, c1.z, c2.z)
-         - c1.x * det2(c0.y, c2.y, c0.z, c2.z)
-         + c2.x * det2(c0.y, c1.y, c0.z, c1.z);
-}
-
-// > 0: p is left of a->b, < 0: right, 0: on the line (twice the signed area)
-float orient(Vec2 a, Vec2 b, Vec2 p) {
-    return det2(b.x - a.x, p.x - a.x, b.y - a.y, p.y - a.y);
-}
-
-// Weights (u, v, w) with p = u*a + v*b + w*c; false if the triangle is flat
-bool barycentric(Vec2 a, Vec2 b, Vec2 c, Vec2 p, float& u, float& v, float& w) {
-    float area = orient(a, b, c);
-    if (area == 0.0f) return false;
-    u = orient(p, b, c) / area;               // sub-triangle opposite a
-    v = orient(a, p, c) / area;               // opposite b
-    w = 1.0f - u - v;                          // the three always sum to 1
-    return true;
-}
-
-bool insideTriangle(Vec2 a, Vec2 b, Vec2 c, Vec2 p) {
-    float u, v, w;
-    return barycentric(a, b, c, p, u, v, w) && u >= 0 && v >= 0 && w >= 0;
-}`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "mDet_tShort", "Shortcut"), tx(t, "mDet_tHow", "How it works")]}
+        rows={[
+          [tx(t, "mDet_s1a", "expand along any row or column"), tx(t, "mDet_s1", "the answer is the same; choose the one with the most zeros, since a zero entry kills its whole term. The signs follow the chessboard + − + / − + − / + − +")],
+          [tx(t, "mDet_s2a", "triangular matrix"), tx(t, "mDet_s2", "if every entry below the diagonal is 0, the determinant is the product of the diagonal: det [[2, 5, 7], [0, 3, 1], [0, 0, 4]] = 2 · 3 · 4 = 24")],
+          [tx(t, "mDet_s3a", "rule of Sarrus (3 × 3 only)"), tx(t, "mDet_s3", "copy the first two columns to the right; add the three products down to the right and subtract the three products up to the right")],
+          [tx(t, "mDet_s4a", "two equal or proportional rows"), tx(t, "mDet_s4", "the determinant is 0 straight away: the rows (or columns) lie on one line or plane")],
+        ]}
+      />
 
       <H2>{tx(t, "mDet_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -197,7 +175,7 @@ bool insideTriangle(Vec2 a, Vec2 b, Vec2 c, Vec2 p) {
           ["det(2A) = 2 det A", "det(2A) = 4 det A (2 × 2)", tx(t, "mDet_m3", "both width and height double")],
           [tx(t, "mDet_m4w", "treating a negative det as an error"), tx(t, "mDet_m4r", "it means the map mirrors"), tx(t, "mDet_m4", "the size is |det|; the sign is orientation")],
           [tx(t, "mDet_m5w", "forgetting the minus on the middle term (3 × 3)"), "+ − +", tx(t, "mDet_m5", "cofactor signs alternate like a chessboard")],
-          ["if (det == 0)", "if (std::abs(det) < eps)", tx(t, "mDet_m6", "with floats a nearly flat matrix gives a tiny non-zero value")],
+          [tx(t, "mDet_m6w", "Sarrus's diagonals on a 4 × 4"), tx(t, "mDet_m6r", "cofactor expansion"), tx(t, "mDet_m6", "the diagonal trick only works for 3 × 3 matrices")],
         ]}
       />
 

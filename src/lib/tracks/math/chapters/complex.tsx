@@ -5,9 +5,9 @@
 // multiply, angles add, from the angle-sum identities); modulus, argument,
 // conjugate and division; powers, De Moivre and roots of unity; complex
 // roots of polynomials; Euler's formula from (1 + iθ/n)ⁿ; complex numbers as
-// 2D rotations in code; the Mandelbrot set; C++.
+// rotations and phasors; the Mandelbrot set by hand.
 
-import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -134,14 +134,14 @@ export function ComplexContent({ t }: { t: TrackTranslations }) {
         {r`e^{i\theta} = \cos\theta + i\sin\theta \qquad z = r\,e^{i\theta} \qquad e^{i\pi} + 1 = 0`}
       </Equation>
 
-      <H2>{tx(t, "mCx_useTitle", "Complex numbers in games and graphics")}</H2>
+      <H2>{tx(t, "mCx_useTitle", "What complex numbers are used for")}</H2>
       <p>
         {tx(t, "mCx_useRot",
-          "A 2D rotation stored as a unit complex number (cos θ, sin θ) is exactly the Rot struct from the identities chapter: applying it is a complex multiplication, combining two rotations is a multiplication, undoing one is the conjugate, and no angles or trig calls are needed along the way. Turning smoothly from one direction to another can blend the two complex numbers and renormalise. Quaternions do the same for 3D.")}
+          "Rotations: a turn by θ is the unit complex number cos θ + i sin θ. Applying it is one multiplication, combining two turns is a multiplication, undoing one is the conjugate. Turning a point z by θ about a pivot c is z' = c + (z − c)(cos θ + i sin θ), the pivot rule of the identities chapter in a single line. Quaternions, the next chapter, do the same for 3D.")}
       </p>
       <p>
         {tx(t, "mCx_useWave",
-          "Waves: a sin t + b cos t, the combination the waves chapter merged into one sinusoid, is the imaginary part of (a + bi) · e^(it); its amplitude is the modulus and its phase the argument. Engineers call this a phasor. The Fourier transform, which splits a sound or image into waves (the FFT behind audio spectra and ocean-wave simulations), is written with e^(iθ) throughout. And the Mandelbrot set, a favourite shader, colours each point c of the plane by whether repeating z → z² + c from z = 0 stays near 0 or escapes.")}
+          "Waves: a sin t + b cos t, the combination the waves chapter merged into one sinusoid, is the imaginary part of (a + bi) · e^(it); its amplitude is the modulus and its phase the argument. Engineers call this a phasor, and describe alternating currents and voltages this way. The Fourier transform, which splits a sound or a signal into waves (behind audio spectra, MRI scans and the analysis of tides), is written with e^(iθ) throughout. And the Mandelbrot set, the most famous fractal, colours each point c of the plane by whether repeating z → z² + c from z = 0 stays near 0 or escapes.")}
       </p>
       <LessonTable
         headers={[tx(t, "mCx_tOp", "Operation"), tx(t, "mCx_tAlg", "Algebra"), tx(t, "mCx_tGeo", "Geometry")]}
@@ -169,42 +169,20 @@ export function ComplexContent({ t }: { t: TrackTranslations }) {
           "3. The cube roots of unity: angles 0°, 120°, 240°, i.e. 1, −½ + (√3/2)i, −½ − (√3/2)i. They add up to 0, the centre of the triangle they form.")}
       </p>
 
-      <H2>{tx(t, "mCx_codeTitle", "Complex numbers in C++")}</H2>
+      <H2>{tx(t, "mCx_mandelTitle", "The Mandelbrot set by hand")}</H2>
       <p>
-        {tx(t, "mCx_codeBody",
-          "The standard library has std::complex<float>, but a hand-written struct shows that nothing magic is going on: two floats and the multiplication formula. The Mandelbrot loop at the end is the whole fractal; a shader runs the same loop once per pixel.")}
+        {tx(t, "mCx_mandelBody",
+          "Pick a complex number c, start from z = 0 and repeat z → z² + c. A useful fact decides the outcome early: once |z| > 2, the values are certain to grow without limit, so c is outside the set. If the values stay bounded forever, c is inside. Four starting points, each worked by squaring and adding:")}
       </p>
-      <CodeBlock lang="cpp" filename="complex.hpp" t={t}>{`#include <cmath>
-
-struct Complex {
-    float re = 0, im = 0;
-
-    Complex operator+(Complex w) const { return { re + w.re, im + w.im }; }
-    // (a + bi)(c + di) = (ac - bd) + (ad + bc)i
-    Complex operator*(Complex w) const { return { re * w.re - im * w.im, re * w.im + im * w.re }; }
-    Complex conj() const { return { re, -im }; }
-    float   abs2() const { return re * re + im * im; }         // |z|^2 = z * conj(z)
-    float   abs()  const { return std::sqrt(abs2()); }
-    float   arg()  const { return std::atan2(im, re); }
-    Complex operator/(Complex w) const {                       // z * conj(w) / |w|^2
-        Complex n = *this * w.conj(); float d = w.abs2();
-        return { n.re / d, n.im / d };
-    }
-    static Complex polar(float r, float theta) { return { r * std::cos(theta), r * std::sin(theta) }; }
-};
-
-// A 2D rotation is a unit complex number: rotate p by multiplying
-Complex rotate(Complex p, float theta) { return p * Complex::polar(1, theta); }
-
-// Mandelbrot: how many steps of z -> z^2 + c before |z| > 2 (the point escapes)
-int mandelbrot(Complex c, int maxIter = 256) {
-    Complex z;
-    for (int i = 0; i < maxIter; ++i) {
-        z = z * z + c;
-        if (z.abs2() > 4.0f) return i;
-    }
-    return maxIter;                                             // stayed bounded: inside the set
-}`}</CodeBlock>
+      <LessonTable
+        headers={["c", tx(t, "mCx_tSeq", "z₁, z₂, z₃, …"), tx(t, "mCx_tVerdict", "verdict")]}
+        rows={[
+          ["−1", "−1, 0, −1, 0, …", tx(t, "mCx_v1", "a cycle of two values: inside")],
+          ["1", "1, 2, 5, 26, …", tx(t, "mCx_v2", "|z₃| = 5 > 2: outside")],
+          ["i", "i, −1 + i, −i, −1 + i, …", tx(t, "mCx_v3", "(−1 + i)² + i = (1 − 2i − 1) + i = −i, and (−i)² + i = −1 + i again: a cycle, inside")],
+          ["1 + i", "1 + i, 1 + 3i, …", tx(t, "mCx_v4", "(1 + i)² + 1 + i = 2i + 1 + i = 1 + 3i, and |1 + 3i| = √10 > 2: outside")],
+        ]}
+      />
 
       <H2>{tx(t, "mCx_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -213,7 +191,7 @@ int mandelbrot(Complex c, int maxIter = 256) {
           ["(a + bi)(c + di) = ac + bdi", "(ac − bd) + (ad + bc)i", tx(t, "mCx_m1", "every term of one bracket multiplies every term of the other, and i² = −1")],
           ["i² = 1", "i² = −1", tx(t, "mCx_m2", "that is the definition of i")],
           ["|a + bi| = a + b", "√(a² + b²)", tx(t, "mCx_m3", "the modulus is a distance, found with Pythagoras")],
-          ["arg = atan(b / a)", "atan2(b, a)", tx(t, "mCx_m4", "atan loses the quadrant: −1 − i and 1 + i would get the same angle")],
+          ["arg = arctan(b / a)", "atan2(b, a)", tx(t, "mCx_m4", "arctan loses the quadrant: −1 − i and 1 + i would get the same angle; use the quadrant rule of the polar chapter")],
           [tx(t, "mCx_m5w", "dividing real and imaginary parts separately"), tx(t, "mCx_m5r", "multiply by the conjugate"), tx(t, "mCx_m5", "(a + bi)/(c + di) is not a/c + (b/d)i")],
           ["√(−4) · √(−9) = √36 = 6", "2i · 3i = −6", tx(t, "mCx_m6", "√a · √b = √(ab) holds only for a, b ≥ 0")],
         ]}
