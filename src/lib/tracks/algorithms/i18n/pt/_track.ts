@@ -10,10 +10,16 @@ const track = {
     "merge-sort": "Merge sort",
     quicksort: "Quicksort",
     "linear-sorts": "Além das comparações: ordenações lineares",
+    "dynamic-array": "Arrays dinâmicos",
+    "linked-list": "Listas encadeadas",
+    stacks: "Pilhas",
+    queues: "Filas e deques",
+    "hash-table": "Tabelas hash",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
     "Searching & Sorting": "Busca e ordenação",
+    "Linear Structures": "Estruturas lineares",
   } as Record<string, string>,
 };
 

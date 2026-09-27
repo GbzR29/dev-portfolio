@@ -17,6 +17,7 @@ import type { Chapter } from "@/lib/tracks/types";
 
 const FOUNDATIONS = "Foundations";
 const SORTING = "Searching & Sorting";
+const LINEAR = "Linear Structures";
 
 export const algorithmsChapters: Chapter[] = [
   { id: "memory",     section: FOUNDATIONS, title: "Memory, Arrays & Pointers", minRead: 20, load: () => import("./chapters/memory").then((m) => m.MemoryContent) },
@@ -28,4 +29,10 @@ export const algorithmsChapters: Chapter[] = [
   { id: "merge-sort",       section: SORTING, title: "Merge Sort",                  minRead: 22, load: () => import("./chapters/merge-sort").then((m) => m.MergeSortContent) },
   { id: "quicksort",        section: SORTING, title: "Quicksort",                   minRead: 26, load: () => import("./chapters/quicksort").then((m) => m.QuicksortContent) },
   { id: "linear-sorts",     section: SORTING, title: "Beyond Comparisons: Linear Sorts", minRead: 22, load: () => import("./chapters/linear-sorts").then((m) => m.LinearSortsContent) },
+
+  { id: "dynamic-array", section: LINEAR, title: "Dynamic Arrays",           minRead: 20, load: () => import("./chapters/dynamic-array").then((m) => m.DynamicArrayContent) },
+  { id: "linked-list",   section: LINEAR, title: "Linked Lists",             minRead: 22, load: () => import("./chapters/linked-list").then((m) => m.LinkedListContent) },
+  { id: "stacks",        section: LINEAR, title: "Stacks",                   minRead: 20, load: () => import("./chapters/stacks").then((m) => m.StacksContent) },
+  { id: "queues",        section: LINEAR, title: "Queues & Deques",          minRead: 18, load: () => import("./chapters/queues").then((m) => m.QueuesContent) },
+  { id: "hash-table",    section: LINEAR, title: "Hash Tables",              minRead: 24, load: () => import("./chapters/hash-table").then((m) => m.HashTableContent) },
 ];
