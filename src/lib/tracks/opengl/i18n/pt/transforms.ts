@@ -66,6 +66,23 @@ const text: Record<string, string> = {
   oglDepth_ze5: "Mapeie near para 1,0 e far para 0,0 com um buffer float. Distribui a precisão quase perfeitamente.",
   oglDepth_visTip: "Para ver o depth buffer, saia com gl_FragCoord.z como cor em tons de cinza. Vai parecer quase todo branco, e é esse o ponto — é a distribuição não linear se tornando visível. Linearize de volta para distância em espaço de view para obter uma imagem legível, e você vai entender o z-fighting na hora.",
   oglDepth_linLabel: "Desfazendo: profundidade linearizada",
+  oglDepth_disableNote: "glDisable(GL_DEPTH_TEST) desliga as duas coisas de uma vez: com o teste desativado, nada é escrito no depth buffer também. Para desenhar tudo e ainda assim gravar a profundidade, mantenha o teste ativo com glDepthFunc(GL_ALWAYS).",
+  oglDepth_earlyTitle: "Early depth testing, e o que o desliga",
+  oglDepth_earlyBody: "O diagrama do pipeline põe o teste de profundidade depois do fragment shader, e esse é o lugar oficial dele. As GPUs reais o executam antes quando conseguem provar que o resultado seria o mesmo: um fragmento já escondido é descartado antes de o shader rodar, então superfícies ocultas quase não custam nada. Esse early-Z é o motivo de objetos opacos serem desenhados mais ou menos da frente para trás. Os próximos preenchem o depth buffer primeiro, e a maior parte do que está atrás deles é rejeitada sem ser sombreada. Três coisas num fragment shader enfraquecem ou desligam o early-Z:",
+  oglDepth_eH0: "O shader",
+  oglDepth_eH1: "Efeito no early-Z",
+  oglDepth_eH2: "Por quê",
+  oglDepth_e1: "escreve gl_FragDepth",
+  oglDepth_e1b: "desligado",
+  oglDepth_e1c: "a profundidade real só é conhecida depois que o shader roda",
+  oglDepth_e2: "usa discard",
+  oglDepth_e2b: "enfraquecido",
+  oglDepth_e2c: "o teste pode rodar antes, mas a escrita de profundidade precisa esperar o shader decidir se o fragmento sobrevive",
+  oglDepth_e3: "escreve em images ou SSBOs",
+  oglDepth_e3b: "desligado por padrão",
+  oglDepth_e3c: "pular o shader também pularia os efeitos colaterais dele",
+  oglDepth_earlyFix: "O OpenGL 4.2 trouxe duas formas de dar à GPU a garantia de que ela precisa. layout(early_fragment_tests) força os testes de profundidade e stencil a rodarem antes do shader; qualquer profundidade que o shader escrever é então ignorada. O conservative depth mantém o gl_FragDepth gravável, mas promete uma direção. depth_greater significa que o shader só empurra o fragmento para mais longe, então com GL_LESS um fragmento que já falha na profundidade interpolada falharia de qualquer jeito, e pode ser rejeitado antes.",
+  oglDepth_prepassTip: "Um depth pre-pass leva o early-Z ao limite. Primeiro desenhe a cena opaca com um shader trivial e a escrita de cor desligada (glColorMask(GL_FALSE, …)), preenchendo só o depth buffer. Depois desenhe de novo com os shaders reais e glDepthFunc(GL_LEQUAL) ou GL_EQUAL: agora cada pixel roda seu shader caro exatamente uma vez, para a superfície que de fato aparece. Custa uma segunda passada de geometria, então compensa quando o sombreamento dos fragmentos é caro.",
 };
 
 export default text;

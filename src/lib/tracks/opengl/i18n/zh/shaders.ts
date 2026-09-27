@@ -20,7 +20,9 @@ const text: Record<string, string> = {
   ch04_interpolationNote: "GPU光栅化时自动进行重心插值，每个像素获得三个顶点颜色的加权平均值，完全免费。",
   ch04_uniformTitle: "Uniform变量",
   ch04_uniformBody: "uniform是从C++设置的值，在绘制调用的所有顶点中保持不变。",
-  ch04_uniformWarn: "设置uniform前必须调用glUseProgram。",
+  ch04_uniformWarn: "glUniform*总是写入当前正在使用的程序，所以要先调用glUseProgram。没有程序在使用时，调用会以GL_INVALID_OPERATION失败。若正在使用的是另一个程序，它会写进那个程序（如果该程序恰好在这个location上有uniform）。OpenGL 4.1加入了glProgramUniform*，它把程序作为第一个参数，完全不需要glUseProgram。",
+  ch04_unusedWarn: "当名称不存在时，glGetUniformLocation返回−1；当uniform存在但从未被使用时也返回−1：编译器会从程序中移除未使用的uniform。location为−1的glUniform*调用会被静默忽略。所以拼写错误，或者测试时把某个uniform唯一的使用处注释掉，看起来都像是“我的uniform不起作用”。调试时请检查location是否为−1。",
+  ch04_classTip: "为每个值查询location再调用glUniform*，很快就会变得重复。GLSL路线中的“C++中的着色器类”一章，把从文件加载、编译、链接、错误检查和uniform设置函数封装进一个小类。本路线后面的章节都采用这种写法：shader.use()，然后shader.setMat4(\"model\", model)、shader.setVec3(…)等。类中还没有的设置函数（例如setMat3）只需按同样的形式加一行。",
 };
 
 export default text;

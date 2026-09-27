@@ -132,9 +132,45 @@ glm::mat4 projection = glm::perspective(
 
       <Callout type="warn" t={t}>
         {tx(t, "ch08_nearWarn",
-          "Never set the near plane to 0. Put n = 0 into the matrix below and the third row becomes (0, 0, −1, 0): z_clip = −z = w, so after the divide every point lands on z_ndc = 1 and the depth buffer can no longer tell anything apart. Even a small positive near plane is costly, because depth precision is concentrated right in front of the camera. Push it out as far as the scene allows (0.1 is a common default); the Depth Testing chapter shows why."
+          "Never set the near plane to 0. Put n = 0 into the matrix above and the third row becomes (0, 0, −1, 0): z_clip = −z = w, so after the divide every point lands on z_ndc = 1 and the depth buffer can no longer tell anything apart. Even a small positive near plane is costly, because depth precision is concentrated right in front of the camera. Push it out as far as the scene allows (0.1 is a common default); the Depth Testing chapter shows why."
         )}
       </Callout>
+
+      <H2>{tx(t, "ch08_orthoTitle", "Projection matrix — orthographic")}</H2>
+      <p>
+        {tx(t, "ch08_orthoBody",
+          "An orthographic projection has no perspective: an object keeps its size however far away it is, and parallel lines stay parallel. Its frustum is a box instead of a pyramid, given by six planes: left, right, bottom, top, near and far. glm::ortho maps that box onto the NDC cube with nothing but a scale and a shift per axis. It is what 2D games and UI use, what CAD and editor views use, and what a directional light's shadow map uses."
+        )}
+      </p>
+      <CodeBlock lang="cpp" filename="ortho.cpp" t={t}>{`// 2D / UI: one unit = one pixel, origin at the bottom-left of the window
+glm::mat4 ui = glm::ortho(0.0f, (float)width, 0.0f, (float)height, -1.0f, 1.0f);
+
+// Same, but y grows downward like screen coordinates: swap bottom and top
+glm::mat4 uiTopDown = glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
+
+// 3D scene seen without perspective: a 20 × 20 unit box, 0.1 to 100 deep
+glm::mat4 box = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);`}</CodeBlock>
+
+      <Equation label={tx(t, "ch08_orthoEqLabel", "glm::ortho(l, r, b, t, n, f)")}
+        where={[
+          [String.raw`l,\ r`, tx(t, "ch08_wLR", "x of the box's left and right sides, in view space")],
+          [String.raw`b,\ t`, tx(t, "ch08_wBT", "y of its bottom and top sides")],
+          [String.raw`n,\ f`, tx(t, "ch08_wNF2", "distances to the near and far planes in front of the camera (view-space z = −n and −f)")],
+        ]}
+        note={tx(t, "ch08_orthoEqNote", "Each diagonal term squeezes one side length of the box into the 2 units of NDC, and the last column moves the box's centre to 0. The bottom row is (0, 0, 0, 1), so w stays 1 and the divide changes nothing: that is why there is no perspective. Unlike the perspective case, depth is stored linearly and n = 0 is allowed.")}>
+        {String.raw`O \;=\; \begin{bmatrix}
+\dfrac{2}{r-l} & 0 & 0 & -\dfrac{r+l}{r-l} \\[6pt]
+0 & \dfrac{2}{t-b} & 0 & -\dfrac{t+b}{t-b} \\[6pt]
+0 & 0 & -\dfrac{2}{f-n} & -\dfrac{f+n}{f-n} \\[6pt]
+0 & 0 & \purple{0} & \purple{1}
+\end{bmatrix}`}
+      </Equation>
+
+      <p>
+        {tx(t, "ch08_orthoCheck",
+          "Check one corner: x = r gives (2r − r − l) / (r − l) = 1, the right edge of NDC, and x = l gives −1. The z row does the same for depth: view-space z = −n lands on −1 and z = −f on +1, with the minus sign turning 'in front of the camera' (negative z) into increasing depth."
+        )}
+      </p>
 
       <H2>{tx(t, "ch08_shaderTitle", "Applying MVP in the vertex shader")}</H2>
       <CodeBlock lang="glsl" filename="mvp.vert" t={t}>{`#version 460 core

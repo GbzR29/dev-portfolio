@@ -46,6 +46,37 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         )}
       </Callout>
 
+      <H2>{tx(t, "oglBlend_opTitle", "Changing the operator: glBlendEquation")}</H2>
+      <p>
+        {tx(t, "oglBlend_opBody",
+          "The full blend equation is result = S·F_src ⊕ D·F_dst, where S is the fragment's colour, D the colour already in the framebuffer, F_src and F_dst the two factors from glBlendFunc, and ⊕ an operator. The operator is addition unless you change it with glBlendEquation:"
+        )}
+      </p>
+      <LessonTable
+        headers={[tx(t, "oglBlend_eqH0", "glBlendEquation"), tx(t, "oglBlend_eqH1", "Result"), tx(t, "oglBlend_eqH2", "Use for")]}
+        rows={[
+          ["GL_FUNC_ADD",              "S·F_src + D·F_dst", tx(t, "oglBlend_eqU1", "the default: every mode in the table above")],
+          ["GL_FUNC_SUBTRACT",         "S·F_src − D·F_dst", tx(t, "oglBlend_eqU2", "rarely; the fragment minus what is behind it")],
+          ["GL_FUNC_REVERSE_SUBTRACT", "D·F_dst − S·F_src", tx(t, "oglBlend_eqU3", "darkening: subtracts light from what is already drawn")],
+          ["GL_MIN",                   "min(S, D)",         tx(t, "oglBlend_eqU4", "keep the darker value per channel; the factors are ignored")],
+          ["GL_MAX",                   "max(S, D)",         tx(t, "oglBlend_eqU5", "keep the brighter value per channel; the factors are ignored")],
+        ]}
+      />
+      <p>
+        {tx(t, "oglBlend_sepBody",
+          "glBlendFuncSeparate sets one pair of factors for RGB and another for alpha. That matters as soon as the framebuffer's alpha channel is read later, for example when a UI layer or a particle buffer is rendered into a texture and composited on top of the scene. With plain SRC_ALPHA, ONE_MINUS_SRC_ALPHA the stored alpha becomes α_s² + α_d(1 − α_s): a 50% sprite on an empty target leaves an alpha of 0.25, and the layer later composites as far too transparent. Using ONE for the source alpha gives α_s + α_d(1 − α_s), the true coverage of both layers together."
+        )}
+      </p>
+      <CodeBlock lang="cpp" filename="blend_separate.cpp" t={t}>{`// Colour: normal alpha blending. Alpha: accumulate coverage correctly.
+glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,    // RGB
+                    GL_ONE,       GL_ONE_MINUS_SRC_ALPHA);   // alpha
+
+// Darken what is already drawn (e.g. a shadow blob) instead of adding to it
+glBlendEquation(GL_FUNC_REVERSE_SUBTRACT);
+glBlendFunc(GL_ONE, GL_ONE);                 // result = D - S
+drawShadowBlobs();
+glBlendEquation(GL_FUNC_ADD);                // restore the default`}</CodeBlock>
+
       <H2>{tx(t, "oglBlend_discardTitle", "Cut-out transparency needs no blending")}</H2>
       <p>
         {tx(t, "oglBlend_discardBody",

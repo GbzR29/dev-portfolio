@@ -64,6 +64,50 @@ if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
         )}
       </Callout>
 
+      <H2>{tx(t, "oglDebug_getErrorTitle", "Without debug output: glGetError")}</H2>
+      <p>
+        {tx(t, "oglDebug_getErrorBody",
+          "Debug output needs OpenGL 4.3 or the KHR_debug extension. macOS stops at 4.1, and some older drivers lack it, so there glGetError is all you have. Each context keeps a set of error flags. A failing call sets a flag and is otherwise ignored: it changes no state (only GL_OUT_OF_MEMORY may leave things undefined). glGetError returns one set flag and clears it, and GL_NO_ERROR once none are left. Two consequences follow. An error is reported by the next glGetError, however many calls later that is, so the culprit may be far away. And several flags can be set at once, so call it in a loop until it returns GL_NO_ERROR."
+        )}
+      </p>
+      <LessonTable
+        headers={[tx(t, "oglDebug_eH0", "Error"), tx(t, "oglDebug_eH1", "Typical cause")]}
+        rows={[
+          ["GL_INVALID_ENUM",                  tx(t, "oglDebug_eE1", "an enum that is not allowed for this parameter, e.g. a mipmap filter as GL_TEXTURE_MAG_FILTER")],
+          ["GL_INVALID_VALUE",                 tx(t, "oglDebug_eE2", "a number out of range: a negative size, an attribute index ≥ GL_MAX_VERTEX_ATTRIBS")],
+          ["GL_INVALID_OPERATION",             tx(t, "oglDebug_eE3", "the call is not allowed in the current state: drawing with no VAO bound, glUniform with no program in use")],
+          ["GL_INVALID_FRAMEBUFFER_OPERATION", tx(t, "oglDebug_eE4", "drawing into or reading from an incomplete framebuffer")],
+          ["GL_OUT_OF_MEMORY",                 tx(t, "oglDebug_eE5", "an allocation failed; the state of the object involved is undefined")],
+        ]}
+      />
+      <CodeBlock lang="cpp" filename="check_error.hpp" t={t}>{`GLenum glCheckError_(const char* file, int line) {
+    GLenum code, last = GL_NO_ERROR;
+    while ((code = glGetError()) != GL_NO_ERROR) {      // drain every set flag
+        const char* name = "UNKNOWN";
+        switch (code) {
+            case GL_INVALID_ENUM:                  name = "INVALID_ENUM"; break;
+            case GL_INVALID_VALUE:                 name = "INVALID_VALUE"; break;
+            case GL_INVALID_OPERATION:             name = "INVALID_OPERATION"; break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION: name = "INVALID_FRAMEBUFFER_OPERATION"; break;
+            case GL_OUT_OF_MEMORY:                 name = "OUT_OF_MEMORY"; break;
+        }
+        std::cerr << "GL " << name << " at " << file << ":" << line << '\\n';
+        last = code;
+    }
+    return last;
+}
+// A macro, so __FILE__ and __LINE__ are those of the call site
+#define glCheckError() glCheckError_(__FILE__, __LINE__)
+
+// Usage: narrow down the culprit by moving the check closer to it
+glBindTexture(GL_TEXTURE_2D, tex);
+glCheckError();`}</CodeBlock>
+      <Callout type="tip" t={t}>
+        {tx(t, "oglDebug_getErrorTip",
+          "glGetError is slow: before it can answer, the driver has to catch up on every call issued before it. Modern drivers process your calls on a thread of their own, so each check makes your thread wait for that one. Keep the checks in debug builds only (wrap the macro in #ifndef NDEBUG), and to find an error start with one check per frame, then move it closer to the suspect until it pins down a single call."
+        )}
+      </Callout>
+
       <H2>{tx(t, "oglDebug_labelsTitle", "Naming your objects")}</H2>
       <CodeBlock lang="cpp" filename="labels.cpp" t={t}>{`// Turns "Buffer 7" into "terrain VBO" in every error message and in RenderDoc
 glObjectLabel(GL_BUFFER,       vbo,     -1, "terrain VBO");

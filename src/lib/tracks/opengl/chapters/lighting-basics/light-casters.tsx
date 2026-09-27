@@ -73,6 +73,32 @@ ambient  *= attenuation;   // attenuate all three terms
 diffuse  *= attenuation;
 specular *= attenuation;`}</CodeBlock>
 
+      <p>
+        {tx(t, "oglCast_tableBody",
+          "Picking three constants by eye is awkward, so a table of tested values is widely reused (it comes from the Ogre3D wiki). Choose the row whose distance matches how far the light should reach. Each row is tuned so that at that distance F_att has fallen to about 1%: for 50 units, 1 + 0.09·50 + 0.032·50² = 85.5, and 1/85.5 ≈ 0.012. Past that point the light is effectively gone. The Multiple Lights chapter uses the 13-unit row.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "oglCast_thDist", "Reach (units)"), "K_c", "K_l", "K_q"]}
+        rows={[
+          ["7",    "1.0", "0.7",    "1.8"],
+          ["13",   "1.0", "0.35",   "0.44"],
+          ["20",   "1.0", "0.22",   "0.20"],
+          ["32",   "1.0", "0.14",   "0.07"],
+          ["50",   "1.0", "0.09",   "0.032"],
+          ["65",   "1.0", "0.07",   "0.017"],
+          ["100",  "1.0", "0.045",  "0.0075"],
+          ["160",  "1.0", "0.027",  "0.0028"],
+          ["200",  "1.0", "0.022",  "0.0019"],
+          ["325",  "1.0", "0.014",  "0.0007"],
+          ["600",  "1.0", "0.007",  "0.0002"],
+          ["3250", "1.0", "0.0014", "0.000007"],
+        ]}
+      />
+      <Callout type="info" t={t}>
+        {tx(t, "oglCast_tableNote",
+          "Read down the columns: as the reach grows, K_l shrinks roughly like 1/d and K_q like 1/d², which keeps both terms the same size at the chosen distance. K_c stays 1 so the light is never brighter than its colour at d = 0. These values were tuned for images without gamma correction. With the linear workflow of the Gamma Correction chapter a plain inverse square looks right, and the PBR chapters use exactly that.")}
+      </Callout>
+
       <H2>{tx(t, "oglCast_spotTitle", "Spotlight")}</H2>
       <p>
         {tx(t, "oglCast_spotBody",

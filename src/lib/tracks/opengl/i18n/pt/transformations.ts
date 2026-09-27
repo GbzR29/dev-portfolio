@@ -25,9 +25,17 @@ const text: Record<string, string> = {
   ch08_wA: "aspect = largura / altura",
   ch08_wNF: "planos near e far",
   ch08_perspEqNote: "A última linha é o truque todo: ela copia −z para w. Depois que a GPU divide por w, x e y encolhem com a distância — isso é perspectiva — e z cai em [−1, 1].",
-  ch08_nearWarn: "Nunca defina o plano near como 0. Coloque n = 0 na matriz abaixo e a terceira linha vira (0, 0, −1, 0): z_clip = −z = w, então depois da divisão todo ponto cai em z_ndc = 1 e o depth buffer não consegue mais distinguir nada. Mesmo um near pequeno e positivo custa caro, porque a precisão de profundidade se concentra logo à frente da câmera. Afaste-o o quanto a cena permitir (0.1 é um padrão comum); o capítulo Depth Testing mostra por quê.",
+  ch08_nearWarn: "Nunca defina o plano near como 0. Coloque n = 0 na matriz acima e a terceira linha vira (0, 0, −1, 0): z_clip = −z = w, então depois da divisão todo ponto cai em z_ndc = 1 e o depth buffer não consegue mais distinguir nada. Mesmo um near pequeno e positivo custa caro, porque a precisão de profundidade se concentra logo à frente da câmera. Afaste-o o quanto a cena permitir (0.1 é um padrão comum); o capítulo Depth Testing mostra por quê.",
   ch08_shaderTitle: "Aplicando MVP no vertex shader",
   ch08_animTip: "Para animar a rotação, multiplique o ângulo por glfwGetTime() a cada frame. O modelo girará continuamente sem estado extra.",
+  ch08_orthoTitle: "Matriz de projeção — ortográfica",
+  ch08_orthoBody: "Uma projeção ortográfica não tem perspectiva: um objeto mantém o tamanho não importa a distância, e linhas paralelas continuam paralelas. Seu frustum é uma caixa em vez de uma pirâmide, dada por seis planos: esquerda, direita, baixo, cima, near e far. O glm::ortho leva essa caixa ao cubo das NDC só com uma escala e um deslocamento por eixo. É o que jogos 2D e interfaces usam, o que vistas de CAD e de editores usam, e o que o shadow map de uma luz direcional usa.",
+  ch08_orthoEqLabel: "glm::ortho(l, r, b, t, n, f)",
+  ch08_wLR: "x dos lados esquerdo e direito da caixa, em view space",
+  ch08_wBT: "y dos seus lados de baixo e de cima",
+  ch08_wNF2: "distâncias até os planos near e far à frente da câmera (z em view space = −n e −f)",
+  ch08_orthoEqNote: "Cada termo da diagonal espreme um lado da caixa nas 2 unidades das NDC, e a última coluna leva o centro da caixa para 0. A última linha é (0, 0, 0, 1), então w continua 1 e a divisão não muda nada: é por isso que não há perspectiva. Diferente do caso perspectivo, a profundidade fica guardada de forma linear e n = 0 é permitido.",
+  ch08_orthoCheck: "Confira um canto: x = r dá (2r − r − l) / (r − l) = 1, a borda direita das NDC, e x = l dá −1. A linha de z faz o mesmo para a profundidade: z = −n em view space cai em −1 e z = −f em +1, com o sinal de menos transformando 'à frente da câmera' (z negativo) em profundidade crescente.",
 };
 
 export default text;

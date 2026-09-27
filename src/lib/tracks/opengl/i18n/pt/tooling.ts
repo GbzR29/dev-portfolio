@@ -50,6 +50,16 @@ const text: Record<string, string> = {
   oglCompute_ssboBody: "Shader storage buffers podem ser lidos e escritos pelo shader, podem ter centenas de megabytes e suportam um array final com tamanho definido em tempo de execução. É assim que você mantém um sistema de partículas, um resultado de culling ou uma grade espacial inteiramente na GPU.",
   oglCompute_sizeTip: "Faça o local size ser múltiplo da largura de wavefront do hardware: 32 na NVIDIA, 64 na AMD. 64 ou 256 é um padrão seguro que não desperdiça lanes em nenhuma das duas. Um local size de 1 roda com uma fração da vazão, porque a maioria das lanes de cada wavefront fica ociosa.",
   oglCompute_readbackNote: "Ler resultados de volta para a CPU com glGetBufferSubData trava o pipeline: ele espera a GPU terminar tudo. Se você precisa ler de volta, faça isso para um buffer mapeado persistentemente e leia um ou dois quadros depois. Melhor ainda, mantenha os dados na GPU — o exemplo de partículas acima nunca toca a CPU depois do upload.",
+  oglDebug_getErrorTitle: "Sem debug output: glGetError",
+  oglDebug_getErrorBody: "O debug output precisa do OpenGL 4.3 ou da extensão KHR_debug. O macOS para no 4.1, e alguns drivers antigos não a têm, então ali o glGetError é tudo o que você tem. Cada contexto guarda um conjunto de flags de erro. Uma chamada que falha liga uma flag e, fora isso, é ignorada: não muda estado nenhum (só GL_OUT_OF_MEMORY pode deixar as coisas indefinidas). glGetError devolve uma flag ligada e a limpa, e GL_NO_ERROR quando não sobra nenhuma. Daí saem duas consequências. Um erro só é reportado pelo próximo glGetError, quantas chamadas depois for, então o culpado pode estar longe. E várias flags podem estar ligadas ao mesmo tempo, então chame-o em loop até ele devolver GL_NO_ERROR.",
+  oglDebug_eH0: "Erro",
+  oglDebug_eH1: "Causa típica",
+  oglDebug_eE1: "um enum não permitido para esse parâmetro, por exemplo um filtro de mipmap em GL_TEXTURE_MAG_FILTER",
+  oglDebug_eE2: "um número fora do intervalo: um tamanho negativo, um índice de atributo ≥ GL_MAX_VERTEX_ATTRIBS",
+  oglDebug_eE3: "a chamada não é permitida no estado atual: desenhar sem VAO ligado, glUniform sem programa em uso",
+  oglDebug_eE4: "desenhar num framebuffer incompleto ou ler dele",
+  oglDebug_eE5: "uma alocação falhou; o estado do objeto envolvido fica indefinido",
+  oglDebug_getErrorTip: "glGetError é lento: antes de responder, o driver precisa pôr em dia todas as chamadas feitas antes dele. Drivers modernos processam suas chamadas numa thread própria, então cada verificação faz a sua thread esperar por essa. Deixe as verificações só em builds de debug (envolva a macro em #ifndef NDEBUG), e para achar um erro comece com uma verificação por quadro, depois aproxime-a do suspeito até ela apontar uma única chamada.",
 };
 
 export default text;

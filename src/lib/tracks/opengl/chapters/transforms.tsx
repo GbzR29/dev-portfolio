@@ -268,6 +268,45 @@ glDepthMask(GL_FALSE);
 drawTransparent();
 glDepthMask(GL_TRUE);    // restore, or the next frame's opaque pass breaks`}</CodeBlock>
 
+      <Callout type="info" t={t}>
+        {tx(t, "oglDepth_disableNote",
+          "glDisable(GL_DEPTH_TEST) switches off both at once: with the test disabled, nothing is written to the depth buffer either. To draw everything but still record depth, keep the test enabled with glDepthFunc(GL_ALWAYS)."
+        )}
+      </Callout>
+
+      <H2>{tx(t, "oglDepth_earlyTitle", "Early depth testing, and what turns it off")}</H2>
+      <p>
+        {tx(t, "oglDepth_earlyBody",
+          "The pipeline diagram puts the depth test after the fragment shader, and that is its official place. Real GPUs run it earlier when they can prove the result would be the same: a fragment that is already hidden is thrown away before its shader runs, so hidden surfaces cost almost nothing. This early-Z is the reason opaque objects are drawn roughly front to back. The near ones fill the depth buffer first, and most of what lies behind them is rejected unshaded. Three things in a fragment shader weaken or disable it:"
+        )}
+      </p>
+      <LessonTable
+        headers={[tx(t, "oglDepth_eH0", "Shader does"), tx(t, "oglDepth_eH1", "Effect on early-Z"), tx(t, "oglDepth_eH2", "Why")]}
+        rows={[
+          [tx(t, "oglDepth_e1", "writes gl_FragDepth"), tx(t, "oglDepth_e1b", "disabled"), tx(t, "oglDepth_e1c", "the real depth is only known after the shader has run")],
+          [tx(t, "oglDepth_e2", "uses discard"), tx(t, "oglDepth_e2b", "weakened"), tx(t, "oglDepth_e2c", "the test can run early, but the depth write must wait until the shader decides whether the fragment survives")],
+          [tx(t, "oglDepth_e3", "writes to images or SSBOs"), tx(t, "oglDepth_e3b", "disabled by default"), tx(t, "oglDepth_e3c", "skipping the shader would also skip its side effects")],
+        ]}
+      />
+      <p>
+        {tx(t, "oglDepth_earlyFix",
+          "OpenGL 4.2 added two ways to give the GPU the guarantee it needs. layout(early_fragment_tests) forces the depth and stencil tests to run before the shader; any depth the shader writes is then ignored. Conservative depth keeps gl_FragDepth writable but promises a direction. depth_greater means the shader only ever pushes the fragment farther away, so with GL_LESS a fragment that already fails at its interpolated depth would fail anyway, and can be rejected early."
+        )}
+      </p>
+      <CodeBlock lang="glsl" filename="early_z.frag" t={t}>{`#version 460 core
+// Option 1: run the depth and stencil tests before this shader, always
+layout (early_fragment_tests) in;
+
+// Option 2 (instead of option 1): keep writing depth, but promise a direction
+// layout (depth_greater) out float gl_FragDepth;   // only ever moves farther
+// ...
+// gl_FragDepth = gl_FragCoord.z + offset;          // offset >= 0 keeps the promise`}</CodeBlock>
+      <Callout type="tip" t={t}>
+        {tx(t, "oglDepth_prepassTip",
+          "A depth pre-pass takes early-Z to its limit. First draw the opaque scene with a trivial shader and the colour writes off (glColorMask(GL_FALSE, …)), filling only the depth buffer. Then draw it again with the real shaders and glDepthFunc(GL_LEQUAL) or GL_EQUAL: now every pixel runs its expensive shader exactly once, for the surface that is actually visible. It costs a second geometry pass, so it pays off when fragment shading is expensive."
+        )}
+      </Callout>
+
       <H2>{tx(t, "oglDepth_precisionTitle", "Z-fighting and why it happens")}</H2>
       <p>
         {tx(t, "oglDepth_precisionBody",

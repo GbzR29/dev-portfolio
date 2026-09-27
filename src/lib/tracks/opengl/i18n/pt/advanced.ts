@@ -199,6 +199,16 @@ const text: Record<string, string> = {
   oglUbo_bindTitle: "Criando e ligando",
   oglUbo_legacyNote: "layout(binding = 0) no shader exige GLSL 4.20 ou superior. Em versões mais antigas, você procura o bloco pelo nome e atribui o binding pelo C++: glUniformBlockBinding(program, glGetUniformBlockIndex(program, \"Matrices\"), 0). Mirando o 4.6, o qualificador de layout é mais simples e elimina um passo fácil de esquecer.",
   oglUbo_ssboTip: "Um UBO só tem garantidos 16 KB (GL_MAX_UNIFORM_BLOCK_SIZE, normalmente 64 KB) e seus arrays precisam de tamanho conhecido em tempo de compilação. Quando você precisa de mais — milhares de luzes, uma paleta de ossos, arrays de tamanho arbitrário — a resposta é um shader storage buffer object. SSBOs são muito maiores, podem terminar num array de tamanho definido em runtime, podem ser escritos pelo shader e podem usar o layout std430, mais compacto, em que arrays de floats e vec2 não são mais preenchidos até 16 bytes por elemento (um vec3 continua alinhado a 16).",
+  oglBlend_opTitle: "Trocando o operador: glBlendEquation",
+  oglBlend_opBody: "A equação de blending completa é resultado = S·F_src ⊕ D·F_dst, em que S é a cor do fragmento, D a cor que já está no framebuffer, F_src e F_dst os dois fatores do glBlendFunc, e ⊕ um operador. O operador é a soma, a menos que você o troque com glBlendEquation:",
+  oglBlend_eqH1: "Resultado",
+  oglBlend_eqH2: "Uso",
+  oglBlend_eqU1: "o padrão: todos os modos da tabela acima",
+  oglBlend_eqU2: "raro; o fragmento menos o que está atrás dele",
+  oglBlend_eqU3: "escurecer: subtrai luz do que já foi desenhado",
+  oglBlend_eqU4: "mantém o valor mais escuro por canal; os fatores são ignorados",
+  oglBlend_eqU5: "mantém o valor mais claro por canal; os fatores são ignorados",
+  oglBlend_sepBody: "glBlendFuncSeparate define um par de fatores para o RGB e outro para o alfa. Isso importa assim que o alfa do framebuffer é lido depois, por exemplo quando uma camada de UI ou um buffer de partículas é renderizado numa textura e composto sobre a cena. Com o SRC_ALPHA, ONE_MINUS_SRC_ALPHA simples, o alfa guardado vira α_s² + α_d(1 − α_s): um sprite de 50% num alvo vazio deixa alfa 0.25, e a camada depois é composta transparente demais. Usar ONE para o alfa de origem dá α_s + α_d(1 − α_s), a cobertura real das duas camadas juntas.",
 };
 
 export default text;

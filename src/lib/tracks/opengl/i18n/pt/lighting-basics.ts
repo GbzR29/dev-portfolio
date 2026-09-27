@@ -135,6 +135,9 @@ const text: Record<string, string> = {
   oglMulti_key0: "As contribuições de luzes separadas simplesmente se somam.",
   oglMulti_key1: "Uma função por tipo de fonte mantém o shader legível; as luzes pontuais vão num array de structs de tamanho fixo.",
   oglMulti_key2: "O forward shading custa luzes × fragmentos — o motivo de o deferred shading existir.",
+  oglCast_tableBody: "Escolher três constantes no olho é complicado, então uma tabela de valores testados é muito reaproveitada (ela vem da wiki do Ogre3D). Escolha a linha cuja distância corresponde a até onde a luz deve alcançar. Cada linha foi ajustada para que, nessa distância, F_att tenha caído para cerca de 1%: para 50 unidades, 1 + 0.09·50 + 0.032·50² = 85.5, e 1/85.5 ≈ 0.012. Depois desse ponto a luz praticamente acabou. O capítulo Multiple Lights usa a linha de 13 unidades.",
+  oglCast_thDist: "Alcance (unidades)",
+  oglCast_tableNote: "Leia as colunas de cima para baixo: conforme o alcance cresce, K_l diminui mais ou menos como 1/d e K_q como 1/d², o que mantém os dois termos do mesmo tamanho na distância escolhida. K_c fica em 1 para que a luz nunca seja mais forte que a sua cor em d = 0. Esses valores foram ajustados para imagens sem correção de gamma. Com o fluxo linear do capítulo Gamma Correction, o inverso do quadrado puro já parece certo, e os capítulos de PBR usam exatamente isso.",
 };
 
 export default text;

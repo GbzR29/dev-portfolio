@@ -66,6 +66,43 @@ float closest = texture(depthCubemap, fragToLight).r * farPlane;
 float current = length(fragToLight);
 float shadow  = current - bias > closest ? 1.0 : 0.0;`}</CodeBlock>
 
+      <H2>{tx(t, "oglPShadow_pcfTitle", "Soft edges: PCF in a cube map")}</H2>
+      <p>
+        {tx(t, "oglPShadow_pcfBody",
+          "One lookup gives hard, jagged shadow edges, exactly as with a 2D shadow map, and the fix is the same idea: take several lookups around the sample and average the yes/no answers (percentage-closer filtering). A cube map is looked up by direction, so the neighbours are made by adding small offsets to the direction vector. The obvious 4 × 4 × 4 grid of offsets is 64 lookups, and many of them are wasted: an offset that points along fragToLight only changes the vector's length, not its direction, so it reads the same texel again. Twenty offsets pointing to the corners and edge midpoints of a cube spread out in every direction and give a similar result for a third of the cost."
+        )}
+      </p>
+      <CodeBlock lang="glsl" filename="point_shadow_pcf.frag" t={t}>{`uniform samplerCube depthCubemap;
+uniform vec3  lightPos, viewPos;
+uniform float farPlane;
+
+const vec3 offsets[20] = vec3[](
+    vec3( 1,  1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1,  1,  1),   // cube corners
+    vec3( 1,  1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1,  1, -1),
+    vec3( 1,  1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1,  1,  0),   // edge midpoints
+    vec3( 1,  0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1,  0, -1),
+    vec3( 0,  1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0,  1, -1));
+
+float pointShadow(vec3 fragPos) {
+    vec3  fragToLight = fragPos - lightPos;
+    float current     = length(fragToLight);
+    float bias        = 0.15;
+    // Wider filter far from the camera (soft), narrower up close (crisp)
+    float radius = (1.0 + length(viewPos - fragPos) / farPlane) / 25.0;
+
+    float shadow = 0.0;
+    for (int i = 0; i < 20; ++i) {
+        float closest = texture(depthCubemap, fragToLight + offsets[i] * radius).r * farPlane;
+        shadow += current - bias > closest ? 1.0 : 0.0;
+    }
+    return shadow / 20.0;      // 0 = fully lit, 1 = fully in shadow
+}`}</CodeBlock>
+      <p>
+        {tx(t, "oglPShadow_pcfRadius",
+          "The offset is added to a vector whose length is the fragment's distance to the light, so the same radius turns the lookup by a smaller angle for fragments far from the light. The radius term itself grows from 1/25 = 0.04 next to the camera to 2/25 = 0.08 at the far plane, which softens distant shadows, where their jagged edges would be hardest to hide, and keeps close ones sharp. Both constants are tuned by eye, and so is the bias: a cube-map shadow has no single light direction to scale it by, which is why a fixed value is used."
+        )}
+      </p>
+
       <Callout type="tip" t={t}>
         {tx(t, "oglPShadow_gsTip",
           "Six passes per light is expensive. Desktop OpenGL can do it in one pass with a geometry shader that emits each triangle six times, choosing the face through gl_Layer, or with instanced rendering and gl_Layer written in the vertex shader. That last option is not core in any OpenGL version; it needs the ARB_shader_viewport_layer_array extension, which current desktop drivers support.")}

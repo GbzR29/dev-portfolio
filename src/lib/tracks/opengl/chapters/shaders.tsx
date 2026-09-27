@@ -104,7 +104,19 @@ glUniform4f(loc, 1.0f, 0.5f, 0.2f, 1.0f);`}</CodeBlock>
 
       <Callout type="warn" t={t}>
         {tx(t, "ch04_uniformWarn",
-          "You must call glUseProgram before setting uniforms. Uniforms belong to the currently active program. Setting a uniform on the wrong program has no effect."
+          "glUniform* always writes to the program currently in use, so call glUseProgram first. With no program in use the call fails with GL_INVALID_OPERATION. With a different program in use it writes into that one instead, if it happens to have a uniform at that location. OpenGL 4.1 added glProgramUniform*, which takes the program as its first argument and needs no glUseProgram at all."
+        )}
+      </Callout>
+
+      <Callout type="warn" t={t}>
+        {tx(t, "ch04_unusedWarn",
+          "glGetUniformLocation returns −1 when the name does not exist, and also when the uniform exists but is never used: the compiler removes unused uniforms from the program. A glUniform* call with location −1 is silently ignored. So a typo, or a uniform whose only use you commented out while testing, just looks like 'my uniform does nothing'. While debugging, check the location against −1."
+        )}
+      </Callout>
+
+      <Callout type="tip" t={t}>
+        {tx(t, "ch04_classTip",
+          "Looking up a location and calling glUniform* for every value quickly gets repetitive. The GLSL track's Shader Class in C++ chapter wraps loading from files, compiling, linking, the error checks and the uniform setters into one small class. Later chapters of this track use that style: shader.use(), then shader.setMat4(\"model\", model), shader.setVec3(…) and so on. A setter the class does not have yet, such as setMat3, is a one-line addition of the same shape."
         )}
       </Callout>
 

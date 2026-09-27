@@ -1,7 +1,7 @@
 // src/lib/tracks/opengl/chapters/lighting-advanced/deferred.tsx
 "use client";
 
-import { CodeBlock, H2, LessonTable } from "@/components/lesson/LessonComponents";
+import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
@@ -77,6 +77,31 @@ glDrawBuffers(3, attachments);        // write all three at once`}</CodeBlock>
           [tx(t, "oglDeferred_tc3", "✗ one lighting model"), tx(t, "oglDeferred_tc3b", "every material shares the same lighting shader (a material ID in the G-buffer helps)")],
         ]}
       />
+
+      <H2>{tx(t, "oglDeferred_mixTitle", "Adding forward-rendered objects afterwards")}</H2>
+      <p>
+        {tx(t, "oglDeferred_mixBody",
+          "Glass, particles, and the small cubes that show where the lights are must be drawn after the lighting pass with an ordinary forward shader. They still have to be hidden behind the lit scene where the scene is closer. The lighting pass drew a fullscreen quad, though, so the target framebuffer's depth buffer holds nothing useful. The scene's depth lives in the G-buffer. Copy it across with glBlitFramebuffer, then draw the forward objects with depth testing on:"
+        )}
+      </p>
+      <CodeBlock lang="cpp" filename="deferred_then_forward.cpp" t={t}>{`// 1. Geometry pass into gBuffer, 2. lighting pass (fullscreen quad) into the default framebuffer
+
+// 3. Copy the scene's depth from the G-buffer to the framebuffer we draw into next
+glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
+glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
+                  GL_DEPTH_BUFFER_BIT, GL_NEAREST);    // depth must use GL_NEAREST
+
+// 4. Forward pass: light cubes, glass, particles — tested against the real scene depth
+glBindFramebuffer(GL_FRAMEBUFFER, 0);
+glEnable(GL_DEPTH_TEST);
+drawLightCubes();
+drawTransparentSorted();`}</CodeBlock>
+      <Callout type="warn" t={t}>
+        {tx(t, "oglDeferred_blitWarn",
+          "A depth blit only works between depth buffers with the same format; otherwise it fails with GL_INVALID_OPERATION and copies nothing. The default framebuffer's format is whatever the window was created with, so either request matching bits (glfwWindowHint(GLFW_DEPTH_BITS, 24) and GLFW_STENCIL_BITS, 8 to match a GL_DEPTH24_STENCIL8 G-buffer), or, more robustly, do the lighting and forward passes into your own HDR framebuffer whose depth attachment you choose yourself."
+        )}
+      </Callout>
 
       <KeyIdeas t={t} id="oglDeferred" items={[
         "Geometry pass: write position, normal, albedo and specular to a G-buffer with MRT.",

@@ -20,7 +20,9 @@ const text: Record<string, string> = {
   ch04_interpolationNote: "Quando a GPU rasteriza um triângulo, cada fragmento recebe a média ponderada das três cores de vértice. Essa interpolação automática se chama interpolação baricêntrica e é gratuita.",
   ch04_uniformTitle: "Uniforms",
   ch04_uniformBody: "Um uniform é um valor que você define do C++ e que permanece igual para todos os vértices do draw call. Perfeito para matrizes de transformação, tempo ou cor global.",
-  ch04_uniformWarn: "Você deve chamar glUseProgram antes de definir uniforms. Os uniforms pertencem ao programa ativo no momento.",
+  ch04_uniformWarn: "glUniform* sempre escreve no programa em uso no momento, então chame glUseProgram antes. Sem nenhum programa em uso a chamada falha com GL_INVALID_OPERATION. Com outro programa em uso, ela escreve nele, se ele por acaso tiver um uniform naquela location. O OpenGL 4.1 trouxe o glProgramUniform*, que recebe o programa como primeiro argumento e dispensa o glUseProgram.",
+  ch04_unusedWarn: "glGetUniformLocation devolve −1 quando o nome não existe, e também quando o uniform existe mas nunca é usado: o compilador remove uniforms não usados do programa. Uma chamada glUniform* com location −1 é ignorada em silêncio. Então um erro de digitação, ou um uniform cujo único uso você comentou enquanto testava, parece simplesmente que 'meu uniform não faz nada'. Ao depurar, compare a location com −1.",
+  ch04_classTip: "Buscar uma location e chamar glUniform* para cada valor logo fica repetitivo. O capítulo Shader Class in C++, da trilha de GLSL, embrulha carregar de arquivos, compilar, linkar, as checagens de erro e os setters de uniform numa classe pequena. Os capítulos seguintes desta trilha usam esse estilo: shader.use(), depois shader.setMat4(\"model\", model), shader.setVec3(…) e assim por diante. Um setter que a classe ainda não tem, como setMat3, é uma linha a mais no mesmo formato.",
 };
 
 export default text;
