@@ -22,6 +22,10 @@ const track = {
     tries: "Tries",
     greedy: "Algoritmos gulosos",
     "dynamic-programming": "Programação dinâmica",
+    graphs: "Grafos e suas representações",
+    "graph-traversal": "Busca em largura e em profundidade",
+    "shortest-paths": "Caminhos mínimos",
+    mst: "Árvores geradoras mínimas e union-find",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
@@ -29,6 +33,7 @@ const track = {
     "Linear Structures": "Estruturas lineares",
     Trees: "Árvores",
     "Algorithm Design": "Projeto de algoritmos",
+    Graphs: "Grafos",
   } as Record<string, string>,
 };
 

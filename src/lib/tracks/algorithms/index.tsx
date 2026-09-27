@@ -5,7 +5,7 @@
 // C++, from how memory is laid out to graphs. Chapters follow their
 // prerequisites; the Math track supplies logarithms, series and probability.
 //
-// Planned order (the rest is added one batch at a time):
+// Sections (complete, 24 chapters):
 //   Foundations        memory, complexity, recursion
 //   Searching & Sorting searching, elementary-sorts, merge-sort, quicksort, linear-sorts
 //   Linear Structures  dynamic-array, linked-list, stacks, queues, hash-table
@@ -20,6 +20,7 @@ const SORTING = "Searching & Sorting";
 const LINEAR = "Linear Structures";
 const TREES = "Trees";
 const DESIGN = "Algorithm Design";
+const GRAPHS = "Graphs";
 
 export const algorithmsChapters: Chapter[] = [
   { id: "memory",     section: FOUNDATIONS, title: "Memory, Arrays & Pointers", minRead: 20, load: () => import("./chapters/memory").then((m) => m.MemoryContent) },
@@ -46,4 +47,9 @@ export const algorithmsChapters: Chapter[] = [
 
   { id: "greedy",              section: DESIGN, title: "Greedy Algorithms",   minRead: 26, load: () => import("./chapters/greedy").then((m) => m.GreedyContent) },
   { id: "dynamic-programming", section: DESIGN, title: "Dynamic Programming", minRead: 28, load: () => import("./chapters/dynamic-programming").then((m) => m.DynamicProgrammingContent) },
+
+  { id: "graphs",          section: GRAPHS, title: "Graphs & Their Representations", minRead: 22, load: () => import("./chapters/graphs").then((m) => m.GraphsContent) },
+  { id: "graph-traversal", section: GRAPHS, title: "Breadth-First & Depth-First Search", minRead: 26, load: () => import("./chapters/graph-traversal").then((m) => m.GraphTraversalContent) },
+  { id: "shortest-paths",  section: GRAPHS, title: "Shortest Paths",                 minRead: 28, load: () => import("./chapters/shortest-paths").then((m) => m.ShortestPathsContent) },
+  { id: "mst",             section: GRAPHS, title: "Minimum Spanning Trees & Union-Find", minRead: 24, load: () => import("./chapters/mst").then((m) => m.MstContent) },
 ];
