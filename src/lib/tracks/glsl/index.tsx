@@ -21,6 +21,7 @@ export const glslChapters: Chapter[] = [
   { id: "types",       section: BASICS,  title: "Types & Vectors",             minRead: 11, load: () => import("./chapters/types").then((m) => m.TypesContent) },
   { id: "builtins",    section: BASICS,  title: "Built-in Functions",          minRead: 13, load: () => import("./chapters/builtins").then((m) => m.BuiltinsContent) },
   { id: "fragcoord",   section: BASICS,  title: "Fragment Coordinates & UV",   minRead: 9,  load: () => import("./chapters/fragcoord").then((m) => m.FragCoordContent) },
+  { id: "builtin-vars", section: BASICS, title: "Built-in Variables",          minRead: 14, load: () => import("./chapters/builtin-vars").then((m) => m.BuiltinVarsContent) },
   { id: "playground",  section: BASICS,  title: "The Shader Playground",       minRead: 8,  load: () => import("./chapters/playground").then((m) => m.PlaygroundContent) },
   // ── Shapes, Patterns & Colour ───────────────────────────────────────────
   { id: "sdf",         section: SHAPES,  title: "Signed Distance Functions",   minRead: 15, load: () => import("./chapters/sdf").then((m) => m.SDFContent) },

@@ -2,6 +2,7 @@
 
 import type { LessonText } from "@/lib/i18n/lessons";
 import track from "./_track";
+import builtinVars from "./builtin-vars";
 import builtins from "./builtins";
 import effects from "./effects";
 import fragcoord from "./fragcoord";
@@ -15,7 +16,7 @@ import shapes from "./shapes";
 import types from "./types";
 
 const bundle: LessonText = {
-  strings: { ...builtins, ...effects, ...fragcoord, ...noise, ...playground, ...raymarching, ...raytracing, ...sdf, ...shaderClass, ...shapes, ...types },
+  strings: { ...builtinVars, ...builtins, ...effects, ...fragcoord, ...noise, ...playground, ...raymarching, ...raytracing, ...sdf, ...shaderClass, ...shapes, ...types },
   titles: track.titles,
   sections: track.sections,
 };

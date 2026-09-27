@@ -79,6 +79,7 @@ export const openGLChapters: Chapter[] = [
   { id: "blending",        section: ADVANCED,        title: "Blending & Transparency",   minRead: 10, load: () => import("./chapters/advanced/blending").then((m) => m.BlendingContent) },
   { id: "framebuffers",    section: ADVANCED,        title: "Framebuffers & Post-FX",    minRead: 12, load: () => import("./chapters/advanced/framebuffers").then((m) => m.FramebuffersContent) },
   { id: "cubemaps",        section: ADVANCED,        title: "Cubemaps & Skybox",         minRead: 32, load: () => import("./chapters/advanced/cubemaps").then((m) => m.CubemapsContent) },
+  { id: "buffer-data",     section: ADVANCED,        title: "Buffer Data: Update, Map, Copy", minRead: 10, load: () => import("./chapters/advanced/buffers").then((m) => m.BufferDataContent) },
   { id: "instancing",      section: ADVANCED,        title: "Instancing",                minRead: 9,  load: () => import("./chapters/advanced/instancing").then((m) => m.InstancingContent) },
   { id: "particles",       section: ADVANCED,        title: "Particles",                 minRead: 21, load: () => import("./chapters/particles").then((m) => m.ParticlesContent) },
   { id: "ubo",             section: ADVANCED,        title: "Uniform Buffer Objects",    minRead: 10, load: () => import("./chapters/advanced/ubo").then((m) => m.UBOContent) },

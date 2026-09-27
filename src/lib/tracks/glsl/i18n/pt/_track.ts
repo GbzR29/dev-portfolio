@@ -5,6 +5,7 @@ const track = {
     types: "Tipos e vetores",
     builtins: "Funções embutidas",
     fragcoord: "Coordenadas de fragmento e UV",
+    "builtin-vars": "Variáveis embutidas",
     playground: "O playground de shaders",
     sdf: "Funções de distância com sinal",
     patterns: "Padrões e transformações",

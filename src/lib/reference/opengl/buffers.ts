@@ -161,6 +161,145 @@ glBufferSubData(GL_UNIFORM_BUFFER, 64, sizeof(glm::mat4), glm::value_ptr(view));
     khronos: `${KHR}glBufferSubData.xhtml`,
   },
   {
+    name: "glMapBuffer",
+    category: "buffers",
+    since: "GL 1.5",
+    signature: "void *glMapBuffer(GLenum target, GLenum access);",
+    summary: {
+      en: "Returns a CPU pointer through which you can read or write a whole buffer.",
+      pt: "Devolve um ponteiro na CPU pelo qual você lê ou escreve um buffer inteiro.",
+    },
+    description: {
+      en: "Instead of preparing data in your own array and copying it with glBufferSubData, you write straight into the buffer's storage through the returned pointer. That saves a copy when you generate the data yourself.\n\nThe buffer stays mapped until glUnmapBuffer. While it is mapped it cannot be used for drawing, and after unmapping the pointer must not be used again.",
+      pt: "Em vez de preparar os dados num array seu e copiá-los com glBufferSubData, você escreve direto no armazenamento do buffer pelo ponteiro devolvido. Isso poupa uma cópia quando você mesmo gera os dados.\n\nO buffer fica mapeado até glUnmapBuffer. Enquanto estiver mapeado ele não pode ser usado para desenhar, e depois de desmapear o ponteiro não pode mais ser usado.",
+    },
+    params: [
+      { name: "target", type: "GLenum", desc: { en: "Slot whose bound buffer is mapped.", pt: "Slot cujo buffer ligado é mapeado." } },
+      {
+        name: "access", type: "GLenum", desc: { en: "What you will do through the pointer.", pt: "O que você vai fazer pelo ponteiro." },
+        values: [
+          { name: "GL_WRITE_ONLY", desc: { en: "Write only — the fastest; the old contents never have to be copied to you.", pt: "Só escrita — o mais rápido; o conteúdo antigo nunca precisa ser copiado para você." } },
+          { name: "GL_READ_ONLY", desc: { en: "Read only.", pt: "Só leitura." } },
+          { name: "GL_READ_WRITE", desc: { en: "Both.", pt: "As duas coisas." } },
+        ],
+      },
+    ],
+    returns: { en: "The pointer, or NULL on failure.", pt: "O ponteiro, ou NULL em caso de falha." },
+    notes: [
+      { en: "Writing through a GL_READ_ONLY mapping, or reading through GL_WRITE_ONLY, is undefined behaviour.", pt: "Escrever por um mapeamento GL_READ_ONLY, ou ler por um GL_WRITE_ONLY, é comportamento indefinido." },
+      { en: "If the GPU is still using the buffer, mapping waits for it. For per-frame data prefer glMapBufferRange with explicit flags.", pt: "Se a GPU ainda estiver usando o buffer, mapear espera por ela. Para dados por frame prefira glMapBufferRange com flags explícitas." },
+    ],
+    errors: [
+      { code: "GL_INVALID_OPERATION", when: { en: "No buffer bound, or the buffer is already mapped.", pt: "Nenhum buffer ligado, ou o buffer já está mapeado." } },
+    ],
+    example: `glBindBuffer(GL_ARRAY_BUFFER, vbo);
+auto* dst = static_cast<Vertex*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY));
+generateTerrain(dst, count);
+glUnmapBuffer(GL_ARRAY_BUFFER);`,
+    related: ["glMapBufferRange", "glUnmapBuffer", "glBufferSubData"],
+    khronos: `${KHR}glMapBuffer.xhtml`,
+  },
+  {
+    name: "glMapBufferRange",
+    category: "buffers",
+    since: "GL 3.0",
+    signature: "void *glMapBufferRange(GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);",
+    summary: {
+      en: "Maps part of a buffer, with flags that say exactly what may happen to its old contents.",
+      pt: "Mapeia parte de um buffer, com flags que dizem exatamente o que pode acontecer com o conteúdo antigo.",
+    },
+    description: {
+      en: "Like glMapBuffer, but for a byte range, and with access bits instead of a single enum. The extra bits let you promise things the driver cannot know: that the old data in the range can be thrown away, or that you will not touch memory the GPU is still reading.\n\nIt is the building block of every efficient streaming scheme; the Buffer Streaming & Sync chapter shows how to combine it with fences.",
+      pt: "Como glMapBuffer, mas para um intervalo de bytes e com bits de acesso em vez de um único enum. Os bits extras deixam você prometer coisas que o driver não tem como saber: que os dados antigos do intervalo podem ser descartados, ou que você não vai tocar na memória que a GPU ainda está lendo.\n\nÉ a peça básica de todo esquema de streaming eficiente; o capítulo Buffer Streaming & Sync mostra como combiná-lo com fences.",
+    },
+    params: [
+      { name: "target", type: "GLenum", desc: { en: "Slot whose bound buffer is mapped.", pt: "Slot cujo buffer ligado é mapeado." } },
+      { name: "offset", type: "GLintptr", desc: { en: "First byte of the range.", pt: "Primeiro byte do intervalo." } },
+      { name: "length", type: "GLsizeiptr", desc: { en: "Number of bytes to map.", pt: "Número de bytes a mapear." } },
+      {
+        name: "access", type: "GLbitfield", desc: { en: "Bitwise OR of access flags.", pt: "OU bit a bit de flags de acesso." },
+        values: [
+          { name: "GL_MAP_WRITE_BIT / GL_MAP_READ_BIT", desc: { en: "What you will do through the pointer (at least one is required).", pt: "O que você vai fazer pelo ponteiro (pelo menos um é obrigatório)." } },
+          { name: "GL_MAP_INVALIDATE_RANGE_BIT", desc: { en: "The old contents of the range may be discarded.", pt: "O conteúdo antigo do intervalo pode ser descartado." } },
+          { name: "GL_MAP_INVALIDATE_BUFFER_BIT", desc: { en: "The old contents of the whole buffer may be discarded.", pt: "O conteúdo antigo do buffer inteiro pode ser descartado." } },
+          { name: "GL_MAP_UNSYNCHRONIZED_BIT", desc: { en: "Do not wait for the GPU — you guarantee it is not using this range.", pt: "Não espere pela GPU — você garante que ela não está usando esse intervalo." } },
+          { name: "GL_MAP_FLUSH_EXPLICIT_BIT", desc: { en: "You will report the written sub-ranges yourself with glFlushMappedBufferRange.", pt: "Você mesmo vai informar os sub-intervalos escritos com glFlushMappedBufferRange." } },
+        ],
+      },
+    ],
+    returns: { en: "A pointer to the start of the range, or NULL on failure.", pt: "Um ponteiro para o início do intervalo, ou NULL em caso de falha." },
+    notes: [
+      { en: "The invalidate bits cannot be combined with GL_MAP_READ_BIT.", pt: "Os bits de invalidação não podem ser combinados com GL_MAP_READ_BIT." },
+    ],
+    errors: [
+      { code: "GL_INVALID_VALUE", when: { en: "offset or length is negative, or the range goes past the end of the buffer.", pt: "offset ou length é negativo, ou o intervalo passa do fim do buffer." } },
+      { code: "GL_INVALID_OPERATION", when: { en: "The buffer is already mapped, neither read nor write was requested, or the flags contradict each other.", pt: "O buffer já está mapeado, não foi pedida nem leitura nem escrita, ou as flags se contradizem." } },
+    ],
+    example: `glBindBuffer(GL_ARRAY_BUFFER, vbo);
+void* p = glMapBufferRange(GL_ARRAY_BUFFER, 0, bytes,
+                           GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+std::memcpy(p, vertices.data(), bytes);
+glUnmapBuffer(GL_ARRAY_BUFFER);`,
+    related: ["glMapBuffer", "glUnmapBuffer", "glBufferSubData"],
+    khronos: `${KHR}glMapBufferRange.xhtml`,
+  },
+  {
+    name: "glUnmapBuffer",
+    category: "buffers",
+    since: "GL 1.5",
+    signature: "GLboolean glUnmapBuffer(GLenum target);",
+    summary: {
+      en: "Ends a mapping and gives the buffer back to OpenGL.",
+      pt: "Encerra um mapeamento e devolve o buffer ao OpenGL.",
+    },
+    description: {
+      en: "After this call the pointer from glMapBuffer or glMapBufferRange is invalid, and the buffer can be used for drawing again.",
+      pt: "Depois desta chamada o ponteiro de glMapBuffer ou glMapBufferRange fica inválido, e o buffer pode voltar a ser usado para desenhar.",
+    },
+    params: [
+      { name: "target", type: "GLenum", desc: { en: "Slot whose bound buffer is unmapped.", pt: "Slot cujo buffer ligado é desmapeado." } },
+    ],
+    returns: {
+      en: "GL_TRUE normally. GL_FALSE if the contents became corrupt while mapped (rare, e.g. after a display mode change) — upload the data again.",
+      pt: "GL_TRUE normalmente. GL_FALSE se o conteúdo se corrompeu enquanto estava mapeado (raro, por exemplo após uma troca de modo de vídeo) — envie os dados de novo.",
+    },
+    errors: [
+      { code: "GL_INVALID_OPERATION", when: { en: "The buffer is not mapped.", pt: "O buffer não está mapeado." } },
+    ],
+    related: ["glMapBuffer", "glMapBufferRange"],
+    khronos: `${KHR}glMapBuffer.xhtml`,
+  },
+  {
+    name: "glCopyBufferSubData",
+    category: "buffers",
+    since: "GL 3.1",
+    signature: "void glCopyBufferSubData(GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr size);",
+    summary: {
+      en: "Copies bytes from one buffer to another on the GPU.",
+      pt: "Copia bytes de um buffer para outro na GPU.",
+    },
+    description: {
+      en: "The data never passes through the CPU. The two buffers are named by the targets they are bound to; because two buffers cannot share one target, OpenGL provides GL_COPY_READ_BUFFER and GL_COPY_WRITE_BUFFER, which exist only for copies and never disturb the bindings your draws use.\n\nTypical uses: growing a buffer while keeping its contents, duplicating a mesh, and moving data from a staging buffer into its final place.",
+      pt: "Os dados nunca passam pela CPU. Os dois buffers são indicados pelos targets aos quais estão ligados; como dois buffers não podem dividir um target, o OpenGL oferece GL_COPY_READ_BUFFER e GL_COPY_WRITE_BUFFER, que existem só para cópias e nunca atrapalham os bindings que seus draws usam.\n\nUsos típicos: aumentar um buffer mantendo o conteúdo, duplicar uma malha e mover dados de um staging buffer para o lugar definitivo.",
+    },
+    params: [
+      { name: "readTarget", type: "GLenum", desc: { en: "Slot of the source buffer (usually GL_COPY_READ_BUFFER).", pt: "Slot do buffer de origem (normalmente GL_COPY_READ_BUFFER)." } },
+      { name: "writeTarget", type: "GLenum", desc: { en: "Slot of the destination buffer (usually GL_COPY_WRITE_BUFFER).", pt: "Slot do buffer de destino (normalmente GL_COPY_WRITE_BUFFER)." } },
+      { name: "readOffset", type: "GLintptr", desc: { en: "First byte to read.", pt: "Primeiro byte a ler." } },
+      { name: "writeOffset", type: "GLintptr", desc: { en: "First byte to write.", pt: "Primeiro byte a escrever." } },
+      { name: "size", type: "GLsizeiptr", desc: { en: "Number of bytes to copy.", pt: "Número de bytes a copiar." } },
+    ],
+    errors: [
+      { code: "GL_INVALID_VALUE", when: { en: "A range goes past the end of its buffer, or source and destination overlap within the same buffer.", pt: "Um intervalo passa do fim do seu buffer, ou origem e destino se sobrepõem no mesmo buffer." } },
+      { code: "GL_INVALID_OPERATION", when: { en: "No buffer is bound to one of the targets, or one of them is mapped.", pt: "Não há buffer ligado a um dos targets, ou um deles está mapeado." } },
+    ],
+    example: `glBindBuffer(GL_COPY_READ_BUFFER,  oldVbo);
+glBindBuffer(GL_COPY_WRITE_BUFFER, biggerVbo);
+glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, oldSize);`,
+    related: ["glBufferSubData", "glBufferData", "glMapBufferRange"],
+    khronos: `${KHR}glCopyBufferSubData.xhtml`,
+  },
+  {
     name: "glGetBufferSubData",
     category: "buffers",
     since: "GL 1.5",

@@ -46,6 +46,7 @@ const track = {
     blending: "Blending e transparência",
     framebuffers: "Framebuffers e pós-efeitos",
     cubemaps: "Cubemaps e skybox",
+    "buffer-data": "Dados de buffer: atualizar, mapear, copiar",
     instancing: "Instancing",
     particles: "Partículas",
     ubo: "Uniform Buffer Objects",
