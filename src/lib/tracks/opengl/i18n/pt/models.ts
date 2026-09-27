@@ -21,6 +21,7 @@ const text: Record<string, string> = {
   oglModel_cacheTitle: "Fazendo cache das texturas",
   oglModel_cacheBody: "Um modelo com trinta malhas muitas vezes compartilha um único atlas entre todas. Sem cache, você decodifica e envia o mesmo PNG trinta vezes, o que transforma um carregamento rápido num lento e desperdiça trinta vezes a VRAM. Use o caminho do arquivo como chave do cache.",
   oglModel_formatTip: "Prefira glTF 2.0 em trabalhos novos. É o único formato popular com uma especificação precisa, guarda parâmetros de material PBR nativamente, e a sua variante binária carrega sem nenhum parsing de texto. OBJ não tem esqueleto nem PBR; FBX é proprietário, e cada exportador discorda sobre unidades e orientação dos eixos.",
+  oglModel_transformNote: "O processNode acima achata a árvore e ignora o mTransformation de cada nó. Isso funciona quando toda malha já está guardada em model space, como na maioria dos arquivos OBJ de um objeto só. Uma cena exportada do Blender, ou um glTF cujas partes são posicionadas pelos nós, sai com todas as partes empilhadas na origem. Para manter o posicionamento, passe a matriz acumulada do pai adiante na recursão, global = parentGlobal × node->mTransformation, e guarde-a com cada malha como parte da sua model matrix. O Assimp guarda matrizes em row-major e o GLM em column-major, então transponha cada uma ao converter.",
 };
 
 export default text;

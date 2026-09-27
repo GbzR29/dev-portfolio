@@ -17,7 +17,7 @@ const text: Record<string, string> = {
   ch08_viewBody: "glm::lookAt recibe posición de cámara, punto de mira y dirección arriba.",
   ch08_projTitle: "Matriz de proyección — perspectiva",
   ch08_projBody: "glm::perspective crea un frustum. Argumentos: FOV vertical, relación de aspecto, planos near y far.",
-  ch08_nearWarn: "Nunca establezca el plano near en 0. Causa z-fighting por pérdida de precisión del depth buffer.",
+  ch08_nearWarn: "Nunca pongas el plano near en 0. Sustituye n = 0 en la matriz de abajo y la tercera fila queda (0, 0, −1, 0): z_clip = −z = w, así que tras la división todos los puntos caen en z_ndc = 1 y el depth buffer ya no puede distinguir nada. Incluso un near pequeño y positivo sale caro, porque la precisión de profundidad se concentra justo delante de la cámara. Aléjalo tanto como la escena permita (0.1 es un valor habitual); el capítulo Depth Testing muestra por qué.",
   ch08_shaderTitle: "Aplicando MVP en el vertex shader",
   ch08_animTip: "Para animar rotación, multiplica el ángulo por glfwGetTime() cada frame.",
 };

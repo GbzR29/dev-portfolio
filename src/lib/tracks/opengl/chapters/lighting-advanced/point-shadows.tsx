@@ -68,7 +68,7 @@ float shadow  = current - bias > closest ? 1.0 : 0.0;`}</CodeBlock>
 
       <Callout type="tip" t={t}>
         {tx(t, "oglPShadow_gsTip",
-          "Six passes per light is expensive. Desktop OpenGL can do it in one pass with a geometry shader that emits each triangle six times, choosing the face through gl_Layer, or with instanced rendering and gl_Layer in the vertex shader (GL 4.x / ARB_shader_viewport_layer_array).")}
+          "Six passes per light is expensive. Desktop OpenGL can do it in one pass with a geometry shader that emits each triangle six times, choosing the face through gl_Layer, or with instanced rendering and gl_Layer written in the vertex shader. That last option is not core in any OpenGL version; it needs the ARB_shader_viewport_layer_array extension, which current desktop drivers support.")}
       </Callout>
 
       <KeyIdeas t={t} id="oglPShadow" items={[

@@ -1,7 +1,7 @@
 // ZH text for src/lib/tracks/opengl/chapters/vbo.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
-  ch02_intro: "顶点数据是CPU RAM中的C++数组，GPU无法直接访问RAM。VBO是OpenGL提供的将数据复制到GPU显存的机制。",
+  ch02_intro: "顶点数据最初是RAM中的一个C++数组，属于你的程序。顶点着色器无法读取C++数组，它读取的是由OpenGL管理的缓冲对象，驱动会把它放在最快的位置：独立显卡上通常是GPU自己的显存（VRAM），集成显卡上则是系统RAM中的共享区域。顶点缓冲对象（VBO）就是这种缓冲。你把数组复制进去一次，之后GPU直接读取它，CPU不需要逐顶点做任何工作。",
   ch02_flowTitle: "数据流",
   ch02_flowAfter: "定义数据、在GPU创建缓冲区、用glBufferData上传、发出绘制调用，GPU完成其余工作。",
   ch02_stepTitle: "逐步创建VBO",
@@ -24,7 +24,7 @@ const text: Record<string, string> = {
   ch02_interpretWarn: "第一个参数（0）必须与顶点着色器中的layout (location = 0)匹配。",
   ch02_fullTitle: "完整的VBO设置",
   ch02_nextTitle: "为什么不应在此停止",
-  ch02_nextBody: "下一章介绍VAO，允许你记录所有绑定和属性规格一次，然后用单次绑定重放。",
+  ch02_nextBody: "就缓冲本身而言，上面的代码是完整的，但在Core profile中它仍然什么都画不出来。你用glVertexAttribPointer描述的属性布局必须存放在某个地方，而在Core中这个地方必须是顶点数组对象（VAO）。没有绑定VAO时，属性调用和绘制调用都会以GL_INVALID_OPERATION失败，唯一的症状就是空白屏幕。（旧的兼容性上下文内置了默认VAO，所以很多老教程会省略它。）下一章会加入VAO。额外的好处是：它把整个布局记录一次，之后绘制网格只需一次绑定，而不必重新描述每个属性。",
 };
 
 export default text;

@@ -132,7 +132,7 @@ glm::mat4 projection = glm::perspective(
 
       <Callout type="warn" t={t}>
         {tx(t, "ch08_nearWarn",
-          "Never set the near plane to 0. It causes depth precision issues (z-fighting) because the depth buffer precision is distributed between near and far."
+          "Never set the near plane to 0. Put n = 0 into the matrix below and the third row becomes (0, 0, −1, 0): z_clip = −z = w, so after the divide every point lands on z_ndc = 1 and the depth buffer can no longer tell anything apart. Even a small positive near plane is costly, because depth precision is concentrated right in front of the camera. Push it out as far as the scene allows (0.1 is a common default); the Depth Testing chapter shows why."
         )}
       </Callout>
 

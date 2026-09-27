@@ -25,7 +25,7 @@ export function VAOContent({ t }: { t: TrackTranslations }) {
       </p>
 
       <H2>{tx(t, "ch03_createTitle", "Creating and using a VAO")}</H2>
-      <CodeBlock lang="cpp" filename="main.cpp" t={t}>{`// 1. Create and bind the VAO FIRST — before touching any VBO
+      <CodeBlock lang="cpp" filename="main.cpp" t={t}>{`// 1. Create and bind the VAO — it must be bound before the attribute calls below
 unsigned int VAO;
 glGenVertexArrays(1, &VAO);
 glBindVertexArray(VAO);  // start recording
@@ -54,7 +54,7 @@ glBindVertexArray(0);`}</CodeBlock>
 
       <Callout type="tip" t={t}>
         {tx(t, "ch03_goldenRule",
-          "The golden rule: create your VAO before you set up your VBOs. If you bind the VBO first and the VAO after, the VAO will not have recorded the attribute pointers."
+          "The rule that matters: the VAO must be bound when you call glVertexAttribPointer and glEnableVertexAttribArray, because those are the calls it records. Creating the VBO or filling it with glBufferData can happen at any time, before or after. A VBO that is merely bound to GL_ARRAY_BUFFER is not recorded. What gets stored is the buffer that was bound at the moment glVertexAttribPointer ran, attached to that attribute. Binding the VAO first, as above, is simply the easiest way to never get this wrong."
         )}
       </Callout>
 

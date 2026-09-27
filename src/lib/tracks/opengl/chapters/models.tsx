@@ -43,7 +43,7 @@ export function ModelLoadingContent({ t }: { t: TrackTranslations }) {
 Assimp::Importer importer;
 const aiScene* scene = importer.ReadFile(path,
       aiProcess_Triangulate            // quads and n-gons become triangles
-    | aiProcess_FlipUVs                // OBJ/FBX origin is top-left, OpenGL's is bottom-left
+    | aiProcess_FlipUVs                // images load top row first; OpenGL's v = 0 is the bottom
     | aiProcess_CalcTangentSpace       // needed for normal mapping
     | aiProcess_GenSmoothNormals       // only if the file has none
     | aiProcess_JoinIdenticalVertices  // real indexing instead of duplicates
@@ -88,12 +88,11 @@ public:
     }
 
     void draw(Shader& shader) const {
-        unsigned diffuseN = 1, specularN = 1;
+        std::unordered_map<std::string, unsigned> count;   // per type: diffuse1, normal1, ...
         for (unsigned i = 0; i < textures.size(); ++i) {
             glActiveTexture(GL_TEXTURE0 + i);
             const std::string number =
-                textures[i].type == "texture_diffuse"  ? std::to_string(diffuseN++)
-                                                       : std::to_string(specularN++);
+                std::to_string(++count[textures[i].type]);
             shader.setInt(textures[i].type + number, (int)i);
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }
@@ -188,6 +187,12 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 
     return Mesh{std::move(vertices), std::move(indices), std::move(textures)};
 }`}</CodeBlock>
+
+      <Callout type="info" t={t}>
+        {tx(t, "oglModel_transformNote",
+          "processNode above flattens the tree and ignores each node's mTransformation. That is fine when every mesh is already stored in model space, as in most single-object OBJ files. A scene exported from Blender or a glTF whose parts are placed by their nodes will instead come out with every part piled up at the origin. To keep the placement, pass the parent's accumulated matrix down the recursion, global = parentGlobal × node->mTransformation, and store it with each mesh as part of its model matrix. Assimp stores matrices row-major and GLM column-major, so transpose each one when converting."
+        )}
+      </Callout>
 
       <Callout type="warn" t={t}>
         {tx(t, "oglModel_nullWarn",

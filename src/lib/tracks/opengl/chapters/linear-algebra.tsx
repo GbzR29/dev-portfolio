@@ -36,7 +36,7 @@ export function LinearAlgebraContent({ t }: { t: TrackTranslations }) {
 
       <Equation label={tx(t, "ch08la_dotLabel", "Dot product")} glsl="float d = dot(a, b);" glm="float d = glm::dot(a, b);"
         notes={[
-          tx(t, "ch08la_dotNote1", "→ result = 1: vectors parallel (same direction)"),
+          tx(t, "ch08la_dotNote1", "→ result = |a||b| (= 1 for unit vectors): parallel, same direction"),
           tx(t, "ch08la_dotNote2", "→ result = 0: vectors perpendicular (90°)"),
           tx(t, "ch08la_dotNote3", "→ result < 0: vectors opposing (> 90°)"),
           tx(t, "ch08la_dotUse", "Use: Phong diffuse lighting — dot(normal, lightDir) gives brightness"),
@@ -185,7 +185,7 @@ vec3 transformedNormal = mat3(uModel) * aNormal;
 
       <Callout type="info" t={t}>
         {tx(t, "ch08la_wNote",
-          "After the vertex shader, the GPU automatically divides x, y, z by w (perspective divide). For regular geometry w=1 so nothing changes. For perspective projection, the projection matrix sets w to the original z value — the divide then makes far objects appear smaller. This is how perspective works mathematically."
+          "After the vertex shader, the GPU automatically divides x, y, z by w (perspective divide). For regular geometry w=1 so nothing changes. For perspective projection, the projection matrix sets w to −z, the distance in front of the camera (view space looks down −Z, so z itself is negative there). The divide then makes far objects appear smaller. This is how perspective works mathematically."
         )}
       </Callout>
 
@@ -216,7 +216,7 @@ vec3 transformedNormal = mat3(uModel) * aNormal;
           {
             step: "3", label: tx(t, "ch08la_step3Title", "Projection matrix (P)"),
             from: tx(t, "ch08la_step3From", "Camera space"), to: tx(t, "ch08la_step3To", "Clip space → NDC"),
-            desc: tx(t, "ch08la_step3Desc", "Creates perspective (or orthographic). Sets w = original z so the GPU divide makes far objects smaller."),
+            desc: tx(t, "ch08la_step3Desc", "Creates perspective (or orthographic). Sets w = −z (the distance in front of the camera) so the GPU divide makes far objects smaller."),
             code: "glm::mat4 P = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);",
             color: "purple",
           },

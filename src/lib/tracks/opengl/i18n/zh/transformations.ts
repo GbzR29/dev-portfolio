@@ -17,7 +17,7 @@ const text: Record<string, string> = {
   ch08_viewBody: "glm::lookAt接受相机位置、观察点和向上方向三个向量。",
   ch08_projTitle: "投影矩阵——透视",
   ch08_projBody: "glm::perspective创建视锥体，远处物体显得更小。参数：垂直FOV、宽高比、近远裁剪面。",
-  ch08_nearWarn: "近裁剪面不要设为0，会导致z-fighting，因为深度缓冲精度在near到far间分布。",
+  ch08_nearWarn: "近平面永远不要设为0。把n = 0代入下面的矩阵，第三行变成(0, 0, −1, 0)：z_clip = −z = w，于是透视除法之后所有点都落在z_ndc = 1，深度缓冲再也无法区分任何东西。即使是很小的正值near也代价不小，因为深度精度集中在相机正前方。在场景允许的范围内尽量把它推远（0.1是常见默认值）；“深度测试”一章会解释原因。",
   ch08_shaderTitle: "在顶点着色器中应用MVP",
   ch08_animTip: "将角度乘以glfwGetTime()可实现每帧旋转动画。",
 };

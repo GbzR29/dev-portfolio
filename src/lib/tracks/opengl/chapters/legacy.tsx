@@ -21,8 +21,11 @@ export function LegacyContent({ t }: { t: TrackTranslations }) {
         headers={["Version", "Year", "Key addition"]}
         rows={[
           ["1.0",  "1992", tx(t, "ch00_v10",  "Immediate Mode — glBegin/glEnd, fixed-function pipeline")],
+          ["1.1",  "1997", tx(t, "ch00_v11",  "Vertex arrays — glDrawArrays draws a whole array in one call")],
+          ["1.5",  "2003", tx(t, "ch00_v15",  "Vertex Buffer Objects — vertex data can live in GPU-managed memory")],
           ["2.0",  "2004", tx(t, "ch00_v20",  "GLSL shaders introduced — but still optional, legacy intact")],
           ["3.0",  "2008", tx(t, "ch00_v30",  "Immediate Mode marked deprecated")],
+          ["3.1",  "2009", tx(t, "ch00_v31",  "Deprecated features removed from the core specification")],
           ["3.2",  "2009", tx(t, "ch00_v32",  "Core Profile introduced — a clean break from legacy")],
           ["4.5",  "2014", tx(t, "ch00_v45",  "Direct State Access (DSA) — no more blind binding")],
           ["4.6",  "2017", tx(t, "ch00_v46",  "Current version — SPIR-V shaders, last major release")],
@@ -59,9 +62,9 @@ glEnd();`}</CodeBlock>
       <p>{tx(t, "ch00_whyBadBody", "The problems were architectural, not superficial:")}</p>
       <ul className="space-y-3 ml-1">
         {[
-          [tx(t, "ch00_bad1title", "CPU-GPU bottleneck"), tx(t, "ch00_bad1body", "Every glVertex3f call crosses the CPU-GPU boundary. 1 million vertices = 1 million function calls. The bus was the bottleneck, not the GPU.")],
-          [tx(t, "ch00_bad2title", "Zero parallelism"), tx(t, "ch00_bad2body", "The GPU can process thousands of vertices in parallel, but immediate mode fed them one at a time. 99% of GPU potential was wasted.")],
-          [tx(t, "ch00_bad3title", "Fixed-function pipeline"), tx(t, "ch00_bad3body", "Lighting and blending were hardcoded into the driver. No custom math, no custom effects.")],
+          [tx(t, "ch00_bad1title", "CPU-GPU bottleneck"), tx(t, "ch00_bad1body", "Every vertex cost at least one function call on the CPU, every frame. The driver collected them into buffers, so they did not cross to the GPU one by one, but a million vertices still meant millions of calls and all of the data sent again each frame. The CPU ran out of time long before the GPU did.")],
+          [tx(t, "ch00_bad2title", "Nothing stayed on the GPU"), tx(t, "ch00_bad2body", "A level that never changes was still submitted from scratch every frame, because glBegin/glEnd kept nothing between frames. Display lists (1.0) and vertex arrays (1.1) eased this, and VBOs (1.5) finally let the data stay in GPU-managed memory — the path that became the only one in Core.")],
+          [tx(t, "ch00_bad3title", "Fixed-function pipeline"), tx(t, "ch00_bad3body", "Vertex transform, lighting and texturing were fixed functions with switches and parameters. You could configure the built-in Gouraud lighting, but not write your own. (Blending and the depth and stencil tests are still fixed-function today: only the stages that compute vertices and colours became programmable.)")],
           [tx(t, "ch00_bad4title", "Stateful color model"), tx(t, "ch00_bad4body", "glColor3f set a global 'current color'. Forgetting to set it before a vertex silently used the last color — notoriously hard bugs.")],
         ].map(([title, body], i) => (
           <li key={i} className="flex items-start gap-3">
@@ -106,7 +109,7 @@ glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // ← this is t
         rows={[
           [tx(t, "ch00_old1", "glVertex per vertex"), tx(t, "ch00_new1", "VBO — upload all at once"), tx(t, "ch00_why1", "One bus transfer instead of N")],
           [tx(t, "ch00_old2", "Fixed lighting model"), tx(t, "ch00_new2", "GLSL fragment shader"), tx(t, "ch00_why2", "Programmable — any math you want")],
-          [tx(t, "ch00_old3", "glColor / global state"), tx(t, "ch00_new3", "Vertex attributes + uniforms"), tx(t, "ch00_why3", "Explicit, per-draw, no hidden state")],
+          [tx(t, "ch00_old3", "glColor / global state"), tx(t, "ch00_new3", "Vertex attributes + uniforms"), tx(t, "ch00_why3", "Named inputs declared in the shader, instead of one implicit 'current colour'")],
         ]}
       />
 

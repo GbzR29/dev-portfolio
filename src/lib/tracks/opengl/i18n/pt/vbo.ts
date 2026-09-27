@@ -1,7 +1,7 @@
 // PT text for src/lib/tracks/opengl/chapters/vbo.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
-  ch02_intro: "Seus dados de vértice começam como um array C++ na RAM. A GPU não consegue acessar a RAM diretamente, ela só pode ler da sua própria memória (VRAM). Um VBO é o mecanismo que o OpenGL fornece para copiar esses dados do CPU para a GPU.",
+  ch02_intro: "Seus dados de vértice começam como um array C++ na RAM, em memória que pertence ao seu programa. O vertex shader não consegue ler um array C++. Ele lê de buffer objects gerenciados pelo OpenGL, colocados onde o driver achar mais rápido: normalmente na memória da própria GPU (VRAM) numa placa dedicada, ou numa região compartilhada da RAM do sistema numa GPU integrada. Um Vertex Buffer Object (VBO) é esse tipo de buffer. Você copia seu array para ele uma vez e, a partir daí, a GPU o lê diretamente, sem nenhum trabalho por vértice na CPU.",
   ch02_flowTitle: "O fluxo de dados",
   ch02_flowAfter: "Você define os dados, cria um buffer na GPU, faz o upload com glBufferData e emite um draw call. A GPU faz o resto.",
   ch02_stepTitle: "Criando um VBO passo a passo",
@@ -24,7 +24,7 @@ const text: Record<string, string> = {
   ch02_interpretWarn: "O primeiro argumento (0) deve corresponder à declaração layout (location = 0) no seu vertex shader. Se não corresponderem, o shader lê dados inválidos.",
   ch02_fullTitle: "O setup completo do VBO em um só lugar",
   ch02_nextTitle: "Por que você não deve parar aqui",
-  ch02_nextBody: "O código acima funciona, mas tem um problema: a cada quadro você precisa religar o VBO e especificar de novo o layout dos atributos de vértice. Para um único triângulo tudo bem, mas para uma cena real com centenas de malhas isso fica caro e repetitivo. O próximo capítulo apresenta os Vertex Array Objects (VAOs), que permitem gravar todos os bindings de VBO e especificações de atributos uma vez e depois reproduzi-los com uma única chamada de bind.",
+  ch02_nextBody: "O código acima está completo no que diz respeito ao buffer, mas no Core profile ele ainda não desenha nada. O layout de atributos que você descreve com glVertexAttribPointer precisa ser guardado em algum lugar, e no Core esse lugar tem de ser um Vertex Array Object (VAO). Sem nenhum VAO ligado, as chamadas de atributo e o draw call falham com GL_INVALID_OPERATION, e o único sintoma é uma tela vazia. (Os antigos contextos de compatibilidade tinham um VAO padrão embutido, por isso muitos tutoriais antigos o pulam.) O próximo capítulo adiciona o VAO. De bônus, ele grava o layout inteiro uma vez, e desenhar uma malha depois passa a exigir um único bind em vez de descrever cada atributo de novo.",
 };
 
 export default text;

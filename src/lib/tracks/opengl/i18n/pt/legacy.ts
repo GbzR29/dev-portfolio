@@ -15,11 +15,11 @@ const text: Record<string, string> = {
   ch00_whyBadTitle: "Por que o Modo Imediato foi abandonado",
   ch00_whyBadBody: "Os problemas eram arquiteturais, não superficiais:",
   ch00_bad1title: "Gargalo CPU-GPU",
-  ch00_bad1body: "Cada chamada glVertex3f cruza a fronteira CPU-GPU. 1 milhão de vértices = 1 milhão de chamadas de função. O barramento era o gargalo, não a GPU.",
-  ch00_bad2title: "Zero de paralelismo",
-  ch00_bad2body: "A GPU pode processar milhares de vértices em paralelo, mas o Modo Imediato os enviava um de cada vez. 99% do potencial da GPU era desperdiçado.",
+  ch00_bad1body: "Cada vértice custava pelo menos uma chamada de função na CPU, a cada quadro. O driver juntava essas chamadas em buffers, então elas não iam para a GPU uma a uma, mas um milhão de vértices ainda significava milhões de chamadas e todos os dados reenviados a cada quadro. A CPU ficava sem tempo muito antes da GPU.",
+  ch00_bad2title: "Nada ficava na GPU",
+  ch00_bad2body: "Um cenário que nunca muda era enviado do zero a cada quadro, porque glBegin/glEnd não guardava nada entre quadros. Display lists (1.0) e vertex arrays (1.1) aliviaram isso, e os VBOs (1.5) finalmente deixaram os dados ficarem em memória gerenciada pela GPU — o caminho que virou o único no Core.",
   ch00_bad3title: "Pipeline de função fixa",
-  ch00_bad3body: "Iluminação e blending eram codificados fixos no driver. Sem matemática personalizada, sem efeitos personalizados.",
+  ch00_bad3body: "Transformação de vértices, iluminação e texturização eram funções fixas com chaves e parâmetros. Dava para configurar a iluminação Gouraud embutida, mas não escrever a sua. (Blending e os testes de depth e stencil continuam fixos até hoje: só os estágios que calculam vértices e cores se tornaram programáveis.)",
   ch00_bad4title: "Modelo de cor com estado global",
   ch00_bad4body: "glColor3f definia uma 'cor atual' global. Esquecer de definí-la antes de um vértice silenciosamente usava a última cor — bugs notoriamente difíceis de encontrar.",
   ch00_coreTitle: "Core Profile vs Compatibility Profile",
@@ -46,8 +46,11 @@ const text: Record<string, string> = {
   ch00_why2: "Programável — qualquer matemática que você quiser",
   ch00_old3: "glColor / estado global",
   ch00_new3: "Atributos de vértice + uniforms",
-  ch00_why3: "Explícito, por draw call, sem estado oculto",
+  ch00_why3: "Entradas com nome declaradas no shader, em vez de uma 'cor atual' implícita",
   ch00_gluNote: "Funções GLU como gluPerspective e gluLookAt eram helpers do Modo Imediato. No OpenGL moderno são substituídas pelo GLM — a mesma matemática como objetos mat4 passados como uniforms.",
+  ch00_v11: "Vertex arrays — glDrawArrays desenha um array inteiro em uma chamada",
+  ch00_v15: "Vertex Buffer Objects — os dados de vértice podem morar em memória gerenciada pela GPU",
+  ch00_v31: "Recursos obsoletos removidos da especificação core",
 };
 
 export default text;

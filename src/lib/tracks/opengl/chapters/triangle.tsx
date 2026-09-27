@@ -63,6 +63,12 @@ int main() {
     unsigned int program = glCreateProgram();
     glAttachShader(program, vs); glAttachShader(program, fs);
     glLinkProgram(program);
+    int linked; glGetProgramiv(program, GL_LINK_STATUS, &linked);
+    if (!linked) {
+        char log[512];
+        glGetProgramInfoLog(program, 512, nullptr, log);
+        std::cerr << log << std::endl;
+    }
     glDeleteShader(vs); glDeleteShader(fs);
 
     float vertices[] = {
@@ -99,13 +105,13 @@ int main() {
 
       <Callout type="tip" t={t}>
         {tx(t, "ch05_blackScreenTip",
-          "If you see a black screen with no errors, the most common causes are: the VAO was bound after the VBO setup, the shader location does not match the attribute pointer index, or the viewport was not set with glViewport."
+          "If you see only the clear colour and no errors, the most common causes are: no VAO was bound when glVertexAttribPointer ran (or at draw time), the shader's layout location does not match the attribute index, the shader failed to compile or link (check both logs, as in the code above), or the vertices lie outside the [-1, 1] range of NDC."
         )}
       </Callout>
 
       <Callout type="warn" t={t}>
         {tx(t, "ch05_windingWarn",
-          "The vertex order in your array is not arbitrary — it defines the winding order of the face. OpenGL expects counter-clockwise (CCW) winding for front-facing triangles by default. Chapter 10 explains why this matters for face culling."
+          "The vertex order in your array is not arbitrary — it defines the winding order of the face. OpenGL expects counter-clockwise (CCW) winding for front-facing triangles by default. The Face Winding & Culling chapter explains why this matters."
         )}
       </Callout>
 

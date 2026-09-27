@@ -15,10 +15,11 @@ const text: Record<string, string> = {
   ch01_fragmentShaderBody: "光栅化后，片段着色器每个像素片段运行一次，输出最终颜色，必须声明为out vec4。",
   ch01_colorTip: "GLSL中颜色用0.0到1.0的浮点数表示。转换：将RGB值除以255。",
   ch01_compileTitle: "着色器如何编译",
-  ch01_compileBody: "着色器在运行时由GPU驱动编译，不是在构建时编译。",
+  ch01_compileBody: "着色器不是在构建时由C++编译器编译的。程序运行时把GLSL源码文本交给驱动，驱动在CPU上把它编译成当前实际安装的GPU的机器码。这就是同一个程序能在NVIDIA、AMD和Intel显卡上运行的原因。编译和链接是两个独立的步骤，每一步都可能单独失败：",
   ch01_compileWarn: "开发时务必检查着色器编译错误。GLSL拼写错误会悄无声息地产生黑屏。glGetShaderInfoLog会告诉你失败的行号。",
   ch01_nextTitle: "接下来",
   ch01_nextBody: "现在理解了管线，需要将顶点数据从CPU传输到GPU，这就是VBO的工作。",
+  ch01_ndcInteractiveTip: "拖动上方画布中的任意顶点，或点击它以获得只沿单轴移动的X/Y控制柄。也可以在坐标框中输入精确数值。注意把点移出[-1, 1]边界时它会被裁剪——三角形的边在边界处消失。CCW/CW指示器显示环绕顺序（见“面环绕与剔除”一章）。",
 };
 
 export default text;

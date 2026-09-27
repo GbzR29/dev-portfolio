@@ -77,7 +77,7 @@ glm::vec3 normal = glm::normalize(glm::cross(edge1, edge2));
       </p>
       <ul className="space-y-2 ml-4 list-disc text-[var(--text-muted)] text-sm">
         <li>{tx(t, "ch10_debug1", "Mesh loaded from a file that uses CW winding — flip with glFrontFace(GL_CW) or fix in the exporter")}</li>
-        <li>{tx(t, "ch10_debug2", "Non-uniform scale (negative scale on one axis mirrors faces, reversing winding)")}</li>
+        <li>{tx(t, "ch10_debug2", "Negative scale: mirroring along one axis (or any odd number of axes) reverses the winding. A positive non-uniform scale does not")}</li>
         <li>{tx(t, "ch10_debug3", "Manually defined quads where the two triangles have inconsistent vertex order")}</li>
       </ul>
 

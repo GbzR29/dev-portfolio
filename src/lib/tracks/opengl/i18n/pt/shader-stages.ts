@@ -32,7 +32,7 @@ const text: Record<string, string> = {
   oglGs_w2: "Linhas grossas",
   oglGs_b2: "quads instanciados por segmento, expandidos no vertex shader",
   oglGs_w3: "Renderizar para 6 faces de cubo ou N cascatas",
-  oglGs_b3: "gl_Layer no vertex shader (GL 4.x ARB_shader_viewport_layer_array) + instancing",
+  oglGs_b3: "gl_Layer a partir do vertex shader (extensão ARB_shader_viewport_layer_array) + instancing",
   oglGs_w4: "Fazer culling ou gerar muita geometria",
   oglGs_b4: "compute shader + draw indireto; mesh shaders em GPUs modernas",
   oglGs_w5: "Visões de depuração (normais, wireframe)",

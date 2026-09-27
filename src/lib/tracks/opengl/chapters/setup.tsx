@@ -97,7 +97,9 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);   // enables the debug callback
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);  // required on macOS
+    // macOS stops at OpenGL 4.1: asking for 4.6 makes glfwCreateWindow fail
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);  // required for any Core context on macOS
 #endif
 
     GLFWwindow* window = glfwCreateWindow(1280, 720, "GLApp", nullptr, nullptr);
@@ -125,6 +127,12 @@ int main() {
       <Callout type="warn" t={t}>
         {tx(t, "oglSetup_orderWarn",
           "Three ordering rules cause almost every setup failure. glad.h must be included before glfw3.h, or GLFW pulls in the system GL header first and you get hundreds of redefinition errors. glfwMakeContextCurrent must run before gladLoadGLLoader, because the loader queries the current context. And no gl* call is valid before the loader has run — calling one gives you a null function pointer crash."
+        )}
+      </Callout>
+
+      <Callout type="info" t={t}>
+        {tx(t, "oglSetup_macNote",
+          "On macOS, OpenGL ends at version 4.1. Apple deprecated it in 2018 and never shipped anything newer, so a 4.6 request simply fails. There, write #version 410 core in your shaders and expect some chapters of this track not to run: the debug callback, compute shaders and SSBOs need 4.3, layout(binding = …) needs 4.2, persistent mapping 4.4 and DSA 4.5. The concepts all carry over, and Windows and Linux drivers support 4.6 on any GPU from the last decade."
         )}
       </Callout>
 

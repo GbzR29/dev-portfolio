@@ -31,7 +31,7 @@ void main() { gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0); }`}<
       <H2>{tx(t, "oglUbo_std140Title", "std140 and its padding rules")}</H2>
       <p>
         {tx(t, "oglUbo_std140Body",
-          "std140 guarantees a layout you can predict from the C++ side, at the cost of aggressive padding. The rule that catches everyone: a vec3 is aligned and padded to 16 bytes, exactly like a vec4. Mirroring a GLSL block with a naive C++ struct is where UBO bugs come from."
+          "std140 guarantees a layout you can predict from the C++ side, at the cost of padding. Every member starts at an offset that is a multiple of its alignment. The rule that catches everyone: a vec3 is 12 bytes but must start on a 16-byte boundary, like a vec4. A single float may fill the 4 bytes left after it, but another vec3 may not. In C++ a glm::vec3 only needs 4-byte alignment, so a naive struct packs members tighter than GLSL expects, and every member after the first mismatch is read from the wrong place."
         )}
       </p>
 
@@ -40,22 +40,36 @@ void main() { gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0); }`}<
         rows={[
           ["float / int / bool", "4",  "4"],
           ["vec2",               "8",  "8"],
-          ["vec3",               "12", tx(t, "oglUbo_a3", "16 — padded")],
+          ["vec3",               "12", tx(t, "oglUbo_a3", "16 — a following float may use the last 4 bytes")],
           ["vec4",               "16", "16"],
           ["mat4",               "64", tx(t, "oglUbo_a5", "16 per column")],
           [tx(t, "oglUbo_t6", "array of anything"), "—", tx(t, "oglUbo_a6", "Each element rounded up to 16")],
         ]}
       />
 
-      <CodeBlock lang="cpp" filename="std140_struct.cpp" t={t}>{`// WRONG — 28 bytes in C++, but GLSL expects 48
-struct BadLights { glm::vec3 position; float intensity; glm::vec3 color; };
-
-// RIGHT — mirror the padding explicitly, and static_assert it
-struct alignas(16) LightBlock {
-    glm::vec3 position;  float _pad0;
-    glm::vec3 color;     float intensity;   // packs into the padding slot
+      <CodeBlock lang="cpp" filename="std140_struct.cpp" t={t}>{`// GLSL side
+layout (std140, binding = 1) uniform Light {
+    vec3  position;    // offset  0 (12 bytes)
+    float intensity;   // offset 12 — a float fits in the gap after a vec3
+    vec3  color;       // offset 16 — a vec3 must start on a multiple of 16
+    vec3  direction;   // offset 32 — NOT 28: 28 is not a multiple of 16
 };
-static_assert(sizeof(LightBlock) == 32, "std140 layout mismatch");`}</CodeBlock>
+
+// WRONG — glm::vec3 only needs 4-byte alignment, so direction lands at 28
+struct BadLight {
+    glm::vec3 position; float intensity;
+    glm::vec3 color;
+    glm::vec3 direction;               // C++ offset 28, GLSL reads offset 32
+};
+
+// RIGHT — mirror the padding explicitly, and check it at compile time
+struct LightBlock {
+    glm::vec3 position;  float intensity;   //  0, 12
+    glm::vec3 color;     float _pad0;       // 16, 28
+    glm::vec3 direction; float _pad1;       // 32, 44
+};
+static_assert(offsetof(LightBlock, direction) == 32, "std140 layout mismatch");
+static_assert(sizeof(LightBlock) == 48, "std140 layout mismatch");`}</CodeBlock>
 
       <Callout type="tip" t={t}>
         {tx(t, "oglUbo_vec4Tip",
@@ -87,7 +101,7 @@ glBindBuffer(GL_UNIFORM_BUFFER, 0);`}</CodeBlock>
 
       <Callout type="tip" t={t}>
         {tx(t, "oglUbo_ssboTip",
-          "A UBO is limited to roughly 16 KB and its size is fixed at compile time. When you need more — thousands of lights, a bone palette, arbitrary-length arrays — the answer is a shader storage buffer object. SSBOs are larger, dynamically sized, writable from the shader, and use the tighter std430 layout where a vec3 array is not padded to 16."
+          "A UBO is only guaranteed 16 KB (GL_MAX_UNIFORM_BLOCK_SIZE, commonly 64 KB) and its arrays need a size known at compile time. When you need more — thousands of lights, a bone palette, arbitrary-length arrays — the answer is a shader storage buffer object. SSBOs are far larger, can end in a runtime-sized array, are writable from the shader, and can use the tighter std430 layout, where arrays of floats and vec2s are no longer padded to 16 bytes per element (a vec3 is still aligned to 16)."
         )}
       </Callout>
 

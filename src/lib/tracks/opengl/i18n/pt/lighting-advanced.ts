@@ -92,7 +92,7 @@ const text: Record<string, string> = {
   oglPShadow_linTitle: "Guarde a distância, não a profundidade",
   oglPShadow_linBody: "A profundidade comum não é linear e pertence à projeção de uma face, o que torna desajeitado comparar entre faces. Os shaders de sombra de luz pontual escrevem o seu próprio valor: a distância em linha reta até a luz, dividida pelo plano distante. A passada de iluminação então só precisa de uma subtração e de um comprimento.",
   oglPShadow_testLabel: "O teste",
-  oglPShadow_gsTip: "Seis passadas por luz é caro. O OpenGL de desktop consegue fazer isso numa passada só com um geometry shader que emite cada triângulo seis vezes, escolhendo a face por gl_Layer, ou com renderização instanciada e gl_Layer no vertex shader (GL 4.x / ARB_shader_viewport_layer_array).",
+  oglPShadow_gsTip: "Seis passadas por luz é caro. O OpenGL de desktop consegue fazer isso numa passada só com um geometry shader que emite cada triângulo seis vezes, escolhendo a face por gl_Layer, ou com renderização instanciada e gl_Layer escrito no vertex shader. Esta última opção não é core em nenhuma versão do OpenGL; ela precisa da extensão ARB_shader_viewport_layer_array, que os drivers de desktop atuais suportam.",
   oglPShadow_key0: "Uma luz omnidirecional precisa de um cube map de profundidades: seis vistas de 90°.",
   oglPShadow_key1: "Escreva você mesmo a distância linear / far; compare comprimentos na passada de iluminação.",
   oglPShadow_key2: "O vetor da luz até o fragmento é ao mesmo tempo a distância e a direção de consulta do cube map.",

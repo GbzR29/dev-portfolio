@@ -12,7 +12,7 @@ const text: Record<string, string> = {
   ch10_debugTitle: "Depurando problemas de winding",
   ch10_debugBody: "Faces faltando em um modelo 3D quase sempre significam winding incorreto ou inconsistente. Causas comuns:",
   ch10_debug1: "Mesh carregado de um arquivo que usa winding CW — inverta com glFrontFace(GL_CW) ou corrija no exportador",
-  ch10_debug2: "Escala não uniforme (escala negativa em um eixo espelha as faces, revertendo o winding)",
+  ch10_debug2: "Escala negativa: espelhar em um eixo (ou em qualquer número ímpar de eixos) inverte o winding. Uma escala não uniforme positiva não inverte",
   ch10_debug3: "Quads definidos manualmente onde os dois triângulos têm ordem de vértices inconsistente",
   ch10_debugTip: "Ao depurar problemas de winding, chame temporariamente glDisable(GL_CULL_FACE) para ver todas as faces. Se o mesh parecer correto sem culling, o problema é a ordem de winding.",
   ch10_areaTitle: "Como a GPU decide: a área com sinal",

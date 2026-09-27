@@ -56,7 +56,7 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);`}</CodeBlock>
 
       <Callout type="warn" t={t}>
         {tx(t, "oglFbo_completeWarn",
-          "Always call glCheckFramebufferStatus. An incomplete framebuffer does not error — it silently discards everything you draw into it, and you spend an hour debugging a shader that was never the problem. The usual causes are a missing colour attachment, mismatched attachment sizes, or an unsupported internal format."
+          "Always call glCheckFramebufferStatus right after building a framebuffer. Drawing into an incomplete one does raise GL_INVALID_FRAMEBUFFER_OPERATION, but without the debug callback or glGetError nobody sees it: the draws are simply dropped and you spend an hour debugging a shader that was never the problem. The status names the cause. The usual ones are a framebuffer with no attachments at all, an attachment whose storage was never allocated (glTexImage2D with a zero size, or a renderbuffer without glRenderbufferStorage), an internal format that cannot be rendered to, attachments with different sample counts, or a glDrawBuffers entry pointing at an empty slot. Attachments of different sizes are allowed since OpenGL 3.0: rendering is limited to the smallest one."
         )}
       </Callout>
 
@@ -79,7 +79,7 @@ glDrawArrays(GL_TRIANGLES, 0, 6);`}</CodeBlock>
 
       <Callout type="tip" t={t}>
         {tx(t, "oglFbo_triangleTip",
-          "You can skip the quad entirely. Draw a single oversized triangle that covers the screen and generate its vertices from gl_VertexID in the shader — no VBO, no VAO data, and it avoids the diagonal seam where a two-triangle quad's edges meet, which costs you a strip of doubly-shaded pixels."
+          "You can skip the quad entirely. Draw a single oversized triangle that covers the screen and generate its vertices from gl_VertexID in the shader — no VBO, no VAO data. It is also slightly faster. GPUs shade pixels in 2×2 blocks, and along the diagonal where a quad's two triangles meet, each block is shaded once for each triangle, with half the results thrown away. One triangle has no inner edge, so nothing is wasted."
         )}
       </Callout>
 
@@ -106,11 +106,11 @@ void main() {
     // float g = dot(c, vec3(0.2126, 0.7152, 0.0722));
 
     // 3x3 kernel — edge detection, blur, sharpen all share this shape
-    const float o = 1.0 / 300.0;
+    vec2 o = 1.0 / vec2(textureSize(uScene, 0));   // one texel, at any resolution
     vec2 offsets[9] = vec2[](
-        vec2(-o, o), vec2(0.0, o), vec2(o, o),
-        vec2(-o,0.0), vec2(0.0,0.0), vec2(o,0.0),
-        vec2(-o,-o), vec2(0.0,-o), vec2(o,-o));
+        vec2(-o.x, o.y), vec2(0.0, o.y), vec2(o.x, o.y),
+        vec2(-o.x, 0.0), vec2(0.0, 0.0), vec2(o.x, 0.0),
+        vec2(-o.x,-o.y), vec2(0.0,-o.y), vec2(o.x,-o.y));
     float kernel[9] = float[](
         -1, -1, -1,
         -1,  9, -1,

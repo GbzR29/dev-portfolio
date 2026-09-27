@@ -12,7 +12,7 @@ export function VBOContent({ t }: { t: TrackTranslations }) {
 
       <p className="text-lg text-[var(--text-main)]">
         {tx(t, "ch02_intro",
-          "Your vertex data starts as a C++ array living in RAM. The GPU cannot access RAM directly, it can only read from its own memory (VRAM). A Vertex Buffer Object (VBO) is the mechanism OpenGL provides to copy that data from your CPU into the GPU, where the vertex shader can read it."
+          "Your vertex data starts as a C++ array living in RAM, in memory your program owns. The vertex shader cannot read a C++ array. It reads from buffer objects that OpenGL manages, placed wherever the driver decides is fastest: usually the GPU's own memory (VRAM) on a discrete card, or a shared region of system RAM on an integrated one. A Vertex Buffer Object (VBO) is that kind of buffer. You copy your array into it once, and from then on the GPU reads it directly, with no per-vertex work on the CPU."
         )}
       </p>
 
@@ -105,6 +105,9 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 glEnableVertexAttribArray(0);
 
+// ⚠ In a Core profile context this does NOT draw yet:
+// glVertexAttribPointer and glDrawArrays both need a bound VAO (next chapter).
+// Without one they fail with GL_INVALID_OPERATION and the screen stays empty.
 while (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT);
     glUseProgram(shaderProgram);
@@ -116,7 +119,7 @@ while (!glfwWindowShouldClose(window)) {
       <H2>{tx(t, "ch02_nextTitle", "Why you should not stop here")}</H2>
       <p>
         {tx(t, "ch02_nextBody",
-          "The code above works, but it has a problem: every frame you need to rebind the VBO and re-specify the vertex attribute layout. For a single triangle this is fine, but for a real scene with hundreds of meshes it becomes expensive and repetitive. The next chapter introduces Vertex Array Objects (VAOs), which let you record all the VBO bindings and attribute specifications once, then replay them with a single bind call."
+          "The code above is complete as far as the buffer is concerned, but in the Core profile it still draws nothing. The attribute layout you describe with glVertexAttribPointer has to be stored somewhere, and in Core that place must be a Vertex Array Object (VAO). With no VAO bound, the attribute calls and the draw call fail with GL_INVALID_OPERATION, and the only symptom is an empty screen. (Old compatibility contexts had a built-in default VAO, which is why many older tutorials skip it.) The next chapter adds the VAO. As a bonus, it records the whole layout once so that drawing a mesh later takes a single bind instead of re-describing every attribute."
         )}
       </p>
 

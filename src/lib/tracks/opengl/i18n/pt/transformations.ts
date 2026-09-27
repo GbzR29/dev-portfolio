@@ -25,7 +25,7 @@ const text: Record<string, string> = {
   ch08_wA: "aspect = largura / altura",
   ch08_wNF: "planos near e far",
   ch08_perspEqNote: "A última linha é o truque todo: ela copia −z para w. Depois que a GPU divide por w, x e y encolhem com a distância — isso é perspectiva — e z cai em [−1, 1].",
-  ch08_nearWarn: "Nunca defina o plano near como 0. Isso causa z-fighting porque a precisão do depth buffer é distribuída entre near e far — um near de 0 dá precisão zero.",
+  ch08_nearWarn: "Nunca defina o plano near como 0. Coloque n = 0 na matriz abaixo e a terceira linha vira (0, 0, −1, 0): z_clip = −z = w, então depois da divisão todo ponto cai em z_ndc = 1 e o depth buffer não consegue mais distinguir nada. Mesmo um near pequeno e positivo custa caro, porque a precisão de profundidade se concentra logo à frente da câmera. Afaste-o o quanto a cena permitir (0.1 é um padrão comum); o capítulo Depth Testing mostra por quê.",
   ch08_shaderTitle: "Aplicando MVP no vertex shader",
   ch08_animTip: "Para animar a rotação, multiplique o ângulo por glfwGetTime() a cada frame. O modelo girará continuamente sem estado extra.",
 };

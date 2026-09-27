@@ -148,7 +148,7 @@ export function PbrTheoryContent({ t }: { t: TrackTranslations }) {
       </Equation>
       <p>
         {tx(t, "oglPbrT_blinnNot",
-          "Blinn-Phong violates the last property: raise the shininess and the highlight shrinks but keeps the same peak, so the total energy drops. Nobody told the model where the light went. The Cook-Torrance BRDF in the next chapter conserves energy by construction, which is why real-time engines standardised on it.")}
+          "Plain Blinn-Phong ignores the last property, in both directions. Its specular term is never normalised. At low shininess the lobe is wide, and diffuse plus specular can reflect more light than arrives. At high shininess the highlight shrinks but keeps the same peak, so light simply disappears. The total is never tied to the material. Multiplying the lobe by (n + 8) / 8π fixes the brightness. The Cook-Torrance BRDF in the next chapter is built to respect the limit from the start, which is why real-time engines standardised on it.")}
       </p>
 
       <H2>{tx(t, "oglPbrT_workflowTitle", "The metallic-roughness workflow")}</H2>

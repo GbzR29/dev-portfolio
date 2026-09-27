@@ -57,7 +57,7 @@ export function VolumetricsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "oglVol_skyTitle", "Why the sky is blue and sunsets are red")}</H2>
       <p>
         {tx(t, "oglVol_skyBody",
-          "Rayleigh scattering is proportional to 1/λ⁴. Blue light (450 nm) scatters about 5.5 times more than red (700 nm). Look at the sky away from the sun and you see mostly blue light that was scattered toward you. Look at the sun near the horizon and its light has crossed so much air (about 40 times the zenith path) that the blue has been scattered away before reaching you. What is left is orange and red. Earth's atmosphere is modelled with densities that fall exponentially with altitude:")}
+          "Rayleigh scattering is proportional to 1/λ⁴. Blue light (450 nm) scatters about 6 times more than red (700 nm): (700/450)⁴ ≈ 5.9. Look at the sky away from the sun and you see mostly blue light that was scattered toward you. Look at the sun near the horizon and its light has crossed so much air (about 40 times the zenith path) that the blue has been scattered away before reaching you. What is left is orange and red. Earth's atmosphere is modelled with densities that fall exponentially with altitude:")}
       </p>
       <Equation label={tx(t, "oglVol_atmoLabel", "A standard atmosphere model")}
         where={[

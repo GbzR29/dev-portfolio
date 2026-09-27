@@ -52,7 +52,7 @@ export function PipelineContent({ t }: { t: TrackTranslations }) {
 
       <Callout type="tip" t={t}>
         {tx(t, "ch01_ndcInteractiveTip",
-          "Drag any vertex on the canvas above, or click it to get an X/Y gizmo that moves it along a single axis. You can also type exact values in the coordinate fields. Notice how moving a point outside the [-1, 1] boundary clips it — the triangle edge disappears at the border. The CCW/CW indicator shows the winding order (covered in chapter 10)."
+          "Drag any vertex on the canvas above, or click it to get an X/Y gizmo that moves it along a single axis. You can also type exact values in the coordinate fields. Notice how moving a point outside the [-1, 1] boundary clips it — the triangle edge disappears at the border. The CCW/CW indicator shows the winding order (covered in the Face Winding & Culling chapter)."
         )}
       </Callout>
 
@@ -117,7 +117,7 @@ void main() {
       <H2>{tx(t, "ch01_compileTitle", "How shaders get compiled")}</H2>
       <p>
         {tx(t, "ch01_compileBody",
-          "Shaders are not compiled on your CPU at build time. They are compiled at runtime by the GPU driver. The process looks like this:"
+          "Shaders are not compiled by your C++ compiler at build time. Your program hands the GLSL source text to the driver while it runs, and the driver compiles it on the CPU into the machine code of the GPU that is actually installed. That is why the same program runs on NVIDIA, AMD and Intel cards. Compiling and linking are two separate steps, and each can fail on its own:"
         )}
       </p>
 
@@ -138,6 +138,14 @@ unsigned int shaderProgram = glCreateProgram();
 glAttachShader(shaderProgram, vertexShader);
 glAttachShader(shaderProgram, fragmentShader);
 glLinkProgram(shaderProgram);
+
+// Linking can fail too (e.g. an 'in' with no matching 'out') — check it separately
+glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+if (!success) {
+    char infoLog[512];
+    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+    std::cerr << "Program link error: " << infoLog << std::endl;
+}
 glDeleteShader(vertexShader);
 glDeleteShader(fragmentShader);`}</CodeBlock>
 

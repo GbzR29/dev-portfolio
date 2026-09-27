@@ -23,6 +23,7 @@ const text: Record<string, string> = {
   oglSetup_dpiTip: "Use o callback de tamanho do FRAMEBUFFER, não o de tamanho da janela. Em uma tela de alta densidade (high-DPI) o framebuffer é maior que a janela em unidades lógicas — uma janela de 1280x720 pode ter um framebuffer de 2560x1440 — e glViewport trabalha em pixels. Errar isso renderiza a cena no quarto inferior esquerdo da tela num Mac com Retina.",
   oglSetup_checkTitle: "Verificação básica",
   oglSetup_checkBody: "Se a janela abre e mostra sua cor de limpeza, está tudo ligado corretamente e você pode seguir em frente. Se ela abre branca ou preta, a cor de limpeza não está sendo aplicada — confira se glClear roda dentro do loop e se glfwSwapBuffers é chamado depois de desenhar, não antes.",
+  oglSetup_macNote: "No macOS, o OpenGL termina na versão 4.1. A Apple o tornou obsoleto em 2018 e nunca lançou nada mais novo, então um pedido de 4.6 simplesmente falha. Lá, escreva #version 410 core nos seus shaders e espere que alguns capítulos desta trilha não rodem: o debug callback, compute shaders e SSBOs precisam do 4.3, layout(binding = …) do 4.2, persistent mapping do 4.4 e DSA do 4.5. Os conceitos valem do mesmo jeito, e os drivers de Windows e Linux suportam 4.6 em qualquer GPU da última década.",
 };
 
 export default text;

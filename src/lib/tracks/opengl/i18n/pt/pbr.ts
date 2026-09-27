@@ -61,7 +61,7 @@ const text: Record<string, string> = {
   oglPbrT_bp1: "Positividade: ela nunca torna a luz negativa.",
   oglPbrT_bp2: "Reciprocidade de Helmholtz: trocar a luz e o olho dá o mesmo valor.",
   oglPbrT_bp3: "Conservação de energia: somando todas as direções de saída, ela nunca reflete mais que 100%.",
-  oglPbrT_blinnNot: "O Blinn-Phong viola a última propriedade: aumente o brilho e o realce encolhe, mas mantém o mesmo pico, então a energia total cai. Ninguém disse ao modelo para onde foi a luz. A BRDF de Cook-Torrance do próximo capítulo conserva energia por construção, e é por isso que as engines em tempo real se padronizaram nela.",
+  oglPbrT_blinnNot: "O Blinn-Phong puro ignora a última propriedade, nos dois sentidos. Seu termo especular nunca é normalizado. Com shininess baixo o lóbulo é largo, e difuso mais especular podem refletir mais luz do que chega. Com shininess alto o brilho encolhe mas mantém o mesmo pico, então a luz simplesmente some. O total nunca está ligado ao material. Multiplicar o lóbulo por (n + 8) / 8π corrige o brilho. O BRDF de Cook-Torrance do próximo capítulo é construído para respeitar o limite desde o início, e é por isso que as engines de tempo real o adotaram como padrão.",
   oglPbrT_workflowTitle: "O fluxo de trabalho metallic-roughness",
   oglPbrT_workflowBody: "As engines (Unreal, Unity HDRP, Godot, glTF 2.0) expõem a BRDF por meio de um pequeno conjunto de texturas que os artistas conseguem entender:",
   oglPbrT_thMap: "Mapa",

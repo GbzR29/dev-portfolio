@@ -1,7 +1,7 @@
 // ES text for src/lib/tracks/opengl/chapters/vbo.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
-  ch02_intro: "Tus datos de vértice comienzan como un array C++ en RAM. La GPU no puede acceder a la RAM directamente. Un VBO es el mecanismo que OpenGL proporciona para copiar esos datos al GPU.",
+  ch02_intro: "Tus datos de vértice empiezan como un array C++ en la RAM, en memoria que pertenece a tu programa. El vertex shader no puede leer un array C++. Lee de buffer objects que gestiona OpenGL, ubicados donde el driver considere más rápido: normalmente en la memoria propia de la GPU (VRAM) en una tarjeta dedicada, o en una región compartida de la RAM del sistema en una integrada. Un Vertex Buffer Object (VBO) es ese tipo de buffer. Copias tu array en él una vez y, desde entonces, la GPU lo lee directamente, sin trabajo por vértice en la CPU.",
   ch02_flowTitle: "El flujo de datos",
   ch02_flowAfter: "Defines los datos, creas un buffer en la GPU, subes los datos con glBufferData y emites un draw call.",
   ch02_stepTitle: "Creando un VBO paso a paso",
@@ -24,7 +24,7 @@ const text: Record<string, string> = {
   ch02_interpretWarn: "El primer argumento (0) debe coincidir con layout (location = 0) en tu vertex shader.",
   ch02_fullTitle: "El setup completo del VBO en un solo lugar",
   ch02_nextTitle: "Por qué no deberías detenerte aquí",
-  ch02_nextBody: "El siguiente capítulo presenta los VAOs, que permiten grabar todos los bindings una vez y reproducirlos con una sola llamada.",
+  ch02_nextBody: "El código de arriba está completo en lo que respecta al buffer, pero en el Core profile todavía no dibuja nada. El layout de atributos que describes con glVertexAttribPointer tiene que guardarse en algún sitio, y en Core ese sitio debe ser un Vertex Array Object (VAO). Sin un VAO enlazado, las llamadas de atributos y el draw call fallan con GL_INVALID_OPERATION, y el único síntoma es una pantalla vacía. (Los antiguos contextos de compatibilidad tenían un VAO por defecto, por eso muchos tutoriales antiguos lo omiten.) El próximo capítulo añade el VAO. Como extra, graba el layout completo una vez, de modo que dibujar una malla después cuesta un solo bind en lugar de describir cada atributo otra vez.",
 };
 
 export default text;

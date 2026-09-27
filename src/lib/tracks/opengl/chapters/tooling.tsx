@@ -194,11 +194,12 @@ void main() {
     imageStore(uOutput, texel, vec4(color, 1.0));
 }`}</CodeBlock>
 
-      <CodeBlock lang="cpp" filename="dispatch.cpp" t={t}>{`// The texture must be created with an immutable, image-compatible format
+      <CodeBlock lang="cpp" filename="dispatch.cpp" t={t}>{`// The texture must be complete and use an image-compatible format.
+// Immutable storage guarantees both, which is why it is the recommended way
 unsigned int tex;
 glGenTextures(1, &tex);
 glBindTexture(GL_TEXTURE_2D, tex);
-glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, W, H);   // NOT glTexImage2D
+glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, W, H);   // 1 level: complete by construction
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

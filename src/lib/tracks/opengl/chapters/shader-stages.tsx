@@ -150,7 +150,7 @@ void main() {
         rows={[
           [tx(t, "oglGs_w1", "Billboards / particles from points"), tx(t, "oglGs_b1", "instanced quads (vertex ID picks the corner) — see Particles")],
           [tx(t, "oglGs_w2", "Thick lines"), tx(t, "oglGs_b2", "instanced quads per segment, expanded in the vertex shader")],
-          [tx(t, "oglGs_w3", "Rendering to 6 cube faces or N cascades"), tx(t, "oglGs_b3", "gl_Layer from the vertex shader (GL 4.x ARB_shader_viewport_layer_array) + instancing")],
+          [tx(t, "oglGs_w3", "Rendering to 6 cube faces or N cascades"), tx(t, "oglGs_b3", "gl_Layer from the vertex shader (ARB_shader_viewport_layer_array extension) + instancing")],
           [tx(t, "oglGs_w4", "Culling or generating lots of geometry"), tx(t, "oglGs_b4", "compute shader + indirect draw; mesh shaders on modern GPUs")],
           [tx(t, "oglGs_w5", "Debug views (normals, wireframe)"), tx(t, "oglGs_b5", "geometry shader is fine — clarity beats speed here")],
         ]}
