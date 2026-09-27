@@ -9,7 +9,7 @@ import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { loadPhotos, bindPhotos, type PhotoList } from "./photoTextures";
 import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
-import { WATER_COLOURS } from "./waterShader";
+import { WATER_COLOURS } from "./waterParams";
 import { SHORE_FS, SHORE_PRESETS, DEFAULT_SHORE, shoreUniforms, applyShoreUniforms, type ShoreParams } from "./shoreShader";
 import { FigureShell } from "@/components/lesson/kit/FigureShell";
 

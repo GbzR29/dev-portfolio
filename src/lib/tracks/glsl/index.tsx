@@ -30,7 +30,8 @@ export const glslChapters: Chapter[] = [
   { id: "noise",       section: SHAPES,  title: "Noise & Procedural Patterns", minRead: 16, load: () => import("./chapters/noise").then((m) => m.NoiseContent) },
   // ── Effect Recipes ──────────────────────────────────────────────────────
   { id: "texturing",   section: EFFECTS, title: "Texturing Tricks",            minRead: 12, load: () => import("./chapters/effects/texturing").then((m) => m.TexturingContent) },
-  { id: "water",       section: EFFECTS, title: "Waves & Water",               minRead: 36, load: () => import("./chapters/effects/water").then((m) => m.WaterContent) },
+  { id: "water",       section: EFFECTS, title: "Waves & Water",               minRead: 38, load: () => import("./chapters/effects/water").then((m) => m.WaterContent) },
+  { id: "ocean",       section: EFFECTS, title: "Ocean: FFT Waves",            minRead: 26, load: () => import("./chapters/effects/ocean").then((m) => m.OceanContent) },
   { id: "glass",       section: EFFECTS, title: "Glass, Refraction & Fresnel", minRead: 21, load: () => import("./chapters/effects/glass").then((m) => m.GlassContent) },
   { id: "fog",         section: EFFECTS, title: "Fog",                         minRead: 18, load: () => import("./chapters/effects/fog").then((m) => m.FogContent) },
   { id: "stylized",    section: EFFECTS, title: "Toon, Dissolve & Hologram",   minRead: 11, load: () => import("./chapters/effects/stylized").then((m) => m.StylizedContent) },

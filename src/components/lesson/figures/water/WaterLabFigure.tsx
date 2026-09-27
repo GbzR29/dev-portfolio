@@ -9,14 +9,16 @@ import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
 import { loadPhotos, bindPhotos, type PhotoList } from "./photoTextures";
 import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
-import {
-  WATER_FS, WATER_PRESETS, WATER_COLOURS, DEFAULT_WATER, MAX_WAVES, waterUniforms, applyUniforms, type WaterParams,
-} from "./waterShader";
+import { WATER_PRESETS, WATER_COLOURS, DEFAULT_WATER, MAX_WAVES, type WaterParams } from "./waterParams";
+import { WATER_VS, WATER_FS, BACKGROUND_FS, waterUniforms } from "./waterShader";
+import { applyUniforms } from "./waterCommon";
+import { ringGrid, drawGrid, deleteGrid, type WaterGrid } from "./waterGrid";
+import { PROBE_FS, makeSkyProbe, renderSkyProbe, bindSkyProbe, type SkyProbe } from "./skyProbe";
 import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
-// The chapter's water, assembled: a traced Gerstner surface with every term
-// the text derives. Terms can be switched off, and the debug views show the
+// The chapter's water, assembled: a Gerstner mesh with every term the text
+// derives. Terms can be switched off, and the debug views show the
 // quantities behind them (normals, the Jacobian, water thickness, caustics,
 // Fresnel). It only animates while it is on screen.
 
@@ -27,7 +29,10 @@ const TEX: PhotoList = [
 ];
 const GROUPS = [[0, 1, 2], [3, 4]];
 
-type Res = { prog: WebGLProgram; vao: WebGLVertexArrayObject; tex: (WebGLTexture | null)[] };
+type Res = {
+  water: WebGLProgram; bg: WebGLProgram; probeProg: WebGLProgram; probe: SkyProbe;
+  vao: WebGLVertexArrayObject; grid: WaterGrid; tex: (WebGLTexture | null)[];
+};
 type Tab = "waves" | "water" | "effects" | "sky";
 
 const VIEWS = ["final", "normals", "Jacobian J", "thickness", "caustics", "Fresnel"] as const;
@@ -57,18 +62,40 @@ export function WaterLabFigure({ t }: { t?: TrackTranslations }) {
 
   const [texReady, setTexReady] = useState(0);        // bumps as textures arrive, so a paused view redraws
   const init = (gl: WebGL2RenderingContext): Res => ({
-    prog: compileProgram(gl, FULL_VS, WATER_FS), vao: gl.createVertexArray()!,
+    water: compileProgram(gl, WATER_VS, WATER_FS), bg: compileProgram(gl, FULL_VS, BACKGROUND_FS),
+    probeProg: compileProgram(gl, FULL_VS, PROBE_FS), probe: makeSkyProbe(gl),
+    vao: gl.createVertexArray()!, grid: ringGrid(gl, w.camHeight),
     tex: loadPhotos(gl, TEX, () => setTexReady(n => n + 1)),
   });
   const draw = (gl: WebGL2RenderingContext, r: Res, size: { w: number; h: number; aspect: number }) => {
     if (size.aspect !== aspect) setAspect(size.aspect);
+    // The far rings are spaced for the camera's height: rebuild when it changes
+    if (r.grid.height !== w.camHeight) { deleteGrid(gl, r.grid); r.grid = ringGrid(gl, w.camHeight); }
+    const u = waterUniforms(w, sky, look, size.aspect, time + 3, r.grid);
+    const pix = 2 * Math.tan(look.fov / 2) / size.h;
+    // 1. The sky, once, into the probe the water reflects
+    gl.useProgram(r.probeProg);
+    applyUniforms(gl, r.probeProg, u);
+    renderSkyProbe(gl, r.probe, r.probeProg, () => drawFullscreen(gl, r.vao));
+
     gl.viewport(0, 0, size.w, size.h);
-    gl.disable(gl.DEPTH_TEST);
-    gl.useProgram(r.prog);
-    applyUniforms(gl, r.prog, waterUniforms(w, sky, look, size.aspect, time + 3));
-    gl.uniform1f(gl.getUniformLocation(r.prog, "uPix"), 2 * Math.tan(look.fov / 2) / size.h);
-    bindPhotos(gl, r.prog, TEX, r.tex, "uHave", GROUPS);
+    gl.enable(gl.DEPTH_TEST);
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+    const pass = (prog: WebGLProgram) => {
+      gl.useProgram(prog);
+      applyUniforms(gl, prog, u);
+      gl.uniform1f(gl.getUniformLocation(prog, "uPix"), pix);
+      bindPhotos(gl, prog, TEX, r.tex, "uHave", GROUPS);
+      bindSkyProbe(gl, prog, r.probe, TEX.length);
+    };
+    // 2. Sky and dry beach, writing the beach's depth
+    pass(r.bg);
+    gl.depthFunc(gl.ALWAYS);
     drawFullscreen(gl, r.vao);
+    // 3. The water mesh, hidden behind the beach
+    pass(r.water);
+    gl.depthFunc(gl.LESS);
+    drawGrid(gl, r.grid);
   };
 
   const btn = (active: boolean) =>
@@ -90,7 +117,7 @@ export function WaterLabFigure({ t }: { t?: TrackTranslations }) {
   );
 
   const notes: Record<number, [string, string]> = {
-    0: ["figWater_n0", "Every pixel is one ray: find where it meets the waves, then mix what the surface reflects and what it lets through by Fresnel's ratio. Switch terms off to see what each one adds."],
+    0: ["figWater_n0", "A mesh of rings around the camera, moved by the waves in the vertex shader. Each pixel mixes what the surface reflects and what it lets through by Fresnel's ratio. Switch terms off to see what each one adds."],
     1: ["figWater_n1", "The exact normal from the Gerstner tangents, plus small ripples that only exist in the normal. Colours are the normal's x, y, z mapped to red, green, blue."],
     2: ["figWater_n2", "J is how much a patch of the calm surface is stretched (J > 1, white) or squeezed (J < 1, grey) by the horizontal Gerstner motion. Red: J < 0, the surface has folded over itself. That is where waves break, so that is where foam goes."],
     3: ["figWater_n3", "Length of water the refracted ray crosses before hitting the bed. Beer–Lambert turns it into colour: the longer the path, the more red and green are absorbed."],

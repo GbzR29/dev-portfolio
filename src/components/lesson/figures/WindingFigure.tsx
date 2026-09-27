@@ -40,7 +40,8 @@ export function WindingFigure({ t }: { t?: TrackTranslations }) {
     let raf = 0;
     const tick = (now: number) => {
       // One full turn takes ~8 s at 1×
-      if (last.current !== null) setAngle(a => (a + ((now - last.current!) * 360) / scaledMs(5000, speedRef.current)) % 360);
+      // The step is computed now: the updater may run after last.current has moved on
+      if (last.current !== null) { const step = ((now - last.current) * 360) / scaledMs(5000, speedRef.current); setAngle(a => (a + step) % 360); }
       last.current = now;
       raf = requestAnimationFrame(tick);
     };

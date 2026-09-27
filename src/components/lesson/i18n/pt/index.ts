@@ -9,6 +9,7 @@ import glass from "./glass";
 import glsl from "./glsl";
 import lighting from "./lighting";
 import math from "./math";
+import ocean from "./ocean";
 import pbr from "./pbr";
 import perf from "./perf";
 import post from "./post";
@@ -18,6 +19,6 @@ import special from "./special";
 import tech from "./tech";
 import water from "./water";
 
-const bundle: Record<string, string> = { ...advgl, ...advlighting, ...figures, ...fog, ...gamedev, ...glass, ...glsl, ...lighting, ...math, ...pbr, ...perf, ...post, ...rt, ...sky, ...special, ...tech, ...water };
+const bundle: Record<string, string> = { ...advgl, ...advlighting, ...figures, ...fog, ...gamedev, ...glass, ...glsl, ...lighting, ...math, ...ocean, ...pbr, ...perf, ...post, ...rt, ...sky, ...special, ...tech, ...water };
 
 export default bundle;

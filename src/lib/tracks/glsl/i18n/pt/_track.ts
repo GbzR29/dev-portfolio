@@ -13,6 +13,7 @@ const track = {
     noise: "Ruído e padrões procedurais",
     texturing: "Truques de texturização",
     water: "Ondas e água",
+    ocean: "Oceano: ondas por FFT",
     glass: "Vidro, refração e Fresnel",
     fog: "Neblina",
     stylized: "Toon, dissolve e holograma",

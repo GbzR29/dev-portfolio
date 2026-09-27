@@ -70,15 +70,30 @@ export function WaterContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "glslWater_labTitle", "A complete water shader")}</H2>
       <p>
         {tx(t, "glslWater_labBody",
-          "The presets above show the pieces separately. The lab below puts them all into a single full-screen fragment shader. It traces the Gerstner surface, reflects the procedural sky from the Cubemaps chapter, and refracts down to a sea bed that rises into a beach. Along the way it adds absorption, crest glow, glints, foam and caustics. Each term has its own section below. Use the view buttons to see the quantity behind each one.")}
+          "The presets above show the pieces separately. The lab below puts them all together, the way a game engine draws water. The surface is a real mesh, moved by the Gerstner waves in the vertex shader. It reflects the procedural sky from the Cubemaps chapter and refracts down to a sea bed that rises into a beach. Along the way it adds absorption, crest glow, glints, foam and caustics. Each term has its own section below. Use the view buttons to see the quantity behind each one.")}
       </p>
 
       <WaterLabFigure t={t} />
 
-      <H3>{tx(t, "glslWater_traceTitle", "Finding the surface")}</H3>
+      <H3>{tx(t, "glslWater_traceTitle", "Drawing the surface")}</H3>
       <p>
         {tx(t, "glslWater_traceBody",
-          "A fragment shader cannot rasterise a mesh, so each pixel sends a ray from the camera and looks for the point where the ray drops below the waves. The waves stay between −H and +H, where H is the sum of the amplitudes, so the search only covers the part of the ray inside that slab. It steps along until the ray's height goes below the surface height, then halves the last interval a few times (bisection) to pin down the crossing. One problem remains. A Gerstner wave moves points sideways, so the surface above a given x comes from a particle that started somewhere else, at x₀. Finding x₀ means solving an equation:")}
+          "The water is a grid of vertices laid out in rings around the camera. Each vertex stores a rest position x₀, and the vertex shader moves it to P(x₀, t) with the Gerstner formula above. The rings are spaced so that every triangle covers roughly the same area on screen. Near the camera the gap between two rings grows in proportion to their distance r, so it matches the gap between neighbours on a ring. Far away that is not enough. Seen from a height h, a ring at distance r lies about h/r radians below the horizon, so the next ring, dr further out, lies only h·dr/r² lower. Without a limit, one row of pixels near the horizon would hold dozens of thin triangles, each shaded in full:")}
+      </p>
+      <Equation label={tx(t, "glslWater_meshLabel", "Ring spacing, and which waves the mesh can carry")}
+        where={[
+          [r`S`, tx(t, "glslWater_wSeg", "vertices per ring (256). Neighbours on a ring of radius r are 2πr/S apart")],
+          [r`\alpha_{\min}`, tx(t, "glslWater_wAmin", "the smallest angle allowed between two rings as seen from the camera: 0.001 rad, about a third of a pixel in this figure")],
+          [r`h`, tx(t, "glslWater_wHcam", "the camera height. Raising it spreads the far rings apart, so the grid is rebuilt when the height slider moves")],
+          [r`\Delta,\ \lambda_i,\ w_i`, tx(t, "glslWater_wFade", "the vertex spacing at the vertex, the wavelength of wave i, and the weight its amplitude is multiplied by. A mesh needs several vertices per wavelength to show a wave. A shorter one would alias into noise, so it fades out, from w = 1 at λ = 6Δ to w = 0 at λ = 3Δ")],
+        ]}
+        note={tx(t, "glslWater_meshNote", "The fragment shader does the same with the pixel footprint instead of Δ, so waves smaller than a couple of pixels stop shimmering in the distance. The sky that the water reflects is drawn once per frame into a small texture, 512 × 128 texels over the upper half of the sky (a reflection probe). Every water pixel samples it instead of evaluating the clouds again. Together these make the lab two to three times cheaper on the GPU than tracing the surface pixel by pixel, which is how it used to work.")}
+        glsl={`float spacing = max(r * 2.0 * PI / S, r * r * ALPHA_MIN / h);\nfloat w = smoothstep(3.0 * spacing, 6.0 * spacing, lambda);`}>
+        {r`r_{i+1} = r_i + \max\!\Big(\frac{2\pi\,r_i}{S},\ \frac{r_i^2\,\alpha_{\min}}{h}\Big) \qquad w_i = \operatorname{smoothstep}(3\Delta,\ 6\Delta,\ \lambda_i)`}
+      </Equation>
+      <p>
+        {tx(t, "glslWater_traceBody2",
+          "The fragment shader receives x₀, interpolated across the triangle, so it evaluates the exact normal and Jacobian of that particle directly. A ray tracer does not have that luxury. It finds a point x on the surface, and a Gerstner wave moves points sideways, so the surface above x comes from a particle that started somewhere else. The mesh avoids that question for the surface itself, but it comes back twice: for the depth of water above a point on the bed, and for the wet sand at the water line. Both need the surface height above a given x, which means solving an equation:")}
       </p>
       <Equation label={tx(t, "glslWater_invLabel", "Which particle ends up above x?")}
         where={[
@@ -247,7 +262,7 @@ export function WaterContent({ t }: { t: TrackTranslations }) {
       </p>
 
       <Callout type="tip" t={t}>
-        {tx(t, "glslWater_fftTip", "Production oceans (Sea of Thieves, Assassin's Creed IV) sum not four but thousands of waves, whose amplitudes follow a measured ocean spectrum (Phillips, JONSWAP). The sum is evaluated with an FFT in a compute shader every frame (Tessendorf, 2001). The formulas here are the same, just many more waves.")}
+        {tx(t, "glslWater_fftTip", "Production oceans (Sea of Thieves, Assassin's Creed IV) sum not eight but thousands of waves, whose amplitudes follow a measured ocean spectrum (Phillips, JONSWAP). The sum is evaluated with an FFT every frame (Tessendorf, 2001). The next chapter, Ocean: FFT Waves, builds one, with foam that lingers behind the breaking crests.")}
       </Callout>
       <KeyIdeas t={t} id="glslWater" items={[
         "Waves are sums of travelling sines; their normals come from the analytic derivative.",

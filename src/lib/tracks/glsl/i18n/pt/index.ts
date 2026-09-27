@@ -7,6 +7,7 @@ import builtins from "./builtins";
 import effects from "./effects";
 import fragcoord from "./fragcoord";
 import noise from "./noise";
+import ocean from "./ocean";
 import playground from "./playground";
 import raymarching from "./raymarching";
 import raytracing from "./raytracing";
@@ -16,7 +17,7 @@ import shapes from "./shapes";
 import types from "./types";
 
 const bundle: LessonText = {
-  strings: { ...builtinVars, ...builtins, ...effects, ...fragcoord, ...noise, ...playground, ...raymarching, ...raytracing, ...sdf, ...shaderClass, ...shapes, ...types },
+  strings: { ...builtinVars, ...builtins, ...effects, ...fragcoord, ...noise, ...ocean, ...playground, ...raymarching, ...raytracing, ...sdf, ...shaderClass, ...shapes, ...types },
   titles: track.titles,
   sections: track.sections,
 };

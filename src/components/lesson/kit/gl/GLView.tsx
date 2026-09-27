@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { forwardFrom, norm, cross, type Vec3 } from "./gl";
 import { claimContext, releaseContext } from "./context";
 import { useMediaQuery, PHONE } from "../media";
@@ -121,15 +121,32 @@ export function GLView<R>({
     return () => ro.disconnect();
   }, [resolution, gen]);
 
-  // Draw on demand
-  useEffect(() => {
+  // Draw on demand: right away, but at most once per display frame. A change
+  // that arrives after this frame's draw marks it dirty, and the next frame
+  // draws the latest state. (Deferring every draw to the next frame made an
+  // animated figure, which re-renders every frame, draw only every other one.)
+  // Context creation runs in a passive effect, after the first layout effect,
+  // so `ready` redraws once resources exist.
+  const sizeRef = useRef(size); sizeRef.current = size;
+  const lock = useRef(0), dirty = useRef(false);
+  const kick = useRef(() => {});
+  kick.current = () => {
+    if (lock.current) { dirty.current = true; return; }
     const gl = glRef.current, r = res.current;
-    if (!gl || r === null || failed || lost) return;
-    const id = requestAnimationFrame(() => {
-      try { drawRef.current(gl, r, size); } catch (e) { setFailed(String((e as Error).message)); }
+    if (!gl || r === null) return;
+    try { drawRef.current(gl, r, sizeRef.current); } catch (e) { setFailed(String((e as Error).message)); return; }
+    lock.current = requestAnimationFrame(() => {
+      lock.current = 0;
+      if (dirty.current) { dirty.current = false; kick.current(); }
     });
-    return () => cancelAnimationFrame(id);
+  };
+  // A layout effect runs in the commit itself; a passive one can slip past the
+  // next vsync, and then two animation ticks merge into one draw.
+  useLayoutEffect(() => {
+    if (failed || lost) return;
+    kick.current();
   }, [frame, size, ready, failed, lost]);
+  useEffect(() => () => cancelAnimationFrame(lock.current), []);
 
   // Wheel = field of view; middle button must not start autoscroll
   useEffect(() => {
@@ -228,8 +245,10 @@ export function useAnimationTime(on: boolean) {
     if (!on) return;
     let raf = 0, last = performance.now();
     const tick = (now: number) => {
-      setTime(v => v + Math.max(0, now - last) / 1000);
+      // dt is read now: the updater may run later, after `last` has moved on
+      const dt = Math.max(0, now - last) / 1000;
       last = now;
+      setTime(v => v + dt);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
