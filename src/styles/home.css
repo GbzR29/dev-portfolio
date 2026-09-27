@@ -4,11 +4,14 @@
    Dark  = "dusk" (slate sky, peach accent, static stars).
    Every token here is prefixed --hm- and scoped to .home, so
    the global theme.css (used by /learn and the blog) is untouched.
+   .hm-scope carries the same tokens without the page styles, for
+   pages that only borrow HomeNav (blog, status).
 ========================================================= */
 
 /* ── Tokens ─────────────────────────────────────────────── */
 
-.home {
+.home,
+.hm-scope {
   --hm-bg: #f1f1eb;
   --hm-surface: #fafaf6;
   --hm-ink: #1d2427;
@@ -26,7 +29,8 @@
   --hm-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
-.dark .home {
+.dark .home,
+.dark .hm-scope {
   --hm-bg: #1a1c29;
   --hm-surface: #212436;
   --hm-ink: #e7e3ef;
@@ -125,6 +129,14 @@ html:not(.dark) .home {
 }
 .hm-langs button:hover { color: var(--hm-accent); }
 .hm-langs button[aria-pressed="true"] { color: var(--hm-ink); text-decoration: underline; text-underline-offset: 4px; }
+
+/* Phones: name + ☰; the links and tools live in the sheet (sitemenu.css) */
+.hm-nav .hm-menu { display: none; }
+@media (max-width: 759px) {
+  .hm-nav { flex-wrap: nowrap; align-items: center; padding-block: 18px; }
+  .hm-nav .hm-links { display: none; }
+  .hm-nav .hm-menu { display: inline-flex; }
+}
 
 /* ── Hero ───────────────────────────────────────────────── */
 

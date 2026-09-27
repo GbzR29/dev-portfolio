@@ -14,6 +14,9 @@ export const homeTranslations = {
     navDark:    "☾ dark",
     navLight:   "☀ light",
     navLanguage: "Language",
+    navMenu:    "Menu",
+    navClose:   "Close menu",
+    navTheme:   "Theme",
 
     // ── Hero ────────────────────────────────────────────────────────────────
     heroEyebrow:    "C++ programmer · computer graphics",
@@ -103,6 +106,9 @@ export const homeTranslations = {
     navDark:    "☾ escuro",
     navLight:   "☀ claro",
     navLanguage: "Idioma",
+    navMenu:    "Menu",
+    navClose:   "Fechar menu",
+    navTheme:   "Tema",
 
     // ── Hero ────────────────────────────────────────────────────────────────
     heroEyebrow:    "programador C++ · computação gráfica",
@@ -192,6 +198,9 @@ export const homeTranslations = {
     navDark:    "☾ oscuro",
     navLight:   "☀ claro",
     navLanguage: "Idioma",
+    navMenu:    "Menú",
+    navClose:   "Cerrar menú",
+    navTheme:   "Tema",
 
     // ── Hero ────────────────────────────────────────────────────────────────
     heroEyebrow:    "programador C++ · gráficos por computadora",
@@ -281,6 +290,9 @@ export const homeTranslations = {
     navDark:    "☾ 深色",
     navLight:   "☀ 浅色",
     navLanguage: "语言",
+    navMenu:    "菜单",
+    navClose:   "关闭菜单",
+    navTheme:   "主题",
 
     // ── Hero ────────────────────────────────────────────────────────────────
     heroEyebrow:    "C++ 程序员 · 计算机图形学",

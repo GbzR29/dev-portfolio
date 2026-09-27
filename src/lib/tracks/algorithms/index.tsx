@@ -19,6 +19,7 @@ const FOUNDATIONS = "Foundations";
 const SORTING = "Searching & Sorting";
 const LINEAR = "Linear Structures";
 const TREES = "Trees";
+const DESIGN = "Algorithm Design";
 
 export const algorithmsChapters: Chapter[] = [
   { id: "memory",     section: FOUNDATIONS, title: "Memory, Arrays & Pointers", minRead: 20, load: () => import("./chapters/memory").then((m) => m.MemoryContent) },
@@ -42,4 +43,7 @@ export const algorithmsChapters: Chapter[] = [
   { id: "balanced-trees", section: TREES, title: "Balanced Trees: AVL & Red-Black", minRead: 26, load: () => import("./chapters/balanced-trees").then((m) => m.BalancedTreesContent) },
   { id: "heaps",          section: TREES, title: "Heaps & Priority Queues",    minRead: 22, load: () => import("./chapters/heaps").then((m) => m.HeapsContent) },
   { id: "tries",          section: TREES, title: "Tries",                      minRead: 18, load: () => import("./chapters/tries").then((m) => m.TriesContent) },
+
+  { id: "greedy",              section: DESIGN, title: "Greedy Algorithms",   minRead: 26, load: () => import("./chapters/greedy").then((m) => m.GreedyContent) },
+  { id: "dynamic-programming", section: DESIGN, title: "Dynamic Programming", minRead: 28, load: () => import("./chapters/dynamic-programming").then((m) => m.DynamicProgrammingContent) },
 ];

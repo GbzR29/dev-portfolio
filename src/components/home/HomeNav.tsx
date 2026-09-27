@@ -1,29 +1,22 @@
 "use client";
 
 // ── Home navigation ─────────────────────────────────────────────────────────
-// A quiet text bar for the Home, the book page and /learn: name, links, theme toggle
-// and the language switch. The rest of the site keeps components/navbar.
+// A quiet text bar for the Home, the book page, /learn and the blog: name,
+// links, theme toggle and the language switch. On phones the links and tools
+// move into the ☰ sheet (components/nav/SiteMenu). Styles: .hm-nav in home.css.
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import type { Language } from "@/lib/i18n";
-
-const LANGUAGES: Language[] = ["en", "pt", "es", "zh"];
+import { SiteMenu } from "@/components/nav/SiteMenu";
+import { LANGUAGES, useSiteLinks } from "@/components/nav/siteLinks";
 
 export default function HomeNav() {
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const pathname = usePathname();
-
-  const links = [
-    { href: "/#about", label: t.navAbout },
-    { href: "/learn", label: t.navLearn },
-    { href: "/the-weight-of-being", label: t.navBook },
-    { href: "/blog", label: t.navBlog },
-    { href: "/#contact", label: t.navContact },
-  ];
+  const links = useSiteLinks();
 
   return (
     <nav className="hm-nav" aria-label="Primary">
@@ -51,6 +44,7 @@ export default function HomeNav() {
           </div>
         </div>
       </div>
+      <SiteMenu className="hm-menu" />
     </nav>
   );
 }

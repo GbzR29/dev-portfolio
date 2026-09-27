@@ -4,7 +4,8 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react"; // 1. Importe o Suspense
 import { Construction, Wrench, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import Navbar from "@/components/navbar/Navbar";
+import "@/styles/home.css";
+import HomeNav from "@/components/home/HomeNav";
 import Footer from "@/components/footer/Footer";
 
 // 2. Crie um componente interno para a lógica que usa searchParams
@@ -72,8 +73,10 @@ function StatusContent() {
 export default function StatusPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text-main)] transition-colors duration-300">
-      <Navbar />
-      <main className="flex-grow flex items-center justify-center px-6 pt-20">
+      <div className="hm-scope relative z-10 max-w-6xl w-full mx-auto px-6 lg:px-10">
+        <HomeNav />
+      </div>
+      <main className="flex-grow flex items-center justify-center px-6 py-12">
         <Suspense fallback={<div className="text-[var(--text-muted)]">Loading...</div>}>
           <StatusContent />
         </Suspense>

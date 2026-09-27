@@ -20,12 +20,15 @@ const track = {
     "balanced-trees": "Árvores balanceadas: AVL e rubro-negra",
     heaps: "Heaps e filas de prioridade",
     tries: "Tries",
+    greedy: "Algoritmos gulosos",
+    "dynamic-programming": "Programação dinâmica",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
     "Searching & Sorting": "Busca e ordenação",
     "Linear Structures": "Estruturas lineares",
     Trees: "Árvores",
+    "Algorithm Design": "Projeto de algoritmos",
   } as Record<string, string>,
 };
 

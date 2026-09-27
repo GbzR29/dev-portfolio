@@ -11,6 +11,7 @@ The build logs a MongoDB `ENOTFOUND` when offline — expected, the blog handles
 
 ```
 src/app/page.tsx, src/components/home/ Home (and the book page /the-weight-of-being); styles in src/styles/home.css (--hm-* tokens, .home scope)
+src/components/nav/                    SiteMenu (phone ☰ sheet, styles in src/styles/sitemenu.css) + siteLinks (links, languages) shared by HomeNav and LearnTopBar; HomeNav is the nav of every page (blog/status borrow it via .hm-scope)
 src/app/learn/page.tsx                 /learn landing — track cards on the Home look (HomeNav, home.css); data from the catalog + progress
 src/styles/learn.css                   /learn look: re-values the theme.css tokens while a .learn page is shown, syntax colours, figure numbering
 src/lib/tracks/progress.ts             reading progress + "last lesson" in localStorage (sidebar, /learn "resume")

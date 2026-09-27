@@ -1,6 +1,7 @@
 @import "../styles/theme.css";
 @import "../styles/figure.css";
 @import "../styles/learn.css";
+@import "../styles/sitemenu.css";
 
 @tailwind base;
 @tailwind components;

@@ -4,14 +4,15 @@
 // The slim sticky bar over lessons and reference pages: name, the page's path
 // (breadcrumbs), theme toggle and language switch. Its height is --nav-h
 // (src/styles/learn.css); the rails and pinned figures sit below it.
+// On phones only the page title and ☰ remain; the sheet (components/nav/SiteMenu)
+// holds the way back up the path, the site links, theme and languages.
 
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import type { Language } from "@/lib/i18n";
-
-const LANGUAGES: Language[] = ["en", "pt", "es", "zh"];
+import { SiteMenu } from "@/components/nav/SiteMenu";
+import { LANGUAGES } from "@/components/nav/siteLinks";
 
 export interface Crumb {
   label: string;
@@ -44,7 +45,9 @@ export function LearnTopBar({ crumbs = [] }: { crumbs?: Crumb[] }) {
           </ol>
         </nav>
 
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <SiteMenu crumbs={crumbs} className="md:!hidden flex-shrink-0" />
+
+        <div className="hidden md:flex items-center gap-3 flex-shrink-0">
           <button
             type="button"
             onClick={toggleTheme}

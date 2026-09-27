@@ -1,7 +1,8 @@
 // components/blog/BlogClientContent.tsx
 "use client";
 
-import Navbar from "@/components/navbar/Navbar";
+import "@/styles/home.css";
+import HomeNav from "@/components/home/HomeNav";
 import Footer from "@/components/footer/Footer";
 import TriangleParticles from "@/components/particles/TriangleParticles";
 import { useLanguage } from "@/components/providers/LanguageProvider";
@@ -97,8 +98,10 @@ export default function BlogClientContent({ initialPosts }: BlogClientProps) {
   return (
     <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--text-main)] transition-colors duration-300">
       <TriangleParticles />
-      <Navbar />
-      <main className="flex-grow pt-28 pb-24">
+      <div className="hm-scope relative z-10 max-w-6xl w-full mx-auto px-6 lg:px-10">
+        <HomeNav />
+      </div>
+      <main className="flex-grow pt-14 pb-24">
         <div className="max-w-6xl mx-auto px-6 lg:px-10 space-y-16">
           <header className="space-y-5 max-w-2xl">
             <div className="flex items-center gap-3">
