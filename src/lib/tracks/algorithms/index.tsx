@@ -18,6 +18,7 @@ import type { Chapter } from "@/lib/tracks/types";
 const FOUNDATIONS = "Foundations";
 const SORTING = "Searching & Sorting";
 const LINEAR = "Linear Structures";
+const TREES = "Trees";
 
 export const algorithmsChapters: Chapter[] = [
   { id: "memory",     section: FOUNDATIONS, title: "Memory, Arrays & Pointers", minRead: 20, load: () => import("./chapters/memory").then((m) => m.MemoryContent) },
@@ -35,4 +36,10 @@ export const algorithmsChapters: Chapter[] = [
   { id: "stacks",        section: LINEAR, title: "Stacks",                   minRead: 20, load: () => import("./chapters/stacks").then((m) => m.StacksContent) },
   { id: "queues",        section: LINEAR, title: "Queues & Deques",          minRead: 18, load: () => import("./chapters/queues").then((m) => m.QueuesContent) },
   { id: "hash-table",    section: LINEAR, title: "Hash Tables",              minRead: 24, load: () => import("./chapters/hash-table").then((m) => m.HashTableContent) },
+
+  { id: "trees",          section: TREES, title: "Trees & Traversals",         minRead: 22, load: () => import("./chapters/trees").then((m) => m.TreesContent) },
+  { id: "bst",            section: TREES, title: "Binary Search Trees",        minRead: 22, load: () => import("./chapters/bst").then((m) => m.BstContent) },
+  { id: "balanced-trees", section: TREES, title: "Balanced Trees: AVL & Red-Black", minRead: 26, load: () => import("./chapters/balanced-trees").then((m) => m.BalancedTreesContent) },
+  { id: "heaps",          section: TREES, title: "Heaps & Priority Queues",    minRead: 22, load: () => import("./chapters/heaps").then((m) => m.HeapsContent) },
+  { id: "tries",          section: TREES, title: "Tries",                      minRead: 18, load: () => import("./chapters/tries").then((m) => m.TriesContent) },
 ];

@@ -15,11 +15,17 @@ const track = {
     stacks: "Pilhas",
     queues: "Filas e deques",
     "hash-table": "Tabelas hash",
+    trees: "Árvores e percursos",
+    bst: "Árvores binárias de busca",
+    "balanced-trees": "Árvores balanceadas: AVL e rubro-negra",
+    heaps: "Heaps e filas de prioridade",
+    tries: "Tries",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
     "Searching & Sorting": "Busca e ordenação",
     "Linear Structures": "Estruturas lineares",
+    Trees: "Árvores",
   } as Record<string, string>,
 };
 
