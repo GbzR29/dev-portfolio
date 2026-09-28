@@ -1,0 +1,77 @@
+// PT text for src/lib/tracks/glsl/chapters/effects/underwater.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  glslUnder_intro: "Mergulhe sob a superfície do Laboratório de Água e três coisas mudam. A superfície vira um teto que mostra o céu só num disco bem acima de você, e espelha as profundezas em todo o resto. A água entre você e tudo o que você olha deixa de ser uma camada fina atravessada uma vez: ela é a cena inteira, e colore, escurece e embaça tudo com a distância. E a luz do sol que desce pelas ondas desenha feixes em movimento nessa névoa. Este capítulo constrói as três coisas sobre a malha e o fundo do Laboratório de Água.",
+
+  glslUnder_snellTitle: "Olhando para cima: a janela de Snell",
+  glslUnder_snellBody: "A luz que passa de um meio para outro se curva de modo que n·sen θ fique igual dos dois lados, onde θ é o ângulo com a normal da superfície e n é o índice de refração. Vista de baixo, a regra funciona ao contrário: um raio que sai do olho e deixa a água se afasta da normal. A partir de certo ângulo o raio precisaria de sen θ_ar > 1 para sair, e então não sai: é refletido de volta para baixo, por inteiro. Esse ângulo é o ângulo crítico:",
+  glslUnder_snellLabel: "Lei de Snell, e o ângulo crítico visto de baixo",
+  glslUnder_wN: "os índices de refração da água e do ar: quantas vezes a luz anda mais devagar neles do que no vácuo",
+  glslUnder_wTh: "os ângulos entre o raio e a normal da superfície, na água e no ar",
+  glslUnder_wThc: "o ângulo crítico, em que θ_a chegaria a 90°: o raio rasparia ao longo da superfície. Além dele, sen θ_a passaria de 1, e nada é transmitido",
+  glslUnder_windowBody: "Faça o caminho inverso, do céu até o olho. A luz que vem de bem acima chega reta. A luz do horizonte chega com θ_a = 90° e se curva para 48,6°. Então o céu inteiro, 180° de horizonte a horizonte, chega ao olho dentro de um cone de 97° de abertura. De baixo, o céu é um disco claro de diâmetro 2·d·tg 48,6° ≈ 2,27·d na profundidade d, comprimido em direção à borda, onde fica o horizonte. Os mergulhadores chamam isso de janela de Snell. Fora dela, a superfície reflete o que está embaixo: as profundezas escuras, o fundo, um peixe.",
+  glslUnder_fresBody: "O Laboratório de Água usou a aproximação de Schlick para o Fresnel. Ela funciona bem para a reflexão vista do lado do ar, mas vista do lado da água nunca chega à reflexão total no ângulo crítico. Por isso a face de baixo usa as equações de Fresnel exatas, para luz chegando com cos θ_i e uma razão de índices η:",
+  glslUnder_fLabel: "Refletância de Fresnel exata (luz não polarizada)",
+  glslUnder_wEta: "o índice do lado de onde a luz vem dividido pelo índice do outro lado: 1,333 para um raio saindo da água",
+  glslUnder_wCt: "o cosseno do ângulo transmitido, pela lei de Snell. Quando a raiz seria de um número negativo, o raio passou do ângulo crítico e F = 1",
+  glslUnder_wRs: "as amplitudes refletidas para luz polarizada perpendicular e paralela ao plano de incidência. A luz do sol e do céu é tratada como não polarizada: uma mistura igual das duas, daí a média dos quadrados",
+  glslUnder_undersideBody: "A face de baixo é sombreada com a malha e as normais do Laboratório de Água, com a normal invertida para apontar para baixo. O raio refratado T olha para cima, na sonda do céu, mais um termo estreito para o próprio sol, com peso 1 − F. O raio refletido R volta para dentro da água, e o que ele encontra lá (o fundo, ou água aberta) recebe peso F. Além do ângulo crítico, F = 1 e só resta a água de baixo. As ondas inclinam a normal, então a borda da janela ondula e se parte em manchas claras.",
+
+  glslUnder_mediumTitle: "A água é um meio",
+  glslUnder_mediumBody: "Acima da superfície, o Laboratório de Água coloriu a luz refratada com a absorção de Beer–Lambert ao longo do caminho até o fundo. Debaixo d'água, esse caminho é todo caminho. A luz que atravessa a água perde energia de dois jeitos. Pode ser absorvida, virar calor: a água absorve o vermelho em poucos metros, o verde em dezenas de metros e o azul menos que todos. Ou pode ser espalhada, desviada para uma nova direção por partículas, plâncton e bolhas, seja qual for a cor. As duas coisas tiram luz de um raio, então somam no coeficiente de extinção:",
+  glslUnder_extLabel: "Extinção e transmitância",
+  glslUnder_wSa: "o coeficiente de absorção, por metro e por canal de cor: as cores de água do Laboratório de Água, divididas pelo controle de limpidez",
+  glslUnder_wSs: "o coeficiente de espalhamento, por metro: o controle de turbidez. Ele é cinza porque as partículas que espalham são muito maiores que o comprimento de onda da luz, e aí espalham todas as cores igualmente",
+  glslUnder_wT: "a transmitância: a fração da luz que ainda segue pelo raio depois de s metros. É uma cor, já que σt é diferente em cada canal",
+  glslUnder_inscBody: "Se fosse só isso, tudo o que está longe sumiria no preto. Some no azul, porque o espalhamento também acrescenta luz. A luz do sol e do céu chega a todos os pontos da água, e uma fração σs dela é espalhada a cada metro, parte na direção do olho. A luz que o olho recebe ao longo de um raio de comprimento s é a soma do que a ponta distante envia, atenuado, com o que cada ponto do caminho espalha em direção ao olho, atenuado pela água entre esse ponto e o olho:",
+  glslUnder_rteLabel: "Espalhamento simples ao longo de um raio de visão",
+  glslUnder_wLend: "a luz que sai daquilo em que o raio termina: o fundo, ou a face de baixo da superfície",
+  glslUnder_wS: "o termo fonte: a luz espalhada em direção ao olho por metro, à distância t ao longo do raio",
+  glslUnder_wE: "a luz do sol e a do céu que chegam à profundidade d, logo abaixo",
+  glslUnder_wP: "a função de fase: que parte da luz do sol espalhada vira na direção do olho, em função de μ, o cosseno do ângulo entre a direção da luz do sol e a direção até o olho",
+  glslUnder_w4pi: "a função de fase da luz que vem do céu todo: ela é tratada como espalhada por igual em todos os 4π esterradianos de direções",
+  glslUnder_wC: "o fator de cáustica no ponto: 1 sob uma superfície plana, mais onde as ondas concentram o sol e menos onde o espalham. É ele que forma os feixes, mais abaixo",
+  glslUnder_phaseBody: "As partículas na água jogam para frente a maior parte da luz que espalham, a poucos graus da direção original. A função de fase de Henyey–Greenstein, já usada na névoa do céu, captura isso com um só número g, o cosseno médio do ângulo de espalhamento. Medições em água do mar dão g ≈ 0,9; o laboratório usa 0,8, que mantém um pouco mais de luz espalhada para os lados. Com g = 0,8, olhar em direção ao sol deixa a luz espalhada cerca de 700 vezes mais forte do que olhar para o lado oposto: é por isso que os feixes brilham mais quando você está de frente para eles.",
+  glslUnder_hgLabel: "Função de fase de Henyey–Greenstein",
+  glslUnder_wMu: "cos do ângulo de espalhamento: 1 quando a luz segue reto até o olho, −1 quando volta para trás",
+  glslUnder_wG: "a assimetria: 0 espalha por igual em todas as direções, valores perto de 1 mantêm a luz perto da direção original",
+
+  glslUnder_depthTitle: "A luz na profundidade d",
+  glslUnder_depthBody: "O sol entra pela superfície com a fração transmitida 1 − F, curvado para a direção refratada L_s, e então atravessa d / cos θ_s metros de água até a profundidade d. A luz do céu entra pelo céu inteiro, que dentro da água ocupa o cone de 48,6° da janela de Snell. Na média sobre esse cone, ponderada por quão de frente cada direção ilumina um pedaço horizontal, o caminho dela é 1,21 vez a profundidade. As duas são atenuadas pela extinção total σt, já que a luz espalhada para fora de um feixe não segue mais com ele:",
+  glslUnder_lightLabel: "Luz do sol e do céu na profundidade d",
+  glslUnder_wE0: "a luz do sol logo acima da superfície, vinda do modelo de céu",
+  glslUnder_wFs: "a refletância de Fresnel para a elevação do sol: um sol baixo é quase todo refletido, então as profundezas escurecem ao entardecer antes da superfície",
+  glslUnder_wCs: "o cosseno da direção refratada do sol em relação à vertical. Ele nunca fica abaixo de cos 48,6° = 0,66, então até um sol se pondo alcança as profundezas por um caminho de no máximo 1,5 vez a profundidade",
+  glslUnder_w121: "a média de 1/cos θ sobre a janela, ponderada por cos θ (a luz que um pedaço horizontal recebe de cada direção): (1 − cos θc) / (½ sen² θc) = 0,339 / 0,281 ≈ 1,21",
+
+  glslUnder_marchTitle: "Marchando pelo raio",
+  glslUnder_marchBody: "A integral não tem forma fechada quando as cáusticas entram nela, então o shader corta o raio em 32 passos e soma. Dentro de um passo de comprimento Δt a fonte S é tomada como constante, e aí a parte desse passo tem resposta exata. Somar S·Δt em vez disso passaria do ponto em água turva, onde um único passo pode ser mais longo que a distância que a luz sobrevive:",
+  glslUnder_stepLabel: "Um passo da marcha",
+  glslUnder_wStep: "a integral de e^(−σt·t) sobre o passo: quanto de uma fonte constante ao longo de Δt metros chega ao início do passo. Para passos curtos vale ≈ Δt, e para longos tende a 1/σt, a distância que a luz sobrevive",
+  glslUnder_wTacc: "a transmitância do olho até o início do passo, multiplicada por e^(−σt·Δt) depois de cada passo",
+  glslUnder_wJ: "um deslocamento por pixel entre 0 e 1 (ruído de gradiente intercalado). Cada pixel amostra o passo num ponto diferente, o que transforma as listras que um passo fixo deixaria num grão fino e uniforme",
+  glslUnder_stepNote: "A marcha para depois de 60 m. Dali em diante, um passo a mais cobre o resto do raio com a fonte do ponto de 60 m, sem o padrão das cáusticas, e termina no fundo ou no infinito, onde e^(−σt·s) = 0.",
+
+  glslUnder_shaftTitle: "Feixes de luz",
+  glslUnder_shaftBody: "O Laboratório de Água iluminou o fundo com cáusticas: cada crista de onda é uma lente fraca, e a luz do sol embaixo dela se concentra em linhas claras. A mesma luz concentrada passa por todas as profundidades no caminho para baixo, e as partículas ao longo dela espalham parte para o olho. Vistas de lado, as linhas de cáustica viram lâminas e feixes de luz que seguem a direção do sol e balançam com as ondas. Então o fator de cáustica c(x) do termo fonte é a fórmula da cáustica de novo, avaliada no ponto onde a luz do sol que chega a x atravessou a superfície:",
+  glslUnder_causLabel: "O fator de cáustica em qualquer profundidade",
+  glslUnder_wXs: "o ponto da superfície de onde veio o raio de sol refratado que passa por x: volte para cima ao longo de L_s por d / cos θ_s metros",
+  glslUnder_wEtaIn: "do ar para a água. (1 − η)·∇h é quanto uma inclinação ∇h da superfície desvia o raio refratado, por metro de profundidade",
+  glslUnder_wH: "a hessiana da altura da superfície (suas derivadas segundas) em x_s: quão rápido a inclinação muda, que é o que concentra ou espalha um feixe",
+  glslUnder_w012: "um piso para a razão de áreas. Num foco perfeito o determinante é 0 e a intensidade infinita; a luz do sol real é um disco de 0,5° de largura, que borra todo foco, então o pico é limitado a 1/0,12 ≈ 8 vezes a luz sob água plana",
+  glslUnder_filterBody: "Trinta e duas amostras ao longo de 60 m ficam a quase 2 m uma da outra, enquanto as ondulações concentram a luz em linhas de poucos centímetros. Amostrar um padrão assim tão espaçado dá ruído, não feixes. Por isso a hessiana deixa de fora as ondas mais curtas que algumas vezes a resolução res, o mesmo desbotamento que o Laboratório de Água usa para ondas distantes, com res = 0,35·Δt + 0,02·d. O primeiro termo acompanha o comprimento do passo. O segundo suaviza o padrão com a profundidade, como a largura do sol e o espalhamento para frente borram os feixes reais; 0,02 foi escolhido comparando com filmagens subaquáticas. O fundo usa o mesmo fator, filtrado pelo tamanho do pixel no fundo, então os feixes caem exatamente sobre as suas cáusticas.",
+
+  glslUnder_passesTitle: "Juntando tudo",
+  glslUnder_passesBody: "O frame tem a estrutura do Laboratório de Água. Primeiro a sonda do céu. Depois um passe de tela cheia para tudo o que não é a superfície: ele traça o raio de visão até o fundo, sombreia o fundo com as cáusticas, aplica a marcha na frente dele e grava a profundidade do fundo. Raios que chegam à superfície antes do fundo pulam tudo isso, já que a malha da superfície vai cobri-los. Então a malha da superfície desenha a face de baixo, com a sua própria marcha do olho até a superfície. Dentro da face de baixo, o raio refletido não ganha uma marcha completa: ele leva um só passo analítico, iluminado na profundidade do meio dos seus primeiros 20 m, e sem feixes. Essa imagem já está atenuada pelo próprio caminho, então a diferença não aparece.",
+  glslUnder_crossBody: "A câmera pode atravessar a superfície. A cada frame, o laboratório compara a altura da câmera com a altura de Gerstner logo acima dela e escolhe os shaders do Laboratório de Água ou os subaquáticos. A câmera fica pelo menos 15 cm abaixo da onda que passa, ou 30 cm acima, para que a lente nunca fique cortada pela superfície: desenhar a linha d'água atravessando a lente exige a altura da superfície na lente e um frame dividido.",
+
+  glslUnder_tip: "Os jogos costumam marchar o espalhamento em resolução menor, ou numa grade 3D de células alinhadas com a câmera (froxels) compartilhada por todos os pixels, e depois borrar e ampliar. Eles também acrescentam o que este laboratório deixa de fora: o borrão dos objetos vistos através de água turva, partículas flutuando na frente da câmera, uma linha d'água desenhada na lente quando ela está meio submersa, e sombras nos feixes projetadas por pedras, barcos e nadadores. A luz espalhada mais de uma vez muitas vezes é imitada diminuindo a extinção usada no caminho da luz para baixo.",
+
+  glslUnder_k1: "De baixo, o céu cabe num cone de ±48,6° (a janela de Snell). Além do ângulo crítico arcsen(1/1,333), a superfície reflete tudo. As equações de Fresnel exatas chegam a F = 1 ali, e a aproximação de Schlick não.",
+  glslUnder_k2: "A água absorve (σa, por cor) e espalha (σs, cinza). A soma σt atenua todo caminho como e^(−σt·s), e a luz espalhada para dentro ao longo do caminho dá à água distante a sua cor.",
+  glslUnder_k3: "O espalhamento simples soma σs·(luz do sol·cáustica·fase + luz do céu/4π) ao longo do raio, um passo por vez, com cada passo integrado exatamente como (1 − e^(−σt·Δt))/σt e deslocado por pixel.",
+  glslUnder_k4: "Os feixes de luz são as cáusticas vistas de lado: em cada amostra, trace o raio de sol refratado de volta até a superfície e use a mudança de área inversa det(I + d(1 − η)H).",
+  glslUnder_k5: "Filtre o padrão para o que as amostras conseguem resolver: descarte ondas mais curtas que algumas vezes o comprimento do passo, e mais com a profundidade.",
+};
+
+export default text;

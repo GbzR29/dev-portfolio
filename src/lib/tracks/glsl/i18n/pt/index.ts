@@ -9,15 +9,17 @@ import fragcoord from "./fragcoord";
 import noise from "./noise";
 import ocean from "./ocean";
 import playground from "./playground";
+import pool from "./pool";
 import raymarching from "./raymarching";
 import raytracing from "./raytracing";
 import sdf from "./sdf";
 import shaderClass from "./shader-class";
 import shapes from "./shapes";
 import types from "./types";
+import underwater from "./underwater";
 
 const bundle: LessonText = {
-  strings: { ...builtinVars, ...builtins, ...effects, ...fragcoord, ...noise, ...ocean, ...playground, ...raymarching, ...raytracing, ...sdf, ...shaderClass, ...shapes, ...types },
+  strings: { ...builtinVars, ...builtins, ...effects, ...fragcoord, ...noise, ...ocean, ...playground, ...pool, ...raymarching, ...raytracing, ...sdf, ...shaderClass, ...shapes, ...types, ...underwater },
   titles: track.titles,
   sections: track.sections,
 };

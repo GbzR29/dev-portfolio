@@ -14,6 +14,8 @@ const track = {
     texturing: "Truques de texturização",
     water: "Ondas e água",
     ocean: "Oceano: ondas por FFT",
+    underwater: "Debaixo d'água",
+    pool: "Piscina interativa",
     glass: "Vidro, refração e Fresnel",
     fog: "Neblina",
     stylized: "Toon, dissolve e holograma",

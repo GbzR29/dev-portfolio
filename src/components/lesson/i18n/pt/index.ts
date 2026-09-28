@@ -12,13 +12,15 @@ import math from "./math";
 import ocean from "./ocean";
 import pbr from "./pbr";
 import perf from "./perf";
+import pool from "./pool";
 import post from "./post";
 import rt from "./rt";
 import sky from "./sky";
 import special from "./special";
 import tech from "./tech";
+import underwater from "./underwater";
 import water from "./water";
 
-const bundle: Record<string, string> = { ...advgl, ...advlighting, ...figures, ...fog, ...gamedev, ...glass, ...glsl, ...lighting, ...math, ...ocean, ...pbr, ...perf, ...post, ...rt, ...sky, ...special, ...tech, ...water };
+const bundle: Record<string, string> = { ...advgl, ...advlighting, ...figures, ...fog, ...gamedev, ...glass, ...glsl, ...lighting, ...math, ...ocean, ...pbr, ...perf, ...pool, ...post, ...rt, ...sky, ...special, ...tech, ...underwater, ...water };
 
 export default bundle;

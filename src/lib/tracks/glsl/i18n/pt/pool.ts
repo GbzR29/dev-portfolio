@@ -1,0 +1,78 @@
+// PT text for src/lib/tracks/glsl/chapters/effects/pool.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  glslPool_intro: "Ondas de Gerstner e oceanos por FFT são fórmulas do tempo: não conseguem reagir quando algo toca a água. Este capítulo reconstrói o WebGL Water de Evan Wallace (2011), ainda uma das demos de água mais conhecidas da web: uma piscina pequena onde um clique cria anéis que batem nas paredes, uma bola que flutua e empurra a água para os lados, e cáusticas claras nos azulejos. São três peças: a equação da onda resolvida numa grade de alturas, uma bola com empuxo, e cáusticas feitas projetando a malha da água ao longo da luz do sol refratada.",
+
+  glslPool_fieldTitle: "Um campo de alturas",
+  glslPool_fieldBody: "A piscina tem 2 m × 2 m e 1 m de profundidade, e a sua água é descrita por uma altura por célula de uma grade de 256 × 256: h(x, z), a altura acima do nível de repouso. Um campo de alturas não consegue dobrar sobre si mesmo nem espirrar, mas uma piscina que só é cutucada nunca precisa disso. Cada célula tem Δx = 2 m / 256 ≈ 7,8 mm. A grade vive numa textura RGBA de ponto flutuante, um texel por célula: o vermelho guarda a altura, o verde a velocidade (quanto a altura se move por passo), e o azul e o alfa o x e o z da normal da superfície, para o sombreamento. Um fragment shader não pode ler a textura em que está escrevendo, então há duas texturas, e cada passe lê uma e escreve a outra (ping-pong).",
+
+  glslPool_waveTitle: "A equação da onda",
+  glslPool_waveBody: "Empurre um pedaço da superfície da água para cima e a gravidade o puxa de volta, empurrando os vizinhos para cima por sua vez. Para ondas pequenas, a equação da onda captura isso: a aceleração vertical de cada ponto é proporcional a quanto ele está abaixo da média ao redor. O laplaciano ∇²h mede exatamente isso:",
+  glslPool_pdeLabel: "A equação da onda",
+  glslPool_wH: "a altura da superfície acima do nível de repouso, em metros",
+  glslPool_wAcc: "a aceleração vertical da superfície num ponto",
+  glslPool_wLap: "o laplaciano: a curvatura da superfície. É positivo numa depressão (os vizinhos estão mais altos) e negativo numa elevação",
+  glslPool_wC: "a velocidade da onda, em m/s: quão rápido uma perturbação se espalha",
+  glslPool_discBody: "Na grade, o laplaciano vira o estêncil de cinco pontos: a soma dos quatro vizinhos menos quatro vezes a própria célula, dividida por Δx². O tempo avança em passos de Δt. Cada passo primeiro atualiza a velocidade pelo estêncil, depois move a altura pela nova velocidade. Essa ordem, velocidade e depois posição, é o método de Euler simplético: ele impede que a energia de uma onda vá subindo ao longo de milhares de passos, enquanto o Euler comum a amplificaria aos poucos. Juntando Δt e Δx numa só constante, a atualização inteira fica:",
+  glslPool_stepLabel: "Um passo, para cada célula (i, j)",
+  glslPool_wV: "a velocidade, guardada em metros por passo (assim ela é simplesmente somada à altura)",
+  glslPool_wC2: "o número de Courant ao quadrado: quanto uma onda anda num passo, em células, ao quadrado. É o controle 'wave speed C²'",
+  glslPool_wD: "o amortecimento: a parte da velocidade mantida a cada passo, um pouco menos que 1. Ele representa o atrito e a viscosidade que a equação deixa de fora. Uma onda perde cerca de 1/e da altura a cada 2/(1 − d) passos: 400 passos, pouco mais de 3 s, com d = 0,995",
+
+  glslPool_stabTitle: "Quão rápido as ondas podem ir?",
+  glslPool_stabBody: "A informação anda no máximo uma célula por passo nesta grade, então não se pode deixar uma onda andar mais rápido que isso. O pior caso é a onda mais curta que a grade consegue ter, o tabuleiro de xadrez, onde cada célula é o oposto dos seus quatro vizinhos. Ali o estêncil dá −8h, então cada passo muda a velocidade em −8·C²·h. Quando C² > 1/2, essa correção passa do ponto mais do que restaura, e o tabuleiro cresce a cada passo, seja qual for o amortecimento. Essa é a condição de Courant–Friedrichs–Lewy (CFL) para este esquema:",
+  glslPool_cflLabel: "Estabilidade, e a velocidade que ela permite",
+  glslPool_wCfl: "o limite em 2D (em 1D, com dois vizinhos, é C² ≤ 1, como na figura acima)",
+  glslPool_wDt: "o laboratório dá 120 passos por segundo de animação, seja qual for a taxa de quadros: ele conta o tempo que passou e roda quantos passos forem devidos",
+  glslPool_wSpeed: "√0,5 × 7,8 mm × 120 /s: as ondas mais rápidas que esta grade e este passo conseguem rodar",
+  glslPool_dispBody: "A água de verdade não é tão simples. Em água de 1 m de profundidade, as ondas longas andam a √(g·profundidade) ≈ 3,1 m/s, enquanto ondulações de poucos centímetros andam a cerca de 0,25 m/s: a velocidade depende do comprimento de onda (dispersão). A equação da onda dá a mesma velocidade a todos os comprimentos. A 0,66 m/s ela parece certa para as ondulações que uma mão ou uma bola fazem numa piscina pequena, que é tudo o que esta piscina precisa mostrar.",
+  glslPool_wallBody: "As paredes saem de graça. Uma célula da borda pede um vizinho fora da grade, e o shader limita a coordenada, então recebe ela mesma de volta. A água logo do lado de fora fica sempre no mesmo nível da borda, então a superfície encontra a parede com inclinação zero (uma fronteira de Neumann). É exatamente assim que a água encontra uma parede vertical, e ela reflete as ondas de volta para a piscina.",
+
+  glslPool_dropTitle: "Gotas e normais",
+  glslPool_dropBody: "Um clique soma um calombo suave às alturas, um cosseno elevado. Ele vale 1 no meio e cai para 0 com inclinação zero na borda, então não acrescenta nenhum canto vivo, que a grade transformaria em oscilação. Depois dos passos do frame, mais um passe calcula as normais a partir das alturas por diferenças centrais:",
+  glslPool_dropLabel: "Uma gota, e a normal",
+  glslPool_wS: "a força da gota em metros: +2 cm num clique, +1 cm ao arrastar. Valores negativos fazem um afundamento",
+  glslPool_wRho: "a distância ao centro x_d da gota, como fração do seu raio R (o controle 'drop radius')",
+  glslPool_wCd: "a inclinação ao longo de x, a partir dos dois vizinhos. Usar os dois lados mantém a normal centrada na célula",
+
+  glslPool_ballTitle: "Uma bola que flutua",
+  glslPool_ballBody: "A bola é simulada na CPU, um passo por frame. A gravidade a puxa para baixo com g. A água a empurra para cima com o peso da água que ela desloca (Arquimedes). Isso depende de quanto da bola está abaixo do nível de repouso: uma calota esférica, cujo volume tem forma fechada. Dividido pela massa da bola, o empuxo é g vezes a fração submersa do volume da bola, dividido pela densidade da bola em relação à água:",
+  glslPool_buoyLabel: "Empuxo de uma esfera",
+  glslPool_wR: "o raio da bola, 25 cm",
+  glslPool_wHs: "a altura da calota submersa, para um centro y_c metros acima do nível de repouso",
+  glslPool_wF: "a fração submersa do volume: o volume da calota π·h_s²·(3r − h_s)/3 dividido pelos 4πr³/3 da bola",
+  glslPool_wDens: "a densidade da bola dividida pela da água (o controle 'ball density'). Em repouso, o empuxo equilibra o peso onde f = ρ: uma bola com metade da densidade da água flutua metade submersa",
+  glslPool_wK: "o arrasto, 0,3 + 4·f por segundo: a água resiste ao movimento muito mais que o ar, então uma oscilação morre depois de poucos balanços",
+  glslPool_pushBody: "A bola também precisa mover a água. Onde quer que esteja, ela ocupa parte de cada coluna de água embaixo dela: do seu fundo até o nível de repouso, um comprimento que sai da equação da esfera. Quando a bola se move, a água numa coluna sobe exatamente o quanto esse comprimento cresceu, e a equação da onda espalha o calombo a partir dali. Uma bola que cai na água eleva a piscina inteira pelo seu volume submerso dividido pela área da piscina, e uma que é puxada para fora a abaixa de novo: o volume de água se conserva. O comprimento cai a zero com inclinação infinita no contorno da bola, e esse bico oscilaria na escala da grade, então ele é suavizado nos 15% externos do raio.",
+  glslPool_colLabel: "A parte da bola numa coluna de água",
+  glslPool_wRhoc: "a distância horizontal da coluna até o centro da bola",
+  glslPool_wHalf: "metade da altura da bola nessa distância",
+  glslPool_wDl: "a mudança desde o último frame, somada à altura da coluna",
+
+  glslPool_causTitle: "Cáusticas a partir de uma malha",
+  glslPool_causBody: "O Laboratório de Água estimou as cáusticas com uma fórmula que supõe inclinações suaves e um fundo plano numa só profundidade. Uma piscina tem paredes, cantos e uma bola, e as suas ondulações são íngremes. Então a piscina usa o método da demo de Evan Wallace. Pegue a malha da água e, para cada vértice, siga o raio de sol que entra na água ali, desviado pela normal daquele vértice, até a parede ou o fundo que ele atinge. Cada triângulo da malha é um tubo fino de luz do sol. Ele carrega a luz que caiu na sua área na superfície e a espalha pela área onde chega. O seu brilho ali é a razão entre as duas áreas:",
+  glslPool_areaLabel: "Brilho de um triângulo refratado",
+  glslPool_wAf: "a área do triângulo onde ele chega se a água fosse plana",
+  glslPool_wAw: "a sua área onde ele chega com as normais reais, onduladas. Menor quer dizer que a luz está concentrada e mais forte",
+  glslPool_wAbs: "a absorção ao longo dos t metros que o feixe anda na água, por canal de cor",
+  glslPool_wSh: "0 onde a bola bloqueia o feixe, acima ou abaixo da água, com borda suave",
+  glslPool_keyBody: "Essas áreas de chegada são desenhadas num mapa de cáusticas, uma textura float de 1024 × 1024, com blending aditivo: onde vários triângulos caem no mesmo lugar, como numa dobra, a luz deles se soma. O mapa precisa de coordenadas que cubram o fundo e as paredes juntos. O truque é indexar cada ponto da piscina pelo lugar onde a luz do sol que chega a ele teria entrado na água plana, a sua chave: deslize o ponto de volta para cima ao longo da direção refratada do sol plano L até o plano y = 0. Cada ponto iluminado tem a sua própria chave, e uma parede virada para longe da luz nunca é iluminada, então nunca precisa de uma. Sombrear um ponto da piscina calcula a sua chave e lê o mapa ali.",
+  glslPool_keyLabel: "A chave do mapa de cáusticas, e a razão de áreas no shader",
+  glslPool_wL: "a direção de percurso do sol sob água plana: refract(−sol, cima, 1/1,333)",
+  glslPool_wQy: "quanto para trás ao longo de L o ponto está em relação à superfície (os dois são negativos abaixo dela)",
+  glslPool_wDfd: "a mudança de um varying de um pixel para o seguinte. As chaves são lineares num triângulo, então essas derivadas medem o próprio triângulo: o produto vetorial delas é a sua área por pixel, em unidades de chave",
+  glslPool_keyNote: "Para água plana, a chave do ponto onde um feixe chega é o próprio ponto de entrada do feixe, então o triângulo 'antes' é simplesmente o triângulo da malha em repouso (k₀), e a razão é 1 em todo lugar. As sombras saem de graça: a parte do fundo junto a uma parede do lado do sol não recebe triângulo nenhum, porque a luz que chegaria ali teria de ter entrado além da parede.",
+
+  glslPool_drawTitle: "Desenhando a piscina",
+  glslPool_drawBody: "Tirando a água, a cena é uma caixa aberta, um plano e uma esfera: formas cujas interseções com raios cabem em poucas linhas cada. Então um passe de tela cheia as traça por pixel em vez de desenhar malhas. Ele encontra o mais próximo entre a bola, o piso em volta da piscina e as faces internas da piscina, sombreia e grava a profundidade, como fazia o fundo do Laboratório de Água. A malha da água então é desenhada por cima, deslocada pelas alturas no seu vertex shader. Cada pixel dela traça as mesmas formas mais duas vezes: ao longo do raio refratado, até os azulejos ou a parte submersa da bola, atenuado pela absorção ao longo da distância, e ao longo do raio refletido, até a bola, a faixa de parede acima da água ou o céu. O Fresnel mistura os dois. Um azulejo debaixo d'água é iluminado pelo sol vezes o seu valor de cáustica, mais a luz do céu atenuada com a profundidade. Acima da água ele é iluminado diretamente, com a sombra da bola.",
+
+  glslPool_tip: "Os jogos usam esse tipo de simulação para água que pode ser tocada: poças, fontes, um lago perto do jogador. A água grande mantém as suas ondas de FFT ou de Gerstner e acrescenta um pedaço simulado pequeno que acompanha a câmera, ou uma 'textura de interação' onde personagens e barcos carimbam os seus rastros. A água que escorre, inunda e enche precisa das equações de águas rasas, que também movem a água para os lados, para que ela se acumule e desça ladeira abaixo.",
+
+  glslPool_k1: "Um campo de alturas numa textura float (altura, velocidade, normal), avançado alternando entre duas texturas, transforma uma piscina em algo que pode ser tocado.",
+  glslPool_k2: "A equação da onda numa grade: velocidade += C²·(soma dos 4 vizinhos − 4·altura), vezes o amortecimento, depois altura += velocidade. Ela só é estável para C² ≤ 1/2, e vizinhos limitados à borda fazem as paredes refletirem.",
+  glslPool_k3: "Uma bola que flutua é Arquimedes: empuxo g·f/ρ a partir da fração f do volume na calota submersa. Ela empurra a água pela mudança da sua parte em cada coluna de água, o que conserva o volume da água.",
+  glslPool_k4: "Cáusticas: projete cada triângulo da malha da água ao longo do seu raio de sol refratado e some o seu brilho A_plana / A_ondulada num mapa, indexado por onde a luz entrou na água plana.",
+  glslPool_k5: "Sólidos simples (caixa, plano, esfera) podem ser traçados por raios no fragment shader, e aí os reflexos e as refrações os enxergam exatamente.",
+};
+
+export default text;

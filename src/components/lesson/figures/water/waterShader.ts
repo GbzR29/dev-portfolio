@@ -142,7 +142,7 @@ mat2 hessian(vec2 x) {
 // Caustics: sunlight through a surface point lands on the bed shifted by
 // d·(1 − η)·∇h, so an area element is scaled by det(I + d·(1 − η)·H).
 // Intensity is the inverse of that area change.
-const GERSTNER_SOURCE_GLSL = `
+export const GERSTNER_SOURCE_GLSL = `
 ${GERSTNER_GLSL}
 float waterHeight(vec2 x) { return heightAt(x); }
 float causticAt(vec2 x, float d) {

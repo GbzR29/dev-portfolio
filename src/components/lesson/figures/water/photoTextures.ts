@@ -27,6 +27,13 @@ vec3 bumped(vec3 n, sampler2D s, vec2 uv, float lod) {
 /** [sampler uniform, texture id] pairs, in texture-unit order. */
 export type PhotoList = readonly (readonly [string, string])[];
 
+/** The bed textures WATER_COMMON_GLSL samples (sand, pool tiles), and their groups for the "have" flags. */
+export const BED_PHOTOS: PhotoList = [
+  ["uSandA", "mat:groundsand:albedo"], ["uSandN", "mat:groundsand:normal"], ["uSandAO", "mat:groundsand:ao"],
+  ["uPoolA", "mat:squareceramicglossytile-aqua-blue:albedo"], ["uPoolN", "mat:squareceramicglossytile-aqua-blue:normal"],
+];
+export const BED_GROUPS = [[0, 1, 2], [3, 4]];
+
 /** Starts loading every texture that exists; onLoad fires as each arrives. */
 export function loadPhotos(gl: WebGL2RenderingContext, list: PhotoList, onLoad: () => void): (WebGLTexture | null)[] {
   const tex: (WebGLTexture | null)[] = list.map(() => null);
@@ -48,5 +55,7 @@ export function bindPhotos(gl: WebGL2RenderingContext, prog: WebGLProgram, list:
   gl.activeTexture(gl.TEXTURE0);
   const flags = groups.map(g => (g.every(i => tex[i]) ? 1 : 0));
   const loc = gl.getUniformLocation(prog, have);
-  if (flags.length === 2) gl.uniform2fv(loc, flags); else gl.uniform3fv(loc, flags);
+  if (flags.length === 1) gl.uniform1f(loc, flags[0]);
+  else if (flags.length === 2) gl.uniform2fv(loc, flags);
+  else gl.uniform3fv(loc, flags);
 }

@@ -7,7 +7,7 @@ import { compileProgram } from "../../kit/gl/gl";
 import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
-import { loadPhotos, bindPhotos, type PhotoList } from "./photoTextures";
+import { loadPhotos, bindPhotos, BED_PHOTOS, BED_GROUPS } from "./photoTextures";
 import { DEFAULT_SKY_PARAMS, type SkyParams } from "../sky/proceduralSky";
 import { WATER_PRESETS, WATER_COLOURS, DEFAULT_WATER, MAX_WAVES, type WaterParams } from "./waterParams";
 import { WATER_VS, WATER_FS, BACKGROUND_FS, waterUniforms } from "./waterShader";
@@ -23,11 +23,7 @@ import { FigureShell } from "@/components/lesson/kit/FigureShell";
 // Fresnel). It only animates while it is on screen.
 
 // Photo textures for the bed, in shader sampler order (see photoTextures.ts)
-const TEX: PhotoList = [
-  ["uSandA", "mat:groundsand:albedo"], ["uSandN", "mat:groundsand:normal"], ["uSandAO", "mat:groundsand:ao"],
-  ["uPoolA", "mat:squareceramicglossytile-aqua-blue:albedo"], ["uPoolN", "mat:squareceramicglossytile-aqua-blue:normal"],
-];
-const GROUPS = [[0, 1, 2], [3, 4]];
+const TEX = BED_PHOTOS, GROUPS = BED_GROUPS;
 
 type Res = {
   water: WebGLProgram; bg: WebGLProgram; probeProg: WebGLProgram; probe: SkyProbe;
