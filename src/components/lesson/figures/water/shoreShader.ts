@@ -52,6 +52,7 @@ uniform float uLevel, uWaves, uWindDir;
 uniform vec3  uAbsorb, uScatter;
 uniform float uFoamW, uContact, uCells, uCaustics, uGrass, uRain, uStreaks, uSplash;
 uniform int   uStyle, uView;
+// Loop bounds add uZero (declared with the sky, always 0) so they stay loops
 uniform vec2  uRes;
 // Photo textures (public/textures/materials_textures); uHave = (grass, sand, wood) loaded
 uniform sampler2D uGrassA, uGrassN, uGrassAO, uSandA, uSandN, uSandAO, uWood;
@@ -66,7 +67,7 @@ vec3 ambientSky(vec3 sun) { return sky(vec3(0.0, 1.0, 0.0)) * 0.9 + sunLight(sun
 // ── Scene: terrain + rocks + posts ──────────────────────────────────────────
 float fbmq(vec2 p) {                                // 3 octaves: cheap enough to trace
   float s = 0.0, a = 0.5;
-  for (int i = 0; i < 3; i++) { s += a * noise3(vec3(p, 1.7)); p = mat2(0.8, -0.6, 0.6, 0.8) * p * 2.03 + 5.1; a *= 0.5; }
+  for (int i = 0; i < uZero + 3; i++) { s += a * noise3(vec3(p, 1.7)); p = mat2(0.8, -0.6, 0.6, 0.8) * p * 2.03 + 5.1; a *= 0.5; }
   return s;
 }
 // Bed height: an island whose shoreline is bent by noise, over a sea floor
@@ -108,7 +109,7 @@ float trace(vec3 o, vec3 d, float tmax) {
   // Nothing exists above y = 2.5: start where the ray enters that slab
   float t = (o.y > 2.5 && d.y < 0.0) ? (2.5 - o.y) / d.y : 0.0;
   if (o.y > 2.5 && d.y >= 0.0) return tmax + 1.0;
-  for (int i = 0; i < 90; i++) {
+  for (int i = 0; i < uZero + 90; i++) {
     float h = map(o + d * t);
     if (h < 0.002 * (1.0 + t) || t > tmax) break;
     t += h;
@@ -117,7 +118,7 @@ float trace(vec3 o, vec3 d, float tmax) {
 }
 float softShadow(vec3 o, vec3 d) {
   float res = 1.0, t = 0.12;                        // start clear of the surface: no self-shadow blotches
-  for (int i = 0; i < 16; i++) {
+  for (int i = 0; i < uZero + 16; i++) {
     float h = map(o + d * t);
     res = min(res, 10.0 * h / t);
     t += clamp(h, 0.08, 0.8);
@@ -136,7 +137,7 @@ vec4 waveDir(int i) {
 }
 vec2 windSlope(vec2 x) {
   vec2 g = vec2(0.0);
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < uZero + 4; i++) {
     vec4 w = waveDir(i);
     g += w.w * w.z * w.xy * cos(w.z * dot(w.xy, x) - sqrt(9.81 * w.z) * uT);
   }
@@ -149,7 +150,7 @@ vec2 windSlope(vec2 x) {
 }
 mat2 windHessian(vec2 x) {
   mat2 H = mat2(0.0);
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < uZero + 4; i++) {
     vec4 w = waveDir(i);
     H -= w.w * w.z * w.z * sin(w.z * dot(w.xy, x) - sqrt(9.81 * w.z) * uT) * outerProduct(w.xy, w.xy);
   }
@@ -165,8 +166,8 @@ vec3 rainSlope(vec2 x, out float splash) {       // xy: slope, z: ring height (f
   splash = 0.0;
   if (uRain <= 0.0) return acc;
   vec2 c0 = floor(x / CELL);
-  for (int j = -1; j <= 1; j++)
-  for (int i = -1; i <= 1; i++) {
+  for (int j = -1; j <= uZero + 1; j++)
+  for (int i = -1; i <= uZero + 1; i++) {
     vec2 cell = c0 + vec2(i, j);
     float ph = hash13(vec3(cell, 1.3));
     if (ph > uRain) continue;                    // lighter rain: fewer cells active
@@ -194,8 +195,8 @@ vec3 rainSlope(vec2 x, out float splash) {       // xy: slope, z: ring height (f
 float voronoiF1(vec2 p) {
   vec2 i = floor(p), f = fract(p);
   float d = 8.0;
-  for (int y = -1; y <= 1; y++)
-  for (int x = -1; x <= 1; x++) {
+  for (int y = -1; y <= uZero + 1; y++)
+  for (int x = -1; x <= uZero + 1; x++) {
     vec2 g = vec2(x, y);
     vec2 o = hash22(i + g);
     o = 0.5 + 0.4 * sin(uT * 0.6 + 6.2831 * o);     // feature points wander
@@ -288,7 +289,7 @@ vec3 shade(vec3 p, vec3 n, vec3 sun, vec3 Ld, vec3 amb, bool underwater, float c
 // ── Rain streaks: screen space, three depth layers ──────────────────────────
 float streaks(vec2 frag) {
   float s = 0.0;
-  for (int l = 0; l < 3; l++) {
+  for (int l = 0; l < uZero + 3; l++) {
     float fl = float(l);
     float scale = 90.0 - fl * 25.0;                   // far layers: more, thinner streaks
     vec2 uv = frag / uRes.y * vec2(scale, scale * 0.12);
@@ -315,32 +316,61 @@ void main() {
 
   float tScene = trace(ro, rd, 80.0);
   float tWater = rd.y < 0.0 ? (uLevel - ro.y) / rd.y : 1e9;
+  bool water = tWater < tScene && tWater > 0.0;
   vec3 col;
 
-  if (tWater < tScene && tWater > 0.0) {
-    vec3 p = ro + rd * tWater;
-    // Water normal: wind ripples + rain rings
-    float splash;
-    vec3 rain = rainSlope(p.xz, splash);
-    vec2 slope = windSlope(p.xz) + rain.xy;
-    vec3 N = normalize(vec3(-slope.x, 1.0, -slope.y));
+  // Water normal: wind ripples + rain rings
+  vec3 p = ro + rd * tWater, N = vec3(0.0, 1.0, 0.0), R = N, T = N, rain = vec3(0.0), refl = vec3(0.0);
+  vec2 wind = vec2(0.0);
+  float splash = 0.0;
+  if (water) {
+    rain = rainSlope(p.xz, splash);
+    wind = windSlope(p.xz);
+    vec2 slope = wind + rain.xy;
+    N = normalize(vec3(-slope.x, 1.0, -slope.y));
+    R = reflect(rd, N);
+    T = refract(rd, N, ETA);
+    refl = sky(R);
+  }
+
+  // Every surface hit is shaded in this one loop: Windows' D3D compiler pastes
+  // a full copy of shade() and trace() at each call site, and three call sites
+  // froze the browser for ~20 s while the shader compiled.
+  // Water: leg 0 traces the refracted ray to the bed or a rock; leg 1 traces the
+  // reflected ray, for the dry scene seen in the water. Dry land: leg 0 shades
+  // the view ray's hit.
+  vec3 bedCol = vec3(0.0);
+  float s = 0.0, caus = 1.0;
+  for (int k = 0; k < uZero + 2; k++) {
+    if (!water && (k == 1 || tScene >= 80.0)) break;
+    vec3 o = ro, d = rd;
+    float t = tScene, path = 0.0;
+    if (water) {
+      o = k == 0 ? p : p + R * 0.05;
+      d = k == 0 ? T : R;
+      float tmax = k == 0 ? 40.0 : 30.0;
+      t = trace(o, d, tmax);
+      if (k == 1 && t >= tmax) break;               // the reflection sees only sky
+      path = tWater;
+    }
+    vec3 q = o + d * t;
+    vec3 light = Ld;
+    float c = 1.0;
+    bool under = water && k == 0;
+    if (under) {
+      float depthQ = max(uLevel - q.y, 0.0);
+      mat2 M = mat2(1.0) + depthQ * (1.0 - ETA) * windHessian(q.xz);
+      c = mix(1.0, 1.0 / max(abs(determinant(M)), 0.15), uCaustics);
+      light = Ld * exp(-uAbsorb * depthQ);
+      caus = c; s = t;
+    }
+    vec3 hit = shade(q, mapNormal(q), sun, light, amb, under, c, path + t);
+    if (k == 0) bedCol = hit; else refl = hit;
+  }
+
+  if (water) {
     vec3 V = -rd;
     float F = 0.02 + 0.98 * pow(1.0 - max(dot(N, V), 0.0), 5.0);
-    vec3 refl = sky(reflect(rd, N));
-    // Objects reflected in the water (only the dry part, one trace)
-    vec3 R = reflect(rd, N);
-    float tr = trace(p + R * 0.05, R, 30.0);
-    if (tr < 30.0) { vec3 q = p + R * (tr + 0.05); refl = shade(q, mapNormal(q), sun, Ld, amb, false, 1.0, tWater + tr); }
-
-    // Refraction: trace the bent ray through the water to the bed or a rock
-    vec3 T = refract(rd, N, ETA);
-    float s = trace(p, T, 40.0);
-    vec3 q = p + T * s;
-    vec3 nq = mapNormal(q);
-    float depthQ = max(uLevel - q.y, 0.0);
-    mat2 M = mat2(1.0) + depthQ * (1.0 - ETA) * windHessian(q.xz);
-    float caus = mix(1.0, 1.0 / max(abs(determinant(M)), 0.15), uCaustics);
-    vec3 bedCol = shade(q, nq, sun, Ld * exp(-uAbsorb * depthQ), amb, true, caus, tWater + s);
     vec3 trans = exp(-uAbsorb * s);
     vec3 refr = bedCol * trans + uScatter * amb * (1.0 - trans);
 
@@ -351,7 +381,7 @@ void main() {
     float contactAmt = clamp(1.0 - near / max(uContact, 1e-3), 0.0, 1.0);
     shoreAmt *= 0.85 + 0.15 * sin(thick * 25.0 - uT * 2.0);          // waves of foam washing in
     float amount = max(shoreAmt, contactAmt);
-    float foam = cellFoam(p.xz * uCells + windSlope(p.xz) * 3.0, amount * 0.95);
+    float foam = cellFoam(p.xz * uCells + wind * 3.0, amount * 0.95);
     foam = max(foam, smoothstep(0.06, 0.0, min(thick, near)));      // solid line at the very edge
     foam = clamp(foam + splash, 0.0, 1.0);
     // Ring crests catch the bright overcast sky: a soft highlight that makes rain readable
@@ -382,8 +412,7 @@ void main() {
     if (uView == 3) { FragColor = vec4(N * 0.5 + 0.5, 1.0); return; }
     if (uView == 4) { FragColor = vec4(vec3(caus * 0.35), 1.0); return; }
   } else if (tScene < 80.0) {
-    vec3 p = ro + rd * tScene;
-    col = shade(p, mapNormal(p), sun, Ld, amb, false, 1.0, tScene);
+    col = bedCol;
     if (uView > 0) { FragColor = vec4(vec3(0.12), 1.0); return; }
   } else {
     col = sky(rd);

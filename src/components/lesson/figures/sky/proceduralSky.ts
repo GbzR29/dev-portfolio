@@ -39,6 +39,10 @@ uniform float uCover;
 uniform float uDensity;
 uniform float uExposure;
 uniform int   uSolo;
+// Never set, so always 0. Loop bounds add it: a bound the compiler cannot see
+// stops Windows' D3D compiler from unrolling the loops, which in the big scene
+// shaders that include this sky froze the whole browser for seconds
+uniform int   uZero;
 
 const float PI = 3.14159265;
 
@@ -63,13 +67,13 @@ float noise3(vec3 p) {
 }
 float fbm3(vec3 p) {
   float s = 0.0, a = 0.5;
-  for (int i = 0; i < 5; i++) { s += a * noise3(p); p = p * 2.03 + 17.1; a *= 0.5; }
+  for (int i = 0; i < uZero + 5; i++) { s += a * noise3(p); p = p * 2.03 + 17.1; a *= 0.5; }
   return s;
 }
 float fbm2(vec2 p) {
   float s = 0.0, a = 0.5;
   mat2 r = mat2(0.8, -0.6, 0.6, 0.8);
-  for (int i = 0; i < 6; i++) { s += a * noise3(vec3(p, 0.5)); p = r * p * 2.02 + 3.7; a *= 0.5; }
+  for (int i = 0; i < uZero + 6; i++) { s += a * noise3(vec3(p, 0.5)); p = r * p * 2.02 + 3.7; a *= 0.5; }
   return s;
 }
 

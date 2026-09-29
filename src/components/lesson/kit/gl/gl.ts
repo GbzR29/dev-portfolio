@@ -56,15 +56,35 @@ export const forwardFrom = (yaw: number, pitch: number): Vec3 =>
 
 // ── Shaders ───────────────────────────────────────────────────────────────────
 export function compileProgram(gl: WebGL2RenderingContext, vs: string, fs: string): WebGLProgram {
+  return finishProgram(gl, startProgram(gl, vs, fs));
+}
+
+/**
+ * compileProgram without blocking: with KHR_parallel_shader_compile the driver
+ * compiles on its own threads and we poll once a frame. For big scene shaders:
+ * a blocking compile of one took seconds on Windows (D3D), and stalls the
+ * browser's GPU process, which freezes every tab, not just this page.
+ */
+export async function compileProgramAsync(gl: WebGL2RenderingContext, vs: string, fs: string): Promise<WebGLProgram> {
+  const job = startProgram(gl, vs, fs);
+  const ext = gl.getExtension("KHR_parallel_shader_compile");
+  if (ext) {
+    while (!gl.getProgramParameter(job.p, ext.COMPLETION_STATUS_KHR)) {
+      if (gl.isContextLost()) throw new Error("WebGL context lost while compiling");
+      await new Promise(r => requestAnimationFrame(r));
+    }
+  }
+  return finishProgram(gl, job);
+}
+
+type ProgramJob = { p: WebGLProgram; v: WebGLShader; f: WebGLShader };
+
+// Queues compile + link; asking for any status is what waits for the driver
+function startProgram(gl: WebGL2RenderingContext, vs: string, fs: string): ProgramJob {
   const make = (type: number, src: string) => {
     const sh = gl.createShader(type)!;
     gl.shaderSource(sh, src);
     gl.compileShader(sh);
-    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
-      const log = gl.getShaderInfoLog(sh);
-      gl.deleteShader(sh);
-      throw new Error(`${type === gl.VERTEX_SHADER ? "vertex" : "fragment"} shader: ${log}`);
-    }
     return sh;
   };
   const p = gl.createProgram()!;
@@ -74,9 +94,20 @@ export function compileProgram(gl: WebGL2RenderingContext, vs: string, fs: strin
   gl.bindAttribLocation(p, 1, "aNormal");
   gl.bindAttribLocation(p, 2, "aColor");
   gl.linkProgram(p);
-  gl.deleteShader(v); gl.deleteShader(f);
-  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(`link: ${gl.getProgramInfoLog(p)}`);
-  return p;
+  return { p, v, f };
+}
+
+function finishProgram(gl: WebGL2RenderingContext, { p, v, f }: ProgramJob): WebGLProgram {
+  try {
+    for (const sh of [v, f]) {
+      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS))
+        throw new Error(`${sh === v ? "vertex" : "fragment"} shader: ${gl.getShaderInfoLog(sh)}`);
+    }
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(`link: ${gl.getProgramInfoLog(p)}`);
+    return p;
+  } finally {
+    gl.deleteShader(v); gl.deleteShader(f);
+  }
 }
 
 // ── Meshes ────────────────────────────────────────────────────────────────────

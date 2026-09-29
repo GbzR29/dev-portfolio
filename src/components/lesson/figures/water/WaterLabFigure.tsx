@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram } from "../../kit/gl/gl";
+import { compileProgramAsync } from "../../kit/gl/gl";
 import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
@@ -57,12 +57,14 @@ export function WaterLabFigure({ t }: { t?: TrackTranslations }) {
   };
 
   const [texReady, setTexReady] = useState(0);        // bumps as textures arrive, so a paused view redraws
-  const init = (gl: WebGL2RenderingContext): Res => ({
-    water: compileProgram(gl, WATER_VS, WATER_FS), bg: compileProgram(gl, FULL_VS, BACKGROUND_FS),
-    probeProg: compileProgram(gl, FULL_VS, PROBE_FS), probe: makeSkyProbe(gl),
-    vao: gl.createVertexArray()!, grid: ringGrid(gl, w.camHeight),
-    tex: loadPhotos(gl, TEX, () => setTexReady(n => n + 1)),
-  });
+  // Three big shaders: compile them side by side in the background
+  const init = async (gl: WebGL2RenderingContext): Promise<Res> => {
+    const tex = loadPhotos(gl, TEX, () => setTexReady(n => n + 1));
+    const [water, bg, probeProg] = await Promise.all([
+      compileProgramAsync(gl, WATER_VS, WATER_FS), compileProgramAsync(gl, FULL_VS, BACKGROUND_FS), compileProgramAsync(gl, FULL_VS, PROBE_FS),
+    ]);
+    return { water, bg, probeProg, probe: makeSkyProbe(gl), vao: gl.createVertexArray()!, grid: ringGrid(gl, w.camHeight), tex };
+  };
   const draw = (gl: WebGL2RenderingContext, r: Res, size: { w: number; h: number; aspect: number }) => {
     if (size.aspect !== aspect) setAspect(size.aspect);
     // The far rings are spaced for the camera's height: rebuild when it changes

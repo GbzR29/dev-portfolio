@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { compileProgram, forwardFrom, norm, cross, type Vec3 } from "../../kit/gl/gl";
+import { compileProgramAsync, forwardFrom, norm, cross, type Vec3 } from "../../kit/gl/gl";
 import { FULL_VS, drawFullscreen } from "../../kit/gl/glx";
 import { GLView, useAnimationTime, type Look } from "../../kit/gl/GLView";
 import { useVisible } from "../../kit/figure";
@@ -62,10 +62,11 @@ export function ShoreLabFigure({ t }: { t?: TrackTranslations }) {
   };
 
   const [texReady, setTexReady] = useState(0);        // bumps as textures arrive, so a paused view redraws
-  const init = (gl: WebGL2RenderingContext): Res => ({
-    prog: compileProgram(gl, FULL_VS, SHORE_FS), vao: gl.createVertexArray()!,
-    tex: loadPhotos(gl, TEX, () => setTexReady(n => n + 1)),
-  });
+  // The scene shader is big: compile it in the background (textures load meanwhile)
+  const init = async (gl: WebGL2RenderingContext): Promise<Res> => {
+    const tex = loadPhotos(gl, TEX, () => setTexReady(n => n + 1));
+    return { prog: await compileProgramAsync(gl, FULL_VS, SHORE_FS), vao: gl.createVertexArray()!, tex };
+  };
   const draw = (gl: WebGL2RenderingContext, r: Res, size: { w: number; h: number; aspect: number }) => {
     const f = forwardFrom(look.yaw, look.pitch);
     const right = norm(cross(f, [0, 1, 0]));
