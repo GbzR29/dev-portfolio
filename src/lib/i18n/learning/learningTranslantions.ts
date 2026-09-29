@@ -31,6 +31,8 @@ export const learningTranslations = {
     // ── Lesson page ─────────────────────────────────────────────────────────
     lessonChapters:   "Chapters",
     lessonMinRead:    "min read",
+    lessonCreated:    "created",
+    lessonUpdated:    "updated",
     lessonProgress:   "Progress",
 
     // ── Redesign (2026-09) ──────────────────────────────────────────────
@@ -132,6 +134,8 @@ export const learningTranslations = {
     // ── Lesson page ─────────────────────────────────────────────────────────
     lessonChapters:    "Capítulos",
     lessonMinRead:     "min de leitura",
+    lessonCreated:     "criado em",
+    lessonUpdated:     "atualizado em",
     lessonProgress:    "Progresso",
 
     // ── Redesign (2026-09) ──────────────────────────────────────────────
@@ -232,6 +236,8 @@ export const learningTranslations = {
 
     lessonChapters:    "Capítulos",
     lessonMinRead:     "min de lectura",
+    lessonCreated:     "creado el",
+    lessonUpdated:     "actualizado el",
     lessonProgress:    "Progreso",
 
     // ── Redesign (2026-09) ──────────────────────────────────────────────
@@ -332,6 +338,8 @@ export const learningTranslations = {
 
     lessonChapters:    "章节",
     lessonMinRead:     "分钟阅读",
+    lessonCreated:     "创建于",
+    lessonUpdated:     "更新于",
     lessonProgress:    "进度",
 
     // ── Redesign (2026-09) ──────────────────────────────────────────────

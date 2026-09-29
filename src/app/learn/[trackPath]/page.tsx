@@ -9,6 +9,7 @@ import { useLanguage } from "@/components/providers/LanguageProvider";
 import { getTrack } from "@/lib/tracks";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { rememberLastLesson, useLessonProgress } from "@/lib/tracks/progress";
+import { chapterDates, formatDate } from "@/lib/tracks/dates";
 import { trackCrumbs, trackName as trackNameOf } from "@/lib/tracks/crumbs";
 import { useLessonText } from "@/lib/i18n/lessons";
 import { getReference, referenceHref } from "@/lib/reference";
@@ -232,6 +233,7 @@ export default function LessonPage() {
   const trackName      = trackNameOf(ui, trackPath);
   const currentIndex   = track.chapters.findIndex((c) => c.id === activeChapterId);
   const currentChapter = shownChapters[currentIndex];
+  const dates          = chapterDates(track?.id, currentChapter?.id);
   const chapterOf      = (ui.lessonChapterOf ?? "chapter {n} of {total}")
     .replace("{n}", String(currentIndex + 1))
     .replace("{total}", String(track.chapters.length));
@@ -272,6 +274,14 @@ export default function LessonPage() {
             {currentChapter?.minRead && (
               <p className="font-mono text-[12px] text-[var(--text-muted)]">
                 {currentChapter.minRead} {t.lessonMinRead ?? "min read"}
+              </p>
+            )}
+            {dates && (
+              <p className="font-mono text-[12px] text-[var(--text-muted)]">
+                {t.lessonCreated ?? "created"} <time dateTime={dates.created}>{formatDate(dates.created, language)}</time>
+                {dates.updated !== dates.created && (
+                  <> · {t.lessonUpdated ?? "updated"} <time dateTime={dates.updated}>{formatDate(dates.updated, language)}</time></>
+                )}
               </p>
             )}
             <ModeToggle

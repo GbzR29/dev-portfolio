@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "assets": "node scripts/gen-assets-manifest.mjs",
-    "predev": "node scripts/gen-assets-manifest.mjs",
+    "dates": "node scripts/gen-chapter-dates.mjs",
+    "predev": "node scripts/gen-assets-manifest.mjs && node scripts/gen-chapter-dates.mjs",
     "dev": "next dev --turbopack",
-    "prebuild": "node scripts/gen-assets-manifest.mjs",
+    "prebuild": "node scripts/gen-assets-manifest.mjs && node scripts/gen-chapter-dates.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

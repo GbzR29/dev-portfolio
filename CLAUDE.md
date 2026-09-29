@@ -4,7 +4,10 @@ Next.js 16 (App Router) + React 19 + Tailwind. Personal portfolio with a blog
 (MongoDB) and a set of interactive graphics-programming courses under `/learn`.
 
 Commands: `npm run dev`, `npm run build`, `npx tsc --noEmit -p .`, `npx eslint <path>`.
-`predev`/`prebuild` regenerate `src/lib/generated/assets.json` from `public/textures`.
+`predev`/`prebuild` regenerate `src/lib/generated/assets.json` from `public/textures`
+and `src/lib/generated/chapter-dates.json` (lesson created/updated dates from git, shown in the lesson header;
+`npm run dates`; committed, since the deploy's shallow clone has no history).
+Record every change with its date at the top of `CHANGELOG.md` (Portuguese, newest first).
 The build logs a MongoDB `ENOTFOUND` when offline — expected, the blog handles it.
 
 ## Where things live
