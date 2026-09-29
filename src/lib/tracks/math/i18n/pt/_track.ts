@@ -62,6 +62,7 @@ const track = {
     "descriptive-stats": "Estatística descritiva",
     sampling: "Amostragem e inferência",
     regression: "Correlação e regressão linear",
+    "markov-chains": "Cadeias de Markov",
   } as Record<string, string>,
   sections: {
     Arithmetic: "Aritmética",

@@ -14,9 +14,10 @@ import identities from "./identities";
 import polar from "./polar";
 import waves from "./waves";
 import vectors from "./vectors";
+import markovChains from "./markov-chains";
 
 const bundle: LessonText = {
-  strings: { ...functions, ...linearSystems, ...quadratics, ...exponents, ...sequences, ...trig, ...unitCircle, ...triangleLaws, ...identities, ...polar, ...waves, ...vectors },
+  strings: { ...functions, ...linearSystems, ...quadratics, ...exponents, ...sequences, ...trig, ...unitCircle, ...triangleLaws, ...identities, ...polar, ...waves, ...vectors, ...markovChains },
   titles: track.titles,
   sections: track.sections,
 };

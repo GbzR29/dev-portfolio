@@ -81,4 +81,5 @@ export const mathChapters: Chapter[] = [
   { id: "descriptive-stats", section: PROBABILITY, title: "Descriptive Statistics",          minRead: 20, load: () => import("./chapters/descriptive-stats").then((m) => m.DescriptiveStatsContent) },
   { id: "sampling",          section: PROBABILITY, title: "Sampling & Inference",            minRead: 23, load: () => import("./chapters/sampling").then((m) => m.SamplingContent) },
   { id: "regression",        section: PROBABILITY, title: "Correlation & Linear Regression", minRead: 21, load: () => import("./chapters/regression").then((m) => m.RegressionContent) },
+  { id: "markov-chains",     section: PROBABILITY, title: "Markov Chains",                   minRead: 24, load: () => import("./chapters/markov-chains").then((m) => m.MarkovChainsContent) },
 ];
