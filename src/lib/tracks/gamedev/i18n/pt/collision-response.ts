@@ -1,0 +1,86 @@
+// PT text for src/lib/tracks/gamedev/chapters/collision-response.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  gdResp_intro: "Os capítulos de colisão respondiam \"essas duas formas se sobrepõem, e ao longo de qual normal?\". A resposta à colisão responde \"e agora, o que acontece?\". Contra uma parede que nunca se move, o capítulo de formas de colisão simplesmente refletia a velocidade. Quando os dois objetos se movem, o mais pesado deve mal perceber um leve, duas bolas de bilhar iguais devem trocar de velocidade, e uma pilha de caixotes deve ficar parada em vez de afundar ou tremer. Tudo isso sai de uma ideia, o impulso, e de duas leis: a conservação do momento e uma regra para o quanto o contato quica.",
+
+  gdResp_impTitle: "Momento e impulso",
+  gdResp_impBody: "O momento de um corpo é a sua massa vezes a sua velocidade, p = m·v. Uma força F agindo por um tempo Δt o muda em F·Δt, o impulso. Uma colisão real é uma força muito grande por um tempo muito curto, alguns milissegundos de borracha ou aço sendo amassados. Um passo de jogo é mais longo que isso, então o motor pula os detalhes e aplica toda a mudança de uma vez, como um impulso instantâneo J. Pela terceira lei de Newton os dois corpos se empurram com a mesma força em sentidos opostos, então A recebe −J e B recebe +J, e o momento total não muda.",
+  gdResp_eqImp: "Um impulso muda as velocidades",
+  gdResp_wJ: "o tamanho do impulso, em N·s (kg·m/s); é o que precisamos encontrar",
+  gdResp_wN: "a normal de colisão unitária, apontando de A para B; o empurrão age ao longo dela (o atrito vem depois)",
+  gdResp_wM: "as duas massas; dividir o impulso pela massa dá a mudança de velocidade",
+  gdResp_impNote: "Somando m_A vezes a primeira linha com m_B vezes a segunda, obtém-se m_A v_A′ + m_B v_B′ = m_A v_A + m_B v_B: o momento se conserva para qualquer j.",
+
+  gdResp_restTitle: "Restituição: o quanto quica",
+  gdResp_restBody: "O momento sozinho não fixa j. A regra que falta é a lei de restituição de Newton. Olhe a velocidade relativa de B em relação a A ao longo da normal, v_n. Antes do impacto ela é negativa (eles se aproximam). Depois, ela é invertida e multiplicada pelo coeficiente de restituição e, uma propriedade do par de materiais: 0 para massinha, que não quica nada, cerca de 0,8 para uma bola de tênis na quadra, e 1 para uma colisão perfeitamente elástica que não perde energia.",
+  gdResp_eqRest: "A lei de restituição",
+  gdResp_wVn: "a velocidade normal relativa: negativa enquanto os corpos se aproximam, positiva enquanto se afastam",
+  gdResp_wE: "o coeficiente de restituição, entre 0 e 1",
+  gdResp_deriveBody: "Agora substitua as duas atualizações de velocidade na definição de v_n′. O impulso soma j/m_B ao longo de n̂ em B e tira j/m_A de A, então a velocidade normal relativa cresce j·(1/m_A + 1/m_B). Igualando isso a −e·v_n e isolando j, sai a fórmula no coração de todo motor baseado em impulsos:",
+  gdResp_eqJ: "O tamanho do impulso",
+  gdResp_wNum: "o quanto a velocidade normal relativa precisa mudar: de v_n para −e·v_n",
+  gdResp_wDen: "o quanto uma unidade de impulso a muda. O seu inverso é a massa reduzida μ = m_A m_B/(m_A + m_B)",
+  gdResp_jNote: "Aplique só quando v_n < 0. Se os corpos já estão se afastando, um impulso os grudaria um no outro.",
+  gdResp_energyBody: "A energia cinética só se conserva quando e = 1. Em geral a colisão perde ½·μ·v_n²·(1 − e²), onde μ é a massa reduzida acima: tudo para e = 0, quando os dois corpos terminam se movendo juntos com a mesma velocidade normal. Com massas iguais e e = 1 a fórmula dá j = −m·v_n, e os dois corpos trocam as suas velocidades normais: a bola que se movia para em seco e a parada sai andando, como no pêndulo de Newton.",
+
+  gdResp_invTitle: "Massa inversa e corpos estáticos",
+  gdResp_invBody: "Os motores guardam a massa inversa 1/m em vez de m. Todas as fórmulas acima a usam, e ela dá aos objetos estáticos, paredes, chãos e tudo que nunca pode se mover, um valor natural: 0, uma massa infinita. Com 1/m_B = 0, a velocidade de B nunca muda, j = −(1 + e)·m_A·v_n, e a nova velocidade de A é v_A − (1 + e)(v_A·n̂)n̂ (com n̂ agora apontando para dentro da parede): exatamente a regra da parede do capítulo de formas de colisão. Uma fórmula cobre os dois casos, e nenhum código precisa dividir por zero.",
+
+  gdResp_fricTitle: "Atrito",
+  gdResp_fricBody: "O impulso normal só age ao longo de n̂. O deslizamento ao longo da superfície é freado pelo atrito, um impulso ao longo da tangente t̂ (a parte da velocidade relativa perpendicular à normal, normalizada). Primeiro calcule o impulso que pararia o deslizamento por completo, igual ao impulso normal com e = 0. Depois aplique a lei de Coulomb: o atrito pode ser no máximo μ vezes a força normal, e no mesmo instante isso significa no máximo μ vezes o impulso normal. Se o impulso que para cabe dentro desse limite, o contato gruda (atrito estático); se não, ele é limitado e os corpos deslizam (atrito cinético).",
+  gdResp_eqFric: "Impulso de atrito",
+  gdResp_wT: "a tangente unitária: a direção do deslizamento, (v_rel − v_n n̂)/‖v_rel − v_n n̂‖",
+  gdResp_wVt: "a velocidade de deslizamento ao longo da superfície",
+  gdResp_wMu: "o coeficiente de atrito: cerca de 0,05 para gelo com gelo, 0,5 para madeira com madeira, 1 para borracha em asfalto seco. Pares de materiais costumam ser combinados como √(μ_A μ_B)",
+
+  gdResp_posTitle: "Correção de posição",
+  gdResp_posBody: "Os impulsos consertam velocidades, mas quando uma colisão é detectada as formas já se sobrepõem por alguma profundidade d. Se nada a remover, a gravidade acrescenta um pouco mais de sobreposição a cada passo e um objeto parado afunda devagar no chão. Então, depois das velocidades, o motor afasta os dois corpos ao longo de n̂, dividindo o empurrão pela massa inversa para que o corpo mais leve se mova mais. Dois refinamentos o mantêm calmo. Ele remove só uma porcentagem da sobreposição por passo (80% é comum), porque corrigir tudo de uma vez faz as pilhas tremerem. E ele ignora uma pequena folga (slop), cerca de 1 cm, para que um contato em repouso continue encostando de leve em vez de ser empurrado para fora e cair de volta a cada passo.",
+  gdResp_eqPos: "Correção de posição",
+  gdResp_wD: "a profundidade de penetração informada pela detecção de colisão",
+  gdResp_wS: "a folga: sobreposição abaixo dela é deixada em paz (cerca de 0,01 m)",
+  gdResp_wBeta: "a fração da sobreposição restante removida por passo (0,2 a 0,8)",
+
+  gdResp_restingTitle: "Contato em repouso",
+  gdResp_restingBody: "Uma bola parada no chão continua colidindo com ele a cada passo: a gravidade lhe dá uma pequena velocidade para baixo, g·h ≈ 0,16 m/s a 60 Hz, e o contato a remove. Com e = 0,8 isso viraria um pequeno quique a cada passo, e a bola ficaria vibrando. A cura habitual é um limiar de restituição: quando a velocidade de aproximação está abaixo de cerca de 1 m/s, use e = 0 naquele contato.",
+
+  gdResp_seqTitle: "Muitos contatos: impulsos sequenciais",
+  gdResp_seqBody: "Um contato tem uma resposta exata. Uma pilha não: o impulso na base depende do peso de tudo acima, e consertar um contato muda as velocidades nos vizinhos. Resolver todos juntos significa resolver um sistema de desigualdades (cada contato pode empurrar mas nunca puxar). Os impulsos sequenciais de Erin Catto, usados no Box2D e na maioria dos motores de jogos, resolvem isso por iteração. A cada passo, percorra todos os contatos várias vezes, e em cada um aplique o impulso que conserta aquele contato com as velocidades atuais. As pequenas correções levam as forças um pouco mais longe pela pilha a cada varredura. Dois detalhes fazem isso convergir. O impulso é acumulado por contato ao longo das varreduras, e é o total acumulado que é limitado em zero, então uma varredura posterior pode desfazer parte do que uma anterior aplicou. E o limite do atrito usa esse impulso normal acumulado.",
+  gdResp_eqAcc: "Uma varredura num contato, com limite no acumulado",
+  gdResp_wAccJ: "o impulso normal total aplicado a este contato até agora neste passo, começando em 0",
+  gdResp_wDj: "o impulso de fato aplicado nesta varredura; pode ser negativo, desde que o total fique ≥ 0",
+  gdResp_wVn0: "a velocidade normal quando o contato foi encontrado, fixa durante todo o passo: o quique mira −e·v_n⁰, não −e vezes o v_n mais recente",
+
+  gdResp_bugsTitle: "Sintomas e causas",
+  gdResp_tSym: "Sintoma",
+  gdResp_tCause: "Causa",
+  gdResp_tFix: "Correção",
+  gdResp_b1: "objetos grudam depois de se tocarem",
+  gdResp_b1c: "um impulso aplicado quando eles já se afastavam",
+  gdResp_b1f: "só resolver quando v_n < 0 (ou limitar o impulso acumulado em 0)",
+  gdResp_b2: "objetos parados vibram ou pulam",
+  gdResp_b2c: "restituição aplicada à pequena velocidade da gravidade de cada passo",
+  gdResp_b2f: "e = 0 abaixo de uma velocidade de aproximação limite",
+  gdResp_b3: "pilhas afundam devagar",
+  gdResp_b3c: "sobreposição nunca removida, ou poucas iterações",
+  gdResp_b3f: "correção de posição; mais iterações",
+  gdResp_b4: "pilhas tremem",
+  gdResp_b4c: "corrigir 100% da sobreposição, sem folga",
+  gdResp_b4f: "porcentagem ≈ 0,8, folga ≈ 0,01 m; warm starting (próximo capítulo)",
+  gdResp_b5: "objetos leves são lançados longe",
+  gdResp_b5c: "uma sobreposição grande corrigida num passo só",
+  gdResp_b5f: "limitar a correção por passo; evitar criar objetos um dentro do outro",
+  gdResp_b6: "a energia cresce numa pilha",
+  gdResp_b6c: "quique recalculado a partir do v_n mais recente em toda varredura",
+  gdResp_b6f: "calcular o alvo do quique uma vez por passo, a partir de v_n⁰",
+
+  gdResp_tip: "Os impulsos ainda precisam de uma detecção de colisão que encontre o contato antes de os corpos se atravessarem. Para objetos rápidos, use os testes contínuos do capítulo de formas de colisão, ou vários subpassos por quadro, antes de resolver.",
+
+  gdResp_k1: "Uma colisão é resolvida por um impulso instantâneo j ao longo da normal: −j para A, +j para B, então o momento se conserva.",
+  gdResp_k2: "A restituição faz a velocidade normal relativa de saída ser −e·v_n, o que dá j = −(1 + e)v_n / (1/m_A + 1/m_B).",
+  gdResp_k3: "Guarde massas inversas: 0 significa estático, e a regra da parede sai da fórmula geral.",
+  gdResp_k4: "O atrito é um impulso tangencial que tenta parar o deslizamento, limitado a μ vezes o impulso normal (Coulomb).",
+  gdResp_k5: "A correção de posição remove uma parte da sobreposição além de uma folga; um limiar de restituição impede que contatos em repouso vibrem.",
+  gdResp_k6: "Pilhas são resolvidas por impulsos sequenciais: várias varreduras sobre todos os contatos, acumulando o impulso de cada um e limitando o total em zero.",
+};
+
+export default text;

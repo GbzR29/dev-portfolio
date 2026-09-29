@@ -11,6 +11,7 @@ const LOOP = "Core Loop & Time";
 const MOTION = "Motion & Game Feel";
 const PROC = "Procedural Generation";
 const COLLISION = "Collision Detection";
+const PHYSICS = "Physics";
 const ARCH = "Architecture & Patterns";
 
 export const gameDevChapters: Chapter[] = [
@@ -24,6 +25,11 @@ export const gameDevChapters: Chapter[] = [
 
   { id: "collision",   section: COLLISION, title: "Collision Shapes & Overlap",     minRead: 18, load: () => import("./chapters/collision").then((m) => m.CollisionContent) },
   { id: "sat",         section: COLLISION, title: "Separating Axis Theorem",        minRead: 13, load: () => import("./chapters/collision").then((m) => m.SatContent) },
+
+  { id: "integration",        section: PHYSICS, title: "Integrators: Euler, Verlet & RK4",         minRead: 20, load: () => import("./chapters/integration").then((m) => m.IntegrationContent) },
+  { id: "collision-response", section: PHYSICS, title: "Collision Response & Impulses",            minRead: 21, load: () => import("./chapters/collision-response").then((m) => m.CollisionResponseContent) },
+  { id: "rigid-body",         section: PHYSICS, title: "2D Rigid Bodies: Rotation & Torque",       minRead: 22, load: () => import("./chapters/rigid-body").then((m) => m.RigidBodyContent) },
+  { id: "platformer",         section: PHYSICS, title: "Platformer Feel: Jumps, Coyote Time & Buffering", minRead: 19, load: () => import("./chapters/platformer").then((m) => m.PlatformerContent) },
 
   { id: "object-pool", section: ARCH,      title: "Object Pools & Handles",         minRead: 15, load: () => import("./chapters/patterns").then((m) => m.ObjectPoolContent) },
 ];

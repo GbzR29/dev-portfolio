@@ -9,6 +9,10 @@ const track = {
     perlin: "Ruído de Perlin e terreno fractal",
     collision: "Formas de colisão e sobreposição",
     sat: "Teorema do eixo separador",
+    integration: "Integradores: Euler, Verlet e RK4",
+    "collision-response": "Resposta a colisão e impulsos",
+    "rigid-body": "Corpos rígidos 2D: rotação e torque",
+    platformer: "Game feel de plataforma: pulos, coyote time e buffer",
     "object-pool": "Object pools e handles",
   } as Record<string, string>,
   sections: {
@@ -16,6 +20,7 @@ const track = {
     "Motion & Game Feel": "Movimento e game feel",
     "Procedural Generation": "Geração procedural",
     "Collision Detection": "Detecção de colisão",
+    Physics: "Física",
     "Architecture & Patterns": "Arquitetura e padrões",
   } as Record<string, string>,
 };

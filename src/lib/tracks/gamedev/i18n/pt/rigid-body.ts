@@ -1,0 +1,84 @@
+// PT text for src/lib/tracks/gamedev/chapters/rigid-body.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  gdRb_intro: "Até aqui todo corpo foi um ponto com massa: podia se mover, mas não girar. Um caixote atingido na quina tomba; uma tábua atingida numa ponta gira; uma caixa descendo uma rampa pode capotar. Um corpo rígido acrescenta rotação: um corpo que mantém a sua forma, de modo que saber onde está o seu centro e o quanto ele girou diz onde está cada parte dele. Este capítulo estende o solver de impulsos do anterior com um ângulo, uma velocidade angular e um momento de inércia, e depois constrói caixas que empilham, tombam e rolam.",
+
+  gdRb_stateTitle: "O estado de um corpo rígido",
+  gdRb_stateBody: "Em 2D um corpo rígido precisa de dois números a mais que uma partícula. A sua posição é a posição do seu centro de massa, x; a sua orientação é um ângulo θ, que gira a forma local do corpo para o mundo. As velocidades vêm junto: v para o centro, e a velocidade angular ω, em radianos por segundo, positiva no sentido anti-horário. A inércia também vem em par. A massa m resiste a mudanças de v; o momento de inércia I resiste a mudanças de ω, e depende de quão longe do centro a massa está: a mesma massa espalhada na borda de uma roda é muito mais difícil de girar que concentrada perto do eixo.",
+  gdRb_eqI: "Momento de inércia",
+  gdRb_wMi: "um pequeno pedaço do corpo e a sua distância ao centro de massa; a soma percorre o corpo inteiro",
+  gdRb_wDisk: "um disco maciço de raio r",
+  gdRb_wBox: "um retângulo maciço de largura w e altura h, em torno do seu centro",
+  gdRb_wRing: "um anel fino: toda a massa à distância r",
+  gdRb_iNote: "Como a massa, I é guardado invertido: 1/I = 0 cria um corpo que não pode girar, útil para a cápsula de um jogador que precisa ficar de pé.",
+
+  gdRb_torqueTitle: "Torque: uma força fora do centro",
+  gdRb_torqueBody: "Uma força F aplicada num ponto p faz duas coisas. Onde quer que ela aja, acelera o centro de massa em F/m, exatamente como se agisse no centro. E ela gira o corpo, numa quantidade dada pelo torque τ: a força vezes o seu braço de alavanca, a distância perpendicular do centro até a linha da força. Com r o vetor do centro até p, o torque é o produto vetorial 2D r × F, um único número (a componente z do produto vetorial 3D). Ele é zero quando a força aponta direto para o centro, e máximo quando age em ângulo reto com r.",
+  gdRb_eqTorque: "Resposta linear e angular a uma força",
+  gdRb_wR: "o braço de alavanca: do centro de massa até o ponto onde a força age",
+  gdRb_wCross: "o produto vetorial 2D: positivo quando a força gira o corpo no sentido anti-horário",
+  gdRb_wAlpha: "a aceleração angular, a taxa de variação de ω",
+  gdRb_pointVelBody: "A rotação também muda a velocidade de cada ponto. Um ponto a uma distância r do centro se move com o centro, mais um movimento circular em volta dele: velocidade ω·‖r‖, perpendicular a r. Em 2D isso é o vetor ω × r = ω·(−r_y, r_x). É essa a velocidade que importa num contato: uma roda girando que toca o chão pode ter o ponto de contato parado mesmo com o centro em movimento.",
+  gdRb_eqPointVel: "Velocidade de um ponto do corpo",
+  gdRb_wWr: "a velocidade devida à rotação: r girado 90° no sentido anti-horário, vezes ω",
+
+  gdRb_integrTitle: "Integrando a rotação",
+  gdRb_integrBody: "O ângulo é integrado exatamente como a posição, com o mesmo Euler semi-implícito: primeiro ω += h·τ/I, depois θ += h·ω. Em 2D o ângulo simplesmente se soma. Em 3D, orientações são quatérnios e a atualização é uma pequena rotação multiplicada, que o capítulo de quatérnios da trilha de Matemática cobre; o resto deste capítulo continua igual.",
+
+  gdRb_impTitle: "Um impulso num ponto",
+  gdRb_impBody: "Um impulso J aplicado num ponto funciona como uma força aplicada por um instante. O centro de massa muda de velocidade em J/m, e a velocidade angular muda em (r × J)/I. Então onde você acerta um corpo não muda a velocidade com que o seu centro sai; só decide o quanto ele gira.",
+  gdRb_eqImp: "Aplicando um impulso num ponto",
+  gdRb_wJ: "o impulso, um vetor em N·s",
+  gdRb_wR2: "do centro de massa até o ponto onde J é aplicado",
+
+  gdRb_effTitle: "O impulso de colisão, com rotação",
+  gdRb_effBody: "Agora refaça a dedução do capítulo anterior num ponto de contato p, com r_A e r_B de cada centro até p. A velocidade normal relativa é medida no contato, incluindo a rotação dos dois corpos. Um impulso j·n̂ agora a muda de dois jeitos: pelas velocidades lineares, em j/m_A + j/m_B como antes, e pelas rotações, porque o impulso também gira cada corpo e o giro move o ponto de contato. No corpo A, o impulso muda ω_A em (r_A × n̂)·j/I_A, e isso move o ponto de contato ao longo de n̂ em (r_A × n̂)·(r_A × n̂)·j/I_A. Então cada corpo soma um termo (r × n̂)²/I ao denominador:",
+  gdRb_eqJ: "Impulso num contato, com rotação",
+  gdRb_wVn: "a velocidade normal relativa no ponto de contato: ((v_B + ω_B × r_B) − (v_A + ω_A × r_A)) · n̂",
+  gdRb_wRn: "o quanto a normal consegue girar o corpo A: 0 quando a normal do contato aponta direto para o seu centro",
+  gdRb_wK: "o inverso da massa efetiva no contato ao longo de n̂: o quanto uma unidade de impulso muda v_n ali",
+  gdRb_jNote: "Depois aplique +j n̂ em B e −j n̂ em A no ponto de contato, o que atualiza v e ω de cada um. O atrito funciona do mesmo jeito com t̂ no lugar de n̂ e o seu próprio K_t.",
+  gdRb_effNote: "Os termos extras aumentam K_n, então a mesma mudança de velocidade precisa de menos impulso. Parte do empurrão é gasta girando o corpo em vez de pará-lo, exatamente o que a figura acima mostrou: um impulso fora do centro dá a mesma velocidade ao centro mas mais energia total, com o resto indo para a rotação.",
+
+  gdRb_manifoldTitle: "Contatos entre caixas",
+  gdRb_manifoldBody: "Uma caixa apoiada de chapado em outra encosta ao longo de uma aresta inteira, não num ponto. Um solver precisa de pontos, e em 2D dois bastam: um em cada ponta do segmento que encosta. O Teorema do Eixo Separador encontra a normal: teste as duas normais de face de cada caixa e fique com o eixo de menor sobreposição. A caixa dona dessa face é a de referência; na outra caixa, a aresta incidente é aquela cuja normal aponta mais contra a normal de referência. Recorte a aresta incidente na largura da face de referência (corte as partes que passam dos planos laterais dela), e fique com as pontas recortadas que estão abaixo da face de referência. Cada uma dá um ponto de contato com a sua própria profundidade. Com dois pontos, uma caixa apoiada de chapado sente dois impulsos para cima e fica nivelada; com uma quina encostando, o impulso único cria um torque e a caixa tomba.",
+  gdRb_eqClip: "Ficando com um ponto recortado",
+  gdRb_wQ: "uma ponta da aresta incidente depois do recorte",
+  gdRb_wPref: "qualquer ponto da face de referência, por exemplo a sua primeira quina",
+  gdRb_wS: "a distância com sinal de q acima da face de referência; o ponto só é um contato quando s ≤ 0, e a sua profundidade é −s",
+
+  gdRb_warmTitle: "Warm starting e o viés de posição",
+  gdRb_warmBody: "Numa torre, o contato da base precisa carregar o peso de todas as caixas acima, e um punhado de varreduras de impulsos sequenciais não consegue construir esse impulso do zero a cada passo. Mas uma torre parada precisa quase dos mesmos impulsos do passo anterior. O warm starting guarda os impulsos acumulados de cada contato de um passo para o outro (casados por quais partes das duas caixas se tocam) e os aplica antes da primeira varredura, então o solver começa perto da resposta e só corrige a diferença. O Box2D também troca a correção de posição separada por uma velocidade de viés: cada contato pede uma pequena velocidade de separação β·max(d − slop, 0)/h além do quique, então a sobreposição é removida pelo mesmo solver.",
+  gdRb_eqBias: "Impulso normal com quique e viés de posição",
+  gdRb_wBias: "o viés: a velocidade com que o solver afasta os corpos para remover a sobreposição d em cerca de 1/β passos",
+  gdRb_wBounce: "o alvo do quique, a partir da velocidade normal quando o contato foi encontrado (0 abaixo do limiar de restituição)",
+
+  gdRb_tuneTitle: "Ajustando um mundo de corpos rígidos",
+  gdRb_tParam: "Parâmetro",
+  gdRb_tTypical: "Valor típico",
+  gdRb_tEffect: "Baixo demais / alto demais",
+  gdRb_p1: "passo h",
+  gdRb_p1e: "grande: tunelamento e pilhas moles / pequeno: caro",
+  gdRb_p2: "iterações de velocidade",
+  gdRb_p2e: "pilhas cedem e escorregam / o custo cresce linearmente",
+  gdRb_p3: "viés de posição β",
+  gdRb_p3e: "corpos afundam uns nos outros / tremores e pulos",
+  gdRb_p4: "folga (slop)",
+  gdRb_p4e: "contatos piscam, aparecendo e sumindo / sobreposição visível",
+  gdRb_p5: "limiar de restituição",
+  gdRb_p5e: "corpos parados vibram / quedas lentas não quicam",
+  gdRb_p6: "razão de massas",
+  gdRb_p6v: "abaixo de cerca de 10:1",
+  gdRb_p6e: "uma caixa pesada sobre uma leve precisa de muitas iterações",
+
+  gdRb_tip: "Antes de escrever o seu, saiba o que os motores fazem: Box2D (2D) e Jolt, PhysX ou Bullet (3D) usam todos este mesmo esquema de Euler semi-implícito, pontos de contato e impulsos sequenciais com warm starting, mais broad phases, corpos que dormem e colisão contínua. Escrever um pequeno ensina o que os parâmetros deles significam; lançar um jogo geralmente significa usar o deles.",
+
+  gdRb_k1: "Um corpo rígido 2D acrescenta a uma partícula um ângulo θ, uma velocidade angular ω e um momento de inércia I = Σ m r².",
+  gdRb_k2: "Uma força num ponto acelera o centro em F/m e gira o corpo com torque τ = r × F; um impulso muda v em J/m e ω em (r × J)/I.",
+  gdRb_k3: "Um ponto do corpo se move a v + ω × r; os contatos usam essa velocidade.",
+  gdRb_k4: "O impulso de contato divide por K = 1/m_A + 1/m_B + (r_A × n)²/I_A + (r_B × n)²/I_B: parte do empurrão vai para a rotação.",
+  gdRb_k5: "Os contatos entre caixas vêm do SAT mais o recorte da aresta incidente contra a face de referência: até dois pontos em 2D.",
+  gdRb_k6: "O warm starting reaproveita os impulsos do passo anterior, e uma velocidade de viés remove a sobreposição pelo mesmo solver: juntos eles deixam as pilhas estáveis.",
+};
+
+export default text;

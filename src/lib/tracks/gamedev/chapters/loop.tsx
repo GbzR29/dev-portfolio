@@ -207,8 +207,9 @@ while (running) {
           [tx(t, "gdLoop_s2", "Motion & Game Feel"), tx(t, "gdLoop_s2t", "lerp, easing, tweens, frame-rate independent smoothing, springs, screen shake")],
           [tx(t, "gdLoop_s3", "Procedural Generation"), tx(t, "gdLoop_s3t", "PRNGs, seeds, hashing, distributions, Poisson disk, Perlin noise, fBm terrain")],
           [tx(t, "gdLoop_s4", "Collision Detection"), tx(t, "gdLoop_s4t", "circles, AABBs, MTV, tunnelling and swept tests, the Separating Axis Theorem")],
+          [tx(t, "gdLoop_s7", "Physics"), tx(t, "gdLoop_s7t", "integrators (Euler, Verlet, RK4) and stability, impulses and friction, 2D rigid bodies and stacking, platformer controllers and game feel")],
           [tx(t, "gdLoop_s5", "Architecture & Patterns"), tx(t, "gdLoop_s5t", "object pools, free lists, generational handles")],
-          [tx(t, "gdLoop_s6", "Coming next"), tx(t, "gdLoop_s6t", "physics (integrators, rigid bodies, impulses, Verlet ropes), broad phase (spatial hash, quadtree), pathfinding (A*, flow fields), steering and flocking, state machines and behaviour trees, ECS, clean code for games, cellular automata and wave function collapse")],
+          [tx(t, "gdLoop_s6", "Coming next"), tx(t, "gdLoop_s6t2", "Verlet ropes and cloth, broad phase (spatial hash, quadtree), pathfinding (A*, flow fields), steering and flocking, state machines and behaviour trees, ECS, clean code for games, cellular automata and wave function collapse")],
         ]}
       />
 
