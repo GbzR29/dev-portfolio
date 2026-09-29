@@ -258,6 +258,16 @@ export function commonUniforms(p: WaterParams, sky: SkyParams, camPos: Vec3, tim
   };
 }
 
+/** The procedural sky's uniforms alone (for a sky probe or a background pass). */
+export function skyUniforms(sky: SkyParams, time: number): UniformSet {
+  return {
+    f1: { uTime: time, uCover: sky.cover, uDensity: sky.density, uExposure: sky.exposure },
+    i1: { uModel: sky.model, uSolo: -1 },
+    v3: { uSun: sunDirection(sky.sunEl, sky.sunAz) },
+    v4: { uLayers: [+sky.sun, +sky.stars, +sky.milky, +sky.clouds] },
+  };
+}
+
 // Uniform locations are looked up once per program and name, not every frame
 const locCache = new WeakMap<WebGLProgram, Map<string, WebGLUniformLocation | null>>();
 export function uniformLoc(gl: WebGL2RenderingContext, prog: WebGLProgram, name: string) {

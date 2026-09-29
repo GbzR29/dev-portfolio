@@ -8,10 +8,9 @@
 // to where its refracted sunbeam lands, rasterised with additive blending.
 // A triangle's brightness there is its area before over its area after.
 
-import { PROC_SKY_GLSL, sunDirection, type SkyParams } from "../sky/proceduralSky";
+import { PROC_SKY_GLSL } from "../sky/proceduralSky";
 import { SKY_ENV_GLSL } from "../water/skyProbe";
 import { PHOTO_GLSL } from "../water/photoTextures";
-import type { UniformSet } from "../water/waterCommon";
 import { POOL_HALF, POOL_DEPTH } from "./poolSim";
 
 export const RIM = 0.12;           // the deck, above the rest water level (m)
@@ -290,13 +289,4 @@ void main() {
   FragColor = vec4(display(col), 1.0);
 }`;
 
-// ── Uniforms ──────────────────────────────────────────────────────────────────
-/** The procedural sky's uniforms (for the probe and the background). */
-export function skyUniforms(sky: SkyParams, time: number): UniformSet {
-  return {
-    f1: { uTime: time, uCover: sky.cover, uDensity: sky.density, uExposure: sky.exposure },
-    i1: { uModel: sky.model, uSolo: -1 },
-    v3: { uSun: sunDirection(sky.sunEl, sky.sunAz) },
-    v4: { uLayers: [+sky.sun, +sky.stars, +sky.milky, +sky.clouds] },
-  };
-}
+export { skyUniforms } from "../water/waterCommon";

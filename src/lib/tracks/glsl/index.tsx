@@ -34,11 +34,13 @@ export const glslChapters: Chapter[] = [
   { id: "ocean",       section: EFFECTS, title: "Ocean: FFT Waves",            minRead: 26, load: () => import("./chapters/effects/ocean").then((m) => m.OceanContent) },
   { id: "underwater",  section: EFFECTS, title: "Underwater",                  minRead: 24, load: () => import("./chapters/effects/underwater").then((m) => m.UnderwaterContent) },
   { id: "pool",        section: EFFECTS, title: "Interactive Pool",            minRead: 22, load: () => import("./chapters/effects/pool").then((m) => m.PoolContent) },
+  { id: "river",       section: EFFECTS, title: "Rivers & Lakes: Flow Maps",   minRead: 24, load: () => import("./chapters/effects/river").then((m) => m.RiverContent) },
   { id: "glass",       section: EFFECTS, title: "Glass, Refraction & Fresnel", minRead: 21, load: () => import("./chapters/effects/glass").then((m) => m.GlassContent) },
   { id: "fog",         section: EFFECTS, title: "Fog",                         minRead: 18, load: () => import("./chapters/effects/fog").then((m) => m.FogContent) },
   { id: "stylized",    section: EFFECTS, title: "Toon, Dissolve & Hologram",   minRead: 11, load: () => import("./chapters/effects/stylized").then((m) => m.StylizedContent) },
   // ── Raymarching ─────────────────────────────────────────────────────────
   { id: "raymarching", section: RAYMARCH, title: "Raymarching",                minRead: 17, load: () => import("./chapters/raymarching").then((m) => m.RaymarchingContent) },
+  { id: "black-hole",  section: RAYMARCH, title: "Black Holes: Bending Light", minRead: 28, load: () => import("./chapters/blackhole").then((m) => m.BlackHoleContent) },
   // ── Ray & Path Tracing ──────────────────────────────────────────────────
   { id: "raytracing",  section: RAYTRACE, title: "Ray Tracing",                minRead: 20, load: () => import("./chapters/raytracing").then((m) => m.RayTracingContent) },
   { id: "pathtracing", section: RAYTRACE, title: "Path Tracing",               minRead: 26, load: () => import("./chapters/raytracing").then((m) => m.PathTracingContent) },
