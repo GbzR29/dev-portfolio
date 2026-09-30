@@ -886,5 +886,17 @@
   "vulkan/synchronization": {
     "created": "2026-09-29",
     "updated": "2026-09-29"
+  },
+  "vulkan/buffers-memory": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "vulkan/staging": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "vulkan/descriptors": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
   }
 }

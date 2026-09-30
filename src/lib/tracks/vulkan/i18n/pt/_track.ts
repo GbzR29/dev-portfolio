@@ -9,10 +9,14 @@ const track = {
     pipeline: "O pipeline gráfico",
     commands: "Command buffers",
     synchronization: "Sincronização: fences, semáforos e barreiras",
+    "buffers-memory": "Buffers e memória",
+    staging: "Staging buffers e transferências",
+    descriptors: "Descritores, uniforms e push constants",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
     Presentation: "Apresentação",
+    Resources: "Recursos",
   } as Record<string, string>,
 };
 

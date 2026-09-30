@@ -8,6 +8,7 @@ import type { Chapter } from "@/lib/tracks/types";
 
 const FOUNDATIONS = "Foundations";
 const PRESENTATION = "Presentation";
+const RESOURCES = "Resources";
 
 export const vulkanChapters: Chapter[] = [
   { id: "why-vulkan", section: FOUNDATIONS,  title: "Why Vulkan: The Explicit GPU API",          minRead: 18, load: () => import("./chapters/why-vulkan").then((m) => m.WhyVulkanContent) },
@@ -18,4 +19,8 @@ export const vulkanChapters: Chapter[] = [
   { id: "pipeline",   section: PRESENTATION, title: "The Graphics Pipeline",                     minRead: 23, load: () => import("./chapters/pipeline").then((m) => m.PipelineContent) },
   { id: "commands",   section: PRESENTATION, title: "Command Buffers",                           minRead: 20, load: () => import("./chapters/commands").then((m) => m.CommandsContent) },
   { id: "synchronization", section: PRESENTATION, title: "Synchronization: Fences, Semaphores & Barriers", minRead: 24, load: () => import("./chapters/synchronization").then((m) => m.SynchronizationContent) },
+
+  { id: "buffers-memory", section: RESOURCES, title: "Buffers & Memory",                         minRead: 22, load: () => import("./chapters/buffers-memory").then((m) => m.BuffersMemoryContent) },
+  { id: "staging",    section: RESOURCES,    title: "Staging Buffers & Transfers",               minRead: 19, load: () => import("./chapters/staging").then((m) => m.StagingContent) },
+  { id: "descriptors", section: RESOURCES,   title: "Descriptors, Uniforms & Push Constants",    minRead: 24, load: () => import("./chapters/descriptors").then((m) => m.DescriptorsContent) },
 ];

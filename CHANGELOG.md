@@ -6,11 +6,15 @@ Registro datado de tudo o que foi feito e criado no site.
 - A data de criação e de última atualização de cada lição também aparece no topo da própria lição. Ela é gerada do histórico do git por `scripts/gen-chapter-dates.mjs` (`npm run dates`, que também roda antes de `dev` e `build`) e fica em `src/lib/generated/chapter-dates.json`.
 - Para registrar algo novo, acrescente uma entrada no topo, com a data.
 
-Totais em 2026-09-29: 8 trilhas e 222 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · C++ 15 · Game Dev 12 · SDL3 10 · Vulkan 7).
+Totais em 2026-09-30: 8 trilhas e 225 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · C++ 15 · Game Dev 12 · Vulkan 10 · SDL3 10).
 
 ---
 
 ## Setembro de 2026
+
+### 2026-09-30
+
+- **Vulkan, lote 3**: nova seção **Recursos**, com *Buffers & Memory*, *Staging Buffers & Transfers* e *Descriptors, Uniforms & Push Constants*. O triângulo vira um quadrado com vertex e index buffer, os vértices passam para a VRAM por um staging buffer, e a cena ganha câmera em perspectiva (uniform buffer) e dois quadrados girando (push constants). Widgets novos: heaps e tipos de memória de quatro GPUs com o findMemoryType bit a bit, suballocação de um bloco com alinhamento e padding, o custo de cada estratégia de upload (t = S / B), "quebre o upload" (desmarcar um passo do staging e ver o erro ou a imagem errada), o mesmo bloco uniform em std140/std430 × C++ com os offsets que divergem, e a cadeia de layout(set, binding) até os bytes com um elo quebrado por vez. Textos e widgets com tradução PT completa.
 
 ### 2026-09-29
 

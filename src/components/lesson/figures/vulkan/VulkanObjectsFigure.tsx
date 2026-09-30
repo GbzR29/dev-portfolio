@@ -63,7 +63,7 @@ const CHAPTERS: Record<string, string> = {
   commands: "Command Buffers",
   sync: "Synchronization",
   buffers: "Buffers & Memory",
-  descriptors: "Descriptors & Uniforms",
+  descriptors: "Descriptors, Uniforms & Push Constants",
   textures: "Textures & Samplers",
 };
 const GROUPS: [number, string, string][] = [
