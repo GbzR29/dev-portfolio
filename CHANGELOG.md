@@ -6,13 +6,15 @@ Registro datado de tudo o que foi feito e criado no site.
 - A data de criação e de última atualização de cada lição também aparece no topo da própria lição. Ela é gerada do histórico do git por `scripts/gen-chapter-dates.mjs` (`npm run dates`, que também roda antes de `dev` e `build`) e fica em `src/lib/generated/chapter-dates.json`.
 - Para registrar algo novo, acrescente uma entrada no topo, com a data.
 
-Totais em 2026-09-30: 8 trilhas e 231 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · Vulkan 16 · C++ 15 · Game Dev 12 · SDL3 10).
+Totais em 2026-09-30: 9 trilhas e 235 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · Vulkan 16 · C++ 15 · Game Dev 12 · SDL3 10 · IA 4).
 
 ---
 
 ## Setembro de 2026
 
 ### 2026-09-30
+
+- **IA**: nova trilha (inteligência artificial do zero em C++, sem bibliotecas; 24 lições planejadas em 5 seções). Lote 1, seção **Fundamentos**: *What Is AI? Learning from Data*, *Data, Features & Vectors*, *Linear Regression* e *Gradient Descent*, com dois exemplos resolvidos à mão ao longo de todos os capítulos (tempo de entrega por distância; preço de apartamentos por área e quartos). Widgets: mapa da IA (regras, busca, ML supervisionado/não supervisionado/por reforço, deep learning), "ajuste a reta à mão" com os erros ao quadrado, escala de atributos mudando o vizinho mais próximo, a superfície de perda no espaço (w, b) com o gradiente, a taxa de aprendizado nos seus quatro regimes, e o caminho da descida do gradiente (km brutos × padronizados, batch/mini-batch/SGD). Textos e widgets com tradução PT completa.
 
 - **Vulkan, lote 5 — trilha completa (16 lições)**: nova seção **Indo além**, com *Frames in Flight & Resizing*, *Mipmaps & Multisampling*, *Compute Shaders* e *Modern Vulkan: Bindless, Device Addresses & Timelines*. O programa ganha dois frames em voo (FrameData por slot, redimensionamento sem `vkDeviceWaitIdle` aposentando a swapchain antiga), mipmaps gerados por blit e MSAA 4× com resolve no dynamic rendering, dez mil partículas orbitando os cubos num compute shader (o mesmo buffer é storage e vertex buffer), e por fim texturas bindless, vertex pulling por buffer device address e um timeline semaphore no lugar das fences. Widgets novos: CPU × GPU com 1/2/3 frames em voo (tempo de frame, latência, o bug de recursos compartilhados), quando a swapchain antiga pode ser destruída (esperar, destruir na hora, aposentar), um chão em perspectiva renderizado pixel a pixel com NEAREST/LINEAR/trilinear e os níveis coloridos, MSAA com as posições de amostra padrão e o resolve, a grade de um dispatch (workgroups, IDs, subgroups), a simulação de partículas com "quebre a barreira / a verificação de limites", o array bindless com PARTIALLY_BOUND, e o contador de um timeline semaphore comparado às fences. Textos e widgets com tradução PT completa.
 

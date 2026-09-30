@@ -1,4 +1,20 @@
 {
+  "ai/what-is-ai": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "ai/data": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "ai/linear-regression": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "ai/gradient-descent": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
   "algorithms/memory": {
     "created": "2026-09-26",
     "updated": "2026-09-26"

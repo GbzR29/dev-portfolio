@@ -14,6 +14,7 @@ import { gameDevChapters } from "./gamedev";
 import { mathChapters }   from "./math";
 import { algorithmsChapters } from "./algorithms";
 import { vulkanChapters } from "./vulkan";
+import { aiChapters }     from "./ai";
 
 // Keyed by catalog id.
 const CHAPTERS: Record<string, Chapter[]> = {
@@ -25,6 +26,7 @@ const CHAPTERS: Record<string, Chapter[]> = {
   math:    mathChapters,
   algorithms: algorithmsChapters,
   vulkan:  vulkanChapters,
+  ai:      aiChapters,
 };
 
 // Keyed by route segment (/learn/[trackPath]). Built once, so every lookup of

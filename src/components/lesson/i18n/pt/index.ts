@@ -1,6 +1,7 @@
 // PT widget text, loaded on demand by src/lib/i18n/lessons.ts.
 
 import advgl from "./advgl";
+import ai from "./ai";
 import advlighting from "./advlighting";
 import blackhole from "./blackhole";
 import figures from "./figures";
@@ -25,6 +26,6 @@ import underwater from "./underwater";
 import vulkan from "./vulkan";
 import water from "./water";
 
-const bundle: Record<string, string> = { ...advgl, ...advlighting, ...blackhole, ...figures, ...fog, ...gamedev, ...glass, ...glintro, ...glsl, ...lighting, ...math, ...ocean, ...pbr, ...perf, ...pool, ...post, ...river, ...rt, ...sky, ...special, ...tech, ...underwater, ...vulkan, ...water };
+const bundle: Record<string, string> = { ...advgl, ...ai,...advlighting, ...blackhole, ...figures, ...fog, ...gamedev, ...glass, ...glintro, ...glsl, ...lighting, ...math, ...ocean, ...pbr, ...perf, ...pool, ...post, ...river, ...rt, ...sky, ...special, ...tech, ...underwater, ...vulkan, ...water };
 
 export default bundle;

@@ -25,6 +25,8 @@ export const learningTranslations = {
       "Mathematics from the ground up: arithmetic, algebra, geometry, trigonometry, linear algebra and calculus, worked by hand — every formula explained, every idea interactive.",
     trackAlgoDesc:
       "Algorithms and data structures built from scratch in C++: memory and Big-O, recursion, sorting and searching, lists, hash tables, trees, heaps and graphs — every step traced in an interactive figure.",
+    trackAiDesc:
+      "Artificial intelligence from scratch in C++: data and features, regression and gradient descent, classic machine learning, neural networks and backpropagation, deep learning, reinforcement learning and game AI — every formula derived, every model trained by hand.",
 
     // AI banner
 
@@ -44,6 +46,7 @@ export const learningTranslations = {
     trackName_math: "Math",
     trackName_algorithms: "Algorithms",
     trackName_vulkan: "Vulkan",
+    trackName_ai: "AI",
     learnCrumb: "learn",
     lessonChapterOf: "chapter {n} of {total}",
     lessonOnThisPage: "On this page",
@@ -129,6 +132,8 @@ export const learningTranslations = {
       "Matemática desde a base: aritmética, álgebra, geometria, trigonometria, álgebra linear e cálculo, feitos à mão — cada fórmula explicada, cada ideia interativa.",
     trackAlgoDesc:
       "Algoritmos e estruturas de dados construídos do zero em C++: memória e Big-O, recursão, ordenação e busca, listas, tabelas hash, árvores, heaps e grafos — cada passo acompanhado numa figura interativa.",
+    trackAiDesc:
+      "Inteligência artificial do zero em C++: dados e atributos, regressão e descida do gradiente, machine learning clássico, redes neurais e backpropagation, deep learning, aprendizado por reforço e IA para jogos — cada fórmula deduzida, cada modelo treinado à mão.",
 
 
     // ── Lesson page ─────────────────────────────────────────────────────────
@@ -147,6 +152,7 @@ export const learningTranslations = {
     trackName_math: "Matemática",
     trackName_algorithms: "Algoritmos",
     trackName_vulkan: "Vulkan",
+    trackName_ai: "IA",
     learnCrumb: "aprender",
     lessonChapterOf: "capítulo {n} de {total}",
     lessonOnThisPage: "Nesta página",
@@ -232,6 +238,8 @@ export const learningTranslations = {
       "Matemáticas desde la base: aritmética, álgebra, geometría, trigonometría, álgebra lineal y cálculo, hechos a mano — cada fórmula explicada, cada idea interactiva.",
     trackAlgoDesc:
       "Algoritmos y estructuras de datos construidos desde cero en C++: memoria y Big-O, recursión, ordenación y búsqueda, listas, tablas hash, árboles, heaps y grafos — cada paso seguido en una figura interactiva.",
+    trackAiDesc:
+      "Inteligencia artificial desde cero en C++: datos y atributos, regresión y descenso de gradiente, machine learning clásico, redes neuronales y backpropagation, deep learning, aprendizaje por refuerzo e IA para juegos — cada fórmula deducida, cada modelo entrenado a mano.",
 
 
     lessonChapters:    "Capítulos",
@@ -249,6 +257,7 @@ export const learningTranslations = {
     trackName_math: "Matemáticas",
     trackName_algorithms: "Algoritmos",
     trackName_vulkan: "Vulkan",
+    trackName_ai: "IA",
     learnCrumb: "aprender",
     lessonChapterOf: "capítulo {n} de {total}",
     lessonOnThisPage: "En esta página",
@@ -334,6 +343,8 @@ export const learningTranslations = {
       "从零开始的数学：算术、代数、几何、三角学、线性代数与微积分，全部手算推导——每个公式都有解释，每个概念都可交互。",
     trackAlgoDesc:
       "用 C++ 从零实现算法与数据结构：内存与大 O、递归、排序与查找、链表、哈希表、树、堆和图——每一步都能在交互图中逐步查看。",
+    trackAiDesc:
+      "用 C++ 从零实现人工智能：数据与特征、回归与梯度下降、经典机器学习、神经网络与反向传播、深度学习、强化学习与游戏 AI——每个公式都有推导，每个模型都亲手训练。",
 
 
     lessonChapters:    "章节",
@@ -351,6 +362,7 @@ export const learningTranslations = {
     trackName_math: "数学",
     trackName_algorithms: "算法",
     trackName_vulkan: "Vulkan",
+    trackName_ai: "人工智能",
     learnCrumb: "学习",
     lessonChapterOf: "第 {n} 章，共 {total} 章",
     lessonOnThisPage: "本页内容",

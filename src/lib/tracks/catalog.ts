@@ -60,4 +60,9 @@ export const TRACK_CATALOG: TrackInfo[] = [
     id: "vulkan", path: "Vulkan", title: "Vulkan 1.3", accentColor: "#ef4444", status: "available", plannedLessons: 16,
     levelKey: "advanced", descKey: "trackVulkanDesc",
   },
+  {
+    id: "ai", path: "AI", title: "Artificial Intelligence", accentColor: "#6366f1", status: "available", plannedLessons: 24,
+    levelKey: "begAdv", levelFallback: "Beginner → Advanced",
+    descKey: "trackAiDesc", descFallback: "Artificial intelligence from scratch in C++: data and features, regression and gradient descent, classic machine learning, neural networks and backpropagation, deep learning, reinforcement learning and game AI — every formula derived, every model trained by hand.",
+  },
 ];
