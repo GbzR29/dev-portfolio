@@ -657,11 +657,11 @@
   },
   "opengl/advanced-lighting": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-09-30"
   },
   "opengl/gamma": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-09-30"
   },
   "opengl/shadow-mapping": {
     "created": "2026-09-03",
@@ -669,7 +669,7 @@
   },
   "opengl/point-shadows": {
     "created": "2026-09-24",
-    "updated": "2026-09-27"
+    "updated": "2026-09-30"
   },
   "opengl/cascaded-shadows": {
     "created": "2026-09-24",
@@ -677,15 +677,15 @@
   },
   "opengl/normal-mapping": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-09-30"
   },
   "opengl/hdr": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-09-30"
   },
   "opengl/bloom": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-09-30"
   },
   "opengl/color-spaces": {
     "created": "2026-09-24",
@@ -693,7 +693,7 @@
   },
   "opengl/deferred": {
     "created": "2026-09-24",
-    "updated": "2026-09-27"
+    "updated": "2026-09-30"
   },
   "opengl/global-illumination": {
     "created": "2026-09-25",
