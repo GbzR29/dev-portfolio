@@ -8,6 +8,8 @@ import {
 } from "./ndc3dScene";
 
 export type Ndc3dFrame = {
+  /** Translated legend lines; {v} and {z} are filled in here. English when omitted. */
+  legend?: { cube: string; selected: string; idle: string };
   theme: "dark" | "light";
   rot: { x: number; y: number };
   zoom: number;
@@ -244,11 +246,16 @@ export function drawNdc3d(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext
   // ── Legend ────────────────────────────────────────────────────────────
   ctx.fillStyle = C.legend;
   ctx.font      = "9px monospace";
-  ctx.fillText("NDC cube  [-1, 1]³", 8, 15);
+  const L = f.legend ?? {
+    cube: "NDC cube  [-1, 1]³",
+    selected: "v{v} selected · drag an arrow to move on one axis",
+    idle: "zoom {z}×  ·  click a vertex  ·  drag to orbit",
+  };
+  ctx.fillText(L.cube, 8, 15);
   ctx.fillText(
     selected !== null
-      ? `v${selected} selected · drag an arrow to move on one axis`
-      : `zoom ${zoom.toFixed(1)}×  ·  click a vertex  ·  drag to orbit`,
+      ? L.selected.replace("{v}", String(selected))
+      : L.idle.replace("{z}", zoom.toFixed(1)),
     8, SIZE - 7);
 
   return { screenVerts, gizmo };

@@ -565,15 +565,15 @@
   },
   "opengl/shaders": {
     "created": "2026-02-09",
-    "updated": "2026-09-27"
+    "updated": "2026-09-29"
   },
   "opengl/triangle": {
     "created": "2026-03-18",
-    "updated": "2026-09-27"
+    "updated": "2026-09-29"
   },
   "opengl/ebo": {
     "created": "2026-05-30",
-    "updated": "2026-09-25"
+    "updated": "2026-09-29"
   },
   "opengl/textures": {
     "created": "2026-05-30",

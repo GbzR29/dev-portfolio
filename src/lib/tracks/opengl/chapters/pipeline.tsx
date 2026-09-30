@@ -91,7 +91,7 @@ void main() {
           "Why not pixels? Because the program then does not need to know the window's size: the same vertices fill the same fraction of any window, and the viewport step converts to pixels at the very end. Drag the vertices of this triangle; a point outside the square is clipped.")}
       </p>
 
-      <InteractiveNDC2D />
+      <InteractiveNDC2D t={t} />
 
       <Callout type="tip" t={t}>
         {tx(t, "oglPipe_ndcTip",
@@ -102,7 +102,7 @@ void main() {
           "In 3D, NDC is a cube: every axis from −1 to +1. Rotate the view below to see shapes sitting inside it; the z coordinate becomes the depth used by the depth test.")}
       </p>
 
-      <InteractiveNDC3D />
+      <InteractiveNDC3D t={t} />
 
       <H2>{tx(t, "oglPipe_assemblyTitle", "Primitive assembly and clipping")}</H2>
       <p>

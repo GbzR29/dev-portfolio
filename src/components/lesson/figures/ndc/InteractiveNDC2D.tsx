@@ -11,9 +11,11 @@ import {
 } from "./ndc2dScene";
 import { Ndc2dPlot } from "./Ndc2dPlot";
 import { FigureShell } from "@/components/lesson/kit/FigureShell";
+import { tx } from "@/lib/tracks/tx";
+import type { TrackTranslations } from "@/lib/tracks/types";
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export function InteractiveNDC2D() {
+export function InteractiveNDC2D({ t }: { t?: TrackTranslations }) {
   const [verts,    setVerts]    = useState<Pt[]>(DEFAULT.map(v => ({ ...v })));
   const [zoom,     setZoom]     = useState(1.0);
   const [pan,      setPan]      = useState<Pt>({ x: 0, y: 0 });
@@ -344,10 +346,10 @@ export function InteractiveNDC2D() {
       {/* Header */}
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
-          NDC 2D — Interactive
+          {tx(t, "figNdc2_title", "NDC 2D — Interactive")}
         </span>
         <span className="text-[9px] text-[var(--text-muted)] font-mono text-right">
-          click a vertex for the gizmo · pinch or scroll to zoom
+          {tx(t, "figNdc_hint", "click a vertex for the gizmo · pinch or scroll to zoom")}
         </span>
       </div>
 
@@ -360,7 +362,7 @@ export function InteractiveNDC2D() {
             viewBox={`0 0 ${SZ} ${SZ}`}
             tabIndex={0}
             role="application"
-            aria-label="Interactive NDC coordinate editor"
+            aria-label={tx(t, "figNdc2_aria", "Interactive NDC coordinate editor")}
             style={{
               width: "min(400px, 88vw)", height: "auto", aspectRatio: "1",
               touchAction: "none", overflow: "hidden", outline: "none",
@@ -392,7 +394,7 @@ export function InteractiveNDC2D() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
-                Vertex Coordinates (NDC)
+                {tx(t, "figNdc2_coords", "Vertex Coordinates (NDC)")}
               </p>
               <span className="text-[9px] font-mono text-[var(--text-muted)] opacity-60">
                 x · y · z &nbsp;·&nbsp; {verts.length}/{MAX_VERTS}
@@ -414,7 +416,7 @@ export function InteractiveNDC2D() {
                     <button
                       onClick={() => setSelected(selected === i ? null : i)}
                       className="flex items-center gap-2 flex-shrink-0"
-                      title="Select for the gizmo"
+                      title={tx(t, "figNdc_select", "Select for the gizmo")}
                     >
                       <span className="w-2 h-2 rounded-full" style={{ background: color }} />
                       <span className="text-[var(--text-muted)] w-5 text-left">v{i}</span>
@@ -437,10 +439,10 @@ export function InteractiveNDC2D() {
                           [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                     ))}
-                    <span className="w-8 text-right text-[var(--text-muted)] opacity-50" title="z is always 0 in 2D">
+                    <span className="w-8 text-right text-[var(--text-muted)] opacity-50" title={tx(t, "figNdc2_z0", "z is always 0 in 2D")}>
                       0.00
                     </span>
-                    {!inBounds && <span className="text-[9px] text-red-400">clipped</span>}
+                    {!inBounds && <span className="text-[9px] text-red-400">{tx(t, "figNdc_clipped", "clipped")}</span>}
                   </div>
                 );
               })}
@@ -451,11 +453,11 @@ export function InteractiveNDC2D() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
-                Generated Code
+                {tx(t, "figNdc2_code", "Generated Code")}
               </p>
               <button onClick={handleCopy}
                 className="text-[9px] font-mono text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors px-2 py-0.5 rounded border border-transparent hover:border-[var(--border)]">
-                {copied ? "✓ copied" : "copy"}
+                {copied ? `✓ ${tx(t, "figNdc_copied", "copied")}` : tx(t, "figNdc_copy", "copy")}
               </button>
             </div>
             <pre className="text-[10px] font-mono bg-[var(--code-bg)] border border-[var(--code-border)] rounded-lg p-3 text-[var(--code-text)] overflow-auto leading-relaxed whitespace-pre max-h-40">
@@ -466,7 +468,7 @@ export function InteractiveNDC2D() {
           {/* Controls */}
           <div className="space-y-2.5">
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-mono text-[var(--text-muted)]">zoom</span>
+              <span className="text-[9px] font-mono text-[var(--text-muted)]">{tx(t, "figNdc_zoom", "zoom")}</span>
               <button onClick={() => applyZoom(0.85, null)}
                 className="w-6 h-6 rounded border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)] hover:border-[var(--primary)]/40 font-bold flex items-center justify-center transition-all text-sm">
                 −
@@ -478,36 +480,36 @@ export function InteractiveNDC2D() {
               </button>
               <button onClick={() => commitView(zoomRef.current, { x: 0, y: 0 })}
                 className="px-2 py-1 text-[9px] font-mono rounded border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)] hover:border-[var(--primary)]/40 transition-all">
-                center
+                {tx(t, "figNdc_center", "center")}
               </button>
             </div>
 
             <div className="flex gap-2 flex-wrap">
               <button onClick={addVertex} disabled={verts.length >= MAX_VERTS}
                 className="px-3 py-1.5 text-[10px] font-semibold rounded-lg border border-[var(--border)] text-[var(--text-muted)] transition-all enabled:hover:border-[var(--primary)]/40 enabled:hover:text-[var(--primary)] disabled:opacity-35 disabled:cursor-not-allowed">
-                + vertex
+                + {tx(t, "figNdc2_vertex", "vertex")}
               </button>
               <button onClick={removeVertex} disabled={verts.length <= MIN_VERTS}
                 className="px-3 py-1.5 text-[10px] font-semibold rounded-lg border border-[var(--border)] text-[var(--text-muted)] transition-all enabled:hover:border-red-500/40 enabled:hover:text-red-400 disabled:opacity-35 disabled:cursor-not-allowed">
-                − {selected !== null ? `remove v${selected}` : "remove"}
+                − {tx(t, "figNdc2_remove", "remove")}{selected !== null ? ` v${selected}` : ""}
               </button>
               <button onClick={reset}
                 className="px-3 py-1.5 text-[10px] font-semibold rounded-lg border border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--primary)]/40 hover:text-[var(--primary)] transition-all">
-                reset
+                {tx(t, "figNdc_reset", "reset")}
               </button>
             </div>
 
             <p className="text-[9px] font-mono text-[var(--text-muted)] opacity-70 leading-relaxed">
               <span style={{ color: AXIS_COLOR[0] }}>X</span>{" "}
-              <span style={{ color: AXIS_COLOR[1] }}>Y</span> gizmo arms constrain one axis
+              <span style={{ color: AXIS_COLOR[1] }}>Y</span> {tx(t, "figNdc_arms", "gizmo arms constrain one axis")}
               <span data-mouse-only>
-                {" "}· <span className="text-[var(--primary)]">shift</span> fine ·{" "}
-                <span className="text-[var(--primary)]">alt</span> snap {SNAP} ·{" "}
-                <span className="text-[var(--primary)]">arrows</span> nudge ·{" "}
-                <span className="text-[var(--primary)]">del</span> remove ·{" "}
-                <span className="text-[var(--primary)]">esc</span> deselect
+                {" "}· <span className="text-[var(--primary)]">shift</span> {tx(t, "figNdc_fine", "fine")} ·{" "}
+                <span className="text-[var(--primary)]">alt</span> {tx(t, "figNdc_snap", "snap")} {SNAP} ·{" "}
+                <span className="text-[var(--primary)]">{tx(t, "figNdc_arrows", "arrows")}</span> {tx(t, "figNdc_nudge", "nudge")} ·{" "}
+                <span className="text-[var(--primary)]">del</span> {tx(t, "figNdc2_remove", "remove")} ·{" "}
+                <span className="text-[var(--primary)]">esc</span> {tx(t, "figNdc_deselect", "deselect")}
               </span>
-              <span data-touch-only> · <span className="text-[var(--primary)]">two fingers</span> pan</span>
+              <span data-touch-only> · <span className="text-[var(--primary)]">{tx(t, "figNdc_twoFingers", "two fingers")}</span> {tx(t, "figNdc_pan", "pan")}</span>
             </p>
           </div>
         </div>

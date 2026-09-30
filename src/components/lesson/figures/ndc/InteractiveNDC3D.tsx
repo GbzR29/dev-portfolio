@@ -10,10 +10,12 @@ import {
 } from "./ndc3dScene";
 import { drawNdc3d } from "./ndc3dDraw";
 import { FigureShell } from "@/components/lesson/kit/FigureShell";
+import { tx } from "@/lib/tracks/tx";
+import type { TrackTranslations } from "@/lib/tracks/types";
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function InteractiveNDC3D() {
+export function InteractiveNDC3D({ t }: { t?: TrackTranslations }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [rot, setRot]           = useState({ x: 0.40, y: 0.70 });
   const [shapeIdx, setShapeIdx] = useState(2);
@@ -92,10 +94,15 @@ export function InteractiveNDC3D() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const dragAxis = drag.current?.mode === "axis" ? drag.current.axis : null;
-    const out = drawNdc3d(canvas, ctx, { theme, rot, zoom, pan, shape, verts, selected, hover, dragAxis });
+    const legend = {
+      cube: tx(t, "figNdc3_cube", "NDC cube  [-1, 1]³"),
+      selected: tx(t, "figNdc3_legendSel", "v{v} selected · drag an arrow to move on one axis"),
+      idle: tx(t, "figNdc3_legendIdle", "zoom {z}×  ·  click a vertex  ·  drag to orbit"),
+    };
+    const out = drawNdc3d(canvas, ctx, { legend, theme, rot, zoom, pan, shape, verts, selected, hover, dragAxis });
     screenVerts.current = out.screenVerts;
     gizmoArms.current   = out.gizmo;
-  }, [rot, shape, verts, zoom, pan, hover, selected, theme]);
+  }, [rot, shape, verts, zoom, pan, hover, selected, theme, t]);
 
   useEffect(() => { draw(); }, [draw]);
 
@@ -345,10 +352,10 @@ export function InteractiveNDC3D() {
     <FigureShell as="div">
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
-          NDC 3D — Interactive
+          {tx(t, "figNdc3_title", "NDC 3D — Interactive")}
         </span>
         <span className="text-[9px] text-[var(--text-muted)] font-mono text-right">
-          click a vertex for the gizmo · pinch or scroll to zoom
+          {tx(t, "figNdc_hint", "click a vertex for the gizmo · pinch or scroll to zoom")}
         </span>
       </div>
 
@@ -374,7 +381,7 @@ export function InteractiveNDC3D() {
 
           {/* Shape selector */}
           <div>
-            <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-2.5">Shape</p>
+            <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-2.5">{tx(t, "figNdc3_shape", "Shape")}</p>
             <div className="flex flex-wrap gap-2">
               {SHAPES.map((s, i) => (
                 <button key={s.label} onClick={() => selectShape(i)}
@@ -384,7 +391,7 @@ export function InteractiveNDC3D() {
                       : "border-[var(--border)] text-[var(--text-muted)] hover:border-[var(--primary)]/30"
                   }`}
                   style={shapeIdx === i ? { background: s.color + "cc" } : {}}>
-                  {s.label}
+                  {tx(t, `figNdc3_s${s.label}`, s.label)}
                 </button>
               ))}
             </div>
@@ -394,7 +401,7 @@ export function InteractiveNDC3D() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
-                {shape.label} Vertices
+                {tx(t, "figNdc3_vertsOf", "{shape} Vertices").replace("{shape}", tx(t, `figNdc3_s${shape.label}`, shape.label))}
               </p>
               <span className="text-[9px] font-mono text-[var(--text-muted)] opacity-60">x · y · z</span>
             </div>
@@ -414,7 +421,7 @@ export function InteractiveNDC3D() {
                     <button
                       onClick={() => setSelected(selected === i ? null : i)}
                       className="flex items-center gap-2 flex-shrink-0"
-                      title="Select for the gizmo"
+                      title={tx(t, "figNdc_select", "Select for the gizmo")}
                     >
                       <span className="w-1.5 h-1.5 rounded-full" style={{ background: color }} />
                       <span className="text-[var(--text-muted)] w-5 text-left">v{i}</span>
@@ -436,7 +443,7 @@ export function InteractiveNDC3D() {
                           [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                     ))}
-                    {!inBounds && <span className="text-[9px] text-red-400">clipped</span>}
+                    {!inBounds && <span className="text-[9px] text-red-400">{tx(t, "figNdc_clipped", "clipped")}</span>}
                   </div>
                 );
               })}
@@ -446,10 +453,10 @@ export function InteractiveNDC3D() {
           {/* C++ snippet */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">In C++</p>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figNdc3_inCpp", "In C++")}</p>
               <button onClick={handleCopy}
                 className="text-[9px] font-mono text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors px-2 py-0.5 rounded border border-transparent hover:border-[var(--border)]">
-                {copied ? "✓ copied" : "copy"}
+                {copied ? `✓ ${tx(t, "figNdc_copied", "copied")}` : tx(t, "figNdc_copy", "copy")}
               </button>
             </div>
             <pre className="text-[9.5px] font-mono bg-[var(--code-bg)] border border-[var(--code-border)] rounded-lg p-3 text-[var(--code-text)] overflow-auto leading-relaxed whitespace-pre max-h-40">
@@ -460,7 +467,7 @@ export function InteractiveNDC3D() {
           {/* Controls */}
           <div className="space-y-2.5 pt-1">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[9px] font-mono text-[var(--text-muted)]">zoom</span>
+              <span className="text-[9px] font-mono text-[var(--text-muted)]">{tx(t, "figNdc_zoom", "zoom")}</span>
               <button onClick={() => applyZoom(0.85, null)}
                 className="w-6 h-6 rounded border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)] hover:border-[var(--primary)]/40 font-bold flex items-center justify-center transition-all text-sm">
                 −
@@ -472,24 +479,24 @@ export function InteractiveNDC3D() {
               </button>
               <button onClick={() => commitView(zoomRef.current, { x: 0, y: 0 })}
                 className="px-2 py-1 text-[9px] font-mono rounded border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)] hover:border-[var(--primary)]/40 transition-all">
-                center
+                {tx(t, "figNdc_center", "center")}
               </button>
               <button onClick={reset}
                 className="px-2 py-1 text-[9px] font-mono rounded border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)] hover:border-[var(--primary)]/40 transition-all">
-                reset
+                {tx(t, "figNdc_reset", "reset")}
               </button>
             </div>
 
             <p className="text-[9px] font-mono text-[var(--text-muted)] opacity-70 leading-relaxed">
               <span style={{ color: AXIS_COLOR[0] }}>X</span>{" "}
               <span style={{ color: AXIS_COLOR[1] }}>Y</span>{" "}
-              <span style={{ color: AXIS_COLOR[2] }}>Z</span> gizmo arms constrain one axis
+              <span style={{ color: AXIS_COLOR[2] }}>Z</span> {tx(t, "figNdc_arms", "gizmo arms constrain one axis")}
               <span data-mouse-only>
-                {" "}· <span className="text-[var(--primary)]">shift</span> fine ·{" "}
-                <span className="text-[var(--primary)]">alt</span> snap {SNAP} ·{" "}
-                <span className="text-[var(--primary)]">middle-drag</span> pans
+                {" "}· <span className="text-[var(--primary)]">shift</span> {tx(t, "figNdc_fine", "fine")} ·{" "}
+                <span className="text-[var(--primary)]">alt</span> {tx(t, "figNdc_snap", "snap")} {SNAP} ·{" "}
+                <span className="text-[var(--primary)]">{tx(t, "figNdc_middle", "middle-drag")}</span> {tx(t, "figNdc_pans", "pans")}
               </span>
-              <span data-touch-only> · <span className="text-[var(--primary)]">two fingers</span> pan</span>
+              <span data-touch-only> · <span className="text-[var(--primary)]">{tx(t, "figNdc_twoFingers", "two fingers")}</span> {tx(t, "figNdc_pan", "pan")}</span>
             </p>
           </div>
 
