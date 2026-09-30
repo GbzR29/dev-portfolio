@@ -16,7 +16,7 @@ export const learningTranslations = {
     trackOpenglDesc:
       "Understand the full OpenGL pipeline: vertex buffers, shaders, textures, framebuffers, and compute shaders — through hands-on C++ code.",
     trackVulkanDesc:
-      "Dive into Vulkan's explicit GPU control: command buffers, render passes, synchronization, and pipeline objects. Not for the faint of heart.",
+      "Vulkan 1.3 from an empty window to a textured 3D scene: instance and devices, swapchain, pipelines, command buffers, synchronization, memory and descriptors — the explicit GPU API, every object explained.",
     trackSdlDesc:
       "Build real applications with SDL3: window management, input handling, audio, and a complete 2D rendering loop using C++.",
     trackGameDevDesc:
@@ -120,7 +120,7 @@ export const learningTranslations = {
     trackOpenglDesc:
       "Entenda o pipeline completo do OpenGL: vertex buffers, shaders, texturas, framebuffers e compute shaders — com código C++ prático.",
     trackVulkanDesc:
-      "Mergulhe no controle explícito de GPU com Vulkan: command buffers, render passes, sincronização e objetos de pipeline. Não é para iniciantes.",
+      "Vulkan 1.3 de uma janela vazia até uma cena 3D texturizada: instance e dispositivos, swapchain, pipelines, command buffers, sincronização, memória e descritores — a API explícita de GPU, cada objeto explicado.",
     trackSdlDesc:
       "Construa aplicações reais com SDL3: gerenciamento de janelas, input, áudio e um loop de renderização 2D completo em C++.",
     trackGameDevDesc:
@@ -223,7 +223,7 @@ export const learningTranslations = {
     trackOpenglDesc:
       "Comprende el pipeline completo de OpenGL: vertex buffers, shaders, texturas, framebuffers y compute shaders — con código C++ práctico.",
     trackVulkanDesc:
-      "Sumérgete en el control explícito de GPU con Vulkan: command buffers, render passes, sincronización y objetos de pipeline. No apto para principiantes.",
+      "Vulkan 1.3 desde una ventana vacía hasta una escena 3D texturizada: instancia y dispositivos, swapchain, pipelines, command buffers, sincronización, memoria y descriptores — la API explícita de GPU, cada objeto explicado.",
     trackSdlDesc:
       "Construye aplicaciones reales con SDL3: gestión de ventanas, entrada, audio y un bucle de renderizado 2D completo en C++.",
     trackGameDevDesc:
@@ -325,7 +325,7 @@ export const learningTranslations = {
     trackOpenglDesc:
       "深入理解完整的OpenGL管线：顶点缓冲、着色器、纹理、帧缓冲和计算着色器——通过实践C++代码。",
     trackVulkanDesc:
-      "深入Vulkan的显式GPU控制：命令缓冲区、渲染通道、同步和管线对象。专为有经验的开发者准备。",
+      "Vulkan 1.3：从空窗口到带纹理的 3D 场景——实例与设备、交换链、管线、命令缓冲区、同步、内存与描述符。显式 GPU API，每个对象都有讲解。",
     trackSdlDesc:
       "使用SDL3构建真实应用：窗口管理、输入处理、音频和完整的2D渲染循环，全部用C++实现。",
     trackGameDevDesc:

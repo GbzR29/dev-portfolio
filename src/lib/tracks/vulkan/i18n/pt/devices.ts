@@ -1,0 +1,85 @@
+// PT text for src/lib/tracks/vulkan/chapters/devices.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  vkDev_intro: "Um computador pode ter várias GPUs: um notebook muitas vezes tem uma lenta e econômica embutida no processador e uma placa dedicada rápida. O Vulkan mostra toda GPU ao programa e o deixa escolher, e então pede ao programa que declare exatamente o que vai usar da escolhida: quais recursos, quais extensões e quantas filas de cada tipo. A resposta vira o dispositivo lógico, o VkDevice a partir do qual quase todo objeto posterior é criado. Este capítulo lista as GPUs, confere o que cada uma sabe fazer, escolhe a melhor e a abre.",
+
+  vkDev_physTitle: "Dispositivos físicos",
+  vkDev_physBody: "Um VkPhysicalDevice representa uma GPU como está instalada. Você não o cria nem o destrói; pega a lista na instance com o idioma das duas chamadas e depois pergunta a cada uma sobre si mesma. vkGetPhysicalDeviceProperties preenche uma struct VkPhysicalDeviceProperties:",
+  vkDev_tField: "Campo",
+  vkDev_tMeaning: "Significado",
+  vkDev_p1: "um nome legível como \"NVIDIA GeForce RTX 4070\", para logs e menus de configuração",
+  vkDev_p2: "DISCRETE_GPU (uma placa separada com memória própria), INTEGRATED_GPU (parte da CPU, dividindo a memória do sistema), VIRTUAL_GPU (dentro de uma máquina virtual), CPU (uma implementação em software como lavapipe ou SwiftShader) ou OTHER",
+  vkDev_p3: "a versão mais alta do Vulkan que o driver desta GPU suporta. Precisamos de pelo menos 1.3.",
+  vkDev_p4: "identificam o driver e o chip exatos; úteis para relatórios de bug e contornos específicos de fabricante",
+  vkDev_p5: "centenas de limites numéricos: a maior textura (maxImageDimension2D), o maior bloco de push constants, o alinhamento dos offsets de uniform buffer, e assim por diante. Os capítulos apontam os de que dependem.",
+
+  vkDev_featTitle: "Recursos: o que a GPU sabe fazer",
+  vkDev_featBody: "Além da API do núcleo, muitas capacidades são recursos opcionais (features): filtragem anisotrópica, floats de 64 bits nos shaders, desenho em wireframe, e todo acréscimo das versões posteriores. Os recursos originais do Vulkan 1.0 são campos de VkPhysicalDeviceFeatures. Os acrescentados depois ficam em structs separadas, uma por versão (VkPhysicalDeviceVulkan11Features, …12…, …13…), que são presas por pNext a VkPhysicalDeviceFeatures2. Você monta a cadeia, passa a cabeça dela a vkGetPhysicalDeviceFeatures2, e o driver preenche cada struct da cadeia, escrevendo VK_TRUE em cada recurso que suporta.",
+  vkDev_featAfter: "Suportado não é o mesmo que ligado. Um recurso que a GPU suporta continua desligado até você ligá-lo ao criar o dispositivo lógico, e usar um recurso desligado é um erro de validação. Então tratar recursos sempre tem duas metades: consultar para escolher uma GPU, ligar para usar.",
+
+  vkDev_extTitle: "Extensões de dispositivo",
+  vkDev_extBody: "Extensões de dispositivo acrescentam funções no nível da GPU e, assim como as de instance, precisam ser pedidas pelo nome. Só precisamos de uma: VK_KHR_swapchain, que fornece as imagens que uma janela mostra (próximo capítulo). Uma GPU dentro de um servidor pode não tê-la, já que não tem tela. No macOS, o MoltenVK também exige que VK_KHR_portability_subset seja ligada, como reconhecimento do programa de que alguns recursos pouco usados do Vulkan estão faltando.",
+
+  vkDev_queueTitle: "Filas e famílias de filas",
+  vkDev_queueBody: "A GPU recebe trabalho por filas (queues). Uma fila é uma caixa de entrada: você submete command buffers a ela e a GPU os executa, na ordem de submissão dentro daquela fila. Uma GPU tem vários motores de hardware que podem trabalhar ao mesmo tempo: o motor gráfico principal, muitas vezes motores de computação extras, e motores de cópia (motores DMA, que movem dados pelo barramento PCIe sem usar os núcleos de shader). O Vulkan agrupa as filas que alimentam o mesmo tipo de motor numa família de filas. Todas as filas de uma família são idênticas; as famílias diferem no que as suas filas sabem fazer, o que vkGetPhysicalDeviceQueueFamilyProperties reporta como flags:",
+  vkDev_tFlag: "Flag",
+  vkDev_tCan: "Filas desta família podem rodar",
+  vkDev_q1: "desenho: comandos de renderização, o pipeline gráfico inteiro",
+  vkDev_q2: "despachos de compute shader",
+  vkDev_q3: "cópias entre buffers e imagens. Toda família gráfica ou de computação também sabe copiar, mesmo que não reporte este bit; a especificação garante isso.",
+  vkDev_q4: "trocar a memória por trás de recursos esparsos (parcialmente residentes); um recurso avançado que esta trilha não usa",
+  vkDev_q5: "decodificação e codificação de vídeo em hardware, por extensões de vídeo",
+  vkDev_presentBody: "Falta uma capacidade nas flags: apresentar, isto é, entregar uma imagem ao sistema de janelas para mostrar. Se uma família pode apresentar depende da janela além da GPU (uma GPU pode controlar um monitor e não outro), então isso é perguntado por família e por surface com vkGetPhysicalDeviceSurfaceSupportKHR. Isso significa que precisamos da surface da janela antes de escolher uma GPU. A surface é uma VkSurfaceKHR, criada a partir da instance pelo SDL numa chamada; o próximo capítulo a explica por completo.",
+  vkDev_pickBody: "A nossa regra: precisamos de uma família que desenhe e uma que apresente. Em praticamente toda GPU real a mesma família faz as duas coisas, e usar uma fila só para as duas deixa o programa mais simples, então preferimos uma família com as duas capacidades e só caímos para duas famílias diferentes se não existir nenhuma. UINT32_MAX marca \"não encontrado\" porque 0 é um índice de família válido.",
+
+  vkDev_chooseTitle: "Escolhendo a GPU",
+  vkDev_chooseBody: "Agora cada GPU pode ser testada e pontuada. Uma GPU a que falte algo de que precisamos recebe −1 e nunca pode ser escolhida. Entre as restantes, uma GPU dedicada é preferida a uma integrada, porque quase sempre é muito mais rápida; o limite de textura desempata GPUs parecidas. Um motor de verdade também deixaria o usuário trocar a escolha num menu de configurações, já que a \"melhor\" GPU nem sempre é a que ele quer (na bateria, por exemplo).",
+  vkDev_orderNote: "A ordem dos testes importa: a struct de recursos do 1.3 só pode ser consultada numa GPU cujo driver conhece a versão 1.3, então a versão é conferida antes de hasFeatures rodar.",
+
+  vkDev_logicalTitle: "O dispositivo lógico",
+  vkDev_logicalBody: "O dispositivo lógico é a conexão própria do seu programa com a GPU escolhida. Ele é criado com três listas: quais filas criar, quais recursos ligar, quais extensões ligar. Nada fora dessas listas pode ser usado. Vários programas podem ter cada um o seu dispositivo lógico na mesma GPU, cada um com o seu estado; por isso ele é \"lógico\".",
+  vkDev_l1: "uma por família de filas de que você quer filas: o índice da família, quantas filas e uma prioridade para cada. Uma família só pode aparecer uma vez na lista, então quando gráfico e apresentação são a mesma família há uma entrada, não duas.",
+  vkDev_l2: "um número de 0,0 a 1,0 por fila: uma dica de como a GPU deve dividir o tempo entre as filas deste dispositivo quando elas competem. Com uma fila, qualquer valor serve; usamos 1,0.",
+  vkDev_l3a: "pNext → VkPhysicalDeviceFeatures2",
+  vkDev_l3: "a mesma cadeia de structs de recursos da consulta, agora com VK_TRUE só nos recursos que usamos. Quando a cadeia é usada, o campo antigo pEnabledFeatures precisa ser nulo.",
+  vkDev_l4: "as extensões de dispositivo: VK_KHR_swapchain (e o portability subset no macOS)",
+  vkDev_queueHandles: "Quando as duas famílias são a mesma, graphicsQueue e presentQueue são a mesma fila, que é exatamente o que queremos. O código que submete e apresenta não precisa saber. As filas pertencem ao dispositivo: não existe vkDestroyQueue, elas somem junto com ele.",
+  vkDev_layerNote: "Tutoriais mais antigos também passam a validation layer a vkCreateDevice. Layers de dispositivo foram descontinuadas há muito tempo; as layers ligadas na instance valem para todo dispositivo, e os campos de layer do dispositivo são ignorados.",
+
+  vkDev_shutdownTitle: "Encerramento, atualizado",
+  vkDev_shutdownBody: "O dispositivo precisa ser destruído antes da surface e da instance, e precisa estar ocioso: vkDeviceWaitIdle bloqueia a CPU até toda fila terminar todo o trabalho submetido. Destruir objetos que a GPU ainda está usando é o bug de destruir-em-uso da figura da validation layer. Daqui em diante, o encerramento de todo capítulo começa com esta chamada.",
+  vkDev_mapBody: "O mapa de objetos agora tem a sua espinha: instance, surface, dispositivo físico, dispositivo e fila. Todo objeto dos capítulos seguintes pende da faixa do VkDevice.",
+
+  vkDev_workedTitle: "Exemplo resolvido: um notebook gamer",
+  vkDev_worked1: "Um notebook reporta duas GPUs. GPU 0: \"Intel UHD Graphics 770\", INTEGRATED_GPU, apiVersion 1.3.289, maxImageDimension2D 16384, uma família com gráfico, computação e transferência que pode apresentar. GPU 1: \"NVIDIA GeForce RTX 4060 Laptop GPU\", DISCRETE_GPU, apiVersion 1.3.280, maxImageDimension2D 32768, com as famílias do layout tipo NVIDIA da figura. As duas passam em todos os testes. Pontos: GPU 0 = 100 + 16384 / 1024 = 100 + 16 = 116; GPU 1 = 1000 + 32768 / 1024 = 1000 + 32 = 1032. Escolhemos a GPU 1.",
+  vkDev_worked2: "Na GPU 1, a família 0 tem o bit gráfico e pode apresentar, então findQueueFamilies devolve {0, 0} na primeira iteração. O std::set guarda só {0}, então vkCreateDevice recebe uma VkDeviceQueueCreateInfo com uma fila, e as duas chamadas de vkGetDeviceQueue devolvem o mesmo handle. Num desktop que só tem a GPU integrada, o mesmo código a escolhe, sem nenhuma mudança.",
+
+  vkDev_mistakesTitle: "Erros comuns",
+  vkDev_tMistake: "Erro",
+  vkDev_tFix: "O que acontece, e a correção",
+  vkDev_e1: "Pegar a primeira GPU da lista",
+  vkDev_e1b: "em notebooks a primeira muitas vezes é a integrada, e em algumas máquinas é um renderizador em software. Teste e pontue todas as GPUs.",
+  vkDev_e2: "Listar a mesma família duas vezes nas create infos de fila",
+  vkDev_e2b: "um erro de validação (VUID-VkDeviceCreateInfo-queueFamilyIndex-02802). Tire as duplicatas dos índices de família, como o std::set faz.",
+  vkDev_e3: "Usar um recurso consultado mas não ligado",
+  vkDev_e3b: "consultar só diz que a GPU poderia; vkCreateDevice precisa ligá-lo. A validation layer reporta o primeiro uso de um recurso desligado.",
+  vkDev_e4: "Definir tanto os recursos no pNext quanto pEnabledFeatures",
+  vkDev_e4b: "não é permitido: com VkPhysicalDeviceFeatures2 na cadeia, pEnabledFeatures precisa ser nulo. Ponha os recursos do 1.0 em features2.features.",
+  vkDev_e5: "Supor que a família gráfica pode apresentar",
+  vkDev_e5b: "verdade na prática, não garantido. Sempre pergunte a vkGetPhysicalDeviceSurfaceSupportKHR, e trate o caso dividido.",
+  vkDev_e6: "Inicializar índices de família \"não encontrados\" com 0",
+  vkDev_e6b: "0 é uma família real, então a conferência nunca falha. Use UINT32_MAX ou std::optional<uint32_t>.",
+  vkDev_e7: "Destruir o dispositivo com a GPU ocupada",
+  vkDev_e7b: "comportamento indefinido, muitas vezes um crash ao sair. Chame vkDeviceWaitIdle antes.",
+
+  vkDev_key0: "Um VkPhysicalDevice é uma GPU instalada: liste-as, leia propriedades, recursos, extensões e famílias de filas, e então escolha.",
+  vkDev_key1: "Os recursos são consultados por uma cadeia pNext de VkPhysicalDeviceFeatures2 e precisam ser ligados de novo na criação do dispositivo para serem usados.",
+  vkDev_key2: "VK_KHR_swapchain é a extensão de dispositivo necessária para mostrar imagens numa janela.",
+  vkDev_key3: "Filas são caixas de entrada para command buffers; uma família de filas é um grupo de filas idênticas com as mesmas capacidades GRAPHICS / COMPUTE / TRANSFER.",
+  vkDev_key4: "O suporte a apresentação é por família e por surface, então a surface é criada antes de escolher a GPU.",
+  vkDev_key5: "Prefira uma família que desenhe e apresente; pontue GPUs dedicadas acima das integradas e rejeite qualquer GPU a que falte um requisito.",
+  vkDev_key6: "vkCreateDevice recebe as filas (uma create info por família distinta), os recursos ligados e as extensões; as filas são depois obtidas com vkGetDeviceQueue.",
+  vkDev_key7: "Encerramento: vkDeviceWaitIdle, depois dispositivo, surface, messenger, instance.",
+};
+
+export default text;

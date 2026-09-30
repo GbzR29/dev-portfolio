@@ -7,6 +7,7 @@ import figures from "./figures";
 import fog from "./fog";
 import gamedev from "./gamedev";
 import glass from "./glass";
+import glintro from "./glintro";
 import glsl from "./glsl";
 import lighting from "./lighting";
 import math from "./math";
@@ -21,8 +22,9 @@ import sky from "./sky";
 import special from "./special";
 import tech from "./tech";
 import underwater from "./underwater";
+import vulkan from "./vulkan";
 import water from "./water";
 
-const bundle: Record<string, string> = { ...advgl, ...advlighting, ...blackhole, ...figures, ...fog, ...gamedev, ...glass, ...glsl, ...lighting, ...math, ...ocean, ...pbr, ...perf, ...pool, ...post, ...river, ...rt, ...sky, ...special, ...tech, ...underwater, ...water };
+const bundle: Record<string, string> = { ...advgl, ...advlighting, ...blackhole, ...figures, ...fog, ...gamedev, ...glass, ...glintro, ...glsl, ...lighting, ...math, ...ocean, ...pbr, ...perf, ...pool, ...post, ...river, ...rt, ...sky, ...special, ...tech, ...underwater, ...vulkan, ...water };
 
 export default bundle;

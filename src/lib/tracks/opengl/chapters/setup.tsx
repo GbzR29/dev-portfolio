@@ -4,18 +4,26 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { StateMachineFigure } from "@/components/lesson/figures/glintro/StateMachineFigure";
+import { DoubleBufferFigure } from "@/components/lesson/figures/glintro/DoubleBufferFigure";
 
 // ── Window & Context ──────────────────────────────────────────────────────────
+// The three pieces (window library, loader, maths); what a context is and the
+// state machine (bind points, object names, the forgotten-bind bug, figure);
+// generating GLAD; the CMake file; creating a 4.6 Core context (hints, order
+// rules, macOS 4.1); double buffering and vsync (figure); the render loop,
+// line by line; resizing and high-DPI; a sanity check; common mistakes.
 
 export function SetupContent({ t }: { t: TrackTranslations }) {
   return (
-    <article className="space-y-5 text-[var(--text-muted)] leading-relaxed text-base">
+    <Article>
 
-      <p className="text-lg text-[var(--text-main)]">
+      <Lead>
         {tx(t, "oglSetup_intro",
           "OpenGL is a specification, not a library. There is no opengl.dll you link against that contains the modern functions — the implementation lives inside your graphics driver, and the entry points must be looked up at runtime. On top of that, OpenGL knows nothing about windows, keyboards or monitors. Two extra libraries fill those gaps, and this chapter sets both up."
         )}
-      </p>
+      </Lead>
 
       <H2>{tx(t, "oglSetup_piecesTitle", "The three pieces")}</H2>
       <LessonTable
@@ -32,6 +40,28 @@ export function SetupContent({ t }: { t: TrackTranslations }) {
           "The loader is not optional and it is not a convenience. Your operating system ships headers for OpenGL 1.1 (Windows) or an old baseline (Linux, macOS). Everything added after that — every function in this track — has to be fetched from the driver by name at runtime. GLAD generates the code that does it."
         )}
       </Callout>
+
+      <H2>{tx(t, "oglSetup_ctxWhatTitle", "What a context is")}</H2>
+      <p>
+        {tx(t, "oglSetup_ctxWhatBody",
+          "Every OpenGL call acts on a context: a large block of state that the driver keeps for your program. It contains every object you create (buffers, textures, shaders), every setting (the clear colour, the viewport, whether depth testing is on) and the connection to one window's framebuffer. A context is current on one thread at a time; OpenGL calls made on a thread with no current context do nothing, or crash. The window library creates the context together with the window, and glfwMakeContextCurrent makes it current on the calling thread.")}
+      </p>
+      <p>
+        {tx(t, "oglSetup_stateBody",
+          "The context works as a state machine: most calls do not produce an effect by themselves, they change a stored value that later calls read. Objects are referred to by names, plain unsigned integers (GLuint) that glGen* hands out; 0 always means \"no object\". To work on an object you first bind it to a bind point (a named slot such as GL_ARRAY_BUFFER), and then calls that mention only the bind point, such as glBufferData, act on whatever object is bound there. Step through the two little programs below and watch the state change.")}
+      </p>
+
+      <StateMachineFigure t={t} />
+
+      <LessonTable
+        headers={[tx(t, "oglSetup_tTerm", "Term"), tx(t, "oglSetup_tMeans", "Meaning")]}
+        rows={[
+          [tx(t, "oglSetup_s1", "Object name"), tx(t, "oglSetup_s1b", "a GLuint that identifies an object inside the context, such as 1 or 2. It is not a pointer and means nothing in another context.")],
+          [tx(t, "oglSetup_s2", "Bind point (target)"), tx(t, "oglSetup_s2b", "a slot in the context, such as GL_ARRAY_BUFFER or GL_TEXTURE_2D, that holds one object name at a time.")],
+          [tx(t, "oglSetup_s3", "Bind"), tx(t, "oglSetup_s3b", "glBind*(target, name): put the object in the slot. It stays there until another bind replaces it; binding 0 empties the slot.")],
+          [tx(t, "oglSetup_s4", "State setter"), tx(t, "oglSetup_s4b", "a call such as glClearColor or glEnable(GL_DEPTH_TEST) that stores a value used by later calls, until you change it again.")],
+        ]}
+      />
 
       <H2>{tx(t, "oglSetup_gladTitle", "Generating GLAD")}</H2>
       <p>
@@ -136,6 +166,19 @@ int main() {
         )}
       </Callout>
 
+      <H2>{tx(t, "oglSetup_bufTitle", "Double buffering and vsync")}</H2>
+      <p>
+        {tx(t, "oglSetup_bufBody",
+          "A monitor does not show a picture all at once: 60 or more times per second it reads the image from memory line by line, top to bottom. If a program drew straight into the image being read, the viewer would see it half drawn: the clear colour flashing, objects appearing one by one. So the window has two images, the front buffer, which the monitor shows, and the back buffer, into which every OpenGL draw goes. When the frame is complete, glfwSwapBuffers exchanges them. glfwSwapInterval(1) turns on vsync: the swap waits for the vertical blank, the moment the monitor has finished one picture and returns to the top. Without it (interval 0) the swap happens immediately, possibly in the middle of a scan, and the top and bottom of the screen show different frames: a tear.")}
+      </p>
+
+      <DoubleBufferFigure t={t} />
+
+      <p>
+        {tx(t, "oglSetup_bufAfter",
+          "Vsync also paces the program. With interval 1, glfwSwapBuffers blocks until the next vertical blank, so a 60 Hz monitor lets the loop run at most 60 times per second, which saves power and heat. With interval 0 the loop runs as fast as it can, useful for measuring performance but wasteful otherwise. The Vulkan track's swapchain chapter goes deeper into the same trade-offs (FIFO, mailbox, immediate).")}
+      </p>
+
       <H2>{tx(t, "oglSetup_loopTitle", "The render loop and resizing")}</H2>
       <CodeBlock lang="cpp" filename="loop.cpp" t={t}>{`void framebufferSizeCallback(GLFWwindow*, int width, int height) {
     glViewport(0, 0, width, height);   // NDC maps to the new pixel rectangle
@@ -163,6 +206,19 @@ while (!glfwWindowShouldClose(window)) {
 
 glfwTerminate();`}</CodeBlock>
 
+      <LessonTable
+        headers={[tx(t, "oglSetup_tLine", "Line"), tx(t, "oglSetup_tDoes", "What it does")]}
+        rows={[
+          ["glfwWindowShouldClose", tx(t, "oglSetup_l1", "true once the user has clicked the close button (or the program asked to close). The loop runs one frame per iteration until then.")],
+          ["glfwGetTime / dt", tx(t, "oglSetup_l2", "seconds since glfwInit, as a double. The difference from the previous frame, dt (delta time), is how long the last frame took; movement multiplied by dt runs at the same speed at any frame rate.")],
+          ["glfwGetKey", tx(t, "oglSetup_l3", "the current state of one key, GLFW_PRESS or GLFW_RELEASE, as of the last glfwPollEvents.")],
+          ["glClearColor + glClear", tx(t, "oglSetup_l4", "glClearColor stores the colour (red, green, blue, alpha, each 0 to 1); glClear fills the back buffer with it. GL_DEPTH_BUFFER_BIT also resets the depth buffer, which the Depth Testing chapter needs.")],
+          ["glfwSwapBuffers", tx(t, "oglSetup_l5", "shows the finished back buffer, as in the figure above, waiting for vsync if it is on.")],
+          ["glfwPollEvents", tx(t, "oglSetup_l6", "processes the operating system's queued events (keys, mouse, resize, close) and calls your callbacks. Without it the window stops responding.")],
+          ["glfwTerminate", tx(t, "oglSetup_l7", "destroys the remaining windows and their contexts and frees GLFW's resources.")],
+        ]}
+      />
+
       <Callout type="tip" t={t}>
         {tx(t, "oglSetup_dpiTip",
           "Use the FRAMEBUFFER size callback, not the window size callback. On a high-DPI display the framebuffer is larger than the window in logical units — a 1280x720 window can have a 2560x1440 framebuffer — and glViewport works in pixels. Getting this wrong renders your scene into the bottom-left quarter of the screen on a Retina Mac."
@@ -176,6 +232,30 @@ glfwTerminate();`}</CodeBlock>
         )}
       </p>
 
-    </article>
+      <H2>{tx(t, "oglSetup_mistakesTitle", "Common mistakes")}</H2>
+      <LessonTable
+        headers={[tx(t, "oglSetup_tMistake", "Mistake"), tx(t, "oglSetup_tFix", "What happens, and the fix")]}
+        rows={[
+          [tx(t, "oglSetup_e1", "Calling gl functions before gladLoadGLLoader"), tx(t, "oglSetup_e1b", "the function pointers are still null, so the first call crashes. Create the window, make the context current, load GLAD, then use OpenGL.")],
+          [tx(t, "oglSetup_e2", "Including glfw3.h before glad.h"), tx(t, "oglSetup_e2b", "the system's old gl.h is pulled in first and GLAD reports redefinitions. Include glad.h first, or define GLFW_INCLUDE_NONE.")],
+          [tx(t, "oglSetup_e3", "Calling OpenGL from another thread"), tx(t, "oglSetup_e3b", "that thread has no current context, so calls are ignored or crash. Keep all OpenGL calls on the thread that made the context current.")],
+          [tx(t, "oglSetup_e4", "Forgetting a bind"), tx(t, "oglSetup_e4b", "the call acts on whatever was bound before, silently, as in the state-machine figure. Bind right before the calls that depend on it, or use DSA (4.5).")],
+          [tx(t, "oglSetup_e5", "Using the window size for glViewport"), tx(t, "oglSetup_e5b", "on high-DPI screens the picture fills only part of the window. Use the framebuffer size callback or glfwGetFramebufferSize.")],
+          [tx(t, "oglSetup_e6", "Not calling glfwPollEvents"), tx(t, "oglSetup_e6b", "the operating system marks the window as not responding and input never arrives. Call it once per frame.")],
+          [tx(t, "oglSetup_e7", "Drawing after glfwSwapBuffers"), tx(t, "oglSetup_e7b", "those draws land in the next back buffer and are cleared before being seen. Order: clear, draw, swap, poll.")],
+        ]}
+      />
+
+      <KeyIdeas t={t} id="oglSetup" items={[
+        "OpenGL needs three helpers: a window library that creates the context (GLFW), a loader that fetches the driver's functions (GLAD) and a maths library (GLM).",
+        "A context holds all of OpenGL's state and objects and is current on one thread at a time.",
+        "OpenGL is a state machine: objects are named by GLuints, bound to bind points, and many calls act on whatever is currently bound.",
+        "Request a 4.6 Core context with window hints before creating the window; macOS stops at 4.1.",
+        "Order matters: include glad.h first, make the context current, then load GLAD, then call OpenGL.",
+        "Draw into the back buffer and swap; vsync (glfwSwapInterval(1)) waits for the vertical blank, so frames never tear and the loop is paced to the display.",
+        "Each frame: measure dt, handle input, clear, draw, swap, poll events; set glViewport from the framebuffer size, in pixels.",
+      ]} />
+
+    </Article>
   );
 }

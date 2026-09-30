@@ -6,7 +6,7 @@ Registro datado de tudo o que foi feito e criado no site.
 - A data de criação e de última atualização de cada lição também aparece no topo da própria lição. Ela é gerada do histórico do git por `scripts/gen-chapter-dates.mjs` (`npm run dates`, que também roda antes de `dev` e `build`) e fica em `src/lib/generated/chapter-dates.json`.
 - Para registrar algo novo, acrescente uma entrada no topo, com a data.
 
-Totais em 2026-09-29: 7 trilhas e 215 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · C++ 15 · Game Dev 12 · SDL3 10).
+Totais em 2026-09-29: 8 trilhas e 219 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · C++ 15 · Game Dev 12 · SDL3 10 · Vulkan 4).
 
 ---
 
@@ -14,6 +14,8 @@ Totais em 2026-09-29: 7 trilhas e 215 lições (OpenGL 69 · Matemática 61 · G
 
 ### 2026-09-29
 
+- **OpenGL, início reescrito (lote 1 de 3)**: *Legacy & Modern OpenGL*, *Window & Context* e *The Graphics Pipeline* agora seguem o padrão novo (explicação de cada termo, exemplos resolvidos, erros comuns, ideias-chave). Widgets novos: linha do tempo das versões com o pipeline de cada época, custo do immediate mode × vertex arrays × VBO, o contexto como máquina de estados (com o bug do bind esquecido), um buffer × dois buffers × vsync, um triângulo passando por todos os estágios do pipeline, e rasterização com pesos baricêntricos. Textos em inglês e PT; ES/ZH desses capítulos ficam em inglês por enquanto.
+- **Vulkan**: nova trilha (Vulkan 1.3, dynamic rendering + synchronization2, API C com SDL3), antes "em breve". Lote 1, seções Fundamentos e Apresentação: *Why Vulkan*, *Instance, Extensions & Validation Layers*, *Physical Devices, Queue Families & the Logical Device*, *Surface, Swapchain & Image Views*. Widgets: mapa de objetos do Vulkan, custo de CPU OpenGL × Vulkan, chamada passando pelas layers, famílias de filas, e uma linha do tempo dos present modes (FIFO/MAILBOX/IMMEDIATE). Textos e widgets com tradução PT completa.
 - **Datas nas lições**: cada lição mostra "criado em · atualizado em", tirado do git, e este CHANGELOG foi criado.
 - **Correção**: o capítulo GLSL *Waves & Water* travava o navegador inteiro por ~27 s. A causa era a compilação dos shaders no Windows (ANGLE/D3D), não o desenho. O shader do Shore & Rain Lab caiu de 21 s para ~6 s de compilação (laços com limite `uZero`, uma chamada só de `shade()`/`trace()`) e agora compila em segundo plano (`compileProgramAsync`). O Water Lab também foi convertido, e os laços do céu procedural foram corrigidos para todos os shaders que o usam.
 - **Game Dev**: trilha ampliada com a seção Física: *Integrators*, *Collision Response & Impulses*, *2D Rigid Bodies*, *Platformer Feel*.

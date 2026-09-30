@@ -33,6 +33,7 @@ const TRACKS: Record<string, Loader<LessonText>> = {
   gamedev: { pt: () => import("@/lib/tracks/gamedev/i18n/pt").then((m) => m.default) },
   math:    { pt: () => import("@/lib/tracks/math/i18n/pt").then((m) => m.default) },
   algorithms: { pt: () => import("@/lib/tracks/algorithms/i18n/pt").then((m) => m.default) },
+  vulkan:  { pt: () => import("@/lib/tracks/vulkan/i18n/pt").then((m) => m.default) },
   opengl: {
     pt: () => import("@/lib/tracks/opengl/i18n/pt").then((m) => m.default),
     es: () => import("@/lib/tracks/opengl/i18n/es").then((m) => m.default),

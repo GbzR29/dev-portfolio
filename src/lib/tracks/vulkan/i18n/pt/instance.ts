@@ -1,0 +1,86 @@
+// PT text for src/lib/tracks/vulkan/chapters/instance.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  vkInst_intro: "O primeiro objeto Vulkan que qualquer programa cria é a instance, uma VkInstance. Ela é a conexão entre o seu programa e o sistema Vulkan deste computador: criá-la carrega os drivers, liga as extensões e layers que você pedir e entrega o handle até o qual todo objeto posterior pode ser rastreado. Este capítulo abre uma janela, cria a instance com a validation layer ligada e configura um callback que imprime as mensagens da layer, para que daqui em diante todo erro que cometermos seja reportado no momento em que o cometemos.",
+
+  vkInst_loaderTitle: "O loader e os drivers",
+  vkInst_loaderBody: "O seu programa não é linkado com um driver de GPU. Ele é linkado com o loader do Vulkan: vulkan-1.dll no Windows, libvulkan.so.1 no Linux. O loader é uma pequena biblioteca do Khronos que encontra os drivers Vulkan instalados na máquina, cada um dos quais se registra com um pequeno arquivo JSON. Um driver é chamado de ICD (installable client driver); um notebook com uma GPU integrada Intel e uma GPU dedicada NVIDIA tem dois, e um programa pode usar os dois. Quando você chama uma função Vulkan, o loader a envia ao driver da GPU a que o objeto pertence.",
+  vkInst_layersBody: "Entre o loader e o driver, o loader pode inserir layers. Uma layer é uma biblioteca que vê cada chamada na descida e cada resultado na volta; ela pode inspecionar, registrar ou medir. A mais importante é a VK_LAYER_KHRONOS_validation, que vem com o SDK. Lembre que o driver em si não confere nada. A validation layer faz toda a conferência no lugar dele: testa cada chamada contra as regras de \"Valid Usage\" da especificação, alguns milhares delas, e reporta cada violação. Por ser uma layer, ela não custa nada quando não é carregada, que é o caso nas builds de release.",
+
+  vkInst_windowTitle: "Uma janela para desenhar",
+  vkInst_windowBody: "O Vulkan em si não sabe nada de janelas, então abrimos uma com SDL3, exatamente como na trilha de SDL3, com uma diferença: a flag SDL_WINDOW_VULKAN diz ao SDL para preparar a janela para o Vulkan e carregar o loader do Vulkan para nós. O estado do programa fica numa struct, App, que ganha membros capítulo a capítulo.",
+
+  vkInst_appInfoTitle: "VkApplicationInfo: quem pede, para qual versão",
+  vkInst_appInfoBody: "A create-info da instance aponta para uma VkApplicationInfo que descreve o programa. Os nomes e versões são só informação; drivers às vezes os usam para aplicar correções específicas de um jogo. O campo que importa é apiVersion: a versão mais alta do Vulkan que o programa pretende usar. Pedimos 1.3. As versões são empacotadas num número de 32 bits por VK_MAKE_API_VERSION(variante, maior, menor, patch); VK_API_VERSION_1_3 é essa macro com 0, 1, 3, 0.",
+  vkInst_versionBody: "Há duas versões envolvidas, e é fácil confundi-las. A versão da instance, devolvida por vkEnumerateInstanceVersion, é a versão do loader, que decide quais funções de nível de instance existem. Cada GPU também tem a sua própria versão de dispositivo, que o próximo capítulo confere ao escolher uma GPU. Pedir apiVersion 1.3 não falha numa GPU mais antiga; só significa que você não pode usar nada além do 1.3 em lugar nenhum. Então conferimos o loader aqui e a GPU depois.",
+
+  vkInst_extTitle: "Extensões de instance",
+  vkInst_extBody: "Tudo que não está na API do núcleo vem como extensão, e as extensões precisam ser ligadas pelo nome quando o objeto é criado, ou as suas funções não podem ser chamadas. Extensões de instance acrescentam recursos no nível da instance; extensões de dispositivo (próximo capítulo) acrescentam recursos da GPU. Precisamos de dois tipos de extensão de instance:",
+  vkInst_tExt: "Extensão",
+  vkInst_tWhy: "Por quê",
+  vkInst_x1: "mostrar imagens numa janela não faz parte do núcleo do Vulkan, porque alguns usos (servidores de computação, renderização fora da tela) não têm tela nenhuma. É preciso a extensão genérica de surface mais a do sistema de janelas desta plataforma. SDL_Vulkan_GetInstanceExtensions devolve exatamente a lista certa, então nunca escrevemos nomes de plataforma nós mesmos.",
+  vkInst_x2: "permite que o programa receba as mensagens da validation layer por um callback e dê nomes legíveis aos objetos, que aparecem nessas mensagens e no RenderDoc. Só nas builds de debug.",
+  vkInst_x3: "só no macOS: permite que o loader liste o MoltenVK, que não implementa todas as regras do Vulkan e por isso fica escondido a não ser que o programa aceite explicitamente.",
+
+  vkInst_twoCallTitle: "O idioma das duas chamadas",
+  vkInst_twoCallBody: "Para conferir se a validation layer está instalada, listamos as layers disponíveis. As funções Vulkan que devolvem uma lista funcionam todas do mesmo jeito: chame uma vez com um array nulo para obter a quantidade, aloque um array desse tamanho, chame de novo para preenchê-lo. Se a lista pudesse ter crescido no meio tempo, a segunda chamada devolve VK_INCOMPLETE; para layers e extensões isso não acontece com o programa rodando.",
+
+  vkInst_msgTitle: "O debug messenger",
+  vkInst_msgBody: "Sem um messenger a validation layer imprime no console (no Windows, na saída do depurador). Um debug messenger desvia cada mensagem para uma função nossa, onde podemos formatá-la, filtrá-la ou pôr um breakpoint para que o depurador pare exatamente na linha que fez a chamada errada. O messenger é descrito por uma VkDebugUtilsMessengerCreateInfoEXT:",
+  vkInst_tField: "Campo",
+  vkInst_tMeaning: "Significado",
+  vkInst_f1: "quais níveis de importância receber: VERBOSE (conversa do driver), INFO (criação de objetos e similares), WARNING (provavelmente um bug ou má prática), ERROR (uma regra de Valid Usage foi quebrada). Pegamos WARNING e ERROR; os outros são muito barulhentos.",
+  vkInst_f2: "quais tipos: GENERAL (não se refere à especificação), VALIDATION (uma regra quebrada), PERFORMANCE (legal, mas provavelmente lento). Pegamos os três.",
+  vkInst_f3: "a nossa função. Ela recebe a gravidade, o tipo, uma struct com o texto da mensagem, o VUID e os objetos envolvidos, e o ponteiro pUserData.",
+  vkInst_f4: "qualquer ponteiro que queiramos devolvido ao callback, por exemplo um logger. Não usado aqui.",
+  vkInst_macroBody: "VKAPI_ATTR e VKAPI_CALL são macros do cabeçalho do Vulkan que dão à função a convenção de chamada que o loader espera (no Windows 32 bits ela difere da padrão). Toda função que você entrega ao Vulkan precisa ser declarada com elas.",
+
+  vkInst_createTitle: "Criando a instance",
+  vkInst_createBody: "Agora todas as peças vão para uma VkInstanceCreateInfo. Dois detalhes merecem atenção. Primeiro, o messenger só pode ser criado depois que a instance existe, então ele perderia qualquer problema dentro das próprias vkCreateInstance e vkDestroyInstance; colocar a create-info dele na cadeia pNext da instance dá a essas duas chamadas um messenger temporário próprio. Isso é o pNext em ação: uma struct de extensão presa a uma struct do núcleo. Segundo, vkCreateDebugUtilsMessengerEXT pertence a uma extensão, e a biblioteca do loader só exporta as funções do núcleo e as do sistema de janelas; qualquer outra função de extensão precisa ser procurada em tempo de execução. Pedimos à instance o endereço dela com vkGetInstanceProcAddr e o convertemos para o tipo de ponteiro de função que o cabeçalho declara, PFN_ seguido do nome da função.",
+  vkInst_pointerNote: "A create-info guarda ponteiros para dentro dos vetores de extensões e layers, então todo push_back precisa acontecer antes de esses ponteiros serem pegos: um push_back pode mover o armazenamento do vetor e deixar o ponteiro pendurado. Por isso a extensão do macOS é acrescentada antes de ppEnabledExtensionNames ser definido.",
+  vkInst_failBody: "vkCreateInstance falha com VK_ERROR_LAYER_NOT_PRESENT ou VK_ERROR_EXTENSION_NOT_PRESENT se algo pedido estiver faltando, e por isso a layer é conferida primeiro e só pedida quando existe; um usuário sem o SDK ainda recebe um programa que funciona (sem validação). VK_ERROR_INCOMPATIBLE_DRIVER significa que nenhum driver foi encontrado, tipicamente uma máquina sem GPU compatível com Vulkan ou um programa no macOS sem a flag de portabilidade.",
+
+  vkInst_loopTitle: "O laço principal e o encerramento",
+  vkInst_loopBody: "O encerramento roda na ordem inversa da criação. O messenger foi criado a partir da instance, então ele sai primeiro, de novo por um ponteiro de função; depois a instance; depois a janela. Destruir a instance enquanto o messenger ainda existe é em si um erro de validação, que o messenger do pNext da instance reportaria.",
+
+  vkInst_readTitle: "Lendo uma mensagem de validação",
+  vkInst_readBody: "Mensagens de validação parecem intimidadoras, mas sempre têm as mesmas partes. Eis uma típica, para um buffer criado com tamanho 0:",
+  vkInst_tPart: "Parte",
+  vkInst_tTells: "O que ela diz",
+  vkInst_p1: "o Valid Usage ID: qual regra, em qual struct ou função, sobre qual campo. Procure-o na especificação para ler a regra e o seu contexto.",
+  vkInst_p2a: "Object 0: handle, type",
+  vkInst_p2: "os objetos envolvidos. Handles crus são difíceis de reconhecer; dar nomes aos objetos com vkSetDebugUtilsObjectNameEXT (num capítulo posterior) faz com que apareçam aqui como \"vertex buffer\" ou \"shadow map\".",
+  vkInst_p3a: "A função e o problema",
+  vkInst_p3: "qual chamada, e o que estava errado nos seus argumentos.",
+  vkInst_p4a: "\"The Vulkan spec states\"",
+  vkInst_p4: "a regra, citada da especificação, com um link.",
+  vkInst_breakNote: "Ponha um breakpoint dentro de debugCallback, na linha que imprime os erros. Quando uma mensagem chega, a pilha de chamadas do depurador mostra a sua função que fez a chamada errada, um nível abaixo do código da layer. Esse é o jeito mais rápido de achar um bug, muito mais rápido que ler a mensagem e procurar no código.",
+  vkInst_vkconfigBody: "A validation layer tem mais verificações do que roda por padrão, porque algumas são lentas. O vkconfig, do SDK, as liga sem tocar no seu código: a validação de sincronização encontra barriers faltando (a partir do capítulo de Sincronização, deixe-a ligada), a validação de boas práticas avisa sobre usos legais mas lentos, e a validação assistida pela GPU confere o que os shaders fazem com índices e descritores enquanto rodam. O vkconfig também pode forçar a layer num programa que não a pede.",
+
+  vkInst_mistakesTitle: "Erros comuns",
+  vkInst_tMistake: "Erro",
+  vkInst_tFix: "O que acontece, e a correção",
+  vkInst_e1: "Esquecer o sType, ou copiar o errado",
+  vkInst_e1b: "o driver lê a struct errado. Sempre inicialize com {} e defina o sType na linha seguinte; a validation layer reporta um errado.",
+  vkInst_e2: "Chamar vkCreateDebugUtilsMessengerEXT diretamente",
+  vkInst_e2b: "um erro de link: a biblioteca do loader não exporta as funções desta extensão. Carregue-a com vkGetInstanceProcAddr, ou use o meta-loader volk, que carrega todos os ponteiros de função para você.",
+  vkInst_e3: "Pedir a validation layer incondicionalmente",
+  vkInst_e3b: "vkCreateInstance falha com VK_ERROR_LAYER_NOT_PRESENT em toda máquina sem o SDK. Confira antes, e só nas builds de debug.",
+  vkInst_e4: "Esquecer as extensões de surface",
+  vkInst_e4b: "criar a surface da janela falha no capítulo da swapchain. Sempre parta de SDL_Vulkan_GetInstanceExtensions.",
+  vkInst_e5: "Devolver VK_TRUE do callback",
+  vkInst_e5b: "a chamada que gerou a mensagem falha com VK_ERROR_VALIDATION_FAILED_EXT, mudando o comportamento do programa só nas builds de debug. Devolva VK_FALSE.",
+  vkInst_e6: "Ignorar avisos porque \"roda\"",
+  vkInst_e6b: "todo erro de validação é um bug, mesmo quando a imagem parece certa. Mantenha a saída limpa desde o primeiro capítulo; limpar depois é muito mais difícil.",
+
+  vkInst_key0: "O programa é linkado com o loader, que encontra os drivers instalados (ICDs) e encaminha cada chamada ao certo.",
+  vkInst_key1: "As layers ficam entre o loader e o driver; a VK_LAYER_KHRONOS_validation confere cada chamada contra as regras de Valid Usage da especificação.",
+  vkInst_key2: "O driver não confere nada: durante o desenvolvimento a validation layer é obrigatória, e um programa correto não produz mensagens.",
+  vkInst_key3: "VkApplicationInfo.apiVersion é a versão mais alta que você vai usar; a versão do loader é conferida aqui, a de cada GPU no próximo capítulo.",
+  vkInst_key4: "As extensões de surface vêm de SDL_Vulkan_GetInstanceExtensions; VK_EXT_debug_utils acrescenta o messenger.",
+  vkInst_key5: "Listas são lidas com o idioma das duas chamadas: quantidade, alocar, preencher.",
+  vkInst_key6: "Funções de extensão são carregadas com vkGetInstanceProcAddr; uma create-info de messenger no pNext da instance também cobre a criação da instance.",
+  vkInst_key7: "Destrua na ordem inversa: messenger, instance, janela.",
+};
+
+export default text;

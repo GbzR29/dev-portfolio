@@ -57,7 +57,7 @@ export const TRACK_CATALOG: TrackInfo[] = [
     descKey: "trackAlgoDesc", descFallback: "Algorithms and data structures built from scratch in C++: memory and Big-O, recursion, sorting and searching, lists, hash tables, trees, heaps and graphs — every step traced in an interactive figure.",
   },
   {
-    id: "vulkan", path: "Vulkan", title: "Vulkan API", accentColor: "#ef4444", status: "coming-soon", plannedLessons: 12,
+    id: "vulkan", path: "Vulkan", title: "Vulkan 1.3", accentColor: "#ef4444", status: "available", plannedLessons: 16,
     levelKey: "advanced", descKey: "trackVulkanDesc",
   },
 ];
