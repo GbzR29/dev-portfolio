@@ -898,5 +898,13 @@
   "vulkan/descriptors": {
     "created": "2026-09-30",
     "updated": "2026-09-30"
+  },
+  "vulkan/textures": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "vulkan/depth": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
   }
 }

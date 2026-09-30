@@ -12,6 +12,8 @@ const track = {
     "buffers-memory": "Buffers e memória",
     staging: "Staging buffers e transferências",
     descriptors: "Descritores, uniforms e push constants",
+    textures: "Texturas e samplers",
+    depth: "Buffer de profundidade e descarte de faces",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",

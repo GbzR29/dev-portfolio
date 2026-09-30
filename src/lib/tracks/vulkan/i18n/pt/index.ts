@@ -4,6 +4,7 @@ import type { LessonText } from "@/lib/i18n/lessons";
 import track from "./_track";
 import buffersMemory from "./buffers-memory";
 import commands from "./commands";
+import depth from "./depth";
 import descriptors from "./descriptors";
 import devices from "./devices";
 import instance from "./instance";
@@ -11,10 +12,11 @@ import pipeline from "./pipeline";
 import staging from "./staging";
 import swapchain from "./swapchain";
 import synchronization from "./synchronization";
+import textures from "./textures";
 import whyVulkan from "./why-vulkan";
 
 const bundle: LessonText = {
-  strings: { ...buffersMemory, ...commands, ...descriptors, ...devices, ...instance, ...pipeline, ...staging, ...swapchain, ...synchronization, ...whyVulkan },
+  strings: { ...buffersMemory, ...commands, ...depth, ...descriptors, ...devices, ...instance, ...pipeline, ...staging, ...swapchain, ...synchronization, ...textures, ...whyVulkan },
   titles: track.titles,
   sections: track.sections,
 };

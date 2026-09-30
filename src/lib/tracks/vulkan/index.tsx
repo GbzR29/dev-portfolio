@@ -23,4 +23,6 @@ export const vulkanChapters: Chapter[] = [
   { id: "buffers-memory", section: RESOURCES, title: "Buffers & Memory",                         minRead: 22, load: () => import("./chapters/buffers-memory").then((m) => m.BuffersMemoryContent) },
   { id: "staging",    section: RESOURCES,    title: "Staging Buffers & Transfers",               minRead: 19, load: () => import("./chapters/staging").then((m) => m.StagingContent) },
   { id: "descriptors", section: RESOURCES,   title: "Descriptors, Uniforms & Push Constants",    minRead: 24, load: () => import("./chapters/descriptors").then((m) => m.DescriptorsContent) },
+  { id: "textures",   section: RESOURCES,    title: "Textures & Samplers",                       minRead: 25, load: () => import("./chapters/textures").then((m) => m.TexturesContent) },
+  { id: "depth",      section: RESOURCES,    title: "Depth Buffering & Face Culling",            minRead: 23, load: () => import("./chapters/depth").then((m) => m.DepthContent) },
 ];
