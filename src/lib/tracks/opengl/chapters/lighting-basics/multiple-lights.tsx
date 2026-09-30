@@ -1,11 +1,19 @@
 // src/lib/tracks/opengl/chapters/lighting-basics/multiple-lights.tsx
 "use client";
 
-import { CodeBlock, Callout, H2 } from "@/components/lesson/LessonComponents";
+// Multiple Lights (explanation pass 2026-09-30): why light adds
+// (superposition); the sum over casters with every symbol; one fragment with
+// three lights worked by hand (LightingScene figure); one function per
+// caster, the uniform array and its limits, an active-light count; the
+// light's radius from its attenuation, worked out (LightSum figure);
+// saturation; the cost of forward shading in numbers; mistakes.
+
+import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { LightingSceneFigure } from "@/components/lesson/figures/lighting/LightingSceneFigure";
+import { LightSumFigure } from "@/components/lesson/figures/lighting/LightSumFigure";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 
 const r = String.raw;
@@ -22,10 +30,33 @@ export function MultipleLightsContent({ t }: { t: TrackTranslations }) {
           "Light adds up. Two lamps on the same wall make it exactly as bright as each lamp alone, summed. That makes many lights easy in principle: compute each light's contribution with the formulas from the last chapters and add them all together.")}
       </Lead>
 
+      <H2>{tx(t, "oglMulti_whyTitle", "Why light simply adds")}</H2>
+      <p>
+        {tx(t, "oglMulti_whyBody",
+          "Light from two lamps does not interact on the way: the photons from one pass through the photons from the other without noticing. A surface reflects each lamp's light exactly as if the other were off, and the eye receives both reflections together. So the reflected light is the sum of the reflections of each light on its own. This property is called superposition, and it is what lets a shader treat each light separately. (It holds for the light itself; what the screen can display is another matter, below.)")}
+      </p>
       <Equation label={tx(t, "oglMulti_eqLabel", "Many lights")}
-        where={[[r`\mathbf{c}_i`, tx(t, "oglMulti_wC", "one light's ambient + diffuse + specular, with its own attenuation and cone")]]}>
+        where={[
+          [r`\mathbf{c}_{\text{dir}}`, tx(t, "oglMulti_wDir", "the directional light's contribution: same direction everywhere, no attenuation")],
+          [r`\mathbf{c}_{\text{point},\,i}`, tx(t, "oglMulti_wC", "one light's ambient + diffuse + specular, with its own attenuation and cone")],
+          [r`N`, tx(t, "oglMulti_wN", "the number of point lights")],
+          [r`\mathbf{c}_{\text{spot}}`, tx(t, "oglMulti_wSpot", "the spotlight (a flashlight held by the camera, for example)")],
+          [r`\mathbf{E}`, tx(t, "oglMulti_wE", "emission from the material, added once")],
+        ]}>
         {r`\mathbf{c}_{\text{final}} \;=\; \mathbf{c}_{\text{dir}} \;+\; \sum_{i=0}^{N-1} \mathbf{c}_{\text{point},\,i} \;+\; \mathbf{c}_{\text{spot}} \;+\; \mathbf{E}`}
       </Equation>
+
+      <H3>{tx(t, "oglMulti_workedTitle", "Worked example: one fragment, three lights")}</H3>
+      <p>
+        {tx(t, "oglMulti_workedIntro",
+          "Diffuse only, to keep the numbers short. A coral fragment (albedo (1, 0.5, 0.31)) is lit by a weak sun and two lamps with the Light Casters attenuation for a 13 m range, att(d) = 1 / (1 + 0.35d + 0.44d²):")}
+      </p>
+      <ol className="list-decimal pl-6 space-y-1.5">
+        <li>{tx(t, "oglMulti_w1", "Sun: Ld = 0.4, N·L = 0.6, no attenuation: 0.4 · 0.6 = 0.240.")}</li>
+        <li>{tx(t, "oglMulti_w2", "Lamp 1 at d = 2 m: att = 1 / (1 + 0.7 + 1.76) = 1 / 3.46 = 0.289. With Ld = 0.8 and N·L = 0.9: 0.289 · 0.8 · 0.9 = 0.208.")}</li>
+        <li>{tx(t, "oglMulti_w3", "Lamp 2 at d = 4 m: att = 1 / (1 + 1.4 + 7.04) = 1 / 9.44 = 0.106. With Ld = 0.8 and N·L = 0.5: 0.106 · 0.8 · 0.5 = 0.042.")}</li>
+        <li>{tx(t, "oglMulti_w4", "Sum of the light factors: 0.240 + 0.208 + 0.042 = 0.490. Times the albedo: (0.490, 0.245, 0.152). Lamp 2, twice as far as lamp 1, contributes a fifth as much: attenuation and the slanted angle together.")}</li>
+      </ol>
 
       <LightingSceneFigure t={t} mode="multi" />
 
@@ -75,23 +106,89 @@ void main() {
     shader.setFloat(base + "linear",    0.35f);
     shader.setFloat(base + "quadratic", 0.44f);
 }`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "oglMulti_tChoice", "Choice"), tx(t, "oglMulti_tReason", "Reason")]}
+        rows={[
+          [tx(t, "oglMulti_c1", "#define for the array size"), tx(t, "oglMulti_c1b", "uniform arrays must have a size known when the shader compiles; the #define keeps the declaration and the loop in step.")],
+          [tx(t, "oglMulti_c2", "normal and view direction computed once in main()"), tx(t, "oglMulti_c2b", "they do not depend on the light; normalising them inside each function would repeat the same work N times.")],
+          [tx(t, "oglMulti_c3", "the light passed by value"), tx(t, "oglMulti_c3b", "GLSL has no pointers or references; the compiler inlines these functions, so the copy costs nothing.")],
+          [tx(t, "oglMulti_c4", "uniform names built as strings"), tx(t, "oglMulti_c4b", "each array element's member is a separate uniform, \"pointLights[2].position\". Fine at setup; in a per-frame loop, look the locations up once and cache them.")],
+        ]}
+      />
+      <H3>{tx(t, "oglMulti_limitTitle", "How many lights fit?")}</H3>
+      <p>
+        {tx(t, "oglMulti_limitBody",
+          "Plain uniforms live in a small, fast memory. OpenGL 4.x guarantees only 1024 float components of them per fragment shader (GL_MAX_FRAGMENT_UNIFORM_COMPONENTS; real GPUs often give more). One PointLight is 15 floats, usually padded to 16 or more, and the material, matrices and other lights need room too, so plain uniform arrays top out at a few dozen lights. Larger light lists go into a Uniform Buffer Object or a Shader Storage Buffer (Advanced OpenGL section). To draw fewer lights than the array holds, add a uniform int numLights and loop to it; loops with a uniform bound are fine on every modern GPU.")}
+      </p>
+
+      <H2>{tx(t, "oglMulti_radiusTitle", "A light's radius")}</H2>
+      <p>
+        {tx(t, "oglMulti_radiusBody",
+          "The attenuation 1 / (c + l·d + q·d²) never reaches zero, so in principle every light touches every fragment. In practice, once a light's contribution falls below what an 8-bit channel can show, it can be skipped. A common threshold is 5/256 of the light's brightest channel I. Setting I · att(d) = 5/256 and solving the quadratic for d:")}
+      </p>
+      <Equation label={tx(t, "oglMulti_eqRadius", "Radius beyond which a light can be ignored")}
+        where={[
+          [r`c, l, q`, tx(t, "oglMulti_wClq", "the constant, linear and quadratic attenuation terms")],
+          [r`I_{\max}`, tx(t, "oglMulti_wImax", "the brightest channel of the light's colour times its strength")],
+          [r`\tfrac{256}{5}`, tx(t, "oglMulti_w256", "the inverse of the threshold 5/256: a contribution smaller than that barely changes an 8-bit pixel")],
+        ]}>
+        {r`q\,d^2 + l\,d + \left(c - \tfrac{256}{5} I_{\max}\right) = 0 \quad\Longrightarrow\quad d_{\max} = \frac{-l + \sqrt{l^2 - 4q\left(c - \tfrac{256}{5} I_{\max}\right)}}{2q}`}
+      </Equation>
+      <p>
+        {tx(t, "oglMulti_radiusEx",
+          "For the 13 m preset (c, l, q) = (1, 0.35, 0.44) and I = 1: c − 51.2 = −50.2, the root is √(0.1225 + 4 · 0.44 · 50.2) = √88.47 = 9.41, so d = (−0.35 + 9.41) / 0.88 = 10.3 m. For the 7 m preset (1, 0.7, 1.8) with I = 1.5 it is 6.3 m. The radius is what light culling uses: tiled, clustered and deferred renderers only evaluate the lights whose sphere of that radius touches the fragment.")}
+      </p>
+      <LightSumFigure t={t} />
+
+      <H3>{tx(t, "oglMulti_satTitle", "When the sum passes 1")}</H3>
+      <p>
+        {tx(t, "oglMulti_satBody",
+          "Superposition holds for light, but the framebuffer can only store 0 to 1. Where several lights overlap, the sum passes 1 and is clipped: bright regions go flat and lose their detail, and a coloured light that is strong enough turns any surface white in the channels it saturates. The cure is to keep the sum in a floating-point buffer and compress it into [0, 1] at the very end, which is what the HDR & Tone Mapping chapter does.")}
+      </p>
 
       <H2>{tx(t, "oglMulti_costTitle", "What it costs")}</H2>
       <p>
         {tx(t, "oglMulti_costBody",
           "Every light runs for every fragment of every object, lit or not, visible or not. The cost is roughly lights × fragments, so a forward renderer like this one stays comfortable up to a handful of lights. Beyond that, techniques such as deferred shading light only the pixels that end up on screen, and light culling skips lights that cannot reach a pixel — both come later in Advanced Lighting.")}
       </p>
-      <Equation>{r`\text{cost} \;\approx\; N_{\text{lights}} \times N_{\text{fragments shaded}}`}</Equation>
+      <Equation label={tx(t, "oglMulti_eqCost", "Light evaluations per frame")}
+        where={[
+          [r`N_{\text{lights}}`, tx(t, "oglMulti_wNl", "lights evaluated per fragment")],
+          [r`N_{\text{fragments shaded}}`, tx(t, "oglMulti_wNf", "pixels on screen times the overdraw: how many times, on average, a pixel is shaded by overlapping objects")],
+        ]}>
+        {r`\text{cost} \;\approx\; N_{\text{lights}} \times N_{\text{fragments shaded}}`}
+      </Equation>
+      <p>
+        {tx(t, "oglMulti_costEx",
+          "At 1920 × 1080 (2.07 million pixels) with an overdraw of 2, that is 4.1 million fragments. With 32 lights: 133 million light evaluations per frame, 8 billion per second at 60 fps, most of them for lights too far away to matter or for fragments later hidden behind others. Culling by radius removes the first waste; deferred shading removes the second.")}
+      </p>
 
       <Callout type="warn" t={t}>
         {tx(t, "oglMulti_warn",
           "The ambient terms add up too: four point lights with ambient 0.05 each is already 0.2 of flat light everywhere, which washes out contrast. Keep each light's ambient tiny, or move ambient out of the per-light functions and add it once.")}
       </Callout>
 
+      <H2>{tx(t, "oglMulti_mistakesTitle", "Common mistakes")}</H2>
+      <LessonTable
+        headers={[tx(t, "oglMulti_tMistake", "Mistake"), tx(t, "oglMulti_tFix", "What happens, and the fix")]}
+        rows={[
+          [tx(t, "oglMulti_e1", "An array element left unset"), tx(t, "oglMulti_e1b", "its constant, linear and quadratic are 0, so att = 1/0 = infinity: the whole screen goes white (or NaN black). Set every element, or loop only to numLights.")],
+          [tx(t, "oglMulti_e2", "Looking up uniform locations by name every frame"), tx(t, "oglMulti_e2b", "string building and hash lookups for every member of every light. Cache the locations, or upload a UBO.")],
+          [tx(t, "oglMulti_e3", "Ambient inside every light"), tx(t, "oglMulti_e3b", "flat light grows with the number of lights. Add ambient once.")],
+          [tx(t, "oglMulti_e4", "Dividing the sum by the number of lights"), tx(t, "oglMulti_e4b", "adding a lamp would make the scene darker. Light adds; handle the excess with tone mapping.")],
+          [tx(t, "oglMulti_e5", "The directional light's direction sign"), tx(t, "oglMulti_e5b", "uniforms usually store the direction the light travels; the shader needs the direction toward the light, −direction. With the wrong sign the lit and dark sides swap.")],
+          [tx(t, "oglMulti_e6", "Normalising the interpolated normal inside each light function"), tx(t, "oglMulti_e6b", "correct but wasteful; do it once in main().")],
+        ]}
+      />
+
       <KeyIdeas t={t} id="oglMulti" items={[
         "Contributions from separate lights simply add.",
         "One function per caster keeps the shader readable; point lights go in a fixed-size array of structs.",
         "Forward shading costs lights × fragments — the reason deferred shading exists.",
+        "Superposition: each light is reflected as if it were alone, so the shader loops and sums.",
+        "Plain uniform arrays hold a few dozen lights at most; larger lists go in buffers.",
+        "Solving I · att(d) = 5/256 gives each light a radius beyond which it can be skipped.",
+        "Sums above 1 are clipped in an 8-bit framebuffer; HDR keeps them.",
       ]} />
     </Article>
   );
