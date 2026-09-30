@@ -906,5 +906,21 @@
   "vulkan/depth": {
     "created": "2026-09-30",
     "updated": "2026-09-30"
+  },
+  "vulkan/frames-in-flight": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "vulkan/mipmaps-msaa": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "vulkan/compute": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "vulkan/modern": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
   }
 }

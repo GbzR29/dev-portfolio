@@ -14,11 +14,16 @@ const track = {
     descriptors: "Descritores, uniforms e push constants",
     textures: "Texturas e samplers",
     depth: "Buffer de profundidade e descarte de faces",
+    "frames-in-flight": "Frames em voo e redimensionamento",
+    "mipmaps-msaa": "Mipmaps e multiamostragem",
+    compute: "Compute shaders",
+    modern: "Vulkan moderno: bindless, endereços de buffer e timelines",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
     Presentation: "Apresentação",
     Resources: "Recursos",
+    "Going further": "Indo além",
   } as Record<string, string>,
 };
 

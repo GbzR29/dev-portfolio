@@ -6,13 +6,15 @@ Registro datado de tudo o que foi feito e criado no site.
 - A data de criação e de última atualização de cada lição também aparece no topo da própria lição. Ela é gerada do histórico do git por `scripts/gen-chapter-dates.mjs` (`npm run dates`, que também roda antes de `dev` e `build`) e fica em `src/lib/generated/chapter-dates.json`.
 - Para registrar algo novo, acrescente uma entrada no topo, com a data.
 
-Totais em 2026-09-30: 8 trilhas e 227 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · C++ 15 · Game Dev 12 · Vulkan 12 · SDL3 10).
+Totais em 2026-09-30: 8 trilhas e 231 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · Vulkan 16 · C++ 15 · Game Dev 12 · SDL3 10).
 
 ---
 
 ## Setembro de 2026
 
 ### 2026-09-30
+
+- **Vulkan, lote 5 — trilha completa (16 lições)**: nova seção **Indo além**, com *Frames in Flight & Resizing*, *Mipmaps & Multisampling*, *Compute Shaders* e *Modern Vulkan: Bindless, Device Addresses & Timelines*. O programa ganha dois frames em voo (FrameData por slot, redimensionamento sem `vkDeviceWaitIdle` aposentando a swapchain antiga), mipmaps gerados por blit e MSAA 4× com resolve no dynamic rendering, dez mil partículas orbitando os cubos num compute shader (o mesmo buffer é storage e vertex buffer), e por fim texturas bindless, vertex pulling por buffer device address e um timeline semaphore no lugar das fences. Widgets novos: CPU × GPU com 1/2/3 frames em voo (tempo de frame, latência, o bug de recursos compartilhados), quando a swapchain antiga pode ser destruída (esperar, destruir na hora, aposentar), um chão em perspectiva renderizado pixel a pixel com NEAREST/LINEAR/trilinear e os níveis coloridos, MSAA com as posições de amostra padrão e o resolve, a grade de um dispatch (workgroups, IDs, subgroups), a simulação de partículas com "quebre a barreira / a verificação de limites", o array bindless com PARTIALLY_BOUND, e o contador de um timeline semaphore comparado às fences. Textos e widgets com tradução PT completa.
 
 - **Vulkan, lote 4**: *Textures & Samplers* e *Depth Buffering & Face Culling*, que fecham a seção Recursos. Os quadrados ganham uma textura PNG (VkImage, layouts, upload por staging com duas transições, sampler com anisotropia, um descriptor set de material) e depois viram dois cubos texturizados que se atravessam, com depth buffer, back-face culling (frontFace anti-horário) e a barreira de profundidade entre frames. Widgets novos: bytes sRGB passando pela textura e pela swapchain (SRGB × UNORM, com a luz), "quebre o upload da textura" (desmarcar um passo e ver o texel cisalhado, desbotado, embaralhado ou o ruído, com a mensagem da validation layer), filtragem NEAREST/LINEAR e os quatro modos de endereçamento com os pesos bilineares de um fragmento, o teste de profundidade pixel a pixel (compareOp, escrita, valor de limpeza, ordem de desenho) e a precisão de profundidade (D16, D24, D32, reversed Z, z-fighting). Textos e widgets com tradução PT completa.
 
