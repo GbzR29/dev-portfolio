@@ -9,6 +9,7 @@ import Now from "@/components/home/Now";
 import RecentWriting from "@/components/home/RecentWriting";
 import Contact from "@/components/home/Contact";
 import HomeFooter from "@/components/home/HomeFooter";
+import Reveal from "@/components/home/Reveal";
 
 export const metadata = {
   title: "Gabriel Carvalho | C++ & graphics programmer",
@@ -47,6 +48,7 @@ export default async function Home() {
         <Contact />
         <HomeFooter />
       </main>
+      <Reveal />
     </div>
   );
 }

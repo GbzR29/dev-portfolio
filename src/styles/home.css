@@ -216,6 +216,35 @@ html:not(.dark) .home {
 .hm-facts div { display: grid; gap: 2px; padding-block: 10px; border-bottom: 1px solid var(--hm-line); }
 .hm-facts dt { color: var(--hm-muted); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
 .hm-facts dd { margin: 0; color: var(--hm-ink); }
+.hm-photo img { transition: transform 0.6s ease; }
+.hm-photo:hover img { transform: scale(1.03); }
+
+/* "Read more" (narrow screens only, see the media query at the end): the fold
+   animates its height with grid rows (0fr → 1fr); the negative margin cancels
+   the parent's gap while it is closed */
+.hm-fold {
+  display: grid;
+  margin-top: -14px;
+  transition: grid-template-rows 0.4s ease, opacity 0.3s ease;
+}
+.hm-fold > div { overflow: hidden; display: grid; gap: 14px; padding-top: 14px; }
+.hm-toggle {
+  display: none;
+  justify-self: start;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--hm-mono);
+  font-size: 13px;
+  color: var(--hm-accent);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--hm-line-strong);
+  padding: 0 0 2px;
+  cursor: pointer;
+}
+.hm-toggle:hover { border-color: var(--hm-accent); }
+.hm-toggle span { display: inline-block; transition: transform 0.3s ease; }
+.hm-toggle[aria-expanded="true"] span { transform: rotate(180deg); }
 
 /* Stack */
 .hm-stack { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 24px 32px; }
@@ -393,11 +422,54 @@ html:not(.dark) .home {
 .hm-how h3 { font-family: var(--hm-display); font-weight: 400; font-size: 19px; margin: 0 0 6px; }
 .hm-how p { margin: 0; color: var(--hm-ink-soft); line-height: 1.6; font-size: 14.5px; }
 
+/* ── Motion ─────────────────────────────────────────────── */
+/* Kept small: a short rise-and-fade for the hero on load and for each section
+   the first time it scrolls in (Reveal.tsx adds .hm-reveal / .is-in). */
+
+@keyframes hm-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.hm-hero > * { animation: hm-rise 0.7s ease both; }
+.hm-hero > :nth-child(2) { animation-delay: 0.08s; }
+.hm-hero > :nth-child(3) { animation-delay: 0.16s; }
+.hm-hero > :nth-child(4) { animation-delay: 0.24s; }
+.hm-hero > :nth-child(5) { animation-delay: 0.32s; }
+.hm-horizon { transform-origin: center; animation: hm-draw 1.4s ease 0.3s both; }
+@keyframes hm-draw { from { transform: scaleX(0); } to { transform: none; } }
+
+.hm-reveal .hm-sec > * {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.hm-reveal .hm-sec > :nth-child(2) { transition-delay: 0.08s; }
+.hm-reveal .hm-sec > :nth-child(3) { transition-delay: 0.16s; }
+.hm-reveal .hm-sec.is-in > * { opacity: 1; transform: none; }
+
+/* Cards and post rows answer the pointer with a small shift */
+.hm-card { transition: border-color 0.2s, transform 0.2s; }
+.hm-now .hm-card:hover { border-color: var(--hm-line-strong); transform: translateY(-2px); }
+.hm-posts span { transition: color 0.15s; }
+.hm-posts a { transition: padding-left 0.2s ease; }
+.hm-posts a:hover { padding-left: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home *, .home *::before, .home *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .hm-reveal .hm-sec > * { opacity: 1; transform: none; }
+}
+
 /* ── Narrow screens ─────────────────────────────────────── */
 
 @media (max-width: 680px) {
   .hm-about,
   .hm-contact { grid-template-columns: 1fr; }
+  .hm-fold { grid-template-rows: 0fr; opacity: 0; }
+  .hm-fold[data-open="true"] { grid-template-rows: 1fr; opacity: 1; }
+  .hm-toggle { display: inline-flex; }
 }
 @media (max-width: 520px) {
   .hm-posts a { grid-template-columns: 1fr; gap: 2px; }

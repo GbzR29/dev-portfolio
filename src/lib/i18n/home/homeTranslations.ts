@@ -45,8 +45,8 @@ export const homeTranslations = {
     factWritingValue: "since 2026",
     factStudying:   "studying now",
     factStudyingValue: "Vulkan",
-    readMore:       "Read more",
-    readLess:       "Read less",
+    aboutMore:      "Read more",
+    aboutLess:      "Read less",
 
     // ── Stack ───────────────────────────────────────────────────────────────
     stackTitle:     "Tools",
@@ -137,8 +137,8 @@ export const homeTranslations = {
     factWritingValue: "desde 2026",
     factStudying:   "estudando agora",
     factStudyingValue: "Vulkan",
-    readMore:       "Ler mais",
-    readLess:       "Ler menos",
+    aboutMore:      "Ler mais",
+    aboutLess:      "Ler menos",
 
     // ── Stack ───────────────────────────────────────────────────────────────
     stackTitle:     "Ferramentas",
@@ -229,8 +229,8 @@ export const homeTranslations = {
     factWritingValue: "desde 2026",
     factStudying:   "estudiando ahora",
     factStudyingValue: "Vulkan",
-    readMore:       "Leer más",
-    readLess:       "Leer menos",
+    aboutMore:      "Leer más",
+    aboutLess:      "Leer menos",
 
     // ── Stack ───────────────────────────────────────────────────────────────
     stackTitle:     "Herramientas",
@@ -321,8 +321,8 @@ export const homeTranslations = {
     factWritingValue: "始于 2026",
     factStudying:   "正在学习",
     factStudyingValue: "Vulkan",
-    readMore:       "阅读更多",
-    readLess:       "收起",
+    aboutMore:      "阅读更多",
+    aboutLess:      "收起",
 
     // ── Stack ───────────────────────────────────────────────────────────────
     stackTitle:     "工具",
