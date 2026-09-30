@@ -6,9 +6,15 @@ const track = {
     data: "Dados, atributos e vetores",
     "linear-regression": "Regressão linear",
     "gradient-descent": "Descida do gradiente",
+    "logistic-regression": "Regressão logística e classificação",
+    generalisation: "Generalização: overfitting, validação e métricas",
+    "k-nearest-neighbours": "k-vizinhos mais próximos",
+    "decision-trees": "Árvores de decisão",
+    "k-means": "Agrupamento k-means",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
+    "Classic Machine Learning": "Machine learning clássico",
   } as Record<string, string>,
 };
 

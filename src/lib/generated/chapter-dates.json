@@ -15,6 +15,26 @@
     "created": "2026-09-30",
     "updated": "2026-09-30"
   },
+  "ai/logistic-regression": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "ai/generalisation": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "ai/k-nearest-neighbours": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "ai/decision-trees": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
+  "ai/k-means": {
+    "created": "2026-09-30",
+    "updated": "2026-09-30"
+  },
   "algorithms/memory": {
     "created": "2026-09-26",
     "updated": "2026-09-26"

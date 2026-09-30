@@ -6,13 +6,15 @@ Registro datado de tudo o que foi feito e criado no site.
 - A data de criação e de última atualização de cada lição também aparece no topo da própria lição. Ela é gerada do histórico do git por `scripts/gen-chapter-dates.mjs` (`npm run dates`, que também roda antes de `dev` e `build`) e fica em `src/lib/generated/chapter-dates.json`.
 - Para registrar algo novo, acrescente uma entrada no topo, com a data.
 
-Totais em 2026-09-30: 9 trilhas e 235 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · Vulkan 16 · C++ 15 · Game Dev 12 · SDL3 10 · IA 4).
+Totais em 2026-09-30: 9 trilhas e 240 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · Vulkan 16 · C++ 15 · Game Dev 12 · SDL3 10 · IA 9).
 
 ---
 
 ## Setembro de 2026
 
 ### 2026-09-30
+
+- **IA, lote 2**: nova seção **Machine learning clássico**, com *Logistic Regression & Classification*, *Generalisation: Overfitting, Validation & Metrics*, *k-Nearest Neighbours*, *Decision Trees* e *k-Means Clustering*. Dois exemplos novos resolvidos à mão atravessam a seção (seis alunos numa prova por horas de estudo; catorze alunos por horas de estudo e de sono, com dois casos "ruidosos"), e as entregas e os apartamentos do lote 1 voltam na validação cruzada leave-one-out, no k-NN de regressão e na árvore de regressão. Widgets: a sigmoide com o custo −ln p de cada aluno e o passo do gradiente, a fronteira logística em 2D treinando época a época com limiar ajustável, underfitting/overfitting com polinômios de grau 0–9 e os erros de treino × validação, limiar + matriz de confusão + curva ROC/AUC, k-NN com ponto arrastável, regiões e erro leave-one-out por k, a maldição da dimensionalidade (distâncias se concentrando até 1024 dimensões), uma árvore de decisão crescendo por Gini com as caixas e o diagrama, e o k-means passo a passo (início aleatório × k-means++, rastros dos centroides, gráfico do cotovelo). Textos e widgets com tradução PT completa.
 
 - **IA**: nova trilha (inteligência artificial do zero em C++, sem bibliotecas; 24 lições planejadas em 5 seções). Lote 1, seção **Fundamentos**: *What Is AI? Learning from Data*, *Data, Features & Vectors*, *Linear Regression* e *Gradient Descent*, com dois exemplos resolvidos à mão ao longo de todos os capítulos (tempo de entrega por distância; preço de apartamentos por área e quartos). Widgets: mapa da IA (regras, busca, ML supervisionado/não supervisionado/por reforço, deep learning), "ajuste a reta à mão" com os erros ao quadrado, escala de atributos mudando o vizinho mais próximo, a superfície de perda no espaço (w, b) com o gradiente, a taxa de aprendizado nos seus quatro regimes, e o caminho da descida do gradiente (km brutos × padronizados, batch/mini-batch/SGD). Textos e widgets com tradução PT completa.
 

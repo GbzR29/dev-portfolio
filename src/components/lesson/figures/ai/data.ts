@@ -40,6 +40,28 @@ export const APARTMENTS = [
   { id: "J", area: 120, rooms: 4, price: 480 },
 ] as const;
 
+/** Exam: hours studied → passed (1) or failed (0). Best logistic fit w ≈ 1.214, b ≈ −4.249, boundary 3.5 h. */
+export const EXAM: [number, number][] = [[1, 0], [2, 0], [3, 1], [4, 0], [5, 1], [6, 1]];
+
+/** Students: hours studied, hours slept the night before, passed (1) or failed (0). Two are "noise":
+ *  (5, 7) failed despite both, (2, 8.5) passed with little study. */
+export const STUDENTS: [number, number, 0 | 1][] = [
+  [1, 5, 0], [1.5, 8, 0], [2, 6, 0], [2.5, 4, 0], [3, 7, 0], [4, 3.5, 0], [5, 4, 0], [5, 7, 0],
+  [3.5, 8, 1], [4.5, 6.5, 1], [5, 8.5, 1], [5.5, 5.5, 1], [6, 7, 1], [2, 8.5, 1],
+];
+
+export const sigmoid = (z: number) => 1 / (1 + Math.exp(-z));
+
+/** Mean cross-entropy of p = σ(w·x + b) on (x, label) pairs; p is clamped so a certain mistake stays finite. */
+export function crossEntropy(data: [number, number][], w: number, b: number) {
+  let s = 0;
+  for (const [x, y] of data) {
+    const p = Math.min(Math.max(sigmoid(w * x + b), 1e-12), 1 - 1e-12);
+    s -= y ? Math.log(p) : Math.log(1 - p);
+  }
+  return s / data.length;
+}
+
 export const meanStd = (v: number[]) => {
   const m = v.reduce((s, x) => s + x, 0) / v.length;
   const sd = Math.sqrt(v.reduce((s, x) => s + (x - m) ** 2, 0) / v.length);   // population σ, as in the lesson
