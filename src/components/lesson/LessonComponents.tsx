@@ -2,7 +2,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronRight } from "lucide-react";
 import { Prism as SyntaxHighlighter, createElement } from "react-syntax-highlighter";
 import { lessonSyntaxTheme } from "@/lib/syntaxTheme";
 import { RefToken, useReference, useRefEntry } from "@/components/reference/RefToken";
@@ -192,118 +191,6 @@ export function H3({ children }: { children: React.ReactNode }) {
     >
       {children}
     </h3>
-  );
-}
-
-// ─── VBO Flow Diagram ─────────────────────────────────────────────────────────
-
-export function VBOFlowDiagram({ t }: { t?: TrackTranslations }) {
-  return (
-    <div className="my-6 rounded-xl border border-[var(--code-border)] bg-[var(--code-bg)] p-6 overflow-x-auto">
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-max mx-auto sm:w-auto">
-
-        <div className="flex flex-col items-center gap-2">
-          <div className="text-[9px] font-mono font-bold text-[var(--code-muted)] uppercase tracking-widest mb-1">
-            {tx(t, "vboFlowCpuRam", "CPU RAM")}
-          </div>
-          <div className="border border-[var(--code-border)] rounded-lg px-4 py-3 bg-[var(--code-surface)] text-center">
-            <div className="font-mono text-[10px] text-[var(--code-muted)]">float vertices[]</div>
-            <div className="font-mono text-[11px] text-[var(--code-text)] mt-1">{"{ -0.5, -0.5, 0.5..."}</div>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center gap-1">
-          <div className="text-[9px] font-mono text-[var(--primary)] whitespace-nowrap">glBufferData()</div>
-          <div className="flex items-center gap-1">
-            <div className="h-px w-10 bg-[var(--primary)]/40" />
-            <ChevronRight size={12} className="text-[var(--primary)]" />
-          </div>
-          <div className="text-[8px] font-mono text-[var(--code-muted)] opacity-80">
-            {tx(t, "vboFlowUpload", "upload")}
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center gap-2">
-          <div className="text-[9px] font-mono font-bold text-[var(--primary)] uppercase tracking-widest mb-1">
-            {tx(t, "vboFlowGpuVram", "GPU VRAM")}
-          </div>
-          <div className="border border-[var(--primary)]/30 rounded-lg px-4 py-3 bg-[var(--primary)]/5 text-center">
-            <div className="font-mono text-[10px] text-[var(--primary)]">VBO #1</div>
-            <div className="font-mono text-[11px] text-[var(--code-text)] mt-1">[ vertex buffer ]</div>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center gap-1">
-          <div className="text-[9px] font-mono text-green-400 whitespace-nowrap">glDrawArrays()</div>
-          <div className="flex items-center gap-1">
-            <div className="h-px w-10 bg-green-500/40" />
-            <ChevronRight size={12} className="text-green-400" />
-          </div>
-          <div className="text-[8px] font-mono text-[var(--code-muted)] opacity-80">
-            {tx(t, "vboFlowDrawCall", "draw call")}
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center gap-2">
-          <div className="text-[9px] font-mono font-bold text-green-400 uppercase tracking-widest mb-1">
-            {tx(t, "vboFlowVertexShader", "Vertex Shader")}
-          </div>
-          <div className="border border-green-500/30 rounded-lg px-4 py-3 bg-green-500/5 text-center">
-            <div className="font-mono text-[10px] text-green-400">gl_Position</div>
-            <div className="font-mono text-[11px] text-[var(--code-text)] mt-1">
-              {tx(t, "vboFlowVertexPos", "= vertex pos")}
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  );
-}
-
-// ─── VAO Diagram ──────────────────────────────────────────────────────────────
-
-export function VAODiagram({ t }: { t?: TrackTranslations }) {
-  return (
-    <div className="my-6 rounded-xl border border-[var(--code-border)] bg-[var(--code-bg)] p-5">
-      <div className="text-[9px] font-mono font-bold text-[var(--code-muted)] uppercase tracking-widest text-center mb-4">
-        {tx(t, "vaoDiagramTitle", "VAO records bindings so you can replay them with one call")}
-      </div>
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-
-        <div className="border-2 border-[var(--primary)]/40 rounded-xl p-4 bg-[var(--primary)]/5 text-center min-w-[130px]">
-          <div className="font-mono text-[10px] font-bold text-[var(--primary)] mb-3">VAO</div>
-          <div className="space-y-1.5">
-            <div className="text-[9px] font-mono text-[var(--code-muted)] text-left">
-              {tx(t, "vaoAttrib0", "attrib 0 → VBO #1")}
-            </div>
-            <div className="text-[9px] font-mono text-[var(--code-muted)] text-left">
-              {tx(t, "vaoAttrib1", "attrib 1 → VBO #1")}
-            </div>
-            <div className="text-[9px] font-mono text-[var(--code-muted)] text-left">
-              {tx(t, "vaoIndices", "indices → EBO #1")}
-            </div>
-          </div>
-        </div>
-
-        <div className="font-mono text-[var(--code-muted)] text-xs">
-          {tx(t, "vaoBindOnce", "bind once")}
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <div className="border border-[var(--code-border)] rounded-lg px-4 py-2 bg-[var(--code-surface)] font-mono text-[10px] text-[var(--code-text)] text-center">
-            {tx(t, "vaoVboPositions", "VBO #1 (positions)")}
-          </div>
-          <div className="border border-[var(--code-border)] rounded-lg px-4 py-2 bg-[var(--code-surface)] font-mono text-[10px] text-[var(--code-text)] text-center">
-            {tx(t, "vaoVboTexCoords", "VBO #2 (tex coords)")}
-          </div>
-          <div className="border border-[var(--code-border)] rounded-lg px-4 py-2 bg-[var(--code-surface)] font-mono text-[10px] text-[var(--code-text)] text-center">
-            {tx(t, "vaoEboIndices", "EBO #1 (indices)")}
-          </div>
-        </div>
-
-      </div>
-    </div>
   );
 }
 
