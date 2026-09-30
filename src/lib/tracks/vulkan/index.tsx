@@ -15,4 +15,7 @@ export const vulkanChapters: Chapter[] = [
   { id: "devices",    section: FOUNDATIONS,  title: "Physical Devices, Queue Families & the Logical Device", minRead: 20, load: () => import("./chapters/devices").then((m) => m.DevicesContent) },
 
   { id: "swapchain",  section: PRESENTATION, title: "Surface, Swapchain & Image Views",          minRead: 22, load: () => import("./chapters/swapchain").then((m) => m.SwapchainContent) },
+  { id: "pipeline",   section: PRESENTATION, title: "The Graphics Pipeline",                     minRead: 23, load: () => import("./chapters/pipeline").then((m) => m.PipelineContent) },
+  { id: "commands",   section: PRESENTATION, title: "Command Buffers",                           minRead: 20, load: () => import("./chapters/commands").then((m) => m.CommandsContent) },
+  { id: "synchronization", section: PRESENTATION, title: "Synchronization: Fences, Semaphores & Barriers", minRead: 24, load: () => import("./chapters/synchronization").then((m) => m.SynchronizationContent) },
 ];

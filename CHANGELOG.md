@@ -6,7 +6,7 @@ Registro datado de tudo o que foi feito e criado no site.
 - A data de criação e de última atualização de cada lição também aparece no topo da própria lição. Ela é gerada do histórico do git por `scripts/gen-chapter-dates.mjs` (`npm run dates`, que também roda antes de `dev` e `build`) e fica em `src/lib/generated/chapter-dates.json`.
 - Para registrar algo novo, acrescente uma entrada no topo, com a data.
 
-Totais em 2026-09-29: 8 trilhas e 219 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · C++ 15 · Game Dev 12 · SDL3 10 · Vulkan 4).
+Totais em 2026-09-29: 8 trilhas e 222 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · C++ 15 · Game Dev 12 · SDL3 10 · Vulkan 7).
 
 ---
 
@@ -14,6 +14,7 @@ Totais em 2026-09-29: 8 trilhas e 219 lições (OpenGL 69 · Matemática 61 · G
 
 ### 2026-09-29
 
+- **Vulkan, lote 2**: *The Graphics Pipeline*, *Command Buffers* e *Synchronization: Fences, Semaphores & Barriers*, que fecham a seção Apresentação e chegam ao primeiro triângulo. Widgets novos: o mesmo NDC em duas viewports (OpenGL × Vulkan, eixo y e sentido de giro, altura negativa), estado do input assembly e do rasterizador (topologia, culling, face frontal), o ciclo de vida de um command buffer com os erros da validation layer, loadOp/storeOp com o tráfego de memória, a linha do tempo de um frame (desligar a fence ou um semáforo e ver o que quebra) e uma pipeline barrier estágio por estágio (máscaras de estágio e de acesso, corridas e sincronização excessiva). Textos e widgets com tradução PT completa.
 - **Home**: no celular (colunas empilhadas), o "Sobre mim" mostra só o primeiro parágrafo, com um botão "Ler mais / Ler menos" que abre o resto com uma animação de altura; no desktop o texto aparece inteiro, porque tem a mesma altura da coluna da foto. Animações discretas: o hero entra em sequência ao carregar, cada seção aparece suavemente na primeira vez que entra na tela, e cards, posts e a foto reagem de leve ao mouse. Tudo desligado com "reduzir movimento" do sistema. As chaves `readMore`/`readLess` da Home (sobrescritas pelas do blog) viraram `aboutMore`/`aboutLess`.
 - **OpenGL, início reescrito (lote 3 de 3)**: *First Shaders*, *Drawing the Triangle* e *Indexed Drawing (EBO)* reescritos. Widgets novos: shaders editáveis com o triângulo rodando ao vivo em WebGL (com erros reais de compilação e de link), swizzling, um "depurador do Hello Triangle" (desligar qualquer chamada e ver o que quebra) e uma malha em grade com lista de índices e conta de memória. A seção **Primeiros passos** inteira agora está em português, incluindo os widgets de NDC e de texturas, que tinham textos em inglês fixos.
 - **OpenGL, início reescrito (lote 2 de 3)**: *Vertex Buffer Objects* e *Vertex Array Objects* reescritos e bem mais longos. Widgets novos: onde os dados de vértice moram (VRAM × RAM × GPU integrada, com a banda de cada um), o array de floats como bytes (IEEE-754, little-endian, e o bug do `sizeof` de ponteiro), um editor de layout de vértice (size/stride/offset) com o triângulo renderizado ao vivo, e o passo a passo do que um VAO grava (e o erro sem VAO no Core). Os diagramas estáticos antigos de VBO/VAO foram removidos.

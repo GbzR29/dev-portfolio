@@ -6,6 +6,9 @@ const track = {
     instance: "Instance, extensões e validation layers",
     devices: "Dispositivos físicos, famílias de filas e o dispositivo lógico",
     swapchain: "Surface, swapchain e image views",
+    pipeline: "O pipeline gráfico",
+    commands: "Command buffers",
+    synchronization: "Sincronização: fences, semáforos e barreiras",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
