@@ -615,13 +615,17 @@
     "created": "2026-05-30",
     "updated": "2026-10-01"
   },
+  "opengl/vectors": {
+    "created": "2026-10-01",
+    "updated": "2026-10-01"
+  },
   "opengl/linear-algebra": {
     "created": "2026-05-30",
-    "updated": "2026-09-27"
+    "updated": "2026-10-01"
   },
   "opengl/transformations": {
     "created": "2026-05-30",
-    "updated": "2026-09-27"
+    "updated": "2026-10-01"
   },
   "opengl/camera": {
     "created": "2026-09-03",
