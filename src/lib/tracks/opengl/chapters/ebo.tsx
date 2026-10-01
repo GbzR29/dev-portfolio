@@ -4,7 +4,8 @@
 // and when vertices cannot be shared); index buffers and how the GPU follows
 // them (figure); creating the EBO inside the VAO; glDrawElements argument by
 // argument, drawing part of a list; index types; memory worked example; the
-// post-transform vertex cache; wireframe; common mistakes.
+// post-transform vertex cache; wireframe; the code-along checkpoint (the
+// coloured square, the whole main.cpp so far); common mistakes.
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
@@ -42,8 +43,16 @@ glDrawArrays(GL_TRIANGLES, 0, 6);`}</CodeBlock>
 
       <H2>{tx(t, "oglEbo_indexTitle", "Indices: numbering the vertices")}</H2>
       <p>
-        {tx(t, "oglEbo_indexBody",
-          "With an index buffer, the vertex buffer holds each unique vertex once, and the vertices are numbered by their position in it: 0, 1, 2, … The index buffer is a list of those numbers, three per triangle. When drawing, the GPU reads the index list in order; for each index it fetches the vertex with that number from the vertex buffer, exactly as the VAO describes. So the index list decides which vertices form each triangle, and a vertex used by six triangles simply appears six times in the list, as a 4-byte (or smaller) number instead of a 32-byte copy.")}
+        {tx(t, "oglEbo_indexBody2",
+          "With an index buffer, the vertex buffer holds each unique vertex once. The vertices are numbered by their position in it: 0, 1, 2, and so on. The index buffer is a list of those numbers, three per triangle.")}
+      </p>
+      <p>
+        {tx(t, "oglEbo_indexHow",
+          "When drawing, the GPU reads the index list in order. For each index, it fetches the vertex with that number from the vertex buffer, using the layout the VAO describes. So the index list decides which vertices form each triangle.")}
+      </p>
+      <p>
+        {tx(t, "oglEbo_indexSave",
+          "A vertex used by six triangles now appears six times in the index list. Each time it costs one number of 4 bytes or less, instead of a full 32-byte copy of the vertex.")}
       </p>
       <CodeBlock lang="cpp" filename="with_ebo.cpp" t={t}>{`float vertices[] = {
     -0.5f,  0.5f, 0.0f,   // 0: top-left
@@ -51,10 +60,14 @@ glDrawArrays(GL_TRIANGLES, 0, 6);`}</CodeBlock>
      0.5f, -0.5f, 0.0f,   // 2: bottom-right
      0.5f,  0.5f, 0.0f,   // 3: top-right
 };
-unsigned int indices[] = {
+GLuint indices[] = {      // GLuint = unsigned int, read as GL_UNSIGNED_INT
     0, 1, 2,              // first triangle:  top-left, bottom-left, bottom-right
     0, 2, 3,              // second triangle: top-left, bottom-right, top-right
 };`}</CodeBlock>
+      <p>
+        {tx(t, "oglEbo_posOnly",
+          "These two snippets show only positions, to keep the numbers easy to follow. In your main.cpp each vertex keeps its colour (6 floats), as the setup code and the checkpoint below show.")}
+      </p>
       <p>
         {tx(t, "oglEbo_figIntro",
           "Grow the grid in the figure: the vertex count grows with the number of grid points, while the triangle count and the index list grow with the number of cells. Click a triangle to find its three numbers in the list.")}
@@ -64,8 +77,16 @@ unsigned int indices[] = {
 
       <H3>{tx(t, "oglEbo_seamTitle", "When vertices cannot be shared")}</H3>
       <p>
-        {tx(t, "oglEbo_seamBody",
-          "A vertex is its whole set of attributes, not just its position. Two triangles can share a vertex only if they want the same position AND the same normal AND the same texture coordinate there. A cube shows the difference: it has 8 corners, but each corner belongs to three faces that point in different directions, so it needs a different normal on each face. A lit cube therefore needs 6 faces × 4 corners = 24 vertices, not 8; indices still save the two duplicates inside each face (36 indices instead of 36 full vertices). The same happens along texture seams, where the texture coordinates jump.")}
+        {tx(t, "oglEbo_seamBody2",
+          "A vertex is its whole set of attributes, not just its position. Two triangles can share a vertex only if they want the same position, the same normal and the same texture coordinate at that corner.")}
+      </p>
+      <p>
+        {tx(t, "oglEbo_seamCube",
+          "A cube shows the difference. It has 8 corners, but each corner belongs to three faces that point in different directions. So the corner needs a different normal on each face (the normal is the direction a surface faces, used for lighting). A lit cube therefore needs 6 faces × 4 corners = 24 vertices, not 8.")}
+      </p>
+      <p>
+        {tx(t, "oglEbo_seamSave",
+          "Indices still help: they save the two duplicates inside each face, so the cube is 24 vertices plus 36 indices instead of 36 full vertices. The same splitting happens along texture seams, where the texture coordinates jump.")}
       </p>
 
       <H2>{tx(t, "oglEbo_createTitle", "Creating the EBO")}</H2>
@@ -73,29 +94,39 @@ unsigned int indices[] = {
         {tx(t, "oglEbo_createBody",
           "An EBO is an ordinary buffer object bound to a different target, GL_ELEMENT_ARRAY_BUFFER. As the VAO chapter showed, that binding is stored inside the currently bound VAO, so bind the EBO while the mesh's VAO is bound, and the VAO will remember which index buffer belongs to it.")}
       </p>
-      <CodeBlock lang="cpp" filename="ebo_setup.cpp" t={t}>{`GLuint vao, vbo, ebo;
+      <p>
+        {tx(t, "oglEbo_createWhere",
+          "In your main.cpp this is step 4b, the same block as before with three additions: one more buffer name, the bind of that buffer to GL_ELEMENT_ARRAY_BUFFER, and the upload of the indices. The vertex layout does not change: each vertex is still x y z r g b.")}
+      </p>
+      <CodeBlock lang="cpp" filename="main.cpp" t={t}>{`GLuint vao, vbo, ebo;
 glGenVertexArrays(1, &vao);
 glGenBuffers(1, &vbo);
-glGenBuffers(1, &ebo);
+glGenBuffers(1, &ebo);                                   // NEW: one more buffer
 
 glBindVertexArray(vao);                                  // start recording
 
 glBindBuffer(GL_ARRAY_BUFFER, vbo);
 glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 glEnableVertexAttribArray(0);
+glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+glEnableVertexAttribArray(1);
 
-glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);              // recorded in the VAO
-glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);              // NEW: recorded in the VAO
+glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);   // NEW
 
-glBindVertexArray(0);                                    // stop recording FIRST...
+glBindVertexArray(0);                                   // stop recording FIRST...
 // ...so a later glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) cannot change this VAO`}</CodeBlock>
       <Callout type="warn" t={t}>
         {tx(t, "oglEbo_unbindWarn", "Do not unbind the EBO while the VAO is still bound. Since the VAO stores the GL_ELEMENT_ARRAY_BUFFER binding, glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) at that moment removes the index buffer from the VAO, and glDrawElements then fails. Unbind the VAO first.")}
       </Callout>
 
       <H2>{tx(t, "oglEbo_drawTitle", "Drawing with glDrawElements")}</H2>
-      <CodeBlock lang="cpp" filename="render.cpp" t={t}>{`glUseProgram(program);
+      <p>
+        {tx(t, "oglEbo_drawWhere",
+          "In the render loop, glDrawElements replaces glDrawArrays. The other two lines stay.")}
+      </p>
+      <CodeBlock lang="cpp" filename="main.cpp" t={t}>{`glUseProgram(shaderProgram);
 glBindVertexArray(vao);                                  // brings its EBO along
 glDrawElements(GL_TRIANGLES,       // mode: how to group the fetched vertices
                6,                  // count: how many INDICES to read
@@ -146,6 +177,111 @@ glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    // back to filled triangles (the d
       <Callout type="tip" t={t}>
         {tx(t, "oglEbo_loaderTip", "Model files and loaders work this way: Assimp and tinyobjloader output a vertex array and an index array, ready for a VBO and an EBO (Model Loading chapter).")}
       </Callout>
+
+      <H2>{tx(t, "oglEbo_soFarTitle", "Your main.cpp so far")}</H2>
+      <p>
+        {tx(t, "oglEbo_soFarBody",
+          "The whole file, with the triangle turned into a square. Compared with the complete program of Drawing the Triangle, four places changed, each marked NEW: the vertices (4 corners, each with its own colour) and the new index list in step 4b; the EBO inside the same block; glDrawElements in the loop; and one more glDeleteBuffers at the end. The shaders and the helpers did not change, so they are shortened here.")}
+      </p>
+      <CodeBlock lang="cpp" filename="src/main.cpp" t={t}>{`#include <glad/glad.h>      // MUST come before glfw3.h
+#include <GLFW/glfw3.h>
+#include <iostream>
+
+// ── Shaders and helpers (unchanged since Drawing the Triangle) ──────────────
+const char* vertexShaderSource   = R"(...)";   // aPos + aColor → vColor
+const char* fragmentShaderSource = R"(...)";   // FragColor = vec4(vColor, 1.0)
+GLuint compileShader(GLenum type, const char* src) { /* ... */ }
+GLuint makeProgram(const char* vsSrc, const char* fsSrc) { /* ... */ }
+
+void framebufferSizeCallback(GLFWwindow*, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+int main() {
+    // ── 1–3. Window, GLAD, viewport (unchanged) ─────────────────────────────
+    if (!glfwInit()) return 1;
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "GLApp", nullptr, nullptr);
+    if (!window) { glfwTerminate(); return 1; }
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return 1;
+    int fbw, fbh;
+    glfwGetFramebufferSize(window, &fbw, &fbh);
+    glViewport(0, 0, fbw, fbh);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+    // ── 4. One-time setup ────────────────────────────────────────────────────
+    // 4a. Shaders → program (unchanged)
+    GLuint shaderProgram = makeProgram(vertexShaderSource, fragmentShaderSource);
+    if (shaderProgram == 0) { glfwTerminate(); return 1; }
+
+    // 4b. Vertex data → VAO + VBO + EBO              >>> NEW: a square, indexed
+    float vertices[] = {
+    //    x      y     z     r     g     b
+        -0.5f,  0.5f, 0.0f, 1.0f, 0.27f, 0.27f,   // 0: top-left, red
+        -0.5f, -0.5f, 0.0f, 0.13f,0.77f, 0.37f,   // 1: bottom-left, green
+         0.5f, -0.5f, 0.0f, 0.23f,0.51f, 0.96f,   // 2: bottom-right, blue
+         0.5f,  0.5f, 0.0f, 1.0f, 0.8f,  0.2f,    // 3: top-right, yellow
+    };
+    GLuint indices[] = {
+        0, 1, 2,              // first triangle
+        0, 2, 3,              // second triangle
+    };
+    GLuint vao, vbo, ebo;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &ebo);
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);    // recorded in the VAO
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBindVertexArray(0);                          // unbind the VAO first, keep the EBO in it
+    //                                               <<< end of NEW
+
+    // ── 5. The render loop ───────────────────────────────────────────────────
+    while (!glfwWindowShouldClose(window)) {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+
+        glClearColor(0.06f, 0.07f, 0.10f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glUseProgram(shaderProgram);
+        glBindVertexArray(vao);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);   // NEW: 6 indices
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // ── 6. Clean up ──────────────────────────────────────────────────────────
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);                      // NEW
+    glDeleteProgram(shaderProgram);
+    glfwTerminate();
+    return 0;
+}`}</CodeBlock>
+      <p>
+        {tx(t, "oglEbo_soFarRun",
+          "Run it: a square with a different colour in each corner, blended across. Look closely at the diagonal from top-left to bottom-right. Along it the colour is a blend of only red and blue, because each triangle blends only its own three corners, and the faint crease you may notice there is that edge.")}
+      </p>
+      <Callout type="tip" t={t}>
+        {tx(t, "oglEbo_soFarWire", "To see the two triangles, add glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); in step 4, after the VAO setup. The diagonal from top-left to bottom-right is the edge both triangles share: vertices 0 and 2, the two numbers that appear in both rows of the index list.")}
+      </Callout>
+      <p>
+        {tx(t, "oglEbo_soFarNext",
+          "The Textures chapter puts an image on this square. Its vertices will carry texture coordinates instead of colours.")}
+      </p>
 
       <H2>{tx(t, "oglEbo_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable

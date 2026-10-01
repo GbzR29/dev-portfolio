@@ -8,17 +8,24 @@ const text: Record<string, string> = {
   oglEbo_dupWhy: "Duas cópias de 12 bytes não fazem diferença. Mas uma cópia é feita para cada triângulo que compartilha um canto, e os vértices de verdade são maiores: posição, normal e coordenada de textura são 32 bytes. As duplicatas também deixam as malhas frágeis, porque mover um canto significa encontrar e mudar todas as cópias dele.",
 
   oglEbo_indexTitle: "Índices: numerando os vértices",
-  oglEbo_indexBody: "Com um index buffer, o vertex buffer guarda cada vértice único uma vez, e os vértices são numerados pela posição dentro dele: 0, 1, 2, … O index buffer é uma lista desses números, três por triângulo. Ao desenhar, a GPU lê a lista de índices em ordem; para cada índice ela busca o vértice com aquele número no vertex buffer, exatamente como o VAO descreve. Então a lista de índices decide quais vértices formam cada triângulo, e um vértice usado por seis triângulos simplesmente aparece seis vezes na lista, como um número de 4 bytes (ou menos) em vez de uma cópia de 32 bytes.",
+  oglEbo_indexBody2: "Com um index buffer, o vertex buffer guarda cada vértice único uma vez. Os vértices são numerados pela posição dentro dele: 0, 1, 2, e assim por diante. O index buffer é uma lista desses números, três por triângulo.",
+  oglEbo_indexHow: "Ao desenhar, a GPU lê a lista de índices em ordem. Para cada índice, ela busca no vertex buffer o vértice com aquele número, usando o layout que o VAO descreve. Então a lista de índices decide quais vértices formam cada triângulo.",
+  oglEbo_indexSave: "Um vértice usado por seis triângulos agora aparece seis vezes na lista de índices. Cada vez custa um número de 4 bytes ou menos, em vez de uma cópia inteira de 32 bytes do vértice.",
+  oglEbo_posOnly: "Estes dois trechos mostram só as posições, para os números ficarem fáceis de acompanhar. No seu main.cpp cada vértice continua com a sua cor (6 floats), como mostram o código de configuração e o ponto de controle abaixo.",
   oglEbo_figIntro: "Aumente a grade na figura: a quantidade de vértices cresce com o número de pontos da grade, enquanto a quantidade de triângulos e a lista de índices crescem com o número de células. Clique num triângulo para encontrar os três números dele na lista.",
 
   oglEbo_seamTitle: "Quando os vértices não podem ser compartilhados",
-  oglEbo_seamBody: "Um vértice é o conjunto inteiro dos seus atributos, não só a posição. Dois triângulos só podem compartilhar um vértice se quiserem ali a mesma posição E a mesma normal E a mesma coordenada de textura. Um cubo mostra a diferença: ele tem 8 cantos, mas cada canto pertence a três faces que apontam para direções diferentes, então precisa de uma normal diferente em cada face. Um cubo iluminado precisa, portanto, de 6 faces × 4 cantos = 24 vértices, não 8; os índices ainda economizam as duas duplicatas dentro de cada face (36 índices em vez de 36 vértices completos). O mesmo acontece nas costuras de textura, onde as coordenadas de textura dão um salto.",
+  oglEbo_seamBody2: "Um vértice é o conjunto inteiro dos seus atributos, não só a posição. Dois triângulos só podem compartilhar um vértice se quiserem naquele canto a mesma posição, a mesma normal e a mesma coordenada de textura.",
+  oglEbo_seamCube: "Um cubo mostra a diferença. Ele tem 8 cantos, mas cada canto pertence a três faces que apontam para direções diferentes. Então o canto precisa de uma normal diferente em cada face (a normal é a direção para onde a superfície aponta, usada na iluminação). Um cubo iluminado precisa, portanto, de 6 faces × 4 cantos = 24 vértices, não 8.",
+  oglEbo_seamSave: "Os índices ainda ajudam: eles economizam as duas duplicatas dentro de cada face, então o cubo fica com 24 vértices mais 36 índices em vez de 36 vértices completos. A mesma divisão acontece nas costuras de textura, onde as coordenadas de textura dão um salto.",
 
   oglEbo_createTitle: "Criando o EBO",
   oglEbo_createBody: "Um EBO é um buffer object comum vinculado a outro target, GL_ELEMENT_ARRAY_BUFFER. Como o capítulo do VAO mostrou, esse vínculo é guardado dentro do VAO vinculado no momento, então vincule o EBO enquanto o VAO da malha estiver vinculado, e o VAO vai lembrar qual index buffer pertence a ele.",
   oglEbo_unbindWarn: "Não desvincule o EBO enquanto o VAO ainda estiver vinculado. Como o VAO guarda o vínculo de GL_ELEMENT_ARRAY_BUFFER, glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) nesse momento tira o index buffer do VAO, e o glDrawElements então falha. Desvincule o VAO antes.",
 
+  oglEbo_createWhere: "No seu main.cpp este é o passo 4b, o mesmo bloco de antes com três acréscimos: mais um nome de buffer, o vínculo desse buffer a GL_ELEMENT_ARRAY_BUFFER e o envio dos índices. O layout dos vértices não muda: cada vértice continua sendo x y z r g b.",
   oglEbo_drawTitle: "Desenhando com glDrawElements",
+  oglEbo_drawWhere: "No laço de renderização, o glDrawElements substitui o glDrawArrays. As outras duas linhas ficam.",
   oglEbo_tArg: "Argumento",
   oglEbo_tMeaning: "Significado",
   oglEbo_a1: "os mesmos modos de primitiva do glDrawArrays: GL_TRIANGLES, GL_LINES, GL_POINTS…",
@@ -41,6 +48,12 @@ const text: Record<string, string> = {
   oglEbo_wireTitle: "Depuração: modo wireframe",
   oglEbo_wireBody: "Um índice errado desenha um triângulo entre os pontos errados, o que é difícil de ver numa malha preenchida. glPolygonMode desenha só as arestas, e a triangulação fica visível.",
   oglEbo_loaderTip: "Os arquivos de modelo e os loaders funcionam assim: o Assimp e o tinyobjloader entregam um array de vértices e um array de índices, prontos para um VBO e um EBO (capítulo de Model Loading).",
+
+  oglEbo_soFarTitle: "O seu main.cpp até aqui",
+  oglEbo_soFarBody: "O arquivo inteiro, com o triângulo transformado num quadrado. Comparado com o programa completo de Desenhando o triângulo, quatro lugares mudaram, cada um marcado NEW: os vértices (4 cantos, cada um com a sua cor) e a nova lista de índices no passo 4b; o EBO dentro do mesmo bloco; o glDrawElements no laço; e mais um glDeleteBuffers no fim. Os shaders e as funções auxiliares não mudaram, então aparecem encurtados aqui.",
+  oglEbo_soFarRun: "Rode: um quadrado com uma cor diferente em cada canto, misturadas pelo meio. Olhe com atenção a diagonal do canto superior esquerdo ao inferior direito. Ao longo dela a cor é uma mistura só de vermelho e azul, porque cada triângulo mistura apenas os seus três cantos, e o vinco leve que você talvez note ali é essa aresta.",
+  oglEbo_soFarWire: "Para ver os dois triângulos, acrescente glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); no passo 4, depois da configuração do VAO. A diagonal do canto superior esquerdo ao inferior direito é a aresta que os dois triângulos compartilham: os vértices 0 e 2, os dois números que aparecem nas duas linhas da lista de índices.",
+  oglEbo_soFarNext: "O capítulo de Texturas põe uma imagem neste quadrado. Os vértices dele vão levar coordenadas de textura em vez de cores.",
 
   oglEbo_mistakesTitle: "Erros comuns",
   oglEbo_tMistake: "Erro",

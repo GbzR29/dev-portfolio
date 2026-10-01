@@ -4,9 +4,10 @@
 // anatomy of a GLSL shader; types, constructors and component-wise maths;
 // swizzling (figure); passing data between stages (in/out, matching rules,
 // interpolation, flat); the live editable triangle (figure); uniforms and the
-// glUniform family; the C++ side (helpers that return a GLuint: ownership,
-// 0 as failure, copied names, a table of helpers); a worked interpolation example; common
-// mistakes.
+// glUniform family; the C++ side (compileShader/makeProgram line by line and
+// where they go in main.cpp; helpers that return a GLuint: ownership, 0 as
+// failure, copied names, a table of helpers); a worked interpolation example;
+// the code-along checkpoint (the whole main.cpp so far); common mistakes.
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
@@ -25,8 +26,16 @@ export function ShadersContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "oglSh_whatTitle", "What a shader is")}</H2>
       <p>
-        {tx(t, "oglSh_whatBody",
-          "A shader is a function the GPU calls many times in parallel, once per item: the vertex shader once per vertex, the fragment shader once per fragment. Each call, called an invocation, gets its own inputs and produces its own outputs, and invocations cannot talk to each other or remember anything from one frame to the next. This is what lets thousands of them run at the same time. As the Pipeline chapter explained, the driver compiles the GLSL source when your program runs, for the GPU that is installed.")}
+        {tx(t, "oglSh_whatBody2",
+          "A shader is a function that the GPU calls many times in parallel. The vertex shader runs once per vertex. The fragment shader runs once per fragment.")}
+      </p>
+      <p>
+        {tx(t, "oglSh_whatInv",
+          "Each of those calls is called an invocation. It gets its own inputs and produces its own outputs. Invocations cannot talk to each other, and they remember nothing from one frame to the next. That isolation is what lets thousands of them run at the same time.")}
+      </p>
+      <p>
+        {tx(t, "oglSh_whatCompile",
+          "You do not compile shaders ahead of time, as you do with C++. As the Pipeline chapter explained, the driver compiles the GLSL text while your program runs, for the GPU that is installed.")}
       </p>
       <p>{tx(t, "oglSh_anatomyBody", "Every shader has the same parts:")}</p>
       <CodeBlock lang="glsl" filename="vertex.glsl" t={t}>{`#version 460 core                         // 1. the GLSL version, always the first line
@@ -83,8 +92,12 @@ vec3 mixd = mix(c, g, 0.25);      // 75% c + 25% g (linear interpolation)`}</Cod
 
       <H2>{tx(t, "oglSh_passTitle", "Passing data between stages")}</H2>
       <p>
-        {tx(t, "oglSh_passBody",
-          "The vertex shader's out variables and the fragment shader's in variables are connected by name and type when the program is linked. Between the two, the rasterizer interpolates each output across the triangle, so a fragment receives a blend of the three vertices' values, weighted by how close it is to each (the barycentric weights of the Pipeline chapter).")}
+        {tx(t, "oglSh_passBody2",
+          "The vertex shader's out variables are connected to the fragment shader's in variables when the program is linked. The link matches them by name and type: an out vec3 vColor feeds an in vec3 vColor.")}
+      </p>
+      <p>
+        {tx(t, "oglSh_passInterp",
+          "The value does not arrive unchanged. Between the two shaders, the rasterizer interpolates each output across the triangle. A fragment receives a blend of the three vertices' values, weighted by how close it is to each vertex. Those weights are the barycentric weights of the Pipeline chapter.")}
       </p>
       <LessonTable
         headers={[tx(t, "oglSh_tQual", "Qualifier"), tx(t, "oglSh_tWhere", "In"), tx(t, "oglSh_tDoes", "Meaning")]}
@@ -126,8 +139,16 @@ void main() {
 
       <H2>{tx(t, "oglSh_uniformTitle", "Uniforms")}</H2>
       <p>
-        {tx(t, "oglSh_uniformBody",
-          "A uniform is a global variable of the shader that your C++ code sets and that stays constant for a whole draw call: the same value for every vertex and every fragment. Use uniforms for anything that is shared, such as the time, a tint colour, or (from the Transformations section on) the matrices that place a model in the world. Setting one takes two steps: find its location in the linked program by name, then write a value there with the glUniform function that matches its type.")}
+        {tx(t, "oglSh_uniformBody2",
+          "A uniform is a global variable of the shader that your C++ code sets. It stays constant for a whole draw call: every vertex and every fragment sees the same value.")}
+      </p>
+      <p>
+        {tx(t, "oglSh_uniformUse",
+          "Use uniforms for anything shared by the whole draw: the time, a tint colour, and later (from the Transformations section on) the matrices that place a model in the world.")}
+      </p>
+      <p>
+        {tx(t, "oglSh_uniformSteps",
+          "Setting a uniform takes two steps. First, ask the linked program for the uniform's location, by name. Then write a value at that location with the glUniform function that matches the uniform's type.")}
       </p>
       <CodeBlock lang="glsl" filename="uniform.glsl" t={t}>{`#version 460 core
 out vec4 FragColor;
@@ -163,8 +184,12 @@ glUniform1f(glGetUniformLocation(shaderProgram, "uTime"), (float)glfwGetTime());
 
       <H2>{tx(t, "oglSh_cppTitle", "The C++ side, together")}</H2>
       <p>
-        {tx(t, "oglSh_cppBody",
-          "Compiling and linking were covered in the Pipeline chapter. Wrapped in a helper, and combined with the VAO from the previous chapter, the setup for the coloured triangle is short. The locations used by glVertexAttribPointer (0 and 1) are the same numbers as the shader's layout(location = …).")}
+        {tx(t, "oglSh_cppBody2",
+          "Compiling and linking were covered in the Pipeline chapter. In your main.cpp, step 4a still does it inline: about 30 lines, with the same checks written twice. Two small functions remove the repetition.")}
+      </p>
+      <p>
+        {tx(t, "oglSh_cppWhere",
+          "Where they go: above main, after the two shader strings. Then step 4a shrinks to a single call, as the checkpoint at the end of this chapter shows.")}
       </p>
       <CodeBlock lang="cpp" filename="main.cpp" t={t}>{`GLuint compileShader(GLenum type, const char* src) {
     GLuint s = glCreateShader(type);
@@ -175,7 +200,8 @@ glUniform1f(glGetUniformLocation(shaderProgram, "uTime"), (float)glfwGetTime());
     if (!ok) {
         char log[1024];
         glGetShaderInfoLog(s, sizeof log, nullptr, log);
-        std::fprintf(stderr, "%s shader:\\n%s\\n", type == GL_VERTEX_SHADER ? "vertex" : "fragment", log);
+        std::cerr << (type == GL_VERTEX_SHADER ? "Vertex" : "Fragment")
+                  << " shader error: " << log << "\\n";
     }
     return s;
 }
@@ -192,12 +218,25 @@ GLuint makeProgram(const char* vsSrc, const char* fsSrc) {
     if (!ok) {
         char log[1024];
         glGetProgramInfoLog(p, sizeof log, nullptr, log);
-        std::fprintf(stderr, "link:\\n%s\\n", log);
+        std::cerr << "Program link error: " << log << "\\n";
     }
     glDeleteShader(vs);            // the program keeps its own copy
     glDeleteShader(fs);
     return p;
 }`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "oglSh_tRetLine", "Line"), tx(t, "oglSh_tRetDoes", "What it does")]}
+        rows={[
+          ["glCreateShader(type)", tx(t, "oglSh_cl1", "creates an empty shader object of that type (GL_VERTEX_SHADER or GL_FRAGMENT_SHADER) and returns its name.")],
+          ["glShaderSource(s, 1, &src, nullptr)", tx(t, "oglSh_cl2", "hands the GLSL text to the driver: 1 piece of text, ending at its '\\0' (nullptr instead of a list of lengths). The Pipeline chapter explains each argument.")],
+          ["glCompileShader(s)", tx(t, "oglSh_cl3", "the driver compiles the text into code for your GPU.")],
+          ["glGetShaderiv(s, GL_COMPILE_STATUS, &ok)", tx(t, "oglSh_cl4", "asks whether it worked. ok becomes 1 (GL_TRUE) or 0 (GL_FALSE).")],
+          ["glGetShaderInfoLog(s, sizeof log, nullptr, log)", tx(t, "oglSh_cl5", "copies the compiler's message into log, at most sizeof log = 1024 bytes. The message names the line of the error.")],
+          ["glAttachShader + glLinkProgram", tx(t, "oglSh_cl6", "put both shaders into one program and link them. Linking connects each out of the vertex shader to the in with the same name in the fragment shader.")],
+          ["glGetProgramiv / glGetProgramInfoLog", tx(t, "oglSh_cl7", "the same two checks for the link step, on the program instead of a shader.")],
+          ["glDeleteShader(vs)", tx(t, "oglSh_cl8", "the linked program keeps the compiled code, so the shader objects are no longer needed.")],
+        ]}
+      />
 
       <H3>{tx(t, "oglSh_retTitle", "Functions that return a GLuint")}</H3>
       <p>
@@ -223,15 +262,15 @@ GLuint makeProgram(const char* vsSrc, const char* fsSrc) {
     return p;
 }
 
-// In main, after gladLoadGLLoader and before the render loop:
-GLuint program = makeProgram(kVertexSrc, kFragmentSrc);
-if (program == 0) return 1;        // stop instead of looping over a black window`}</CodeBlock>
+// In main, step 4a (after gladLoadGLLoader, before the render loop):
+GLuint shaderProgram = makeProgram(vertexShaderSource, fragmentShaderSource);
+if (shaderProgram == 0) return 1;  // stop instead of looping over a black window`}</CodeBlock>
       <LessonTable
         headers={[tx(t, "oglSh_tRetLine", "Line"), tx(t, "oglSh_tRetDoes", "What it does")]}
         rows={[
           ["glDeleteShader(vs)", tx(t, "oglSh_r1", "runs on both paths. After linking, the shader objects are no longer needed, success or not.")],
           ["glDeleteProgram(p); return 0;", tx(t, "oglSh_r2", "on failure, frees the program that did not link and reports it with the one name that is never valid.")],
-          ["if (program == 0) return 1;", tx(t, "oglSh_r3", "the caller decides what failure means. Here main quits with an error code; the error itself was already printed.")],
+          ["if (shaderProgram == 0) return 1;", tx(t, "oglSh_r3", "the caller decides what failure means. Here main quits with an error code; the error itself was already printed.")],
         ]}
       />
 
@@ -255,6 +294,150 @@ if (program == 0) return 1;        // stop instead of looping over a black windo
       />
       <Callout type="info" t={t}>
         {tx(t, "oglSh_retRaii", "A GLuint does not delete its object by itself: forget glDelete* and the GPU memory leaks until the context closes; copy the name and there are two owners. C++ can solve both with a small class that deletes the object in its destructor (RAII). For a first program, helpers that return a GLuint plus one clean-up block at the end of main are enough.")}
+      </Callout>
+
+      <H2>{tx(t, "oglSh_soFarTitle", "Your main.cpp so far")}</H2>
+      <p>
+        {tx(t, "oglSh_soFarBody",
+          "The whole file at the end of this chapter. Compared with the VAO chapter's version, two things changed, both marked NEW. The two helpers sit above main, with the strict makeProgram that returns 0 on failure. Step 4a, which was about 30 lines, is now two. The shaders themselves did not change: the VAO chapter already made them pass the colour along.")}
+      </p>
+      <CodeBlock lang="cpp" filename="src/main.cpp" t={t}>{`#include <glad/glad.h>      // MUST come before glfw3.h
+#include <GLFW/glfw3.h>
+#include <iostream>
+
+// ── Shaders (unchanged since the VAO chapter) ───────────────────────────────
+const char* vertexShaderSource = R"(#version 460 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
+out vec3 vColor;
+void main() {
+    gl_Position = vec4(aPos, 1.0);
+    vColor = aColor;
+})";
+
+const char* fragmentShaderSource = R"(#version 460 core
+in vec3 vColor;
+out vec4 FragColor;
+void main() {
+    FragColor = vec4(vColor, 1.0);
+})";
+
+// ── Shader helpers ──────────────────────────────── >>> NEW in this chapter
+GLuint compileShader(GLenum type, const char* src) {
+    GLuint s = glCreateShader(type);
+    glShaderSource(s, 1, &src, nullptr);
+    glCompileShader(s);
+    GLint ok = 0;
+    glGetShaderiv(s, GL_COMPILE_STATUS, &ok);
+    if (!ok) {
+        char log[1024];
+        glGetShaderInfoLog(s, sizeof log, nullptr, log);
+        std::cerr << (type == GL_VERTEX_SHADER ? "Vertex" : "Fragment")
+                  << " shader error: " << log << "\\n";
+    }
+    return s;
+}
+
+GLuint makeProgram(const char* vsSrc, const char* fsSrc) {
+    GLuint vs = compileShader(GL_VERTEX_SHADER, vsSrc);
+    GLuint fs = compileShader(GL_FRAGMENT_SHADER, fsSrc);
+    GLuint p = glCreateProgram();
+    glAttachShader(p, vs);
+    glAttachShader(p, fs);
+    glLinkProgram(p);
+    GLint ok = 0;
+    glGetProgramiv(p, GL_LINK_STATUS, &ok);
+    if (!ok) {
+        char log[1024];
+        glGetProgramInfoLog(p, sizeof log, nullptr, log);
+        std::cerr << "Program link error: " << log << "\\n";
+    }
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+    if (!ok) {
+        glDeleteProgram(p);
+        return 0;                   // 0 = "no program"
+    }
+    return p;
+}
+//                                                 <<< end of NEW
+
+void framebufferSizeCallback(GLFWwindow*, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+int main() {
+    // ── 1. Window library and context ────────────────────────────────────────
+    if (!glfwInit()) return 1;
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "GLApp", nullptr, nullptr);
+    if (!window) { glfwTerminate(); return 1; }
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+
+    // ── 2. Load the OpenGL functions (no gl* call before this) ───────────────
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return 1;
+
+    // ── 3. Viewport, now and on every resize ─────────────────────────────────
+    int fbw, fbh;
+    glfwGetFramebufferSize(window, &fbw, &fbh);
+    glViewport(0, 0, fbw, fbh);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+    // ── 4. One-time setup ────────────────────────────────────────────────────
+    // 4a. Shaders → program                         >>> NEW: one call
+    GLuint shaderProgram = makeProgram(vertexShaderSource, fragmentShaderSource);
+    if (shaderProgram == 0) { glfwTerminate(); return 1; }
+
+    // 4b. Vertex data → VAO + VBO (unchanged)
+    float vertices[] = {
+    //    x      y      z     r     g     b
+        -0.6f, -0.55f, 0.0f, 1.0f, 0.27f, 0.27f,   // vertex 0
+         0.65f,-0.45f, 0.0f, 0.13f,0.77f, 0.37f,   // vertex 1
+         0.0f,  0.65f, 0.0f, 0.23f,0.51f, 0.96f,   // vertex 2
+    };
+    GLuint vao, vbo;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
+
+    // ── 5. The render loop ───────────────────────────────────────────────────
+    while (!glfwWindowShouldClose(window)) {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+
+        glClearColor(0.06f, 0.07f, 0.10f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // ... draw (Drawing the Triangle chapter) ...
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // ── 6. Clean up ──────────────────────────────────────────────────────────
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteProgram(shaderProgram);
+    glfwTerminate();
+    return 0;
+}`}</CodeBlock>
+      <p>
+        {tx(t, "oglSh_soFarRun",
+          "Run it: still only the clear colour, as before. The difference shows when something is wrong. Delete a semicolon in a shader and run again: the console prints the driver's message with the line number, and the program closes instead of showing an empty window.")}
+      </p>
+      <Callout type="info" t={t}>
+        {tx(t, "oglSh_soFarUniform", "Uniforms are not in the file yet, because the triangle does not need one. A uniform that a shader declares but C++ never sets reads as 0, which would make a tint uniform paint the triangle black. Exercise 3 of the next chapter adds a uTime uniform and sets it every frame.")}
       </Callout>
 
       <H2>{tx(t, "oglSh_mistakesTitle", "Common mistakes")}</H2>

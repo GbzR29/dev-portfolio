@@ -409,8 +409,8 @@ int main() {
 
       <H2>{tx(t, "oglSetup_alongTitle", "Coding along: what each chapter adds")}</H2>
       <p>
-        {tx(t, "oglSetup_alongBody",
-          "The next five chapters build one program: the coloured triangle. Each one explains a single piece, so for a while you will be adding code whose result you cannot see yet. That is expected. This is what each chapter adds to the main.cpp above, and what you should see when you run it.")}
+        {tx(t, "oglSetup_alongBody2",
+          "The rest of this section builds one program: first the coloured triangle, then a square, then a square with an image on it. Each chapter explains a single piece, so for a while you will be adding code whose result you cannot see yet. That is expected. This is what each chapter adds to the main.cpp above, and what you should see when you run it.")}
       </p>
       <LessonTable
         headers={[tx(t, "oglSetup_aCh", "Chapter"), tx(t, "oglSetup_aAdds", "Adds to main.cpp"), tx(t, "oglSetup_aSee", "What you see")]}
@@ -419,10 +419,16 @@ int main() {
           [tx(t, "oglSetup_a2", "The Graphics Pipeline"), tx(t, "oglSetup_a2b", "the two shaders as text, compiled and linked into a program (step 4)"), tx(t, "oglSetup_a2c", "the same window; the console prints any shader error")],
           [tx(t, "oglSetup_a3", "Vertex Buffer Objects"), tx(t, "oglSetup_a3b", "the vertex array, copied into a buffer on the GPU (step 4)"), tx(t, "oglSetup_a3c", "no change yet")],
           [tx(t, "oglSetup_a4", "Vertex Array Objects"), tx(t, "oglSetup_a4b", "the description of the vertex layout, glVertexAttribPointer (step 4)"), tx(t, "oglSetup_a4c", "no change yet")],
-          [tx(t, "oglSetup_a5", "First Shaders"), tx(t, "oglSetup_a5b", "colour per vertex, uniforms, a helper that compiles shaders"), tx(t, "oglSetup_a5c", "no change yet")],
+          [tx(t, "oglSetup_a5", "First Shaders"), tx(t, "oglSetup_a5b2", "the compileShader and makeProgram helpers above main; step 4a becomes one call"), tx(t, "oglSetup_a5c2", "no change yet, but a shader error now prints its line and closes the program")],
           [tx(t, "oglSetup_a6", "Drawing the Triangle"), tx(t, "oglSetup_a6b", "glUseProgram, glBindVertexArray and glDrawArrays inside the loop (step 5)"), tx(t, "oglSetup_a6c", "the coloured triangle; the chapter also shows the complete file")],
+          [tx(t, "oglSetup_a7", "Indexed Drawing (EBO)"), tx(t, "oglSetup_a7b", "4 vertices and an index list instead of the triangle, an EBO, glDrawElements"), tx(t, "oglSetup_a7c", "a square with a colour in each corner")],
+          [tx(t, "oglSetup_a8", "Textures"), tx(t, "oglSetup_a8b", "stb_image, an image file, (u, v) per vertex, a loadTexture helper, the texture bound in the loop"), tx(t, "oglSetup_a8c", "your image on the square")],
         ]}
       />
+      <p>
+        {tx(t, "oglSetup_alongCheck",
+          "From Vertex Buffer Objects on, every one of these chapters ends with \"Your main.cpp so far\": the whole file, with the new parts marked NEW, to compare with yours.")}
+      </p>
 
       <H2>{tx(t, "oglSetup_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
