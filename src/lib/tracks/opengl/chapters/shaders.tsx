@@ -4,7 +4,8 @@
 // anatomy of a GLSL shader; types, constructors and component-wise maths;
 // swizzling (figure); passing data between stages (in/out, matching rules,
 // interpolation, flat); the live editable triangle (figure); uniforms and the
-// glUniform family; the C++ side; a worked interpolation example; common
+// glUniform family; the C++ side (helpers that return a GLuint: ownership,
+// 0 as failure, copied names, a table of helpers); a worked interpolation example; common
 // mistakes.
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
@@ -198,6 +199,64 @@ GLuint makeProgram(const char* vsSrc, const char* fsSrc) {
     return p;
 }`}</CodeBlock>
 
+      <H3>{tx(t, "oglSh_retTitle", "Functions that return a GLuint")}</H3>
+      <p>
+        {tx(t, "oglSh_retBody",
+          "compileShader and makeProgram follow one pattern that works for every kind of OpenGL object. The function creates the object, sets it up and returns its name. The caller gets back a single GLuint and does not need to know the steps behind it.")}
+      </p>
+      <p>
+        {tx(t, "oglSh_retOwner",
+          "Whoever holds the returned name owns the object: they must delete it when it is no longer needed. Inside makeProgram, the shaders vs and fs belong to the function, so it deletes them before returning. The program p is handed to the caller, which deletes it with glDeleteProgram at the end of main (Drawing the Triangle chapter).")}
+      </p>
+      <p>
+        {tx(t, "oglSh_retZero",
+          "Because 0 is never a valid name, a function can return 0 to mean \"it failed\". The helpers above only print the error and return the broken object anyway. A stricter makeProgram cleans up and returns 0, and the caller checks it:")}
+      </p>
+      <CodeBlock lang="cpp" filename="main.cpp" t={t}>{`GLuint makeProgram(const char* vsSrc, const char* fsSrc) {
+    // ... compile, attach, link and read GL_LINK_STATUS into ok, as above ...
+    glDeleteShader(vs);            // not needed any more, whether linking worked or not
+    glDeleteShader(fs);
+    if (!ok) {
+        glDeleteProgram(p);        // free the half-made program
+        return 0;                  // 0 = "no program"
+    }
+    return p;
+}
+
+// In main, after gladLoadGLLoader and before the render loop:
+GLuint program = makeProgram(kVertexSrc, kFragmentSrc);
+if (program == 0) return 1;        // stop instead of looping over a black window`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "oglSh_tRetLine", "Line"), tx(t, "oglSh_tRetDoes", "What it does")]}
+        rows={[
+          ["glDeleteShader(vs)", tx(t, "oglSh_r1", "runs on both paths. After linking, the shader objects are no longer needed, success or not.")],
+          ["glDeleteProgram(p); return 0;", tx(t, "oglSh_r2", "on failure, frees the program that did not link and reports it with the one name that is never valid.")],
+          ["if (program == 0) return 1;", tx(t, "oglSh_r3", "the caller decides what failure means. Here main quits with an error code; the error itself was already printed.")],
+        ]}
+      />
+
+      <p>
+        {tx(t, "oglSh_retCopy",
+          "A GLuint is only a label, like a ticket number. Copying it does not copy the object. After GLuint a = makeProgram(…); GLuint b = a; both variables name the same program. If you delete it through a, b still holds the number, but the object is gone. Using b is now an error, and the driver may later hand the same number to a new object, so b quietly names something else. Keep one clear owner per name, and set the variable to 0 after deleting: glDelete* ignores 0, so a second delete then does no harm.")}
+      </p>
+      <p>
+        {tx(t, "oglSh_retMore",
+          "The same pattern builds the rest of a small renderer. Each helper hides several calls behind one name:")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "oglSh_tHelper", "Helper"), tx(t, "oglSh_tReturns", "Returns"), tx(t, "oglSh_tHides", "Calls it hides")]}
+        rows={[
+          ["GLuint compileShader(type, src)", tx(t, "oglSh_h1r", "a shader name"), tx(t, "oglSh_h1", "create, source, compile, read the log")],
+          ["GLuint makeProgram(vs, fs)", tx(t, "oglSh_h2r", "a program name"), tx(t, "oglSh_h2", "compile both shaders, attach, link, check, delete the shaders")],
+          ["GLuint makeBuffer(data, bytes)", tx(t, "oglSh_h3r", "a buffer name"), tx(t, "oglSh_h3", "glGenBuffers, glBindBuffer, glBufferData (VBO chapter)")],
+          ["GLuint loadTexture(path)", tx(t, "oglSh_h4r", "a texture name"), tx(t, "oglSh_h4", "read the image file, create, bind, upload, build mipmaps (Textures chapter)")],
+          ["Mesh makeMesh(vertices, indices)", tx(t, "oglSh_h5r", "a struct with several names (vao, vbo, ebo) and the index count"), tx(t, "oglSh_h5", "everything in the VAO and EBO chapters. When one thing needs several objects, return a small struct instead of a single GLuint.")],
+        ]}
+      />
+      <Callout type="info" t={t}>
+        {tx(t, "oglSh_retRaii", "A GLuint does not delete its object by itself: forget glDelete* and the GPU memory leaks until the context closes; copy the name and there are two owners. C++ can solve both with a small class that deletes the object in its destructor (RAII). For a first program, helpers that return a GLuint plus one clean-up block at the end of main are enough.")}
+      </Callout>
+
       <H2>{tx(t, "oglSh_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
         headers={[tx(t, "oglSh_tMistake", "Mistake"), tx(t, "oglSh_tFix", "What happens, and the fix")]}
@@ -220,6 +279,7 @@ GLuint makeProgram(const char* vsSrc, const char* fsSrc) {
         "Vertex shader outs connect to fragment shader ins by name and type, and are interpolated across the triangle; flat turns that off.",
         "Uniforms carry per-draw values from C++: glGetUniformLocation, then the matching glUniform* on the program in use.",
         "A location of −1 means the uniform is missing or unused, and writes to it are silently ignored.",
+        "Helpers that create an object and return its GLuint name hide the setup; the holder owns and deletes it, 0 means failure, and copying a name never copies the object.",
       ]} />
     </Article>
   );

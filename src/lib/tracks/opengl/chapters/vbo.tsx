@@ -4,6 +4,7 @@
 // the PCIe bus, integrated GPUs; bandwidth figure); a vertex array as bytes
 // (sizeof, IEEE-754, little-endian; figure with the sizeof-pointer bug);
 // creating a VBO (gen, bind, glBufferData with every argument explained);
+// GLuint and the other GL types (why not unsigned int);
 // usage hints (frequency × access); updating (glBufferSubData, orphaning with
 // nullptr); lifetime and deletion; worked examples; the attribute description
 // and why nothing draws without a VAO; common mistakes.
@@ -56,6 +57,31 @@ export function VBOContent({ t }: { t: TrackTranslations }) {
       </p>
       <CodeBlock lang="cpp" filename="main.cpp" t={t}>{`GLuint vbo;
 glGenBuffers(1, &vbo);   // one new buffer name, written into vbo`}</CodeBlock>
+
+      <H3>{tx(t, "oglVbo_glTypesTitle", "Why GLuint and not unsigned int")}</H3>
+      <p>
+        {tx(t, "oglVbo_glTypesBody",
+          "GLuint is not a new kind of number. The OpenGL header defines it with typedef, and on every desktop platform it is exactly unsigned int. So GLuint vbo; and unsigned int vbo; compile to the same thing.")}
+      </p>
+      <p>
+        {tx(t, "oglVbo_glTypesWhy",
+          "The difference is a guarantee. The C++ standard only promises that an unsigned int has at least 16 bits; the real size is up to the compiler. The OpenGL specification promises that a GLuint has exactly 32 bits on every platform. The GL types exist so that every number you pass has the size the driver expects. The same family covers the other arguments you will meet:")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "oglVbo_tGlType", "GL type"), tx(t, "oglVbo_tCppType", "On desktop"), tx(t, "oglVbo_tSize", "Size"), tx(t, "oglVbo_tUsedFor", "Used for")]}
+        rows={[
+          ["GLuint", "unsigned int", "32 bits", tx(t, "oglVbo_gt1", "object names (buffers, shaders, textures) and unsigned index values (GL_UNSIGNED_INT)")],
+          ["GLint", "int", "32 bits", tx(t, "oglVbo_gt2", "signed values, such as a uniform location (−1 means \"not found\") or a status read with glGet*iv")],
+          ["GLsizei", "int", "32 bits", tx(t, "oglVbo_gt3", "counts, such as the n of glGenBuffers or the vertex count of glDrawArrays; never negative")],
+          ["GLenum", "unsigned int", "32 bits", tx(t, "oglVbo_gt4", "named constants: GL_ARRAY_BUFFER, GL_TRIANGLES, GL_FLOAT")],
+          ["GLfloat", "float", "32 bits", tx(t, "oglVbo_gt5", "floating-point values, as in glClearColor or glUniform1f")],
+          ["GLboolean", "unsigned char", "8 bits", tx(t, "oglVbo_gt6", "GL_TRUE or GL_FALSE, such as the normalized argument of glVertexAttribPointer")],
+          ["GLsizeiptr", "ptrdiff_t", tx(t, "oglVbo_gt7s", "64 bits on a 64-bit program"), tx(t, "oglVbo_gt7", "sizes in bytes of buffers, as in glBufferData; as wide as a pointer, so a buffer can be larger than 4 GB")],
+        ]}
+      />
+      <Callout type="tip" t={t}>
+        {tx(t, "oglVbo_glTypesTip", "Which one to write: use the GL types in code that talks to OpenGL. GLuint vbo tells the reader \"this number is an OpenGL name\"; unsigned int vbo could be any count. It also keeps the C++ type next to its matching enum: an index array of GLuint goes with GL_UNSIGNED_INT, one of GLushort with GL_UNSIGNED_SHORT (EBO chapter). For your own maths and logic, ordinary C++ types are fine. Many tutorials, LearnOpenGL included, write unsigned int: the program behaves the same, so do not let it confuse you.")}
+      </Callout>
 
       <H3>{tx(t, "oglVbo_s2Title", "2. Bind it")}</H3>
       <p>
@@ -171,6 +197,7 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
         "Usage hints (STATIC, DYNAMIC, STREAM × DRAW, READ, COPY) guide placement but never change behaviour.",
         "glBufferSubData changes part of a buffer without reallocating; glDeleteBuffers frees it.",
         "The layout of the bytes is described with glVertexAttribPointer, stored in a VAO; in Core nothing draws without one.",
+        "GLuint is OpenGL's unsigned int with a guaranteed 32 bits; use the GL types (GLuint, GLint, GLsizei, GLenum…) where code talks to OpenGL.",
       ]} />
     </Article>
   );

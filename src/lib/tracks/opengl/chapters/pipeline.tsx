@@ -348,11 +348,11 @@ glShaderSource(fragmentShader, 3, parts, nullptr);        // compiled as one tex
         {tx(t, "oglPipe_compileSteps",
           "Turning the two strings into something the GPU can run takes two steps, and each can fail on its own. Compiling checks and translates each shader by itself. Linking joins the compiled vertex and fragment shaders into one program object, checking that what one stage outputs matches what the next one reads. This code goes in main, after gladLoadGLLoader and before the render loop (step 4 of the Window & Context file):")}
       </p>
-      <CodeBlock lang="cpp" filename="shader_compile.cpp" t={t}>{`unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+      <CodeBlock lang="cpp" filename="shader_compile.cpp" t={t}>{`GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);       // a name: OpenGL's unsigned int (VBO chapter)
 glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);   // hand over the text
 glCompileShader(vertexShader);                                // GLSL → GPU code
 
-int success;
+GLint success;
 glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);    // did it compile?
 if (!success) {
     char infoLog[512];
@@ -361,7 +361,7 @@ if (!success) {
 }
 // ... the same for fragmentShader ...
 
-unsigned int shaderProgram = glCreateProgram();
+GLuint shaderProgram = glCreateProgram();
 glAttachShader(shaderProgram, vertexShader);
 glAttachShader(shaderProgram, fragmentShader);
 glLinkProgram(shaderProgram);                                 // connect the stages
