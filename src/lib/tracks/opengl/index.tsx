@@ -35,7 +35,7 @@ export const openGLChapters: Chapter[] = [
   // ── 3D & Transformations ─────────────────────────────────────────────────
   { id: "vectors",         section: TRANSFORMS,      title: "Vectors for 3D",            minRead: 18, load: () => import("./chapters/vectors").then((m) => m.VectorsContent) },
   { id: "linear-algebra",  section: TRANSFORMS,      title: "Matrices for 3D",           minRead: 18, load: () => import("./chapters/linear-algebra").then((m) => m.LinearAlgebraContent) },
-  { id: "transformations", section: TRANSFORMS,      title: "Transformations + GLM",     minRead: 11, load: () => import("./chapters/transformations").then((m) => m.TransformationsContent) },
+  { id: "transformations", section: TRANSFORMS,      title: "Transformations + GLM",     minRead: 18, load: () => import("./chapters/transformations").then((m) => m.TransformationsContent) },
   { id: "camera",          section: TRANSFORMS,      title: "Camera & View Matrix",      minRead: 11, load: () => import("./chapters/transforms").then((m) => m.CameraContent) },
   { id: "depth-testing",   section: TRANSFORMS,      title: "Depth Testing",             minRead: 9,  load: () => import("./chapters/transforms").then((m) => m.DepthTestingContent) },
 
