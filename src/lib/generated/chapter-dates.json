@@ -605,15 +605,15 @@
   },
   "opengl/triangle": {
     "created": "2026-03-18",
-    "updated": "2026-09-29"
+    "updated": "2026-10-01"
   },
   "opengl/ebo": {
     "created": "2026-05-30",
-    "updated": "2026-09-29"
+    "updated": "2026-10-01"
   },
   "opengl/textures": {
     "created": "2026-05-30",
-    "updated": "2026-09-27"
+    "updated": "2026-10-01"
   },
   "opengl/linear-algebra": {
     "created": "2026-05-30",
