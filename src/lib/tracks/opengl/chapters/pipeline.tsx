@@ -6,10 +6,11 @@
 // NDC (2D and 3D figures); primitive assembly and clipping; the viewport
 // transform, with a worked example; rasterization, pixel centres, fragments
 // and barycentric interpolation (figure); the fragment shader; per-fragment
-// operations; how shaders are compiled and linked; counting the work; common
-// mistakes.
+// operations; shaders as C++ strings or in their own files (reading them,
+// the working-directory trap, SHADER_DIR from CMake), where the compile code goes in main.cpp,
+// and how they are compiled and linked; counting the work; common mistakes.
 
-import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
+import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { InteractiveNDC2D } from "@/components/lesson/figures/ndc/InteractiveNDC2D";
 import { InteractiveNDC3D } from "@/components/lesson/figures/ndc/InteractiveNDC3D";
@@ -63,7 +64,11 @@ export function PipelineContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "oglPipe_vsTitle", "The vertex shader")}</H2>
       <p>
         {tx(t, "oglPipe_vsBody",
-          "The vertex shader runs once for every vertex of every draw call, and each run sees only its own vertex. Its inputs are the vertex's attributes, declared with in; here one attribute, the position, arrives at location 0 (the VAO chapter connects that number to a buffer). Its one required job is to write the vertex's final position to the built-in variable gl_Position, a vec4: four floats x, y, z and w. For now we pass the position through unchanged and set w to 1.0; the Transformations section will multiply it by matrices here to move, rotate and project the model.")}
+          "The vertex shader is a small function that the GPU calls once for each vertex. For one triangle, that is three calls. Each call receives the data of one vertex only; it cannot see the other two.")}
+      </p>
+      <p>
+        {tx(t, "oglPipe_vsBody2",
+          "It has one required job: say where the vertex is, by writing its position to gl_Position. That is the whole shader below. It receives the position, three numbers x, y and z, and hands it on unchanged.")}
       </p>
       <CodeBlock lang="glsl" filename="vertex.glsl" t={t}>{`#version 460 core                         // GLSL 4.60, Core profile
 
@@ -72,11 +77,34 @@ layout (location = 0) in vec3 aPos;       // attribute 0: the position, 3 floats
 void main() {
     gl_Position = vec4(aPos, 1.0);        // x, y, z from the buffer, w = 1
 }`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "oglPipe_tLine", "Line"), tx(t, "oglPipe_tMeans", "What it means")]}
+        rows={[
+          ["#version 460 core", tx(t, "oglPipe_vl1", "the GLSL version: 4.60, which goes with OpenGL 4.6, Core profile. It must be the first line.")],
+          ["layout (location = 0)", tx(t, "oglPipe_vl2", "gives this input the number 0. The C++ side uses that number to say \"the positions in my buffer go to input 0\" (the VAO chapter does exactly that).")],
+          ["in vec3 aPos", tx(t, "oglPipe_vl3", "an input of the shader, here a vec3 (three floats: x, y, z) called aPos. The name is your choice; the a stands for attribute, one of the vertex's values.")],
+          ["void main()", tx(t, "oglPipe_vl4", "the function the GPU calls once per vertex.")],
+          ["gl_Position", tx(t, "oglPipe_vl5", "the built-in output for the position. It is not declared because GLSL already has it (built-in names start with gl_). It is a vec4: four floats, x, y, z and w.")],
+          ["vec4(aPos, 1.0)", tx(t, "oglPipe_vl6", "builds those four floats: the three of aPos followed by 1.0 as w.")],
+        ]}
+      />
+      <p>
+        {tx(t, "oglPipe_vsW",
+          "So what is w, and why 1? A point in 3D needs only x, y and z; w is a fourth number that exists for perspective. Right after the vertex shader, the GPU divides x, y and z by w. With w = 1, dividing by 1 changes nothing, and the position comes out exactly as you wrote it. That is all we want for now. Later, the projection matrix (Transformations section) sets w to the distance from the camera, and the division then makes far things smaller. The next section shows the division with numbers.")}
+      </p>
+      <p>
+        {tx(t, "oglPipe_vsLater",
+          "This line, gl_Position = …, is also where the Transformations section will move, rotate and project the model, by multiplying the position by matrices before writing it.")}
+      </p>
 
       <H2>{tx(t, "oglPipe_ndcTitle", "Clip space, w and normalized device coordinates")}</H2>
       <p>
         {tx(t, "oglPipe_ndcBody",
-          "The position written to gl_Position is in clip space. After the vertex shader, the GPU divides x, y and z by w (the perspective divide), which gives normalized device coordinates, NDC. In NDC the visible region is the same for every window: x from −1 (left edge) to +1 (right edge), y from −1 (bottom) to +1 (top), z from −1 (near) to +1 (far). Anything outside is clipped away. With w = 1 the division changes nothing, so for now the numbers you put in the buffer are NDC directly. Later, the projection matrix will set w to the distance from the camera, and the division by w is what makes far things small.")}
+          "The four numbers written to gl_Position are called clip-space coordinates. The GPU then divides x, y and z by w; this step is the perspective divide, and its result is called normalized device coordinates, NDC for short.")}
+      </p>
+      <p>
+        {tx(t, "oglPipe_ndcBody2",
+          "NDC is the coordinate system of the screen, the same for every window: x goes from −1 at the left edge to +1 at the right edge, y from −1 at the bottom to +1 at the top, and z from −1 (near) to +1 (far). Anything outside that range is not drawn. Example: a vertex shader that writes (0.5, −0.5, 0, 1) gives NDC (0.5/1, −0.5/1, 0/1) = (0.5, −0.5, 0), halfway to the right edge and halfway down. Because w = 1 in this chapter, the numbers you put in your vertex array are already NDC.")}
       </p>
       <Equation label={tx(t, "oglPipe_eqDivide", "The perspective divide")}
         where={[
@@ -181,7 +209,90 @@ void main() {
       <H2>{tx(t, "oglPipe_compileTitle", "How shaders get compiled")}</H2>
       <p>
         {tx(t, "oglPipe_compileBody",
-          "Shaders are not compiled by your C++ compiler at build time. Your program hands the GLSL source text to the driver while it runs, and the driver compiles it on the CPU into the machine code of the GPU that is actually installed. That is why the same program runs on NVIDIA, AMD and Intel cards. Compiling and linking are two separate steps, and each can fail on its own:")}
+          "Shaders are not compiled by your C++ compiler at build time. Your program hands the GLSL source text to the driver while it runs, and the driver compiles it on the CPU into the machine code of the GPU that is actually installed. That is why the same program runs on NVIDIA, AMD and Intel cards.")}
+      </p>
+      <p>
+        {tx(t, "oglPipe_srcBody",
+          "So to the C++ program a shader is just a string. The simplest way to write one is a raw string literal: everything between R\"( and )\" is taken literally, line breaks included, so the GLSL can be pasted as it is. Put the two shaders at the top of main.cpp, outside main:")}
+      </p>
+      <CodeBlock lang="cpp" filename="src/main.cpp" t={t}>{`// The two shaders of this chapter, as C++ strings
+const char* vertexShaderSource = R"(#version 460 core
+layout (location = 0) in vec3 aPos;
+void main() {
+    gl_Position = vec4(aPos, 1.0);
+})";
+
+const char* fragmentShaderSource = R"(#version 460 core
+out vec4 FragColor;
+void main() {
+    FragColor = vec4(1.0, 0.5, 0.2, 1.0);
+})";`}</CodeBlock>
+      <Callout type="tip" t={t}>
+        {tx(t, "oglPipe_srcTip",
+          "#version must be the very first thing in the string, so write it right after R\"( on the same line; a line break before it is a compile error on some drivers.")}
+      </Callout>
+
+      <H3>{tx(t, "oglPipe_filesTitle", "Shaders in their own files")}</H3>
+      <p>
+        {tx(t, "oglPipe_filesBody",
+          "Strings inside main.cpp are fine for one triangle, but they get in the way quickly: the editor shows GLSL as one grey string with no colours, every shader change means rebuilding the C++ program, and main.cpp fills up with code that is not C++. The usual fix is to give each shader its own file and have the program read the file when it starts. Nothing else changes: the driver still receives the same text, it just comes from disk instead of from a string literal.")}
+      </p>
+      <CodeBlock lang="bash" filename="project_layout.txt" t={t}>{`CMakeLists.txt
+src/main.cpp
+shaders/triangle.vert      # vertex shader: plain GLSL, #version on line 1
+shaders/triangle.frag      # fragment shader`}</CodeBlock>
+      <p>
+        {tx(t, "oglPipe_filesExt",
+          "The files hold exactly the GLSL from this chapter, without R\"( and )\". The extensions .vert and .frag are only a convention (.vs/.fs and .glsl are also common); OpenGL never sees the file name. Editors use it to pick GLSL highlighting: in VS Code, install a GLSL extension. Then a small function reads a whole file into a std::string:")}
+      </p>
+      <CodeBlock lang="cpp" filename="src/main.cpp" t={t}>{`#include <fstream>
+#include <sstream>
+#include <string>
+
+// Reads a whole text file; returns "" (and says so) if it cannot be opened
+std::string readFile(const std::string& path) {
+    std::ifstream file(path);
+    if (!file) {
+        std::cerr << "could not open " << path << "\\n";
+        return "";
+    }
+    std::stringstream ss;
+    ss << file.rdbuf();            // copy the whole file into the stream
+    return ss.str();
+}
+
+// In main, after gladLoadGLLoader, in place of the two string literals:
+std::string vertexCode   = readFile(SHADER_DIR "triangle.vert");
+std::string fragmentCode = readFile(SHADER_DIR "triangle.frag");
+const char* vertexShaderSource   = vertexCode.c_str();
+const char* fragmentShaderSource = fragmentCode.c_str();
+// ... the compile and link code below stays exactly the same ...`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "oglPipe_tLine", "Line"), tx(t, "oglPipe_tMeans", "What it means")]}
+        rows={[
+          ["std::ifstream file(path)", tx(t, "oglPipe_fl1", "opens the file for reading. If it does not exist, or the path is wrong, file is false and the if prints the path it tried, which is the first thing to check when something fails.")],
+          ["ss << file.rdbuf()", tx(t, "oglPipe_fl2", "copies everything in the file, line breaks included, into a string stream; ss.str() turns it into a std::string.")],
+          ["SHADER_DIR \"triangle.vert\"", tx(t, "oglPipe_fl3", "two string literals written side by side are joined by the compiler, so this becomes the full path, for example \"C:/dev/GLApp/shaders/triangle.vert\". SHADER_DIR comes from CMake, below.")],
+          [".c_str()", tx(t, "oglPipe_fl4", "gives the const char* that glShaderSource expects. The pointer is valid only while vertexCode exists, which is why the string is kept in a variable.")],
+        ]}
+      />
+      <p>
+        {tx(t, "oglPipe_cwdBody",
+          "Why not simply readFile(\"shaders/triangle.vert\")? A relative path is resolved from the working directory, the folder the program is started from, and that is usually not your project folder: Visual Studio and CLion start it from the build folder (build/, or build/Debug/), where there is no shaders/ folder. The file is not found, readFile returns an empty string, and the driver then reports a confusing compile error about a missing #version. The simplest fix while developing is to let CMake write the absolute path of the shaders folder into the program:")}
+      </p>
+      <CodeBlock lang="cmake" filename="CMakeLists.txt" t={t}>{`# After add_executable(app ...): define SHADER_DIR as the absolute path of shaders/
+target_compile_definitions(app PRIVATE SHADER_DIR="\${CMAKE_SOURCE_DIR}/shaders/")`}</CodeBlock>
+      <p>
+        {tx(t, "oglPipe_cwdAfter",
+          "Now the program finds its shaders wherever it is started from, and you can edit a .frag file and just run again, with no rebuild. The catch is that the path points into your project folder, so the program will not find its shaders on another computer. When you want to share it, copy the shaders/ folder next to the executable instead (CMake can do it after each build with add_custom_command and copy_directory) and read them with a path relative to the executable. The GLSL track's Shader Class chapter wraps all of this, reading, compiling, linking and the error checks, into a small reusable class, and adds reloading the shaders while the program runs.")}
+      </p>
+      <Callout type="warn" t={t}>
+        {tx(t, "oglPipe_filesWarn",
+          "Two traps that look like shader bugs. First, the shortcut const char* src = readFile(\"…\").c_str(); keeps a pointer into a temporary string that is destroyed at the end of that same line, so glShaderSource later reads freed memory. Always keep the std::string in a variable, as above. Second, some Windows editors save files as \"UTF-8 with BOM\", which puts three invisible bytes before #version; some drivers then reject line 1. If the first line errors for no visible reason, save the file as plain UTF-8.")}
+      </Callout>
+      <p>
+        {tx(t, "oglPipe_compileSteps",
+          "Turning the two strings into something the GPU can run takes two steps, and each can fail on its own. Compiling checks and translates each shader by itself. Linking joins the compiled vertex and fragment shaders into one program object, checking that what one stage outputs matches what the next one reads. This code goes in main, after gladLoadGLLoader and before the render loop (step 4 of the Window & Context file):")}
       </p>
       <CodeBlock lang="cpp" filename="shader_compile.cpp" t={t}>{`unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);   // hand over the text
@@ -213,6 +324,10 @@ glDeleteShader(fragmentShader);`}</CodeBlock>
       <Callout type="warn" t={t}>
         {tx(t, "oglPipe_compileWarn", "Always check for compile and link errors during development. A typo in GLSL produces no C++ error at all; without the check you just get a black screen. The info log names the exact line that failed.")}
       </Callout>
+      <p>
+        {tx(t, "oglPipe_runBody",
+          "If you are coding along, run the program now. The window looks the same as before: you have a program that can draw, but nothing to draw with it yet. What you can test is the error check: delete a semicolon in vertexShaderSource and the console prints the driver's message with the line number. The triangle itself needs vertices in GPU memory (VBO chapter), a description of their layout (VAO chapter) and, inside the loop, glUseProgram(shaderProgram) followed by a draw call (Drawing the Triangle).")}
+      </p>
 
       <H2>{tx(t, "oglPipe_countTitle", "Counting the work")}</H2>
       <p>
@@ -230,6 +345,7 @@ glDeleteShader(fragmentShader);`}</CodeBlock>
           [tx(t, "oglPipe_e4", "Thinking a fragment is a pixel"), tx(t, "oglPipe_e4b", "several triangles can produce fragments for the same pixel; tests and blending decide which one, if any, ends up in it.")],
           [tx(t, "oglPipe_e5", "Not checking compile and link status"), tx(t, "oglPipe_e5b", "a GLSL error gives a silent black screen. Check both, and print the info log.")],
           [tx(t, "oglPipe_e6", "Forgetting glViewport after a resize"), tx(t, "oglPipe_e6b", "NDC is still mapped to the old rectangle, so the picture is squashed or cut off. Update it in the framebuffer-size callback.")],
+          [tx(t, "oglPipe_e7", "Loading shader files with a relative path"), tx(t, "oglPipe_e7b", "the program runs from the build folder, the file is not found and the driver compiles an empty string (\"no #version\"). Use the SHADER_DIR path from CMake, or copy the shaders next to the executable.")],
         ]}
       />
 

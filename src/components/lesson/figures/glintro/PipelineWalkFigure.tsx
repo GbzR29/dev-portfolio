@@ -64,7 +64,7 @@ const FRAGMENTS = (() => {
 
 const STAGES: [string, string, string][] = [
   ["figGlWalk_s0", "vertex data", "The program's array: three vertices, each a position (x, y, z) and a colour. glDrawArrays(GL_TRIANGLES, 0, 3) sends them into the pipeline."],
-  ["figGlWalk_s1", "vertex shader", "Runs once per vertex, three times here, each run seeing only its own vertex. It writes gl_Position (here the position unchanged, with w = 1) and passes the colour on in an out variable."],
+  ["figGlWalk_s1", "vertex shader", "Runs once per vertex, three times here, each run seeing only its own vertex. It writes the vertex's position to gl_Position, here unchanged, and passes the colour on in an out variable. gl_Position has a fourth number, w, used for perspective; here it is 1, which changes nothing (explained right after this figure)."],
   ["figGlWalk_s2", "primitive assembly", "GL_TRIANGLES groups the vertices three at a time into triangles. With GL_LINES they would be joined in pairs, with GL_POINTS drawn alone."],
   ["figGlWalk_s3", "clipping", "Everything outside the NDC square from −1 to +1 is cut away. The green vertex sits at x = 1.3, so the triangle is cut along x = 1 into a four-sided polygon, which is split into two triangles. (Division by w also happens here; with w = 1 it changes nothing.)"],
   ["figGlWalk_s4", "viewport transform", "glViewport(0, 0, 16, 10) maps NDC to window pixels: x_w = (x + 1) / 2 · 16 and y_w = (y + 1) / 2 · 10. NDC −1 becomes the left or bottom edge, +1 the right or top edge."],

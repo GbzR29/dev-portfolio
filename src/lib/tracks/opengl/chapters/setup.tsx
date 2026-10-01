@@ -13,7 +13,9 @@ import { DoubleBufferFigure } from "@/components/lesson/figures/glintro/DoubleBu
 // state machine (bind points, object names, the forgotten-bind bug, figure);
 // generating GLAD; the CMake file; creating a 4.6 Core context (hints, order
 // rules, macOS 4.1); double buffering and vsync (figure); the render loop,
-// line by line; resizing and high-DPI; a sanity check; common mistakes.
+// line by line; resizing and high-DPI; the whole file and a sanity check;
+// the same program with SDL3, SFML and LWJGL; the code-along roadmap of the
+// next chapters; common mistakes.
 
 export function SetupContent({ t }: { t: TrackTranslations }) {
   return (
@@ -24,6 +26,11 @@ export function SetupContent({ t }: { t: TrackTranslations }) {
           "OpenGL is a specification, not a library. There is no opengl.dll you link against that contains the modern functions — the implementation lives inside your graphics driver, and the entry points must be looked up at runtime. On top of that, OpenGL knows nothing about windows, keyboards or monitors. Two extra libraries fill those gaps, and this chapter sets both up."
         )}
       </Lead>
+
+      <Callout type="info" t={t}>
+        {tx(t, "oglSetup_stackNote",
+          "What this track uses: C++, with GLFW for the window, GLAD to load the OpenGL functions and GLM for the maths, built with CMake. It is the most common combination in books and tutorials, so it is the one you will find answers for most easily. If you already use SDL, SFML or Java with LWJGL, keep it: only about ten lines, the ones that create the window and run the loop, are different. The section \"Using another window library\" near the end shows them side by side. Every gl… call, and every shader, is exactly the same in all of them.")}
+      </Callout>
 
       <H2>{tx(t, "oglSetup_piecesTitle", "The three pieces")}</H2>
       <LessonTable
@@ -74,6 +81,11 @@ export function SetupContent({ t }: { t: TrackTranslations }) {
 include/glad/glad.h
 include/KHR/khrplatform.h
 src/glad.c          # compile this into your target like any other source file`}</CodeBlock>
+
+      <Callout type="tip" t={t}>
+        {tx(t, "oglSetup_glad2Tip",
+          "There are two versions of GLAD. This track uses GLAD 1 (generator at glad.dav1d.de): header glad/glad.h, loaded with gladLoadGLLoader((GLADloadproc)glfwGetProcAddress). The newer GLAD 2 (gen.glad.sh) works the same way but names things differently: header glad/gl.h and the call gladLoadGL(glfwGetProcAddress). Either works; just do not mix the header of one with the call of the other.")}
+      </Callout>
 
       <H2>{tx(t, "oglSetup_cmakeTitle", "The build file")}</H2>
       <CodeBlock lang="cmake" filename="CMakeLists.txt" t={t}>{`cmake_minimum_required(VERSION 3.20)
@@ -225,12 +237,192 @@ glfwTerminate();`}</CodeBlock>
         )}
       </Callout>
 
+      <H2>{tx(t, "oglSetup_fullTitle", "The whole file")}</H2>
+      <p>
+        {tx(t, "oglSetup_fullBody",
+          "The pieces above, joined into one main.cpp that compiles with the CMake file from this chapter. This is your project at the end of this chapter: a window that opens, shows a dark blue-grey colour and closes with Esc. The next chapters add to this same file; the comment // ... draw ... marks where the drawing will go.")}
+      </p>
+      <CodeBlock lang="cpp" filename="src/main.cpp" t={t}>{`#include <glad/glad.h>      // MUST come before glfw3.h
+#include <GLFW/glfw3.h>
+#include <iostream>
+
+// Called by GLFW whenever the framebuffer changes size (in pixels)
+void framebufferSizeCallback(GLFWwindow*, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+int main() {
+    // ── 1. Window library and context ────────────────────────────────────────
+    if (!glfwInit()) {
+        std::cerr << "glfwInit failed\\n";
+        return 1;
+    }
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+#endif
+
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "GLApp", nullptr, nullptr);
+    if (!window) {
+        std::cerr << "window creation failed\\n";
+        glfwTerminate();
+        return 1;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);                                        // vsync
+
+    // ── 2. Load the OpenGL functions (no gl* call before this) ───────────────
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "GLAD failed to load OpenGL\\n";
+        return 1;
+    }
+    std::cout << "GL " << glGetString(GL_VERSION) << "\\n";
+
+    // ── 3. Viewport, now and on every resize ─────────────────────────────────
+    int fbw, fbh;
+    glfwGetFramebufferSize(window, &fbw, &fbh);                 // pixels, not window units
+    glViewport(0, 0, fbw, fbh);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+    // ── 4. One-time setup: shaders, buffers (next chapters) ──────────────────
+
+    // ── 5. The render loop: input, clear, draw, swap, poll ───────────────────
+    while (!glfwWindowShouldClose(window)) {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+
+        glClearColor(0.06f, 0.07f, 0.10f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // ... draw ...
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // ── 6. Clean up ──────────────────────────────────────────────────────────
+    glfwTerminate();
+    return 0;
+}`}</CodeBlock>
+
       <H3>{tx(t, "oglSetup_checkTitle", "Sanity check")}</H3>
       <p>
         {tx(t, "oglSetup_checkBody",
           "If the window opens and shows your clear colour, everything is wired correctly and you can move on. If it opens white or black, the clear colour is not being applied — check that glClear runs inside the loop and that glfwSwapBuffers is called after drawing, not before."
         )}
       </p>
+
+      <H2>{tx(t, "oglSetup_otherTitle", "Using another window library")}</H2>
+      <p>
+        {tx(t, "oglSetup_otherBody",
+          "GLFW does only four jobs in this program: it creates the window and the context, tells GLAD where to find the OpenGL functions, shows the finished frame, and delivers events such as keys, resizes and the close button. Every other line is plain OpenGL and does not care which library opened the window. So if you use SDL, SFML or LWJGL, replace only the lines in this table and copy the rest of each chapter unchanged.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "oglSetup_oJob", "Job"), "GLFW", "SDL3", "SFML 3"]}
+        rows={[
+          [tx(t, "oglSetup_o1", "Ask for 4.6 Core"), "glfwWindowHint", "SDL_GL_SetAttribute", "sf::ContextSettings"],
+          [tx(t, "oglSetup_o2", "Create window + context"), "glfwCreateWindow, glfwMakeContextCurrent", "SDL_CreateWindow, SDL_GL_CreateContext", "sf::Window(…, settings)"],
+          [tx(t, "oglSetup_o3", "Address for GLAD"), "glfwGetProcAddress", "SDL_GL_GetProcAddress", "sf::Context::getFunction"],
+          [tx(t, "oglSetup_o4", "Vsync"), "glfwSwapInterval(1)", "SDL_GL_SetSwapInterval(1)", "setVerticalSyncEnabled(true)"],
+          [tx(t, "oglSetup_o5", "Show the frame"), "glfwSwapBuffers", "SDL_GL_SwapWindow", "window.display()"],
+          [tx(t, "oglSetup_o6", "Events and closing"), "glfwPollEvents", "SDL_PollEvent", "window.pollEvent()"],
+          [tx(t, "oglSetup_o7", "Size in pixels"), "glfwGetFramebufferSize", "SDL_GetWindowSizeInPixels", "window.getSize()"],
+        ]}
+      />
+      <p>
+        {tx(t, "oglSetup_otherSdl",
+          "The same program with SDL3. Note the order is the same as with GLFW: describe the context, create the window, create the context (SDL makes it current at once), load GLAD, and only then call OpenGL.")}
+      </p>
+      <CodeBlock lang="cpp" filename="main_sdl3.cpp" t={t}>{`#include <glad/glad.h>
+#include <SDL3/SDL.h>
+
+int main(int, char**) {
+    SDL_Init(SDL_INIT_VIDEO);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+    SDL_Window* window = SDL_CreateWindow("GLApp", 1280, 720,
+                                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    SDL_GLContext context = SDL_GL_CreateContext(window);    // also makes it current
+    gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
+    SDL_GL_SetSwapInterval(1);
+
+    bool running = true;
+    while (running) {
+        SDL_Event e;
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_EVENT_QUIT) running = false;
+            if (e.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED)
+                glViewport(0, 0, e.window.data1, e.window.data2);
+        }
+        glClearColor(0.06f, 0.07f, 0.10f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // ... draw: identical to the GLFW version ...
+        SDL_GL_SwapWindow(window);
+    }
+
+    SDL_GL_DestroyContext(context);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+    return 0;
+}`}</CodeBlock>
+      <p>
+        {tx(t, "oglSetup_otherSfml",
+          "With SFML, use sf::Window, not sf::RenderWindow: the plain window gives you an OpenGL context without SFML's own 2D drawing state getting in the way.")}
+      </p>
+      <CodeBlock lang="cpp" filename="main_sfml.cpp" t={t}>{`#include <glad/glad.h>
+#include <SFML/Window.hpp>
+
+int main() {
+    sf::ContextSettings settings;
+    settings.majorVersion   = 4;
+    settings.minorVersion   = 6;
+    settings.attributeFlags = sf::ContextSettings::Attribute::Core;
+    settings.depthBits      = 24;
+
+    sf::Window window(sf::VideoMode({1280, 720}), "GLApp",
+                      sf::Style::Default, sf::State::Windowed, settings);
+    window.setVerticalSyncEnabled(true);
+    window.setActive(true);                                     // make the context current
+    gladLoadGLLoader((GLADloadproc)sf::Context::getFunction);
+
+    while (window.isOpen()) {
+        while (const std::optional event = window.pollEvent()) {
+            if (event->is<sf::Event::Closed>()) window.close();
+            if (const auto* r = event->getIf<sf::Event::Resized>())
+                glViewport(0, 0, r->size.x, r->size.y);
+        }
+        glClearColor(0.06f, 0.07f, 0.10f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // ... draw: identical to the GLFW version ...
+        window.display();
+    }
+}`}</CodeBlock>
+      <p>
+        {tx(t, "oglSetup_otherLwjgl",
+          "LWJGL (Java, and Kotlin) wraps GLFW itself, so the window code is almost word for word the GLFW code, with long window instead of GLFWwindow*. It needs no GLAD: GL.createCapabilities(), called after glfwMakeContextCurrent, does the loader's job. With import static org.lwjgl.opengl.GL46C.*; the gl… calls keep their C names. The differences you will meet are in how data is passed: glGenBuffers() returns the name instead of writing it into a variable, and arrays go in as Java arrays or FloatBuffers instead of pointers with a size in bytes. The shaders are the same text, character for character.")}
+      </p>
+
+      <H2>{tx(t, "oglSetup_alongTitle", "Coding along: what each chapter adds")}</H2>
+      <p>
+        {tx(t, "oglSetup_alongBody",
+          "The next five chapters build one program: the coloured triangle. Each one explains a single piece, so for a while you will be adding code whose result you cannot see yet. That is expected. This is what each chapter adds to the main.cpp above, and what you should see when you run it.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "oglSetup_aCh", "Chapter"), tx(t, "oglSetup_aAdds", "Adds to main.cpp"), tx(t, "oglSetup_aSee", "What you see")]}
+        rows={[
+          [tx(t, "oglSetup_a1", "Window & Context (this one)"), tx(t, "oglSetup_a1b", "the window, the context, GLAD and the loop"), tx(t, "oglSetup_a1c", "a window filled with the clear colour")],
+          [tx(t, "oglSetup_a2", "The Graphics Pipeline"), tx(t, "oglSetup_a2b", "the two shaders as text, compiled and linked into a program (step 4)"), tx(t, "oglSetup_a2c", "the same window; the console prints any shader error")],
+          [tx(t, "oglSetup_a3", "Vertex Buffer Objects"), tx(t, "oglSetup_a3b", "the vertex array, copied into a buffer on the GPU (step 4)"), tx(t, "oglSetup_a3c", "no change yet")],
+          [tx(t, "oglSetup_a4", "Vertex Array Objects"), tx(t, "oglSetup_a4b", "the description of the vertex layout, glVertexAttribPointer (step 4)"), tx(t, "oglSetup_a4c", "no change yet")],
+          [tx(t, "oglSetup_a5", "First Shaders"), tx(t, "oglSetup_a5b", "colour per vertex, uniforms, a helper that compiles shaders"), tx(t, "oglSetup_a5c", "no change yet")],
+          [tx(t, "oglSetup_a6", "Drawing the Triangle"), tx(t, "oglSetup_a6b", "glUseProgram, glBindVertexArray and glDrawArrays inside the loop (step 5)"), tx(t, "oglSetup_a6c", "the coloured triangle; the chapter also shows the complete file")],
+        ]}
+      />
 
       <H2>{tx(t, "oglSetup_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -254,6 +446,7 @@ glfwTerminate();`}</CodeBlock>
         "Order matters: include glad.h first, make the context current, then load GLAD, then call OpenGL.",
         "Draw into the back buffer and swap; vsync (glfwSwapInterval(1)) waits for the vertical blank, so frames never tear and the loop is paced to the display.",
         "Each frame: measure dt, handle input, clear, draw, swap, poll events; set glViewport from the framebuffer size, in pixels.",
+        "Only the window code depends on the library (GLFW, SDL, SFML, LWJGL); every gl… call and every shader is the same in all of them.",
       ]} />
 
     </Article>

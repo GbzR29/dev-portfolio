@@ -112,7 +112,7 @@ const text: Record<string, string> = {
   figGlWalk_s7: "profundidade e blending",
   figGlWalk_s8: "framebuffer",
   figGlWalk_s0b: "O array do programa: três vértices, cada um com uma posição (x, y, z) e uma cor. glDrawArrays(GL_TRIANGLES, 0, 3) os envia para o pipeline.",
-  figGlWalk_s1b: "Roda uma vez por vértice, três vezes aqui, e cada execução vê só o seu próprio vértice. Escreve gl_Position (aqui a posição sem mudança, com w = 1) e repassa a cor numa variável out.",
+  figGlWalk_s1b: "Roda uma vez por vértice, três vezes aqui, e cada execução vê só o seu próprio vértice. Escreve a posição do vértice em gl_Position, aqui sem mudança, e repassa a cor numa variável out. O gl_Position tem um quarto número, w, que serve para a perspectiva; aqui ele vale 1, o que não muda nada (explicado logo depois desta figura).",
   figGlWalk_s2b: "GL_TRIANGLES agrupa os vértices de três em três em triângulos. Com GL_LINES eles seriam ligados em pares, com GL_POINTS desenhados sozinhos.",
   figGlWalk_s3b: "Tudo que fica fora do quadrado NDC de −1 a +1 é cortado. O vértice verde está em x = 1,3, então o triângulo é cortado ao longo de x = 1 num polígono de quatro lados, que é dividido em dois triângulos. (A divisão por w também acontece aqui; com w = 1 ela não muda nada.)",
   figGlWalk_s4b: "glViewport(0, 0, 16, 10) mapeia o NDC para pixels da janela: x_w = (x + 1) / 2 · 16 e y_w = (y + 1) / 2 · 10. O −1 do NDC vira a borda esquerda ou de baixo, o +1 a borda direita ou de cima.",
