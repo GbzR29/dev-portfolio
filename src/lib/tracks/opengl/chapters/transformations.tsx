@@ -6,6 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { TransformOrderFigure } from "@/components/lesson/figures/TransformOrderFigure";
 import { FrustumFigure } from "@/components/lesson/figures/FrustumFigure";
+import { VertexJourneyFigure } from "@/components/lesson/figures/VertexJourneyFigure";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 
@@ -47,6 +48,13 @@ glm::mat4 identity(1.0f);  // identity matrix`}</CodeBlock>
           ["Projection", tx(t, "mvpProjection", "Applies perspective — things far away appear smaller"),            "glm::perspective"],
         ]}
       />
+
+      <p>
+        {tx(t, "ch08_journeyIntro",
+          "Watch all three happen to one vertex. Each step moves the whole scene into the next space, and the table tracks the same vertex's coordinates along the way. After the projection, the GPU divides x, y and z by w on its own; you never write that step.")}
+      </p>
+
+      <VertexJourneyFigure t={t} />
 
       <H2>{tx(t, "ch08_modelTitle", "Model matrix — placing objects")}</H2>
       <p>

@@ -65,7 +65,7 @@ const text: Record<string, string> = {
   figQuad_note: "a define o quão larga é a parábola e se ela abre para cima (a > 0) ou para baixo (a < 0). O vértice, o ponto de virada, fica em x = −b/(2a). As raízes são onde a curva encontra o eixo x; elas ficam simétricas em volta do vértice, √Δ/(2a) para cada lado. Deslize c para cima até a curva descolar do eixo: no exato instante em que Δ chega a 0 as duas raízes se fundem em uma, e além disso elas precisariam da raiz quadrada de um número negativo, então não há nenhuma. O ray tracing faz exatamente essa pergunta para um raio e uma esfera: duas raízes significam que o raio entra e sai, uma que ele raspa, nenhuma que ele erra.",
   figUnit_title: "O círculo unitário: seno e cosseno",
   figUnit_note: "Arraste o ponto em volta do círculo, ou arraste no painel das ondas. O ângulo θ é medido a partir do eixo x positivo, no sentido anti-horário. A coordenada x do ponto é cos θ (vermelho), a coordenada y é sin θ (verde). Como o raio é 1, Pitágoras dá cos²θ + sin²θ = 1 em qualquer ângulo. Desenrolar o ângulo ao longo de uma reta transforma o movimento circular nas ondas conhecidas: o seno começa em 0, o cosseno em 1, separados por um quarto de volta (π/2). O comprimento do arco do eixo x até o ponto é igual a θ em radianos, que é exatamente o que é um radiano.",
-  figVec_title: "Escalar e Vetorial — O que Eles Medem",
+  figVec_opsTitle: "Operações com vetores",
   figVec_target: "mover até o alvo",
   figVec_speed: "velocidade",
   figVec_dist: "distância",

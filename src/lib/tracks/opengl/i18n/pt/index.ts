@@ -40,11 +40,12 @@ import transforms from "./transforms";
 import triangle from "./triangle";
 import vao from "./vao";
 import vbo from "./vbo";
+import vectors from "./vectors";
 import volumetrics from "./volumetrics";
 import winding from "./winding";
 
 const bundle: LessonText = {
-  strings: { ...advanced, ...clustered, ...color, ...compute, ...csm, ...decals, ...dsa, ...ebo, ...gi, ...legacy, ...lightingAdvanced, ...lightingBasics, ...linearAlgebra, ...models, ...oit, ...particles, ...pbr, ...performance, ...picking, ...pipeline, ...post, ...reflections, ...setup, ...shaderStages, ...shaders, ...skeletal, ...stencil, ...temporal, ...terrain, ...text, ...texturecompression, ...textures, ...tooling, ...transformations, ...transforms, ...triangle, ...vao, ...vbo, ...volumetrics, ...winding },
+  strings: { ...advanced, ...clustered, ...color, ...compute, ...csm, ...decals, ...dsa, ...ebo, ...gi, ...legacy, ...lightingAdvanced, ...lightingBasics, ...linearAlgebra, ...models, ...oit, ...particles, ...pbr, ...performance, ...picking, ...pipeline, ...post, ...reflections, ...setup, ...shaderStages, ...shaders, ...skeletal, ...stencil, ...temporal, ...terrain, ...text, ...texturecompression, ...textures, ...tooling, ...transformations, ...transforms, ...triangle, ...vao, ...vbo, ...vectors, ...volumetrics, ...winding },
   titles: track.titles,
   sections: track.sections,
 };

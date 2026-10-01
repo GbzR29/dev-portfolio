@@ -35,7 +35,8 @@ const text: Record<string, string> = {
   ch08_wBT: "y dos seus lados de baixo e de cima",
   ch08_wNF2: "distâncias até os planos near e far à frente da câmera (z em view space = −n e −f)",
   ch08_orthoEqNote: "Cada termo da diagonal espreme um lado da caixa nas 2 unidades das NDC, e a última coluna leva o centro da caixa para 0. A última linha é (0, 0, 0, 1), então w continua 1 e a divisão não muda nada: é por isso que não há perspectiva. Diferente do caso perspectivo, a profundidade fica guardada de forma linear e n = 0 é permitido.",
-  ch08_orthoCheck: "Confira um canto: x = r dá (2r − r − l) / (r − l) = 1, a borda direita das NDC, e x = l dá −1. A linha de z faz o mesmo para a profundidade: z = −n em view space cai em −1 e z = −f em +1, com o sinal de menos transformando 'à frente da câmera' (z negativo) em profundidade crescente.",
+  ch08_journeyIntro: "Veja as três acontecerem com um vértice. Cada passo leva a cena inteira para o próximo espaço, e a tabela acompanha as coordenadas do mesmo vértice pelo caminho. Depois da projeção, a GPU divide x, y e z por w sozinha; você nunca escreve esse passo.",
+  ch08_orthoCheck:"Confira um canto: x = r dá (2r − r − l) / (r − l) = 1, a borda direita das NDC, e x = l dá −1. A linha de z faz o mesmo para a profundidade: z = −n em view space cai em −1 e z = −f em +1, com o sinal de menos transformando 'à frente da câmera' (z negativo) em profundidade crescente.",
 };
 
 export default text;

@@ -14,8 +14,12 @@ import { GLView, useAnimationTime, type Look } from "@/components/lesson/kit/gl/
 // uTime (seconds) and uTint (a colour from the slider). WebGL 2 speaks
 // GLSL ES 3.00, so the sources start with "#version 300 es" and a precision
 // line instead of "#version 460 core"; everything else is the same language.
+// The fragment presets use "precision highp float": the vertex shader's
+// default is already highp, and a uniform declared in both shaders (uTime)
+// must have the same precision in both, or the program fails to link.
 
-type Preset = { key: string; en: string; vs: string; fs: string };
+// `why` marks the presets that fail on purpose and says how to fix them.
+type Preset = { key: string; en: string; vs: string; fs: string; why?: string };
 
 const VS_COLOUR = `#version 300 es
 layout (location = 0) in vec3 aPos;
@@ -28,7 +32,7 @@ void main() {
     vColor = aColor;
 }`;
 const FS_COLOUR = `#version 300 es
-precision mediump float;
+precision highp float;
 
 in vec3 vColor;           // same name and type as the vertex shader's out
 out vec4 FragColor;
@@ -40,7 +44,7 @@ const PRESETS: Preset[] = [
   { key: "pColour", en: "colour per vertex", vs: VS_COLOUR, fs: FS_COLOUR },
   {
     key: "pUniform", en: "uniform tint", vs: VS_COLOUR, fs: `#version 300 es
-precision mediump float;
+precision highp float;
 
 in vec3 vColor;
 uniform vec3 uTint;       // same for every fragment, set from C++ (the slider)
@@ -62,7 +66,7 @@ void main() {
     gl_Position = vec4(aPos.xy * s, aPos.z, 1.0);
     vColor = aColor;
 }`, fs: `#version 300 es
-precision mediump float;
+precision highp float;
 
 in vec3 vColor;
 uniform float uTime;
@@ -87,7 +91,7 @@ void main() {
   },
   {
     key: "pCompile", en: "compile error", vs: VS_COLOUR, fs: `#version 300 es
-precision mediump float;
+precision highp float;
 
 in vec3 vColor;
 out vec4 FragColor;
@@ -95,10 +99,11 @@ out vec4 FragColor;
 void main() {
     FragColor = vec4(vColor, 1.0)     // missing semicolon
 }`,
+    why: "This preset fails on purpose: the FragColor line has no semicolon at the end. The compiler stops and the log names the line. Add the ; and the triangle comes back.",
   },
   {
     key: "pLink", en: "link error", vs: VS_COLOUR, fs: `#version 300 es
-precision mediump float;
+precision highp float;
 
 in vec3 vColour;          // British spelling: no matching "out" in the vertex shader
 out vec4 FragColor;
@@ -106,6 +111,7 @@ out vec4 FragColor;
 void main() {
     FragColor = vec4(vColour, 1.0);
 }`,
+    why: "This preset fails on purpose: each shader compiles alone, but the fragment shader reads \"vColour\" and the vertex shader writes \"vColor\". Linking connects outs to ins by name, so it finds no match. Rename both uses to vColor and it links.",
   },
 ];
 
@@ -165,6 +171,8 @@ export function TriangleShaderFigure({ t }: { t?: TrackTranslations }) {
 
   const pick = (i: number) => { setPreset(i); setVs(PRESETS[i].vs); setFs(PRESETS[i].fs); setSrc({ vs: PRESETS[i].vs, fs: PRESETS[i].fs }); };
   const tint = hsl(hue);
+  const shown = PRESETS[preset];
+  const why = shown.why && vs === shown.vs && fs === shown.fs ? shown.why : null;   // only while the preset is unedited
 
   const init = (gl: WebGL2RenderingContext): Res => {
     const vao = gl.createVertexArray()!;
@@ -230,8 +238,9 @@ export function TriangleShaderFigure({ t }: { t?: TrackTranslations }) {
           {usesTime && <Readout>uTime = {time.toFixed(1)} s</Readout>}
         </Row>
         {!status.ok && <pre className="text-[11px] font-mono whitespace-pre-wrap p-2 rounded bg-[rgba(239,68,68,0.08)] border border-[rgba(239,68,68,0.3)]" style={{ color: C.red }}>{status.log || "(no log)"}</pre>}
+        {!status.ok && why && <p className="text-[12px] text-[var(--text-muted)]">{tx(t, `figGlShader_${shown.key}Why`, why)}</p>}
       </>}
-      note={tx(t, "figGlShader_note", "This is real GLSL running on your GPU through WebGL 2, which uses GLSL ES 3.00: \"#version 300 es\" instead of \"#version 460 core\", and a precision line in the fragment shader. Everything else is the language of this chapter. Try the presets, then edit: change the output colour, multiply a coordinate, swizzle aColor.gbr. When a shader fails, nothing is drawn and the log names the line, exactly as glGetShaderInfoLog would in your C++ program. uTime and uTint are uniforms the figure sets every frame, like glUniform calls.")}
+      note={tx(t, "figGlShader_note", "This is real GLSL running on your GPU through WebGL 2, which uses GLSL ES 3.00: \"#version 300 es\" instead of \"#version 460 core\", and a precision line in the fragment shader. Everything else is the language of this chapter. Try the presets, then edit: change the output colour, multiply a coordinate, swizzle aColor.gbr. When a shader fails, nothing is drawn and the log names the line, exactly as glGetShaderInfoLog would in your C++ program. The last two presets fail on purpose, so you can see a compile error and a link error. uTime and uTint are uniforms the figure sets every frame, like glUniform calls. The precision line says \"highp\" because the vertex shader is highp by default, and a uniform used in both shaders (like uTime) must have the same precision in both; with \"mediump\" the link fails with \"precisions of uniform differ\". Desktop GLSL (#version 460 core) has no such rule.")}
     >
       <div ref={vis.ref as React.Ref<HTMLDivElement>} className="p-2">
         <GLView<Res> init={init} draw={draw} look={LOOK} frame={[src, hue, usesTime ? time : 0]} aspect={16 / 9} />

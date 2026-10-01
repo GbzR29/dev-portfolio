@@ -42,7 +42,7 @@ export function VectorFigure({ t }: { t?: TrackTranslations }) {
 
   return (
     <Figure
-      title={tx(t, "figVec_title", "Vector operations")}
+      title={tx(t, "figVec_opsTitle", "Vector operations")}
       head={<Choice value={mode} onChange={setMode} options={[["add", "a + b"], ["sub", "b − a"], ["scale", "k · a"], ["norm", "a / |a|"], ["target", tx(t, "figVec_target", "move to target")]] as const} />}
       controls={<>
         {mode === "scale" && <Slider label="k" value={k} min={-2} max={2} step={0.05} onChange={setK} width="w-10" />}
@@ -55,7 +55,7 @@ export function VectorFigure({ t }: { t?: TrackTranslations }) {
           {mode === "scale" && <Readout color={C.green}>{f2(k)} · a = ({f2(sc.x)}, {f2(sc.y)}) · |k·a| = {f2(len(sc))}</Readout>}
           {mode === "norm" && <Readout color={C.green}>â = ({f2(nrm.x, 3)}, {f2(nrm.y, 3)}) · |â| = {f2(len(nrm), 3)}</Readout>}
           {mode === "target" && <>
-            <Readout color={C.amber}>P − E = ({f2(toP.x, 1)}, {f2(toP.y, 1)})</Readout>
+            <Readout color={C.amber}>G − W =({f2(toP.x, 1)}, {f2(toP.y, 1)})</Readout>
             <Readout>{tx(t, "figVec_dist", "distance")} = {f2(dist)}</Readout>
             <Readout color={C.green}>{tx(t, "figVec_dir", "direction")} = ({f2(dir.x, 3)}, {f2(dir.y, 3)})</Readout>
             <Readout color={C.sky}>{tx(t, "figVec_vel", "velocity")} = {tx(t, "figVec_dir", "direction")} × {speed.toFixed(1)}</Readout>
