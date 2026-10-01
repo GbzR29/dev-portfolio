@@ -273,7 +273,7 @@ const char* fragmentShaderSource = fragmentCode.c_str();
           ["std::ifstream file(path)", tx(t, "oglPipe_fl1", "opens the file for reading. If it does not exist, or the path is wrong, file is false and the if prints the path it tried, which is the first thing to check when something fails.")],
           ["ss << file.rdbuf()", tx(t, "oglPipe_fl2", "copies everything in the file, line breaks included, into a string stream; ss.str() turns it into a std::string.")],
           ["SHADER_DIR \"triangle.vert\"", tx(t, "oglPipe_fl3", "two string literals written side by side are joined by the compiler, so this becomes the full path, for example \"C:/dev/GLApp/shaders/triangle.vert\". SHADER_DIR comes from CMake, below.")],
-          [".c_str()", tx(t, "oglPipe_fl4", "gives the const char* that glShaderSource expects. The pointer is valid only while vertexCode exists, which is why the string is kept in a variable.")],
+          [".c_str()", tx(t, "oglPipe_fl4", "gives the const char* that glShaderSource expects. The pointer is valid only while vertexCode exists, which is why the string is kept in a variable. The next subsection explains why OpenGL wants a const char* and not a std::string.")],
         ]}
       />
       <p>
@@ -286,6 +286,60 @@ target_compile_definitions(app PRIVATE SHADER_DIR="\${CMAKE_SOURCE_DIR}/shaders/
         {tx(t, "oglPipe_cwdAfter",
           "Now the program finds its shaders wherever it is started from, and you can edit a .frag file and just run again, with no rebuild. The catch is that the path points into your project folder, so the program will not find its shaders on another computer. When you want to share it, copy the shaders/ folder next to the executable instead (CMake can do it after each build with add_custom_command and copy_directory) and read them with a path relative to the executable. The GLSL track's Shader Class chapter wraps all of this, reading, compiling, linking and the error checks, into a small reusable class, and adds reloading the shaders while the program runs.")}
       </p>
+      <H3>{tx(t, "oglPipe_cstrTitle", "What OpenGL actually receives: const char*")}</H3>
+      <p>
+        {tx(t, "oglPipe_cstrBody",
+          "OpenGL is a C API: every gl… function is a C function, usable from any language, and it only understands C types. C has no string type. A piece of text in C is a row of bytes in memory, one per character, ending with a byte of value zero, written '\\0', that marks the end. The text is handed around as the address of its first byte; that is a const char*, a \"pointer to characters that will only be read\". The function walks from that address, byte by byte, until it reaches the zero. This is the declaration of the function that receives the shader text, argument by argument:")}
+      </p>
+      <CodeBlock lang="cpp" filename="gl.h" t={t}>{`void glShaderSource(GLuint shader,                 // which shader object receives the text
+                    GLsizei count,                 // how many pieces of text
+                    const GLchar* const* string,   // an array of 'count' pointers, one per piece
+                    const GLint* length);          // their lengths, or NULL: each piece ends at '\\0'`}</CodeBlock>
+      <p>
+        {tx(t, "oglPipe_cstrPieces",
+          "GLchar is just char. The function takes an array of pieces, which the driver glues together in order as if they were one text. With one piece, the array is our single pointer, so we pass its address: count = 1 and &vertexShaderSource. Several pieces are useful to put a line in front of a shader without editing the file, for example a #define that switches a feature on. The driver copies the text during the call, so once glShaderSource returns, the C++ strings can be freed.")}
+      </p>
+      <CodeBlock lang="cpp" filename="pieces.cpp" t={t}>{`std::string body = readFile(SHADER_DIR "triangle.frag");   // this file has no #version line
+const char* parts[] = {
+    "#version 460 core\\n",
+    "#define USE_FOG 1\\n",
+    body.c_str(),
+};
+glShaderSource(fragmentShader, 3, parts, nullptr);        // compiled as one text, in this order`}</CodeBlock>
+      <p>
+        {tx(t, "oglPipe_cstrTypes",
+          "So readFile must end in a const char*. The C++ types along the way each do a different job:")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "oglPipe_tType", "Type"), tx(t, "oglPipe_tWhat", "What it is")]}
+        rows={[
+          ["const char*", tx(t, "oglPipe_ty1", "only an address: where the text starts. It owns nothing; somebody else must keep the bytes alive while it is used. This is what C functions such as glShaderSource take.")],
+          ["std::string", tx(t, "oglPipe_ty2", "a C++ object that owns a block of text: it allocates the memory, knows the length, grows when you append, and frees the memory itself when it goes out of scope. .c_str() lends a const char* to that text, with the '\\0' at the end, valid while the string exists and is not changed. The closest thing to Java's String.")],
+          ["std::ifstream", tx(t, "oglPipe_ty3", "an input file stream: an open file that you read from, piece by piece, like Java's FileReader. It is a reader, not text.")],
+          ["std::stringstream", tx(t, "oglPipe_ty4", "a stream whose destination is memory instead of a file: you write into it with << as many times as you like, and .str() returns everything written, as a std::string. It is a tool for building text, like Java's StringBuilder or StringWriter, not a kind of text you can hand to OpenGL.")],
+        ]}
+      />
+      <p>
+        {tx(t, "oglPipe_cstrChain",
+          "Read readFile again with that in mind. The file is opened as a stream (ifstream). file.rdbuf() is the file's whole contents as a source of bytes, and ss << file.rdbuf() pours all of it into the memory stream in one statement, which is the shortest standard way to read a file whole. ss.str() copies the result into a std::string, which owns it. Finally .c_str() lends the const char* that OpenGL reads. File → ifstream → stringstream → std::string → const char* → driver. The stringstream is only the bucket used to read everything at once; the one-liner std::string code{std::istreambuf_iterator<char>(file), {}}; gives the same std::string without it.")}
+      </p>
+      <p>
+        {tx(t, "oglPipe_cstrLangs",
+          "Other languages do exactly the same job, and most of them hide the last step. Their OpenGL bindings accept the language's own string and convert it to zero-terminated bytes for you before calling the C function. What stays the same everywhere: read the whole file into one string, keep it until the call, and remember that a relative path is resolved from the working directory.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "oglPipe_tLang", "Language"), tx(t, "oglPipe_tRead", "Read the file"), tx(t, "oglPipe_tHand", "Hand it to OpenGL")]}
+        rows={[
+          ["C", tx(t, "oglPipe_lgC", "fopen + fread into a malloc'd buffer, then buf[size] = '\\0'"), "glShaderSource(s, 1, &buf, NULL)"],
+          ["C++", tx(t, "oglPipe_lgCpp", "readFile(path), as above"), "const char* src = code.c_str(); glShaderSource(s, 1, &src, nullptr)"],
+          ["Java / Kotlin (LWJGL)", "Files.readString(Path.of(path))", "glShaderSource(shader, code)"],
+          ["C# (OpenTK)", "File.ReadAllText(path)", "GL.ShaderSource(shader, code)"],
+          ["Python (PyOpenGL)", "open(path).read()", "glShaderSource(shader, code)"],
+          ["Rust (gl crate)", "std::fs::read_to_string(path)", "let c = CString::new(code)?; unsafe { gl::ShaderSource(s, 1, &c.as_ptr(), std::ptr::null()) }"],
+          ["JavaScript (WebGL)", "await (await fetch(url)).text()", "gl.shaderSource(shader, code)"],
+        ]}
+      />
+
       <Callout type="warn" t={t}>
         {tx(t, "oglPipe_filesWarn",
           "Two traps that look like shader bugs. First, the shortcut const char* src = readFile(\"…\").c_str(); keeps a pointer into a temporary string that is destroyed at the end of that same line, so glShaderSource later reads freed memory. Always keep the std::string in a variable, as above. Second, some Windows editors save files as \"UTF-8 with BOM\", which puts three invisible bytes before #version; some drivers then reject line 1. If the first line errors for no visible reason, save the file as plain UTF-8.")}
