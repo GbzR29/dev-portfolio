@@ -6,7 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { FigureShell } from "@/components/lesson/kit/FigureShell";
 
 // ── What this figure shows ────────────────────────────────────────────────────
-// 1. A test you run on your own screen: a fine black/white checker emits 50%
+// 1. A test you run on your own screen: fine black/white stripes emit 50%
 //    light; the flat swatch that matches it is ~0.735, not 0.5.
 // 2. The curves: what the display does (x^2.2), the inverse the shader
 //    applies, and the exact sRGB transfer function.
@@ -17,24 +17,38 @@ type Tab = "test" | "curves" | "light";
 const srgbToLinear = (c: number) => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
 const linearToSrgb = (c: number) => (c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055);
 
-// ── 1. The checker test ───────────────────────────────────────────────────────
+// ── 1. The stripe test ────────────────────────────────────────────────────────
 function CheckerTest({ t }: { t?: TrackTranslations }) {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const c = ref.current;
     if (!c) return;
-    // Draw at device resolution so each checker cell is ONE physical pixel
-    const dpr = window.devicePixelRatio || 1;
-    const css = 140;
-    c.width = c.height = Math.round(css * dpr);
-    c.style.width = c.style.height = `${css}px`;
-    const g = c.getContext("2d")!;
-    const img = g.createImageData(c.width, c.height);
-    for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) {
-      const v = (x + y) % 2 ? 255 : 0, o = (y * c.width + x) * 4;
-      img.data[o] = img.data[o + 1] = img.data[o + 2] = v; img.data[o + 3] = 255;
-    }
-    g.putImageData(img, 0, 0);
+    // Horizontal black/white stripes, 2 physical pixels each (fix 2026-10-01).
+    // A 1-pixel checkerboard is the worst case for LCD polarity inversion:
+    // it made the whole panel flicker and shimmer on some monitors, and at
+    // fractional scaling (125%, 150%) it was resampled into moiré. Stripes
+    // two device pixels tall still emit exactly 50% light without either.
+    const draw = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const px = Math.round(140 * dpr);                 // canvas size in device pixels
+      c.width = c.height = px;
+      c.style.width = c.style.height = `${px / dpr}px`; // exactly px device pixels, no resampling
+      const g = c.getContext("2d")!;
+      const img = g.createImageData(px, px);
+      for (let y = 0; y < px; y++) {
+        const v = (y >> 1) % 2 ? 255 : 0;
+        for (let x = 0; x < px; x++) {
+          const o = (y * px + x) * 4;
+          img.data[o] = img.data[o + 1] = img.data[o + 2] = v; img.data[o + 3] = 255;
+        }
+      }
+      g.putImageData(img, 0, 0);
+    };
+    draw();
+    // Redraw when the zoom level or the monitor (and so the pixel ratio) changes
+    const mq = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+    mq.addEventListener("change", draw);
+    return () => mq.removeEventListener("change", draw);
   }, []);
   const sw = (v: number, label: string) => (
     <div className="flex flex-col items-center gap-1.5">
@@ -53,7 +67,7 @@ function CheckerTest({ t }: { t?: TrackTranslations }) {
         {sw(0.735, "0.735")}
       </div>
       <p className="text-[12.5px] text-[var(--text-muted)] leading-relaxed">
-        {tx(t, "figGamma_testNote", "The middle square alternates black and white pixels, so it emits exactly half the light of white. Step back or squint: it matches the 0.735 swatch, not 0.5. A pixel value of 0.5 produces only about 21% of the light — the monitor raises values to the power 2.2 before turning them into light.")}
+        {tx(t, "figGamma_testNote", "The middle square alternates thin black and white lines, so it emits exactly half the light of white. Step back or squint: it matches the 0.735 swatch, not 0.5. A pixel value of 0.5 produces only about 21% of the light — the monitor raises values to the power 2.2 before turning them into light.")}
       </p>
     </div>
   );

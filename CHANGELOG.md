@@ -6,9 +6,17 @@ Registro datado de tudo o que foi feito e criado no site.
 - A data de criação e de última atualização de cada lição também aparece no topo da própria lição. Ela é gerada do histórico do git por `scripts/gen-chapter-dates.mjs` (`npm run dates`, que também roda antes de `dev` e `build`) e fica em `src/lib/generated/chapter-dates.json`.
 - Para registrar algo novo, acrescente uma entrada no topo, com a data.
 
-Totais em 2026-09-30: 9 trilhas e 240 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · Vulkan 16 · C++ 15 · Game Dev 12 · SDL3 10 · IA 9).
+Totais em 2026-10-01: 9 trilhas e 240 lições (OpenGL 69 · Matemática 61 · GLSL 24 · Algoritmos 24 · Vulkan 16 · C++ 15 · Game Dev 12 · SDL3 10 · IA 9).
 
 ---
+
+## Outubro de 2026
+
+### 2026-10-01
+
+- **Correção, *Gamma Correction* (fig. "Gamma — your monitor is not linear")**: o teste de 50% de luz usava um xadrez preto/branco de 1 pixel físico, o pior padrão para a inversão de polaridade dos painéis LCD (fazia a tela inteira cintilar em alguns monitores) e que virava moiré em escala fracionária (125%, 150%). Agora são listras horizontais de 2 pixels físicos, desenhadas exatamente na resolução do dispositivo e redesenhadas quando o zoom muda; continuam emitindo exatamente 50% da luz.
+
+- **OpenGL, passada de explicação (lote 3 — OpenGL avançado e moderno)**: *Direct State Access*, *Instancing*, *Framebuffers & Post-FX*, *Uniform Buffer Objects* e *Compute Shaders* reescritos no padrão atual (legenda para cada símbolo, exemplos resolvidos à mão, tabela de escolhas do código, erros comuns), passando de ~220–365 para ~1190–1440 palavras cada. Conteúdo novo: pontos de bind como estado global e o bug de uma função auxiliar rastreado linha a linha, `glCreate*` × `glGen*`, armazenamento imutável e suas flags, o número de níveis de mipmap (⌊log₂ n⌋ + 1), VAOs DSA separando formato e binding, editar × usar; o custo de um draw call, a fórmula do divisor com baseInstance, o mat4 como quatro vec4 lido byte a byte, um anel de 10 000 asteroides em números e o orphaning; o que é um framebuffer, textura × renderbuffer, a memória de um alvo 1080p, o viewport, o triângulo de tela cheia bit a bit e a convolução 3×3 com um pixel calculado; a regra de offset do std140 como fórmula, um bloco inteiro calculado em std140/std430/C++, pontos de binding e o alinhamento de offset (256); o ID global montado a partir dos outros, o arredondamento de um dispatch 1921×1080, os bits de glMemoryBarrier pelo consumidor, memória shared e barrier() com uma redução paralela, e o SSBO desenhado como vértices (código corrigido). *Compute Shaders* foi para o seu próprio módulo (`chapters/compute.tsx`). Widgets novos: "uma função auxiliar rouba o binding" (bind-to-edit × DSA), atributos → pontos de binding → buffers com troca de malha, qual elemento cada instância lê (divisor e baseInstance), quad × triângulo de tela cheia com os blocos 2×2 sombreados duas vezes, o layout byte a byte de um bloco editável em std140/std430/C++, e a grade de um dispatch com a sobra e os IDs de cada invocação. Textos e widgets com tradução PT completa.
 
 ## Setembro de 2026
 

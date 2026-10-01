@@ -1,6 +1,8 @@
 // src/lib/tracks/opengl/chapters/tooling.tsx
 "use client";
 
+// Debugging OpenGL. (Compute Shaders moved to compute.tsx on 2026-10-01.)
+
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -181,150 +183,6 @@ bool checkLink(unsigned int program) {
       <Callout type="tip" t={t}>
         {tx(t, "oglDebug_renderdocTip",
           "Learn RenderDoc before you need it. Capturing a working frame and reading through the pipeline state teaches you more about how OpenGL actually behaves than any article — and once a bug appears, you are already fluent in the tool that finds it in two minutes."
-        )}
-      </Callout>
-
-    </article>
-  );
-}
-
-// ── Compute Shaders ──────────────────────────────────────────────────────────
-
-export function ComputeContent({ t }: { t: TrackTranslations }) {
-  return (
-    <article className="space-y-5 text-[var(--text-muted)] leading-relaxed text-base">
-
-      <p className="text-lg text-[var(--text-main)]">
-        {tx(t, "oglCompute_intro",
-          "Every shader so far sat inside the rasterization pipeline: it received vertices or fragments and had to produce geometry or colour. A compute shader has no pipeline around it. You dispatch a grid of threads, they read and write buffers and images, and that is the whole model. It is how particle simulation, culling, physics and image processing move onto the GPU."
-        )}
-      </p>
-
-      <H2>{tx(t, "oglCompute_modelTitle", "The execution model")}</H2>
-      <p>
-        {tx(t, "oglCompute_modelBody",
-          "Work is organized in two levels. You dispatch work groups; each work group runs a fixed number of invocations declared in the shader. Invocations inside a group can share memory and synchronize with each other. Invocations in different groups cannot — they may not even run at the same time."
-        )}
-      </p>
-
-      <LessonTable
-        headers={[tx(t, "oglCompute_h0", "Built-in"), tx(t, "oglCompute_h1", "Meaning")]}
-        rows={[
-          ["gl_GlobalInvocationID",  tx(t, "oglCompute_b1", "Unique index across the whole dispatch. Usually your data index.")],
-          ["gl_LocalInvocationID",   tx(t, "oglCompute_b2", "Index within the work group. Used to address shared memory.")],
-          ["gl_WorkGroupID",         tx(t, "oglCompute_b3", "Which work group this invocation belongs to.")],
-          ["gl_NumWorkGroups",       tx(t, "oglCompute_b4", "The dispatch dimensions you passed to glDispatchCompute.")],
-        ]}
-      />
-
-      <H2>{tx(t, "oglCompute_writeTitle", "Writing into a texture")}</H2>
-      <CodeBlock lang="glsl" filename="gradient.comp" t={t}>{`#version 460 core
-
-layout (local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
-layout (rgba32f, binding = 0) uniform image2D uOutput;
-
-uniform float uTime;
-
-void main() {
-    ivec2 texel = ivec2(gl_GlobalInvocationID.xy);
-    ivec2 size  = imageSize(uOutput);
-
-    // A dispatch is rounded up, so the last group runs past the edge
-    if (texel.x >= size.x || texel.y >= size.y) return;
-
-    vec2 uv = vec2(texel) / vec2(size);
-    vec3 color = 0.5 + 0.5 * cos(uTime + uv.xyx + vec3(0.0, 2.0, 4.0));
-
-    imageStore(uOutput, texel, vec4(color, 1.0));
-}`}</CodeBlock>
-
-      <CodeBlock lang="cpp" filename="dispatch.cpp" t={t}>{`// The texture must be complete and use an image-compatible format.
-// Immutable storage guarantees both, which is why it is the recommended way
-unsigned int tex;
-glGenTextures(1, &tex);
-glBindTexture(GL_TEXTURE_2D, tex);
-glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, W, H);   // 1 level: complete by construction
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-glUseProgram(computeProgram);
-glBindImageTexture(0, tex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-
-// Round UP — 1920/16 is exact, but 1921 would lose a column without the +15
-glDispatchCompute((W + 15) / 16, (H + 15) / 16, 1);
-
-// Wait for the writes to be visible to the next stage
-glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
-
-// Now sample it like any other texture
-glUseProgram(drawProgram);
-glBindTexture(GL_TEXTURE_2D, tex);`}</CodeBlock>
-
-      <Callout type="warn" t={t}>
-        {tx(t, "oglCompute_barrierWarn",
-          "glMemoryBarrier is not optional and forgetting it is the defining compute-shader bug. The dispatch is asynchronous: without a barrier the next draw may read the texture before the compute writes have landed, and the result is a flickering or one-frame-stale image that looks intermittent and hardware-dependent. Pick the barrier bits matching how you will read the data."
-        )}
-      </Callout>
-
-      <H2>{tx(t, "oglCompute_ssboTitle", "SSBOs — the real workhorse")}</H2>
-      <p>
-        {tx(t, "oglCompute_ssboBody",
-          "Shader storage buffers are readable and writable from the shader, can be hundreds of megabytes, and support a runtime-sized trailing array. They are how you keep a particle system, a culling result or a spatial grid entirely on the GPU."
-        )}
-      </p>
-
-      <CodeBlock lang="glsl" filename="particles.comp" t={t}>{`#version 460 core
-layout (local_size_x = 256) in;
-
-struct Particle {
-    vec4 position;    // vec4, not vec3 — std430 still aligns vec3 to 16
-    vec4 velocity;
-};
-
-layout (std430, binding = 0) buffer Particles {
-    Particle particles[];      // runtime-sized: no length needed
-};
-
-uniform float uDt;
-
-void main() {
-    uint i = gl_GlobalInvocationID.x;
-    if (i >= particles.length()) return;
-
-    particles[i].velocity.y -= 9.81 * uDt;
-    particles[i].position    += particles[i].velocity * uDt;
-
-    if (particles[i].position.y < 0.0) {
-        particles[i].position.y = 0.0;
-        particles[i].velocity.y *= -0.6;    // bounce
-    }
-}`}</CodeBlock>
-
-      <CodeBlock lang="cpp" filename="ssbo.cpp" t={t}>{`unsigned int ssbo;
-glGenBuffers(1, &ssbo);
-glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-glBufferData(GL_SHADER_STORAGE_BUFFER, particles.size() * sizeof(Particle),
-             particles.data(), GL_DYNAMIC_DRAW);
-glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);   // binding = 0
-
-glUseProgram(computeProgram);
-glUniform1f(glGetUniformLocation(computeProgram, "uDt"), dt);
-glDispatchCompute((particleCount + 255) / 256, 1, 1);
-glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT);
-
-// The same buffer can be bound as a vertex buffer — the data never leaves the GPU
-glBindBuffer(GL_ARRAY_BUFFER, ssbo);
-glDrawArraysInstanced(GL_POINTS, 0, 1, particleCount);`}</CodeBlock>
-
-      <Callout type="tip" t={t}>
-        {tx(t, "oglCompute_sizeTip",
-          "Make the local size a multiple of the hardware's wavefront width: 32 on NVIDIA, 64 on AMD. 64 or 256 is a safe default that wastes no lanes on either. A local size of 1 runs at a fraction of the throughput because most lanes in every wavefront sit idle."
-        )}
-      </Callout>
-
-      <Callout type="info" t={t}>
-        {tx(t, "oglCompute_readbackNote",
-          "Reading results back to the CPU with glGetBufferSubData stalls the pipeline: it waits for the GPU to finish everything. If you must read back, do it into a persistently mapped buffer and read it one or two frames later. Better still, keep the data on the GPU — the particle example above never touches the CPU after upload."
         )}
       </Callout>
 

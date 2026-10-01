@@ -749,7 +749,7 @@
   },
   "opengl/framebuffers": {
     "created": "2026-09-03",
-    "updated": "2026-09-27"
+    "updated": "2026-10-01"
   },
   "opengl/cubemaps": {
     "created": "2026-09-03",
@@ -761,7 +761,7 @@
   },
   "opengl/instancing": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "opengl/particles": {
     "created": "2026-09-24",
@@ -769,7 +769,7 @@
   },
   "opengl/ubo": {
     "created": "2026-09-03",
-    "updated": "2026-09-27"
+    "updated": "2026-10-01"
   },
   "opengl/geometry-shader": {
     "created": "2026-09-24",
@@ -845,15 +845,15 @@
   },
   "opengl/dsa": {
     "created": "2026-05-30",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "opengl/debugging": {
     "created": "2026-09-03",
-    "updated": "2026-09-27"
+    "updated": "2026-10-01"
   },
   "opengl/compute": {
     "created": "2026-09-03",
-    "updated": "2026-09-27"
+    "updated": "2026-10-01"
   },
   "sdl3/whats-new": {
     "created": "2026-09-03",

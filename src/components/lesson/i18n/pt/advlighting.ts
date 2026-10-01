@@ -30,7 +30,7 @@ const text: Record<string, string> = {
   figDeferred_noFloat: "Este navegador não consegue renderizar em texturas float, então as posições são cortadas para 8 bits e a iluminação vai parecer errada.",
   figDeferred_cost: "custo da iluminação ≈ pixels × luzes, independente de quantos objetos se sobrepõem",
   figDeferred_note: "Abra 'os quatro' para ver o que a passada de geometria guarda: posição no mundo (como uma cor que se repete), a normal, o albedo e a intensidade especular. A passada de iluminação nunca toca uma malha — ela só lê essas texturas, então o overdraw não multiplica mais o custo da iluminação.",
-  figGamma_testNote: "O quadrado do meio alterna pixels pretos e brancos, então emite exatamente metade da luz do branco. Afaste-se ou aperte os olhos: ele combina com a amostra de 0,735, não com a de 0,5. Um valor de pixel de 0,5 produz só cerca de 21% da luz — o monitor eleva os valores à potência 2,2 antes de transformá-los em luz.",
+  figGamma_testNote: "O quadrado do meio alterna linhas finas pretas e brancas, então emite exatamente metade da luz do branco. Afaste-se ou aperte os olhos: ele combina com a amostra de 0,735, não com a de 0,5. Um valor de pixel de 0,5 produz só cerca de 21% da luz — o monitor eleva os valores à potência 2,2 antes de transformá-los em luz.",
   figGamma_curveNote: "As duas curvas se cancelam: codifique com 1/2,2 e o 2,2 do monitor traz você de volta à reta. Essa ida e volta é a ideia toda — faça as contas em valores lineares e codifique uma vez, bem no final.",
   figGamma_none: "iluminação sobre valores sRGB, saída crua — atenuação dura demais, escura e turva",
   figGamma_correct: "decodificar a textura, iluminar em linear, codificar uma vez",

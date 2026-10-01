@@ -109,5 +109,5 @@ export const openGLChapters: Chapter[] = [
   // ── Modern OpenGL & Tooling ──────────────────────────────────────────────
   { id: "dsa",             section: MODERN,          title: "Direct State Access (DSA)", minRead: 9,  load: () => import("./chapters/dsa").then((m) => m.DSAContent) },
   { id: "debugging",       section: MODERN,          title: "Debugging OpenGL",          minRead: 11, load: () => import("./chapters/tooling").then((m) => m.DebuggingContent) },
-  { id: "compute",         section: MODERN,          title: "Compute Shaders",           minRead: 13, load: () => import("./chapters/tooling").then((m) => m.ComputeContent) },
+  { id: "compute",         section: MODERN,          title: "Compute Shaders",           minRead: 13, load: () => import("./chapters/compute").then((m) => m.ComputeContent) },
 ];

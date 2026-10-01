@@ -5,6 +5,7 @@ import track from "./_track";
 import advanced from "./advanced";
 import clustered from "./clustered";
 import color from "./color";
+import compute from "./compute";
 import csm from "./csm";
 import decals from "./decals";
 import dsa from "./dsa";
@@ -43,7 +44,7 @@ import volumetrics from "./volumetrics";
 import winding from "./winding";
 
 const bundle: LessonText = {
-  strings: { ...advanced, ...clustered, ...color, ...csm, ...decals, ...dsa, ...ebo, ...gi, ...legacy, ...lightingAdvanced, ...lightingBasics, ...linearAlgebra, ...models, ...oit, ...particles, ...pbr, ...performance, ...picking, ...pipeline, ...post, ...reflections, ...setup, ...shaderStages, ...shaders, ...skeletal, ...stencil, ...temporal, ...terrain, ...text, ...texturecompression, ...textures, ...tooling, ...transformations, ...transforms, ...triangle, ...vao, ...vbo, ...volumetrics, ...winding },
+  strings: { ...advanced, ...clustered, ...color, ...compute, ...csm, ...decals, ...dsa, ...ebo, ...gi, ...legacy, ...lightingAdvanced, ...lightingBasics, ...linearAlgebra, ...models, ...oit, ...particles, ...pbr, ...performance, ...picking, ...pipeline, ...post, ...reflections, ...setup, ...shaderStages, ...shaders, ...skeletal, ...stencil, ...temporal, ...terrain, ...text, ...texturecompression, ...textures, ...tooling, ...transformations, ...transforms, ...triangle, ...vao, ...vbo, ...volumetrics, ...winding },
   titles: track.titles,
   sections: track.sections,
 };
