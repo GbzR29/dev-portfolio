@@ -4,8 +4,10 @@
 // inputs; glVertexAttribPointer argument by argument and the address formula
 // (worked example); the live layout editor (figure); interleaved vs separate
 // layouts; normalized and integer attributes; what a VAO stores and what it
-// does not, step by step (figure); creating, using and drawing several meshes;
-// the golden rule; a DSA preview; common mistakes.
+// does not, step by step (figure); does the order matter (VBO first or VAO
+// first, and the one order that breaks); creating, using and drawing several
+// meshes (makeMesh); a DSA preview; the code-along checkpoint (the whole
+// main.cpp so far); common mistakes.
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
@@ -50,6 +52,9 @@ void main() {
      0.65f, -0.45f, 0.0f, 0.13f, 0.77f, 0.37f,  // vertex 1, bytes 24..47
      0.0f,  0.65f, 0.0f,  0.23f, 0.51f, 0.96f,  // vertex 2, bytes 48..71
 };`}</CodeBlock>
+      <Callout type="info" t={t}>
+        {tx(t, "oglVao_changeNote", "Changed since the last chapter: the VBO chapter's vertices had 3 floats each (only a position, 12 bytes). From here on each vertex has 6 floats (position and colour, 24 bytes), so the array above replaces the old one, and the two shaders pass the colour along: the vertex shader reads aColor and hands it on as vColor, and the fragment shader uses vColor instead of the fixed orange (the First Shaders chapter explains in and out). If you are coding along, make both changes now; the checkpoint at the end of this chapter shows the whole file.")}
+      </Callout>
 
       <H2>{tx(t, "oglVao_pointerTitle", "glVertexAttribPointer, argument by argument")}</H2>
       <p>{tx(t, "oglVao_pointerBody", "One call describes one attribute. For the position:")}</p>
@@ -143,11 +148,69 @@ glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(Vertex), (void*)o
           [tx(t, "oglVao_st3", "the GL_ELEMENT_ARRAY_BUFFER binding (the index buffer)"), tx(t, "oglVao_ns3", "the contents of the buffers: those live in the buffers, and the VAO only points at them")],
         ]}
       />
+      <H2>{tx(t, "oglVao_orderTitle", "Does the order matter? VBO first or VAO first")}</H2>
+      <p>
+        {tx(t, "oglVao_orderBody",
+          "Mostly no. Creating the VBO (glGenBuffers) and filling it (glBufferData) do not involve the VAO at all, so they can happen before or after the VAO is created. The order matters at exactly one moment: when you describe an attribute.")}
+      </p>
       <Callout type="tip" t={t}>
-        {tx(t, "oglVao_goldenRule", "The rule that matters: the VAO must be bound when you call glVertexAttribPointer and glEnableVertexAttribArray, and the right VBO must be bound to GL_ARRAY_BUFFER at the moment of glVertexAttribPointer, because that is when the VAO captures it. Creating the VBO and filling it with glBufferData can happen before or after, with or without the VAO bound.")}
+        {tx(t, "oglVao_goldenRule2", "The rule: when glVertexAttribPointer runs, two things must be bound. (1) The VAO, because the description is written into it; glEnableVertexAttribArray needs it too. (2) The right VBO on GL_ARRAY_BUFFER, because the VAO records \"this attribute reads from the buffer bound right now\".")}
       </Callout>
+      <p>
+        {tx(t, "oglVao_orderBoth",
+          "So both of these orders are correct and give the same result:")}
+      </p>
+      <CodeBlock lang="cpp" filename="order_vbo_first.cpp" t={t}>{`// A) VBO first, then VAO: correct
+GLuint vbo;
+glGenBuffers(1, &vbo);
+glBindBuffer(GL_ARRAY_BUFFER, vbo);        // vbo is now bound to GL_ARRAY_BUFFER...
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+GLuint vao;
+glGenVertexArrays(1, &vao);
+glBindVertexArray(vao);                    // ...and binding a VAO does not unbind it
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);  // VAO ✓  VBO ✓
+glEnableVertexAttribArray(0);`}</CodeBlock>
+      <CodeBlock lang="cpp" filename="order_vao_first.cpp" t={t}>{`// B) VAO first, then VBO: correct (the usual way)
+GLuint vao, vbo;
+glGenVertexArrays(1, &vao);
+glGenBuffers(1, &vbo);
+glBindVertexArray(vao);                    // bind the VAO once; everything below is recorded in it
+glBindBuffer(GL_ARRAY_BUFFER, vbo);
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);  // VAO ✓  VBO ✓
+glEnableVertexAttribArray(0);`}</CodeBlock>
+      <p>
+        {tx(t, "oglVao_orderWhyB",
+          "Order A works because the GL_ARRAY_BUFFER binding belongs to the context, not to the VAO: binding the VAO leaves vbo bound. Most code, and this track, uses order B. It is not more correct; it is simply harder to get wrong, because once the VAO is bound at the top you no longer have to think about it.")}
+      </p>
+      <p>
+        {tx(t, "oglVao_orderBroken", "What does break is describing the attribute before any VAO is bound:")}
+      </p>
+      <CodeBlock lang="cpp" filename="order_wrong.cpp" t={t}>{`// ✗ Wrong: the attribute is described while no VAO is bound
+glBindBuffer(GL_ARRAY_BUFFER, vbo);
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);  // GL_INVALID_OPERATION
+glEnableVertexAttribArray(0);                                                  // GL_INVALID_OPERATION
+
+glGenVertexArrays(1, &vao);
+glBindVertexArray(vao);   // too late: this VAO is empty, and the draw shows nothing`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "oglVao_tStep", "Step"), tx(t, "oglVao_tNeedsVao", "Needs the VAO bound?"), tx(t, "oglVao_tNeedsVbo", "Needs the VBO bound?")]}
+        rows={[
+          ["glGenBuffers, glGenVertexArrays", tx(t, "oglVao_o1a", "no"), tx(t, "oglVao_o1b", "no")],
+          ["glBufferData", tx(t, "oglVao_o2a", "no"), tx(t, "oglVao_o2b", "yes, on GL_ARRAY_BUFFER: it fills the bound buffer")],
+          ["glVertexAttribPointer", tx(t, "oglVao_o3a", "yes: the description is stored in it"), tx(t, "oglVao_o3b", "yes: the VAO records which buffer this attribute reads")],
+          ["glEnableVertexAttribArray", tx(t, "oglVao_o4a", "yes"), tx(t, "oglVao_o4b", "no")],
+          ["glDrawArrays", tx(t, "oglVao_o5a", "yes: the VAO of the mesh you want to draw"), tx(t, "oglVao_o5b", "no: the VAO already knows its buffer")],
+        ]}
+      />
 
       <H2>{tx(t, "oglVao_useTitle", "Creating and using VAOs")}</H2>
+      <p>
+        {tx(t, "oglVao_useBody",
+          "For our triangle, with both attributes, order B looks like this. It goes in main, after the shaders are compiled and before the render loop (step 4 of the file).")}
+      </p>
       <CodeBlock lang="cpp" filename="main.cpp" t={t}>{`GLuint vao, vbo;
 glGenVertexArrays(1, &vao);
 glGenBuffers(1, &vbo);
@@ -164,22 +227,210 @@ glBindVertexArray(0);                         // done; unbinding protects it fro
         {tx(t, "oglVao_manyBody",
           "A program usually has one VAO per mesh, each with its own buffers and layout. Drawing then becomes: pick the shader, bind the mesh's VAO, draw. Switching meshes is one bind instead of re-describing every attribute.")}
       </p>
-      <CodeBlock lang="cpp" filename="render_loop.cpp" t={t}>{`while (!glfwWindowShouldClose(window)) {
+      <p>
+        {tx(t, "oglVao_manyHow",
+          "To build several meshes without copying the block above each time, wrap it in a function. It takes the vertex data and its size in bytes, and returns a VAO that is ready to draw. The size is passed in because, inside the function, data is only a pointer and sizeof(data) would be 8 (the trap from the VBO chapter).")}
+      </p>
+      <CodeBlock lang="cpp" filename="main.cpp" t={t}>{`// Above main: the setup block as a function. Vertices are x y z r g b.
+GLuint makeMesh(const float* data, GLsizeiptr bytes, GLuint* vboOut) {
+    GLuint vao, vbo;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, bytes, data, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
+    *vboOut = vbo;          // the caller keeps the VBO's name to delete it later
+    return vao;
+}
+
+// In main, step 4: two meshes, two VAOs
+float triangleVertices[] = {   // 3 vertices
+    -0.9f, -0.5f, 0.0f,  1.0f, 0.27f, 0.27f,
+    -0.1f, -0.5f, 0.0f,  0.13f, 0.77f, 0.37f,
+    -0.5f,  0.5f, 0.0f,  0.23f, 0.51f, 0.96f,
+};
+float quadVertices[] = {       // a square = 2 triangles = 6 vertices
+     0.1f, -0.5f, 0.0f,  1.0f, 0.8f, 0.2f,
+     0.9f, -0.5f, 0.0f,  1.0f, 0.8f, 0.2f,
+     0.9f,  0.3f, 0.0f,  1.0f, 0.8f, 0.2f,
+     0.1f, -0.5f, 0.0f,  1.0f, 0.8f, 0.2f,
+     0.9f,  0.3f, 0.0f,  1.0f, 0.8f, 0.2f,
+     0.1f,  0.3f, 0.0f,  1.0f, 0.8f, 0.2f,
+};
+GLuint triangleVbo, quadVbo;
+GLuint triangleVao = makeMesh(triangleVertices, sizeof(triangleVertices), &triangleVbo);
+GLuint quadVao     = makeMesh(quadVertices,     sizeof(quadVertices),     &quadVbo);`}</CodeBlock>
+      <p>
+        {tx(t, "oglVao_manyLoop",
+          "Here sizeof works, because triangleVertices and quadVertices are real arrays in main: 18 floats are 72 bytes, 36 floats are 144. The render loop then draws each mesh with one bind:")}
+      </p>
+      <CodeBlock lang="cpp" filename="main.cpp" t={t}>{`while (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT);
     glUseProgram(shaderProgram);
 
     glBindVertexArray(triangleVao);           // layout + buffer of mesh 1
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, 3);         // its 3 vertices
 
     glBindVertexArray(quadVao);               // layout + buffer of mesh 2
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawArrays(GL_TRIANGLES, 0, 6);         // its 6 vertices
 
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
-// At shutdown: glDeleteVertexArrays(1, &triangleVao); ... then the buffers.`}</CodeBlock>
+
+// After the loop: the VAOs, then the buffers
+glDeleteVertexArrays(1, &triangleVao);
+glDeleteVertexArrays(1, &quadVao);
+glDeleteBuffers(1, &triangleVbo);
+glDeleteBuffers(1, &quadVbo);`}</CodeBlock>
+      <p>
+        {tx(t, "oglVao_manyNote",
+          "This is only to show the pattern. Our code-along program keeps one triangle and the plain variable names vao and vbo, as in the checkpoint below. The quad comes back in the EBO chapter, where it needs only 4 vertices instead of 6.")}
+      </p>
       <Callout type="info" t={t}>
         {tx(t, "oglVao_dsaNote", "OpenGL 4.5's Direct State Access splits the same information more cleanly: glVertexArrayAttribFormat describes an attribute's format, glVertexArrayVertexBuffer attaches a buffer with its stride, and nothing has to be bound while you set it up. The DSA chapter rewrites this setup that way.")}
+      </Callout>
+
+      <H2>{tx(t, "oglVao_soFarTitle", "Your main.cpp so far")}</H2>
+      <p>
+        {tx(t, "oglVao_soFarBody",
+          "The whole file at the end of this chapter, to compare with yours. Compared with the VBO chapter's version, three things changed, each marked NEW: the shaders pass a colour along, the vertices have 6 floats, and step 4b now creates the VAO first (order B) and describes both attributes. If you kept the VBO first (order A), your file is also correct, as long as the VAO is bound before glVertexAttribPointer.")}
+      </p>
+      <CodeBlock lang="cpp" filename="src/main.cpp" t={t}>{`#include <glad/glad.h>      // MUST come before glfw3.h
+#include <GLFW/glfw3.h>
+#include <iostream>
+
+// ── Shaders ─────────────────────────────────── NEW: the colour is passed along
+const char* vertexShaderSource = R"(#version 460 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
+out vec3 vColor;
+void main() {
+    gl_Position = vec4(aPos, 1.0);
+    vColor = aColor;
+})";
+
+const char* fragmentShaderSource = R"(#version 460 core
+in vec3 vColor;
+out vec4 FragColor;
+void main() {
+    FragColor = vec4(vColor, 1.0);
+})";
+
+void framebufferSizeCallback(GLFWwindow*, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+int main() {
+    // ── 1. Window library and context ────────────────────────────────────────
+    if (!glfwInit()) return 1;
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "GLApp", nullptr, nullptr);
+    if (!window) { glfwTerminate(); return 1; }
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+
+    // ── 2. Load the OpenGL functions (no gl* call before this) ───────────────
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return 1;
+
+    // ── 3. Viewport, now and on every resize ─────────────────────────────────
+    int fbw, fbh;
+    glfwGetFramebufferSize(window, &fbw, &fbh);
+    glViewport(0, 0, fbw, fbh);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+    // ── 4. One-time setup ────────────────────────────────────────────────────
+    // 4a. Shaders → program (unchanged)
+    GLint success;
+    char infoLog[512];
+
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cerr << "Vertex shader error: " << infoLog << "\\n";
+    }
+
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cerr << "Fragment shader error: " << infoLog << "\\n";
+    }
+
+    GLuint shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cerr << "Program link error: " << infoLog << "\\n";
+    }
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    // 4b. Vertex data → VAO + VBO                   >>> NEW in this chapter
+    float vertices[] = {
+    //    x      y      z     r     g     b
+        -0.6f, -0.55f, 0.0f, 1.0f, 0.27f, 0.27f,   // vertex 0
+         0.65f,-0.45f, 0.0f, 0.13f,0.77f, 0.37f,   // vertex 1
+         0.0f,  0.65f, 0.0f, 0.23f,0.51f, 0.96f,   // vertex 2
+    };
+    GLuint vao, vbo;
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vbo);
+
+    glBindVertexArray(vao);                         // from here on, recorded in vao
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    // attribute 0 = aPos: 3 floats, stride 24 bytes, starts at byte 0
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // attribute 1 = aColor: 3 floats, stride 24 bytes, starts at byte 12
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glBindVertexArray(0);                           // done recording
+    //                                               <<< end of NEW
+
+    // ── 5. The render loop ───────────────────────────────────────────────────
+    while (!glfwWindowShouldClose(window)) {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+
+        glClearColor(0.06f, 0.07f, 0.10f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // ... draw (Drawing the Triangle chapter) ...
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // ── 6. Clean up ──────────────────────────────────────────────────────────
+    glDeleteVertexArrays(1, &vao);                  // NEW: free the VAO
+    glDeleteBuffers(1, &vbo);
+    glDeleteProgram(shaderProgram);
+    glfwTerminate();
+    return 0;
+}`}</CodeBlock>
+      <p>
+        {tx(t, "oglVao_soFarRun",
+          "Run it: still only the clear colour, and that is correct. Everything the triangle needs is now on the GPU: the program, the bytes and their description. What is missing is the order to draw, inside the loop.")}
+      </p>
+      <Callout type="tip" t={t}>
+        {tx(t, "oglVao_peekTip", "Want to see it already? Replace the // ... draw ... line in the loop with these three lines: glUseProgram(shaderProgram); glBindVertexArray(vao); glDrawArrays(GL_TRIANGLES, 0, 3);. The coloured triangle appears. The First Shaders chapter explains the shaders in detail, and Drawing the Triangle explains these three lines and shows the finished program, the same steps with the shader code moved into helper functions.")}
       </Callout>
 
       <H2>{tx(t, "oglVao_mistakesTitle", "Common mistakes")}</H2>

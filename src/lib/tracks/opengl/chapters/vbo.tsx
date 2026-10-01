@@ -7,7 +7,8 @@
 // GLuint and the other GL types (why not unsigned int);
 // usage hints (frequency × access); updating (glBufferSubData, orphaning with
 // nullptr); lifetime and deletion; worked examples; the attribute description
-// and why nothing draws without a VAO; common mistakes.
+// and why nothing draws without a VAO; the code-along checkpoint (the whole
+// main.cpp so far); common mistakes.
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
@@ -174,6 +175,126 @@ glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 // Next chapter: create and bind a VAO, then
 // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 // glEnableVertexAttribArray(0);`}</CodeBlock>
+
+      <H2>{tx(t, "oglVbo_soFarTitle", "Your main.cpp so far")}</H2>
+      <p>
+        {tx(t, "oglVbo_soFarBody",
+          "If you are coding along, this is the whole file at the end of this chapter. It is the Window & Context file, plus the shaders from the Graphics Pipeline chapter, plus this chapter's VBO. The parts marked NEW are the ones this chapter adds. Compare it with yours line by line.")}
+      </p>
+      <CodeBlock lang="cpp" filename="src/main.cpp" t={t}>{`#include <glad/glad.h>      // MUST come before glfw3.h
+#include <GLFW/glfw3.h>
+#include <iostream>
+
+// ── Shaders (Graphics Pipeline chapter) ──────────────────────────────────────
+const char* vertexShaderSource = R"(#version 460 core
+layout (location = 0) in vec3 aPos;
+void main() {
+    gl_Position = vec4(aPos, 1.0);
+})";
+
+const char* fragmentShaderSource = R"(#version 460 core
+out vec4 FragColor;
+void main() {
+    FragColor = vec4(1.0, 0.5, 0.2, 1.0);
+})";
+
+void framebufferSizeCallback(GLFWwindow*, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+int main() {
+    // ── 1. Window library and context ────────────────────────────────────────
+    if (!glfwInit()) return 1;
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "GLApp", nullptr, nullptr);
+    if (!window) { glfwTerminate(); return 1; }
+    glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
+
+    // ── 2. Load the OpenGL functions (no gl* call before this) ───────────────
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return 1;
+
+    // ── 3. Viewport, now and on every resize ─────────────────────────────────
+    int fbw, fbh;
+    glfwGetFramebufferSize(window, &fbw, &fbh);
+    glViewport(0, 0, fbw, fbh);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+
+    // ── 4. One-time setup ────────────────────────────────────────────────────
+    // 4a. Shaders → program (Graphics Pipeline chapter)
+    GLint success;
+    char infoLog[512];
+
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cerr << "Vertex shader error: " << infoLog << "\\n";
+    }
+
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cerr << "Fragment shader error: " << infoLog << "\\n";
+    }
+
+    GLuint shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cerr << "Program link error: " << infoLog << "\\n";
+    }
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    // 4b. Vertex data → VBO                         >>> NEW in this chapter
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,    // vertex 0
+         0.5f, -0.5f, 0.0f,    // vertex 1
+         0.0f,  0.5f, 0.0f,    // vertex 2
+    };
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    //                                               <<< end of NEW
+
+    // 4c. Next chapter: the VAO, which describes these bytes
+
+    // ── 5. The render loop ───────────────────────────────────────────────────
+    while (!glfwWindowShouldClose(window)) {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+
+        glClearColor(0.06f, 0.07f, 0.10f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // ... draw (Drawing the Triangle chapter) ...
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // ── 6. Clean up ──────────────────────────────────────────────────────────
+    glDeleteBuffers(1, &vbo);                        // NEW: free the VBO
+    glDeleteProgram(shaderProgram);
+    glfwTerminate();
+    return 0;
+}`}</CodeBlock>
+      <p>
+        {tx(t, "oglVbo_soFarRun",
+          "Run it: the window looks exactly as before. That is correct. The triangle's 36 bytes are now in GPU memory, but nothing reads them yet. The next chapter adds the VAO, which tells the GPU how to read them, in step 4c. Creating the VBO before the VAO, as here, is fine: the next chapter shows the one moment where the order does matter.")}
+      </p>
 
       <H2>{tx(t, "oglVbo_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable

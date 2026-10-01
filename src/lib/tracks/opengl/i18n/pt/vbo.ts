@@ -62,6 +62,10 @@ const text: Record<string, string> = {
   oglVbo_describeTitle: "Os bytes ainda precisam de uma descrição",
   oglVbo_describeBody: "O buffer agora guarda 36 bytes, mas o vertex shader pede um vec3 chamado aPos no location 0. Alguém precisa dizer que o location 0 recebe 3 floats por vértice, a partir do byte 0, com 12 bytes de um vértice ao próximo. Isso é o glVertexAttribPointer. Num contexto Core essa descrição precisa ficar guardada num Vertex Array Object, e sem um vinculado tanto a descrição quanto o draw call falham com GL_INVALID_OPERATION: o único sintoma é uma tela vazia. (Contextos Compatibility têm um VAO padrão embutido, e por isso muitos tutoriais antigos o pulam.) O próximo capítulo constrói o VAO e explica cada argumento do glVertexAttribPointer.",
 
+  oglVbo_soFarTitle: "O seu main.cpp até aqui",
+  oglVbo_soFarBody: "Se você está programando junto, este é o arquivo inteiro no fim deste capítulo. É o arquivo do capítulo Janela e contexto, mais os shaders do capítulo O pipeline gráfico, mais o VBO deste capítulo. As partes marcadas com NEW são as que este capítulo acrescenta. Compare com o seu, linha por linha.",
+  oglVbo_soFarRun: "Rode: a janela fica exatamente como antes. Isso está certo. Os 36 bytes do triângulo agora estão na memória da GPU, mas nada os lê ainda. O próximo capítulo acrescenta o VAO, que diz à GPU como lê-los, no passo 4c. Criar o VBO antes do VAO, como aqui, não tem problema: o próximo capítulo mostra o único momento em que a ordem importa.",
+
   oglVbo_mistakesTitle: "Erros comuns",
   oglVbo_tMistake: "Erro",
   oglVbo_tFix: "O que acontece, e a correção",
