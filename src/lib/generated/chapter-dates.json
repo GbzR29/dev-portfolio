@@ -241,11 +241,11 @@
   },
   "glsl/types": {
     "created": "2026-05-30",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "glsl/builtins": {
     "created": "2026-05-30",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "glsl/fragcoord": {
     "created": "2026-05-30",
@@ -257,19 +257,19 @@
   },
   "glsl/playground": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "glsl/sdf": {
     "created": "2026-05-30",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "glsl/patterns": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "glsl/color": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "glsl/noise": {
     "created": "2026-05-30",
@@ -277,7 +277,7 @@
   },
   "glsl/texturing": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "glsl/water": {
     "created": "2026-09-24",
@@ -309,7 +309,7 @@
   },
   "glsl/stylized": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "glsl/raymarching": {
     "created": "2026-09-24",
