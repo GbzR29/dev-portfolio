@@ -37,6 +37,7 @@ clamp(x,lo,hi)// clamp to [lo, hi]
 
 // Example: tile coordinates to create a repeating grid
 vec2 tiled = fract(uv * 5.0);  // 5×5 grid of [0,1] tiles`}</CodeBlock>
+      <p>{tx(t, "glsl02_mathSteps", "Component-wise means the function runs on each component separately: abs(vec3(−1, 2, −3)) = (1, 2, 3), and min(vec2(1, 5), vec2(3, 2)) = (1, 2). Worked rounding with x = −1.3: floor = −2 (towards −∞, so down, not towards zero), ceil = −1, round = −1, fract = −1.3 − (−2) = 0.7. GLSL's mod(x, y) is x − y·floor(x/y), so mod(−1.3, 1.0) = 0.7 as well: unlike C's fmod (−0.3), it never goes negative for positive y, which is what makes it safe for tiling across the origin. In the tiling line, a pixel at uv = (0.47, 0.9) gives uv·5 = (2.35, 4.5) and tiled = (0.35, 0.5).")}</p>
 
       <H2>{tx(t, "glsl02_interpTitle", "Interpolation functions")}</H2>
       <p>{tx(t, "glsl02_interpBody", "These are some of the most used functions in all of GLSL. They control how values transition between states and are the basis of many visual effects.")}</p>
@@ -53,6 +54,7 @@ step(edge, x)
 // smoothstep: smooth S-curve transition between edge0 and edge1
 smoothstep(0.0, 1.0, x)  // slow start, fast middle, slow end
 smoothstep(0.4, 0.6, x)  // transition only happens between 0.4 and 0.6`}</CodeBlock>
+      <p>{tx(t, "glsl02_interpSteps", "Worked: mix(warm, cool, 0.5) = warm·0.5 + cool·0.5 = (0.5, 0.5, 0.5), a grey, because orange and blue are opposites; with t = 0.25 it is (0.75, 0.5, 0.25), still mostly orange. t is not clamped, so t = 1.5 extrapolates past b. step(0.5, 0.49) = 0 and step(0.5, 0.5) = 1: note the edge comes first, the opposite order from most languages' comparisons. smoothstep(0.4, 0.6, 0.45): t = (0.45 − 0.4)/0.2 = 0.25, and t²(3 − 2t) = 0.0625 · 2.5 = 0.156, lower than the straight-line 0.25 because the curve starts slowly.")}</p>
 
       <Callout type="tip" t={t}>
         {tx(t, "glsl02_smoothstepNote",
@@ -72,6 +74,7 @@ refract(I, N, eta) // Snell's law refraction, eta = ratio of IOR
 
 // Lighting pattern: diffuse intensity
 float diff = max(dot(normalize(normal), normalize(lightDir)), 0.0);`}</CodeBlock>
+      <p>{tx(t, "glsl02_geoSteps", "Worked: v = (3, 4, 0) has length √(9 + 16) = 5, so normalize(v) = (0.6, 0.8, 0). dot((0, 1, 0), (0.6, 0.8, 0)) = 0.8, which is cos of the angle between them (about 37°): the diffuse line above would light that surface at 80%. max(…, 0) stops surfaces facing away from getting negative light. reflect(I, N) = I − 2·dot(N, I)·N: a ray going down-right, I = (0.707, −0.707, 0), off a floor with N = (0, 1, 0) gives dot = −0.707 and I + 1.414·N = (0.707, 0.707, 0), the same ray bouncing up-right. N must be normalised or the result is scaled wrongly. In refract, eta is n₁/n₂, e.g. 1.0/1.5 from air into glass.")}</p>
 
       <H2>{tx(t, "glsl02_trigTitle", "Trigonometric functions")}</H2>
       <p>{tx(t, "glsl02_trigBody", "All trig functions work in radians. They are great for creating oscillating animations and circular motion — combine sin and cos to trace a circle.")}</p>
@@ -80,11 +83,12 @@ asin(x), acos(x), atan(x)  // inverse trig
 atan(y, x)                 // 2-argument atan2 equivalent
 
 // Animate a point in a circle of radius r
-float angle = uTime * 2.0;              // full revolution per second
-vec2 orbit  = vec2(cos(angle), sin(angle)) * 0.5;
+float angle = uTime * 6.28318;          // 2π rad/s = one full revolution per second
+vec2 orbit  = vec2(cos(angle), sin(angle)) * 0.5;   // radius 0.5
 
-// Oscillate between 0 and 1
+// Oscillate between 0 and 1, one cycle every 2 seconds
 float pulse = sin(uTime * 3.14159) * 0.5 + 0.5;`}</CodeBlock>
+      <p>{tx(t, "glsl02_trigSteps", "Radians measure an angle by arc length on a circle of radius 1, so a full turn is 2π ≈ 6.283. Multiplying time by 2π gives exactly one turn per second; multiplying by 2.0 would give one turn every π ≈ 3.14 s. (cos(a), sin(a)) is the point on the unit circle at angle a, so at uTime = 0.25 s the angle is π/2 and orbit = (0, 1)·0.5 = (0, 0.5), a quarter-turn up. For the pulse, sin has period 2π, so sin(uTime·π) repeats every 2 s; · 0.5 + 0.5 maps −1..1 to 0..1.")}</p>
 
 
       <H2>{tx(t, "glsl02_plotTitle", "See every function")}</H2>
@@ -110,6 +114,18 @@ float pulse = sin(uTime * 3.14159) * 0.5 + 0.5;`}</CodeBlock>
       <Callout type="info" t={t}>
         {tx(t, "glsl02_derivNote", "dFdx(v), dFdy(v) and fwidth(v) = |dFdx(v)| + |dFdy(v)| tell you how much any value changes to the next pixel. The GPU shades pixels in 2×2 quads and simply subtracts neighbours. They exist only in fragment shaders, and they are how texture() picks mip levels and how every edge in this track is anti-aliased.")}
       </Callout>
+
+      <H2>{tx(t, "glsl02_mistakesTitle", "Common mistakes")}</H2>
+      <LessonTable
+        headers={[tx(t, "glsl02_thSymptom", "Symptom"), tx(t, "glsl02_thCause", "Cause"), tx(t, "glsl02_thFix", "Fix")]}
+        rows={[
+          [tx(t, "glsl02_m1a", "Threshold inverted"), tx(t, "glsl02_m1b", "Wrote step(x, edge) instead of step(edge, x)"), tx(t, "glsl02_m1c", "Edge first, value second")],
+          [tx(t, "glsl02_m2a", "NaN / black pixels"), tx(t, "glsl02_m2b", "pow(x, k) with x < 0, sqrt of a negative, normalize(vec3(0))"), tx(t, "glsl02_m2c", "max(x, 0.0) first; guard zero-length vectors")],
+          [tx(t, "glsl02_m3a", "Animation far too fast or slow"), tx(t, "glsl02_m3b", "Degrees passed to sin/cos"), tx(t, "glsl02_m3c", "Use radians: radians(deg) or deg · π/180")],
+          [tx(t, "glsl02_m4a", "Lighting too bright or dim"), tx(t, "glsl02_m4b", "dot of vectors that are not unit length"), tx(t, "glsl02_m4c", "normalize both before dot")],
+          [tx(t, "glsl02_m5a", "smoothstep gives garbage"), tx(t, "glsl02_m5b", "e0 == e1 divides by zero; the spec also calls e0 > e1 undefined, though GPUs compute the inverted curve"), tx(t, "glsl02_m5c", "Keep e0 < e1; write 1.0 − smoothstep(e0, e1, x) for the inverted curve")],
+        ]}
+      />
       <KeyIdeas t={t} id="glsl02" items={[
         "Built-ins are component-wise and hardware-accelerated: abs, fract, mod, clamp, mix, step, smoothstep…",
         "Think in curves: plot the function from input to output before writing it.",

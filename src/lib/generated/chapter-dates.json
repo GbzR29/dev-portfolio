@@ -249,7 +249,7 @@
   },
   "glsl/fragcoord": {
     "created": "2026-05-30",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "glsl/builtin-vars": {
     "created": "2026-09-27",
@@ -333,7 +333,7 @@
   },
   "glsl/shaderclass": {
     "created": "2026-05-30",
-    "updated": "2026-09-25"
+    "updated": "2026-10-01"
   },
   "math/number-line": {
     "created": "2026-09-25",

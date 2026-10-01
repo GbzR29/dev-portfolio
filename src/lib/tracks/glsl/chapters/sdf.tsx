@@ -4,7 +4,7 @@
 
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { tx } from "@/lib/tracks/tx";
-import { CodeBlock, Callout, H2 } from "@/components/lesson/LessonComponents";
+import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { KeyIdeas } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
@@ -37,10 +37,11 @@ void main() {
 
     // Smooth edge — anti-aliased using screen-space derivative
     float px     = fwidth(dist);  // pixel width in SDF space
-    float inside = smoothstep(px, -px, dist);
+    float inside = 1.0 - smoothstep(-px, px, dist);   // 1 inside, 0 outside
 
     FragColor = vec4(vec3(inside), 1.0);
 }`}</CodeBlock>
+      <p>{tx(t, "glsl04_conceptSteps", "Worked on a 600-pixel-tall canvas, where uv spans 2 units vertically, so one pixel is 2/600 ≈ 0.0033 units and px ≈ 0.0033. A pixel at uv = (0.3, 0) has dist = 0.3 − 0.5 = −0.2: far inside, so smoothstep(−px, px, −0.2) = 0 and inside = 1. A pixel exactly on the edge, dist = 0, gets 1 − 0.5 = 0.5, half covered. A pixel at dist = 0.1 is outside: inside = 0. Only the pixels within about one pixel of the edge get values in between, which is exactly what anti-aliasing should do.")}</p>
 
       <H2>{tx(t, "glsl04_circleTitle", "SDF: Circle")}</H2>
       <p>{tx(t, "glsl04_circleBody", "The simplest SDF. Distance from a point to a circle of radius r centered at the origin is just length(p) - r.")}</p>
@@ -67,6 +68,8 @@ float sdfRoundedBox(vec2 p, vec2 b, float r) {
 // Usage
 float box     = sdfBox(uv, vec2(0.4, 0.2));          // 0.8 wide, 0.4 tall
 float rounded = sdfRoundedBox(uv, vec2(0.4, 0.2), 0.05); // with rounded corners`}</CodeBlock>
+      <p>{tx(t, "glsl04_boxSteps", "Line by line, with b = (0.4, 0.2). abs(p) folds all four quadrants onto the top-right one, since a box is symmetric. d = abs(p) − b measures how far past each edge the point is: negative components mean \"inside along that axis\". Outside, the distance is the length of the positive parts only, so max(d, 0). Inside, every component is negative and the nearest edge is the one with the largest (least negative) component, so max(d.x, d.y), wrapped in min(…, 0) so it only counts when inside. Three points worked: p = (0.6, 0) gives d = (0.2, −0.2), outside by 0.2 straight to the right edge. p = (0.7, 0.6) gives d = (0.3, 0.4), past the corner: length = 0.5, the diagonal distance to the corner. p = (0.1, 0.05) gives d = (−0.3, −0.15), inside: max = −0.15, the top edge is 0.15 away.")}</p>
+      <p>{tx(t, "glsl04_roundSteps", "The rounded box shrinks the box by r and then subtracts r. Shrinking pulls every edge in by r; subtracting r from any SDF grows its surface outward by r in every direction. Along the flat sides the two cancel, but around the corners the grown surface is a quarter-circle of radius r. That is the general rounding trick, d − r, applied to a box.")}</p>
 
       <H2>{tx(t, "glsl04_combineTitle", "Combining shapes")}</H2>
       <p>{tx(t, "glsl04_combineBody", "Because SDFs return distances, you can combine them with simple math — no special API needed.")}</p>
@@ -85,6 +88,7 @@ float sdfSmoothUnion(float d1, float d2, float k) {
 float c1     = sdfCircle(uv - vec2( 0.3*sin(uTime), 0.0), 0.25);
 float c2     = sdfCircle(uv - vec2(-0.3*sin(uTime), 0.0), 0.20);
 float merged = sdfSmoothUnion(c1, c2, 0.15);`}</CodeBlock>
+      <p>{tx(t, "glsl04_combineSteps", "Why min, max and −d work: a point is inside the union if it is inside either shape, so it needs either distance negative, and min returns the negative one. Intersection needs both negative, so max. Negating an SDF swaps inside and outside, so subtracting B from A is \"inside A and outside B\": max(d1, −d2). Worked with d1 = 0.1 (just outside A) and d2 = −0.05 (inside B): union = −0.05, inside; intersection = 0.1, outside; A − B = max(0.1, 0.05) = 0.1, outside. Rendering only ever looks at the sign near zero, so these shortcuts draw correct shapes even where the distance they return is not exact.")}</p>
 
       <Callout type="info" t={t}>
         {tx(t, "glsl04_combineWarn",
@@ -101,14 +105,32 @@ float merged = sdfSmoothUnion(c1, c2, 0.15);`}</CodeBlock>
         {r`\text{round: } d - r \qquad \text{onion: } |d| - w \qquad \text{outline: } |d| < w \qquad \text{glow: } e^{-k\,\max(d, 0)}`}
       </Equation>
       <Equation label={tx(t, "glsl04_sminLabel", "Smooth minimum (polynomial)")}
-        where={[[r`k`, tx(t, "glsl04_wK", "blend radius: how far apart the shapes start to merge")]]}
+        where={[
+          [r`d_1, d_2`, tx(t, "glsl04_wD12", "the signed distances to the two shapes")],
+          [r`k`, tx(t, "glsl04_wK", "blend radius: how far apart the shapes start to merge")],
+          [r`h`, tx(t, "glsl04_wH", "blend weight, 0 = all d₂, 1 = all d₁, ½ where the two are equal")],
+        ]}
         note={tx(t, "glsl04_sminNote", "Where the two distances differ by more than k, h is 0 or 1 and smin returns the plain min. Inside that band it subtracts a small parabolic amount, which fills the crease between the shapes. The result is organic, blobby joins, the look of every SDF-sculpted character.")}>
         {r`h = \operatorname{clamp}\!\left(\tfrac12 + \tfrac12\,\frac{d_2 - d_1}{k},\ 0,\ 1\right) \qquad \operatorname{smin}(d_1, d_2) = \operatorname{mix}(d_2, d_1, h) - k\,h\,(1 - h)`}
       </Equation>
+      <p>{tx(t, "glsl04_sminSteps", "Worked with k = 0.15 at a point midway between two blobs, d₁ = d₂ = 0.05. The plain min would be 0.05, outside. h = 0.5 + 0.5·0/0.15 = 0.5, mix gives 0.05, and the correction is k·h·(1 − h) = 0.15·0.25 = 0.0375, so smin = 0.0125: still outside, but much closer to the surface. Points slightly nearer the middle tip over to negative, which is the bridge of material that joins the two. The largest correction is k/4, where the distances are equal, which is why k reads as the size of the fillet. With d₁ = 0.05 and d₂ = 0.3, the difference 0.25 exceeds k, h clamps to 1, and smin = d₁ exactly: far from the join, nothing changes.")}</p>
+      <p>{tx(t, "glsl04_opsSteps", "The other operations, with numbers. Onion with w = 0.02 on a circle of radius 0.5: at the old surface |0| − 0.02 = −0.02, inside a ring; at the old centre |−0.5| − 0.02 = 0.48, outside. The shape becomes a 0.04-thick shell. Glow: e^(−k·d) with k = 10 is 1 on the surface, e^(−1) = 0.37 at d = 0.1 and 0.05 at d = 0.3, a halo that fades with distance and that you add on top of the colour.")}</p>
       <ShaderPlayground presets={SDF_PRESETS} t={t} id="glsl04Sdf" />
       <Callout type="tip" t={t}>
         {tx(t, "glsl04_aaTip", "fwidth(d) is the change of d over one pixel, so smoothstep(-w, w, d) with w = fwidth(d) gives an edge exactly one pixel wide at any zoom, rotation or resolution. Text renderers use the same trick with SDF font atlases (Valve, 2007), so glyphs stay sharp at any size from one small texture.")}
       </Callout>
+
+      <H2>{tx(t, "glsl04_mistakesTitle", "Common mistakes")}</H2>
+      <LessonTable
+        headers={[tx(t, "glsl04_thSymptom", "Symptom"), tx(t, "glsl04_thCause", "Cause"), tx(t, "glsl04_thFix", "Fix")]}
+        rows={[
+          [tx(t, "glsl04_m1a", "Box is twice the size you expected"), tx(t, "glsl04_m1b", "Passed the full size as b, which is the half-size"), tx(t, "glsl04_m1c", "b = size / 2")],
+          [tx(t, "glsl04_m2a", "Edges blurry or jagged after scaling"), tx(t, "glsl04_m2b", "Hard-coded edge width instead of fwidth(d), or scaled SDF not multiplied back"), tx(t, "glsl04_m2c", "w = fwidth(d); return s · f(p / s)")],
+          [tx(t, "glsl04_m3a", "Subtraction removes the wrong part"), tx(t, "glsl04_m3b", "Arguments swapped: max(d2, −d1) cuts A out of B"), tx(t, "glsl04_m3c", "max(dKeep, −dCut)")],
+          [tx(t, "glsl04_m4a", "Smooth union bulges everywhere"), tx(t, "glsl04_m4b", "k too large compared with the shapes"), tx(t, "glsl04_m4c", "Start with k around 10–20% of the smaller shape")],
+          [tx(t, "glsl04_m5a", "Circle squashed into an ellipse"), tx(t, "glsl04_m5b", "uv not aspect-corrected"), tx(t, "glsl04_m5c", "Divide by uResolution.y (see Fragment Coordinates)")],
+        ]}
+      />
       <KeyIdeas t={t} id="glsl04" items={[
         "An SDF returns signed distance: negative inside, zero on the surface, positive outside.",
         "|d| is the radius of the largest empty circle around the point.",
