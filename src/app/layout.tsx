@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Spectral, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import "./globals.css";
@@ -53,7 +54,9 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
             {children}
           </ThemeProvider>
         </LanguageProvider>
-        
+
+        <Analytics />
+
       </body>
     </html>
   );
