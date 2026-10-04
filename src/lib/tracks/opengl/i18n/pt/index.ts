@@ -9,6 +9,7 @@ import color from "./color";
 import compute from "./compute";
 import csm from "./csm";
 import decals from "./decals";
+import depthTesting from "./depth-testing";
 import dsa from "./dsa";
 import ebo from "./ebo";
 import gi from "./gi";
@@ -37,7 +38,6 @@ import texturecompression from "./texturecompression";
 import textures from "./textures";
 import tooling from "./tooling";
 import transformations from "./transformations";
-import transforms from "./transforms";
 import triangle from "./triangle";
 import vao from "./vao";
 import vbo from "./vbo";
@@ -46,7 +46,7 @@ import volumetrics from "./volumetrics";
 import winding from "./winding";
 
 const bundle: LessonText = {
-  strings: { ...advanced, ...camera, ...clustered, ...color, ...compute, ...csm, ...decals, ...dsa, ...ebo, ...gi, ...legacy, ...lightingAdvanced, ...lightingBasics, ...linearAlgebra, ...models, ...oit, ...particles, ...pbr, ...performance, ...picking, ...pipeline, ...post, ...reflections, ...setup, ...shaderStages, ...shaders, ...skeletal, ...stencil, ...temporal, ...terrain, ...text, ...texturecompression, ...textures, ...tooling, ...transformations, ...transforms, ...triangle, ...vao, ...vbo, ...vectors, ...volumetrics, ...winding },
+  strings: { ...advanced, ...camera, ...clustered, ...color, ...compute, ...csm, ...decals, ...depthTesting, ...dsa, ...ebo, ...gi, ...legacy, ...lightingAdvanced, ...lightingBasics, ...linearAlgebra, ...models, ...oit, ...particles, ...pbr, ...performance, ...picking, ...pipeline, ...post, ...reflections, ...setup, ...shaderStages, ...shaders, ...skeletal, ...stencil, ...temporal, ...terrain, ...text, ...texturecompression, ...textures, ...tooling, ...transformations, ...triangle, ...vao, ...vbo, ...vectors, ...volumetrics, ...winding },
   titles: track.titles,
   sections: track.sections,
 };

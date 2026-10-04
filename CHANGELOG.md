@@ -12,6 +12,10 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ## Outubro de 2026
 
+### 2026-10-04
+
+- **OpenGL, *Teste de profundidade* reescrito como "programando junto"**: o capítulo continua o `main.cpp` do fim de *Câmera e matriz view* (cinco cubos e a câmera com W A S D). Antes dos passos, o texto explica o que o depth buffer guarda (um número de 0 a 1 por pixel, 24 bits, de onde vem `gl_FragCoord.z`) e acompanha um pixel com três fragmentos numa tabela. **Passo 1**: quebrar o teste de propósito (sem `glEnable`, sem `GL_DEPTH_BUFFER_BIT`). Depois vêm `glDepthFunc` (com o "experimente" de GL_GREATER e GL_ALWAYS) e `glDepthMask` numa tabela teste × escrita, com o caso do vidro. A figura interativa do teste de profundidade da trilha Vulkan foi reaproveitada com os nomes do OpenGL (novo modo `api="gl"`: `glEnable(GL_DEPTH_TEST)`, `glDepthMask`, `glDepthFunc`, `glClearDepth`). **Passo 2**: as teclas 1/2/3 mostram a textura, a profundidade crua e a distância linearizada; a fórmula da profundidade com cada termo explicado, a tabela distância → profundidade (por que a imagem fica quase branca) e uma conta de volta para 3 unidades. **Passo 3**: um cubo gêmeo girado um quarto de volta para provocar z-fighting, e `glPolygonOffset` com a fórmula factor · m + units · r explicada. **Passo 4**: o gêmeo 0,0005 maior, o tremeluzir que volta a ~30 unidades, a tabela de passos do buffer com near 0,1 × 0,001 e Δd ≈ d² / (n · 2²⁴). No fim vêm o checkpoint "Seu main.cpp até aqui", uma tabela "o que você vê → causa provável", um exercício (anéis de distância com `fract`), a seção "Indo além" de early-Z e uma tabela de erros comuns. O capítulo saiu de `chapters/transforms.tsx` para o próprio módulo `chapters/depth-testing.tsx` (a URL continua a mesma). Tradução PT completa.
+
 ### 2026-10-01
 
 - **Vercel Analytics**: o pacote `@vercel/analytics` foi instalado e o componente `<Analytics />` entrou no layout raiz (`src/app/layout.tsx`), então todas as páginas contam visitas. Os dados aparecem na aba Analytics do projeto na Vercel depois do deploy.

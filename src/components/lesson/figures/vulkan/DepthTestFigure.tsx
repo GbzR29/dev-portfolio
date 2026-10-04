@@ -12,6 +12,8 @@ import { Figure, Btn, Choice, Readout, Row, C, T, f2, svgPoint } from "@/compone
 // red is near on the left, blue near on the right. Every setting of the
 // depth test is applied per fragment, exactly as the rasterizer does it, and
 // the result is compared with the correct picture pixel by pixel.
+// api="gl" shows the OpenGL names (glEnable, glDepthMask, glDepthFunc…)
+// instead of the Vulkan pipeline fields; the model is the same.
 
 type Op = "LESS" | "LESS_OR_EQUAL" | "GREATER" | "ALWAYS";
 type Tri = { id: "A" | "B"; p: [number, number][]; z: (x: number) => number; col: string };
@@ -52,10 +54,17 @@ function render(o: Opts) {
 }
 const REF = render({ test: true, write: true, op: "LESS", clear: 1, order: "AB" }).color;
 
-export function DepthTestFigure({ t }: { t?: TrackTranslations }) {
+const NAMES = {
+  vk: { test: "depthTestEnable", write: "depthWriteEnable", op: "depthCompareOp", prefix: "", leq: "LESS_OR_EQUAL" },
+  gl: { test: "glEnable(GL_DEPTH_TEST)", write: "glDepthMask", op: "glDepthFunc", prefix: "GL_", leq: "GL_LEQUAL" },
+};
+
+export function DepthTestFigure({ t, api = "vk" }: { t?: TrackTranslations; api?: "vk" | "gl" }) {
   const [o, setO] = useState<Opts>({ test: true, write: true, op: "LESS", clear: 1, order: "AB" });
   const [probe, setProbe] = useState<number | null>(16 + 10 * GW);
   const L = (k: string, en: string) => tx(t, `figVkDepth_${k}`, en);
+  const G = (k: string, en: string) => tx(t, `figGlDepth_${k}`, en);
+  const N = NAMES[api];
   const set = <K extends keyof Opts>(k: K, v: Opts[K]) => setO(s => ({ ...s, [k]: v }));
 
   const r = render(o);
@@ -76,12 +85,12 @@ export function DepthTestFigure({ t }: { t?: TrackTranslations }) {
       head={<Choice value={o.order} onChange={v => set("order", v)} options={[["AB", L("orderAB", "draw red, then blue")], ["BA", L("orderBA", "draw blue, then red")]] as const} />}
       controls={<>
         <Row>
-          <Btn active={o.test} onClick={() => set("test", !o.test)}>{o.test ? "☑" : "☐"} depthTestEnable</Btn>
-          <Btn active={o.write} onClick={() => set("write", !o.write)}>{o.write ? "☑" : "☐"} depthWriteEnable</Btn>
-          <span className="text-[10px] font-mono text-[var(--text-muted)] ml-2">{L("clear", "clear")}</span>
+          <Btn active={o.test} onClick={() => set("test", !o.test)}>{o.test ? "☑" : "☐"} {N.test}</Btn>
+          <Btn active={o.write} onClick={() => set("write", !o.write)}>{o.write ? "☑" : "☐"} {N.write}</Btn>
+          <span className="text-[10px] font-mono text-[var(--text-muted)] ml-2">{api === "gl" ? "glClearDepth" : L("clear", "clear")}</span>
           <Choice value={String(o.clear) as "1" | "0"} onChange={v => set("clear", Number(v))} options={[["1", "1.0"], ["0", "0.0"]] as const} />
         </Row>
-        <Row><span className="text-[10px] font-mono text-[var(--text-muted)]">depthCompareOp</span><Choice value={o.op} onChange={v => set("op", v)} options={[["LESS", "LESS"], ["LESS_OR_EQUAL", "LESS_OR_EQUAL"], ["GREATER", "GREATER"], ["ALWAYS", "ALWAYS"]] as const} /></Row>
+        <Row><span className="text-[10px] font-mono text-[var(--text-muted)]">{N.op}</span><Choice value={o.op} onChange={v => set("op", v)} options={[["LESS", N.prefix + "LESS"], ["LESS_OR_EQUAL", N.leq], ["GREATER", N.prefix + "GREATER"], ["ALWAYS", N.prefix + "ALWAYS"]] as const} /></Row>
         <Row>
           <Readout>{L("tested", "fragments")} {r.tested}</Readout>
           <Readout>{L("rejected", "rejected")} {r.rejected}</Readout>
@@ -90,11 +99,13 @@ export function DepthTestFigure({ t }: { t?: TrackTranslations }) {
           {probe !== null && <Readout>{L("stored", "depth buffer")} = {f2(r.depth[probe])}</Readout>}
         </Row>
       </>}
-      note={L("note", "Each cell is one pixel; its centre is tested against each triangle. The red triangle is near (small z) on its left and the blue one near on its right, so they cross along x = 16, something no drawing order can get right: with the test off, whatever is drawn last covers the overlap. With LESS and a clear of 1.0, the first fragment at each pixel passes (anything is less than 1) and writes its depth, and later fragments pass only if they are nearer. Turn depth writes off and every fragment is compared with the clear value, so the last drawn wins again. Clear to 0.0 with LESS and nothing passes; GREATER with a clear of 0.0 is the reversed-Z setup, which is correct only with a projection that maps near to 1. Move the pointer over either grid to read the depths at one pixel.")}
+      note={api === "gl"
+        ? G("note", "Each cell is one pixel; its centre is tested against each triangle. The red triangle is near (small depth) on its left and the blue one near on its right, so they cross along x = 16, something no drawing order can get right: with the test off, whatever is drawn last covers the overlap. With GL_LESS and glClearDepth(1.0), the first fragment at each pixel passes (anything is less than 1) and writes its depth, and later fragments pass only if they are nearer. Untick glDepthMask and every fragment is compared with the cleared 1.0, so the last drawn wins again. Clear to 0.0 with GL_LESS and nothing passes. GL_GREATER with a clear of 0.0 is the reversed-Z setup, which is correct only with a projection that maps near to 1. Move the pointer over either grid to read the depths at one pixel.")
+        : L("note", "Each cell is one pixel; its centre is tested against each triangle. The red triangle is near (small z) on its left and the blue one near on its right, so they cross along x = 16, something no drawing order can get right: with the test off, whatever is drawn last covers the overlap. With LESS and a clear of 1.0, the first fragment at each pixel passes (anything is less than 1) and writes its depth, and later fragments pass only if they are nearer. Turn depth writes off and every fragment is compared with the clear value, so the last drawn wins again. Clear to 0.0 with LESS and nothing passes; GREATER with a clear of 0.0 is the reversed-Z setup, which is correct only with a projection that maps near to 1. Move the pointer over either grid to read the depths at one pixel.")}
     >
       <svg viewBox={`0 0 640 ${GY + GH * CELL + 8}`} className="w-full h-auto touch-none" role="img" onPointerMove={onMove} onPointerDown={onMove}>
-        <T x={GX[0]} y={GY - 8} size={8.5}>{L("colour", "colour attachment")}</T>
-        <T x={GX[1]} y={GY - 8} size={8.5}>{L("depth", "depth attachment (brighter = nearer)")}</T>
+        <T x={GX[0]} y={GY - 8} size={8.5}>{api === "gl" ? G("colour", "colour buffer") : L("colour", "colour attachment")}</T>
+        <T x={GX[1]} y={GY - 8} size={8.5}>{api === "gl" ? G("depth", "depth buffer (brighter = nearer)") : L("depth", "depth attachment (brighter = nearer)")}</T>
         {r.color.map((c, k) => (
           <rect key={`c${k}`} x={GX[0] + (k % GW) * CELL} y={GY + Math.floor(k / GW) * CELL} width={CELL - 0.6} height={CELL - 0.6}
             fill={c ?? "#0b0d16"} stroke={c !== REF[k] ? "#fff" : "none"} strokeWidth={c !== REF[k] ? 0.8 : 0} />

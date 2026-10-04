@@ -390,6 +390,9 @@ const text: Record<string, string> = {
   figVkSrgb_note: "Os bytes da textura estão codificados em sRGB, como toda foto e textura pintada. Com um formato de imagem _SRGB o sampler os decodifica para luz linear antes de o shader vê-los; com a swapchain _SRGB a GPU codifica de novo a saída linear do shader quando ela é escrita. As duas conversões, ou nenhuma, dão os mesmos bytes com luz 1, e é por isso que o erro UNORM + UNORM passa num primeiro teste; diminua a luz e só o caminho todo em sRGB reduz o brilho do jeito que a luz de verdade reduz. Texturas de dados (normal maps, rugosidade, máscaras) não são cores, então usam _UNORM.",
 
   // ── DepthTestFigure ──
+  figGlDepth_colour: "color buffer",
+  figGlDepth_depth: "depth buffer (mais claro = mais perto)",
+  figGlDepth_note: "Cada célula é um pixel; o seu centro é testado contra cada triângulo. O triângulo vermelho está perto (profundidade pequena) do lado esquerdo e o azul perto do lado direito, então eles se cruzam em x = 16, algo que nenhuma ordem de desenho acerta: com o teste desligado, o que for desenhado por último cobre a sobreposição. Com GL_LESS e glClearDepth(1.0), o primeiro fragmento de cada pixel passa (qualquer coisa é menor que 1) e escreve a sua profundidade, e os fragmentos seguintes só passam se estiverem mais perto. Desmarque glDepthMask e todo fragmento é comparado com o 1,0 da limpeza, então o último desenhado volta a vencer. Limpe para 0,0 com GL_LESS e nada passa. GL_GREATER com limpeza em 0,0 é a configuração de reversed-Z, que só está certa com uma projeção que leva o perto para 1. Passe o ponteiro sobre qualquer uma das grades para ler as profundidades de um pixel.",
   figVkDepth_title: "O teste de profundidade, um fragmento de cada vez",
   figVkDepth_orderAB: "desenhar vermelho, depois azul",
   figVkDepth_orderBA: "desenhar azul, depois vermelho",
