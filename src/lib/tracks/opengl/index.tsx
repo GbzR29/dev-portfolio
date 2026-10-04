@@ -40,7 +40,7 @@ export const openGLChapters: Chapter[] = [
   { id: "depth-testing",   section: TRANSFORMS,      title: "Depth Testing",             minRead: 18, load: () => import("./chapters/depth-testing").then((m) => m.DepthTestingContent) },
 
   // ── Lighting ─────────────────────────────────────────────────────────────
-  { id: "light-color",     section: LIGHTING,        title: "Light & Color",             minRead: 7,  load: () => import("./chapters/lighting-basics/light-color").then((m) => m.LightColorContent) },
+  { id: "light-color",     section: LIGHTING,        title: "Light & Color",             minRead: 16, load: () => import("./chapters/lighting-basics/light-color").then((m) => m.LightColorContent) },
   { id: "lighting",        section: LIGHTING,        title: "Basic Lighting (Phong)",    minRead: 18, load: () => import("./chapters/lighting-basics/lighting").then((m) => m.BasicLightingContent) },
   { id: "materials",       section: LIGHTING,        title: "Materials",                 minRead: 9,  load: () => import("./chapters/lighting-basics/materials").then((m) => m.MaterialsContent) },
   { id: "lighting-maps",   section: LIGHTING,        title: "Lighting Maps",             minRead: 9,  load: () => import("./chapters/lighting-basics/lighting-maps").then((m) => m.LightingMapsContent) },

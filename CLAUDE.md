@@ -91,3 +91,13 @@ from the `chapters` array — never hand-write them.
 ## Still to do (agreed, one small step at a time)
 
 - Translations: PT is complete (all tracks + widgets). ES/ZH exist only for OpenGL and GLSL lessons; no ES/ZH widget text yet.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

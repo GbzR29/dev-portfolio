@@ -1,7 +1,7 @@
 // PT text for src/lib/tracks/opengl/chapters/color.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
-  oglColor_intro: "Antes de iluminar uma cena, precisamos concordar sobre o que é cor. Um objeto não é \"vermelho\" por si só — ele é vermelho porque, de toda a luz que o atinge, devolve principalmente a parte vermelha e engole o resto. A computação gráfica modela isso com uma única multiplicação.",
+  oglColor_intro: "vec3(1.0, 0.0, 0.0) não é \"vermelho\". Quer dizer \"quantidade total da primeira primária de algum espaço de cor, nada das outras\", e qual vermelho é esse depende do espaço. Num monitor sRGB é um vermelho, num celular P3 é um bem mais saturado, num pipeline HDR é outra coisa ainda. Este capítulo mostra o que os números de uma cor realmente significam, por que os renderizadores fazem as contas num espaço e exibem em outro, e como o tone mapper espreme uma luz sem limite no que uma tela consegue mostrar.",
   oglColor_spaceTitle: "O que define um espaço de cor",
   oglColor_thPart: "Parte",
   oglColor_thWhat: "O que ela fixa",
@@ -19,7 +19,7 @@ const text: Record<string, string> = {
   oglColor_referredTitle: "Referido à cena e referido ao display",
   oglColor_referredBody: "O pipeline de iluminação calcula grandezas físicas: radiância, que vai da luz das estrelas ao disco do sol, atravessando mais de 20 stops. Esses valores são referidos à cena: descrevem o mundo e não têm limite superior. Um display emite entre o preto e o seu brilho máximo, uma faixa de talvez 10 stops em SDR, então os seus valores são referidos ao display. Em algum ponto no meio do caminho, a cena precisa ser mapeada para o display. Essa etapa, o tone mapping, é tanto uma decisão artística quanto técnica, porque decide como são o \"claro\" e o \"escuro\".",
   oglColor_evLabel: "Exposição em stops (EV)",
-  oglColor_wL: "cor da luz (o que a fonte emite)",
+  oglColor_wL: "luminância da cena",
   oglColor_wK: "exposição: definida pelo artista, ou automaticamente a partir da luminância logarítmica média da cena (adaptação do olho)",
   oglColor_evNote: "Um stop é um fator de 2 na luz. O cinza médio, 18% de refletância, é a âncora: a exposição é escolhida para o cinza médio cair onde a curva de tons coloca os tons médios. A exposição automática mede a média de log2(L) no frame (uma cadeia de mips ou um histograma num compute shader) e leva k suavemente até ela ao longo de um segundo, mais ou menos, como as pupilas se adaptando.",
   oglColor_toneTitle: "Tone mapping, em detalhe",
@@ -39,9 +39,9 @@ const text: Record<string, string> = {
   oglColor_wY: "luminância / 10000 nits",
   oglColor_wPQ: "0,1593, 78,84, 0,8359, 18,85, 18,69: ajustados à sensibilidade humana ao contraste, para que cada valor de código seja um degrau apenas perceptível",
   oglColor_pitfalls: "Texturas de cor são codificadas em sRGB e precisam ser linearizadas; texturas de dados (normais, rugosidade) não. Faça iluminação e blending em espaço linear, faça o tone mapping uma vez, codifique uma vez. Aplicar a codificação sRGB duas vezes desbota tudo, e esquecê-la deixa tudo escuro e contrastado demais. Faça a correção de cor depois do tone mapping com uma LUT 3D, ou antes dele num espaço logarítmico, e seja consistente. Render targets para luz HDR precisam de formatos float (RGBA16F ou R11G11B10F), senão os valores claros são cortados antes de o tone mapper sequer vê-los.",
-  oglColor_key0: "A cor que vemos é luz × superfície, um canal de cada vez.",
-  oglColor_key1: "Uma superfície só consegue refletir os canais que a luz realmente contém.",
-  oglColor_key2: "As fontes de luz ganham um shader simples próprio para nunca serem iluminadas.",
+  oglColor_key0: "Um espaço de cor = primárias + ponto branco + função de transferência; números RGB não significam nada sem ele.",
+  oglColor_key1: "O XYZ é a referência comum; converter entre espaços RGB é uma matriz 3×3 aplicada a valores lineares.",
+  oglColor_key2: "A iluminação é referida à cena (sem limite); os displays são referidos ao display; o tone mapping liga os dois.",
   oglColor_key3: "Curvas de tons têm pé, trecho linear e ombro; curvas por canal dão um caminho até o branco, com desvio de matiz.",
   oglColor_key4: "ACES: espaço de trabalho amplo (ACEScg) + RRT + ODT por display; o AgX mantém as matizes fortes mais limpas.",
   oglColor_key5: "Saída HDR: primárias Rec.2020, codificação PQ em nits absolutos, interface num branco de papel fixo.",

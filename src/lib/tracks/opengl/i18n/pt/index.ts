@@ -14,6 +14,7 @@ import dsa from "./dsa";
 import ebo from "./ebo";
 import gi from "./gi";
 import legacy from "./legacy";
+import lightColor from "./light-color";
 import lightingAdvanced from "./lighting-advanced";
 import lightingBasics from "./lighting-basics";
 import linearAlgebra from "./linear-algebra";
@@ -46,7 +47,7 @@ import volumetrics from "./volumetrics";
 import winding from "./winding";
 
 const bundle: LessonText = {
-  strings: { ...advanced, ...camera, ...clustered, ...color, ...compute, ...csm, ...decals, ...depthTesting, ...dsa, ...ebo, ...gi, ...legacy, ...lightingAdvanced, ...lightingBasics, ...linearAlgebra, ...models, ...oit, ...particles, ...pbr, ...performance, ...picking, ...pipeline, ...post, ...reflections, ...setup, ...shaderStages, ...shaders, ...skeletal, ...stencil, ...temporal, ...terrain, ...text, ...texturecompression, ...textures, ...tooling, ...transformations, ...triangle, ...vao, ...vbo, ...vectors, ...volumetrics, ...winding },
+  strings: { ...advanced, ...camera, ...clustered, ...color, ...compute, ...csm, ...decals, ...depthTesting, ...dsa, ...ebo, ...gi, ...legacy, ...lightColor, ...lightingAdvanced, ...lightingBasics, ...linearAlgebra, ...models, ...oit, ...particles, ...pbr, ...performance, ...picking, ...pipeline, ...post, ...reflections, ...setup, ...shaderStages, ...shaders, ...skeletal, ...stencil, ...temporal, ...terrain, ...text, ...texturecompression, ...textures, ...tooling, ...transformations, ...triangle, ...vao, ...vbo, ...vectors, ...volumetrics, ...winding },
   titles: track.titles,
   sections: track.sections,
 };
