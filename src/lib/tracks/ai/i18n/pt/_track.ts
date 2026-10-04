@@ -11,10 +11,12 @@ const track = {
     "k-nearest-neighbours": "k-vizinhos mais próximos",
     "decision-trees": "Árvores de decisão",
     "k-means": "Agrupamento k-means",
+    perceptron: "O perceptron",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
     "Classic Machine Learning": "Machine learning clássico",
+    "Neural Networks": "Redes neurais",
   } as Record<string, string>,
 };
 

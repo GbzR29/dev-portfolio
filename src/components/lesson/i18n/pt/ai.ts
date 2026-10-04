@@ -201,6 +201,36 @@ const text: Record<string, string> = {
   figAiKm_converged: "convergiu",
   figAiKm_elbow: "melhor J para cada k",
   figAiKm_note: "Os pontos não têm rótulos; as quatro bolhas só são visíveis para nós. Cada passo \"atribuir\" pinta cada ponto com a cor do centroide mais próximo (as cruzes) e sombreia o território de cada centroide; cada passo \"mover\" põe cada centroide na média dos seus pontos. J, a soma das distâncias ao quadrado de cada ponto até o seu centroide, cai a cada passo até nada mudar. O primeiro início aleatório com k = 4 termina com dois centroides dividindo uma bolha e outro cobrindo duas bolhas: convergiu, mas com J ≈ 103 em vez de ≈ 42. Aqui a maioria dos inícios aleatórios termina num mínimo local ruim assim. O k-means++ espalha os centroides iniciais e encontra as quatro bolhas quase sempre. O gráfico do cotovelo (canto superior direito) mostra o melhor J para k = 1…8: ele cai rápido até k = 4, depois só devagar.",
+
+  // ── NeuronFigure ──
+  figAiNeuron_title: "Um neurônio, quatro entradas, uma porta lógica",
+  figAiNeuron_solution: "mostrar uma solução",
+  figAiNeuron_noLine: "nenhuma reta faz o XOR",
+  figAiNeuron_correct: "acertos",
+  figAiNeuron_stepLabel: "degrau: z ≥ 0 → 1",
+  figAiNeuron_note: "À esquerda: o neurônio multiplica cada entrada pelo seu peso (arestas azuis são pesos positivos, laranja negativos, mais grossas são maiores), soma o viés b e dá 1 se a soma z for pelo menos 0. Clique em x₁, x₂ ou num canto do quadrado para mudar a entrada. À direita: as quatro entradas como cantos de um quadrado, preenchidos de verde onde a porta escolhida deve dar 1 e de vermelho onde deve dar 0; um canto com contorno escuro é um que o neurônio erra. O neurônio dá 1 no lado sombreado da reta z = 0, e a seta (w₁, w₂) sempre aponta para esse lado. Tente chegar a 4 / 4 no AND, depois no OR, depois no NAND. No XOR os dois cantos verdes ficam em diagonal, e nenhuma reta põe os dois de um lado e os dois cantos vermelhos do outro.",
+
+  // ── PerceptronFigure ──
+  figAiPerc_title: "A regra do perceptron, um aluno de cada vez",
+  figAiPerc_clean: "12 alunos",
+  figAiPerc_all: "todos os 14",
+  figAiPerc_centred: "centrados",
+  figAiPerc_raw: "horas cruas",
+  figAiPerc_one: "próximo aluno",
+  figAiPerc_pass: "uma época",
+  figAiPerc_hundred: "100 épocas",
+  figAiPerc_reset: "recomeçar",
+  figAiPerc_epoch: "épocas",
+  figAiPerc_mistakes: "atualizações",
+  figAiPerc_wrong: "errados agora",
+  figAiPerc_pocket: "bolso: o melhor erra",
+  figAiPerc_wrongShort: "aluno(s)",
+  figAiPerc_converged: "parou: uma época sem erros",
+  figAiPerc_gaveUp: "parou depois de 2000 épocas",
+  figAiPerc_mean: "média",
+  figAiPerc_studied: "estudou →",
+  figAiPerc_slept: "↑ dormiu",
+  figAiPerc_note: "Pontos verdes passaram, pontos vermelhos reprovaram. O neurônio prevê \"passa\" no lado sombreado da reta roxa. O aluno no anel tracejado é o próximo a ser conferido; quando o neurônio erra um aluno, a reta salta (a reta tracejada é onde ela estava) somando os atributos desse aluno aos pesos, ou subtraindo no caso de uma reprovação errada. Com 12 alunos e atributos centrados a regra termina em 2 épocas e 3 atualizações. Mude para horas cruas: os mesmos dados agora precisam de 804 épocas e 1807 atualizações, porque a reta precisa terminar longe da origem e o viés só anda 1 por atualização. Com os 14 alunos não existe reta, então ela nunca termina; o bolso guarda os melhores pesos que encontrou (a reta pontilhada âmbar: 1 errado com atributos centrados).",
 };
 
 export default text;

@@ -29,3 +29,21 @@ export function contourPaths(m: Map2, f: (x: number, y: number) => number,
 /** Levels spaced geometrically between lo and hi: equal steps on a log scale. */
 export const geoLevels = (lo: number, hi: number, n: number) =>
   Array.from({ length: n }, (_, k) => lo * (hi / lo) ** (k / (n - 1)));
+
+// ── Half-plane of a linear classifier ─────────────────────────────────────────
+
+/** The rectangle [x0, x1] × [y0, y1] clipped to the side where z(x, y) ≥ 0 (z linear),
+ *  as a polygon in world coordinates, plus the two ends of the line z = 0 inside it. */
+export function halfPlane(z: (x: number, y: number) => number, x0: number, x1: number, y0: number, y1: number) {
+  const cs: [number, number][] = [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+  const poly: [number, number][] = [], ends: [number, number][] = [];
+  cs.forEach((p, k) => {
+    const q = cs[(k + 1) % 4], zp = z(...p), zq = z(...q);
+    if (zp >= 0) poly.push(p);
+    if ((zp >= 0) !== (zq >= 0)) {
+      const u = zp / (zp - zq), c: [number, number] = [p[0] + u * (q[0] - p[0]), p[1] + u * (q[1] - p[1])];
+      poly.push(c); ends.push(c);
+    }
+  });
+  return { poly, ends };
+}

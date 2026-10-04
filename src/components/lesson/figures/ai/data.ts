@@ -67,3 +67,6 @@ export const meanStd = (v: number[]) => {
   const sd = Math.sqrt(v.reduce((s, x) => s + (x - m) ** 2, 0) / v.length);   // population σ, as in the lesson
   return { m, sd };
 };
+
+/** STUDENTS without the two noisy ones: a straight line separates passes from fails (Perceptron chapter). */
+export const STUDENTS_CLEAN = STUDENTS.filter(([h, s]) => !(h === 5 && s === 7) && !(h === 2 && s === 8.5));

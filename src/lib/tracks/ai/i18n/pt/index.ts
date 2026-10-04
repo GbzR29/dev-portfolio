@@ -10,12 +10,13 @@ import kMeans from "./k-means";
 import kNearestNeighbours from "./k-nearest-neighbours";
 import linearRegression from "./linear-regression";
 import logisticRegression from "./logistic-regression";
+import perceptron from "./perceptron";
 import whatIsAi from "./what-is-ai";
 
 const bundle: LessonText = {
   strings: {
     ...data, ...decisionTrees, ...generalisation, ...gradientDescent, ...kMeans,
-    ...kNearestNeighbours, ...linearRegression, ...logisticRegression, ...whatIsAi,
+    ...kNearestNeighbours, ...linearRegression, ...logisticRegression, ...perceptron, ...whatIsAi,
   },
   titles: track.titles,
   sections: track.sections,
