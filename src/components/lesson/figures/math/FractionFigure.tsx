@@ -4,6 +4,7 @@ import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Figure, Choice, Row, Readout, Slider, Sliders, C, T } from "@/components/lesson/kit/figure";
+import { Lab, LabButton, fill, useLab, type Insight, type LabStep } from "@/components/lesson/kit/lab/Lab";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Fractions as lengths on bars where one whole is a fixed width.
@@ -44,6 +45,7 @@ export function FractionFigure({ t }: { t?: TrackTranslations }) {
   const [c, setC] = useState(1), [d, setD] = useState(4);
   const [k, setK] = useState(2);
   const [sub, setSub] = useState<"+" | "−">("+");
+  const lab = useLab("math-fractions");
   const W = 560;
   const small = mode === "mul" || mode === "add";   // keep sums within the two drawn wholes
   const pick = (v: Mode) => {
@@ -127,11 +129,8 @@ export function FractionFigure({ t }: { t?: TrackTranslations }) {
       : mode === "mul" ? `${aa}/${b} × ${cc}/${d} = ${aa * cc}/${b * d} = ${frac(aa * cc, b * d)}`
         : `${a}/${b} ÷ ${c}/${d} = ${a}/${b} × ${d}/${c} = ${frac(a * d, b * c)} ≈ ${((a * d) / (b * c)).toFixed(3)}`;
 
-  return (
-    <Figure
-      title={tx(t, "figFrac_title", "Fractions as lengths")}
-      head={<Choice value={mode} onChange={pick} options={[["eq", tx(t, "figFrac_eq", "equivalent")], ["add", tx(t, "figFrac_add", "add / subtract")], ["mul", tx(t, "figFrac_mul", "multiply")], ["div", tx(t, "figFrac_div", "divide")]] as const} />}
-      controls={<>
+  const modeChoice = <Choice value={mode} onChange={pick} options={[["eq", tx(t, "figFrac_eq", "equivalent")], ["add", tx(t, "figFrac_add", "add / subtract")], ["mul", tx(t, "figFrac_mul", "multiply")], ["div", tx(t, "figFrac_div", "divide")]] as const} />;
+  const controls = <>
         <Sliders>
           <Slider label={tx(t, "figFrac_a", "numerator a")} value={a} min={mode === "div" ? 1 : 0} max={small ? b : 2 * b} step={1} onChange={setA} fmt={v => `${v}`} width="w-28" />
           <Slider label={tx(t, "figFrac_b", "denominator b")} value={b} min={1} max={12} step={1} onChange={v => { setB(v); setA(x => Math.min(x, small ? v : 2 * v)); }} fmt={v => `${v}`} width="w-28" />
@@ -148,7 +147,122 @@ export function FractionFigure({ t }: { t?: TrackTranslations }) {
           {mode === "add" && <Readout>{tx(t, "figFrac_lcd", "common denominator")} lcm({b}, {d}) = {L}</Readout>}
           {mode === "eq" && <Readout>gcd({a}, {b}) = {g}</Readout>}
         </Row>
-      </>}
+      </>;
+  const stage = <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">{svg}</svg>;
+
+  // ── Lab ──
+  const set = (v: Mode, na: number, nb: number, nc = c, nd = d, nk = k) => { setMode(v); setA(na); setB(nb); setC(nc); setD(nd); setK(nk); setSub("+"); };
+  const prodIsHalf = mode === "mul" && 2 * aa * cc === b * d;
+  const quot = (a * d) / (b * c);
+  const labSteps: LabStep[] = [
+    {
+      title: tx(t, "figFracL1_t", "Thinner slices, same length"),
+      body: <>
+        <p>{tx(t, "figFracL1_b1", "The blue bar is 3/4: the whole from 0 to 1 is cut into 4 slices and 3 are shaded. The amber bar below starts as the same fraction.")}</p>
+        <p>{tx(t, "figFracL1_b2", "Multiply top and bottom by k = 2. What happens to the slices, and to the length?")}</p>
+      </>,
+      goal: { text: tx(t, "figFracL1_g", "Turn 3/4 into eighths with k = 2."), done: mode === "eq" && a === 3 && b === 4 && k === 2 },
+      setup: () => set("eq", 3, 4, c, d, 1),
+    },
+    {
+      title: tx(t, "figFracL2_t", "Find the equivalent fraction"),
+      body: <p>{tx(t, "figFracL2_b", "Now set a and b yourself. Find the fraction with denominator 6 that is the same length as 2/3 (the green bar shows the simplest form of whatever you choose).")}</p>,
+      goal: { text: tx(t, "figFracL2_g", "A fraction over 6 equal to 2/3."), done: mode === "eq" && b === 6 && a === 4 },
+      hint: tx(t, "figFracL2_h", "Each third is cut into 2 sixths, so 2 thirds are 2 × 2 sixths."),
+      setup: () => set("eq", 2, 3, c, d, 1),
+    },
+    {
+      title: tx(t, "figFracL3_t", "Adding needs equal slices"),
+      body: <>
+        <p>{tx(t, "figFracL3_b1", "Thirds and quarters cannot be counted together. The third bar re-slices both into twelfths, lcm(3, 4) = 12, and then adding is just counting slices.")}</p>
+        <p>{tx(t, "figFracL3_b2", "Choose two fractions that add up to exactly one whole.")}</p>
+      </>,
+      goal: { text: tx(t, "figFracL3_g", "Two fractions whose sum is exactly 1."), done: mode === "add" && sub === "+" && pa + pc === L && a > 0 && c > 0 },
+      hint: tx(t, "figFracL3_h", "Keep b = 3 and d = 4 and look at the twelfths: 4 twelfths + 8 twelfths… which fractions are those? Or simply 1/2 + 1/2."),
+      setup: () => set("add", 1, 3, 1, 4),
+    },
+    {
+      title: tx(t, "figFracL4_t", "Quick check"),
+      body: <p>{tx(t, "figFracL4_b", "Never add the denominators.")}</p>,
+      quiz: {
+        q: tx(t, "figFracL4_q", "1/4 + 1/6 = ?"),
+        options: ["5/12", "2/10", "1/5", "2/24"],
+        answer: 0,
+        why: tx(t, "figFracL4_w", "lcm(4, 6) = 12: 1/4 = 3/12 and 1/6 = 2/12, so the sum is 5/12. 2/10 adds the denominators, which would make the sum smaller than 1/4 alone."),
+      },
+    },
+    {
+      title: tx(t, "figFracL5_t", "Multiplying is an area"),
+      body: <>
+        <p>{tx(t, "figFracL5_b1", "a/b of the width times c/d of the height: the purple overlap is a·c cells out of b·d.")}</p>
+        <p>{tx(t, "figFracL5_b2", "Choose two fractions whose product is exactly one half.")}</p>
+      </>,
+      goal: { text: tx(t, "figFracL5_g", "A product equal to 1/2."), done: prodIsHalf },
+      hint: tx(t, "figFracL5_h", "Two thirds of three quarters: 2/3 × 3/4."),
+      setup: () => set("mul", 1, 3, 1, 4),
+    },
+    {
+      title: tx(t, "figFracL6_t", "Dividing counts how many fit"),
+      body: <>
+        <p>{tx(t, "figFracL6_b1", "a/b ÷ c/d asks: how many pieces of length c/d fit into a/b? Here, how many eighths fit into 3/4? Count the numbered pieces.")}</p>
+        <p>{tx(t, "figFracL6_b2", "Now change the fractions so that exactly 4 pieces fit.")}</p>
+      </>,
+      goal: { text: tx(t, "figFracL6_g", "A division whose answer is exactly 4."), done: mode === "div" && Math.abs(quot - 4) < 1e-9 },
+      hint: tx(t, "figFracL6_h", "How many quarters fit into one whole? Set a/b = 1/1 and c/d = 1/4."),
+      setup: () => set("div", 3, 4, 1, 8),
+    },
+    {
+      title: tx(t, "figFracL7_t", "Quick check"),
+      body: <p>{tx(t, "figFracL7_b", "Dividing by a number smaller than 1.")}</p>,
+      quiz: {
+        q: tx(t, "figFracL7_q", "3 ÷ 1/2 = ?"),
+        options: ["6", "3/2", "1/6", "5/2"],
+        answer: 0,
+        why: tx(t, "figFracL7_w", "Six halves fit into 3. By the rule: 3 ÷ 1/2 = 3 × 2/1 = 6. Small pieces fit many times, so the result is bigger than 3."),
+      },
+    },
+  ];
+
+  const insights: Insight[] = [
+    {
+      id: "same", tone: "info", when: mode === "eq" && k > 1,
+      title: tx(t, "figFracI1_t", "Same length, more slices"),
+      body: fill(tx(t, "figFracI1_b", "×{k} cuts every slice into {k}: {k} times more slices, {k} times more shaded. {a}/{b} = {ak}/{bk}."), { k, a, b, ak: a * k, bk: b * k }),
+    },
+    {
+      id: "simplify", tone: "ok", when: mode === "eq" && g > 1,
+      title: tx(t, "figFracI2_t", "This one simplifies"),
+      body: fill(tx(t, "figFracI2_b", "{a} and {b} share the divisor {g}. Dividing both by it gives {s}, the green bar: the same length with the fewest slices."), { a, b, g, s: frac(a, b) }),
+    },
+    {
+      id: "lcm", tone: "info", when: mode === "add" && L < b * d,
+      title: tx(t, "figFracI3_t", "A smaller common denominator"),
+      body: fill(tx(t, "figFracI3_b", "b·d = {bd} always works, but {b} and {d} share a factor, so the least common multiple {L} is smaller and keeps the numbers small."), { bd: b * d, b, d, L }),
+    },
+    {
+      id: "neg", tone: "warn", when: mode === "add" && sum < 0,
+      title: tx(t, "figFracI4_t", "Below zero"),
+      body: tx(t, "figFracI4_b", "c/d is bigger than a/b, so the difference is negative: the bars can't show it, but the arithmetic works the same."),
+    },
+    {
+      id: "shrink", tone: "info", when: mode === "mul" && aa < b && cc < d && aa > 0 && cc > 0,
+      title: tx(t, "figFracI5_t", "The product is smaller than both"),
+      body: tx(t, "figFracI5_b", "Both fractions are less than 1, so taking one of the other shrinks it: the purple part is smaller than the blue columns and smaller than the amber rows."),
+    },
+    {
+      id: "grow", tone: "info", when: mode === "div" && c < d,
+      title: tx(t, "figFracI6_t", "Dividing by less than 1 makes it bigger"),
+      body: fill(tx(t, "figFracI6_b", "Each piece is only {c}/{d} long, less than a whole, so it fits into {a}/{b} more often than 1 would: {q}."), { c, d, a, b, q: frac(a * d, b * c) }),
+    },
+  ];
+
+  const title = tx(t, "figFrac_title", "Fractions as lengths");
+  return (
+    <>
+    <Figure fullscreen={false}
+      title={title}
+      head={<>{modeChoice}<LabButton lab={lab} t={t} /></>}
+      controls={controls}
       note={mode === "eq"
         ? tx(t, "figFrac_noteEq", "One whole is the distance from 0 to 1. The blue bar cuts each whole into b slices and shades a of them. Multiplying top and bottom by the same k cuts every slice into k thinner ones: there are k times more slices and k times more are shaded, so the length (the value) does not change. Going the other way, dividing top and bottom by their greatest common divisor, gives the green bar: the same length with the fewest slices.")
         : mode === "add"
@@ -157,7 +271,19 @@ export function FractionFigure({ t }: { t?: TrackTranslations }) {
             ? tx(t, "figFrac_noteMul", "Taking a/b of c/d is an area: the unit square is cut into b columns and d rows, so each cell is 1/(b·d) of it. The blue columns are a/b of the width, the amber rows c/d of the height, and their purple overlap is a·c cells. That is why you multiply tops together and bottoms together. The product is smaller than both factors because each is less than 1.")
             : tx(t, "figFrac_noteDiv", "Dividing by c/d asks: how many pieces of length c/d fit into a/b? The orange pieces are laid end to end along a/b; whole ones are numbered and the last, partial one is faded. Counting always agrees with the rule \"multiply by the reciprocal\": a/b ÷ c/d = a/b × d/c. Dividing by a number less than 1 gives a bigger result, because small pieces fit many times.")}
     >
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">{svg}</svg>
+      {stage}
     </Figure>
+
+    <Lab lab={lab} t={t} title={title}
+      steps={labSteps} insights={insights} stage={stage}
+      controls={<><Row>{modeChoice}</Row>{controls}</>}
+      recap={[
+        tx(t, "figFracR1", "Multiplying top and bottom by the same k gives thinner slices and the same length: an equivalent fraction."),
+        tx(t, "figFracR2", "To add or subtract, re-slice both into a common denominator first, then count slices."),
+        tx(t, "figFracR3", "Multiplying is an area: a·c cells out of b·d."),
+        tx(t, "figFracR4", "Dividing counts how many pieces fit: a/b ÷ c/d = a/b × d/c, and dividing by less than 1 makes it bigger."),
+      ]}
+    />
+    </>
   );
 }

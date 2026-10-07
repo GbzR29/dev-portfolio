@@ -7,6 +7,7 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -33,6 +34,7 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
           [r`n`, tx(t, "mPow_wN", "the exponent: how many copies of b are in the product, here a whole number 1, 2, 3 …")],
           [r`b^1 = b`, tx(t, "mPow_wOne", "a single copy is just the number itself")],
         ]}
+        words={tx(t, "mPow_powWords", "b to the power n means n copies of b multiplied together.")}
         note={tx(t, "mPow_eqPowNote", "Signs: a negative base multiplied an even number of times gives a positive result, (−2)⁴ = 16, and an odd number of times a negative one, (−2)³ = −8, because the minus signs cancel in pairs. Remember from the order of operations that −2⁴ means −(2⁴) = −16: without parentheses, the minus is not part of the base.")}>
         {r`b^n = \underbrace{b \cdot b \cdots b}_{n \text{ copies}}`}
       </Equation>
@@ -53,6 +55,7 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
           [r`(b^m)^n = b^{m \cdot n}`, tx(t, "mPow_wPow", "power of a power: n groups of m copies")],
           [r`(a b)^n = a^n b^n`, tx(t, "mPow_wProdBase", "power of a product: each factor gets the exponent. The same for a quotient, (a/b)ⁿ = aⁿ/bⁿ")],
         ]}
+        words={tx(t, "mPow_lawsWords", "With the same base, multiplying adds the exponents and dividing subtracts them. A power of a power multiplies the exponents, and a power of a product gives every factor the exponent.")}
         note={tx(t, "mPow_eqLawsNote", "There is no law for sums: (a + b)² is not a² + b². Multiplied out, (a + b)(a + b) = a² + 2ab + b²; the missing 2ab is the two rectangles in the corner of a square with side a + b. For a = 3, b = 4: (3 + 4)² = 49, but 3² + 4² = 25.")}>
         {r`b^m b^n = b^{m+n} \qquad \frac{b^m}{b^n} = b^{m-n} \qquad (b^m)^n = b^{mn} \qquad (ab)^n = a^n b^n`}
       </Equation>
@@ -70,6 +73,14 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mPow_eqNegNote", "So 10⁻³ = 1/1000 = 0.001, a thousandth, and 2⁻¹⁰ = 1/1024. Dividing by a power and multiplying by the negative power are the same operation, which is how x / 8 can be written x · 2⁻³.")}>
         {r`b^0 = 1 \qquad b^{-n} = \frac{1}{b^n} \qquad \left(\frac{a}{b}\right)^{-n} = \left(\frac{b}{a}\right)^{n}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mPow_dNeg", "Why b⁰ = 1 and b⁻ⁿ = 1/bⁿ: keep the quotient law")}
+        steps={[
+          { tex: r`b^0` },
+          { tex: r`= b^{\,n - n}`, why: tx(t, "mPow_dN1", "write the exponent 0 as n − n, for any whole n") },
+          { tex: r`= \frac{b^n}{b^n}`, why: tx(t, "mPow_dN2", "quotient law, read backwards: subtracting exponents is dividing powers") },
+          { tex: r`= \green{1}`, why: tx(t, "mPow_dN3", "a number (not 0) divided by itself is 1") },
+          { tex: r`b^{-n} = b^{\,0 - n} = \frac{b^0}{b^n} = \frac{1}{b^n}`, full: true, why: tx(t, "mPow_dN4", "the same trick with 0 − n: so a negative exponent must mean the reciprocal, if the laws are to keep working") },
+        ]} />
 
       <H2>{tx(t, "mPow_sciTitle", "Powers of ten and scientific notation")}</H2>
       <p>
@@ -96,6 +107,7 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
           [r`\sqrt{ab} = \sqrt{a}\,\sqrt{b}`, tx(t, "mPow_wRootProd", "for a, b ≥ 0. Both sides squared give ab. Likewise √(a/b) = √a / √b")],
           [r`\sqrt{a + b} \ne \sqrt{a} + \sqrt{b}`, tx(t, "mPow_wRootSum", "there is no rule for sums: √(9 + 16) = √25 = 5, but √9 + √16 = 7. This is the same fact as (a + b)² ≠ a² + b²")],
         ]}
+        words={tx(t, "mPow_rootWords", "The square root of x is the non-negative number whose square is x: the side of a square with area x.")}
         note={tx(t, "mPow_eqRootNote", "The product rule simplifies roots: pull out the largest perfect-square factor. √72 = √(36 × 2) = √36 · √2 = 6√2. The numbers 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 … are the perfect squares, the squares of whole numbers; the square root of any other whole number is irrational, an endless non-repeating decimal like √2 = 1.41421356….")}>
         {r`\sqrt{x} = r \iff r^2 = x,\; r \ge 0 \qquad \sqrt{x^2} = |x|`}
       </Equation>
@@ -123,6 +135,7 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
           [r`g_k`, tx(t, "mPow_wG", "the k-th guess. g₀ can be anything positive; x itself or x/2 works")],
           [r`\tfrac{x}{g_k}`, tx(t, "mPow_wXg", "the partner of the guess: a rectangle with sides gₖ and x/gₖ always has area x")],
         ]}
+        words={tx(t, "mPow_heronWords", "The next guess is the average of the current guess and x divided by it. One of the two is too big and the other too small, so the average is closer.")}
         note={tx(t, "mPow_eqHeronNote", "For √10 from g₀ = 3: g₁ = (3 + 10/3)/2 = 3.1667, g₂ = (3.1667 + 3.1579)/2 = 3.16228, already correct to five decimals (√10 = 3.162278…). Geometrically, each step reshapes a rectangle of area x to be more square; the side of the final square is √x. It is Newton's method, from the calculus chapters, applied to g² − x = 0.")}>
         {r`g_{k+1} = \frac{1}{2}\left(g_k + \frac{x}{g_k}\right)`}
       </Equation>
@@ -131,14 +144,13 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPow_squaringBody",
           "Computing 3⁸ as 3 × 3 × 3 × 3 × 3 × 3 × 3 × 3 takes seven multiplications. The power-of-a-power law gives a shortcut: 3⁸ = ((3²)²)², so square three times, 3² = 9, 9² = 81, 81² = 6561. For an exponent that is not a power of two, split it into powers of two with the product law: 3¹³ = 3⁸ · 3⁴ · 3¹, because 13 = 8 + 4 + 1, and 3⁴ and 3⁸ were already on the way. Five multiplications instead of twelve.")}
       </p>
-      <Equation label={tx(t, "mPow_eqSquaring", "2¹⁰ by squaring")}
-        notes={[
-          tx(t, "mPow_sq1", "10 = 8 + 2, so 2¹⁰ = 2⁸ · 2²"),
-          tx(t, "mPow_sq2", "square repeatedly: 2² = 4, 4² = 16 = 2⁴, 16² = 256 = 2⁸"),
-          tx(t, "mPow_sq3", "multiply the pieces you need: 256 × 4 = 1024"),
-        ]}>
-        {r`2^{10} = 2^{8} \cdot 2^{2} = \left((2^2)^2\right)^2 \cdot 2^2 = 256 \cdot 4 = 1024`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mPow_eqSquaring", "2¹⁰ by squaring")}
+        steps={[
+          { tex: r`2^{10}` },
+          { tex: r`= 2^{8} \cdot 2^{2}`, why: tx(t, "mPow_sq1", "10 = 8 + 2, so 2¹⁰ = 2⁸ · 2²") },
+          { tex: r`= \left((2^2)^2\right)^2 \cdot 2^2 = 256 \cdot 4`, why: tx(t, "mPow_sq2", "square repeatedly: 2² = 4, 4² = 16 = 2⁴, 16² = 256 = 2⁸") },
+          { tex: r`= 1024`, why: tx(t, "mPow_sq3", "multiply the pieces you need: 256 × 4 = 1024") },
+        ]} />
 
       <H2>{tx(t, "mPow_gamesTitle", "Squares and roots in the world")}</H2>
       <p>

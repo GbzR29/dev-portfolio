@@ -6,12 +6,24 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { DivisibilityFigure } from "@/components/lesson/figures/math/DivisibilityFigure";
 
 const r = String.raw;
+
+// ── Live division with remainder ──────────────────────────────────────────────
+
+function remainderNumbers(v: Record<string, number>) {
+  const { a, b } = v, q = Math.floor(a / b), rem = a - q * b;
+  const p = (x: number) => (x < 0 ? `(${x})` : `${x}`);
+  return {
+    tex: r`${a} = \sym{q}{\blue{${p(q)}}} \cdot ${b} + \sym{r}{\amber{${rem}}} \qquad 0 \le \sym{r}{\amber{${rem}}} < ${b}`,
+  };
+}
 
 export function DivisibilityContent({ t }: { t: TrackTranslations }) {
   return (
@@ -30,12 +42,21 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`a`, tx(t, "mDiv_wA", "the dividend: the number being divided (17)")],
           [r`b`, tx(t, "mDiv_wB", "the divisor, a whole number greater than 0 (5)")],
-          [r`q`, tx(t, "mDiv_wQ", "the quotient: how many whole times b fits into a (3)")],
-          [r`r`, tx(t, "mDiv_wR", "the remainder: what is left, always 0 ≤ r < b (2)")],
+          [r`\sym{q}{\blue{q}}`, tx(t, "mDiv_wQ", "the quotient: how many whole times b fits into a (3)")],
+          [r`\sym{r}{\amber{r}}`, tx(t, "mDiv_wR", "the remainder: what is left, always 0 ≤ r < b (2)")],
         ]}
+        words={tx(t, "mDiv_remWords", "Fit b into a as many whole times as you can; that count is the quotient, and whatever is left, less than b, is the remainder.")}
         note={tx(t, "mDiv_eqRemNote", "For every whole number a and every b > 0 there is exactly one such pair q, r. Check: 3 × 5 + 2 = 17. The rule 0 ≤ r < b also settles negative dividends: −17 = (−4) × 5 + 3, so the quotient is −4 and the remainder 3. The quotient is the whole number just below −17/5 = −3.4 (rounded down, toward −∞), which keeps the remainder positive.")}>
-        {r`a = q \cdot b + r \qquad 0 \le r < b`}
+        {r`a = \sym{q}{\blue{q}} \cdot b + \sym{r}{\amber{r}} \qquad 0 \le \sym{r}{\amber{r}} < b`}
       </Equation>
+      <LiveFormula label={tx(t, "mDiv_liveRem", "Try it: quotient and remainder")}
+        tex={r`a = \sym{q}{\blue{q}} \cdot b + \sym{r}{\amber{r}} \qquad 0 \le \sym{r}{\amber{r}} < b`}
+        vars={[
+          { id: "a", label: tx(t, "mDiv_lvA", "dividend a"), min: -40, max: 100, step: 1, value: 17, fmt: v => String(v) },
+          { id: "b", label: tx(t, "mDiv_lvB", "divisor b"), min: 1, max: 12, step: 1, value: 5, fmt: v => String(v) },
+        ]}
+        compute={remainderNumbers}
+        note={tx(t, "mDiv_liveRemNote", "Move a below zero: the quotient steps down to the next smaller whole number, so that the remainder stays between 0 and b − 1. With a = −17 and b = 5 you get −17 = (−4) · 5 + 3.")} />
 
       <H2>{tx(t, "mDiv_divTitle", "Divisors and multiples")}</H2>
       <p>
@@ -89,6 +110,7 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
           [r`e_i`, tx(t, "mDiv_wE", "the exponent of pᵢ: how many times it appears in the product (a power, pᵉ, is e copies of p multiplied, as the next chapter explains)")],
           [r`(e_1 + 1)\cdots(e_k + 1)`, tx(t, "mDiv_wCount", "the number of divisors of n: a divisor picks 0 to eᵢ copies of each pᵢ, which is eᵢ + 1 choices per prime")],
         ]}
+        words={tx(t, "mDiv_factWords", "Every whole number above 1 is a product of primes in exactly one way. To count its divisors, add one to each exponent and multiply.")}
         note={tx(t, "mDiv_eqFactNote", "360 = 2³ × 3² × 5¹ has (3 + 1)(2 + 1)(1 + 1) = 24 divisors. Finding the factorisation by trial division: divide by 2 as long as it goes, then by 3, then 5, and so on, and stop when the divisor squared passes what is left; whatever is left then (if more than 1) is itself prime.")}>
         {r`n = p_1^{e_1}\, p_2^{e_2} \cdots p_k^{e_k} \qquad \#\text{divisors} = (e_1 + 1)(e_2 + 1)\cdots(e_k + 1)`}
       </Equation>
@@ -109,9 +131,18 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
           [r`a \bmod b`, tx(t, "mDiv_wMod", "a mod b, read \"a modulo b\": the remainder r when a is divided by b")],
           [r`\gcd(a, 0) = a`, tx(t, "mDiv_wStop", "the stopping rule: every number divides 0, so the largest common divisor of a and 0 is a itself")],
         ]}
+        words={tx(t, "mDiv_euclidWords", "Replace the pair by the smaller number and the remainder of dividing the bigger by it. The common divisors do not change. When the remainder reaches 0, the other number is the gcd.")}
         note={tx(t, "mDiv_eqEuclidNote", "Why it works: a = q·b + r. Any number that divides a and b also divides r = a − q·b, and any number that divides b and r also divides a = q·b + r. So the pair (a, b) and the pair (b, r) have exactly the same common divisors, hence the same gcd, and the numbers shrink every step. gcd(48, 36) = gcd(36, 12) = gcd(12, 0) = 12. Geometrically: cut the biggest possible squares off a 48 × 36 rectangle; the leftover strip is 12 × 36; cut squares off that; the last square size that fits exactly is the gcd. The figure draws this.")}>
         {r`\gcd(a, b) = \gcd(b,\; a \bmod b) \qquad \gcd(a, 0) = a`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mDiv_dEuclid", "Euclid on 1071 and 462")}
+        steps={[
+          { tex: r`\gcd(1071,\, 462)` },
+          { tex: r`= \gcd(462,\, \amber{147})`, why: tx(t, "mDiv_dE1", "1071 = 2 × 462 + 147: replace the pair by the smaller number and the remainder") },
+          { tex: r`= \gcd(147,\, \amber{21})`, why: tx(t, "mDiv_dE2", "462 = 3 × 147 + 21") },
+          { tex: r`= \gcd(21,\, \amber{0})`, why: tx(t, "mDiv_dE3", "147 = 7 × 21 + 0: the division is exact") },
+          { tex: r`= \green{21}`, why: tx(t, "mDiv_dE4", "stopping rule gcd(a, 0) = a. Check with the factorisations: 1071 = 3² × 7 × 17 and 462 = 2 × 3 × 7 × 11 share 3 × 7 = 21") },
+        ]} />
 
       <H2>{tx(t, "mDiv_lcmTitle", "The least common multiple")}</H2>
       <p>
@@ -123,6 +154,7 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
           [r`\operatorname{lcm}(a, b)`, tx(t, "mDiv_wLcm", "the least common multiple of positive whole numbers a and b")],
           [r`\gcd(a, b)`, tx(t, "mDiv_wGcd", "their greatest common divisor, from Euclid's algorithm")],
         ]}
+        words={tx(t, "mDiv_lcmWords", "Multiply the two numbers and divide by their gcd, so that the factors they share are not counted twice.")}
         note={tx(t, "mDiv_eqLcmNote", "In factorisations, the lcm takes each prime with the larger of its two exponents, the gcd with the smaller, and between them they use every copy exactly once, which is why gcd × lcm = a × b. Example: gcd(6, 8) = 2, so lcm(6, 8) = 6 × 8 / 2 = 24. By hand, divide first to keep the numbers small: 6 ÷ 2 × 8 = 3 × 8 = 24.")}>
         {r`\operatorname{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}`}
       </Equation>
@@ -137,6 +169,7 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
           [r`a \equiv b \pmod{n}`, tx(t, "mDiv_wCong", "\"a is congruent to b modulo n\": a and b leave the same remainder when divided by n, which is the same as saying n divides a − b. 14 ≡ 2 (mod 12)")],
           [r`n`, tx(t, "mDiv_wN", "the modulus, the length of the cycle: 12 for hours, 7 for weekdays, 10 for the last digit of a number")],
         ]}
+        words={tx(t, "mDiv_congWords", "Two numbers are congruent modulo n when they leave the same remainder on division by n, which happens exactly when their difference is a multiple of n.")}
         note={tx(t, "mDiv_eqCongNote", "Sums and products can be reduced at any step: to find the last digit of 37 × 58, only the last digits matter, 7 × 8 = 56, so the answer ends in 6 (37 × 58 = 2146). The divisibility test for 9 is this rule too: 10 ≡ 1 (mod 9), so every power of ten is ≡ 1 and a number is ≡ its digit sum.")}>
         {r`a \equiv b \pmod{n} \iff n \mid (a - b)`}
       </Equation>

@@ -80,10 +80,13 @@ export function Lab({ lab, title, steps, insights = [], stage, controls, recap =
     steps[k].setup?.();
   };
 
-  // First opening: start the first step from its own setup
+  // First opening: start the first step from its own setup. Its state lands on
+  // the next render, so the goal check below skips this one (the figure's
+  // state before the setup could already meet the goal).
+  const settling = useRef(false);
   useEffect(() => {
     if (!open) return;
-    if (!opened.current) { opened.current = true; steps[0]?.setup?.(); }
+    if (!opened.current) { opened.current = true; settling.current = !!steps[0]?.setup; steps[0]?.setup?.(); }
     closeBtn.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -91,6 +94,7 @@ export function Lab({ lab, title, steps, insights = [], stage, controls, recap =
   // A goal, once met, stays met: the dots (and the saved progress) remember it
   const done = step?.goal?.done ?? false;
   useEffect(() => {
+    if (settling.current) { settling.current = false; return; }
     if (open && done && !progress.reached.includes(at)) setProgress({ ...progress, reached: [...progress.reached, at] });
   }, [open, done, at, progress, setProgress]);
 

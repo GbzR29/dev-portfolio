@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Figure, Btn, Row, Readout, C, T } from "@/components/lesson/kit/figure";
+import { Figure, Btn, Row, Readout, C, T, useVisible } from "@/components/lesson/kit/figure";
+import { scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
+import { Transport } from "@/components/lesson/kit/Transport";
+import { Lab, LabButton, fill, useLab, type Insight, type LabStep } from "@/components/lesson/kit/lab/Lab";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // An arithmetic expression parsed with the usual precedence rules into a tree:
@@ -123,15 +126,57 @@ function layout(root: Node) {
 
 const PRESETS = ["2 + 3 × 4", "(2 + 3) × 4", "2 + 3 × 4^2", "10 − 4 − 3", "8 ÷ 4 ÷ 2", "2^3^2", "−3^2", "(−3)^2", "6 ÷ 2 × (1 + 2)"];
 
+/**
+ * The value a flat expression (numbers with + − × ÷, nothing else) would get if
+ * it were read strictly left to right, ignoring precedence; null otherwise.
+ */
+function naiveLeftToRight(src: string): number | null {
+  const s = src.replace(/[−–]/g, "-").replace(/[×·*]/g, "*").replace(/[÷/:]/g, "/").replace(/\s+/g, "");
+  if (!/^\d+(?:\.\d+)?(?:[-+*/]\d+(?:\.\d+)?)+$/.test(s)) return null;
+  const toks = s.match(/\d+(?:\.\d+)?|[-+*/]/g)!;
+  let v = Number(toks[0]);
+  for (let i = 1; i < toks.length; i += 2) {
+    const b = Number(toks[i + 1]), op = toks[i];
+    v = op === "+" ? v + b : op === "-" ? v - b : op === "*" ? v * b : v / b;
+  }
+  return v;
+}
+
 export function ExpressionTreeFigure({ t }: { t?: TrackTranslations }) {
   const [src, setSrc] = useState(PRESETS[2]);
   const [step, setStep] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const [seen, setSeen] = useState<string[]>([]);       // expressions evaluated to the end
+  const [speed] = useFigureSpeed();
+  const lab = useLab("math-expression-tree");
+  const vis = useVisible<HTMLDivElement>();
   const tree = useMemo(() => {
     const root = parse(src);
     if (!root) return null;
     return { root, ops: order(root), ...layout(root) };
   }, [src]);
-  const load = (s: string) => { setSrc(s); setStep(0); };
+  const load = (s: string) => { setSrc(s); setStep(0); setPlaying(false); };
+  const count = tree?.ops.length ?? 0;
+  const finished = !!tree && step >= count;
+
+  // Playing collapses one operator per beat
+  useEffect(() => {
+    if (!playing || !(vis.on || lab.open)) return;
+    if (step >= count) { setPlaying(false); return; }
+    const id = setTimeout(() => setStep(s => Math.min(count, s + 1)), scaledMs(900, speed));
+    return () => clearTimeout(id);
+  }, [playing, step, count, speed, vis.on, lab.open]);
+
+  // Remember which expressions were followed to the end (lab goals)
+  useEffect(() => {
+    if (finished && !seen.includes(src)) setSeen(s => [...s, src]);
+  }, [finished, src, seen]);
+
+  const play = () => {
+    if (playing) { setPlaying(false); return; }
+    if (finished) setStep(0);
+    setPlaying(true);
+  };
 
   const W = 560;
   const ops = tree?.ops ?? [];
@@ -153,26 +198,11 @@ export function ExpressionTreeFigure({ t }: { t?: TrackTranslations }) {
           : op === "*" || op === "/" ? tx(t, "figExpr_rMul", "× and ÷ before + and −, left to right")
             : tx(t, "figExpr_rAdd", "+ and − last, left to right");
 
-  return (
-    <Figure
-      title={tx(t, "figExpr_title", "Order of operations as a tree")}
-      controls={<>
-        <Row>
-          {PRESETS.map(s => <Btn key={s} active={s === src} onClick={() => load(s)}>{s}</Btn>)}
-        </Row>
-        <Row>
-          <input value={src} onChange={e => load(e.target.value)} aria-label={tx(t, "figExpr_input", "expression")}
-            className="w-52 px-2 py-1 text-[12px] font-mono rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--text-main)]" />
-          <Btn onClick={() => setStep(s => Math.max(0, s - 1))}>{tx(t, "figExpr_back", "◀ back")}</Btn>
-          <Btn active onClick={() => setStep(s => Math.min(ops.length, s + 1))}>{tx(t, "figExpr_step", "step ▶")}</Btn>
-          <Btn onClick={() => setStep(0)}>{tx(t, "figExpr_reset", "reset")}</Btn>
-          {tree && <Readout>{tx(t, "figExpr_stepN", "step")} {step} / {ops.length}</Readout>}
-        </Row>
-        {tree ? <Readout color={curNode ? C.amber : C.green}>{rule}</Readout>
-          : <Readout color={C.red}>{tx(t, "figExpr_bad", "Could not read that. Use numbers, + − × ÷ ^ and parentheses.")}</Readout>}
-      </>}
-      note={tx(t, "figExpr_note", "The parser turns the text into a tree: every operator is a node and its two operands hang below it. Operators that bind more tightly (^ before × ÷ before + −) end up lower in the tree, so they are reached first when you evaluate from the bottom up. Press step to collapse one operator at a time; the amber part of the expression is what is being computed. Try the pairs 2 + 3 × 4 / (2 + 3) × 4 and −3^2 / (−3)^2, and type your own.")}
-    >
+  const result = tree ? value(tree.root) : NaN;
+  const naive = naiveLeftToRight(src);
+
+  const stage = (
+    <div>
       <div className="px-4 pt-3 pb-1 font-mono text-[15px] text-[var(--text-main)] text-center min-h-[2rem]">
         {segs.map((g, i) => <span key={i} style={g.hl ? { color: C.amber, fontWeight: 700 } : undefined}>{g.s}</span>)}
       </div>
@@ -201,6 +231,151 @@ export function ExpressionTreeFigure({ t }: { t?: TrackTranslations }) {
           {curNode && <T x={W - 10} y={H - 8} size={9} anchor="end" color={C.amber}>{`${fmt(value(curNode))} ${tx(t, "figExpr_next", "← next result")}`}</T>}
         </svg>
       )}
-    </Figure>
+      <p className="px-4 pb-1 text-center text-[12.5px] min-h-[1.4rem]" style={{ color: !tree ? C.red : curNode ? C.amber : C.green }}>
+        {tree ? rule : tx(t, "figExpr_bad", "Could not read that. Use numbers, + − × ÷ ^ and parentheses.")}
+      </p>
+      {tree && (
+        <Transport t={t} speed playing={playing} onPlay={play}
+          playLabel={tx(t, "figExpr_play", "evaluate step by step")}
+          onStep={step < count ? () => { setPlaying(false); setStep(s => Math.min(count, s + 1)); } : undefined}
+          onBack={step > 0 ? () => { setPlaying(false); setStep(s => Math.max(0, s - 1)); } : undefined}
+          onReset={() => { setPlaying(false); setStep(0); }}
+          readout={`${tx(t, "figExpr_stepN", "step")} ${step} / ${count}`} />
+      )}
+    </div>
+  );
+
+  const pick = (
+    <>
+      <Row>
+        {PRESETS.map(s => <Btn key={s} active={s === src} onClick={() => load(s)}>{s}</Btn>)}
+      </Row>
+      <Row>
+        <input value={src} onChange={e => load(e.target.value)} aria-label={tx(t, "figExpr_input", "expression")}
+          className="w-56 px-2 py-1 text-[13px] font-mono rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--text-main)]" />
+        {tree && finished && <Readout color={C.green}>= {fmt(result)}</Readout>}
+      </Row>
+    </>
+  );
+
+  // ── Lab ──
+  const ran = (s: string) => seen.includes(s);
+  const labSteps: LabStep[] = [
+    {
+      title: tx(t, "figExprL1_t", "Which goes first?"),
+      body: <>
+        <p>{tx(t, "figExprL1_b1", "2 + 3 × 4 written as a tree: the × hangs lower than the +, so it is reached first when you work from the bottom up.")}</p>
+        <p>{tx(t, "figExprL1_b2", "Press ⏭ to collapse one operation at a time, or ▶ to watch it run.")}</p>
+      </>,
+      goal: { text: tx(t, "figExprL1_g", "Evaluate 2 + 3 × 4 to the end."), done: ran("2 + 3 × 4") },
+      focus: "step",
+      setup: () => load("2 + 3 × 4"),
+    },
+    {
+      title: tx(t, "figExprL2_t", "Parentheses change the tree"),
+      body: <>
+        <p>{tx(t, "figExprL2_b1", "Now (2 + 3) × 4. The parentheses push the + down below the ×: the tree turns upside down, and the answer changes from 14 to 20.")}</p>
+        <p>{tx(t, "figExprL2_b2", "That is all parentheses do: they decide the shape of the tree.")}</p>
+      </>,
+      goal: { text: tx(t, "figExprL2_g", "Evaluate (2 + 3) × 4 to the end."), done: ran("(2 + 3) × 4") },
+      focus: "play",
+      setup: () => load("(2 + 3) × 4"),
+    },
+    {
+      title: tx(t, "figExprL3_t", "Same level: left to right"),
+      body: <>
+        <p>{tx(t, "figExprL3_b1", "× and ÷ share a level, and so do + and −. Within a level, work from left to right: the leftmost operation sits lowest in the tree.")}</p>
+        <p>{tx(t, "figExprL3_b2", "Watch 8 ÷ 4 ÷ 2. Is it 8 ÷ 2 = 4, or 2 ÷ 2 = 1?")}</p>
+      </>,
+      goal: { text: tx(t, "figExprL3_g", "Evaluate 8 ÷ 4 ÷ 2 to the end."), done: ran("8 ÷ 4 ÷ 2") },
+      focus: "play",
+      setup: () => load("8 ÷ 4 ÷ 2"),
+    },
+    {
+      title: tx(t, "figExprL4_t", "Quick check"),
+      body: <p>{tx(t, "figExprL4_b", "Subtraction is done left to right too.")}</p>,
+      quiz: {
+        q: tx(t, "figExprL4_q", "What is 10 − 4 − 3?"),
+        options: ["3", "9", "11", "1"],
+        answer: 0,
+        why: tx(t, "figExprL4_w", "(10 − 4) − 3 = 6 − 3 = 3. Doing the right-hand subtraction first, 10 − (4 − 3) = 9, changes the meaning."),
+      },
+    },
+    {
+      title: tx(t, "figExprL5_t", "A minus sign and a power"),
+      body: <>
+        <p>{tx(t, "figExprL5_b1", "In −3^2 the power is attached to the 3 only: square first, then apply the minus. The result is −9.")}</p>
+        <p>{tx(t, "figExprL5_b2", "To square the negative number you need parentheses. Choose (−3)^2 and compare the trees.")}</p>
+      </>,
+      goal: { text: tx(t, "figExprL5_g", "Evaluate both −3^2 and (−3)^2 to the end."), done: ran("−3^2") && ran("(−3)^2") },
+      setup: () => load("−3^2"),
+    },
+    {
+      title: tx(t, "figExprL6_t", "Build your own tree"),
+      body: <>
+        <p>{tx(t, "figExprL6_b1", "Type in the box. Use the numbers 2, 4, 1 and 3 in this order, any operations, and parentheses where you need them.")}</p>
+        <p>{tx(t, "figExprL6_b2", "Make the value 24, and check it by evaluating the tree.")}</p>
+      </>,
+      goal: { text: tx(t, "figExprL6_g", "An expression with 2, 4, 1, 3 (in order) whose value is 24, evaluated to the end."), done: finished && Math.abs(result - 24) < 1e-9 && src.replace(/[^\d]/g, "") === "2413" },
+      hint: tx(t, "figExprL6_h", "Add first inside each pair: (2 + 4) × (1 + 3)."),
+      setup: () => load("2 + 4 × 1 + 3"),
+    },
+    {
+      title: tx(t, "figExprL7_t", "Quick check"),
+      body: <p>{tx(t, "figExprL7_b", "The famous one from social media. Parentheses first, then × and ÷ from left to right.")}</p>,
+      quiz: {
+        q: tx(t, "figExprL7_q", "What is 6 ÷ 2 × (1 + 2)?"),
+        options: ["9", "1", "6", "3"],
+        answer: 0,
+        why: tx(t, "figExprL7_w", "1 + 2 = 3 first. Then ÷ and × from left to right: 6 ÷ 2 = 3, and 3 × 3 = 9. Getting 1 means doing the × before the ÷."),
+      },
+      setup: () => load("6 ÷ 2 × (1 + 2)"),
+    },
+  ];
+
+  const insights: Insight[] = [
+    {
+      id: "naive", tone: "warn", when: naive !== null && Math.abs(naive - result) > 1e-9,
+      title: tx(t, "figExprI1_t", "Left to right would be wrong here"),
+      body: fill(tx(t, "figExprI1_b", "Read strictly from left to right, ignoring the levels, this would give {n}. With × and ÷ first it is {v}."), { n: fmt(naive ?? 0), v: fmt(result) }),
+    },
+    {
+      id: "negpow", tone: "info", when: !!tree && tree.root.kind === "neg" && src.includes("^"),
+      title: tx(t, "figExprI2_t", "The power comes before the minus"),
+      body: tx(t, "figExprI2_b", "The minus is at the top of the tree: it is applied last, to the result of the power. That is why −3^2 = −9."),
+    },
+    {
+      id: "tower", tone: "info", when: /\^\s*\d+\s*\^/.test(src),
+      title: tx(t, "figExprI3_t", "A tower is read from the top"),
+      body: tx(t, "figExprI3_b", "A chain of powers is the one place that goes right to left: 2^3^2 = 2^(3^2) = 2⁹ = 512. The upper power hangs lowest in the tree."),
+    },
+    {
+      id: "root", tone: "ok", when: finished,
+      title: tx(t, "figExprI4_t", "One number left"),
+      body: fill(tx(t, "figExprI4_b", "The last operation was the one at the top of the tree, the root. The value is {v}."), { v: fmt(result) }),
+    },
+  ];
+
+  const title = tx(t, "figExpr_title", "Order of operations as a tree");
+  return (
+    <>
+      <Figure fullscreen={false} title={title}
+        head={<LabButton lab={lab} t={t} />}
+        controls={pick}
+        note={tx(t, "figExpr_note2", "Every operator is a node and its two operands hang below it. Operators that bind more tightly (^ before × ÷ before + −) sit lower in the tree, so they are reached first when you evaluate from the bottom up. Press ⏭ to collapse one operator at a time; the amber part of the expression is being computed. Try 2 + 3 × 4 against (2 + 3) × 4, and type your own.")}
+      >
+        <div ref={vis.ref}>{stage}</div>
+      </Figure>
+
+      <Lab lab={lab} t={t} title={title}
+        steps={labSteps} insights={insights} stage={stage} controls={pick}
+        recap={[
+          tx(t, "figExprR1", "An expression is a tree: operations that bind tighter sit lower and are done first."),
+          tx(t, "figExprR2", "Parentheses only change the shape of the tree, and with it the answer."),
+          tx(t, "figExprR3", "Within a level, work left to right: 8 ÷ 4 ÷ 2 = 1 and 10 − 4 − 3 = 3."),
+          tx(t, "figExprR4", "A power binds tighter than a leading minus: −3² = −9, (−3)² = 9."),
+        ]}
+      />
+    </>
   );
 }

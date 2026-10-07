@@ -7,6 +7,8 @@
 
 import { H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -14,6 +16,21 @@ import { FractionFigure } from "@/components/lesson/figures/math/FractionFigure"
 import { DecimalFigure } from "@/components/lesson/figures/math/DecimalFigure";
 
 const r = String.raw;
+
+// ── Live cross-multiplication: a/b against c/d ───────────────────────────────
+
+const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+const fr = (p: number, q: number) => r`\tfrac{${p}}{${q}}`;
+
+function compareNumbers(v: Record<string, number>) {
+  const { a, b, c, d } = v;
+  const L = a * d, R = c * b;
+  const sign = L < R ? "<" : L > R ? ">" : "=";
+  const g = gcd(b, d), lcm = (b / g) * d;
+  return {
+    tex: r`${fr(a, b)} \;\text{vs}\; ${fr(c, d)}: \quad \sym{ad}{\blue{${a} \cdot ${d}}} = ${L} \;${sign}\; ${R} = \sym{cb}{\amber{${c} \cdot ${b}}} \quad\Rightarrow\quad ${fr(a, b)} ${sign} ${fr(c, d)} \qquad \left(${fr(a * (lcm / b), lcm)} ${sign} ${fr(c * (lcm / d), lcm)}\right)`,
+  };
+}
 
 export function FractionsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -34,6 +51,7 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
           [r`b`, tx(t, "mFrac_wDen", "the denominator: into how many equal parts the whole is cut. Any integer except 0 (a whole cannot be cut into zero parts)")],
           [r`a \div b`, tx(t, "mFrac_wDiv", "a fraction is also a division: 3/4 is what each person gets when 3 pizzas are shared by 4 people. Both readings give the same point on the number line")],
         ]}
+        words={tx(t, "mFrac_defWords", "Cut the whole into b equal parts and take a of them. It is the same amount as a divided by b, and b can never be zero.")}
         note={tx(t, "mFrac_eqDefNote", "When a < b the fraction is less than 1 (a proper fraction). When a ≥ b it is 1 or more (an improper fraction): 7/4 is seven quarters, one whole (4/4) and 3/4 more, sometimes written as the mixed number 1¾. In calculations, improper fractions are easier to work with; mixed numbers are only for reading. A negative fraction can put its sign anywhere: −3/4 = (−3)/4 = 3/(−4).")}>
         {r`\frac{a}{b} = a \div b \qquad b \neq 0`}
       </Equation>
@@ -59,12 +77,23 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mFrac_eqCmp", "Cross-multiplication (b, d > 0)")}
         where={[
-          [r`a \cdot d`, tx(t, "mFrac_wAd", "the numerator of a/b rewritten over b·d")],
-          [r`c \cdot b`, tx(t, "mFrac_wCb", "the numerator of c/d rewritten over b·d")],
+          [r`\sym{ad}{\blue{a \cdot d}}`, tx(t, "mFrac_wAd", "the numerator of a/b rewritten over b·d")],
+          [r`\sym{cb}{\amber{c \cdot b}}`, tx(t, "mFrac_wCb", "the numerator of c/d rewritten over b·d")],
         ]}
+        words={tx(t, "mFrac_cmpWords", "To compare two fractions, multiply each numerator by the other fraction's denominator. Whichever product is bigger belongs to the bigger fraction.")}
         note={tx(t, "mFrac_eqCmpNote", "Is 5/7 bigger than 2/3? 5 · 3 = 15 and 2 · 7 = 14, so 5/7 > 2/3 (15/21 against 14/21). The comparison uses only whole-number multiplication, so it is exact: no decimals, no rounding. It needs positive denominators: multiplying by a negative number would flip the comparison.")}>
-        {r`\frac{a}{b} < \frac{c}{d} \iff a\,d < c\,b`}
+        {r`\frac{a}{b} < \frac{c}{d} \iff \sym{ad}{\blue{a\,d}} < \sym{cb}{\amber{c\,b}}`}
       </Equation>
+      <LiveFormula label={tx(t, "mFrac_liveCmp", "Try it: compare two fractions")}
+        tex={r`\frac{a}{b} \;?\; \frac{c}{d} \quad\Longleftrightarrow\quad \sym{ad}{\blue{a\,d}} \;?\; \sym{cb}{\amber{c\,b}}`}
+        vars={[
+          { id: "a", label: "a", min: 1, max: 40, step: 1, value: 5, fmt: v => String(v) },
+          { id: "b", label: "b", min: 1, max: 40, step: 1, value: 7, fmt: v => String(v) },
+          { id: "c", label: "c", min: 1, max: 40, step: 1, value: 2, fmt: v => String(v) },
+          { id: "d", label: "d", min: 1, max: 40, step: 1, value: 3, fmt: v => String(v) },
+        ]}
+        compute={compareNumbers}
+        note={tx(t, "mFrac_liveCmpNote", "The bracket on the right rewrites both fractions over their least common denominator, which is what the two products secretly do. Try 13/20 against 21/32, the scores of the worked example below.")} />
 
       <H2>{tx(t, "mFrac_opsTitle", "Computing with fractions")}</H2>
       <H3>{tx(t, "mFrac_addTitle", "Adding and subtracting")}</H3>
@@ -77,6 +106,7 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
           [r`b\,d`, tx(t, "mFrac_wBd", "a common denominator that always works: the product of the two denominators")],
           [r`a\,d,\; c\,b`, tx(t, "mFrac_wAdCb", "the numerators after rewriting: a/b = (a·d)/(b·d) and c/d = (c·b)/(d·b)")],
         ]}
+        words={tx(t, "mFrac_addWords", "Rewrite both fractions so the slices are the same size, then add how many slices you have. The denominators are never added.")}
         note={tx(t, "mFrac_eqAddNote", "Example: 1/4 + 1/6. With b·d = 24: 6/24 + 4/24 = 10/24 = 5/12. With the lcm, 12: 3/12 + 2/12 = 5/12 directly. Subtraction works the same way: 3/4 − 1/6 = 9/12 − 2/12 = 7/12. Never add denominators: 1/2 + 1/2 is 2/2 = 1, not 2/4.")}>
         {r`\frac{a}{b} + \frac{c}{d} = \frac{a\,d + c\,b}{b\,d}`}
       </Equation>
@@ -91,6 +121,7 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
           [r`a\,c`, tx(t, "mFrac_wAc", "the number of cells in the overlap of a columns and c rows")],
           [r`b\,d`, tx(t, "mFrac_wBd2", "the number of cells the whole is cut into")],
         ]}
+        words={tx(t, "mFrac_mulWords", "Top times top, bottom times bottom. Taking a fraction of a fraction gives a piece of a piece.")}
         note={tx(t, "mFrac_eqMulNote", "Simplify before multiplying when you can: in 2/3 × 3/4 the 3 on top and the 3 below cancel, and the 2 and the 4 share a 2, leaving 1/2. A whole number n is the fraction n/1, so 5 × 2/3 = 10/3. Multiplying by a fraction smaller than 1 makes a number smaller: half of something is less than the whole of it.")}>
         {r`\frac{a}{b} \times \frac{c}{d} = \frac{a\,c}{b\,d}`}
       </Equation>
@@ -104,6 +135,7 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\tfrac{d}{c}`, tx(t, "mFrac_wRecip", "the reciprocal of c/d, which exists only when c ≠ 0: c/d × d/c = (c·d)/(d·c) = 1")],
         ]}
+        words={tx(t, "mFrac_divWords", "To divide by a fraction, turn it upside down and multiply.")}
         note={tx(t, "mFrac_eqDivNote", "Example: 3/4 ÷ 1/8 = 3/4 × 8/1 = 24/4 = 6. Six eighths fit into three quarters. Dividing by a number between 0 and 1 gives a bigger result, which surprises people at first: small pieces fit many times.")}>
         {r`\frac{a}{b} \div \frac{c}{d} = \frac{a}{b} \times \frac{d}{c} = \frac{a\,d}{b\,c}`}
       </Equation>
@@ -137,15 +169,13 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
       <DecimalFigure t={t} />
 
       <H3>{tx(t, "mFrac_backTitle", "From a repeating decimal back to a fraction")}</H3>
-      <Equation label={tx(t, "mFrac_eqRep", "Shifting away the repeating part")}
-        notes={[
-          tx(t, "mFrac_rep1", "call the number x: x = 0.272727…"),
-          tx(t, "mFrac_rep2", "the block \"27\" has 2 digits, so multiply by 10² = 100: 100x = 27.272727…"),
-          tx(t, "mFrac_rep3", "subtract the first line from the second: the infinite tails are identical and cancel, leaving 99x = 27"),
-          tx(t, "mFrac_rep4", "divide: x = 27/99 = 3/11. The same trick shows 0.999… = 9/9 = 1 exactly: they are two names for the same number"),
-        ]}>
-        {r`100x - x = 27.\overline{27} - 0.\overline{27} \;\Rightarrow\; 99x = 27 \;\Rightarrow\; x = \tfrac{27}{99} = \tfrac{3}{11}`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mFrac_eqRep", "Shifting away the repeating part")}
+        steps={[
+          { tex: r`x = 0.\sym{tail}{\amber{272727\ldots}}`, full: true, why: tx(t, "mFrac_rep1", "call the number x: x = 0.272727…") },
+          { tex: r`100x = 27.\sym{tail}{\amber{272727\ldots}}`, full: true, why: tx(t, "mFrac_rep2", "the block \"27\" has 2 digits, so multiply by 10² = 100: 100x = 27.272727…") },
+          { tex: r`100x - x = 27 \quad\Rightarrow\quad 99x = 27`, full: true, why: tx(t, "mFrac_rep3", "subtract the first line from the second: the infinite tails are identical and cancel, leaving 99x = 27") },
+          { tex: r`x = \tfrac{27}{99} = \tfrac{3}{11}`, full: true, why: tx(t, "mFrac_rep4", "divide: x = 27/99 = 3/11. The same trick shows 0.999… = 9/9 = 1 exactly: they are two names for the same number") },
+        ]} />
 
       <H2>{tx(t, "mFrac_roundTitle", "Rounding")}</H2>
       <p>
@@ -185,15 +215,14 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
       </p>
 
       <H3>{tx(t, "mFrac_ex4T", "Mixed numbers, step by step")}</H3>
-      <Equation label={tx(t, "mFrac_eqMixed", "2¾ + 1⅚")}
-        notes={[
-          tx(t, "mFrac_mix1", "turn each mixed number into an improper fraction: 2¾ is 2 wholes of 4 quarters plus 3 more, 2 × 4 + 3 = 11 quarters; 1⅚ is 1 × 6 + 5 = 11 sixths"),
-          tx(t, "mFrac_mix2", "common denominator: lcm(4, 6) = 12. Multiply 11/4 top and bottom by 3, and 11/6 by 2"),
-          tx(t, "mFrac_mix3", "add the numerators: 33 + 22 = 55 twelfths"),
-          tx(t, "mFrac_mix4", "back to a mixed number: 55 ÷ 12 = 4 remainder 7, so 4 wholes and 7/12. Check: 4 × 12 + 7 = 55"),
-        ]}>
-        {r`2\tfrac{3}{4} + 1\tfrac{5}{6} = \frac{11}{4} + \frac{11}{6} = \frac{33}{12} + \frac{22}{12} = \frac{55}{12} = 4\tfrac{7}{12}`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mFrac_eqMixed", "2¾ + 1⅚")}
+        steps={[
+          { tex: r`2\tfrac{3}{4} + 1\tfrac{5}{6}` },
+          { tex: r`= \frac{11}{4} + \frac{11}{6}`, why: tx(t, "mFrac_mix1", "turn each mixed number into an improper fraction: 2¾ is 2 wholes of 4 quarters plus 3 more, 2 × 4 + 3 = 11 quarters; 1⅚ is 1 × 6 + 5 = 11 sixths") },
+          { tex: r`= \frac{33}{12} + \frac{22}{12}`, why: tx(t, "mFrac_mix2", "common denominator: lcm(4, 6) = 12. Multiply 11/4 top and bottom by 3, and 11/6 by 2") },
+          { tex: r`= \frac{55}{12}`, why: tx(t, "mFrac_mix3", "add the numerators: 33 + 22 = 55 twelfths") },
+          { tex: r`= 4\tfrac{7}{12}`, why: tx(t, "mFrac_mix4", "back to a mixed number: 55 ÷ 12 = 4 remainder 7, so 4 wholes and 7/12. Check: 4 × 12 + 7 = 55") },
+        ]} />
       <p>
         {tx(t, "mFrac_ex4Body",
           "A quick estimate catches mistakes: 2¾ is almost 3 and 1⅚ is almost 2, so the sum should be a bit under 5, and 4 7/12 is. For multiplying or dividing mixed numbers the first step is the same, convert to improper fractions, but never multiply the whole parts and the fractional parts separately: 2½ × 2½ is 5/2 × 5/2 = 25/4 = 6¼, not 4¼.")}

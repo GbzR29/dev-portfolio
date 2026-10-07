@@ -6,6 +6,7 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -51,6 +52,7 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
           [r`a \div b \times c`, tx(t, "mOrd_wLR2", "means (a ÷ b) × c. 12 ÷ 3 × 2 = 8, not 12 ÷ 6 = 2")],
           [r`a \div b \div c`, tx(t, "mOrd_wLR3", "means (a ÷ b) ÷ c = a ÷ (b × c). 8 ÷ 4 ÷ 2 = 1, not 8 ÷ 2 = 4")],
         ]}
+        words={tx(t, "mOrd_lrWords", "When the operations are on the same level, do them in the order you read them, from left to right.")}
         note={tx(t, "mOrd_eqLRNote", "Why left to right is safe: a − b + c is a + (−b) + c, a pure sum, and sums can be regrouped freely. Likewise a ÷ b × c is a × (1/b) × c. Rewriting subtractions as additions of opposites and divisions as multiplications by reciprocals removes the need to remember any direction at all.")}>
         {r`10 - 4 + 3 = (10 - 4) + 3 = 9`}
       </Equation>
@@ -65,7 +67,8 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
           [r`-3^2 = -(3^2) = -9`, tx(t, "mOrd_wNeg", "the square is taken first, then the sign is applied")],
           [r`(-3)^2 = (-3)(-3) = 9`, tx(t, "mOrd_wNegP", "the parentheses make −3 the base, so the minus sign is squared too")],
           [r`2^{3^2} = 2^{9} = 512`, tx(t, "mOrd_wTower", "a tower of powers is read from the top down")],
-        ]}>
+        ]}
+        words={tx(t, "mOrd_powWords", "Minus three squared is not the same as the square of minus three: the power goes only on the 3, unless parentheses make −3 the base.")}>
         {r`-3^2 \neq (-3)^2`}
       </Equation>
 
@@ -78,7 +81,8 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\frac{a + b}{c + d}`, tx(t, "mOrd_wBar", "the numerator and the denominator are each computed first, then divided")],
           [r`(a + b) / (c + d)`, tx(t, "mOrd_wLine", "the same thing on one line. a + b / c + d would mean a + (b/c) + d")],
-        ]}>
+        ]}
+        words={tx(t, "mOrd_barWords", "Work out everything above the bar, then everything below it, and only then divide.")}>
         {r`\frac{a + b}{c + d} = (a + b) \div (c + d)`}
       </Equation>
 
@@ -97,15 +101,14 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mOrd_exTitle", "Worked examples")}</H2>
       <H3>{tx(t, "mOrd_ex1T", "A full evaluation")}</H3>
-      <Equation label={tx(t, "mOrd_eqEx1", "One step per line")}
-        notes={[
-          tx(t, "mOrd_ex1a", "parentheses first: 7 − 3 = 4"),
-          tx(t, "mOrd_ex1b", "then the power: 4² = 16"),
-          tx(t, "mOrd_ex1c", "then × and ÷, left to right: 5 × 2 = 10, and 16 ÷ 8 = 2 followed by 2 × 3 = 6"),
-          tx(t, "mOrd_ex1d", "finally + and −, left to right: 20 − 10 = 10, then 10 + 6 = 16"),
-        ]}>
-        {r`20 - 5 \times 2 + (7 - 3)^2 \div 8 \times 3 = 20 - 10 + 16 \div 8 \times 3 = 20 - 10 + 6 = 16`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mOrd_eqEx1", "One step per line")}
+        steps={[
+          { tex: r`20 - 5 \times 2 + \amber{(7 - 3)}^2 \div 8 \times 3` },
+          { tex: r`= 20 - 5 \times 2 + \amber{4^2} \div 8 \times 3`, why: tx(t, "mOrd_ex1a", "parentheses first: 7 − 3 = 4") },
+          { tex: r`= 20 - \amber{5 \times 2} + \amber{16 \div 8 \times 3}`, why: tx(t, "mOrd_ex1b", "then the power: 4² = 16") },
+          { tex: r`= \amber{20 - 10 + 6}`, why: tx(t, "mOrd_ex1c", "then × and ÷, left to right: 5 × 2 = 10, and 16 ÷ 8 = 2 followed by 2 × 3 = 6") },
+          { tex: r`= 16`, why: tx(t, "mOrd_ex1d", "finally + and −, left to right: 20 − 10 = 10, then 10 + 6 = 16") },
+        ]} />
       <p>
         {tx(t, "mOrd_ex1Body",
           "The trick for long expressions: first find the terms, the pieces separated by + and − at the top level (outside every parenthesis). Here they are 20, 5 × 2 and (7 − 3)² ÷ 8 × 3. Compute each term on its own, then add and subtract them from left to right: 20 − 10 + 6 = 16.")}
@@ -126,16 +129,15 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mOrd_nestBody",
           "When brackets sit inside brackets, textbooks often vary their shape, ( ) inside [ ] inside { }, so the pairs are easy to match. The shapes mean exactly the same thing. Always start with the innermost pair, the one that contains no other bracket, and replace it by its value. That makes the next pair innermost, and so on outward. Rewrite the whole line after each step instead of keeping partial results in your head: it takes a little longer and removes almost every slip.")}
       </p>
-      <Equation label={tx(t, "mOrd_eqNest", "Innermost bracket first, one line per step")}
-        notes={[
-          tx(t, "mOrd_nest1", "innermost ( ): 9 − 5 = 4"),
-          tx(t, "mOrd_nest2", "inside [ ], the power first: 4² = 16"),
-          tx(t, "mOrd_nest3", "finish the [ ]: 16 − 6 = 10"),
-          tx(t, "mOrd_nest4", "inside { }, × before +: 3 × 10 = 30, then 2 + 30 = 32"),
-          tx(t, "mOrd_nest5", "outside: 32 ÷ 4 = 8, and last the subtraction 8 − 1 = 7"),
-        ]}>
-        {r`\{2 + 3 \times [(9 - 5)^2 - 6]\} \div 4 - 1 = \{2 + 3 \times [16 - 6]\} \div 4 - 1 = \{2 + 30\} \div 4 - 1 = 7`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mOrd_eqNest", "Innermost bracket first, one line per step")}
+        steps={[
+          { tex: r`\{2 + 3 \times [\amber{(9 - 5)}^2 - 6]\} \div 4 - 1` },
+          { tex: r`= \{2 + 3 \times [\amber{4^2} - 6]\} \div 4 - 1`, why: tx(t, "mOrd_nest1", "innermost ( ): 9 − 5 = 4") },
+          { tex: r`= \{2 + 3 \times \amber{[16 - 6]}\} \div 4 - 1`, why: tx(t, "mOrd_nest2", "inside [ ], the power first: 4² = 16") },
+          { tex: r`= \amber{\{2 + 3 \times 10\}} \div 4 - 1`, why: tx(t, "mOrd_nest3", "finish the [ ]: 16 − 6 = 10") },
+          { tex: r`= \amber{32 \div 4} - 1`, why: tx(t, "mOrd_nest4", "inside { }, × before +: 3 × 10 = 30, then 2 + 30 = 32") },
+          { tex: r`= 8 - 1 = 7`, why: tx(t, "mOrd_nest5", "outside: 32 ÷ 4 = 8, and last the subtraction 8 − 1 = 7") },
+        ]} />
       <Callout type="tip" t={t}>
         {tx(t, "mOrd_tip", "Two habits catch most errors. Before starting, count the brackets: every opening one needs a closing partner, and an expression with an unmatched bracket has no meaning. After finishing, estimate: if the pieces are about 30 and 4, an answer near 8 is plausible and an answer of 800 is not. Checking with a calculator works only if you type every hidden parenthesis, including those of fraction bars and root signs.")}
       </Callout>

@@ -6,12 +6,25 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { RatioFigure } from "@/components/lesson/figures/math/RatioFigure";
 
 const r = String.raw;
+
+// ── Live change of scale: Celsius to Fahrenheit ──────────────────────────────
+
+const num = (v: number) => String(Math.round(v * 100) / 100);
+
+function fahrenheit(v: Record<string, number>) {
+  const C = v.C, tt = C / 100, F = 32 + 180 * tt;
+  return {
+    tex: r`\sym{t}{\amber{t}} = \frac{${num(C)} - 0}{100 - 0} = ${num(tt)} \qquad F = 32 + ${num(tt)} \times 180 = \sym{f}{\green{${num(F)}}}\ ^\circ\text{F}`,
+  };
+}
 
 export function RatiosContent({ t }: { t: TrackTranslations }) {
   return (
@@ -31,6 +44,7 @@ export function RatiosContent({ t }: { t: TrackTranslations }) {
           [r`a : b`, tx(t, "mRat_wRatio", "the ratio of a to b; its value is a/b")],
           [r`\tfrac{a}{a + b}`, tx(t, "mRat_wShare", "the share of the total that is a. A ratio a : b splits a whole into a + b equal parts, a of them on one side")],
         ]}
+        words={tx(t, "mRat_ratioWords", "A ratio a : b splits the whole into a + b equal parts; a of them go to one side, so that side's share is a out of a + b.")}
         note={tx(t, "mRat_eqRatioNote", "Example: two partners split a profit of 100 in the ratio 3 : 2. There are 3 + 2 = 5 parts of 100/5 = 20 each, so they get 3 × 20 = 60 and 2 × 20 = 40. Check: 60 + 40 = 100 and 60 : 40 = 3 : 2. A common error is to treat 3 : 2 as 3/2 of the total; the shares are 3/5 and 2/5.")}>
         {r`a : b = \frac{a}{b} \qquad \text{share of } a = \frac{a}{a + b}`}
       </Equation>
@@ -80,6 +94,7 @@ export function RatiosContent({ t }: { t: TrackTranslations }) {
           [r`W`, tx(t, "mRat_wW", "the whole, the reference amount that counts as 100 %")],
           [r`P`, tx(t, "mRat_wPart", "the part, the amount that is p of the whole")],
         ]}
+        words={tx(t, "mRat_pctWords", "The part is the percentage of the whole. Knowing any two of part, percentage and whole gives the third: multiply to get the part, divide to get the other two.")}
         notes={[
           tx(t, "mRat_q1", "part: what is 35 % of 80? P = 0.35 × 80 = 28"),
           tx(t, "mRat_q2", "percentage: 28 is what percent of 80? p = 28/80 = 0.35 = 35 %"),
@@ -98,6 +113,7 @@ export function RatiosContent({ t }: { t: TrackTranslations }) {
           [r`1 + p`, tx(t, "mRat_wFactor", "the growth factor of a change p: 1.2 for +20 %, 0.8 for −20 %")],
           [r`\frac{\text{new} - \text{old}}{\text{old}}`, tx(t, "mRat_wRel", "the relative change: the difference as a fraction of where you started")],
         ]}
+        words={tx(t, "mRat_chgWords", "Each change multiplies the amount by one plus the percentage, so two changes multiply the amount by both factors. The change in percent is always measured against where you started.")}
         note={tx(t, "mRat_eqChangeNote", "Undoing a change needs the reciprocal factor, not the opposite percentage: after −20 % (× 0.8), getting back needs × 1/0.8 = × 1.25, a 25 % increase. Also distinguish percentages from percentage points: an interest rate going from 10 % to 15 % is up 5 percentage points, but up 50 % relative to where it was (5 is half of 10).")}>
         {r`\text{new} = \text{old}\,(1 + p_1)(1 + p_2) \qquad \text{change} = \frac{\text{new} - \text{old}}{\text{old}}`}
       </Equation>
@@ -115,18 +131,22 @@ export function RatiosContent({ t }: { t: TrackTranslations }) {
           [r`t`, tx(t, "mRat_wT", "the fraction of the way from a to b. x − a is how far x has come from a; dividing by the whole length b − a turns that into a fraction")],
           [r`c, d`, tx(t, "mRat_wCD", "the output range. The ranges may point in opposite directions (c > d), which flips the mapping")],
         ]}
+        words={tx(t, "mRat_lerpWords", "First find how far along its range x is, as a fraction t. Then go the same fraction of the way along the new range.")}
         note={tx(t, "mRat_eqLerpNote", "Example: a test is scored 0 to 120 and must be turned into a mark from 0 to 10. A score of 30 is t = (30 − 0)/(120 − 0) = 0.25 of the way, and the mark is 0 + 0.25 × (10 − 0) = 2.5. Values outside [a, b] give t outside [0, 1]: the formula still works but extrapolates beyond the scale. If a = b the range has no length and the formula divides by zero, so a and b must differ.")}>
         {r`t = \frac{x - a}{b - a} \qquad y = c + t\,(d - c) = c + \frac{x - a}{b - a}(d - c)`}
       </Equation>
-      <Equation label={tx(t, "mRat_eqTemp", "Celsius to Fahrenheit as a change of scale")}
-        notes={[
-          tx(t, "mRat_temp1", "the two scales share two fixed points: water freezes at 0 °C = 32 °F and boils at 100 °C = 212 °F. So a = 0, b = 100, c = 32, d = 212"),
-          tx(t, "mRat_temp2", "fraction of the way from freezing to boiling: t = (C − 0)/(100 − 0) = C/100"),
-          tx(t, "mRat_temp3", "the same fraction of the Fahrenheit gap, 212 − 32 = 180 degrees, added to 32. 180/100 = 1.8"),
-          tx(t, "mRat_temp4", "check with 37 °C: 32 + 1.8 × 37 = 32 + 66.6 = 98.6 °F, normal body temperature"),
-        ]}>
-        {r`F = 32 + \frac{C - 0}{100 - 0}\,(212 - 32) = 32 + 1.8\,C`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mRat_eqTemp", "Celsius to Fahrenheit as a change of scale")}
+        steps={[
+          { tex: r`a = 0,\; b = 100 \;(^\circ\text{C}) \qquad c = 32,\; d = 212 \;(^\circ\text{F})`, full: true, why: tx(t, "mRat_temp1", "the two scales share two fixed points: water freezes at 0 °C = 32 °F and boils at 100 °C = 212 °F. So a = 0, b = 100, c = 32, d = 212") },
+          { tex: r`\amber{t} = \frac{C - 0}{100 - 0} = \frac{C}{100}`, full: true, why: tx(t, "mRat_temp2", "fraction of the way from freezing to boiling: t = (C − 0)/(100 − 0) = C/100") },
+          { tex: r`F = 32 + \amber{t}\,(212 - 32) = 32 + \frac{180}{100}\,C = 32 + 1.8\,C`, full: true, why: tx(t, "mRat_temp3", "the same fraction of the Fahrenheit gap, 212 − 32 = 180 degrees, added to 32. 180/100 = 1.8") },
+          { tex: r`C = 37: \quad F = 32 + 1.8 \times 37 = 32 + 66.6 = 98.6`, full: true, why: tx(t, "mRat_temp4", "check with 37 °C: 32 + 1.8 × 37 = 32 + 66.6 = 98.6 °F, normal body temperature") },
+        ]} />
+      <LiveFormula label={tx(t, "mRat_liveTemp", "Try it: any temperature")}
+        tex={r`\sym{t}{\amber{t}} = \frac{C - 0}{100 - 0} \qquad F = 32 + \sym{t}{\amber{t}}\,(212 - 32)`}
+        vars={[{ id: "C", label: "C (°C)", min: -50, max: 120, step: 1, value: 37, fmt: v => String(v) }]}
+        compute={fahrenheit}
+        note={tx(t, "mRat_liveTempNote", "Below 0 °C the fraction t is negative and above 100 °C it is more than 1: the formula extrapolates past the two fixed points, and that is fine here. Find the one temperature that reads the same on both scales.")} />
 
       <H2>{tx(t, "mRat_exTitle", "Worked examples")}</H2>
       <H3>{tx(t, "mRat_ex1T", "Stacking discounts")}</H3>

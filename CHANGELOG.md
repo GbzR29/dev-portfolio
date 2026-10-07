@@ -14,6 +14,13 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ### 2026-10-07
 
+- **Matemática → Aritmética interativa (7 capítulos)**: primeira seção a receber laboratórios, barra de reprodução e fórmulas dinâmicas fora de Markov.
+  - **Laboratórios guiados** (7 a 8 passos cada, com objetivos, dicas, testes rápidos, insights e resumo final) nos widgets centrais: reta numérica, árvore de expressão, frações, razões/porcentagem, divisibilidade, potências e bases.
+  - **Barra de reprodução dentro do desenho** no lugar dos botões escondidos nos controles: árvore de expressão (uma operação por passo), divisão longa (um dígito por passo), crivo de Eratóstenes (uma rodada por passo), algoritmo de Euclides (um corte por passo), método de Heron, conversão de base (uma divisão por passo) e soma binária (uma coluna por passo).
+  - **Fórmulas**: "em palavras" nas fórmulas principais; deduções passo a passo novas (por que (−3)(−4) = 12 pela lei distributiva; 25 × 7 × 4 de cabeça; por que b⁰ = 1 e b⁻ⁿ = 1/bⁿ; Euclides em 1071 e 462) e as contas longas que estavam numa linha só viraram deduções (avaliação completa, colchetes aninhados, dízima periódica, número misto, Celsius → Fahrenheit, 2¹⁰ ao quadrado); fórmulas ao vivo para comparar frações em cruz, Celsius → Fahrenheit, quociente e resto (inclusive negativo) e qualquer número em qualquer base.
+  - **Kit**: o laboratório não marca mais como cumprido um objetivo que o estado do widget já satisfazia antes do `setup` do primeiro passo.
+  - Tradução PT de tudo o que é novo e dos 8 widgets inteiros; o texto corrido dos capítulos de Aritmética continua em inglês (ainda sem tradução).
+  - Removida a menção a "float" na divisão longa (a trilha de Matemática não fala de computação); a tabela de seções do primeiro capítulo inclui estatística descritiva e cadeias de Markov.
 - **Matemática em ordem de pré-requisitos**: nenhum capítulo usa um assunto antes dele ser ensinado.
   - *Estatística descritiva* passou para o início de Probabilidade e Estatística (antes de *Contagem*), porque variáveis aleatórias, esperança e distribuições já usavam histograma, média e mediana. Ela só precisa de aritmética. As frases que diziam "como no capítulo de esperança" viraram explicações próprias, com referências para frente. Os ids não mudaram, então links e progresso continuam valendo.
   - **"Antes de começar"**: uma caixa no topo de cada lição lista as lições que ela pressupõe, como chips com número e título (✓ nas já lidas). A lição não ensina de novo; o chip abre a anterior para revisar, e um botão "← voltar para …" leva de volta. Os dados ficam no campo novo `requires` do `Chapter`; o mapa da Matemática (60 capítulos) está no fim de `math/index.tsx`. Textos em EN e PT.

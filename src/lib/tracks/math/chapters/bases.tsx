@@ -6,12 +6,25 @@
 
 import { H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { BaseFigure } from "@/components/lesson/figures/math/BaseFigure";
 
 const r = String.raw;
+
+// ── Live positional notation: n written in base B, digit by digit ─────────────
+
+const HEX = "0123456789ABCDEF";
+
+function placeNumbers(v: Record<string, number>) {
+  const { n, B } = v;
+  const digits = n.toString(B).toUpperCase().split("");
+  const k = digits.length;
+  const terms = digits.map((d, i) => r`\sym{d}{\amber{${HEX.indexOf(d)}}} \cdot ${B}^{${k - 1 - i}}`).join(" + ");
+  return { tex: r`${n} = (\sym{d}{\amber{${digits.join("")}}})_{${B}} = ${terms}` };
+}
 
 export function BasesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -33,9 +46,18 @@ export function BasesContent({ t }: { t: TrackTranslations }) {
           [r`n`, tx(t, "mBase_wN", "the number of digits")],
           [r`\sum_{k=0}^{n-1}`, tx(t, "mBase_wSum", "the sum over every position k from 0 to n − 1: add up digit × place value for each digit")],
         ]}
+        words={tx(t, "mBase_placeWords", "Multiply each digit by the base raised to its position, counting positions from 0 on the right, and add everything up.")}
         note={tx(t, "mBase_eqPlaceNote", "A subscript names the base when it is not obvious: 101₂ = 1·4 + 0·2 + 1·1 = 5, while 101₁₀ is a hundred and one. Hexadecimal numbers are also often written with the prefix 0x: 0x1F = 1F₁₆ = 1·16 + 15 = 31.")}>
         {r`(d_{n-1} \cdots d_1 d_0)_B = \sum_{k=0}^{n-1} d_k \, B^{k}`}
       </Equation>
+      <LiveFormula label={tx(t, "mBase_livePlace", "Try it: any number in any base")}
+        tex={r`(d_{n-1} \cdots d_1 d_0)_B = \sum_{k=0}^{n-1} \sym{d}{\amber{d_k}} \, B^{k}`}
+        vars={[
+          { id: "n", label: tx(t, "mBase_lvN", "number"), min: 0, max: 1000, step: 1, value: 214, fmt: v => String(v) },
+          { id: "B", label: tx(t, "mBase_lvB", "base B"), min: 2, max: 16, step: 1, value: 2, fmt: v => String(v) },
+        ]}
+        compute={placeNumbers}
+        note={tx(t, "mBase_livePlaceNote", "Each digit is between 0 and B − 1; above 9 they are written A to F. Set the base to 10 to see the ordinary place values, and to 16 to see how much shorter the number gets.")} />
 
       <H2>{tx(t, "mBase_binTitle", "Binary")}</H2>
       <p>
@@ -57,6 +79,7 @@ export function BasesContent({ t }: { t: TrackTranslations }) {
           [r`B^n`, tx(t, "mBase_wCount", "the number of different values n digits of base B can write: B choices for each of the n positions")],
           [r`B^n - 1`, tx(t, "mBase_wMax", "the largest of them, all digits at B − 1: 999 = 10³ − 1, 1111 1111₂ = 2⁸ − 1 = 255")],
         ]}
+        words={tx(t, "mBase_rangeWords", "With n digits in base B you can write B to the power n different numbers, from 0 up to one less than that.")}
         note={tx(t, "mBase_eqRangeNote", "So 8 binary digits write 256 values, 0 to 255, just as 3 decimal digits write 1000 values, 0 to 999. Going the other way, writing N different values needs the smallest n with Bⁿ ≥ N: 1000 values need 10 binary digits, because 2⁹ = 512 is too few and 2¹⁰ = 1024 is enough. The same count answers everyday questions: a 4-digit PIN has 10⁴ = 10 000 possibilities, and a lock with 3 dials of 6 symbols has 6³ = 216.")}>
         {r`\text{values} = B^n \qquad 0 \le x \le B^n - 1`}
       </Equation>
@@ -111,6 +134,7 @@ export function BasesContent({ t }: { t: TrackTranslations }) {
           [r`h,\; m,\; s`, tx(t, "mBase_wHms", "hours, minutes (0–59) and seconds (0–59)")],
           [r`\tfrac{m}{60},\; \tfrac{s}{3600}`, tx(t, "mBase_wFrac", "the fraction of an hour that the minutes and seconds make: a minute is 1/60 of an hour, a second 1/3600")],
         ]}
+        words={tx(t, "mBase_sixtyWords", "To turn a time into hours, add the minutes divided by 60 and the seconds divided by 3600.")}
         note={tx(t, "mBase_eqSixtyNote", "Going the other way, 2.7 h is 2 h and 0.7 × 60 = 42 min. A common slip is to read 2.7 h as 2 h 70 min or 2 h 7 min: the part after the decimal point is tenths of an hour, not minutes.")}>
         {r`h \text{ h } m \text{ min } s \text{ s} = h + \frac{m}{60} + \frac{s}{3600} \text{ hours} \qquad 1 \text{ h } 30 \text{ min} = 1.5 \text{ h}`}
       </Equation>

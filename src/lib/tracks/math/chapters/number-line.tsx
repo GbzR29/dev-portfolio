@@ -7,6 +7,7 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -99,6 +100,7 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
           [r`-b`, tx(t, "mNL_wOpp", "the opposite of b: same distance from 0, other side. b + (−b) = 0")],
           [r`a - b`, tx(t, "mNL_wSubt", "subtract b from a")],
         ]}
+        words={tx(t, "mNL_subWords", "Taking b away from a gives the same result as adding the opposite of b to a.")}
         note={tx(t, "mNL_eqSubNote", "Examples: 3 − 5 = 3 + (−5) = −2. 3 − (−5) = 3 + 5 = 8: removing a debt of 5 is the same as receiving 5. −3 − 5 = −3 + (−5) = −8: already 3 left of zero, walk 5 further left.")}>
         {r`a - b = a + (-b)`}
       </Equation>
@@ -127,6 +129,19 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mNL_tNeg", "negative"), tx(t, "mNL_np", "negative: (−3) × 4 = −12"), tx(t, "mNL_nn", "positive: (−3) × (−4) = 12")],
         ]}
       />
+      <p>
+        {tx(t, "mNL_whyNN",
+          "The flip picture explains the rule; the laws of arithmetic (at the end of this chapter) prove it. If (−3) × (−4) were anything other than 12, the distributive law would break. Follow it line by line:")}
+      </p>
+      <Derivation t={t} label={tx(t, "mNL_dNN", "Why (−3) × (−4) = 12")}
+        steps={[
+          { tex: r`0`, why: tx(t, "mNL_dNN0", "start from 0 and rewrite it, one allowed step at a time") },
+          { tex: r`= (-3) \times 0`, why: tx(t, "mNL_dNN1", "anything times 0 is 0") },
+          { tex: r`= (-3) \times \big(\sym{m4}{\red{(-4)}} + \sym{p4}{\green{4}}\big)`, why: tx(t, "mNL_dNN2", "write 0 as −4 + 4: a number plus its opposite") },
+          { tex: r`= (-3) \times (\sym{m4}{\red{-4}}) + (-3) \times \sym{p4}{\green{4}}`, why: tx(t, "mNL_dNN3", "distributive law: multiply each term of the sum") },
+          { tex: r`= (-3) \times (\sym{m4}{\red{-4}}) - 12`, why: tx(t, "mNL_dNN4", "one negative factor: (−3) × 4 = −12, from the table above") },
+          { tex: r`\Rightarrow\; (-3) \times (\sym{m4}{\red{-4}}) = 12`, full: true, why: tx(t, "mNL_dNN5", "the line says: this product minus 12 is 0. Add 12 to both sides") },
+        ]} />
 
       <NumberLineFigure t={t} />
 
@@ -136,6 +151,7 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
           "Often only the size of a number matters, not its side: how far apart two towns on a straight road are, how big a measuring error was, how fast a car is moving regardless of direction. The absolute value |x| keeps the size and drops the sign: it is the distance from x to 0. From it comes the distance between any two numbers, which is the length of the gap between their points, and is never negative.")}
       </p>
       <Equation label={tx(t, "mNL_eqAbs", "Absolute value and distance on the line")}
+        words={tx(t, "mNL_absWords", "The absolute value of a number is its size without the sign: a positive number stays as it is, a negative one loses its minus. The distance between two numbers is the size of their difference.")}
         where={[
           [r`|x|`, tx(t, "mNL_wAbs", "the absolute value of x: x itself when x is 0 or positive, its opposite −x when x is negative. |−7| = −(−7) = 7")],
           [r`|a - b|`, tx(t, "mNL_wDist", "the distance between a and b. a − b is positive or negative depending on which is further right; the absolute value removes that. |2 − 7| = |−5| = 5 = |7 − 2|")],
@@ -161,9 +177,18 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
           [r`a + 0 = a,\;\; a \cdot 1 = a`, tx(t, "mNL_wId", "identities: 0 is neutral for +, 1 is neutral for ×. Also a · 0 = 0 for every a")],
           [r`a + (-a) = 0,\;\; a \cdot \tfrac{1}{a} = 1`, tx(t, "mNL_wInv", "inverses: the opposite cancels addition; the reciprocal 1/a cancels multiplication, and exists only when a ≠ 0")],
         ]}
+        words={tx(t, "mNL_lawsWords", "Multiplying a sum gives the same result as multiplying each of its terms and then adding.")}
         note={tx(t, "mNL_eqLawsNote", "Mental arithmetic is these laws in action. 17 × 6 = 17 × (5 + 1) = 85 + 17 = 102 (distributive). 25 × 7 × 4 = 25 × 4 × 7 = 100 × 7 = 700 (commutative and associative). 3x + 5x = (3 + 5)x = 8x (distributive, backwards).")}>
         {r`a(b + c) = ab + ac`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mNL_dMental", "25 × 7 × 4 in your head, one law per line")}
+        steps={[
+          { tex: r`25 \times 7 \times 4` },
+          { tex: r`= 25 \times (7 \times 4)`, why: tx(t, "mNL_dM1", "associative law: a chain of × can be grouped as you like") },
+          { tex: r`= 25 \times (4 \times 7)`, why: tx(t, "mNL_dM2", "commutative law: swap 7 and 4 inside the brackets") },
+          { tex: r`= (25 \times 4) \times 7`, why: tx(t, "mNL_dM3", "associative law again: now group 25 with 4") },
+          { tex: r`= 100 \times 7 = 700`, why: tx(t, "mNL_dM4", "25 × 4 = 100, and multiplying by 100 is easy. Every step was a law, so the value never changed") },
+        ]} />
       <Callout type="info" t={t}>
         {tx(t, "mNL_lawsTip", "The laws are what \"allowed\" means. A step that is one of these laws, or follows from them, never changes the value; a step that is not, such as swapping the two sides of a subtraction or regrouping a division, can. When unsure whether a rearrangement is legal, test it with small numbers first: if it fails for 8, 4 and 2, it is not a law.")}
       </Callout>
@@ -207,7 +232,7 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mNL_s3t", "Geometry and trigonometry"), tx(t, "mNL_s3d", "angles, triangles, Pythagoras, similarity, areas and volumes, circles, analytic geometry, transformations, the unit circle, identities, polar coordinates, waves")],
           [tx(t, "mNL_s4t", "Linear algebra"), tx(t, "mNL_s4d", "vectors, the dot and cross products, matrices, determinants, inverses, eigenvectors, complex numbers, quaternions")],
           [tx(t, "mNL_s5t", "Calculus"), tx(t, "mNL_s5d", "limits, derivatives and their rules, integrals, the fundamental theorem, integration techniques, Taylor series, partial derivatives and gradients, multiple integrals, differential equations")],
-          [tx(t, "mNL_s6t", "Probability and statistics"), tx(t, "mNL_s6d", "counting, probability, Bayes, random variables and distributions, expectation and variance, sampling, regression")],
+          [tx(t, "mNL_s6t", "Probability and statistics"), tx(t, "mNL_s6d", "describing data, counting, probability, Bayes, random variables and distributions, expectation and variance, sampling, regression, Markov chains")],
         ]}
       />
 
