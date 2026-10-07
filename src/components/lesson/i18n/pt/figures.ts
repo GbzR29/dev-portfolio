@@ -154,6 +154,26 @@ const text: Record<string, string> = {
   figYP_top: "2 · VISTA DE CIMA (yaw)",
   figYP_topNote: "anel âmbar: raio h — o círculo sobre o qual d anda",
   figYP_note: "Aumente o pitch: y cresce, e o anel âmbar à direita encolhe — sobra menos comprimento para x e z. Em 89° o anel é quase um ponto: olhando reto para cima, o yaw quase não importa. Esse cos(pitch) compartilhado é o motivo de ele aparecer nas linhas de x e z, mas não na de y.",
+
+  // Lab: the full-screen guided mode of a figure (kit/lab/Lab.tsx)
+  figLab_open: "explorar",
+  figLab_openTitle: "Abrir o laboratório guiado em tela cheia",
+  figLab_name: "lab",
+  figLab_steps: "passos",
+  figLab_close: "Voltar à lição",
+  figLab_back: "voltar",
+  figLab_redo: "recomeçar este passo",
+  figLab_finish: "concluir",
+  figLab_next: "próximo",
+  figLab_skip: "pular",
+  figLab_insights: "o que está acontecendo",
+  figLab_step: "passo",
+  figLab_goal: "sua vez",
+  figLab_hint: "mostrar uma dica",
+  figLab_quiz: "teste rápido",
+  figLab_wrong: "Ainda não. Tente outra.",
+  figLab_right: "Certo.",
+  figLab_answer: "A resposta:",
 };
 
 export default text;

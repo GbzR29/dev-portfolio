@@ -33,7 +33,7 @@ export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 // ── Frame ─────────────────────────────────────────────────────────────────────
 
-export function Figure({ title, head, children, controls, note }: {
+export function Figure({ title, head, children, controls, note, fullscreen }: {
   title: string;
   /** Right side of the title bar: mode buttons and the like. */
   head?: ReactNode;
@@ -43,9 +43,11 @@ export function Figure({ title, head, children, controls, note }: {
   controls?: ReactNode;
   /** What to look at, in prose. */
   note?: ReactNode;
+  /** False for figures that open their own full-screen lab (kit/lab/Lab.tsx). */
+  fullscreen?: boolean;
 }) {
   return (
-    <FigureShell>
+    <FigureShell fullscreen={fullscreen}>
       <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{title}</span>
         {head && <div className="flex gap-1.5 flex-wrap">{head}</div>}
@@ -275,6 +277,27 @@ export function useRaf(on: boolean, tick: (dt: number, time: number) => void) {
     return () => cancelAnimationFrame(raf);
   }, [on, visible.on]);
   return ref;
+}
+
+/**
+ * Like useRaf, without its own visibility check: the caller decides when it
+ * runs (e.g. `playing && (vis.on || lab.open)` for a figure with a lab).
+ */
+export function useFrame(on: boolean, tick: (dt: number) => void) {
+  const tickRef = useRef(tick);
+  tickRef.current = tick;
+  useEffect(() => {
+    if (!on) return;
+    let raf = 0, last = performance.now();
+    const loop = (now: number) => {
+      const dt = Math.min(0.1, Math.max(0, now - last) / 1000);
+      last = now;
+      tickRef.current(dt);
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [on]);
 }
 
 /** True while the element is (nearly) on screen. */

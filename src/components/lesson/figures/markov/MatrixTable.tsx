@@ -2,7 +2,7 @@
 
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { fIsZero, fStr, type FMat } from "./markovModel";
+import { fIsZero, fStr, type FMat } from "./model";
 
 // ── A transition matrix as a table of exact fractions ─────────────────────────
 // Used by the Markov-chain figures. One row can be tinted (the state the walk

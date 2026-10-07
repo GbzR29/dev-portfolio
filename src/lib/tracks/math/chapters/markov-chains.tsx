@@ -5,16 +5,21 @@
 // the transition matrix; n-step probabilities as matrix powers, derived as a
 // sum over paths (Chapman–Kolmogorov); the distribution row vector π₀Pⁿ and
 // joint probabilities; a fully worked exercise (reflecting random walk);
-// stationary distributions, detailed balance and periodicity.
+// stationary distributions, detailed balance and periodicity; πP = π solved
+// for any chain (weather example) and the classification of states; absorbing
+// chains by first-step analysis (absorption chances, expected time, gambler's
+// ruin). Every figure has a guided full-screen lab (kit/lab).
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
-import { MarkovChainFigure } from "@/components/lesson/figures/math/MarkovChainFigure";
-import { MatrixPathsFigure } from "@/components/lesson/figures/math/MatrixPathsFigure";
-import { MarkovDistributionFigure } from "@/components/lesson/figures/math/MarkovDistributionFigure";
+import { MarkovChainFigure } from "@/components/lesson/figures/markov/ChainFigure";
+import { MatrixPathsFigure } from "@/components/lesson/figures/markov/PathsFigure";
+import { MarkovDistributionFigure } from "@/components/lesson/figures/markov/DistributionFigure";
+import { StationaryFigure } from "@/components/lesson/figures/markov/StationaryFigure";
+import { AbsorbFigure } from "@/components/lesson/figures/markov/AbsorbFigure";
 
 const r = String.raw;
 
@@ -23,7 +28,7 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mMk_intro",
-          "Many random processes unfold one step at a time: a board-game token moves square by square, the weather changes day by day, a reader clicks from web page to web page. Often the next step depends on where the process is now, but not on the long road that brought it there. Such a process is a Markov chain, after the Russian mathematician Andrey Markov, who studied them in 1906. This chapter defines the Markov property, stores a chain's rules in a transition matrix, and explains the one fact that makes everything computable: the probabilities of n steps are the entries of the n-th power of that matrix. A full exercise is solved along the way.")}
+          "Many random processes unfold one step at a time: a board-game token moves square by square, the weather changes day by day, a reader clicks from web page to web page. Often the next step depends on where the process is now, but not on the long road that brought it there. Such a process is a Markov chain, after the Russian mathematician Andrey Markov, who studied them in 1906. This chapter defines the Markov property, stores a chain's rules in a transition matrix, and explains the one fact that makes everything computable: the probabilities of n steps are the entries of the n-th power of that matrix. A full exercise is solved along the way. Then come the long run (the stationary distribution, for walks and for any chain, and when the chain actually reaches it) and absorbing chains: where a walk that can get stuck ends up, and how long that takes. Every figure has an \"explore\" button that opens it full screen as a guided lab.")}
       </Lead>
 
       <H2>{tx(t, "mMk_seqTitle", "A sequence of random variables")}</H2>
@@ -196,10 +201,137 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
       </p>
       <p>
         {tx(t, "mMk_periodBody",
-          "Yet for most starts πₙ never converges. Because every step flips the parity, a walk that starts at 0 is surely at an even state at even times and at an odd state at odd times, so its probability sloshes between {0, 2} and {1, 3} for ever. The chain is periodic with period 2, and in eigenvalue terms P also has the eigenvalue −1: the vector (1, −1, 1, −1) is flipped in sign by every step, so the part of π₀ that tips the balance between even and odd states keeps alternating. The exercise's uniform start is a lucky exception. It gives the even states 1/2 and the odd states 1/2, which is exactly how π splits them too (1 + 12 = 4 + 9 = 13 out of 26), so there is nothing to swing, and its πₙ does converge to π. Two facts hold for every start. First, the share of time spent in each state still tends to π, as the bars of the first figure show. Second, a chain that can reach every state from every state (irreducible) and is not periodic (aperiodic) always forgets its start: πₙ → π, whatever π₀ is. A small chance of staying put, h > 0, breaks the rhythm and makes the walk aperiodic. Try it below.")}
+          "Yet for most starts πₙ never converges. Because every step flips the parity, a walk that starts at 0 is surely at an even state at even times and at an odd state at odd times, so its probability sloshes between {0, 2} and {1, 3} for ever. The chain is periodic with period 2, and in eigenvalue terms P also has the eigenvalue −1: the vector (1, −1, 1, −1) is flipped in sign by every step, so the part of π₀ that tips the balance between even and odd states keeps alternating. The exercise's uniform start is a lucky exception. It gives the even states 1/2 and the odd states 1/2, which is exactly how π splits them too (1 + 12 = 4 + 9 = 13 out of 26), so there is nothing to swing, and its πₙ does converge to π. That half-and-half split is no coincidence: one step moves all the even probability to the odd states and back, so a distribution that one step leaves unchanged must give both halves the same amount. Two facts hold for every start. First, the share of time spent in each state still tends to π, as the bars of the first figure show. Second, a chain that can reach every state from every state (irreducible) and is not periodic (aperiodic) always forgets its start: πₙ → π, whatever π₀ is. A small chance of staying put, h > 0, breaks the rhythm and makes the walk aperiodic. Try it below.")}
       </p>
 
       <MarkovDistributionFigure t={t} />
+
+      <H2>{tx(t, "mMk_anyTitle", "Solving πP = π for any chain")}</H2>
+      <p>
+        {tx(t, "mMk_anyBody",
+          "Detailed balance was a shortcut for walks that only move between neighbours. Most chains have arrows in every direction, and the shortcut gives wrong answers for them. The general method is to write πP = π out as equations and solve them. Take a weather model with three states: 0 = sunny, 1 = cloudy, 2 = rainy. Tomorrow's weather depends only on today's, through this matrix:")}
+      </p>
+      <Equation label={tx(t, "mMk_eqWeather", "A weather chain")}
+        where={[
+          [r`\text{row } 0`, tx(t, "mMk_wW0", "today sunny: tomorrow sunny 0.7, cloudy 0.2, rainy 0.1")],
+          [r`\text{row } 1`, tx(t, "mMk_wW1", "today cloudy: 0.3, 0.4, 0.3")],
+          [r`\text{row } 2`, tx(t, "mMk_wW2", "today rainy: 0.2, 0.3, 0.5")],
+        ]}
+        note={tx(t, "mMk_weatherNote", "Every state can go to every state, including itself, so detailed balance does not apply: the flow from 0 to 1 need not equal the flow from 1 to 0, as long as the total flow into each state equals the total flow out.")}>
+        {r`P = \begin{pmatrix} 0.7 & 0.2 & 0.1 \\ 0.3 & 0.4 & 0.3 \\ 0.2 & 0.3 & 0.5 \end{pmatrix}`}
+      </Equation>
+      <p>
+        {tx(t, "mMk_colBody",
+          "Read πP = π one column at a time. Entry j of πP is Σᵢ π(i)·p_ij: the probability of being at j tomorrow, added up over every state i it could come from today. Setting it equal to π(j) gives one equation per state. Each one uses a column of P, not a row:")}
+      </p>
+      <Equation label={tx(t, "mMk_eqSystem", "πP = π, one equation per column")}
+        where={[
+          [r`\pi(j)`, tx(t, "mMk_wPij2", "the long-run probability of state j, the unknown")],
+          [r`0.7\,\pi(0) + 0.3\,\pi(1) + 0.2\,\pi(2)`, tx(t, "mMk_wInflow", "everything that flows into state 0 in one step: column 0 of P, weighted by where the chain is")],
+          [r`\pi(0) + \pi(1) + \pi(2) = 1`, tx(t, "mMk_wNorm", "the entries of a distribution add up to 1")],
+        ]}
+        note={tx(t, "mMk_systemNote", "The three flow equations are not independent. Add them up: the left sides give π(0) + π(1) + π(2), and so do the right sides, because every row of P adds up to 1. So one of them carries no information. Drop one and use the sum = 1 instead; without it, any multiple of π would be a solution too.")}>
+        {r`\begin{aligned} \pi(0) &= 0.7\,\pi(0) + 0.3\,\pi(1) + 0.2\,\pi(2) \\ \pi(1) &= 0.2\,\pi(0) + 0.4\,\pi(1) + 0.3\,\pi(2) \\ \pi(2) &= 0.1\,\pi(0) + 0.3\,\pi(1) + 0.5\,\pi(2) \\ 1 &= \pi(0) + \pi(1) + \pi(2) \end{aligned}`}
+      </Equation>
+      <p>
+        {tx(t, "mMk_solve1",
+          "Solve it step by step. Move the π(0) terms of the first equation to the left: 0.3·π(0) = 0.3·π(1) + 0.2·π(2). Times 10, that is 3π(0) = 3π(1) + 2π(2), so π(0) = π(1) + (2/3)π(2).")}
+      </p>
+      <p>
+        {tx(t, "mMk_solve2",
+          "The second equation, also times 10 after moving 0.4·π(1) to the left, says 6π(1) = 2π(0) + 3π(2). Put π(0) from the first one in: 6π(1) = 2π(1) + (4/3)π(2) + 3π(2), so 4π(1) = (13/3)π(2) and π(1) = (13/12)π(2). Then π(0) = (13/12)π(2) + (8/12)π(2) = (21/12)π(2).")}
+      </p>
+      <p>
+        {tx(t, "mMk_solve3",
+          "Everything is now a multiple of π(2), and the sum fixes it: (21 + 13 + 12)/12 · π(2) = 1, so π(2) = 12/46. The answer is π = (21, 13, 12)/46 ≈ (0.457, 0.283, 0.261). Check it with the equation that was dropped: 0.1 · 21/46 + 0.3 · 13/46 + 0.5 · 12/46 = (2.1 + 3.9 + 6)/46 = 12/46. ✓")}
+      </p>
+      <p>
+        {tx(t, "mMk_returnBody",
+          "π(j) is the long-run share of time spent in j, so its reciprocal is the mean time between two visits: the mean return time 1/π(j). Rain comes back on average every 46/12 ≈ 3.8 days, sunshine every 46/21 ≈ 2.2 days.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "mMk_tStep", "Step"), tx(t, "mMk_tDo", "What to do")]}
+        rows={[
+          ["1", tx(t, "mMk_r1", "For every state j, write π(j) = Σᵢ π(i)·p_ij, reading column j of P.")],
+          ["2", tx(t, "mMk_r2", "Drop any one of those equations and add π(0) + π(1) + … = 1.")],
+          ["3", tx(t, "mMk_r3", "Solve: express every unknown as a multiple of one of them, then use the sum.")],
+          ["4", tx(t, "mMk_r4", "Check with the dropped equation, and check that every entry is between 0 and 1.")],
+        ]}
+      />
+
+      <StationaryFigure t={t} />
+
+      <H3>{tx(t, "mMk_classTitle", "When π is unique, and when πₙ reaches it")}</H3>
+      <p>
+        {tx(t, "mMk_classBody",
+          "The figure's presets break the weather chain on purpose, and each break changes the answer. The words for what breaks:")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "mMk_tTerm", "Term"), tx(t, "mMk_tMeaning", "Meaning"), tx(t, "mMk_tExample", "Example")]}
+        rows={[
+          [tx(t, "mMk_c1t", "irreducible"), tx(t, "mMk_c1m", "every state can reach every other state, in some number of steps"), tx(t, "mMk_c1e", "the weather chain; the reflecting walk")],
+          [tx(t, "mMk_c2t", "closed class"), tx(t, "mMk_c2m", "a group of states that reach each other and that no arrow leaves"), tx(t, "mMk_c2e", "\"two worlds\": {sunny, cloudy} and {rainy}")],
+          [tx(t, "mMk_c3t", "absorbing state"), tx(t, "mMk_c3m", "a closed class with one state: p_ii = 1"), tx(t, "mMk_c3e", "\"trap\"; the walls of an absorbing walk")],
+          [tx(t, "mMk_c4t", "transient state"), tx(t, "mMk_c4m", "the chain can leave it and never come back; π gives it 0"), tx(t, "mMk_c4e", "sunny and cloudy in \"trap\"")],
+          [tx(t, "mMk_c5t", "period d"), tx(t, "mMk_c5m", "returns to a state can happen only after a multiple of d steps (d = the gcd of the loop lengths)"), tx(t, "mMk_c5e", "\"cycle\": d = 3; the reflecting walk: d = 2")],
+          [tx(t, "mMk_c6t", "aperiodic"), tx(t, "mMk_c6m", "period 1; any p_ii > 0 is enough in an irreducible chain"), tx(t, "mMk_c6e", "the weather chain; the walk with h > 0")],
+        ]}
+      />
+      <p>
+        {tx(t, "mMk_theoremBody",
+          "For a chain with finitely many states these facts hold. If it is irreducible, πP = π has exactly one solution, every π(j) is positive, and 1/π(j) is the mean return time. If it is also aperiodic, πₙ → π from every start. If it is periodic, π still exists and still gives the share of time, but πₙ can keep circling. If it has exactly one closed class, π is still unique and is 0 on the transient states. If it has two or more closed classes, πP = π has infinitely many solutions, and the long run depends on the start.")}
+      </p>
+
+      <H2>{tx(t, "mMk_absTitle", "Absorbing chains: where it ends and how long it takes")}</H2>
+      <p>
+        {tx(t, "mMk_absBody",
+          "Make the walls of the walk absorbing: from 0 the walk stays at 0, and from k it stays at k. Now every walk ends at one wall or the other, and the stationary distribution says nothing useful: all the probability ends up on the walls, split in a way that depends on the start. The questions become: from i, what is the chance of ending at k rather than 0, and how many steps does it take on average? The classic story is a gambler. They have i coins, win one coin with probability p and lose one with q = 1 − p, and stop when they are ruined (0 coins) or reach their target (k coins).")}
+      </p>
+      <p>
+        {tx(t, "mMk_firstStep",
+          "The tool is first-step analysis: condition on the first step. From an inner state i the walk goes to i + 1 with probability p or to i − 1 with probability q. After that step, by the Markov property, it is a fresh start from the new state. So the chance from i is a weighted average of the chances from its neighbours:")}
+      </p>
+      <Equation label={tx(t, "mMk_eqHit", "Chance of reaching k first (first-step analysis)")}
+        where={[
+          [r`h_i`, tx(t, "mMk_wHi", "the probability of reaching k before 0, starting from i")],
+          [r`q\,h_{i-1}`, tx(t, "mMk_wHq", "first step to the left (probability q), then the chance from i − 1")],
+          [r`p\,h_{i+1}`, tx(t, "mMk_wHp", "first step to the right (probability p), then the chance from i + 1")],
+          [r`h_0 = 0,\ h_k = 1`, tx(t, "mMk_wHb", "the boundary conditions: at 0 the walk is already ruined, at k it has already arrived")],
+        ]}>
+        {r`h_i = q\,h_{i-1} + p\,h_{i+1} \quad (0 < i < k), \qquad h_0 = 0, \quad h_k = 1`}
+      </Equation>
+      <p>
+        {tx(t, "mMk_absEx1",
+          "Worked example: the exercise's walk with absorbing walls, k = 3, p = 3/4, q = 1/4. There are two unknowns. From 1: h₁ = 1/4 · h₀ + 3/4 · h₂ = 3/4 · h₂. From 2: h₂ = 1/4 · h₁ + 3/4 · h₃ = 1/4 · h₁ + 3/4. Put the second into the first: h₁ = 3/4 · (1/4 · h₁ + 3/4) = 3/16 · h₁ + 9/16. So 13/16 · h₁ = 9/16 and h₁ = 9/13 ≈ 0.69. Then h₂ = 1/4 · 9/13 + 3/4 = 9/52 + 39/52 = 12/13 ≈ 0.92.")}
+      </p>
+      <p>
+        {tx(t, "mMk_timeBody",
+          "The expected number of steps works the same way, with one change: the first step itself counts. Whatever it does, one step has been taken, and then the walk expects tᵢ₋₁ or tᵢ₊₁ more:")}
+      </p>
+      <Equation label={tx(t, "mMk_eqTime", "Expected time until absorption")}
+        where={[
+          [r`t_i`, tx(t, "mMk_wTi", "the expected number of steps until the walk reaches 0 or k, starting from i")],
+          [r`1`, tx(t, "mMk_wT1", "the first step, which is always taken")],
+          [r`t_0 = t_k = 0`, tx(t, "mMk_wTb", "at a wall the walk has already stopped")],
+        ]}
+        note={tx(t, "mMk_timeNote", "For the example: t₁ = 1 + 3/4 · t₂ and t₂ = 1 + 1/4 · t₁. Substituting, t₁ = 1 + 3/4 + 3/16 · t₁, so 13/16 · t₁ = 7/4 and t₁ = 28/13 ≈ 2.15 steps; then t₂ = 1 + 7/13 = 20/13 ≈ 1.54 steps.")}>
+        {r`t_i = 1 + q\,t_{i-1} + p\,t_{i+1} \quad (0 < i < k), \qquad t_0 = t_k = 0`}
+      </Equation>
+      <p>
+        {tx(t, "mMk_ruinBody",
+          "For the walk these equations have a closed form, the gambler's ruin formula. Write dᵢ = hᵢ − hᵢ₋₁ for the step between neighbouring bars. Since p + q = 1, the left side hᵢ equals p·hᵢ + q·hᵢ, so the equation hᵢ = q·hᵢ₋₁ + p·hᵢ₊₁ can be rearranged as p·(hᵢ₊₁ − hᵢ) = q·(hᵢ − hᵢ₋₁), that is dᵢ₊₁ = r·dᵢ with r = q/p. So the steps form a geometric sequence d₁, r·d₁, r²·d₁, …, and they must add up to hₖ − h₀ = 1. Adding the first i of them gives:")}
+      </p>
+      <Equation label={tx(t, "mMk_eqRuin", "Gambler's ruin")}
+        where={[
+          [r`r = q/p`, tx(t, "mMk_wR", "how much more likely a loss is than a win; r > 1 means the game is against the gambler")],
+          [r`\frac{1 - r^i}{1 - r^k}`, tx(t, "mMk_wGeo", "the first i steps of the geometric sequence, divided by all k of them")],
+          [r`i/k`, tx(t, "mMk_wFair", "the fair case p = q, where every step d_i is the same and the bars lie on a straight line")],
+        ]}
+        note={tx(t, "mMk_ruinNote", "Check with the example: r = 1/3, so h₁ = (1 − 1/3)/(1 − 1/27) = (2/3)/(26/27) = 9/13. ✓ A slightly unfair game is much worse than it looks: with p = 0.45, a gambler with 4 coins who wants 8 reaches the target with probability 1/(1 + (11/9)⁴) ≈ 0.31, not 0.5. For a fair game the expected duration is t_i = i·(k − i).")}>
+        {r`h_i = \frac{1 - r^i}{1 - r^k} \quad (p \ne q), \qquad h_i = \frac{i}{k} \quad (p = q)`}
+      </Equation>
+
+      <AbsorbFigure t={t} />
 
       <Callout type="tip" t={t}>
         {tx(t, "mMk_uses", "Markov chains are everywhere. Google's original PageRank is the stationary distribution of a reader who clicks random links. Snakes and Ladders is a Markov chain, and powers of its matrix give the chance of finishing within n turns. Text predictors are chains whose state is the last few words. Markov chain Monte Carlo methods even run the idea backwards: they design a chain whose stationary distribution is one they want to sample.")}
@@ -210,6 +342,10 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
       <p>{tx(t, "mMk_pr2", "2. P(X₁₀ = 3 | X₇ = 1, X₃ = 0) = (P³)₁₃ = 0: three steps change the parity, so from 1 the walk is at 0 or 2.")}</p>
       <p>{tx(t, "mMk_pr3", "3. If the walk starts at 0 for sure, π₀ = (1, 0, 0, 0) and π₂ is row 0 of P²: (1/4, 0, 3/4, 0).")}</p>
       <p>{tx(t, "mMk_pr4", "4. P(X₀ = 1, X₁ = 2, X₂ = 3) = π₀(1) · p₁₂ · p₂₃ = 1/4 · 3/4 · 3/4 = 9/64.")}</p>
+      <p>{tx(t, "mMk_pr5", "5. Weather chain: the chance of rain the day after tomorrow, if today is sunny, is (P²)₀₂ = row 0 times column 2 = 0.7 · 0.1 + 0.2 · 0.3 + 0.1 · 0.5 = 0.18.")}</p>
+      <p>{tx(t, "mMk_pr6", "6. Any two-state chain with p₀₁ = a and p₁₀ = b (a + b > 0) has π = (b, a)/(a + b): with only one way across, the flow 0 → 1 must equal the flow 1 → 0, so π(0)·a = π(1)·b. For a = 0.1, b = 0.3: π = (3/4, 1/4).")}</p>
+      <p>{tx(t, "mMk_pr7", "7. Absorbing walk of the worked example, starting at 2: the chance of ruin is 1 − h₂ = 1 − 12/13 = 1/13.")}</p>
+      <p>{tx(t, "mMk_pr8", "8. A fair game (p = 1/2) with target 10, starting with 3 coins: reaching 10 has probability 3/10, and the game lasts 3 · 7 = 21 rounds on average.")}</p>
 
       <H2>{tx(t, "mMk_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -221,6 +357,10 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mMk_m4w", "π₀ written as a column, Pπ₀"), "π₀P", tx(t, "mMk_m4", "rows are \"from\": the distribution must go on the left")],
           [tx(t, "mMk_m5w", "P(X₃ = 1) = (P³)ᵢ₁ for one chosen start i"), "π₀P³", tx(t, "mMk_m5", "an unconditional question averages over the initial distribution, here uniform")],
           [tx(t, "mMk_m6w", "every chain converges to π"), tx(t, "mMk_m6r", "only irreducible, aperiodic ones"), tx(t, "mMk_m6", "the reflecting walk with h = 0, started at 0, swings between even and odd states for ever")],
+          [tx(t, "mMk_m7w", "build the equations of πP = π from the rows of P"), tx(t, "mMk_m7r", "from the columns"), tx(t, "mMk_m7", "π(j) collects what flows into j, and the arrows into j are column j")],
+          [tx(t, "mMk_m8w", "solve the n flow equations without Σπ = 1"), tx(t, "mMk_m8r", "drop one, add Σπ = 1"), tx(t, "mMk_m8", "the flow equations are dependent; alone they only fix π up to a multiple")],
+          [tx(t, "mMk_m9w", "use detailed balance for any chain"), tx(t, "mMk_m9r", "solve πP = π"), tx(t, "mMk_m9", "detailed balance holds for walks between neighbours, not in general: in the weather chain π(0)·p₀₁ ≠ π(1)·p₁₀")],
+          [tx(t, "mMk_m10w", "tᵢ = q·tᵢ₋₁ + p·tᵢ₊₁"), "tᵢ = 1 + q·tᵢ₋₁ + p·tᵢ₊₁", tx(t, "mMk_m10", "the first step itself takes one unit of time")],
         ]}
       />
 
@@ -231,6 +371,9 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
         tx(t, "mMk_k4", "(Pⁿ)ᵢⱼ is the sum, over every path from i to j of n steps, of the product of the step probabilities."),
         tx(t, "mMk_k5", "The distribution is a row vector: πₙ = π₀Pⁿ. Joint probabilities multiply: P(X_m = i, X_{m+n} = j) = π_m(i)(Pⁿ)ᵢⱼ."),
         tx(t, "mMk_k6", "A stationary π solves πP = π. Irreducible, aperiodic chains converge to it from any start; periodic ones, like the reflecting walk, can keep swinging."),
+        tx(t, "mMk_k7", "For any chain, write πP = π as one equation per column of P, replace one of them by Σπ = 1 and solve. 1/π(j) is the mean time between visits to j."),
+        tx(t, "mMk_k8", "Irreducible: π is unique. Two or more closed classes: many solutions. Transient states get π = 0."),
+        tx(t, "mMk_k9", "Absorbing chains: condition on the first step. hᵢ = Σⱼ pᵢⱼ hⱼ for the chance of an outcome, tᵢ = 1 + Σⱼ pᵢⱼ tⱼ for the expected time. For the walk, hᵢ = (1 − rⁱ)/(1 − rᵏ) with r = q/p (gambler's ruin)."),
       ]} />
     </Article>
   );

@@ -11,6 +11,7 @@ import glass from "./glass";
 import glintro from "./glintro";
 import glsl from "./glsl";
 import lighting from "./lighting";
+import markov from "./markov";
 import math from "./math";
 import ocean from "./ocean";
 import pbr from "./pbr";
@@ -26,6 +27,6 @@ import underwater from "./underwater";
 import vulkan from "./vulkan";
 import water from "./water";
 
-const bundle: Record<string, string> = { ...advgl, ...ai,...advlighting, ...blackhole, ...figures, ...fog, ...gamedev, ...glass, ...glintro, ...glsl, ...lighting, ...math, ...ocean, ...pbr, ...perf, ...pool, ...post, ...river, ...rt, ...sky, ...special, ...tech, ...underwater, ...vulkan, ...water };
+const bundle: Record<string, string> = { ...advgl, ...ai,...advlighting, ...blackhole, ...figures, ...fog, ...gamedev, ...glass, ...glintro, ...glsl, ...lighting, ...markov, ...math, ...ocean, ...pbr, ...perf, ...pool, ...post, ...river, ...rt, ...sky, ...special, ...tech, ...underwater, ...vulkan, ...water };
 
 export default bundle;
