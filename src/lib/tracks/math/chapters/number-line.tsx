@@ -173,7 +173,7 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`a + b = b + a,\;\; ab = ba`, tx(t, "mNL_wComm", "commutative: swap freely. Subtraction and division are not commutative: 5 − 2 = 3 but 2 − 5 = −3")],
           [r`(a + b) + c = a + (b + c)`, tx(t, "mNL_wAssoc", "associative: regroup freely; the same holds for ×. Again not for − or ÷: (8 − 4) − 2 = 2 but 8 − (4 − 2) = 6")],
-          [r`a(b + c) = ab + ac`, tx(t, "mNL_wDist", "distributive: multiplying a sum multiplies each term. Read right to left it is factoring, pulling out a common factor")],
+          [r`a(b + c) = ab + ac`, tx(t, "mNL_wDistr", "distributive: multiplying a sum multiplies each term. Read right to left it is factoring, pulling out a common factor")],
           [r`a + 0 = a,\;\; a \cdot 1 = a`, tx(t, "mNL_wId", "identities: 0 is neutral for +, 1 is neutral for ×. Also a · 0 = 0 for every a")],
           [r`a + (-a) = 0,\;\; a \cdot \tfrac{1}{a} = 1`, tx(t, "mNL_wInv", "inverses: the opposite cancels addition; the reciprocal 1/a cancels multiplication, and exists only when a ≠ 0")],
         ]}

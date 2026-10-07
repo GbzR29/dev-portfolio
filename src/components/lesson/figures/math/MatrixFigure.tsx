@@ -135,7 +135,7 @@ export function MatrixFigure({ t }: { t?: TrackTranslations }) {
 
   return (
     <Figure
-      title={tx(t, "figMat_title", "A matrix moves the whole plane")}
+      title={tx(t, "figMatx_title", "A matrix moves the whole plane")}
       head={<Choice value={mode} onChange={setMode} options={[
         ["columns", tx(t, "figMat_mCols", "columns")],
         ["compose", tx(t, "figMat_mComp", "order matters")],

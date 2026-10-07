@@ -172,7 +172,7 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
           "A shape is transformed by transforming its corners and joining them up again in the same order. Take the triangle A = (1, 0), B = (3, 0), C = (1, 2) and apply three moves in this order: reflect across the y-axis, (x, y) → (−x, y); turn a quarter turn anticlockwise about the origin, (x, y) → (−y, x); move by (4, 1). One row per corner, one column per move:")}
       </p>
       <LessonTable
-        headers={[tx(t, "mTf_tCorner", "Corner"), tx(t, "mTf_tReflect", "reflect in y-axis"), tx(t, "mTf_tTurn", "quarter turn"), tx(t, "mTf_tMove", "move (4, 1)")]}
+        headers={[tx(t, "mTf_tCorner", "Corner"), tx(t, "mTf_tReflect", "reflect in y-axis"), tx(t, "mTf_tTurn", "quarter turn"), tx(t, "mTf_tMoveBy", "move (4, 1)")]}
         rows={[
           ["A (1, 0)", "(−1, 0)", "(0, −1)", "A' (4, 0)"],
           ["B (3, 0)", "(−3, 0)", "(0, −3)", "B' (4, −2)"],

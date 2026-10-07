@@ -1,0 +1,92 @@
+// PT text for the math widgets of the Trigonometry section. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  // ── RightTriangleFigure ──
+  figRt_adj: "adj",
+  figRt_opp: "op",
+  figRt_hyp: "hip",
+  figRt_angle: "ângulo θ",
+  figRt_size: "tamanho",
+  figRt_noteR: "Mude o tamanho: os três lados crescem ou encolhem juntos, mas as três razões nas leituras não se mexem, porque todo triângulo retângulo com o ângulo θ é semelhante a todos os outros (AA). O pequeno triângulo roxo é o de hipotenusa 1: seus lados são exatamente cos θ e sin θ. Mude θ e as razões mudam. Então cada razão é uma função só do ângulo: é isso que seno, cosseno e tangente são.",
+  figRt_noteS: "Dois triângulos dão valores exatos. Corte um quadrado de lado 1 pela diagonal: dois triângulos retângulos com ângulos de 45° e catetos 1, então a hipotenusa é √2 por Pitágoras. Corte um triângulo equilátero de lado 2 ao meio: seus ângulos têm 60°, o corte faz 30° no topo, a metade da base é 1 e a altura é √(4 − 1) = √3. Leia qualquer razão nas figuras.",
+  figRt_you: "você",
+  figRt_dist: "distância d",
+  figRt_elev: "ângulo para cima",
+  figRt_noteH: "Fique a uma distância d de uma torre e meça o ângulo até o topo dela. O chão, a torre e sua linha de visada formam um triângulo retângulo: d é o cateto adjacente ao ângulo e a altura h é o oposto, então tan θ = h/d e h = d · tan θ. Agrimensores medem montanhas assim, e navegadores a altura de falésias.",
+  figRt_title: "Razões num triângulo retângulo",
+  figRt_mRatios: "razões",
+  figRt_mSpecial: "ângulos notáveis",
+  figRt_mHeight: "medir uma altura",
+
+  // ── TriangleLawFigure ──
+  figTl_noteC: "Arraste os cantos. A altura roxa tracejada a partir de B encontra a reta CA em D, num ângulo reto. No triângulo retângulo BDC, CD = a·cos C e BD = a·sin C; o resto da base, DA, é b − a·cos C. Pitágoras no triângulo retângulo BDA dá c² = (a sin C)² + (b − a cos C)², que simplifica para a² + b² − 2ab cos C. Faça C reto: a correção 2ab cos C vira 0 e é Pitágoras. Faça C obtuso: o cosseno fica negativo, D cai fora do triângulo e c² fica maior que a² + b².",
+  figTl_noteS: "Cada lado fica em frente ao canto de mesma letra: a fica em frente a A. Arraste os cantos: as três razões lado / seno do ângulo oposto continuam iguais entre si, e iguais ao diâmetro da circunferência que passa pelos três cantos (roxa). Um lado longo precisa ficar em frente a um ângulo grande, e a lei dos senos diz exatamente quão grande.",
+  figTl_two: "dois triângulos",
+  figTl_one: "um triângulo",
+  figTl_none: "nenhum triângulo",
+  figTl_a: "lado a",
+  figTl_alpha: "ângulo A",
+  figTl_noteA: "Você conhece o lado b (verde), o ângulo A e o lado a, que não fica junto de A. O canto B precisa estar na semirreta tracejada que sai de A e à distância a de C, portanto na circunferência vermelha. Se a for menor que a distância de C até a semirreta, b · sin A, a circunferência não alcança e não existe triângulo. Se a ficar entre b · sin A e b, a circunferência corta a semirreta duas vezes: dois triângulos diferentes servem para os dados. É por isso que LLA não prova nada, como avisou o capítulo de triângulos.",
+  figTl_l1: "braço",
+  figTl_l2: "antebraço",
+  figTl_elbow: "cotovelo",
+  figTl_shoulder: "ombro",
+  figTl_out: "fora de alcance: braço esticado",
+  figTl_noteK: "Arraste o ponto-alvo. Braço, antebraço e a reta do ombro até o alvo formam um triângulo com três lados conhecidos, então a lei dos cossenos dá todo ângulo: o ângulo do cotovelo diretamente, e o ângulo do ombro como o ângulo entre a reta até o alvo e o braço. Quando o alvo está mais longe que l₁ + l₂ (fora da circunferência tracejada) não existe triângulo: o cosseno teria de ficar abaixo de −1, e o braço só consegue se esticar reto em direção a ele.",
+  figTl_title: "Resolvendo qualquer triângulo",
+  figTl_mCos: "lei dos cossenos",
+  figTl_mSin: "lei dos senos",
+  figTl_mSsa: "caso ambíguo",
+  figTl_mIk: "braço de dois segmentos",
+
+  // ── RotationFigure ──
+  figRot_theta: "ângulo θ",
+  figRot_noteR: "Arraste P e gire θ. As setas apagadas constroem P a partir da origem: x passos ao longo do eixo x (vermelho), depois y passos para cima (verde). Girar a imagem toda transforma o passo unitário para a direita, (1, 0), em (cos θ, sin θ), e o passo unitário para cima, (0, 1), em (−sin θ, cos θ), um quarto de volta adiante. Dar os mesmos x e y passos ao longo das direções giradas (setas cheias) termina exatamente no ponto girado P'. Some os dois passos coordenada por coordenada e você tem a fórmula da rotação.",
+  figRot_noteS: "O ponto azul está no ângulo α, então é (cos α, sin α). Gire-o por β e ele cai no ângulo α + β (âmbar), que por definição é (cos(α + β), sin(α + β)). Mas a fórmula da rotação diz que o mesmo ponto é cos α passos na direção x girada (vermelho) mais sin α passos na direção y girada (verde). As duas descrições nomeiam um mesmo ponto, então suas coordenadas concordam, e esse é o par de fórmulas da soma de ângulos nas leituras.",
+  figRot_title: "Girando por qualquer ângulo",
+  figRot_mRot: "girar um ponto",
+  figRot_mSum: "soma de ângulos",
+
+  // ── PolarFigure ──
+  figPol_circle: "circunferência",
+  figPol_cardioid: "cardioide",
+  figPol_rose: "rosácea",
+  figPol_spiral: "espiral",
+  figPol_neg: "r < 0: desenhado do lado oposto",
+  figPol_noteC: "Numa grade polar os anéis são distâncias até o centro e os raios são ângulos. Uma curva polar dá a distância r para cada ângulo θ. Varra θ e observe o ponto âmbar: a circunferência mantém r fixo, a espiral deixa r crescer de forma constante com θ, a cardioide incha e encolhe uma vez por volta, e a rosácea r = cos(kθ) faz pétalas (k pétalas para k ímpar, 2k para k par). Quando r sai negativo o ponto é desenhado do lado oposto do centro, que é como a rosácea ganha suas pétalas extras.",
+  figPol_heading: "direção atual",
+  figPol_target: "alvo",
+  figPol_raw: "diferença bruta",
+  figPol_wrapped: "reduzida",
+  figPol_noteT: "Arraste a direção atual (azul) e o alvo (âmbar). O atan2 devolve ângulos entre −180° e 180°, então simplesmente subtraí-los pode dar quase uma volta completa (arco vermelho tracejado) mesmo quando o alvo está logo depois da linha de ±180°. Reduzir a diferença de volta para (−180°, 180°] dá o caminho curto (verde): seu sinal diz para que lado girar, anti-horário ou horário, e seu tamanho quanto.",
+  figPol_title: "Coordenadas polares",
+  figPol_mCurves: "curvas polares",
+  figPol_mTurn: "giro mais curto",
+
+  // ── HarmonicsFigure ──
+  figHar_square: "quadrada",
+  figHar_saw: "dente de serra",
+  figHar_terms: "senos somados",
+  figHar_noteH: "A linha tracejada é a forma-alvo; a curva azul é a soma dos primeiros senos (os roxos claros são os termos individuais). Cada seno a mais tem frequência maior e amplitude menor e acerta um detalhe mais fino. Com um termo é só um seno; com quarenta, os cantos ficam afiados, a não ser por uma pequena ultrapassagem que nunca some (o fenômeno de Gibbs). Fourier mostrou que praticamente qualquer sinal que se repete pode ser construído assim, que é como a compressão de áudio e os equalizadores pensam o som.",
+  figHar_noteL: "O ponto âmbar se move para a esquerda e para a direita como sin(a·t) (marca vermelha) e para cima e para baixo como sin(b·t + φ) (marca verde), duas oscilações independentes em ângulo reto. Seu caminho é uma figura de Lissajous. Quando a : b é uma razão entre inteiros o caminho fecha; a = b dá uma elipse (ou uma reta, ou um círculo quando φ = π/2), e 1 : 2 dá um oito. Um osciloscópio desenha exatamente isso quando compara dois sinais elétricos.",
+  figHar_halfA: "meia amplitude",
+  figHar_decay: "decaimento λ",
+  figHar_freq: "frequência f",
+  figHar_halfLife: "meia-vida",
+  figHar_noteD: "Multiplique um seno por uma exponencial que encolhe (o e^(−λt) do capítulo de expoentes) e a onda vai morrendo dentro do envelope tracejado. λ define quão rápido: a amplitude cai pela metade a cada ln 2 / λ segundos. Com λ = 0 ela soa para sempre. Essa é a forma de uma corda dedilhada, de uma mola de porta se acomodando e da suspensão de um carro depois de um buraco: um tranco grande que logo se acalma.",
+  figHar_title: "Combinando ondas",
+  figHar_mHarm: "harmônicos",
+  figHar_mLiss: "Lissajous",
+  figHar_mDamp: "amortecida",
+
+  // ── TrigGraphFigure ──
+  figTg_theta: "ângulo θ",
+  figTg_ref: "ângulo de referência",
+  figTg_noteQ: "Arraste o ponto em volta do círculo. Seu cosseno é o cateto horizontal vermelho e seu seno o vertical verde, com sinais: à esquerda do eixo y o cos é negativo, abaixo do eixo x o sin é negativo. O arco âmbar é o ângulo de referência, o ângulo agudo entre o raio e a parte mais próxima do eixo x. Os quatro pontos apagados (θ refletido nos eixos) têm esse mesmo ângulo de referência, então seus senos e cossenos são os mesmos números com sinais diferentes. Os valores de todo ângulo vêm de um ângulo entre 0° e 90°.",
+  figTg_noteG: "Desenrolados por duas voltas para cada lado, seno e cosseno são a mesma onda deslocada de um quarto de volta (π/2), e se repetem a cada 2π: dar mais uma volta no círculo traz o ponto de volta. Ligue a tan: ela se repete a cada π, cruza o zero onde o seno cruza e tem assíntotas verticais (tracejadas) onde o cosseno é zero, já que divide pelo cosseno. Ângulos negativos giram no sentido horário; o seno é ímpar (sin(−θ) = −sin θ) e o cosseno é par (cos(−θ) = cos θ).",
+  figTg_title: "Todo ângulo, todo sinal",
+  figTg_mQuad: "quadrantes",
+  figTg_mGraphs: "gráficos",
+};
+
+export default text;

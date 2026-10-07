@@ -55,7 +55,7 @@ export function ExpectationFigure({ t }: { t?: TrackTranslations }) {
   const fx = pl.X(mu);
   return (
     <Figure
-      title={tx(t, "figExp_title", "The mean as a balance point")}
+      title={tx(t, "figExpv_title", "The mean as a balance point")}
       head={<Choice value={preset as Preset} onChange={setPreset} options={[
         ["die", tx(t, "figExp_die", "fair die")],
         ["loaded", tx(t, "figExp_loaded", "loaded die")],

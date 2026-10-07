@@ -170,7 +170,7 @@ export function IntegralsContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mInt_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
-        headers={[tx(t, "mInt_tWrong", "Wrong"), tx(t, "mInt_tRight", "Right"), tx(t, "mInt_tWhy", "Why")]}
+        headers={[tx(t, "mInt_tWrong", "Wrong"), tx(t, "mInt_tRightM", "Right"), tx(t, "mInt_tWhy", "Why")]}
         rows={[
           [tx(t, "mInt_m1w", "the integral is always the geometric area"), tx(t, "mInt_m1r", "it is signed area"), tx(t, "mInt_m1", "parts below the axis subtract")],
           [tx(t, "mInt_m2w", "displacement = distance travelled"), tx(t, "mInt_m2r", "distance is ∫|v| dt"), tx(t, "mInt_m2", "moving back cancels moving forward in ∫v")],

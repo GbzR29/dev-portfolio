@@ -20,7 +20,7 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
   return (
     <Article>
       <Lead>
-        {tx(t, "mExp_intro",
+        {tx(t, "mExpv_intro",
           "A random variable is described completely by its distribution, but a whole table or curve is a lot to carry around. Two numbers summarise most of what we need: where the values sit on average, the expectation, and how widely they scatter around that average, the variance. This chapter defines both for discrete and continuous variables, computes them by hand, and proves the rules that make them so useful: expectations add, even for dependent variables, and variances add for independent ones. The last rule explains why averaging many measurements makes them more precise.")}
       </Lead>
 
