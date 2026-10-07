@@ -14,6 +14,13 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ### 2026-10-07
 
+- **Fórmulas dinâmicas (teste em *Cadeias de Markov*)**: três recursos novos e opcionais, que as 806 fórmulas existentes não precisam usar.
+  - **Símbolos ligados à legenda**: a macro KaTeX `\sym{id}{…}` (em `Tex.tsx`) marca um símbolo. Passar o mouse (ou tocar) nele acende o símbolo em toda a fórmula e a linha dele na lista "onde", e o contrário também. As cores dos símbolos são as mesmas na fórmula, na legenda e nas figuras (no sistema do tempo, π(0), π(1) e π(2) têm as cores dos estados do widget).
+  - **"Em palavras"**: o `Equation` ganhou a prop `words`, um botão que troca a fórmula por uma frase que diz a mesma coisa. Usado em 9 fórmulas do capítulo.
+  - **`Derivation`** (componente novo, `components/lesson/Derivation.tsx`): uma dedução linha por linha com a barra de reprodução dos widgets (⟲ ⏮ ▶ ⏭, velocidade). Os sinais de = ficam alinhados e as linhas são numeradas. A linha nova acende e a justificativa dela aparece numa legenda embaixo; clicar em qualquer linha mostra a justificativa dela. Quatro deduções no capítulo: probabilidade de dois passos (lei da probabilidade total → propriedade de Markov, com o X₀ = i riscado → multiplicação de matrizes); a solução de πP = π da cadeia do tempo (8 linhas, substitui três parágrafos); h₁ e h₂ do exemplo absorvente; e a fórmula da ruína do apostador pela progressão geométrica dos degraus.
+  - **`LiveFormula`** (componente novo, `components/lesson/LiveFormula.tsx`): a fórmula em símbolos, sliders e a mesma fórmula com os números substituídos ao vivo, com um medidor para resultados que são probabilidades. No capítulo: a ruína do apostador com p, k e i (p = 0,45, 4 de 8 → 0,309; com p = 0,50 vira i/k).
+  - Tradução PT completa.
+
 - **Laboratório pronto para as outras trilhas** (quatro melhorias no kit, combinadas com o usuário antes de aplicar o padrão em todo o site):
   - *Botão voltar e link direto*: abrir um laboratório põe `?lab=<id>` na URL (`history.pushState`), então o "voltar" do navegador ou do celular fecha o laboratório em vez de sair da lição. Um link com `?lab=markov-absorbing`, por exemplo, abre aquele laboratório direto, com a figura rolada para trás dele. Fechar pelo X, por Esc ou pelo voltar deixa a URL limpa. A lógica fica em `kit/lab/useLab.ts`, e cada laboratório tem um id estável (`useLab("markov-walk")`).
   - *Progresso salvo*: os objetivos cumpridos e o "concluído" ficam no `localStorage` de quem lê (`lab:<id>`) e voltam depois de recarregar. O botão "explorar" fica verde com ✓ quando o laboratório foi concluído.

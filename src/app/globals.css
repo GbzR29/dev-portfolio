@@ -110,6 +110,22 @@ html:not(.dark) .tx-cyan   { color: #0891b2; }
 /* Inline formulas sit on the text baseline at the body size */
 .tex-inline .katex { font-size: 1.05em; }
 
+/* Linked symbols (\sym{id}{…}): pointing at one lights it up in the formula and
+   in its "where" line */
+.katex [data-sym] { cursor: help; border-radius: 4px; transition: background-color 0.15s, box-shadow 0.15s; }
+.katex [data-sym].sym-on { background: var(--primary-low); box-shadow: 0 0 0 2px var(--primary-low), 0 2px 0 0 var(--primary); }
+.eq-meaning { border-radius: 4px; transition: background-color 0.15s, color 0.15s; }
+.eq-meaning[data-sym] { cursor: help; }
+.eq-meaning.sym-on { background: var(--primary-low); color: var(--text-main); box-shadow: 0 0 0 4px var(--primary-low); }
+@keyframes eq-words-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.eq-words { animation: eq-words-in 0.25s ease-out; }
+
+/* Derivation (components/lesson/Derivation.tsx): the newest line slides in, lit */
+.deriv-current { background: var(--primary-low); box-shadow: inset 3px 0 0 var(--primary); animation: eq-words-in 0.3s ease-out; }
+.deriv-num { display: inline-block; min-width: 1.4em; margin-right: 0.35em; font: 10.5px/1 var(--font-plex-mono, ui-monospace), monospace; color: var(--text-muted); vertical-align: 0.35em; }
+.deriv-current .deriv-num { color: var(--primary); }
+@media (prefers-reduced-motion: reduce) { .eq-words, .deriv-current { animation: none; } }
+
 
 /* =========================================================
    LIGHT MODE CONTRAST

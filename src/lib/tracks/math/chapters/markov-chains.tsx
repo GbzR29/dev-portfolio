@@ -12,6 +12,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -44,13 +46,15 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mMk_eqProp", "The Markov property")}
         where={[
-          [r`X_n`, tx(t, "mMk_wXn", "the state at time n, the present")],
-          [r`X_0, \dots, X_{n-1}`, tx(t, "mMk_wPast", "the states at all earlier times, the past")],
+          [r`\sym{now}{\amber{X_n}}`, tx(t, "mMk_wXn", "the state at time n, the present")],
+          [r`\sym{past}{\muted{X_0, \dots, X_{n-1}}}`, tx(t, "mMk_wPast", "the states at all earlier times, the past")],
+          [r`\sym{next}{\green{X_{n+1}}}`, tx(t, "mMk_wNext", "the state at time n + 1, the next one: what we want to predict")],
           [r`i_0, \dots, i_{n-1}, i, j`, tx(t, "mMk_wIdx", "particular states: the past states, the present state i and the next state j")],
-          [r`p_{ij}`, tx(t, "mMk_wPij", "the transition probability from i to j: the chance of going to j in one step when the walk is at i")],
+          [r`\sym{pij}{\blue{p_{ij}}}`, tx(t, "mMk_wPij", "the transition probability from i to j: the chance of going to j in one step when the walk is at i")],
         ]}
+        words={tx(t, "mMk_propWords", "If you know where the walk is now (state i), also knowing everything it did before changes nothing: the chance that its next state is j is the same, and it is the single number p_ij written in the matrix.")}
         note={tx(t, "mMk_propNote", "The chains in this chapter are also time-homogeneous: p_ij is the same at every time n, so the rules of the game never change.")}>
-        {r`P(X_{n+1} = j \mid X_n = i,\ X_{n-1} = i_{n-1},\ \dots,\ X_0 = i_0) \;=\; P(X_{n+1} = j \mid X_n = i) \;=\; p_{ij}`}
+        {r`P(\sym{next}{\green{X_{n+1}}} = j \mid \sym{now}{\amber{X_n = i}},\ \sym{past}{\muted{X_{n-1} = i_{n-1},\ \dots,\ X_0 = i_0}}) \;=\; P(\sym{next}{\green{X_{n+1}}} = j \mid \sym{now}{\amber{X_n = i}}) \;=\; \sym{pij}{\blue{p_{ij}}}`}
       </Equation>
       <p>
         {tx(t, "mMk_notIndep",
@@ -79,15 +83,24 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mMk_twoBody",
           "The matrix answers one-step questions. What is the chance of going from i to j in two steps? After the first step the walk is at some intermediate state k, and the possibilities k = 0, 1, …, are mutually exclusive: the walk is at exactly one of them. So the law of total probability splits the question into one case per k and adds the cases up. In each case, the multiplication rule gives the probability of \"first to k\" times the probability of \"then to j, given that\". Finally, the Markov property lets the second factor forget where the walk started, because at time 1 it is at k and only that matters:")}
       </p>
-      <Equation label={tx(t, "mMk_eqTwo", "Two-step probability")}
+      <Derivation t={t} label={tx(t, "mMk_eqTwo", "Two-step probability")}
+        steps={[
+          { tex: r`P(X_2 = j \mid X_0 = i)`, why: tx(t, "mMk_d2a", "the question: from i to j in two steps") },
+          { tex: r`= \sum_{\sym{k}{\purple{k}}} P(X_1 = \sym{k}{\purple{k}} \mid X_0 = i)\;P(X_2 = j \mid X_1 = \sym{k}{\purple{k}},\ X_0 = i)`,
+            why: tx(t, "mMk_d2b", "law of total probability: split on the state k at time 1, and use the multiplication rule in each case") },
+          { tex: r`= \sum_{\sym{k}{\purple{k}}} P(X_1 = \sym{k}{\purple{k}} \mid X_0 = i)\;P(X_2 = j \mid X_1 = \sym{k}{\purple{k}},\ \muted{\cancel{X_0 = i}})`,
+            why: tx(t, "mMk_d2c", "Markov property: at time 1 the walk is at k, so where it started no longer matters") },
+          { tex: r`= \sum_{\sym{k}{\purple{k}}} \sym{pik}{\amber{p_{ik}}}\;\sym{pkj}{\blue{p_{kj}}}`,
+            why: tx(t, "mMk_d2d", "both factors are one-step probabilities: entries of P") },
+          { tex: r`= \sym{p2}{\green{(P^2)_{ij}}}`,
+            why: tx(t, "mMk_d2e", "row i of P times column j of P: exactly how matrix multiplication computes an entry") },
+        ]}
         where={[
-          [r`k`, tx(t, "mMk_wK", "the state after the first step; the sum runs over every state")],
-          [r`p_{ik}`, tx(t, "mMk_wPik", "the probability of the first step, from i to k")],
-          [r`p_{kj}`, tx(t, "mMk_wPkj", "the probability of the second step, from k to j; by the Markov property it does not matter that the walk began at i")],
-          [r`(P^2)_{ij}`, tx(t, "mMk_wP2", "the entry in row i, column j of the matrix P² = P·P")],
-        ]}>
-        {r`P(X_2 = j \mid X_0 = i) = \sum_k P(X_1 = k \mid X_0 = i)\,P(X_2 = j \mid X_1 = k, X_0 = i) = \sum_k p_{ik}\,p_{kj} = (P^2)_{ij}`}
-      </Equation>
+          [r`\sym{k}{\purple{k}}`, tx(t, "mMk_wK", "the state after the first step; the sum runs over every state")],
+          [r`\sym{pik}{\amber{p_{ik}}}`, tx(t, "mMk_wPik", "the probability of the first step, from i to k")],
+          [r`\sym{pkj}{\blue{p_{kj}}}`, tx(t, "mMk_wPkj", "the probability of the second step, from k to j; by the Markov property it does not matter that the walk began at i")],
+          [r`\sym{p2}{\green{(P^2)_{ij}}}`, tx(t, "mMk_wP2", "the entry in row i, column j of the matrix P² = P·P")],
+        ]} />
       <p>
         {tx(t, "mMk_whyPow",
           "The last step is the whole point. The sum Σₖ p_ik·p_kj is exactly how matrix multiplication computes an entry: go along row i of the first matrix and down column j of the second, multiply the matching entries and add. Nobody chose to \"raise the matrix to a power\" as a trick. The rule for combining two steps of a chain simply is the rule for multiplying matrices. For example, from 1 to 3 in two steps: row 1 of P is (1/4, 0, 3/4, 0) and column 3 is (0, 0, 3/4, 0), so (P²)₁₃ = 3/4 · 3/4 = 9/16. The only route is 1 → 2 → 3.")}
@@ -100,10 +113,11 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mMk_eqN", "n-step probabilities (Chapman–Kolmogorov)")}
         where={[
-          [r`P^n`, tx(t, "mMk_wPn", "the matrix P multiplied by itself n times; P⁰ is the identity matrix (zero steps: you stay where you are)")],
-          [r`m`, tx(t, "mMk_wM", "any starting time; the answer depends only on the number of steps n")],
-        ]}>
-        {r`P^{m+n} = P^m\,P^n \qquad\Longrightarrow\qquad P(X_{m+n} = j \mid X_m = i) = (P^n)_{ij}`}
+          [r`\sym{pn}{\green{P^n}}`, tx(t, "mMk_wPn", "the matrix P multiplied by itself n times; P⁰ is the identity matrix (zero steps: you stay where you are)")],
+          [r`\sym{m}{\amber{m}}`, tx(t, "mMk_wM", "any starting time; the answer depends only on the number of steps n")],
+        ]}
+        words={tx(t, "mMk_nWords", "Going m + n steps is going m steps and then n more, so the matrices multiply. And the chance of going from i to j in n steps, starting at any time, is the entry in row i, column j of P to the n-th power.")}>
+        {r`P^{\sym{m}{\amber{m}}+n} = P^{\sym{m}{\amber{m}}}\,\sym{pn}{\green{P^n}} \qquad\Longrightarrow\qquad P(X_{\sym{m}{\amber{m}}+n} = j \mid X_{\sym{m}{\amber{m}}} = i) = (\sym{pn}{\green{P^n}})_{ij}`}
       </Equation>
       <p>
         {tx(t, "mMk_pathsBody",
@@ -119,11 +133,13 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mMk_eqDist", "The distribution after n steps")}
         where={[
-          [r`\pi_0`, tx(t, "mMk_wPi0", "the initial distribution, as a row vector; uniform on 4 states is (1/4, 1/4, 1/4, 1/4)")],
-          [r`\pi_n(j)`, tx(t, "mMk_wPin", "the probability that the walk is at j at time n, averaged over all starting states")],
+          [r`\sym{pi0}{\amber{\pi_0}}`, tx(t, "mMk_wPi0", "the initial distribution, as a row vector; uniform on 4 states is (1/4, 1/4, 1/4, 1/4)")],
+          [r`\sym{pin}{\green{\pi_n}}(j)`, tx(t, "mMk_wPin", "the probability that the walk is at j at time n, averaged over all starting states")],
+          [r`\sym{P}{\blue{P}}`, tx(t, "mMk_wPmat", "the transition matrix: one multiplication by it is one step")],
         ]}
+        words={tx(t, "mMk_distWords", "To get the distribution one step later, multiply today's row of probabilities by the matrix. Do it n times starting from the initial distribution, and you get the distribution after n steps.")}
         note={tx(t, "mMk_distNote", "The vector goes on the left, as a row. Each entry of πₙP mixes a column of P: the chances of arriving at j from every state, weighted by how likely each state was.")}>
-        {r`\pi_{n+1} = \pi_n\,P \qquad\Longrightarrow\qquad \pi_n = \pi_0\,P^n`}
+        {r`\pi_{n+1} = \sym{pin}{\green{\pi_n}}\,\sym{P}{\blue{P}} \qquad\Longrightarrow\qquad \sym{pin}{\green{\pi_n}} = \sym{pi0}{\amber{\pi_0}}\,\sym{P}{\blue{P}}^n`}
       </Equation>
       <p>
         {tx(t, "mMk_jointBody",
@@ -190,10 +206,12 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mMk_eqStat", "Stationary distribution")}
         where={[
-          [r`\pi`, tx(t, "mMk_wPi", "a row vector of probabilities: every entry ≥ 0 and all of them add up to 1")],
-          [r`\pi P = \pi`, tx(t, "mMk_wFix", "one step changes nothing: the probability flowing into each state equals the probability it holds")],
-        ]}>
-        {r`\pi P = \pi, \qquad \sum_i \pi(i) = 1`}
+          [r`\sym{pi}{\green{\pi}}`, tx(t, "mMk_wPi", "a row vector of probabilities: every entry ≥ 0 and all of them add up to 1")],
+          [r`\sym{fix}{\green{\pi} P = \green{\pi}}`, tx(t, "mMk_wFix", "one step changes nothing: the probability flowing into each state equals the probability it holds")],
+          [r`\sym{sum}{\textstyle\sum_i \pi(i) = 1}`, tx(t, "mMk_wSum1", "it is a distribution: the chances add up to 1")],
+        ]}
+        words={tx(t, "mMk_statWords", "A stationary distribution is a way of spreading the probability over the states that one more step leaves exactly as it was.")}>
+        {r`\sym{fix}{\sym{pi}{\green{\pi}} P = \sym{pi}{\green{\pi}}}, \qquad \sym{sum}{\sum_i \pi(i) = 1}`}
       </Equation>
       <p>
         {tx(t, "mMk_balanceBody",
@@ -226,25 +244,37 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mMk_eqSystem", "πP = π, one equation per column")}
         where={[
-          [r`\pi(j)`, tx(t, "mMk_wPij2", "the long-run probability of state j, the unknown")],
-          [r`0.7\,\pi(0) + 0.3\,\pi(1) + 0.2\,\pi(2)`, tx(t, "mMk_wInflow", "everything that flows into state 0 in one step: column 0 of P, weighted by where the chain is")],
-          [r`\pi(0) + \pi(1) + \pi(2) = 1`, tx(t, "mMk_wNorm", "the entries of a distribution add up to 1")],
+          [r`\sym{s0}{\amber{\pi(0)}},\ \sym{s1}{\purple{\pi(1)}},\ \sym{s2}{\blue{\pi(2)}}`, tx(t, "mMk_wPij3", "the long-run probabilities of sunny, cloudy and rainy: the unknowns, in the colours of the figure below")],
+          [r`\sym{in0}{0.7\,\pi(0) + 0.3\,\pi(1) + 0.2\,\pi(2)}`, tx(t, "mMk_wInflow", "everything that flows into state 0 in one step: column 0 of P, weighted by where the chain is")],
+          [r`\sym{norm}{\pi(0) + \pi(1) + \pi(2) = 1}`, tx(t, "mMk_wNorm", "the entries of a distribution add up to 1")],
         ]}
+        words={tx(t, "mMk_systemWords", "For each kind of weather: its long-run chance equals the sum, over today's weather, of the chance of being in that weather today times the chance of moving to it. And the three chances add up to 1.")}
         note={tx(t, "mMk_systemNote", "The three flow equations are not independent. Add them up: the left sides give π(0) + π(1) + π(2), and so do the right sides, because every row of P adds up to 1. So one of them carries no information. Drop one and use the sum = 1 instead; without it, any multiple of π would be a solution too.")}>
-        {r`\begin{aligned} \pi(0) &= 0.7\,\pi(0) + 0.3\,\pi(1) + 0.2\,\pi(2) \\ \pi(1) &= 0.2\,\pi(0) + 0.4\,\pi(1) + 0.3\,\pi(2) \\ \pi(2) &= 0.1\,\pi(0) + 0.3\,\pi(1) + 0.5\,\pi(2) \\ 1 &= \pi(0) + \pi(1) + \pi(2) \end{aligned}`}
+        {r`\begin{aligned} \sym{s0}{\amber{\pi(0)}} &= \sym{in0}{0.7\,\amber{\pi(0)} + 0.3\,\purple{\pi(1)} + 0.2\,\blue{\pi(2)}} \\ \sym{s1}{\purple{\pi(1)}} &= 0.2\,\amber{\pi(0)} + 0.4\,\purple{\pi(1)} + 0.3\,\blue{\pi(2)} \\ \sym{s2}{\blue{\pi(2)}} &= 0.1\,\amber{\pi(0)} + 0.3\,\purple{\pi(1)} + 0.5\,\blue{\pi(2)} \\ 1 &= \sym{norm}{\amber{\pi(0)} + \purple{\pi(1)} + \blue{\pi(2)}} \end{aligned}`}
       </Equation>
       <p>
-        {tx(t, "mMk_solve1",
-          "Solve it step by step. Move the π(0) terms of the first equation to the left: 0.3·π(0) = 0.3·π(1) + 0.2·π(2). Times 10, that is 3π(0) = 3π(1) + 2π(2), so π(0) = π(1) + (2/3)π(2).")}
+        {tx(t, "mMk_solveIntro",
+          "Now solve it one line at a time. Press ⏭ under the derivation to add the next line; each one says why it follows from the one before.")}
       </p>
-      <p>
-        {tx(t, "mMk_solve2",
-          "The second equation, also times 10 after moving 0.4·π(1) to the left, says 6π(1) = 2π(0) + 3π(2). Put π(0) from the first one in: 6π(1) = 2π(1) + (4/3)π(2) + 3π(2), so 4π(1) = (13/3)π(2) and π(1) = (13/12)π(2). Then π(0) = (13/12)π(2) + (8/12)π(2) = (21/12)π(2).")}
-      </p>
-      <p>
-        {tx(t, "mMk_solve3",
-          "Everything is now a multiple of π(2), and the sum fixes it: (21 + 13 + 12)/12 · π(2) = 1, so π(2) = 12/46. The answer is π = (21, 13, 12)/46 ≈ (0.457, 0.283, 0.261). Check it with the equation that was dropped: 0.1 · 21/46 + 0.3 · 13/46 + 0.5 · 12/46 = (2.1 + 3.9 + 6)/46 = 12/46. ✓")}
-      </p>
+      <Derivation t={t} label={tx(t, "mMk_dSolve", "Solving the weather chain")}
+        steps={[
+          { full: true, tex: r`0.3\,\amber{\pi(0)} = 0.3\,\purple{\pi(1)} + 0.2\,\blue{\pi(2)}`,
+            why: tx(t, "mMk_ds1", "the first equation, with the π(0) terms moved to the left: 1 − 0.7 = 0.3") },
+          { full: true, tex: r`\amber{\pi(0)} = \purple{\pi(1)} + \tfrac23\,\blue{\pi(2)}`,
+            why: tx(t, "mMk_ds2", "times 10, then divided by 3") },
+          { full: true, tex: r`0.6\,\purple{\pi(1)} = 0.2\,\amber{\pi(0)} + 0.3\,\blue{\pi(2)}`,
+            why: tx(t, "mMk_ds3", "the second equation, with the π(1) terms moved to the left: 1 − 0.4 = 0.6") },
+          { full: true, tex: r`6\,\purple{\pi(1)} = 2\,\purple{\pi(1)} + \tfrac43\,\blue{\pi(2)} + 3\,\blue{\pi(2)} \;\Rightarrow\; \purple{\pi(1)} = \tfrac{13}{12}\,\blue{\pi(2)}`,
+            why: tx(t, "mMk_ds4", "times 10, π(0) from line 2 put in, and the terms collected: 4π(1) = (13/3)π(2)") },
+          { full: true, tex: r`\amber{\pi(0)} = \tfrac{13}{12}\,\blue{\pi(2)} + \tfrac{8}{12}\,\blue{\pi(2)} = \tfrac{21}{12}\,\blue{\pi(2)}`,
+            why: tx(t, "mMk_ds5", "back into line 2: now every unknown is a multiple of π(2)") },
+          { full: true, tex: r`\tfrac{21 + 13 + 12}{12}\,\blue{\pi(2)} = 1 \;\Rightarrow\; \blue{\pi(2)} = \tfrac{12}{46}`,
+            why: tx(t, "mMk_ds6", "the sum must be 1, and that fixes π(2)") },
+          { full: true, tex: r`\pi = \tfrac{1}{46}\,(\amber{21},\ \purple{13},\ \blue{12}) \approx (0.457,\ 0.283,\ 0.261)`,
+            why: tx(t, "mMk_ds7", "the answer") },
+          { full: true, tex: r`0.1 \cdot \tfrac{21}{46} + 0.3 \cdot \tfrac{13}{46} + 0.5 \cdot \tfrac{12}{46} = \tfrac{2.1 + 3.9 + 6}{46} = \tfrac{12}{46} = \blue{\pi(2)}\ \checkmark`,
+            why: tx(t, "mMk_ds8", "check with the third equation, the one that was dropped") },
+        ]} />
       <p>
         {tx(t, "mMk_returnBody",
           "π(j) is the long-run share of time spent in j, so its reciprocal is the mean time between two visits: the mean return time 1/π(j). Rain comes back on average every 46/12 ≈ 3.8 days, sunshine every 46/21 ≈ 2.2 days.")}
@@ -293,43 +323,76 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mMk_eqHit", "Chance of reaching k first (first-step analysis)")}
         where={[
-          [r`h_i`, tx(t, "mMk_wHi", "the probability of reaching k before 0, starting from i")],
-          [r`q\,h_{i-1}`, tx(t, "mMk_wHq", "first step to the left (probability q), then the chance from i − 1")],
-          [r`p\,h_{i+1}`, tx(t, "mMk_wHp", "first step to the right (probability p), then the chance from i + 1")],
-          [r`h_0 = 0,\ h_k = 1`, tx(t, "mMk_wHb", "the boundary conditions: at 0 the walk is already ruined, at k it has already arrived")],
-        ]}>
-        {r`h_i = q\,h_{i-1} + p\,h_{i+1} \quad (0 < i < k), \qquad h_0 = 0, \quad h_k = 1`}
+          [r`\sym{hi}{\green{h_i}}`, tx(t, "mMk_wHi", "the probability of reaching k before 0, starting from i")],
+          [r`\sym{left}{\red{q}\,h_{i-1}}`, tx(t, "mMk_wHq", "first step to the left (probability q), then the chance from i − 1")],
+          [r`\sym{right}{\blue{p}\,h_{i+1}}`, tx(t, "mMk_wHp", "first step to the right (probability p), then the chance from i + 1")],
+          [r`\sym{bc}{h_0 = 0,\ h_k = 1}`, tx(t, "mMk_wHb", "the boundary conditions: at 0 the walk is already ruined, at k it has already arrived")],
+        ]}
+        words={tx(t, "mMk_hitWords", "Your chance of winning from i is: the chance of losing the next round times your chance from one coin less, plus the chance of winning it times your chance from one coin more. With no coins you have already lost; at the target you have already won.")}>
+        {r`\sym{hi}{\green{h_i}} = \sym{left}{\red{q}\,h_{i-1}} + \sym{right}{\blue{p}\,h_{i+1}} \quad (0 < i < k), \qquad \sym{bc}{h_0 = 0, \quad h_k = 1}`}
       </Equation>
       <p>
-        {tx(t, "mMk_absEx1",
-          "Worked example: the exercise's walk with absorbing walls, k = 3, p = 3/4, q = 1/4. There are two unknowns. From 1: h₁ = 1/4 · h₀ + 3/4 · h₂ = 3/4 · h₂. From 2: h₂ = 1/4 · h₁ + 3/4 · h₃ = 1/4 · h₁ + 3/4. Put the second into the first: h₁ = 3/4 · (1/4 · h₁ + 3/4) = 3/16 · h₁ + 9/16. So 13/16 · h₁ = 9/16 and h₁ = 9/13 ≈ 0.69. Then h₂ = 1/4 · 9/13 + 3/4 = 9/52 + 39/52 = 12/13 ≈ 0.92.")}
+        {tx(t, "mMk_absEx0",
+          "Worked example: the exercise's walk with absorbing walls, k = 3, p = 3/4, q = 1/4. The unknowns are h₁ and h₂:")}
       </p>
+      <Derivation t={t} label={tx(t, "mMk_dAbs", "Solving for h₁ and h₂")}
+        steps={[
+          { full: true, tex: r`\green{h_1} = \tfrac14\,h_0 + \tfrac34\,h_2 = \tfrac34\,h_2`, why: tx(t, "mMk_da1", "the equation from 1, with h₀ = 0") },
+          { full: true, tex: r`h_2 = \tfrac14\,\green{h_1} + \tfrac34\,h_3 = \tfrac14\,\green{h_1} + \tfrac34`, why: tx(t, "mMk_da2", "the equation from 2, with h₃ = 1") },
+          { full: true, tex: r`\green{h_1} = \tfrac34\left(\tfrac14\,\green{h_1} + \tfrac34\right) = \tfrac{3}{16}\,\green{h_1} + \tfrac{9}{16}`, why: tx(t, "mMk_da3", "the second equation put into the first") },
+          { full: true, tex: r`\tfrac{13}{16}\,\green{h_1} = \tfrac{9}{16} \;\Rightarrow\; \green{h_1} = \tfrac{9}{13} \approx 0.69`, why: tx(t, "mMk_da4", "the h₁ terms collected on the left: 1 − 3/16 = 13/16") },
+          { full: true, tex: r`h_2 = \tfrac14 \cdot \tfrac{9}{13} + \tfrac34 = \tfrac{9}{52} + \tfrac{39}{52} = \tfrac{12}{13} \approx 0.92`, why: tx(t, "mMk_da5", "back into the second equation") },
+        ]} />
       <p>
         {tx(t, "mMk_timeBody",
           "The expected number of steps works the same way, with one change: the first step itself counts. Whatever it does, one step has been taken, and then the walk expects tᵢ₋₁ or tᵢ₊₁ more:")}
       </p>
       <Equation label={tx(t, "mMk_eqTime", "Expected time until absorption")}
         where={[
-          [r`t_i`, tx(t, "mMk_wTi", "the expected number of steps until the walk reaches 0 or k, starting from i")],
-          [r`1`, tx(t, "mMk_wT1", "the first step, which is always taken")],
-          [r`t_0 = t_k = 0`, tx(t, "mMk_wTb", "at a wall the walk has already stopped")],
+          [r`\sym{ti}{\purple{t_i}}`, tx(t, "mMk_wTi", "the expected number of steps until the walk reaches 0 or k, starting from i")],
+          [r`\sym{one}{\amber{1}}`, tx(t, "mMk_wT1", "the first step, which is always taken")],
+          [r`\sym{tb}{t_0 = t_k = 0}`, tx(t, "mMk_wTb", "at a wall the walk has already stopped")],
         ]}
+        words={tx(t, "mMk_timeWords", "The expected number of rounds left from i is one (the round about to be played) plus the expected number left from wherever that round takes you.")}
         note={tx(t, "mMk_timeNote", "For the example: t₁ = 1 + 3/4 · t₂ and t₂ = 1 + 1/4 · t₁. Substituting, t₁ = 1 + 3/4 + 3/16 · t₁, so 13/16 · t₁ = 7/4 and t₁ = 28/13 ≈ 2.15 steps; then t₂ = 1 + 7/13 = 20/13 ≈ 1.54 steps.")}>
-        {r`t_i = 1 + q\,t_{i-1} + p\,t_{i+1} \quad (0 < i < k), \qquad t_0 = t_k = 0`}
+        {r`\sym{ti}{\purple{t_i}} = \sym{one}{\amber{1}} + q\,t_{i-1} + p\,t_{i+1} \quad (0 < i < k), \qquad \sym{tb}{t_0 = t_k = 0}`}
       </Equation>
       <p>
-        {tx(t, "mMk_ruinBody",
-          "For the walk these equations have a closed form, the gambler's ruin formula. Write dᵢ = hᵢ − hᵢ₋₁ for the step between neighbouring bars. Since p + q = 1, the left side hᵢ equals p·hᵢ + q·hᵢ, so the equation hᵢ = q·hᵢ₋₁ + p·hᵢ₊₁ can be rearranged as p·(hᵢ₊₁ − hᵢ) = q·(hᵢ − hᵢ₋₁), that is dᵢ₊₁ = r·dᵢ with r = q/p. So the steps form a geometric sequence d₁, r·d₁, r²·d₁, …, and they must add up to hₖ − h₀ = 1. Adding the first i of them gives:")}
+        {tx(t, "mMk_ruinIntro",
+          "For the walk these equations have a closed form, the gambler's ruin formula. The trick is to look at the steps between neighbouring bars instead of the bars themselves:")}
       </p>
+      <Derivation t={t} label={tx(t, "mMk_dRuin", "Deriving the gambler's ruin formula")}
+        steps={[
+          { full: true, tex: r`(p + q)\,h_i = q\,h_{i-1} + p\,h_{i+1}`,
+            why: tx(t, "mMk_dr1", "the first-step equation, with hᵢ written as (p + q)·hᵢ, which is allowed because p + q = 1") },
+          { full: true, tex: r`p\,(h_{i+1} - h_i) = q\,(h_i - h_{i-1})`,
+            why: tx(t, "mMk_dr2", "the p terms moved to one side and the q terms to the other") },
+          { full: true, tex: r`\amber{d_{i+1}} = \blue{r}\,\amber{d_i}, \qquad \amber{d_i} = h_i - h_{i-1}, \quad \blue{r} = q/p`,
+            why: tx(t, "mMk_dr3", "call each step between bars d: every step is r times the one before, a geometric sequence") },
+          { full: true, tex: r`\amber{d_1}\,(1 + \blue{r} + \blue{r}^2 + \dots + \blue{r}^{k-1}) = h_k - h_0 = 1 \;\Rightarrow\; \amber{d_1} = \frac{1 - \blue{r}}{1 - \blue{r}^k}`,
+            why: tx(t, "mMk_dr4", "the k steps add up to the whole climb from h₀ = 0 to hₖ = 1; a geometric sum is (1 − rᵏ)/(1 − r)") },
+          { full: true, tex: r`\green{h_i} = \amber{d_1}\,(1 + \blue{r} + \dots + \blue{r}^{i-1}) = \frac{1 - \blue{r}^i}{1 - \blue{r}^k}`,
+            why: tx(t, "mMk_dr5", "hᵢ is the first i steps added up") },
+        ]} />
       <Equation label={tx(t, "mMk_eqRuin", "Gambler's ruin")}
         where={[
-          [r`r = q/p`, tx(t, "mMk_wR", "how much more likely a loss is than a win; r > 1 means the game is against the gambler")],
-          [r`\frac{1 - r^i}{1 - r^k}`, tx(t, "mMk_wGeo", "the first i steps of the geometric sequence, divided by all k of them")],
-          [r`i/k`, tx(t, "mMk_wFair", "the fair case p = q, where every step d_i is the same and the bars lie on a straight line")],
+          [r`\sym{r}{\blue{r} = q/p}`, tx(t, "mMk_wR", "how much more likely a loss is than a win; r > 1 means the game is against the gambler")],
+          [r`\sym{geo}{\frac{1 - r^i}{1 - r^k}}`, tx(t, "mMk_wGeo", "the first i steps of the geometric sequence, divided by all k of them")],
+          [r`\sym{fair}{i/k}`, tx(t, "mMk_wFair", "the fair case p = q, where every step d_i is the same and the bars lie on a straight line")],
         ]}
+        words={tx(t, "mMk_ruinWords", "If each round is fair, your chance of reaching the target is simply how far along you already are, i out of k. If not, it depends on how much more likely a loss is than a win, raised to the number of coins.")}
         note={tx(t, "mMk_ruinNote", "Check with the example: r = 1/3, so h₁ = (1 − 1/3)/(1 − 1/27) = (2/3)/(26/27) = 9/13. ✓ A slightly unfair game is much worse than it looks: with p = 0.45, a gambler with 4 coins who wants 8 reaches the target with probability 1/(1 + (11/9)⁴) ≈ 0.31, not 0.5. For a fair game the expected duration is t_i = i·(k − i).")}>
-        {r`h_i = \frac{1 - r^i}{1 - r^k} \quad (p \ne q), \qquad h_i = \frac{i}{k} \quad (p = q)`}
+        {r`\green{h_i} = \sym{geo}{\frac{1 - \sym{r}{\blue{r}}^i}{1 - \sym{r}{\blue{r}}^k}} \quad (p \ne q), \qquad \green{h_i} = \sym{fair}{\frac{i}{k}} \quad (p = q)`}
       </Equation>
+      <LiveFormula label={tx(t, "mMk_liveRuin", "Try it: the gambler's ruin with your numbers")}
+        tex={r`h_i = \frac{1 - r^i}{1 - r^k}, \qquad r = \frac{q}{p} = \frac{1 - p}{p}`}
+        vars={[
+          { id: "p", label: tx(t, "mMk_lvP", "win a round, p"), min: 0.05, max: 0.95, step: 0.05, value: 0.45 },
+          { id: "k", label: tx(t, "mMk_lvK", "target k"), min: 2, max: 20, step: 1, value: 8, fmt: v => String(v) },
+          { id: "i", label: tx(t, "mMk_lvI", "coins now, i"), min: 1, max: 19, step: 1, value: 4, fmt: v => String(v) },
+        ]}
+        compute={ruinNumbers}
+        note={tx(t, "mMk_liveRuinNote", "Move p just below 1/2 and raise k: the bar drops fast. Set p = 0.50 and it becomes i/k exactly. i is capped at k − 1, since at k the game is already won.")} />
 
       <AbsorbFigure t={t} />
 
@@ -377,4 +440,28 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
       ]} />
     </Article>
   );
+}
+
+// ── Numbers for the live gambler's-ruin formula ───────────────────────────────
+
+/** A number for TeX: up to 3 decimals, or a × 10ⁿ when it is very large. */
+function texNum(x: number) {
+  if (Math.abs(x) >= 1e5) {
+    const [m, e] = x.toExponential(2).split("e");
+    return `${m} \\times 10^{${Number(e)}}`;
+  }
+  return String(+x.toFixed(3));
+}
+
+function ruinNumbers(v: Record<string, number>) {
+  const p = v.p, k = v.k, i = Math.min(v.i, k - 1), q = 1 - p;
+  if (Math.abs(p - q) < 1e-9) {
+    const h = i / k;
+    return { tex: r`p = q \;\Rightarrow\; h_{${i}} = \frac{${i}}{${k}} = \mathbf{${texNum(h)}}`, meter: h };
+  }
+  const ratio = q / p, ri = ratio ** i, rk = ratio ** k, h = (1 - ri) / (1 - rk);
+  return {
+    tex: r`r = \frac{${texNum(q)}}{${texNum(p)}} = ${texNum(ratio)}, \qquad h_{${i}} = \frac{1 - ${texNum(ratio)}^{${i}}}{1 - ${texNum(ratio)}^{${k}}} = \frac{1 - ${texNum(ri)}}{1 - ${texNum(rk)}} = \mathbf{${texNum(h)}}`,
+    meter: h,
+  };
 }
