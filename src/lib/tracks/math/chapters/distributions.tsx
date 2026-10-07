@@ -1,6 +1,6 @@
 "use client";
 
-// Probability & Statistics 6: the common distributions — Bernoulli and
+// Probability & Statistics 7: the common distributions — Bernoulli and
 // binomial (pmf by counting sequences, mean np and variance np(1 − p) by
 // indicators); geometric (series, first-step argument, memoryless); Poisson
 // as the limit of the binomial, e^(−λ) from (1 − λ/n)ⁿ, mean = variance = λ;

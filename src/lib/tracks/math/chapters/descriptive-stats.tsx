@@ -1,6 +1,6 @@
 "use client";
 
-// Probability & Statistics 7: descriptive statistics — population and
+// Probability & Statistics 1: descriptive statistics — population and
 // sample, kinds of variables; frequency tables, bar charts and histograms
 // (bin width, density scale, shapes); centre: mean, median, mode, weighted
 // mean from a frequency table, resistance to outliers; spread: range,
@@ -23,7 +23,7 @@ export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mDesc_intro",
-          "Up to now we started from a model, such as a fair die or a normal distribution, and computed what the data should look like. Statistics runs the other way: we have data, a list of numbers someone measured, and want to understand them. The first step is to describe them honestly: draw them, find their centre, measure their spread and spot anything unusual. The ideas mirror the expectation chapter, with the data's own relative frequencies playing the role of probabilities, but there are new tools too, like the median and the box plot, that stay reliable when a few values are strange.")}
+          "Statistics starts with data: a list of numbers someone measured, such as test scores, heights or waiting times, and the wish to understand them. The first step is to describe them honestly: draw them, find their centre, measure their spread and spot anything unusual. Everything here needs only arithmetic. The rest of this section then goes the other way, from a model such as a fair die to the data it should produce, and the ideas you meet here (mean, spread, histogram) come back there with probabilities in place of frequencies. Some tools, like the median and the box plot, are worth having because they stay reliable when a few values are strange.")}
       </Lead>
 
       <H2>{tx(t, "mDesc_dataTitle", "Data, populations and samples")}</H2>
@@ -47,7 +47,7 @@ export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
       />
       <p>
         {tx(t, "mDesc_freqRel",
-          "The relative frequencies behave exactly like a pmf (non-negative, adding to 1), and the cumulative row like a CDF. A bar chart draws them. For measurements, where hardly any two values are equal, first group the values into intervals called bins, such as 60–70, 70–80, and draw a bar over each bin: a histogram. If the bins have different widths, the bar's height must be relative frequency divided by width, so that areas, not heights, carry the proportions; this is the density scale of the random-variables chapter.")}
+          "The relative frequencies are never negative and always add to 1; the cumulative row climbs to 1. (Probabilities will follow exactly the same two rules in the coming chapters.) A bar chart draws them. For measurements, where hardly any two values are equal, first group the values into intervals called bins, such as 60–70, 70–80, and draw a bar over each bin: a histogram. If the bins have different widths, the bar's height must be relative frequency divided by width, so that areas, not heights, carry the proportions. This is called the density scale, and it returns in the random-variables chapter.")}
       </p>
       <p>
         {tx(t, "mDesc_shape",
@@ -61,7 +61,7 @@ export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
           [r`\bar x`, tx(t, "mDesc_wBar", "the mean, read \"x bar\": the total divided by the count")],
           [r`\sum f_j x_j / n`, tx(t, "mDesc_wWeighted", "the same mean from a frequency table: each value times how often it occurs")],
         ]}
-        note={tx(t, "mDesc_meanNote", "Dividing by n is the same as weighting each distinct value by its relative frequency f/n, so the sample mean is the E[X] of the data's own distribution, and it has the same balance-point property: the deviations xᵢ − x̄ add to zero.")}>
+        note={tx(t, "mDesc_meanNote", "Dividing by n is the same as weighting each distinct value by its relative frequency f/n, so the mean is a weighted average of the distinct values. It is also the balance point of the data: the deviations xᵢ − x̄ add to zero. (The expectation chapter builds E[X] the same way, with probabilities as the weights.)")}>
         {r`\bar x = \frac{x_1 + x_2 + \dots + x_n}{n} = \frac1n \sum_{i=1}^{n} x_i`}
       </Equation>
       <p>
@@ -88,7 +88,7 @@ export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
           [r`x_i - \bar x`, tx(t, "mDesc_wDev", "the deviation of each value from the mean")],
           [r`n - 1`, tx(t, "mDesc_wN1", "the divisor: one less than the number of values (see below)")],
           [r`s^2,\ s`, tx(t, "mDesc_wS", "the sample variance and the sample standard deviation, in the units of x")],
-          [r`\sum x_i^2 - n\bar x^2`, tx(t, "mDesc_wShort", "the shortcut for the sum of squared deviations, as E[X²] − μ² was for random variables")],
+          [r`\sum x_i^2 - n\bar x^2`, tx(t, "mDesc_wShort", "the shortcut for the sum of squared deviations: add up the squares, then subtract n times the squared mean (checked in the worked example below)")],
         ]}
         note={tx(t, "mDesc_n1Note", "Why n − 1? The mean x̄ was computed from the same data, and it is the point that makes the sum of squared deviations as small as possible; the deviations from the true population mean would on average be a little larger. Dividing by n − 1 instead of n exactly compensates, so that s² is right on average (the sampling chapter proves it). Another way to say it: the n deviations add to 0, so only n − 1 of them are free; the last one is determined by the others.")}>
         {r`s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar x)^2 = \frac{\sum x_i^2 - n\bar x^2}{n-1} \qquad s = \sqrt{s^2}`}
@@ -124,11 +124,11 @@ export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mDesc_zTitle", "Relative standing: z-scores and percentiles")}</H2>
       <p>
         {tx(t, "mDesc_zBody",
-          "The z-score z = (x − x̄)/s says how many standard deviations a value lies from the mean, exactly as for random variables. The 95 in the test has z = (95 − 71)/12.3 ≈ 1.95; the 52 has z ≈ −1.54. A percentile says what share of the data lie below a value: the median is the 50th percentile, Q1 and Q3 are roughly the 25th and 75th. A child \"in the 90th percentile for height\" is taller than about 90% of children of the same age.")}
+          "The z-score z = (x − x̄)/s says how many standard deviations a value lies from the mean (random variables will use the same idea). The 95 in the test has z = (95 − 71)/12.3 ≈ 1.95; the 52 has z ≈ −1.54. A percentile says what share of the data lie below a value: the median is the 50th percentile, Q1 and Q3 are roughly the 25th and 75th. A child \"in the 90th percentile for height\" is taller than about 90% of children of the same age.")}
       </p>
       <p>
         {tx(t, "mDesc_unitsBody",
-          "Changing units is a linear transformation y = ax + b, and the summaries follow the rules of the expectation chapter: every measure of centre (mean, median, quartiles) becomes a · (old) + b, and every measure of spread (range, IQR, s) is multiplied by |a| and ignores b. Temperatures with mean 20 °C and s = 5 °C become 68 °F and 9 °F. Adding 5 bonus points to every test score raises the mean and median by 5 and leaves s and the IQR unchanged.")}
+          "Changing units is a linear transformation y = ax + b, and the summaries follow it in a simple way: every measure of centre (mean, median, quartiles) becomes a · (old) + b, and every measure of spread (range, IQR, s) is multiplied by |a| and ignores b. Temperatures with mean 20 °C and s = 5 °C become 68 °F and 9 °F. Adding 5 bonus points to every test score raises the mean and median by 5 and leaves s and the IQR unchanged.")}
       </p>
 
       <H2>{tx(t, "mDesc_simpsonTitle", "Simpson's paradox: when grouping reverses a comparison")}</H2>

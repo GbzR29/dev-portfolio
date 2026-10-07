@@ -1,6 +1,6 @@
 "use client";
 
-// Probability & Statistics 2: probability — experiments, outcomes, sample
+// Probability & Statistics 3: probability — experiments, outcomes, sample
 // spaces and events (as sets); equally likely outcomes (ordered pairs for two
 // dice); probability as long-run frequency; the three axioms and what follows
 // from them (complement, addition rule); the complement trick (de Méré,

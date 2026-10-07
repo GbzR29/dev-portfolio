@@ -1,6 +1,6 @@
 "use client";
 
-// Probability & Statistics 3: conditional probability and Bayes — new
+// Probability & Statistics 4: conditional probability and Bayes — new
 // information shrinks the sample space; P(A | B) = P(A ∩ B)/P(B); the
 // multiplication rule and tree diagrams (drawing without replacement);
 // independence, versus mutually exclusive, pairwise versus mutual, the

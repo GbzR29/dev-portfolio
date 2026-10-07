@@ -1,6 +1,6 @@
 "use client";
 
-// Probability & Statistics 1: counting — listing and tree diagrams; the
+// Probability & Statistics 2: counting — listing and tree diagrams; the
 // multiplication and addition principles; restrictions handled first;
 // factorials and permutations (0! = 1); combinations as permutations divided
 // by k!; symmetry; Pascal's rule and the binomial theorem; grid paths; the

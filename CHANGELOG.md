@@ -14,6 +14,10 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ### 2026-10-07
 
+- **Matemática em ordem de pré-requisitos**: nenhum capítulo usa um assunto antes dele ser ensinado.
+  - *Estatística descritiva* passou para o início de Probabilidade e Estatística (antes de *Contagem*), porque variáveis aleatórias, esperança e distribuições já usavam histograma, média e mediana. Ela só precisa de aritmética. As frases que diziam "como no capítulo de esperança" viraram explicações próprias, com referências para frente. Os ids não mudaram, então links e progresso continuam valendo.
+  - **"Antes de começar"**: uma caixa no topo de cada lição lista as lições que ela pressupõe, como chips com número e título (✓ nas já lidas). A lição não ensina de novo; o chip abre a anterior para revisar, e um botão "← voltar para …" leva de volta. Os dados ficam no campo novo `requires` do `Chapter`; o mapa da Matemática (60 capítulos) está no fim de `math/index.tsx`. Textos em EN/PT/ES/ZH.
+  - **`<Recall to="…">`** (em `components/lesson/Prerequisites.tsx`): chip para marcar, dentro do texto, um termo ensinado antes. Um clique abre um cartão com a lição e o link. Pronto, mas ainda não usado nos capítulos.
 - **Fórmulas dinâmicas (teste em *Cadeias de Markov*)**: três recursos novos e opcionais, que as 806 fórmulas existentes não precisam usar.
   - **Símbolos ligados à legenda**: a macro KaTeX `\sym{id}{…}` (em `Tex.tsx`) marca um símbolo. Passar o mouse (ou tocar) nele acende o símbolo em toda a fórmula e a linha dele na lista "onde", e o contrário também. As cores dos símbolos são as mesmas na fórmula, na legenda e nas figuras (no sistema do tempo, π(0), π(1) e π(2) têm as cores dos estados do widget).
   - **"Em palavras"**: o `Equation` ganhou a prop `words`, um botão que troca a fórmula por uma frase que diz a mesma coisa. Usado em 9 fórmulas do capítulo.

@@ -14,7 +14,7 @@ const LINEAR_ALGEBRA = "Linear Algebra";
 const CALCULUS = "Calculus";
 const PROBABILITY = "Probability & Statistics";
 
-export const mathChapters: Chapter[] = [
+const chapters: Chapter[] = [
   { id: "number-line",         section: ARITHMETIC, title: "Numbers & the Number Line",    minRead: 16, load: () => import("./chapters/number-line").then((m) => m.NumberLineContent) },
   { id: "order-of-operations", section: ARITHMETIC, title: "Order of Operations",          minRead: 13, load: () => import("./chapters/order-of-operations").then((m) => m.OrderOfOperationsContent) },
   { id: "fractions",           section: ARITHMETIC, title: "Fractions & Decimals",         minRead: 19, load: () => import("./chapters/fractions").then((m) => m.FractionsContent) },
@@ -72,14 +72,89 @@ export const mathChapters: Chapter[] = [
   { id: "multiple-integrals",     section: CALCULUS, title: "Multiple Integrals",        minRead: 20, load: () => import("./chapters/multiple-integrals").then((m) => m.MultipleIntegralsContent) },
   { id: "differential-equations", section: CALCULUS, title: "Differential Equations",    minRead: 22, load: () => import("./chapters/differential-equations").then((m) => m.DifferentialEquationsContent) },
 
+  { id: "descriptive-stats", section: PROBABILITY, title: "Descriptive Statistics",          minRead: 20, load: () => import("./chapters/descriptive-stats").then((m) => m.DescriptiveStatsContent) },
   { id: "counting",         section: PROBABILITY, title: "Counting: Permutations & Combinations", minRead: 20, load: () => import("./chapters/counting").then((m) => m.CountingContent) },
   { id: "probability",      section: PROBABILITY, title: "Probability Basics",              minRead: 19, load: () => import("./chapters/probability").then((m) => m.ProbabilityContent) },
   { id: "conditional",      section: PROBABILITY, title: "Conditional Probability & Bayes", minRead: 21, load: () => import("./chapters/conditional").then((m) => m.ConditionalContent) },
   { id: "random-variables", section: PROBABILITY, title: "Random Variables",                minRead: 20, load: () => import("./chapters/random-variables").then((m) => m.RandomVariablesContent) },
   { id: "expectation",       section: PROBABILITY, title: "Expectation & Variance",          minRead: 22, load: () => import("./chapters/expectation").then((m) => m.ExpectationContent) },
   { id: "distributions",     section: PROBABILITY, title: "Common Distributions",            minRead: 24, load: () => import("./chapters/distributions").then((m) => m.DistributionsContent) },
-  { id: "descriptive-stats", section: PROBABILITY, title: "Descriptive Statistics",          minRead: 20, load: () => import("./chapters/descriptive-stats").then((m) => m.DescriptiveStatsContent) },
   { id: "sampling",          section: PROBABILITY, title: "Sampling & Inference",            minRead: 23, load: () => import("./chapters/sampling").then((m) => m.SamplingContent) },
   { id: "regression",        section: PROBABILITY, title: "Correlation & Linear Regression", minRead: 21, load: () => import("./chapters/regression").then((m) => m.RegressionContent) },
   { id: "markov-chains",     section: PROBABILITY, title: "Markov Chains",                   minRead: 34, load: () => import("./chapters/markov-chains").then((m) => m.MarkovChainsContent) },
 ];
+
+// ── Prerequisites ────────────────────────────────────────────────────────────
+// What each chapter builds on, listed in its "Before you start" box. Only
+// earlier chapters; the direct needs, not everything they in turn need.
+
+const requires: Record<string, string[]> = {
+  "order-of-operations": ["number-line"],
+  "fractions":           ["number-line", "order-of-operations"],
+  "ratios":              ["fractions"],
+  "divisibility":        ["fractions"],
+  "powers":              ["order-of-operations"],
+  "bases":               ["powers", "divisibility"],
+
+  "expressions":      ["order-of-operations", "fractions"],
+  "linear-equations": ["expressions"],
+  "inequalities":     ["linear-equations"],
+  "algebra":          ["linear-equations"],
+  "linear-systems":   ["linear-equations", "algebra"],
+  "quadratics":       ["algebra", "powers"],
+  "polynomials":      ["quadratics"],
+  "exponents":        ["powers", "algebra"],
+  "sequences":        ["exponents"],
+
+  "angles":          ["number-line"],
+  "triangles":       ["angles"],
+  "area":            ["triangles"],
+  "pythagoras":      ["area", "powers"],
+  "similarity":      ["triangles", "ratios"],
+  "circle":          ["area", "pythagoras"],
+  "volumes":         ["circle", "similarity"],
+  "analytic":        ["pythagoras", "algebra", "quadratics", "circle"],
+  "transformations": ["analytic", "angles"],
+
+  "trig":          ["pythagoras", "similarity"],
+  "unit-circle":   ["trig", "circle"],
+  "triangle-laws": ["unit-circle"],
+  "identities":    ["unit-circle", "transformations"],
+  "polar":         ["unit-circle", "analytic"],
+  "waves":         ["unit-circle", "algebra"],
+
+  "vectors":     ["pythagoras", "trig"],
+  "dot":         ["vectors"],
+  "cross":       ["dot"],
+  "matrices":    ["vectors", "linear-systems", "identities"],
+  "determinant": ["matrices", "area"],
+  "inverse":     ["determinant", "linear-systems"],
+  "eigen":       ["inverse", "quadratics"],
+  "complex":     ["polar", "identities", "quadratics"],
+  "quaternions": ["complex", "cross", "matrices"],
+
+  "limits":                 ["algebra", "sequences"],
+  "derivatives":            ["limits"],
+  "derivative-rules":       ["derivatives", "exponents", "identities"],
+  "derivative-uses":        ["derivative-rules"],
+  "integrals":              ["limits", "sequences"],
+  "ftc":                    ["integrals", "derivative-rules"],
+  "integration-techniques": ["ftc"],
+  "series":                 ["derivative-rules", "sequences"],
+  "partial-derivatives":    ["derivative-rules", "dot"],
+  "multiple-integrals":     ["ftc", "polar"],
+  "differential-equations": ["integration-techniques", "exponents"],
+
+  "descriptive-stats": ["ratios", "powers"],
+  "counting":          ["powers"],
+  "probability":       ["counting", "fractions"],
+  "conditional":       ["probability"],
+  "random-variables":  ["conditional", "integrals", "ftc", "descriptive-stats"],
+  "expectation":       ["random-variables"],
+  "distributions":     ["expectation", "counting", "exponents"],
+  "sampling":          ["distributions", "descriptive-stats"],
+  "regression":        ["descriptive-stats", "partial-derivatives", "dot"],
+  "markov-chains":     ["conditional", "random-variables", "matrices", "sequences"],
+};
+
+export const mathChapters: Chapter[] = chapters.map((c) => ({ ...c, requires: requires[c.id] }));

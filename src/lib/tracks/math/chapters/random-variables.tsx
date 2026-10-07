@@ -1,6 +1,6 @@
 "use client";
 
-// Probability & Statistics 4: random variables — a number attached to each
+// Probability & Statistics 5: random variables — a number attached to each
 // outcome; events {X = x}; discrete variables and the probability mass
 // function (dice sum, heads in n tosses); the cumulative distribution function
 // and interval probabilities; functions of a random variable; two variables:

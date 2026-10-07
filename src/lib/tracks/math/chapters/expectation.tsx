@@ -1,6 +1,6 @@
 "use client";
 
-// Probability & Statistics 5: expectation and variance — the mean as a
+// Probability & Statistics 6: expectation and variance — the mean as a
 // long-run average and a balance point; E[X] for discrete and continuous
 // variables; E[g(X)] and why E[g(X)] ≠ g(E[X]); linearity and the indicator
 // trick (hat-check problem); fair games; variance and standard deviation,

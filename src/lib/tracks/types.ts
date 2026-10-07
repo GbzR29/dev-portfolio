@@ -23,6 +23,11 @@ export interface Chapter {
    */
   section?: string;
   /**
+   * Ids of earlier chapters (same track) this one builds on. They are listed
+   * in a "Before you start" box at the top, for review only.
+   */
+  requires?: string[];
+  /**
    * Loads the content on demand, e.g.
    * `() => import("./chapters/legacy").then((m) => m.LegacyContent)`.
    * Only the open chapter is downloaded; the track list stays metadata only.

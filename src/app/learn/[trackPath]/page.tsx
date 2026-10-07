@@ -18,6 +18,7 @@ import { LessonSidebar } from "@/components/sidebar/LessonSidebar";
 import { DocsLayout } from "@/components/lesson/DocsLayout";
 import { OnThisPage, type TocHeading } from "@/components/lesson/OnThisPage";
 import { ChapterPager } from "@/components/lesson/ChapterPager";
+import { BeforeYouStart, PrereqProvider } from "@/components/lesson/Prerequisites";
 import { ReferenceProvider } from "@/components/reference/RefToken";
 import { ChapterFunctions } from "@/components/reference/ChapterFunctions";
 import { useChapterSteps } from "@/components/lesson/focus/useChapterSteps";
@@ -149,6 +150,13 @@ export default function LessonPage() {
     return () => { clearTimeout(id); mo.disconnect(); };
   }, [activeChapterId]);
 
+  // ── Prerequisites: opening one remembers where to come back to ─────────────
+  const [returnTo, setReturnTo] = useState<string | null>(null);
+  const openPrereq = useCallback((id: string) => {
+    setReturnTo(activeChapterId);
+    setActiveChapterId(id);
+  }, [activeChapterId]);
+
   // ── Focus mode: one h2 section per step ────────────────────────────────────
   const [mode, setMode] = useLessonMode();
   const focus = mode === "focus";
@@ -240,8 +248,18 @@ export default function LessonPage() {
   const focusSteps     = focus && steps.length > 1;
   const lastStep       = !focusSteps || step >= steps.length - 1;
 
+  const backChapter    = returnTo && returnTo !== activeChapterId ? shownChapters.find((c) => c.id === returnTo) : undefined;
+  const prereqLabels   = {
+    beforeStart: ui.lessonBeforeStart ?? "Before you start",
+    buildsOn: ui.lessonBuildsOn ?? "This lesson assumes familiarity with the following topics:",
+    read: ui.lessonRead ?? "read",
+    review: ui.lessonReview ?? "review",
+    open: ui.lessonReviewOpen ?? "open the lesson",
+  };
+
   return (
     <ReferenceProvider reference={reference}>
+    <PrereqProvider chapters={shownChapters} visited={visited} open={openPrereq} labels={prereqLabels}>
       <DocsLayout
         crumbs={[...trackCrumbs(ui, trackPath), { label: currentChapter?.title ?? "" }]}
         drawerTitle={t.lessonChapters ?? "Chapters"}
@@ -262,6 +280,17 @@ export default function LessonPage() {
         }
         right={<OnThisPage headings={headings} activeId={activeTocId} label={ui.lessonOnThisPage ?? "On this page"} onJump={jumpToHeading} />}
       >
+        {/* Back to the chapter a prerequisite link came from */}
+        {backChapter && (
+          <button
+            type="button"
+            onClick={() => { setReturnTo(null); setActiveChapterId(backChapter.id); }}
+            className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--border)] px-3 py-1.5 font-mono text-[12px] text-[var(--text-muted)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary)]"
+          >
+            ← {ui.lessonBackTo ?? "back to"} <span className="font-sans text-[13px] text-[var(--text-main)]">{backChapter.title}</span>
+          </button>
+        )}
+
         {/* Chapter header */}
         <header className="mb-10 pb-8 border-b border-[var(--border)] space-y-3">
           <p className="font-mono text-[12.5px] tracking-[0.04em] text-[var(--primary)]">
@@ -291,6 +320,8 @@ export default function LessonPage() {
             />
           </div>
         </header>
+
+        {(!focusSteps || step === 0) && <BeforeYouStart ids={currentChapter?.requires} />}
 
         <div ref={stepAnchorRef} />
         {focusSteps && (
@@ -348,6 +379,7 @@ export default function LessonPage() {
           />
         )}
       </DocsLayout>
+    </PrereqProvider>
     </ReferenceProvider>
   );
 }
