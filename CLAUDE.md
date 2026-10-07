@@ -41,6 +41,7 @@ src/components/lesson/kit/             widget INFRASTRUCTURE (no lesson content)
   vec3.ts         the only 3D vector math (Vec3, add, cross, norm, rotY…)
   scene3d.tsx     SVG 3D: projector, orbit controls, boxFaces/frontFacing, lookAt
   svg.tsx, Stepper.tsx, protoTexture.tsx (Arrow/Label, step animations, textured quads)
+  Transport.tsx   playback bar under an animated drawing (big ▶/❚❚, ⟲ ⏮ ⏭, readout); part of the stage, not the controls
   lab/Lab.tsx     a figure's full-screen guided "lab": steps with self-ticking goals, hints, quizzes, insights (styles in src/styles/lab.css); model: figures/markov/
   gl/GLView.tsx   WebGL2 host: context, resize, look/orbit, context loss; useAnimationTime
   gl/gl.ts, gl/glx.ts, gl/context.ts   mat4, shaders, meshes, render targets, context release

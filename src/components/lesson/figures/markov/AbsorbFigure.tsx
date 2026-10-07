@@ -6,7 +6,8 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { Btn, C, Choice, Figure, Readout, Row, Slider, Sliders, f2, mulberry32, useFrame, useVisible } from "@/components/lesson/kit/figure";
 import { SpeedControl, scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
 import { Lab, LabButton, fill, useLab, type Insight, type LabStep } from "@/components/lesson/kit/lab/Lab";
-import { absorption, fNum, fStr, PLAY, stepFrom, sub, toNumbers, walkMatrix } from "./model";
+import { Transport } from "@/components/lesson/kit/Transport";
+import { absorption, fNum, fStr, stepFrom, sub, toNumbers, walkMatrix } from "./model";
 import { AbsorbStage, crowdLayout, stateX, type Mode } from "./AbsorbStage";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -29,7 +30,7 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
   const [prev, setPrev] = useState<number[]>(() => Array(WALKERS).fill(1));
   const [u, setU] = useState(1);
   const [running, setRunning] = useState(false);
-  const [finished, setFinished] = useState(0);          // completed runs (lab goals)
+  const [moves, setMoves] = useState(0);                // steps taken by the crowd since it was placed
   const [touched, setTouched] = useState(false);
   const [speed, setSpeed] = useFigureSpeed();
   const lab = useLab();
@@ -43,8 +44,23 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
   const rnd = useRef(mulberry32(11));
   const posRef = useRef(pos); posRef.current = pos;
   const uRef = useRef(1);
-  const place = (s: number) => { const a = Array(WALKERS).fill(s); setPos(a); setPrev(a); posRef.current = a; uRef.current = 1; setU(1); setRunning(false); };
-  const release = () => { place(start); setRunning(true); uRef.current = 0; };
+  // "go": the ⏭ button asked for one move; "done": that move was made, stop when its glide ends
+  const single = useRef<null | "go" | "done">(null);
+  const [stepMode, setStepMode] = useState(false);       // running only to show one ⏭ move
+  const place = (s: number) => {
+    const a = Array(WALKERS).fill(s);
+    setPos(a); setPrev(a); posRef.current = a; uRef.current = 1; setU(1); setRunning(false); setMoves(0); single.current = null;
+  };
+  const absorbed = (ps: number[]) => ps.every(s => s === 0 || s === k);
+  const playPause = () => {
+    if (running && !stepMode) { setRunning(false); single.current = null; return; }
+    if (absorbed(posRef.current)) place(start);
+    single.current = null; setStepMode(false); setRunning(true);
+  };
+  const stepOnce = () => {
+    if (absorbed(posRef.current)) return;
+    single.current = "go"; setStepMode(true); uRef.current = 1; setRunning(true);
+  };
   const reconfigure = (nk: number, np: number, ns = start) => {
     const s = Math.max(1, Math.min(nk - 1, ns));
     setK(nk); setP(np); setStart(s); setFocus(s); place(s);
@@ -55,9 +71,10 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
     const next = uRef.current + (dt * 1000) / scaledMs(260, speed);
     if (next < 1) { uRef.current = next; setU(next); return; }
     const cur = posRef.current;
-    if (cur.every(s => s === 0 || s === k)) { setRunning(false); setFinished(f => f + 1); uRef.current = 1; setU(1); return; }
+    if (single.current === "done" || absorbed(cur)) { single.current = null; setStepMode(false); setRunning(false); uRef.current = 1; setU(1); return; }
     const moved = cur.map(s => (s === 0 || s === k ? s : stepFrom(Pn, s, rnd.current())));
-    setPrev(cur); setPos(moved); posRef.current = moved;
+    setPrev(cur); setPos(moved); posRef.current = moved; setMoves(m => m + 1);
+    if (single.current === "go") single.current = "done";
     uRef.current = 0; setU(0);
   });
 
@@ -74,19 +91,27 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
     ? `h${sub(f)} = q·h${sub(f - 1)} + p·h${sub(f + 1)} = ${fStr(P[f][f - 1])}·${fStr(hit[f - 1])} + ${fStr(P[f][f + 1])}·${fStr(hit[f + 1])} = ${fStr(hit[f])}`
     : `t${sub(f)} = 1 + q·t${sub(f - 1)} + p·t${sub(f + 1)} = 1 + ${fStr(P[f][f - 1])}·${fStr(time[f - 1])} + ${fStr(P[f][f + 1])}·${fStr(time[f + 1])} = ${fStr(time[f])}`;
 
-  const stage = (
+  const drawing = (
     <AbsorbStage k={k} p={p} values={values} mode={mode} focus={focus} dots={dots}
       onFocus={i => { if (i > 0 && i < k) { setFocus(i); setTouched(true); } }}
       labels={{ ruin: tx(t, "figMkAbs_ruin", "ruin"), win: tx(t, "figMkAbs_win", "target"), formula }} />
   );
+  const stage = (
+    <>
+      {drawing}
+      <Transport t={t} playing={running && !stepMode} onPlay={playPause} onStep={stepOnce} onReset={() => place(start)}
+        playLabel={fill(tx(t, "figMkAbs_release", "release {n} walkers"), { n: WALKERS })}
+        readout={`${tx(t, "figMkChain_steps", "steps")}: ${moves}`} />
+    </>
+  );
 
   const startPick = (
-    <Row>
+    <>
       <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--text-muted)]">{tx(t, "figMkAbs_start", "start i")}</span>
       {Array.from({ length: k - 1 }, (_, i) => i + 1).map(i => (
         <Btn key={i} active={start === i} onClick={() => { setStart(i); setFocus(i); place(i); }}>{i}</Btn>
       ))}
-    </Row>
+    </>
   );
   const modeChoice = (
     <Choice value={mode} onChange={(m: Mode) => setMode(m)} options={[
@@ -94,7 +119,6 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
       ["time", tx(t, "figMkAbs_time", "expected steps")],
     ]} />
   );
-  const releaseBtn = <Btn active={running} onClick={release}>{PLAY} {fill(tx(t, "figMkAbs_release", "release {n} walkers"), { n: WALKERS })}</Btn>;
   const readouts = (
     <Row>
       <Readout color={C.green}>h{sub(start)} = {fStr(hit[start])} ≈ {f2(fNum(hit[start]) * 100, 1)}%</Readout>
@@ -112,9 +136,10 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
       title: tx(t, "figMkAbsL1_t", "Where does it end?"),
       body: <>
         <p>{tx(t, "figMkAbsL1_b1", "The walk on {0, 1, 2, 3} again, with p = 3/4, but now the ends are absorbing: think of a gambler with 1 coin who wins a coin with probability 3/4 and loses one with 1/4, until ruin (0 coins) or the target (3 coins).")}</p>
-        <p>{tx(t, "figMkAbsL1_b2", "Release a crowd of walkers from 1 and count how many reach 3.")}</p>
+        <p>{tx(t, "figMkAbsL1_b2", "Release a crowd of walkers from 1 with the big ▶ under the drawing, and count how many reach 3. ⏭ moves them one step at a time.")}</p>
       </>,
-      goal: { text: tx(t, "figMkAbsL1_g", "Release the walkers and wait until every one has stopped."), done: finished > 0 && done },
+      goal: { text: tx(t, "figMkAbsL1_g", "Release the walkers and wait until every one has stopped."), done },
+      focus: "play",
       setup: () => { setMode("hit"); reconfigure(EX.k, EX.p, 1); },
     },
     {
@@ -154,7 +179,8 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
         <p>{tx(t, "figMkAbsL6_b1", "A casino game that is only slightly unfair: p = 0.45. You start with 4 coins and stop at 0 or at 8.")}</p>
         <p>{tx(t, "figMkAbsL6_b2", "With r = q/p, the solution is hᵢ = (1 − rⁱ)/(1 − rᵏ). Release the walkers and compare.")}</p>
       </>,
-      goal: { text: tx(t, "figMkAbsL6_g", "Release the walkers from 4 and let them finish."), done: k === 8 && p < 0.5 && start === 4 && finished > 0 && done },
+      goal: { text: tx(t, "figMkAbsL6_g", "Release the walkers from 4 and let them finish."), done: k === 8 && p < 0.5 && start === 4 && done },
+      focus: "play",
       setup: () => { setMode("hit"); reconfigure(8, 0.45, 4); },
     },
   ];
@@ -196,8 +222,7 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
           <LabButton onClick={lab.show} t={t} />
         </>}
         controls={<>
-          {startPick}
-          <Row>{releaseBtn}{modeChoice}</Row>
+          <Row>{startPick}<span className="w-px h-5 bg-[var(--border)] mx-1" />{modeChoice}</Row>
           {readouts}
         </>}
         note={tx(t, "figMkAbs_note", "The bars are exact: for every start, the chance of reaching k before 0, or the expected number of steps until the walk stops. Click an inner bar to see its first-step equation: its top lies on the chord between its neighbours, p of the way along. Release the crowd to check the chance by simulation.")}
@@ -209,8 +234,7 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
         title={tx(t, "figMkAbs_title", "Absorbing walls: where it ends and how long it takes")}
         steps={labSteps} insights={insights} stage={stage}
         controls={<>
-          {startPick}
-          <Row>{releaseBtn}{modeChoice}</Row>
+          <Row>{startPick}<span className="w-px h-5 bg-[var(--border)] mx-1" />{modeChoice}</Row>
           <Sliders>
             <Slider label={tx(t, "figMkAbs_p", "win a coin, p")} value={p} min={0.05} max={0.95} step={0.05} onChange={v => reconfigure(k, v)} width="w-28" />
             <Slider label={tx(t, "figMkAbs_k", "target k")} value={k} min={2} max={8} step={1} onChange={v => reconfigure(v, p)} fmt={v => String(v)} width="w-28" />

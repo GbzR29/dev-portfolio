@@ -6,7 +6,8 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { Btn, C, Choice, Figure, Readout, Row, Slider, Sliders, f2, useFrame, useVisible } from "@/components/lesson/kit/figure";
 import { SpeedControl, scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
 import { Lab, LabButton, fill, useLab, type Insight, type LabStep } from "@/components/lesson/kit/lab/Lab";
-import { EXERCISE, PLAY, stationary, stepFrom, toNumbers, walkMatrix, type Boundary, type Walk } from "./model";
+import { Transport } from "@/components/lesson/kit/Transport";
+import { EXERCISE, stationary, stepFrom, toNumbers, walkMatrix, type Boundary, type Walk } from "./model";
 import { MarkovMatrixTable } from "./MatrixTable";
 import { ChainStage, NEEDLE_END, type Move } from "./ChainStage";
 
@@ -108,15 +109,13 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
     time: tx(t, "figMkChain_time", "time spent"),
   };
   const stage = (
-    <ChainStage P={P} state={state} hist={hist} move={move} share={share} pi={pi} labels={labels} />
+    <>
+      <ChainStage P={P} state={state} hist={hist} move={move} share={share} pi={pi} labels={labels} />
+      <Transport t={t} playing={playing} onPlay={() => setPlaying(v => !v)} onStep={stepOnce}
+        onReset={() => { setPlaying(false); reset(walk, 0); }}
+        readout={`${tx(t, "figMkChain_steps", "steps")}: ${steps}`} />
+    </>
   );
-
-  const playBtn = (
-    <Btn active={playing} onClick={() => setPlaying(v => !v)}>{playing ? `❚❚ ${tx(t, "figMk_pause", "pause")}` : `${PLAY} ${tx(t, "figMk_play", "play")}`}</Btn>
-  );
-  const stepBtn = <Btn onClick={stepOnce}>{tx(t, "figMkChain_step", "one step")}</Btn>;
-  const resetBtn = <Btn onClick={() => { setPlaying(false); reset(walk, 0); }}>{tx(t, "figMkChain_reset", "reset")}</Btn>;
-  const stepsReadout = <Readout>{tx(t, "figMkChain_steps", "steps")}: {steps}</Readout>;
 
   // ── Lab ──
   const exercise = () => { setPlaying(false); setFast(false); setWalk(EXERCISE); reset(EXERCISE, 0); };
@@ -127,7 +126,8 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
         <p>{tx(t, "figMkChainL1_b1", "The walker stands on a state. To move, it reads that state's row of P: the strip at the bottom. The strip has length 1 and is cut into pieces as long as the row's probabilities.")}</p>
         <p>{tx(t, "figMkChainL1_b2", "A step drops a random number u between 0 and 1 on the strip. The piece it lands in is the next state. A piece of length 3/4 catches the needle 3/4 of the time.")}</p>
       </>,
-      goal: { text: tx(t, "figMkChainL1_g", "Press \"one step\" three times and watch the needle."), done: steps >= 3 },
+      goal: { text: tx(t, "figMkChainL1_g2", "Press ⏭ (one step, under the drawing) three times and watch the needle."), done: steps >= 3 },
+      focus: "step",
       setup: exercise,
     },
     {
@@ -137,6 +137,7 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
         <p>{tx(t, "figMkChainL2_b2", "That is the Markov property: given the present state, the past changes nothing.")}</p>
       </>,
       goal: { text: tx(t, "figMkChainL2_g", "Reach state 2 once from 1 and once from 3."), done: pairs.includes("1>2") && pairs.includes("3>2") },
+      focus: "step",
       hint: tx(t, "figMkChainL2_h", "From 3 the walker always goes to 2. So get to 3 (it takes two right steps from 1) and take one more step."),
     },
     {
@@ -153,9 +154,10 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
       title: tx(t, "figMkChainL4_t", "The long run"),
       body: <>
         <p>{tx(t, "figMkChainL4_b1", "The amber bars count the share of time the walker has spent in each state. The green ticks are the stationary distribution π = (1, 4, 12, 9)/26.")}</p>
-        <p>{tx(t, "figMkChainL4_b2", "Fast mode is on: press play and let it run.")}</p>
+        <p>{tx(t, "figMkChainL4_b2b", "Fast mode is on: press the big ▶ under the drawing and let it run.")}</p>
       </>,
       goal: { text: tx(t, "figMkChainL4_g", "Run 2000 steps. Do the bars meet the ticks?"), done: steps >= 2000 },
+      focus: "play",
       setup: () => { exercise(); setFast(true); },
     },
     {
@@ -172,6 +174,7 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
         <p>{tx(t, "figMkChainL6_b1", "Until now the walls bounced the walker back. Switch them to absorbing: row 0 becomes (1, 0, 0, 0), so from 0 the only move is to stay at 0. The same holds for the last state.")}</p>
       </>,
       goal: { text: tx(t, "figMkChainL6_g", "Choose \"absorbing\" and run until the walker is stuck."), done: walk.boundary === "absorbing" && atEnd && steps > 0 },
+      focus: walk.boundary === "absorbing" ? "play" : undefined,
     },
     {
       title: tx(t, "figMkChainL7_t", "Staying put"),
@@ -211,9 +214,6 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
       <Figure fullscreen={false}
         title={tx(t, "figMkChain_title", "A random walk as a Markov chain")}
         head={<LabButton onClick={lab.show} t={t} />}
-        controls={<>
-          <Row>{playBtn}{stepBtn}{resetBtn}{stepsReadout}</Row>
-        </>}
         note={tx(t, "figMkChain_note2", "To move, the walker reads only the row of P of the state it is on: a random needle lands on that row's strip and picks the next state. The faded history plays no part. That is the Markov property. Let it run and the bars, the share of time in each state, settle on the green ticks: the long-run distribution π. Open the lab to change p, the walls and more, one step at a time.")}
       >
         <div ref={vis.ref}>{stage}</div>
@@ -224,12 +224,9 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
         steps={labSteps} insights={insights} stage={stage}
         controls={<>
           <Row>
-            {playBtn}{stepBtn}
             <Btn active={fast} onClick={() => setFast(v => !v)}>{fast ? "✓ " : ""}{tx(t, "figMkChain_fast", "fast")}</Btn>
-            {resetBtn}
             <Btn onClick={exercise}>{tx(t, "figMkChain_exercise", "the exercise's chain")}</Btn>
-          </Row>
-          <Row>
+            <span className="w-px h-5 bg-[var(--border)] mx-1" />
             <Choice value={walk.boundary} onChange={(b: Boundary) => change({ ...walk, boundary: b })}
               options={[["reflecting", tx(t, "figMkChain_reflect", "reflecting")], ["absorbing", tx(t, "figMkChain_absorb", "absorbing")]]} />
           </Row>
@@ -241,7 +238,6 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
           <SpeedControl speed={speed} setSpeed={setSpeed} />
           <MarkovMatrixTable P={P} row={move ? move.from : state} cell={move && move.t > NEEDLE_END ? [move.from, move.to] : null} t={t} />
           <Row>
-            {stepsReadout}
             <Readout color={C.amber}>X = {state}</Readout>
             {pi && <Readout color={C.green}>π = ({pi.map(x => f2(x, 3)).join(", ")})</Readout>}
           </Row>

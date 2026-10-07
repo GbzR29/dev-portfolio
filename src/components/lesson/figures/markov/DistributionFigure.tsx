@@ -6,7 +6,8 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { Btn, C, Choice, Figure, Readout, Row, Slider, Sliders, f2, useFrame, useVisible } from "@/components/lesson/kit/figure";
 import { SpeedControl, scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
 import { Lab, LabButton, fill, useLab, type Insight, type LabStep } from "@/components/lesson/kit/lab/Lab";
-import { EXERCISE, frac, fStr, fVecMul, PLAY, stationary, sub, toNumbers, walkMatrix, type Boundary, type Frac, type Walk } from "./model";
+import { Transport } from "@/components/lesson/kit/Transport";
+import { EXERCISE, frac, fStr, fVecMul, stationary, sub, toNumbers, walkMatrix, type Boundary, type Frac, type Walk } from "./model";
 import { FlowStage } from "./FlowStage";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -74,7 +75,15 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
   const rhythm = walk.boundary === "reflecting" && walk.hold === 0;
   const isExercise = walk.k === 3 && walk.p === 0.75 && walk.hold === 0 && walk.boundary === "reflecting";
 
-  const stage = <FlowStage P={Pn} dists={dists} n={n} u={u} pi={pi} tMax={T_MAX} labels={{ time: tx(t, "figMkDist_time", "n") }} />;
+  const stage = (
+    <>
+      <FlowStage P={Pn} dists={dists} n={n} u={u} pi={pi} tMax={T_MAX} labels={{ time: tx(t, "figMkDist_time", "n") }} />
+      <Transport t={t} playing={playing} onPlay={play}
+        onStep={() => { setPlaying(false); pour(); }}
+        onBack={n > 0 ? () => jump(n - 1) : undefined}
+        onReset={() => jump(0)} readout={`n = ${n}`} />
+    </>
+  );
 
   const startChoice = (
     <Choice value={start} onChange={(v: Start) => { setStart(v); jump(0); }} options={[
@@ -83,9 +92,6 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
       ["top", tx(t, "figMkDist_top", "start at k")],
     ]} />
   );
-  const stepBtn = <Btn onClick={() => { setPlaying(false); pour(); }}>{tx(t, "figMkChain_step", "one step")}</Btn>;
-  const playBtn = <Btn active={playing} onClick={play}>{playing ? `❚❚ ${tx(t, "figMk_pause", "pause")}` : `${PLAY} ${tx(t, "figMk_play", "play")}`}</Btn>;
-  const zeroBtn = <Btn onClick={() => jump(0)}>n = 0</Btn>;
   const exBtn = <Btn onClick={() => { setWalk(EXERCISE); setStart("uniform"); jump(3); }}>{tx(t, "figMkDist_ex", "exercise (c): n = 3")}</Btn>;
   const holdSlider = <Slider label={tx(t, "figMkChain_hold", "stay put, h")} value={walk.hold} min={0} max={0.5} step={0.05} onChange={v => { setWalk(w => ({ ...w, hold: v })); jump(0); }} width="w-28" />;
   const nSlider = <Slider label={tx(t, "figMkDist_n", "step n")} value={n} min={0} max={T_MAX} step={1} onChange={jump} fmt={v => String(v)} width="w-28" />;
@@ -100,7 +106,8 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
         <p>{tx(t, "figMkDistL1_b1", "Picture 1 litre of fluid spread over the states: the bar of state j holds πₙ(j), the chance that the walk is at j at time n. Right now it all sits at 0, because the walk starts at 0.")}</p>
         <p>{tx(t, "figMkDistL1_b2", "One step pours every bar along the arrows that leave it: state i sends the share p_ij of its fluid to j.")}</p>
       </>,
-      goal: { text: tx(t, "figMkDistL1_g", "Press \"one step\" and watch the fluid move."), done: n >= 1 },
+      goal: { text: tx(t, "figMkDistL1_g2", "Press ⏭ (one step, under the drawing) and watch the fluid move."), done: n >= 1 },
+      focus: "step",
       setup: () => setupAt(EXERCISE, "zero"),
     },
     {
@@ -110,6 +117,7 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
         <p>{tx(t, "figMkDistL2_b2", "Adding what lands on j gives πₙ₊₁(j) = Σᵢ πₙ(i)·p_ij. That is the row vector πₙ times the matrix P, so n steps are π₀·Pⁿ.")}</p>
       </>,
       goal: { text: tx(t, "figMkDistL2_g", "Take steps until n = 3."), done: n >= 3 },
+      focus: "step",
     },
     {
       title: tx(t, "figMkDistL3_t", "Quick check"),
@@ -125,9 +133,10 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
       title: tx(t, "figMkDistL4_t", "It never settles"),
       body: <>
         <p>{tx(t, "figMkDistL4_b1", "Every step moves the fluid by one state, so all of it jumps from the even states {0, 2} to the odd states {1, 3} and back.")}</p>
-        <p>{tx(t, "figMkDistL4_b2", "Press play and follow the lines in the plot.")}</p>
+        <p>{tx(t, "figMkDistL4_b2b", "Press the big ▶ under the drawing and follow the lines in the plot.")}</p>
       </>,
       goal: { text: tx(t, "figMkDistL4_g", "Play until n = 20. Do the bars reach the green ticks?"), done: n >= 20 && rhythm && !balanced },
+      focus: "play",
       setup: () => setupAt(EXERCISE, "zero"),
     },
     {
@@ -142,6 +151,7 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
         <p>{tx(t, "figMkDistL6_b2", "Before you play: will it slosh like the start at 0?")}</p>
       </>,
       goal: { text: tx(t, "figMkDistL6_g", "Play to n = 10 and compare."), done: start === "uniform" && rhythm && n >= 10 },
+      focus: "play",
       setup: () => setupAt(EXERCISE, "uniform"),
     },
     {
@@ -186,8 +196,7 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
         title={tx(t, "figMkDist_title", "The distribution after n steps: π₀ · Pⁿ")}
         head={<LabButton onClick={lab.show} t={t} />}
         controls={<>
-          <Row>{startChoice}</Row>
-          <Row>{stepBtn}{playBtn}{zeroBtn}{exBtn}</Row>
+          <Row>{startChoice}<span className="w-px h-5 bg-[var(--border)] mx-1" />{exBtn}</Row>
           <Sliders>{holdSlider}</Sliders>
           <Row>{piRead}{pi && <Readout color={C.green}>π = ({pi.map(v => f2(v, 3)).join(", ")})</Readout>}</Row>
         </>}
@@ -200,8 +209,7 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
         title={tx(t, "figMkDist_title", "The distribution after n steps: π₀ · Pⁿ")}
         steps={labSteps} insights={insights} stage={stage}
         controls={<>
-          <Row>{startChoice}</Row>
-          <Row>{stepBtn}{playBtn}{zeroBtn}{exBtn}</Row>
+          <Row>{startChoice}<span className="w-px h-5 bg-[var(--border)] mx-1" />{exBtn}</Row>
           <Row>
             <Choice value={walk.boundary} onChange={(b: Boundary) => { setWalk(w => ({ ...w, boundary: b })); jump(0); }}
               options={[["reflecting", tx(t, "figMkChain_reflect", "reflecting")], ["absorbing", tx(t, "figMkChain_absorb", "absorbing")]]} />

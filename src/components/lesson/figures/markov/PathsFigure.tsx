@@ -5,7 +5,8 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Btn, C, Figure, Readout, Row, Slider, Sliders, useFrame, useVisible } from "@/components/lesson/kit/figure";
 import { Lab, LabButton, fill, useLab, type Insight, type LabStep } from "@/components/lesson/kit/lab/Lab";
-import { EXERCISE, fAdd, fIsZero, fMatPow, fMul, fNum, fStr, pathsBetween, PLAY, sub, sup, walkMatrix, ZERO, type Walk } from "./model";
+import { Transport } from "@/components/lesson/kit/Transport";
+import { EXERCISE, fAdd, fIsZero, fMatPow, fMul, fNum, fStr, pathsBetween, sub, sup, walkMatrix, ZERO, type Walk } from "./model";
 import { MarkovMatrixTable } from "./MatrixTable";
 import { PathsStage } from "./PathsStage";
 
@@ -51,6 +52,18 @@ export function MatrixPathsFigure({ t }: { t?: TrackTranslations }) {
     if (next >= paths.length) { setBuilding(false); setTouched(s => ({ ...s, built: true })); }
   });
   const build = () => { addedRef.current = 0; setAdded(0); setFocus(null); setGroup(null); setBuilding(paths.length > 0); };
+  const playPause = () => {
+    if (building) { setBuilding(false); return; }
+    if (shownAdded >= paths.length) { build(); return; }
+    addedRef.current = shownAdded; setFocus(null); setGroup(null); setBuilding(true);
+  };
+  /** Shows exactly `m` whole paths in the bar (the stepping buttons). */
+  const showPaths = (m: number) => {
+    setBuilding(false); setFocus(null); setGroup(null);
+    const c = Math.max(0, Math.min(paths.length, m));
+    addedRef.current = c; setAdded(c);
+    if (c === paths.length && c > 0) setTouched(s => ({ ...s, built: true }));
+  };
 
   const setK = (k: number) => { setWalk(w => ({ ...w, k })); setFrom(f => Math.min(f, k)); setTo(v => Math.min(v, k)); };
   const exercise = () => { setWalk(EXERCISE); setFrom(2); setTo(1); setN(3); };
@@ -60,8 +73,17 @@ export function MatrixPathsFigure({ t }: { t?: TrackTranslations }) {
   const pick = (i: number | null) => { setFocus(i); setGroup(null); if (i !== null) setTouched(s => ({ ...s, path: true })); };
 
   const stage = (
+    <>
     <PathsStage P={P} pows={pows} from={from} to={to} n={n} paths={paths} entry={entry} focus={focus} group={group}
       added={shownAdded} labels={{ none: tx(t, "figMkPaths_none", "no path: this move is impossible in exactly n steps"), sum: entryName }} />
+      {paths.length > 0 && (
+        <Transport t={t} playing={building} onPlay={playPause} playLabel={tx(t, "figMkPaths_build", "add up the paths")}
+          onBack={() => showPaths(Math.ceil(shownAdded) - 1)}
+          onStep={() => showPaths(shownAdded >= paths.length ? 1 : Math.floor(shownAdded) + 1)}
+          onReset={() => showPaths(0)}
+          readout={`${Math.floor(shownAdded)} / ${paths.length} ${tx(t, "figMkPaths_list", "paths")}`} />
+      )}
+    </>
   );
 
   const pickers = (
@@ -74,7 +96,6 @@ export function MatrixPathsFigure({ t }: { t?: TrackTranslations }) {
     </Row>
   );
   const nSlider = <Slider label={tx(t, "figMkPaths_n", "steps n")} value={n} min={1} max={8} step={1} onChange={setN} fmt={v => String(v)} width="w-24" />;
-  const buildBtn = <Btn active={building} onClick={build}>{PLAY} {tx(t, "figMkPaths_build", "add up the paths")}</Btn>;
   const sumReadout = <Readout color={C.green}>{entryName} = {fStr(entry)} ≈ {fNum(entry).toFixed(4)}</Readout>;
 
   // ── Row × column: group the paths by their last stop k ──
@@ -145,7 +166,8 @@ export function MatrixPathsFigure({ t }: { t?: TrackTranslations }) {
         <p>{tx(t, "figMkPathsL2_b1", "The paths are different ways of getting from 2 to 1, and only one of them can happen. So their probabilities add.")}</p>
         <p>{tx(t, "figMkPathsL2_b2", "The dashed box is exactly as long as the entry (P³)₂₁ of the matrix. Watch the paths fill it.")}</p>
       </>,
-      goal: { text: tx(t, "figMkPathsL2_g", "Press \"add up the paths\" and let it finish."), done: touched.built },
+      goal: { text: tx(t, "figMkPathsL2_g2", "Press the big ▶ under the drawing (add up the paths) and let it finish, or add them one by one with ⏭."), done: touched.built },
+      focus: "play",
     },
     {
       title: tx(t, "figMkPathsL3_t", "Group by the last stop"),
@@ -217,7 +239,7 @@ export function MatrixPathsFigure({ t }: { t?: TrackTranslations }) {
         controls={<>
           {pickers}
           <Sliders>{nSlider}</Sliders>
-          <Row>{buildBtn}{sumReadout}</Row>
+          <Row>{sumReadout}</Row>
         </>}
         note={tx(t, "figMkPaths_note2", "Each route from the left dot to the right dot is one history; multiply along it. Different routes are different ways of getting there, so add them. \"Add up the paths\" fills the bar one path at a time, and the total is exactly the entry of Pⁿ. The lab shows the same sum grouped by the last stop, which is row × column.")}
       >
@@ -235,7 +257,7 @@ export function MatrixPathsFigure({ t }: { t?: TrackTranslations }) {
             <Slider label={tx(t, "figMkChain_hold", "stay put, h")} value={walk.hold} min={0} max={0.5} step={0.05} onChange={v => setWalk(w => ({ ...w, hold: v }))} width="w-24" />
             <Slider label={tx(t, "figMkChain_k", "last state k")} value={walk.k} min={2} max={5} step={1} onChange={setK} fmt={v => String(v)} width="w-24" />
           </Sliders>
-          <Row>{buildBtn}<Btn onClick={exercise}>{tx(t, "figMkPaths_ex", "exercise (b): 2 → 1 in 3 steps")}</Btn>{sumReadout}</Row>
+          <Row><Btn onClick={exercise}>{tx(t, "figMkPaths_ex", "exercise (b): 2 → 1 in 3 steps")}</Btn>{sumReadout}</Row>
           <div className="grid gap-5 lg:grid-cols-2 items-start">
             {pathList}
             {rowCol}

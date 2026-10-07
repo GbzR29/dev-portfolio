@@ -174,6 +174,13 @@ const text: Record<string, string> = {
   figLab_wrong: "Ainda não. Tente outra.",
   figLab_right: "Certo.",
   figLab_answer: "A resposta:",
+
+  // Transport: the playback bar under an animated drawing (kit/Transport.tsx)
+  figT_play: "rodar",
+  figT_pause: "pausar",
+  figT_step: "um passo",
+  figT_back: "voltar um passo",
+  figT_reset: "recomeçar",
 };
 
 export default text;

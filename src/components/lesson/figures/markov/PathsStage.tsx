@@ -40,7 +40,7 @@ export function PathsStage({ P, pows, from, to, n, paths, entry, focus, group, a
   const tot = fNum(entry);
 
   const edges: React.ReactNode[] = [];
-  const dim = focus !== null || group !== null;
+  const dim = focus !== null || group !== null || (added > 0 && added < paths.length);
   for (let s = 0; s < n; s++) for (let a = 0; a < S; a++) for (let b = 0; b < S; b++) {
     if (fIsZero(P[a][b])) continue;
     // Probability that the walk goes i → … → a at time s, then a → b, then b → … → j
@@ -53,8 +53,11 @@ export function PathsStage({ P, pows, from, to, n, paths, entry, focus, group, a
     );
   }
 
+  // The path being added (or, between steps, the one just added) is traced in the grid too
+  const adding = added > 0 && added < paths.length ? paths[Number.isInteger(added) ? added - 1 : Math.floor(added)] : null;
   const drawn = focus !== null && paths[focus] ? [paths[focus]]
-    : group !== null ? paths.filter(p => p.states[n - 1] === group) : [];
+    : group !== null ? paths.filter(p => p.states[n - 1] === group)
+    : adding ? [adding] : [];
 
   // The running sum: whole paths, then a growing slice of the current one
   const segs: React.ReactNode[] = [];
@@ -67,8 +70,7 @@ export function PathsStage({ P, pows, from, to, n, paths, entry, focus, group, a
       stroke={focus === i ? C.pink : "none"} strokeWidth={2} />);
     x += w;
   }
-  const current = paths[Math.min(paths.length - 1, whole)];
-  const showing = focus !== null ? paths[focus] : added > 0 && added < paths.length ? current : null;
+  const showing = focus !== null ? paths[focus] : adding;
   const product = (st: number[]) => st.slice(1).map((b, s) => fStr(P[st[s]][b])).join(" · ");
 
   return (

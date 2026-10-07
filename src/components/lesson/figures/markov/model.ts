@@ -28,9 +28,6 @@ export const fDiv = (a: Frac, b: Frac) => frac(a.n * b.d, a.d * b.n);
 export const fNum = (a: Frac) => Number(a.n) / Number(a.d);
 export const fIsZero = (a: Frac) => a.n === B0;
 export const fStr = (a: Frac) => (a.n === B0 ? "0" : a.d === B1 ? String(a.n) : `${a.n}/${a.d}`);
-/** ▶ forced to its text form (U+FE0E): outside the lesson's font Windows draws it as a blue emoji. */
-export const PLAY = "▶︎";
-
 const SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹", SUB = "₀₁₂₃₄₅₆₇₈₉";
 /** Unicode superscript / subscript digits, for labels such as (P³)₂₁. */
 export const sup = (n: number) => String(n).split("").map(d => SUP[Number(d)]).join("");

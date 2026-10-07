@@ -35,6 +35,8 @@ export type LabStep = {
   quiz?: Quiz;
   /** Puts the figure in this step's starting state; runs when the step opens. */
   setup?: () => void;
+  /** A Transport button ("play", "step", "back", "reset") that pulses until the goal is met. */
+  focus?: string;
 };
 
 export type Insight = {
@@ -132,7 +134,8 @@ export function Lab({ open, onClose, title, steps, insights = [], stage, control
   const shown = insights.filter(s => s.when);
 
   return createPortal(
-    <div className="lab-root fixed inset-0 z-[70] flex flex-col bg-[var(--bg)] text-[var(--text-main)]" role="dialog" aria-modal="true" aria-label={title}>
+    <div className="lab-root fixed inset-0 z-[70] flex flex-col bg-[var(--bg)] text-[var(--text-main)]" role="dialog" aria-modal="true" aria-label={title}
+      data-lab-focus={step.focus && !ready ? step.focus : undefined}>
       {/* ── Top bar: title, progress, close ── */}
       <header className="flex items-center gap-3 px-3 md:px-5 h-12 flex-shrink-0 border-b border-[var(--border)] bg-[var(--surface)]">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--primary)] flex-shrink-0">{tx(t, "figLab_name", "lab")}</span>

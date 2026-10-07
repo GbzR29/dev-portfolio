@@ -20,17 +20,35 @@
   100% { transform: scale(1); }
 }
 
-.lab-root { animation: lab-in 0.22s ease-out; }
+@keyframes lab-pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 60%, transparent); }
+  70%  { box-shadow: 0 0 0 12px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* Text-style ▶ ⏭ in step texts, not coloured emoji */
+.lab-root { animation: lab-in 0.22s ease-out; font-variant-emoji: text; }
+
+/* The Transport button a lab step asks for pulses until its goal is met */
+[data-lab-focus="play"] [data-transport="play"],
+[data-lab-focus="step"] [data-transport="step"],
+[data-lab-focus="back"] [data-transport="back"],
+[data-lab-focus="reset"] [data-transport="reset"] {
+  animation: lab-pulse 1.4s ease-out infinite;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+[data-lab-focus="play"] [data-transport="play"] { color: var(--bg); }
 .lab-card-in { animation: lab-card-in 0.3s ease-out both; }
 .lab-pop { animation: lab-pop 0.35s ease-out; }
 
 /* The drawing grows to the room it is given, but keeps its aspect ratio */
-.lab-stage svg { width: 100%; height: auto; max-height: calc(100dvh - 230px); }
+.lab-stage svg:not(.lucide) { width: 100%; height: auto; max-height: calc(100dvh - 290px); }
 
 @media (max-width: 767px) {
-  .lab-stage svg { max-height: 52dvh; }
+  .lab-stage svg:not(.lucide) { max-height: 44dvh; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lab-root, .lab-card-in, .lab-pop { animation: none; }
+  .lab-root, .lab-card-in, .lab-pop, [data-lab-focus] [data-transport] { animation: none; }
 }
