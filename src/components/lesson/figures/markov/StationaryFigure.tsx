@@ -30,7 +30,7 @@ export function StationaryFigure({ t }: { t?: TrackTranslations }) {
   const [M, setM] = useState<number[][]>(PRESETS.weather);
   const [free, setFree] = useState(false);
   const [moved, setMoved] = useState(false);
-  const lab = useLab();
+  const lab = useLab("markov-stationary");
   const names = [tx(t, "figMkStat_s0", "sunny"), tx(t, "figMkStat_s1", "cloudy"), tx(t, "figMkStat_s2", "rainy")];
 
   const sums = M.map(r => r[0] + r[1] + r[2]);
@@ -227,7 +227,7 @@ export function StationaryFigure({ t }: { t?: TrackTranslations }) {
     <>
       <Figure fullscreen={false}
         title={tx(t, "figMkStat_title", "Any chain: solving πP = π")}
-        head={<LabButton onClick={lab.show} t={t} />}
+        head={<LabButton lab={lab} t={t} />}
         controls={<>
           {presets}
           {equations}
@@ -238,7 +238,13 @@ export function StationaryFigure({ t }: { t?: TrackTranslations }) {
         {stage}
       </Figure>
 
-      <Lab open={lab.open} onClose={lab.hide} t={t}
+      <Lab lab={lab} t={t}
+        recap={[
+          tx(t, "figMkStatR1", "πP = π is one equation per column of P; one of them is redundant and is replaced by Σπ = 1."),
+          tx(t, "figMkStatR2", "1/π(j) is the mean time between visits to j."),
+          tx(t, "figMkStatR3", "A cycle has a π but πₙ keeps circling; a trap takes all of π; two closed classes make π not unique."),
+          tx(t, "figMkStatR4", "Rows that don't add up to 1 create or destroy probability: they are not a Markov chain."),
+        ]}
         title={tx(t, "figMkStat_title", "Any chain: solving πP = π")}
         steps={labSteps} insights={insights} stage={stage}
         controls={<>

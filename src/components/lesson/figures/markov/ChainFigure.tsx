@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Btn, C, Choice, Figure, Readout, Row, Slider, Sliders, f2, useFrame, useVisible } from "@/components/lesson/kit/figure";
-import { SpeedControl, scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
+import { scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
 import { Lab, LabButton, fill, useLab, type Insight, type LabStep } from "@/components/lesson/kit/lab/Lab";
 import { Transport } from "@/components/lesson/kit/Transport";
 import { EXERCISE, stationary, stepFrom, toNumbers, walkMatrix, type Boundary, type Walk } from "./model";
@@ -31,8 +31,8 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
   const [playing, setPlaying] = useState(false);
   const [fast, setFast] = useState(false);
   const [move, setMove] = useState<Move | null>(null);
-  const [speed, setSpeed] = useFigureSpeed();
-  const lab = useLab();
+  const [speed] = useFigureSpeed();
+  const lab = useLab("markov-walk");
   const vis = useVisible<HTMLDivElement>();
 
   const P = useMemo(() => walkMatrix(walk), [walk]);
@@ -111,7 +111,7 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
   const stage = (
     <>
       <ChainStage P={P} state={state} hist={hist} move={move} share={share} pi={pi} labels={labels} />
-      <Transport t={t} playing={playing} onPlay={() => setPlaying(v => !v)} onStep={stepOnce}
+      <Transport t={t} speed playing={playing} onPlay={() => setPlaying(v => !v)} onStep={stepOnce}
         onReset={() => { setPlaying(false); reset(walk, 0); }}
         readout={`${tx(t, "figMkChain_steps", "steps")}: ${steps}`} />
     </>
@@ -213,13 +213,19 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
     <>
       <Figure fullscreen={false}
         title={tx(t, "figMkChain_title", "A random walk as a Markov chain")}
-        head={<LabButton onClick={lab.show} t={t} />}
+        head={<LabButton lab={lab} t={t} />}
         note={tx(t, "figMkChain_note2", "To move, the walker reads only the row of P of the state it is on: a random needle lands on that row's strip and picks the next state. The faded history plays no part. That is the Markov property. Let it run and the bars, the share of time in each state, settle on the green ticks: the long-run distribution π. Open the lab to change p, the walls and more, one step at a time.")}
       >
         <div ref={vis.ref}>{stage}</div>
       </Figure>
 
-      <Lab open={lab.open} onClose={lab.hide} t={t}
+      <Lab lab={lab} t={t}
+        recap={[
+          tx(t, "figMkChainR1", "The next state is drawn from one row of P: the row of the state the walker is on."),
+          tx(t, "figMkChainR2", "The history plays no part. That is the Markov property."),
+          tx(t, "figMkChainR3", "Over many steps the share of time in each state settles on the stationary π."),
+          tx(t, "figMkChainR4", "Absorbing walls trap the walker, so there is no single long run; staying put (h) fills the diagonal of P."),
+        ]}
         title={tx(t, "figMkChain_title", "A random walk as a Markov chain")}
         steps={labSteps} insights={insights} stage={stage}
         controls={<>
@@ -235,7 +241,6 @@ export function MarkovChainFigure({ t }: { t?: TrackTranslations }) {
             <Slider label={tx(t, "figMkChain_hold", "stay put, h")} value={walk.hold} min={0} max={0.5} step={0.05} onChange={v => change({ ...walk, hold: v })} width="w-28" />
             <Slider label={tx(t, "figMkChain_k", "last state k")} value={walk.k} min={2} max={6} step={1} onChange={v => change({ ...walk, k: v })} fmt={v => String(v)} width="w-28" />
           </Sliders>
-          <SpeedControl speed={speed} setSpeed={setSpeed} />
           <MarkovMatrixTable P={P} row={move ? move.from : state} cell={move && move.t > NEEDLE_END ? [move.from, move.to] : null} t={t} />
           <Row>
             <Readout color={C.amber}>X = {state}</Readout>

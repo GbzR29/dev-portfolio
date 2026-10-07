@@ -47,6 +47,11 @@
 
 @media (max-width: 767px) {
   .lab-stage svg:not(.lucide) { max-height: 44dvh; }
+  /* A 660-unit-wide drawing shrinks to ~370 px, and its labels to ~5 px: each
+     label grows around its own centre, so it stays where it was placed */
+  .lab-stage svg:not(.lucide) text { transform-box: fill-box; transform-origin: center; transform: scale(1.4); }
+  .lab-stage svg:not(.lucide) text[text-anchor="start"] { transform-origin: left center; }
+  .lab-stage svg:not(.lucide) text[text-anchor="end"] { transform-origin: right center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

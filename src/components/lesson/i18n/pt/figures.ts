@@ -174,6 +174,11 @@ const text: Record<string, string> = {
   figLab_wrong: "Ainda não. Tente outra.",
   figLab_right: "Certo.",
   figLab_answer: "A resposta:",
+  figLab_openDone: "Laboratório concluído: abrir de novo",
+  figLab_doneTitle: "Laboratório concluído",
+  figLab_goalsMet: "objetivos cumpridos",
+  figLab_learned: "o que você viu",
+  figLab_again: "fazer de novo",
 
   // Transport: the playback bar under an animated drawing (kit/Transport.tsx)
   figT_play: "rodar",
@@ -181,6 +186,8 @@ const text: Record<string, string> = {
   figT_step: "um passo",
   figT_back: "voltar um passo",
   figT_reset: "recomeçar",
+  figT_space: "espaço",
+  figT_speed: "velocidade",
 };
 
 export default text;

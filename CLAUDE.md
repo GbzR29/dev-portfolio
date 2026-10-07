@@ -42,7 +42,8 @@ src/components/lesson/kit/             widget INFRASTRUCTURE (no lesson content)
   scene3d.tsx     SVG 3D: projector, orbit controls, boxFaces/frontFacing, lookAt
   svg.tsx, Stepper.tsx, protoTexture.tsx (Arrow/Label, step animations, textured quads)
   Transport.tsx   playback bar under an animated drawing (big ▶/❚❚, ⟲ ⏮ ⏭, readout); part of the stage, not the controls
-  lab/Lab.tsx     a figure's full-screen guided "lab": steps with self-ticking goals, hints, quizzes, insights (styles in src/styles/lab.css); model: figures/markov/
+  lab/Lab.tsx     a figure's full-screen guided "lab": steps with self-ticking goals, hints, quizzes, insights, closing recap
+                  (styles in src/styles/lab.css); lab/useLab.ts: ?lab=<id> URL + back button + saved progress; model: figures/markov/
   gl/GLView.tsx   WebGL2 host: context, resize, look/orbit, context loss; useAnimationTime
   gl/gl.ts, gl/glx.ts, gl/context.ts   mat4, shaders, meshes, render targets, context release
 src/components/lesson/figures/         the widgets themselves, grouped by topic folder
@@ -79,8 +80,8 @@ from the `chapters` array — never hand-write them.
   (axes, points, curves), which stay the same in both themes. It finds the drawing itself; mark keyboard/mouse-only hint text with
   `data-mouse-only` (and a `data-touch-only` alternative if there is one).
 - Animated widgets pause off screen: `const vis = useVisible<HTMLElement>()`, `useAnimationTime(playing && vis.on)`, `<figure ref={vis.ref}>`.
-- A widget with a lab: `<LabButton>` in the `Figure` head (`fullscreen={false}`), `<Lab>` rendered beside it with the
-  same stage; the drawing component owns its own `useDrag`, since it is mounted twice while the lab is open.
+- A widget with a lab: `const lab = useLab("<track>-<topic>")` (stable id: it is in URLs and storage), `<LabButton lab={lab}>`
+  in the `Figure` head (`fullscreen={false}`), `<Lab lab={lab} recap={[…]}>` rendered beside it with the same stage; the drawing component owns its own `useDrag`, since it is mounted twice while the lab is open.
 - WebGL widgets render through `GLView`; a widget that creates its own context must call `claimContext`/`releaseContext` (kit/gl/context.ts).
 - `boxFaces` faces wind CCW from outside (it fixes left-handed axes itself); `frontFacing` relies on that.
 

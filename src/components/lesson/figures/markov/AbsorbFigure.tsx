@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Btn, C, Choice, Figure, Readout, Row, Slider, Sliders, f2, mulberry32, useFrame, useVisible } from "@/components/lesson/kit/figure";
-import { SpeedControl, scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
+import { scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
 import { Lab, LabButton, fill, useLab, type Insight, type LabStep } from "@/components/lesson/kit/lab/Lab";
 import { Transport } from "@/components/lesson/kit/Transport";
 import { absorption, fNum, fStr, stepFrom, sub, toNumbers, walkMatrix } from "./model";
@@ -32,8 +32,8 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
   const [running, setRunning] = useState(false);
   const [moves, setMoves] = useState(0);                // steps taken by the crowd since it was placed
   const [touched, setTouched] = useState(false);
-  const [speed, setSpeed] = useFigureSpeed();
-  const lab = useLab();
+  const [speed] = useFigureSpeed();
+  const lab = useLab("markov-absorbing");
   const vis = useVisible<HTMLDivElement>();
 
   const P =useMemo(() => walkMatrix({ k, p, hold: 0, boundary: "absorbing" }), [k, p]);
@@ -99,7 +99,7 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
   const stage = (
     <>
       {drawing}
-      <Transport t={t} playing={running && !stepMode} onPlay={playPause} onStep={stepOnce} onReset={() => place(start)}
+      <Transport t={t} speed playing={running && !stepMode} onPlay={playPause} onStep={stepOnce} onReset={() => place(start)}
         playLabel={fill(tx(t, "figMkAbs_release", "release {n} walkers"), { n: WALKERS })}
         readout={`${tx(t, "figMkChain_steps", "steps")}: ${moves}`} />
     </>
@@ -219,7 +219,7 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
         title={tx(t, "figMkAbs_title", "Absorbing walls: where it ends and how long it takes")}
         head={<>
           <Btn onClick={() => { setMode("hit"); reconfigure(EX.k, EX.p, 1); }}>{tx(t, "figMkAbs_ex", "worked example")}</Btn>
-          <LabButton onClick={lab.show} t={t} />
+          <LabButton lab={lab} t={t} />
         </>}
         controls={<>
           <Row>{startPick}<span className="w-px h-5 bg-[var(--border)] mx-1" />{modeChoice}</Row>
@@ -230,7 +230,13 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
         <div ref={vis.ref}>{stage}</div>
       </Figure>
 
-      <Lab open={lab.open} onClose={lab.hide} t={t}
+      <Lab lab={lab} t={t}
+        recap={[
+          tx(t, "figMkAbsR1", "First-step analysis: one step, then a fresh start, so hᵢ = q·hᵢ₋₁ + p·hᵢ₊₁ with h₀ = 0 and hₖ = 1."),
+          tx(t, "figMkAbsR2", "The expected time adds 1 for the step taken: tᵢ = 1 + q·tᵢ₋₁ + p·tᵢ₊₁."),
+          tx(t, "figMkAbsR3", "A fair game gives a straight line, hᵢ = i/k; otherwise hᵢ = (1 − rⁱ)/(1 − rᵏ) with r = q/p."),
+          tx(t, "figMkAbsR4", "A small edge against you makes ruin much more likely, and more so the longer the game."),
+        ]}
         title={tx(t, "figMkAbs_title", "Absorbing walls: where it ends and how long it takes")}
         steps={labSteps} insights={insights} stage={stage}
         controls={<>
@@ -239,7 +245,6 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
             <Slider label={tx(t, "figMkAbs_p", "win a coin, p")} value={p} min={0.05} max={0.95} step={0.05} onChange={v => reconfigure(k, v)} width="w-28" />
             <Slider label={tx(t, "figMkAbs_k", "target k")} value={k} min={2} max={8} step={1} onChange={v => reconfigure(v, p)} fmt={v => String(v)} width="w-28" />
           </Sliders>
-          <SpeedControl speed={speed} setSpeed={setSpeed} />
           {readouts}
         </>}
       />

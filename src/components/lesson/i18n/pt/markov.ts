@@ -59,6 +59,11 @@ const text: Record<string, string> = {
   figMkChainI4_t: "Os laços são a diagonal",
   figMkChainI4_b: "Cada laço é uma entrada p_ii = h. Ficar parado não mexe nas marcas verdes: todo movimento para a esquerda ou a direita é multiplicado pelo mesmo 1 − h, então o balanço detalhado dá o mesmo π. O que muda é o ritmo. Sem laços o passeador alterna par, ímpar, par… A próxima figura mostra por que isso importa.",
 
+  figMkChainR1: "O próximo estado é sorteado de uma linha de P: a linha do estado em que o passeador está.",
+  figMkChainR2: "O histórico não participa. Essa é a propriedade de Markov.",
+  figMkChainR3: "Em muitos passos, a fração do tempo em cada estado se ajusta à π estacionária.",
+  figMkChainR4: "Paredes absorventes prendem o passeador, então não existe um único longo prazo; ficar parado (h) preenche a diagonal de P.",
+
   // ── PathsFigure: why Pⁿ ──
   figMkPaths_title: "Por que Pⁿ: somando todos os caminhos",
   figMkPaths_ex: "exercício (b): 2 → 1 em 3 passos",
@@ -107,6 +112,11 @@ const text: Record<string, string> = {
   figMkPathsI4_t: "Laços somam caminhos",
   figMkPathsI4_b: "Com h > 0 um caminho pode ficar parado por um passo, desenhado como um segmento horizontal na grade. Ficar parado não muda o estado, então um número ímpar de passos agora pode terminar num estado de mesma paridade, e os zeros do tabuleiro se preenchem.",
 
+  figMkPathsR1: "A probabilidade de um caminho é o produto dos seus passos; caminhos diferentes se somam.",
+  figMkPathsR2: "Agrupar os caminhos pela última parada k dá Σₖ (Pⁿ⁻¹)ᵢₖ pₖⱼ: linha vezes coluna, que é a multiplicação de matrizes.",
+  figMkPathsR3: "Então (Pⁿ)ᵢⱼ soma todos os caminhos, e não é (pᵢⱼ)ⁿ.",
+  figMkPathsR4: "Com movimentos só de ±1, a paridade zera metade das entradas; uma chance de ficar parado as preenche.",
+
   // ── DistributionFigure: πₙ as a fluid ──
   figMkDist_title: "A distribuição depois de n passos: π₀ · Pⁿ",
   figMkDist_uniform: "início uniforme",
@@ -154,6 +164,11 @@ const text: Record<string, string> = {
   figMkDistI3_b: "Em n = {n}, πₙ está a menos de 1% de π. Um pouco de fluido ficando parado torna a cadeia aperiódica. Uma cadeia que alcança todo estado a partir de todo estado e é aperiódica esquece onde começou: πₙ → π a partir de qualquer π₀.",
   figMkDistI4_t: "O fluido escoa para as pontas",
   figMkDistI4_b: "Com pontas absorventes, o fluido pode entrar no 0 e no k mas nunca sair. As barras internas se esvaziam, e πₙ tende a uma divisão entre as duas pontas que depende de onde começou. A seção nova sobre cadeias absorventes calcula essa divisão.",
+
+  figMkDistR1: "Um passo despeja a probabilidade de cada estado pelas suas setas: πₙ₊₁(j) = Σᵢ πₙ(i)·p_ij, que é πₙ·P.",
+  figMkDistR2: "Então n passos são π₀·Pⁿ; partindo de um estado certo, πₙ é uma linha de Pⁿ.",
+  figMkDistR3: "Uma cadeia de período 2 oscila entre estados pares e ímpares, a menos que o início já seja equilibrado.",
+  figMkDistR4: "Uma chance de ficar parado a torna aperiódica, e aí πₙ → π a partir de qualquer início.",
 
   // ── StationaryFigure: any chain ──
   figMkStat_title: "Qualquer cadeia: resolvendo πP = π",
@@ -218,6 +233,11 @@ const text: Record<string, string> = {
   figMkStatI7_t: "Irredutível e aperiódica",
   figMkStatI7_b: "Todo estado alcança todos os outros (irredutível), e existem laços de comprimento 1 ou de comprimentos primos entre si (aperiódica). Uma cadeia assim tem exatamente uma π, e πₙ → π a partir de qualquer início. No gráfico, as linhas encontram os níveis pontilhados.",
 
+  figMkStatR1: "πP = π é uma equação por coluna de P; uma delas é redundante e é trocada por Σπ = 1.",
+  figMkStatR2: "1/π(j) é o tempo médio entre visitas a j.",
+  figMkStatR3: "Um ciclo tem π, mas πₙ fica girando; uma armadilha leva toda a π; duas classes fechadas tornam π não única.",
+  figMkStatR4: "Linhas que não somam 1 criam ou destroem probabilidade: não são uma cadeia de Markov.",
+
   // ── AbsorbFigure: absorbing walk ──
   figMkAbs_title: "Paredes absorventes: onde termina e quanto demora",
   figMkAbs_ex: "exemplo resolvido",
@@ -232,6 +252,11 @@ const text: Record<string, string> = {
   figMkAbs_p: "ganhar uma moeda, p",
   figMkAbs_k: "meta k",
   figMkAbs_note: "As barras são exatas: para cada início, a chance de chegar a k antes de 0, ou o número esperado de passos até o passeio parar. Clique numa barra interna para ver a equação do primeiro passo: o topo dela fica na corda entre os vizinhos, a uma fração p do caminho. Solte a multidão para conferir a chance por simulação.",
+
+  figMkAbsR1: "Análise do primeiro passo: um passo, depois um novo começo, então hᵢ = q·hᵢ₋₁ + p·hᵢ₊₁ com h₀ = 0 e hₖ = 1.",
+  figMkAbsR2: "O tempo esperado soma 1 pelo passo dado: tᵢ = 1 + q·tᵢ₋₁ + p·tᵢ₊₁.",
+  figMkAbsR3: "Um jogo justo dá uma reta, hᵢ = i/k; senão hᵢ = (1 − rⁱ)/(1 − rᵏ) com r = q/p.",
+  figMkAbsR4: "Uma pequena vantagem contra você torna a ruína bem mais provável, e mais ainda quanto mais longo o jogo.",
 
   figMkAbsL1_t: "Onde termina?",
   figMkAbsL1_b1: "O passeio em {0, 1, 2, 3} de novo, com p = 3/4, mas agora as pontas são absorventes: pense num apostador com 1 moeda que ganha uma moeda com probabilidade 3/4 e perde uma com 1/4, até a ruína (0 moedas) ou a meta (3 moedas).",

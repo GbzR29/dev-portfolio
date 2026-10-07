@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Btn, C, Choice, Figure, Readout, Row, Slider, Sliders, f2, useFrame, useVisible } from "@/components/lesson/kit/figure";
-import { SpeedControl, scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
+import { scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
 import { Lab, LabButton, fill, useLab, type Insight, type LabStep } from "@/components/lesson/kit/lab/Lab";
 import { Transport } from "@/components/lesson/kit/Transport";
 import { EXERCISE, frac, fStr, fVecMul, stationary, sub, toNumbers, walkMatrix, type Boundary, type Frac, type Walk } from "./model";
@@ -28,8 +28,8 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
   const [u, setU] = useState(0);                 // progress of the step n → n + 1
   const [stepping, setStepping] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [speed, setSpeed] = useFigureSpeed();
-  const lab = useLab();
+  const [speed] = useFigureSpeed();
+  const lab = useLab("markov-distribution");
   const vis = useVisible<HTMLDivElement>();
   const S = walk.k + 1;
 
@@ -78,7 +78,7 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
   const stage = (
     <>
       <FlowStage P={Pn} dists={dists} n={n} u={u} pi={pi} tMax={T_MAX} labels={{ time: tx(t, "figMkDist_time", "n") }} />
-      <Transport t={t} playing={playing} onPlay={play}
+      <Transport t={t} speed playing={playing} onPlay={play}
         onStep={() => { setPlaying(false); pour(); }}
         onBack={n > 0 ? () => jump(n - 1) : undefined}
         onReset={() => jump(0)} readout={`n = ${n}`} />
@@ -194,7 +194,7 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
     <>
       <Figure fullscreen={false}
         title={tx(t, "figMkDist_title", "The distribution after n steps: π₀ · Pⁿ")}
-        head={<LabButton onClick={lab.show} t={t} />}
+        head={<LabButton lab={lab} t={t} />}
         controls={<>
           <Row>{startChoice}<span className="w-px h-5 bg-[var(--border)] mx-1" />{exBtn}</Row>
           <Sliders>{holdSlider}</Sliders>
@@ -205,7 +205,13 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
         <div ref={vis.ref}>{stage}</div>
       </Figure>
 
-      <Lab open={lab.open} onClose={lab.hide} t={t}
+      <Lab lab={lab} t={t}
+        recap={[
+          tx(t, "figMkDistR1", "One step pours every state's probability along its arrows: πₙ₊₁(j) = Σᵢ πₙ(i)·p_ij, which is πₙ·P."),
+          tx(t, "figMkDistR2", "So n steps are π₀·Pⁿ; from a sure start, πₙ is a row of Pⁿ."),
+          tx(t, "figMkDistR3", "A chain with period 2 sloshes between even and odd states unless its start is already balanced."),
+          tx(t, "figMkDistR4", "A chance of staying put makes it aperiodic, and then πₙ → π from any start."),
+        ]}
         title={tx(t, "figMkDist_title", "The distribution after n steps: π₀ · Pⁿ")}
         steps={labSteps} insights={insights} stage={stage}
         controls={<>
@@ -220,7 +226,6 @@ export function MarkovDistributionFigure({ t }: { t?: TrackTranslations }) {
             <Slider label={tx(t, "figMkChain_p", "right, p")} value={walk.p} min={0.05} max={0.95} step={0.05} onChange={v => { setWalk(w => ({ ...w, p: v })); jump(0); }} width="w-28" />
             <Slider label={tx(t, "figMkChain_k", "last state k")} value={walk.k} min={2} max={6} step={1} onChange={v => { setWalk(w => ({ ...w, k: v })); jump(0); }} fmt={v => String(v)} width="w-28" />
           </Sliders>
-          <SpeedControl speed={speed} setSpeed={setSpeed} />
           <Row>
             {piRead}
             {pi && <Readout color={C.green}>π = ({pi.map(v => f2(v, 3)).join(", ")})</Readout>}

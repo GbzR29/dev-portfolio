@@ -31,7 +31,7 @@ export function MatrixPathsFigure({ t }: { t?: TrackTranslations }) {
   const [added, setAdded] = useState(Infinity);          // paths in the bar; Infinity = all of them
   const [building, setBuilding] = useState(false);
   const [touched, setTouched] = useState({ path: false, built: false, term: false });
-  const lab = useLab();
+  const lab = useLab("markov-paths");
   const vis = useVisible<HTMLDivElement>();
 
   const P = useMemo(() => walkMatrix(walk), [walk]);
@@ -234,7 +234,7 @@ export function MatrixPathsFigure({ t }: { t?: TrackTranslations }) {
         title={tx(t, "figMkPaths_title", "Why Pⁿ: adding up every path")}
         head={<>
           <Btn onClick={exercise}>{tx(t, "figMkPaths_ex", "exercise (b): 2 → 1 in 3 steps")}</Btn>
-          <LabButton onClick={lab.show} t={t} />
+          <LabButton lab={lab} t={t} />
         </>}
         controls={<>
           {pickers}
@@ -246,7 +246,13 @@ export function MatrixPathsFigure({ t }: { t?: TrackTranslations }) {
         <div ref={vis.ref}>{stage}</div>
       </Figure>
 
-      <Lab open={lab.open} onClose={lab.hide} t={t}
+      <Lab lab={lab} t={t}
+        recap={[
+          tx(t, "figMkPathsR1", "A path's probability is the product of its steps; different paths add up."),
+          tx(t, "figMkPathsR2", "Grouping the paths by their last stop k gives Σₖ (Pⁿ⁻¹)ᵢₖ pₖⱼ: row times column, which is matrix multiplication."),
+          tx(t, "figMkPathsR3", "So (Pⁿ)ᵢⱼ adds up every path, and it is not (pᵢⱼ)ⁿ."),
+          tx(t, "figMkPathsR4", "With moves of ±1 only, parity makes half the entries 0; a chance of staying put fills them in."),
+        ]}
         title={tx(t, "figMkPaths_title", "Why Pⁿ: adding up every path")}
         steps={labSteps} insights={insights} stage={stage}
         controls={<>
