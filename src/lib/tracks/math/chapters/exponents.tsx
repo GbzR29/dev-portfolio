@@ -6,12 +6,25 @@
 
 import { H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { ExpLogFigure } from "@/components/lesson/figures/math/ExpLogFigure";
 
 const r = String.raw;
+
+// ── Live doubling time: n = log 2 / log(1 + r) ───────────────────────────────
+
+function doublingNumbers(v: Record<string, number>, t: TrackTranslations) {
+  const pct = v.r, g = 1 + pct / 100;
+  const n = Math.log10(2) / Math.log10(g);
+  const whole = Math.ceil(n - 1e-9);
+  return {
+    tex: r`n = \frac{\log 2}{\log ${g.toFixed(2)}} = \frac{0.3010}{${Math.log10(g).toFixed(4)}} \approx \amber{${n.toFixed(2)}} \qquad \text{${tx(t, "mExp_liveWhole", "whole years:")}}\ \green{${whole}}`,
+  };
+}
 
 export function ExpLogContent({ t }: { t: TrackTranslations }) {
   return (
@@ -33,7 +46,8 @@ export function ExpLogContent({ t }: { t: TrackTranslations }) {
           [r`b^0 = 1`, tx(t, "mExp_wZero", "forced by the first rule: bⁿ · b⁰ = bⁿ⁺⁰ = bⁿ, so b⁰ must be 1")],
           [r`b^{-n} = 1/b^n`, tx(t, "mExp_wNeg", "forced too: bⁿ · b⁻ⁿ = b⁰ = 1. A negative exponent means \"divide by\"")],
           [r`b^{1/n} = \sqrt[n]{b}`, tx(t, "mExp_wFrac", "(b^(1/n))ⁿ = b¹ = b, so b^(1/n) is the number whose n-th power is b: a root. 2.2 in gamma correction, x^(1/2.2), is a fractional exponent")],
-        ]}>
+        ]}
+        words={tx(t, "mExp_rulesWords", "Multiplying powers of the same base adds the exponents, a power of a power multiplies them, a zero exponent gives 1, a negative one divides, and a fraction 1/n takes the n-th root.")}>
         {r`b^m\,b^n = b^{m+n}, \quad (b^m)^n = b^{mn}, \quad b^0 = 1, \quad b^{-n} = \frac{1}{b^n}, \quad b^{1/n} = \sqrt[n]{b}`}
       </Equation>
 
@@ -48,6 +62,7 @@ export function ExpLogContent({ t }: { t: TrackTranslations }) {
           [r`T`, tx(t, "mExp_wT", "the time it takes to multiply by b once (doubling time or half-life)")],
           [r`e^{-\lambda t}`, tx(t, "mExp_wLambda", "the same curve written with base e and a rate λ = ln 2 / T for a half-life. Physics usually uses this form, because the rate λ appears directly in the laws of cooling, radioactivity and charging")],
         ]}
+        words={tx(t, "mExp_decayWords", "Start at y₀ and multiply by b once every T. For decay b is one half: the value halves every half-life.")}
         note={tx(t, "mExp_eqDecayNote", "Example: a sound fades to half its amplitude every 0.3 s. After 1.2 s = 4 half-lives it is at (½)⁴ = 1/16. Exponential decay never reaches exactly zero; cut it off below a threshold.")}>
         {r`y(t) = y_0 \cdot b^{\,t/T} \qquad\text{decay:}\quad y(t) = y_0\left(\tfrac12\right)^{t/T} = y_0\,e^{-\lambda t}`}
       </Equation>
@@ -78,7 +93,8 @@ export function ExpLogContent({ t }: { t: TrackTranslations }) {
           [r`\log_b(xy) = \log_b x + \log_b y`, tx(t, "mExp_wProd", "from b^m · b^n = b^(m+n)")],
           [r`\log_b(x^k) = k\,\log_b x`, tx(t, "mExp_wPow", "from (b^m)^k = b^(mk)")],
           [r`\log_b x = \frac{\ln x}{\ln b}`, tx(t, "mExp_wChange", "change of base: any logarithm from the natural one (ln = log base e), or from log₁₀, the two a calculator has")],
-        ]}>
+        ]}
+        words={tx(t, "mExp_logWords", "The logarithm of a product is the sum of the logarithms, the logarithm of a power is the exponent times the logarithm, and any base can be reached by dividing two natural logarithms.")}>
         {r`\log_b(x\,y) = \log_b x + \log_b y \qquad \log_b(x^k) = k\log_b x \qquad \log_b x = \frac{\ln x}{\ln b}`}
       </Equation>
 
@@ -87,19 +103,23 @@ export function ExpLogContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mExp_solveBody",
           "When the unknown sits in an exponent, as in 2ˣ = 20, none of the moves from the linear equations chapter can reach it. The logarithm can: take the log of both sides and use the power rule to bring the exponent down to the ground floor, where it becomes an ordinary factor. Any base of logarithm works, as long as you use the same one on both sides.")}
       </p>
-      <Equation label={tx(t, "mExp_eqSolve", "Solving 2ˣ = 20")}
-        notes={[
-          tx(t, "mExp_s1", "take log₁₀ of both sides: log(2ˣ) = log 20"),
-          tx(t, "mExp_s2", "power rule: x · log 2 = log 20"),
-          tx(t, "mExp_s3", "divide by log 2 ≈ 0.3010: x = 1.3010 / 0.3010 ≈ 4.32"),
-          tx(t, "mExp_s4", "check: 2⁴ = 16 and 2⁵ = 32, and 20 lies between them, so x between 4 and 5 is right"),
-        ]}>
-        {r`2^x = 20 \;\Rightarrow\; x\log 2 = \log 20 \;\Rightarrow\; x = \frac{\log 20}{\log 2} \approx 4.32`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mExp_eqSolve", "Solving 2ˣ = 20")}
+        steps={[
+          { full: true, tex: r`2^x = 20` },
+          { full: true, tex: r`\amber{\log}(2^x) = \amber{\log} 20`, why: tx(t, "mExp_s1", "take log₁₀ of both sides: log(2ˣ) = log 20") },
+          { full: true, tex: r`\amber{x}\cdot\log 2 = \log 20`, why: tx(t, "mExp_s2", "power rule: x · log 2 = log 20") },
+          { full: true, tex: r`x = \frac{\log 20}{\log 2} = \frac{1.3010}{0.3010} \approx \green{4.32}`, why: tx(t, "mExp_s3", "divide by log 2 ≈ 0.3010: x = 1.3010 / 0.3010 ≈ 4.32") },
+          { full: true, tex: r`2^4 = 16 < 20 < 32 = 2^5 \;\checkmark`, why: tx(t, "mExp_s4", "check: 2⁴ = 16 and 2⁵ = 32, and 20 lies between them, so x between 4 and 5 is right") },
+        ]} />
       <p>
         {tx(t, "mExp_solveEx",
           "Example: 1000 is saved at 5% interest per year. When does it reach 2000? 1000 · 1.05ⁿ = 2000. Divide by 1000: 1.05ⁿ = 2. Take logs: n · log 1.05 = log 2, so n = 0.3010 / 0.0212 ≈ 14.2. After 14 years it is still just short of 2000 (1.05¹⁴ ≈ 1.98), so it takes 15 whole years. Notice the starting amount cancelled: at 5% any sum doubles in about 14.2 years.")}
       </p>
+      <LiveFormula label={tx(t, "mExp_liveDouble", "Try it: how long until it doubles?")}
+        tex={r`(1 + r)^n = 2 \;\Rightarrow\; n = \frac{\log 2}{\log(1 + r)}`}
+        vars={[{ id: "r", label: tx(t, "mExp_liveR", "interest rate r (% per year)"), min: 1, max: 25, step: 1, value: 5, fmt: v => `${v}%` }]}
+        compute={v => doublingNumbers(v, t)}
+        note={tx(t, "mExp_liveDoubleNote", "The starting amount never appears: any sum doubles in the same time. Bankers use the rule of 72: the doubling time is roughly 72 divided by the rate in percent (72/5 ≈ 14.4, 72/8 = 9). Compare it with the exact value as you slide.")} />
 
       <H2>{tx(t, "mExp_usesTitle", "Where they show up")}</H2>
       <LessonTable

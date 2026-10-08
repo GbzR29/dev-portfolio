@@ -6,10 +6,29 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { FunctionFigure } from "@/components/lesson/figures/math/FunctionFigure";
+
+// ── Live piecewise function: the parking fee ─────────────────────────────────
+
+const num = (v: number) => String(Math.round(v * 100) / 100);
+
+function feeNumbers(v: Record<string, number>, t: TrackTranslations) {
+  const d = v.d;
+  const piece = d <= 2 ? 0 : d < 10 ? 1 : 2;
+  const fee = piece === 0 ? 0 : piece === 1 ? 3 * (d - 2) : 24;
+  const which = [
+    tx(t, "mFn_livePiece1", "first piece: d ≤ 2"),
+    tx(t, "mFn_livePiece2", "middle piece: 2 < d < 10"),
+    tx(t, "mFn_livePiece3", "last piece: d ≥ 10"),
+  ][piece];
+  const calc = piece === 1 ? String.raw`3\,(${num(d)} - 2) = 3 \cdot ${num(d - 2)} = ` : "";
+  return { tex: String.raw`\text{${which}} \qquad P(${num(d)}) = ${calc}\green{${num(fee)}}`, meter: fee / 24, meterLabel: `${num(fee)} / 24` };
+}
 
 const r = String.raw;
 
@@ -32,7 +51,8 @@ export function AlgebraContent({ t }: { t: TrackTranslations }) {
           [r`x`, tx(t, "mFn_wX", "the input, also called the argument or the independent variable")],
           [r`f(x)`, tx(t, "mFn_wFx", "the output for input x, read \"f of x\". It is not f times x: the parentheses hold the input")],
           [r`f(3) = 2 \cdot 3 + 1 = 7`, tx(t, "mFn_wEval", "evaluating: replace every x in the rule with the input, in parentheses")],
-        ]}>
+        ]}
+        words={tx(t, "mFn_notationWords", "f of x is what the rule f gives back when you feed it x. Here: double the input and add one, so f of 3 is 7.")}>
         {r`f(x) = 2x + 1 \qquad f(3) = 7 \qquad f(-1) = -1 \qquad f(a + 1) = 2a + 3`}
       </Equation>
       <p>
@@ -81,6 +101,7 @@ export function AlgebraContent({ t }: { t: TrackTranslations }) {
           [r`m`, tx(t, "mAlg_wM", "the slope: how much y changes when x increases by 1. Between two points it is rise over run, (y₂ − y₁)/(x₂ − x₁)")],
           [r`b`, tx(t, "mAlg_wB", "the intercept: the value at x = 0, where the line crosses the y axis")],
         ]}
+        words={tx(t, "mAlg_lineWords", "Start at height b when x is 0, and for every step of 1 to the right go up by m.")}
         note={tx(t, "mAlg_eqLineNote", "A straight line through two points (x₁, y₁) and (x₂, y₂) is y = y₁ + m(x − x₁). It reads \"start at y₁ and add the slope times how far x has moved from x₁\".")}>
         {r`y = m\,x + b`}
       </Equation>
@@ -104,6 +125,11 @@ export function AlgebraContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mFn_eqFalloffNote", "The pieces meet: at d = 2 the middle rule gives 3 · 0 = 0, and at d = 10 it gives 3 · 8 = 24. No jumps. Example: 5 hours cost 3 · (5 − 2) = 9; 12 hours cost 24.")}>
         {r`P(d) = \begin{cases} 0 & d \le 2 \\ 3\,(d - 2) & 2 < d < 10 \\ 24 & d \ge 10 \end{cases}`}
       </Equation>
+      <LiveFormula label={tx(t, "mFn_liveFee", "Try it: the fee for any time")}
+        tex={r`P(d) = \begin{cases} 0 & d \le 2 \\ 3\,(d - 2) & 2 < d < 10 \\ 24 & d \ge 10 \end{cases}`}
+        vars={[{ id: "d", label: tx(t, "mFn_liveD", "time d (hours)"), min: 0, max: 14, step: 0.5, value: 5, fmt: num }]}
+        compute={v => feeNumbers(v, t)}
+        note={tx(t, "mFn_liveFeeNote", "First the time decides which piece applies, and only then is that piece's rule used. Slide across 2 and across 10: the fee changes rule there but does not jump, because the pieces meet.")} />
 
       <H2>{tx(t, "mAlg_transTitle", "Moving and stretching graphs")}</H2>
       <p>
@@ -116,7 +142,8 @@ export function AlgebraContent({ t }: { t: TrackTranslations }) {
           [r`b`, tx(t, "mAlg_wBh", "horizontal scale: multiplies the input, so b = 2 makes things happen twice as fast (half as wide); b < 0 mirrors left–right")],
           [r`c`, tx(t, "mAlg_wC", "horizontal shift: the graph moves right by c")],
           [r`d`, tx(t, "mAlg_wD", "vertical shift: the graph moves up by d")],
-        ]}>
+        ]}
+        words={tx(t, "mAlg_transWords", "Shift the input by c and scale it by b, apply f, then scale the output by a and shift it by d. The two outside numbers act as you expect; the two inside ones act in reverse.")}>
         {r`y = a\cdot f\big(b\,(x - c)\big) + d`}
       </Equation>
 
@@ -138,6 +165,14 @@ export function AlgebraContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mFn_invSteps",
           "The recipe for finding an inverse is the one from the linear equations chapter: write y = f(x), solve for x, then rename. For f(x) = 3x − 6: y = 3x − 6, so y + 6 = 3x and x = (y + 6)/3. Check: f⁻¹(f(4)) = f⁻¹(6) = 12/3 = 4 ✓.")}
       </p>
+      <Derivation t={t} label={tx(t, "mFn_dInv", "Inverting f(x) = 3x − 6")}
+        steps={[
+          { full: true, tex: r`y = 3x - 6` },
+          { full: true, tex: r`y \amber{+ 6} = 3x`, why: tx(t, "mFn_dInv1", "write y = f(x), then undo the last operation, − 6, by adding 6 to both sides") },
+          { full: true, tex: r`x = \frac{y + 6}{\amber{3}}`, why: tx(t, "mFn_dInv2", "undo the × 3 by dividing both sides by 3: x is now written in terms of y") },
+          { full: true, tex: r`\green{f^{-1}(y) = \frac{y + 6}{3}}`, why: tx(t, "mFn_dInv3", "that rule, which takes an output back to its input, is the inverse function") },
+          { full: true, tex: r`f^{-1}(f(4)) = f^{-1}(6) = \frac{12}{3} = 4 \;\checkmark`, why: tx(t, "mFn_dInv4", "check: going forward and then back must return the number you started with") },
+        ]} />
       <Callout type="info" t={t}>
         {tx(t, "mFn_remapInfo", "A common composition is rescaling: a test marked out of 40 must be reported out of 100. First find the fraction of the way through [0, 40], f(v) = v/40, then scale that fraction to [0, 100], g(u) = 100u. The composition is g(f(v)) = 100v/40 = 2.5v, so 30/40 becomes 75/100. In general, going from [a, b] to [c, d] is v ↦ c + (d − c)·(v − a)/(b − a). Two linear functions composed are again linear.")}
       </Callout>

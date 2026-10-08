@@ -63,6 +63,15 @@ const text: Record<string, string> = {
   mExp_v7b: "a diferença para a temperatura ambiente encolhe pelo mesmo fator a cada minuto",
   mExp_v8: "Problemas de metades",
   mExp_v8b: "quantas vezes n pode ser dividido pela metade até chegar a 1: adivinhar um número de 1 a 1000 com \"maior ou menor\" leva no máximo 10 palpites",
+
+  // ── In words, derivation, live formula (2026-10-07) ──
+  mExp_rulesWords: "Multiplicar potências da mesma base soma os expoentes, uma potência de potência os multiplica, expoente zero dá 1, um negativo divide, e uma fração 1/n tira a raiz n-ésima.",
+  mExp_decayWords: "Comece em y₀ e multiplique por b uma vez a cada T. No decaimento b é um meio: o valor cai pela metade a cada meia-vida.",
+  mExp_logWords: "O logaritmo de um produto é a soma dos logaritmos, o logaritmo de uma potência é o expoente vezes o logaritmo, e qualquer base se obtém dividindo dois logaritmos naturais.",
+  mExp_liveDouble: "Experimente: quanto tempo até dobrar?",
+  mExp_liveR: "taxa de juros r (% ao ano)",
+  mExp_liveWhole: "anos inteiros:",
+  mExp_liveDoubleNote: "O valor inicial nunca aparece: qualquer quantia dobra no mesmo tempo. Banqueiros usam a regra do 72: o tempo para dobrar é mais ou menos 72 dividido pela taxa em porcentagem (72/5 ≈ 14,4, 72/8 = 9). Compare com o valor exato enquanto desliza.",
 };
 
 export default text;

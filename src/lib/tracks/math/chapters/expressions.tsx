@@ -6,12 +6,29 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { AlgebraTilesFigure } from "@/components/lesson/figures/math/AlgebraTilesFigure";
 
 const r = String.raw;
+
+// ── Live Horner: both forms of 2x² − 5x + 1 at any x ─────────────────────────
+
+/** A number for TeX, negatives in parentheses so they can be substituted. */
+const par = (v: number) => (v < 0 ? `(${v})` : String(v));
+
+function hornerNumbers(v: Record<string, number>) {
+  const x = v.x, sq = 2 * x * x, lin = 5 * x, inner = 2 * x - 5, val = sq - lin + 1;
+  return {
+    tex: r`\begin{aligned}
+      2\cdot ${par(x)}^2 - 5\cdot ${par(x)} + 1 &= ${sq} - ${par(lin)} + 1 = \green{${val}} \\
+      (\amber{2\cdot ${par(x)} - 5})\cdot ${par(x)} + 1 &= \amber{${par(inner)}}\cdot ${par(x)} + 1 = \green{${val}}
+    \end{aligned}`,
+  };
+}
 
 export function ExpressionsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -63,15 +80,14 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mExpr_evalBody",
           "To evaluate an expression, replace every occurrence of each variable by its value, then compute using the order of operations. The one habit that prevents most mistakes: put the substituted value in parentheses, especially when it is negative. Squaring x when x = −3 must give (−3)² = 9, but writing −3² gives −9.")}
       </p>
-      <Equation label={tx(t, "mExpr_eqEval", "Substituting x = −3")}
-        notes={[
-          tx(t, "mExpr_ev1", "replace every x with (−3), in parentheses"),
-          tx(t, "mExpr_ev2", "powers first: (−3)² = 9, so 2 · 9 = 18"),
-          tx(t, "mExpr_ev3", "then the products: −5 · (−3) = +15"),
-          tx(t, "mExpr_ev4", "finally add left to right: 18 + 15 + 1 = 34"),
-        ]}>
-        {r`2x^2 - 5x + 1 \;\to\; 2(-3)^2 - 5(-3) + 1 = 18 + 15 + 1 = 34`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mExpr_eqEval", "Substituting x = −3")}
+        steps={[
+          { tex: r`2x^2 - 5x + 1` },
+          { tex: r`= 2\amber{(-3)}^2 - 5\amber{(-3)} + 1`, why: tx(t, "mExpr_ev1", "replace every x with (−3), in parentheses") },
+          { tex: r`= \amber{18} - 5(-3) + 1`, why: tx(t, "mExpr_ev2", "powers first: (−3)² = 9, so 2 · 9 = 18") },
+          { tex: r`= 18 \amber{+ 15} + 1`, why: tx(t, "mExpr_ev3", "then the products: −5 · (−3) = +15") },
+          { tex: r`= \green{34}`, why: tx(t, "mExpr_ev4", "finally add left to right: 18 + 15 + 1 = 34") },
+        ]} />
 
       <H2>{tx(t, "mExpr_likeTitle", "Combining like terms")}</H2>
       <p>
@@ -83,7 +99,8 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
           [r`3x + 2x`, tx(t, "mExpr_wLike1", "three x's and two more x's")],
           [r`(3 + 2)x`, tx(t, "mExpr_wLike2", "the distributive law read backwards: a common factor x taken out")],
           [r`x^2 + x`, tx(t, "mExpr_wLike3", "not like terms: x² and x are different variable parts, so this does not simplify to 2x³ or anything else")],
-        ]}>
+        ]}
+        words={tx(t, "mExpr_likeWords", "Three x's plus two x's are five x's: to combine like terms, add their coefficients and keep the variable part.")}>
         {r`3x + 2x = (3 + 2)\,x = 5x`}
       </Equation>
 
@@ -99,7 +116,8 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
           [r`k(a + b) = ka + kb`, tx(t, "mExpr_wDist", "the factor k reaches every term inside the bracket, not just the first")],
           [r`-(a - b) = -a + b`, tx(t, "mExpr_wMinus", "a minus sign before a bracket is a factor of −1, so it flips the sign of every term inside")],
           [r`a - 2(x - 3) = a - 2x + 6`, tx(t, "mExpr_wMinus2", "the −2 multiplies the −3 as well: (−2)(−3) = +6")],
-        ]}>
+        ]}
+        words={tx(t, "mExpr_distWords", "A number in front of a bracket multiplies every term inside it, one by one, and the products are added.")}>
         {r`k\,(a + b) = k\,a + k\,b`}
       </Equation>
 
@@ -113,7 +131,8 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
           [r`x \cdot x`, tx(t, "mExpr_wF", "first terms: x²")],
           [r`x \cdot b + a \cdot x`, tx(t, "mExpr_wOI", "outer and inner: both are x terms, so they combine into (a + b)x")],
           [r`a \cdot b`, tx(t, "mExpr_wL", "last terms: the constant")],
-        ]}>
+        ]}
+        words={tx(t, "mExpr_foilWords", "Every term of the first bracket multiplies every term of the second: four products, and the two middle ones are both x terms, so they combine.")}>
         {r`(x + a)(x + b) = x^2 + (a + b)\,x + ab`}
       </Equation>
       <p>
@@ -125,7 +144,8 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
           [r`(a + b)^2`, tx(t, "mExpr_wSq1", "a² + 2ab + b²: the middle term 2ab is the two rectangles a·b; forgetting it is the most common algebra mistake")],
           [r`(a - b)^2`, tx(t, "mExpr_wSq2", "a² − 2ab + b²: the same with b replaced by −b")],
           [r`(a + b)(a - b)`, tx(t, "mExpr_wDiff", "a² − b²: the middle terms +ab and −ab cancel. Mental maths trick: 21 × 19 = (20 + 1)(20 − 1) = 400 − 1 = 399")],
-        ]}>
+        ]}
+        words={tx(t, "mExpr_specialWords", "The square of a sum is the first squared, plus twice the product, plus the second squared. A sum times a difference of the same two numbers is the difference of their squares.")}>
         {r`(a + b)^2 = a^2 + 2ab + b^2 \qquad (a + b)(a - b) = a^2 - b^2`}
       </Equation>
 
@@ -145,15 +165,14 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mExpr_exTitle", "Worked examples")}</H2>
       <H3>{tx(t, "mExpr_ex1T", "Simplify 4(x − 2) − (x − 5)")}</H3>
-      <Equation label={tx(t, "mExpr_eqEx1", "Expand, then collect")}
-        notes={[
-          tx(t, "mExpr_ex1a", "distribute the 4: 4x − 8"),
-          tx(t, "mExpr_ex1b", "the minus before the second bracket flips both signs inside: −x + 5"),
-          tx(t, "mExpr_ex1c", "collect: 4x − x = 3x and −8 + 5 = −3"),
-          tx(t, "mExpr_ex1d", "check with x = 1: 4(−1) − (−4) = 0, and 3 − 3 = 0 ✓"),
-        ]}>
-        {r`4(x - 2) - (x - 5) = 4x - 8 - x + 5 = 3x - 3`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mExpr_eqEx1", "Expand, then collect")}
+        steps={[
+          { tex: r`4(x - 2) - (x - 5)` },
+          { tex: r`= \amber{4x - 8} - (x - 5)`, why: tx(t, "mExpr_ex1a", "distribute the 4: 4x − 8") },
+          { tex: r`= 4x - 8 \amber{- x + 5}`, why: tx(t, "mExpr_ex1b", "the minus before the second bracket flips both signs inside: −x + 5") },
+          { tex: r`= \green{3x - 3}`, why: tx(t, "mExpr_ex1c", "collect: 4x − x = 3x and −8 + 5 = −3") },
+          { tex: r`x = 1:\quad 4(-1) - (-4) = 0 = 3 - 3 \;\checkmark`, full: true, why: tx(t, "mExpr_ex1d", "check with x = 1: 4(−1) − (−4) = 0, and 3 − 3 = 0 ✓") },
+        ]} />
       <H3>{tx(t, "mExpr_ex2T", "A price formula")}</H3>
       <p>
         {tx(t, "mExpr_ex2",
@@ -185,6 +204,11 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
         ]}>
         {r`2\cdot 7^2 - 5\cdot 7 + 1 = (2\cdot 7 - 5)\cdot 7 + 1 = 64`}
       </Equation>
+      <LiveFormula label={tx(t, "mExpr_liveHorner", "Try it: both forms at any x")}
+        tex={r`2x^2 - 5x + 1 = (\amber{2x - 5})\,x + 1`}
+        vars={[{ id: "x", label: "x", min: -5, max: 10, step: 1, value: 3, fmt: v => String(v) }]}
+        compute={hornerNumbers}
+        note={tx(t, "mExpr_liveHornerNote", "Whatever x you pick, the two lines end on the same number: they are the same expression written two ways. The nested line only ever multiplies by x twice, and the amber bracket is the only intermediate number you need to keep.")} />
       <p>
         {tx(t, "mExpr_hornerBody2",
           "The idea works for longer expressions too: 3x³ + 2x² − x + 4 = ((3x + 2)x − 1)x + 4. Read it from the inside out: start with the first coefficient, then repeatedly \"multiply by x, add the next coefficient\". The Polynomials chapter turns this into a tidy table for dividing polynomials.")}

@@ -7,12 +7,24 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { InequalityFigure } from "@/components/lesson/figures/math/InequalityFigure";
 
 const r = String.raw;
+
+// ── Live absolute value: |x − c| ≤ r as an interval ──────────────────────────
+
+const num = (v: number) => String(Math.round(v * 100) / 100);
+
+function withinNumbers(v: Record<string, number>) {
+  const { c, r: rad } = v;
+  const neg = c < 0 ? `(${num(c)})` : num(c);
+  return { tex: r`|x - ${neg}| \le ${num(rad)} \iff ${num(c)} - ${num(rad)} \le x \le ${num(c)} + ${num(rad)} \iff \green{${num(c - rad)} \le x \le ${num(c + rad)}}` };
+}
 
 export function InequalitiesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -71,7 +83,8 @@ export function InequalitiesContent({ t }: { t: TrackTranslations }) {
           [r`a < b,\ c > 0 \Rightarrow c\,a < c\,b`, tx(t, "mIneq_wPos", "a positive factor stretches the line; the order stays")],
           [r`a < b,\ c < 0 \Rightarrow c\,a > c\,b`, tx(t, "mIneq_wNeg", "a negative factor mirrors the line; the order reverses")],
           [r`c = 0`, tx(t, "mIneq_wZero", "multiplying by 0 gives 0 = 0 on both sides and destroys the information, just as with equations")],
-        ]}>
+        ]}
+        words={tx(t, "mIneq_movesWords", "Adding anything to both sides keeps the order, and so does multiplying by a positive number. Multiplying by a negative number reverses it, so the symbol must flip.")}>
         {r`a < b \;\Longrightarrow\; \begin{cases} c\,a < c\,b & c > 0 \\ c\,a > c\,b & c < 0 \end{cases}`}
       </Equation>
 
@@ -82,22 +95,20 @@ export function InequalitiesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mIneq_solveBody",
           "Solve exactly as for an equation: expand brackets, gather x terms on one side and constants on the other, then divide by the coefficient of x. Keep one eye on the sign of every number you multiply or divide by. Then pick one value inside your answer and one outside it and test both in the original inequality; the figure's test point does just that.")}
       </p>
-      <Equation label={tx(t, "mIneq_eqEx1", "Solving 3x − 5 < 7")}
-        notes={[
-          tx(t, "mIneq_e1a", "add 5 to both sides: 3x < 12"),
-          tx(t, "mIneq_e1b", "divide both sides by 3, a positive number: the symbol stays, x < 4"),
-          tx(t, "mIneq_e1c", "test x = 0 (inside): −5 < 7 ✓. Test x = 5 (outside): 10 < 7 ✗. The answer is (−∞, 4)"),
-        ]}>
-        {r`3x - 5 < 7 \;\to\; 3x < 12 \;\to\; x < 4`}
-      </Equation>
-      <Equation label={tx(t, "mIneq_eqEx2", "Solving −2x + 1 ≤ 7")}
-        notes={[
-          tx(t, "mIneq_e2a", "subtract 1 from both sides: −2x ≤ 6"),
-          tx(t, "mIneq_e2b", "divide both sides by −2, a negative number: the symbol flips, x ≥ −3"),
-          tx(t, "mIneq_e2c", "test x = 0 (inside): 1 ≤ 7 ✓. Test x = −4 (outside): 9 ≤ 7 ✗. The answer is [−3, ∞)"),
-        ]}>
-        {r`-2x + 1 \le 7 \;\to\; -2x \le 6 \;\to\; x \ge -3`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mIneq_eqEx1", "Solving 3x − 5 < 7")}
+        steps={[
+          { full: true, tex: r`3x - 5 < 7` },
+          { full: true, tex: r`3x < 12`, why: tx(t, "mIneq_e1a", "add 5 to both sides: 3x < 12") },
+          { full: true, tex: r`x \green{<} 4`, why: tx(t, "mIneq_e1b", "divide both sides by 3, a positive number: the symbol stays, x < 4") },
+          { full: true, tex: r`x = 0: -5 < 7\;\checkmark \qquad x = 5: 10 < 7\;\red{\times} \qquad x \in (-\infty, 4)`, why: tx(t, "mIneq_e1c", "test x = 0 (inside): −5 < 7 ✓. Test x = 5 (outside): 10 < 7 ✗. The answer is (−∞, 4)") },
+        ]} />
+      <Derivation t={t} label={tx(t, "mIneq_eqEx2", "Solving −2x + 1 ≤ 7")}
+        steps={[
+          { full: true, tex: r`-2x + 1 \le 7` },
+          { full: true, tex: r`-2x \le 6`, why: tx(t, "mIneq_e2a", "subtract 1 from both sides: −2x ≤ 6") },
+          { full: true, tex: r`x \red{\ge} -3`, why: tx(t, "mIneq_e2b", "divide both sides by −2, a negative number: the symbol flips, x ≥ −3") },
+          { full: true, tex: r`x = 0: 1 \le 7\;\checkmark \qquad x = -4: 9 \le 7\;\red{\times} \qquad x \in [-3, \infty)`, why: tx(t, "mIneq_e2c", "test x = 0 (inside): 1 ≤ 7 ✓. Test x = −4 (outside): 9 ≤ 7 ✗. The answer is [−3, ∞)") },
+        ]} />
       <Callout type="tip" t={t}>
         {tx(t, "mIneq_avoidTip", "You can avoid dividing by a negative altogether: move the x terms to the side where their coefficient is positive. From −2x + 1 ≤ 7, add 2x and subtract 7 on both sides: −6 ≤ 2x, so −3 ≤ x. Same answer, no flip to forget.")}
       </Callout>
@@ -107,13 +118,12 @@ export function InequalitiesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mIneq_compBody",
           "Often a value must stay between two limits: a room temperature between 18 °C and 24 °C, 18 ≤ T ≤ 24. Such a double inequality means both conditions hold at once (an \"and\"), and its solution is a segment, the overlap of two rays. Solve it by applying each move to all three parts at once. An \"or\" condition, like x < −2 or x > 2, is the opposite: the union of two separate rays, the values outside a segment.")}
       </p>
-      <Equation label={tx(t, "mIneq_eqComp", "Solving −3 < 2x + 1 ≤ 9")}
-        notes={[
-          tx(t, "mIneq_c1", "subtract 1 from all three parts: −4 < 2x ≤ 8"),
-          tx(t, "mIneq_c2", "divide all three parts by 2: −2 < x ≤ 4, the interval (−2, 4]"),
-        ]}>
-        {r`-3 < 2x + 1 \le 9 \;\to\; -4 < 2x \le 8 \;\to\; -2 < x \le 4`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mIneq_eqComp", "Solving −3 < 2x + 1 ≤ 9")}
+        steps={[
+          { full: true, tex: r`-3 < 2x + 1 \le 9` },
+          { full: true, tex: r`-4 < 2x \le 8`, why: tx(t, "mIneq_c1", "subtract 1 from all three parts: −4 < 2x ≤ 8") },
+          { full: true, tex: r`\green{-2 < x \le 4}`, why: tx(t, "mIneq_c2", "divide all three parts by 2: −2 < x ≤ 4, the interval (−2, 4]") },
+        ]} />
 
       <H2>{tx(t, "mIneq_absTitle", "Absolute value: within a distance")}</H2>
       <p>
@@ -127,9 +137,18 @@ export function InequalitiesContent({ t }: { t: TrackTranslations }) {
           [r`|x - c| < r`, tx(t, "mIneq_wIn", "inside: c − r < x < c + r, an \"and\"")],
           [r`|x - c| > r`, tx(t, "mIneq_wOut", "outside: x < c − r or x > c + r, an \"or\"")],
         ]}
+        words={tx(t, "mIneq_absWords", "x is less than r away from c exactly when x lies between c minus r and c plus r.")}
         note={tx(t, "mIneq_eqAbsNote", "Example: a bus stop at kilometre 12 serves everyone living within 3 km of it: |x − 12| ≤ 3 means 9 ≤ x ≤ 15.")}>
         {r`|x - c| < r \;\iff\; c - r < x < c + r`}
       </Equation>
+      <LiveFormula label={tx(t, "mIneq_liveAbs", "Try it: within a distance")}
+        tex={r`|x - c| \le r \iff c - r \le x \le c + r`}
+        vars={[
+          { id: "c", label: tx(t, "mIneq_liveC", "centre c"), min: -10, max: 20, step: 1, value: 12, fmt: num },
+          { id: "r", label: tx(t, "mIneq_liveR", "distance r"), min: 0, max: 8, step: 0.5, value: 3, fmt: num },
+        ]}
+        compute={withinNumbers}
+        note={tx(t, "mIneq_liveAbsNote", "The segment always has the centre c in the middle and length 2r. With r = 0 it shrinks to the single point x = c: being 0 away from c means being c.")} />
 
       <H2>{tx(t, "mIneq_exTitle", "Worked examples")}</H2>
       <H3>{tx(t, "mIneq_ex1T", "How many trips?")}</H3>
@@ -148,15 +167,14 @@ export function InequalitiesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mIneq_testBody",
           "An inequality has infinitely many solutions, so you cannot check them all. You do not need to. The boundary value, where the two sides are equal, splits the number line into pieces, and on each piece the inequality is either always true or always false. So pick one easy test point on each side of the boundary, plus the boundary itself, and substitute into the original inequality. If the pieces that pass are exactly the ones in your answer, the answer is right.")}
       </p>
-      <Equation label={tx(t, "mIneq_eqTest", "Checking −2x + 5 ≥ 1, answer x ≤ 2")}
-        notes={[
-          tx(t, "mIneq_t1", "boundary x = 2: −4 + 5 = 1 ≥ 1 is true, so 2 belongs to the answer (the dot is filled)"),
-          tx(t, "mIneq_t2", "left of it, x = 0: 0 + 5 = 5 ≥ 1 is true, so the left side is in"),
-          tx(t, "mIneq_t3", "right of it, x = 3: −6 + 5 = −1 ≥ 1 is false, so the right side is out"),
-          tx(t, "mIneq_t4", "exactly the ray x ≤ 2 ✓; had you forgotten to flip the symbol you would have written x ≥ 2, and x = 3 would have caught it"),
-        ]}>
-        {r`-2x + 5 \ge 1 \;\to\; -2x \ge -4 \;\to\; x \le 2`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mIneq_eqTest", "Checking −2x + 5 ≥ 1, answer x ≤ 2")}
+        steps={[
+          { full: true, tex: r`-2x + 5 \ge 1 \;\to\; -2x \ge -4 \;\to\; x \le 2` },
+          { full: true, tex: r`x = 2:\; -4 + 5 = 1 \ge 1 \;\checkmark`, why: tx(t, "mIneq_t1", "boundary x = 2: −4 + 5 = 1 ≥ 1 is true, so 2 belongs to the answer (the dot is filled)") },
+          { full: true, tex: r`x = 0:\; 0 + 5 = 5 \ge 1 \;\checkmark`, why: tx(t, "mIneq_t2", "left of it, x = 0: 0 + 5 = 5 ≥ 1 is true, so the left side is in") },
+          { full: true, tex: r`x = 3:\; -6 + 5 = -1 \ge 1 \;\red{\times}`, why: tx(t, "mIneq_t3", "right of it, x = 3: −6 + 5 = −1 ≥ 1 is false, so the right side is out") },
+          { full: true, tex: r`\green{x \le 2}\;\checkmark`, why: tx(t, "mIneq_t4", "exactly the ray x ≤ 2 ✓; had you forgotten to flip the symbol you would have written x ≥ 2, and x = 3 would have caught it") },
+        ]} />
 
       <H2>{tx(t, "mIneq_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable

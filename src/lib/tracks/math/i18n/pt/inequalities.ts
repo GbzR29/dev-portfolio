@@ -78,6 +78,14 @@ const text: Record<string, string> = {
   mIneq_m5r: "x > 7",
   mIneq_m5: "uma cadeia precisa apontar para um lado só; “maior que 3 e maior que 7” é simplesmente x > 7",
   mIneq_m6: "7 não satisfaz n ≥ 7,14; arredonde em direção ao conjunto solução",
+
+  // ── In words, live formula (2026-10-07) ──
+  mIneq_movesWords: "Somar qualquer coisa aos dois lados mantém a ordem, e multiplicar por um número positivo também. Multiplicar por um número negativo a inverte, então o sinal precisa se inverter.",
+  mIneq_absWords: "x está a menos de r de distância de c exatamente quando x fica entre c menos r e c mais r.",
+  mIneq_liveAbs: "Experimente: dentro de uma distância",
+  mIneq_liveC: "centro c",
+  mIneq_liveR: "distância r",
+  mIneq_liveAbsNote: "O segmento sempre tem o centro c no meio e comprimento 2r. Com r = 0 ele encolhe até o único ponto x = c: estar a 0 de distância de c é ser c.",
 };
 
 export default text;

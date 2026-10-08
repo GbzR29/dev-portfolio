@@ -7,12 +7,26 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { BalanceFigure } from "@/components/lesson/figures/math/BalanceFigure";
 
 const r = String.raw;
+
+// ── Live rearranged formula: t = (v − u)/a ───────────────────────────────────
+
+const num = (v: number) => String(Math.round(v * 100) / 100);
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+function timeNumbers(v: Record<string, number>, t: TrackTranslations) {
+  const { u, v: vv, a } = v;
+  if (a === 0) return { tex: r`t = \frac{${num(vv)} - ${par(u)}}{\red{0}} \qquad \text{${tx(t, "mLin_liveZero", "division by zero: no answer")}}` };
+  const tt = (vv - u) / a;
+  return { tex: r`\sym{t}{\amber{t}} = \frac{${num(vv)} - ${par(u)}}{${par(a)}} = \frac{${num(vv - u)}}{${par(a)}} = \sym{t}{\green{${num(tt)}}}\ \text{s}${tt < 0 ? r`\qquad \text{${tx(t, "mLin_liveNeg", "before the clock started")}}` : ""}` };
+}
 
 export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -33,7 +47,8 @@ export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
           [r`a`, tx(t, "mLin_wA", "the coefficient of x, a fixed number. If a = 0 there is no x left and the equation is not really about x at all")],
           [r`b`, tx(t, "mLin_wB", "the constant term, also a fixed number")],
           [r`x = -b/a`, tx(t, "mLin_wSol", "the solution when a ≠ 0: subtract b from both sides, then divide both sides by a")],
-        ]}>
+        ]}
+        words={tx(t, "mLin_formWords", "Some number times x, plus another number, equals zero. Take the constant to the other side and divide by the coefficient: x is minus b over a.")}>
         {r`a\,x + b = 0 \quad\Longrightarrow\quad x = -\frac{b}{a} \qquad (a \neq 0)`}
       </Equation>
 
@@ -48,6 +63,7 @@ export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
           [r`A = B \iff c\,A = c\,B`, tx(t, "mLin_wMul", "multiply (or divide) both sides by the same number c, provided c ≠ 0")],
           [r`\iff`, tx(t, "mLin_wIff", "\"if and only if\": the two equations are true for exactly the same x, so no solution is gained or lost")],
         ]}
+        words={tx(t, "mLin_ruleWords", "Adding the same thing to both sides, or multiplying both sides by the same number that is not zero, gives an equation with exactly the same solutions.")}
         note={tx(t, "mLin_eqRuleNote", "Why c ≠ 0: multiplying both sides of any equation by 0 gives 0 = 0, which is true for every x, so all information about x is destroyed. Dividing by an expression that could be zero, such as x − 2, has the same danger and is the classic way to lose a solution.")}>
         {r`A = B \;\iff\; A + c = B + c \;\iff\; c\,A = c\,B \quad (c \neq 0)`}
       </Equation>
@@ -69,29 +85,27 @@ export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mLin_i5", "negate"), tx(t, "mLin_i5u", "negate (multiply by −1)"), "−x = 4 → x = −4"],
         ]}
       />
-      <Equation label={tx(t, "mLin_eqSteps", "Solving 2x + 3 = 11")}
-        notes={[
-          tx(t, "mLin_s1", "the last thing done to x was + 3, so subtract 3 from both sides: 2x = 8"),
-          tx(t, "mLin_s2", "the first thing done was × 2, so divide both sides by 2: x = 4"),
-          tx(t, "mLin_s3", "check in the original: 2 · 4 + 3 = 11 ✓"),
-        ]}>
-        {r`2x + 3 = 11 \;\to\; 2x = 8 \;\to\; x = 4`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mLin_eqSteps", "Solving 2x + 3 = 11")}
+        steps={[
+          { full: true, tex: r`2x + 3 = 11` },
+          { full: true, tex: r`2x = 11 \amber{- 3} = 8`, why: tx(t, "mLin_s1", "the last thing done to x was + 3, so subtract 3 from both sides: 2x = 8") },
+          { full: true, tex: r`x = 8 \amber{\div 2} = \green{4}`, why: tx(t, "mLin_s2", "the first thing done was × 2, so divide both sides by 2: x = 4") },
+          { full: true, tex: r`2 \cdot 4 + 3 = 11 \;\checkmark`, why: tx(t, "mLin_s3", "check in the original: 2 · 4 + 3 = 11 ✓") },
+        ]} />
 
       <H2>{tx(t, "mLin_bothTitle", "The unknown on both sides")}</H2>
       <p>
         {tx(t, "mLin_bothBody",
           "When x appears on both sides, first gather all the x terms on one side and all the constants on the other, using the same add/subtract moves. It is usually easiest to move the smaller x term, so the coefficient that remains is positive. Then it is an ordinary one-step equation.")}
       </p>
-      <Equation label={tx(t, "mLin_eqBoth", "Solving 3x − 4 = x + 6")}
-        notes={[
-          tx(t, "mLin_b1", "subtract x from both sides: 2x − 4 = 6"),
-          tx(t, "mLin_b2", "add 4 to both sides: 2x = 10"),
-          tx(t, "mLin_b3", "divide both sides by 2: x = 5"),
-          tx(t, "mLin_b4", "check: left 3 · 5 − 4 = 11, right 5 + 6 = 11 ✓"),
-        ]}>
-        {r`3x - 4 = x + 6 \;\to\; 2x - 4 = 6 \;\to\; 2x = 10 \;\to\; x = 5`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mLin_eqBoth", "Solving 3x − 4 = x + 6")}
+        steps={[
+          { full: true, tex: r`3x - 4 = x + 6` },
+          { full: true, tex: r`2x - 4 = 6`, why: tx(t, "mLin_b1", "subtract x from both sides: 2x − 4 = 6") },
+          { full: true, tex: r`2x = 10`, why: tx(t, "mLin_b2", "add 4 to both sides: 2x = 10") },
+          { full: true, tex: r`x = \green{5}`, why: tx(t, "mLin_b3", "divide both sides by 2: x = 5") },
+          { full: true, tex: r`3 \cdot 5 - 4 = 11 = 5 + 6 \;\checkmark`, why: tx(t, "mLin_b4", "check: left 3 · 5 − 4 = 11, right 5 + 6 = 11 ✓") },
+        ]} />
       <Callout type="info" t={t}>
         {tx(t, "mLin_moveInfo", "You may have learned \"move a term to the other side and change its sign\". That is a shortcut for adding its opposite to both sides: from 2x − 4 = 6, adding 4 to both sides gives 2x = 6 + 4. The shortcut is fine once you know why it works; when unsure, write the move out in full.")}
       </Callout>
@@ -101,22 +115,20 @@ export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mLin_bracketBody",
           "Brackets: expand them first with the distributive law, collect like terms on each side, then solve as before. Fractions: multiply both sides by a common denominator (the LCM of the denominators, from the divisibility chapter) to clear them all in one move. Multiply every term, on both sides, not just the ones with fractions.")}
       </p>
-      <Equation label={tx(t, "mLin_eqBr", "Brackets: 5(x − 1) = 2(x + 4)")}
-        notes={[
-          tx(t, "mLin_br1", "expand both sides: 5x − 5 = 2x + 8"),
-          tx(t, "mLin_br2", "subtract 2x: 3x − 5 = 8"),
-          tx(t, "mLin_br3", "add 5: 3x = 13, divide by 3: x = 13/3 ≈ 4.33. Solutions need not be whole numbers; keep the exact fraction"),
-        ]}>
-        {r`5x - 5 = 2x + 8 \;\to\; 3x = 13 \;\to\; x = \tfrac{13}{3}`}
-      </Equation>
-      <Equation label={tx(t, "mLin_eqFr", "Fractions: x/2 + x/3 = 10")}
-        notes={[
-          tx(t, "mLin_fr1", "the denominators are 2 and 3; lcm(2, 3) = 6, so multiply every term by 6"),
-          tx(t, "mLin_fr2", "6 · x/2 = 3x and 6 · x/3 = 2x, and 6 · 10 = 60: 3x + 2x = 60"),
-          tx(t, "mLin_fr3", "collect: 5x = 60, so x = 12. Check: 6 + 4 = 10 ✓"),
-        ]}>
-        {r`\frac{x}{2} + \frac{x}{3} = 10 \;\to\; 3x + 2x = 60 \;\to\; x = 12`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mLin_eqBr", "Brackets: 5(x − 1) = 2(x + 4)")}
+        steps={[
+          { full: true, tex: r`5(x - 1) = 2(x + 4)` },
+          { full: true, tex: r`5x - 5 = 2x + 8`, why: tx(t, "mLin_br1", "expand both sides: 5x − 5 = 2x + 8") },
+          { full: true, tex: r`3x - 5 = 8`, why: tx(t, "mLin_br2", "subtract 2x: 3x − 5 = 8") },
+          { full: true, tex: r`3x = 13 \;\Rightarrow\; x = \green{\tfrac{13}{3}} \approx 4.33`, why: tx(t, "mLin_br3", "add 5: 3x = 13, divide by 3: x = 13/3 ≈ 4.33. Solutions need not be whole numbers; keep the exact fraction") },
+        ]} />
+      <Derivation t={t} label={tx(t, "mLin_eqFr", "Fractions: x/2 + x/3 = 10")}
+        steps={[
+          { full: true, tex: r`\frac{x}{2} + \frac{x}{3} = 10` },
+          { full: true, tex: r`\amber{6}\cdot\frac{x}{2} + \amber{6}\cdot\frac{x}{3} = \amber{6}\cdot 10`, why: tx(t, "mLin_fr1", "the denominators are 2 and 3; lcm(2, 3) = 6, so multiply every term by 6") },
+          { full: true, tex: r`3x + 2x = 60`, why: tx(t, "mLin_fr2", "6 · x/2 = 3x and 6 · x/3 = 2x, and 6 · 10 = 60: 3x + 2x = 60") },
+          { full: true, tex: r`5x = 60 \;\Rightarrow\; x = \green{12}`, why: tx(t, "mLin_fr3", "collect: 5x = 60, so x = 12. Check: 6 + 4 = 10 ✓") },
+        ]} />
 
       <H2>{tx(t, "mLin_casesTitle", "One, none or infinitely many")}</H2>
       <p>
@@ -147,6 +159,15 @@ export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mLin_eqRearrNote", "Subtract u from both sides: v − u = a·t. Divide both sides by a (assuming a ≠ 0): t = (v − u)/a. A negative t means the target speed was reached before the clock started: check that an answer makes sense for the question, not just for the algebra.")}>
         {r`v = u + a\,t \;\;\Longrightarrow\;\; t = \frac{v - u}{a}`}
       </Equation>
+      <LiveFormula label={tx(t, "mLin_liveTime", "Try it: how long to reach speed v?")}
+        tex={r`\sym{t}{\amber{t}} = \frac{v - u}{a}`}
+        vars={[
+          { id: "u", label: tx(t, "mLin_liveU", "start speed u (m/s)"), min: 0, max: 30, step: 1, value: 5, fmt: num },
+          { id: "v", label: tx(t, "mLin_liveV", "target speed v (m/s)"), min: 0, max: 40, step: 1, value: 25, fmt: num },
+          { id: "a", label: tx(t, "mLin_liveA", "acceleration a (m/s²)"), min: -5, max: 5, step: 0.5, value: 2, fmt: num },
+        ]}
+        compute={v => timeNumbers(v, t)}
+        note={tx(t, "mLin_liveTimeNote", "Set a to 0: the formula divides by zero, which is the case the rearrangement had to exclude. Make v smaller than u with a positive a: the time comes out negative. The algebra is right, but the question has no answer in the future.")} />
 
       <H2>{tx(t, "mLin_wordTitle", "From words to an equation")}</H2>
       <p>

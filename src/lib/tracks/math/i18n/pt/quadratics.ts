@@ -77,6 +77,22 @@ const text: Record<string, string> = {
   mAlg_wDisc: "o discriminante. Δ > 0: duas soluções reais; Δ = 0: uma (a parábola toca o eixo); Δ < 0: nenhuma, porque nenhum número real ao quadrado dá negativo",
   mAlg_wVertex: "o x do vértice, o ponto de virada da parábola. As raízes ficam simétricas em torno dele",
   mAlg_wSpread: "a distância de cada raiz até o vértice",
+
+  // ── In words, derivations, live formula (2026-10-07) ──
+  mQuad_stdWords: "Um número vezes x ao quadrado, mais um número vezes x, mais uma constante, sendo que o primeiro número não é zero.",
+  mQuad_vertexWords: "A parábola y = x² movida para que seu ponto de virada fique em (h, k), e esticada por a.",
+  mAlg_quadWords: "Comece em menos b sobre 2a, o vértice, e dê um passo de raiz do discriminante sobre 2a para cada lado: esses dois pontos são as raízes.",
+  mQuad_vietaWords: "As duas raízes somam menos b sobre a e multiplicadas dão c sobre a.",
+  mQuad_dFormula: "De onde vem a fórmula",
+  mQuad_dF1: "divida cada termo por a (permitido, a ≠ 0) e passe a constante para a direita",
+  mQuad_dF2: "o coeficiente de x é b/a; metade dele é b/2a, então o canto que falta é (b/2a)² = b²/4a². Some-o aos dois lados",
+  mQuad_dF3: "o lado esquerdo agora é um quadrado perfeito; à direita, escreva c/a como 4ac/4a² para usar um só denominador",
+  mQuad_dF4: "raiz quadrada dos dois lados, com os dois sinais; a raiz de 4a² é 2a (o ± já cobre o sinal dele)",
+  mQuad_dF5: "subtraia b/2a dos dois lados e ponha tudo sobre 2a",
+  mQuad_liveRoots: "Experimente: a fórmula em qualquer quadrática",
+  mQuad_liveLinear: "não é quadrática, a fórmula dividiria por 0",
+  mQuad_liveNone: "nenhuma raiz real",
+  mQuad_liveRootsNote: "Começa no exemplo resolvido. Deixe c grande e positivo com a positivo: Δ fica negativo e as raízes somem. Experimente a = 1, b = −4, c = 4: Δ = 0 e as duas raízes se fundem numa só.",
 };
 
 export default text;

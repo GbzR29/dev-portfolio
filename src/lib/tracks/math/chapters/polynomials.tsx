@@ -7,12 +7,30 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { PolynomialFigure } from "@/components/lesson/figures/math/PolynomialFigure";
 
 const r = String.raw;
+
+// ── Live Horner: 2x³ − 6x² + 2x − 1, one multiply-add per coefficient ────────
+
+const par = (v: number) => (v < 0 ? `(${v})` : String(v));
+
+function hornerChain(v: Record<string, number>) {
+  const x = v.x, coefs = [2, -6, 2, -1];
+  let acc = coefs[0];
+  const steps = [r`\amber{${acc}}`];
+  coefs.slice(1).forEach((c, i) => {
+    const next = acc * x + c, last = i === coefs.length - 2;
+    steps.push(r`${par(acc)}\cdot${par(x)} ${c < 0 ? "-" : "+"} ${Math.abs(c)} = ${last ? r`\green{${next}}` : r`\amber{${next}}`}`);
+    acc = next;
+  });
+  return { tex: steps.join(r` \to `) };
+}
 
 export function PolynomialsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -34,6 +52,7 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
           [r`a_n \neq 0`, tx(t, "mPoly_wLead", "the leading coefficient; if it were 0, the degree would be lower")],
           [r`a_0`, tx(t, "mPoly_wA0", "the constant term, the value p(0)")],
         ]}
+        words={tx(t, "mPoly_defWords", "A sum of terms, each a fixed number times x raised to a whole-number power, written from the highest power down to the constant.")}
         note={tx(t, "mPoly_eqDefNote", "Example: p(x) = 4x³ − 2x + 7 has degree 3, leading coefficient 4, constant term 7, and a missing x² term (its coefficient is 0).")}>
         {r`p(x) = a_n x^n + a_{n-1} x^{n-1} + \dots + a_1 x + a_0`}
       </Equation>
@@ -53,15 +72,14 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPoly_opsBody",
           "Adding or subtracting polynomials is collecting like terms: add the coefficients of equal powers. Multiplying uses the distributive law: every term of the first multiplies every term of the second, the exponents add (x² · x³ = x⁵), then like terms are collected. The degree of a product is the sum of the degrees, which is why multiplying the factors (x − r) of the figure below builds a polynomial of any degree you like.")}
       </p>
-      <Equation label={tx(t, "mPoly_eqMul", "Multiplying (x² + 2x − 1)(x − 3)")}
-        notes={[
-          tx(t, "mPoly_mu1", "x² · (x − 3) = x³ − 3x²"),
-          tx(t, "mPoly_mu2", "2x · (x − 3) = 2x² − 6x"),
-          tx(t, "mPoly_mu3", "−1 · (x − 3) = −x + 3"),
-          tx(t, "mPoly_mu4", "collect: x³ + (−3 + 2)x² + (−6 − 1)x + 3. Degrees 2 + 1 = 3 ✓"),
-        ]}>
-        {r`(x^2 + 2x - 1)(x - 3) = x^3 - x^2 - 7x + 3`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mPoly_eqMul", "Multiplying (x² + 2x − 1)(x − 3)")}
+        steps={[
+          { tex: r`(\amber{x^2} + 2x - 1)(x - 3)` },
+          { tex: r`= \amber{x^3 - 3x^2} + 2x(x - 3) - 1(x - 3)`, why: tx(t, "mPoly_mu1", "x² · (x − 3) = x³ − 3x²") },
+          { tex: r`= x^3 - 3x^2 + \amber{2x^2 - 6x} - 1(x - 3)`, why: tx(t, "mPoly_mu2", "2x · (x − 3) = 2x² − 6x") },
+          { tex: r`= x^3 - 3x^2 + 2x^2 - 6x \amber{- x + 3}`, why: tx(t, "mPoly_mu3", "−1 · (x − 3) = −x + 3") },
+          { tex: r`= \green{x^3 - x^2 - 7x + 3}`, why: tx(t, "mPoly_mu4", "collect: x³ + (−3 + 2)x² + (−6 − 1)x + 3. Degrees 2 + 1 = 3 ✓") },
+        ]} />
 
       <H2>{tx(t, "mPoly_hornerTitle", "Evaluating: Horner's method")}</H2>
       <p>
@@ -76,6 +94,11 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mPoly_eqHornerNote", "At x = 3: 2 → 2·3 − 6 = 0 → 0·3 + 2 = 2 → 2·3 − 1 = 5. Check: 54 − 54 + 6 − 1 = 5 ✓.")}>
         {r`2x^3 - 6x^2 + 2x - 1 = \big((2x - 6)\,x + 2\big)\,x - 1`}
       </Equation>
+      <LiveFormula label={tx(t, "mPoly_liveHorner", "Try it: Horner at any x")}
+        tex={r`p(x) = \big((2x - 6)\,x + 2\big)\,x - 1`}
+        vars={[{ id: "x", label: "x", min: -4, max: 6, step: 1, value: 3, fmt: v => String(v) }]}
+        compute={hornerChain}
+        note={tx(t, "mPoly_liveHornerNote", "Each arrow is one step: multiply the amber number by x, then add the next coefficient (−6, then 2, then −1). The green number at the end is p(x). Try x = 3 and compare with the check under Horner's form above.")} />
 
       <H2>{tx(t, "mPoly_divTitle", "Division, remainders and factors")}</H2>
       <p>
@@ -86,22 +109,22 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`q(x)`, tx(t, "mPoly_wQ", "the quotient, of degree one less than p")],
           [r`p(r)`, tx(t, "mPoly_wR", "the remainder: substitute x = r into p(x) = (x − r)q(x) + R and the first term vanishes, leaving R = p(r)")],
-        ]}>
+        ]}
+        words={tx(t, "mPoly_remWords", "Dividing a polynomial by x minus r leaves a remainder, and that remainder is simply the polynomial's value at r.")}>
         {r`p(x) = (x - r)\,q(x) + p(r)`}
       </Equation>
       <p>
         {tx(t, "mPoly_factorThm",
           "The factor theorem follows at once: (x − r) divides p(x) exactly, with no remainder, precisely when p(r) = 0. So every root of a polynomial gives a factor, and every factor gives a root. To factor a cubic, find one root r by trying small whole numbers (for whole-number coefficients, any whole-number root must divide the constant term), divide by (x − r), and what remains is a quadratic you already know how to solve.")}
       </p>
-      <Equation label={tx(t, "mPoly_eqFactor", "Factoring x³ − 6x² + 11x − 6")}
-        notes={[
-          tx(t, "mPoly_fa1", "try divisors of 6: p(1) = 1 − 6 + 11 − 6 = 0, so (x − 1) is a factor"),
-          tx(t, "mPoly_fa2", "Horner at x = 1 on the coefficients 1, −6, 11, −6: 1 → 1·1 − 6 = −5 → −5·1 + 11 = 6 → 6·1 − 6 = 0 (the remainder)"),
-          tx(t, "mPoly_fa3", "the intermediate values 1, −5, 6 are the quotient: x² − 5x + 6 = (x − 2)(x − 3)"),
-          tx(t, "mPoly_fa4", "so the roots are 1, 2 and 3"),
-        ]}>
-        {r`x^3 - 6x^2 + 11x - 6 = (x - 1)(x^2 - 5x + 6) = (x - 1)(x - 2)(x - 3)`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mPoly_eqFactor", "Factoring x³ − 6x² + 11x − 6")}
+        steps={[
+          { full: true, tex: r`p(x) = x^3 - 6x^2 + 11x - 6` },
+          { full: true, tex: r`p(\amber{1}) = 1 - 6 + 11 - 6 = 0`, why: tx(t, "mPoly_fa1", "try divisors of 6: p(1) = 1 − 6 + 11 − 6 = 0, so (x − 1) is a factor") },
+          { full: true, tex: r`\amber{1} \to 1\cdot1 - 6 = \amber{-5} \to -5\cdot1 + 11 = \amber{6} \to 6\cdot1 - 6 = 0`, why: tx(t, "mPoly_fa2", "Horner at x = 1 on the coefficients 1, −6, 11, −6: 1 → 1·1 − 6 = −5 → −5·1 + 11 = 6 → 6·1 − 6 = 0 (the remainder)") },
+          { full: true, tex: r`p(x) = (x - 1)(\amber{1}x^2 \amber{- 5}x + \amber{6}) = (x - 1)(x - 2)(x - 3)`, why: tx(t, "mPoly_fa3", "the intermediate values 1, −5, 6 are the quotient: x² − 5x + 6 = (x − 2)(x − 3)") },
+          { full: true, tex: r`\green{x = 1,\; 2,\; 3}`, why: tx(t, "mPoly_fa4", "so the roots are 1, 2 and 3") },
+        ]} />
 
       <H2>{tx(t, "mPoly_rootsTitle", "Roots shape the graph")}</H2>
       <p>

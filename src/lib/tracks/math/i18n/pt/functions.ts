@@ -83,6 +83,22 @@ const text: Record<string, string> = {
   mAlg_eqInv: "Invertendo uma função linear",
   mAlg_wFwd: "a função direta",
   mAlg_wBack: "isolar x dá a inversa: desfaça o + b, depois desfaça o × m",
+
+  // ── In words, derivation, live formula (2026-10-07) ──
+  mFn_notationWords: "f de x é o que a regra f devolve quando você a alimenta com x. Aqui: dobre a entrada e some um, então f de 3 é 7.",
+  mAlg_lineWords: "Comece na altura b quando x é 0 e, a cada passo de 1 para a direita, suba m.",
+  mAlg_transWords: "Desloque a entrada por c e escale-a por b, aplique f, depois escale a saída por a e desloque-a por d. Os dois números de fora agem como você espera; os dois de dentro agem ao contrário.",
+  mFn_liveFee: "Experimente: a tarifa para qualquer tempo",
+  mFn_liveD: "tempo d (horas)",
+  mFn_livePiece1: "primeiro pedaço: d ≤ 2",
+  mFn_livePiece2: "pedaço do meio: 2 < d < 10",
+  mFn_livePiece3: "último pedaço: d ≥ 10",
+  mFn_liveFeeNote: "Primeiro o tempo decide qual pedaço vale, e só então a regra desse pedaço é usada. Passe pelo 2 e pelo 10: a tarifa muda de regra ali, mas não pula, porque os pedaços se encontram.",
+  mFn_dInv: "Invertendo f(x) = 3x − 6",
+  mFn_dInv1: "escreva y = f(x), depois desfaça a última operação, − 6, somando 6 aos dois lados",
+  mFn_dInv2: "desfaça o × 3 dividindo os dois lados por 3: agora x está escrito em função de y",
+  mFn_dInv3: "essa regra, que leva uma saída de volta à sua entrada, é a função inversa",
+  mFn_dInv4: "confira: ir para a frente e depois voltar tem de devolver o número de onde você partiu",
 };
 
 export default text;

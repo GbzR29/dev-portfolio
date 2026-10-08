@@ -7,6 +7,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -14,6 +16,23 @@ import { QuadraticFigure } from "@/components/lesson/figures/math/QuadraticFigur
 import { CompleteSquareFigure } from "@/components/lesson/figures/math/CompleteSquareFigure";
 
 const r = String.raw;
+
+// ── Live quadratic formula ───────────────────────────────────────────────────
+
+const num = (v: number) => String(Math.round(v * 1000) / 1000);
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+function rootNumbers(v: Record<string, number>, t: TrackTranslations) {
+  const { a, b, c } = v;
+  if (a === 0) return { tex: r`a = 0: \text{${tx(t, "mQuad_liveLinear", "not a quadratic, the formula would divide by 0")}}` };
+  const d = b * b - 4 * a * c;
+  const dTex = r`\sym{disc}{\amber{\Delta}} = ${par(b)}^2 - 4\cdot${par(a)}\cdot${par(c)} = \amber{${num(d)}}`;
+  if (d < 0) return { tex: r`${dTex} < 0 \qquad \text{${tx(t, "mQuad_liveNone", "no real roots")}}` };
+  const s = Math.sqrt(d);
+  return {
+    tex: r`\begin{gathered} ${dTex} \\[4pt] x = \frac{${num(-b)} \pm \sqrt{${num(d)}}}{${num(2 * a)}} = \frac{${num(-b)} \pm ${num(s)}}{${num(2 * a)}} \;\Rightarrow\; \green{x = ${num((-b - s) / (2 * a))}}${d === 0 ? "" : r`,\; \green{x = ${num((-b + s) / (2 * a))}}`} \end{gathered}`,
+  };
+}
 
 export function QuadraticsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -33,7 +52,8 @@ export function QuadraticsContent({ t }: { t: TrackTranslations }) {
           [r`a`, tx(t, "mQuad_wA", "the shape: a > 0 opens upward (a valley, it has a minimum), a < 0 opens downward (a hill, a maximum). A larger |a| is narrower")],
           [r`b`, tx(t, "mQuad_wB", "together with a, sets where the vertex is left or right: its x is −b/(2a)")],
           [r`c`, tx(t, "mQuad_wC", "the value at x = 0, where the parabola crosses the y axis")],
-        ]}>
+        ]}
+        words={tx(t, "mQuad_stdWords", "Some number times x squared, plus some number times x, plus a constant, where the first number is not zero.")}>
         {r`y = a\,x^2 + b\,x + c \qquad (a \neq 0)`}
       </Equation>
 
@@ -48,6 +68,7 @@ export function QuadraticsContent({ t }: { t: TrackTranslations }) {
           [r`h = -\tfrac{b}{2a}`, tx(t, "mQuad_wH", "the vertex's x, from the standard form")],
           [r`k = c - \tfrac{b^2}{4a}`, tx(t, "mQuad_wK", "the vertex's y: the value of the quadratic at x = h")],
         ]}
+        words={tx(t, "mQuad_vertexWords", "The parabola y = x² moved so that its turning point sits at (h, k), and stretched by a.")}
         note={tx(t, "mQuad_eqVertexNote", "Example: y = 2x² − 8x + 5. h = 8/4 = 2, k = 2·4 − 16 + 5 = −3, so y = 2(x − 2)² − 3: a valley with its bottom at (2, −3).")}>
         {r`y = a\,(x - h)^2 + k`}
       </Equation>
@@ -62,27 +83,25 @@ export function QuadraticsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mQuad_sqrtBody",
           "If b = 0, isolate x² and take the square root of both sides. Remember both signs: x² = 9 has two solutions, 3 and −3, because both square to 9. Writing only x = 3 loses half of the answer. The same works for anything of the form (x − h)² = k: x − h = ±√k, so x = h ± √k.")}
       </p>
-      <Equation label={tx(t, "mQuad_eqSqrt", "Solving 2x² − 18 = 0")}
-        notes={[
-          tx(t, "mQuad_q1", "add 18, divide by 2: x² = 9"),
-          tx(t, "mQuad_q2", "square root of both sides, both signs: x = ±3"),
-        ]}>
-        {r`2x^2 = 18 \;\to\; x^2 = 9 \;\to\; x = \pm 3`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mQuad_eqSqrt", "Solving 2x² − 18 = 0")}
+        steps={[
+          { full: true, tex: r`2x^2 - 18 = 0` },
+          { full: true, tex: r`x^2 = 9`, why: tx(t, "mQuad_q1", "add 18, divide by 2: x² = 9") },
+          { full: true, tex: r`\green{x = \pm 3}`, why: tx(t, "mQuad_q2", "square root of both sides, both signs: x = ±3") },
+        ]} />
 
       <H3>{tx(t, "mQuad_factTitle", "2. Factoring and the zero-product rule")}</H3>
       <p>
         {tx(t, "mQuad_factBody",
           "If a product is zero, one of its factors must be zero: 0 is the only number that can make a product vanish. So if you can write the quadratic as (x − p)(x − q) = 0, the solutions are p and q. For x² + bx + c with a = 1, look for two numbers p and q whose product is c and whose sum is −b (the expansion (x − p)(x − q) = x² − (p + q)x + pq from the expressions chapter). This is quick when the roots are whole numbers, and useless when they are not.")}
       </p>
-      <Equation label={tx(t, "mQuad_eqFact", "Solving x² − 5x + 6 = 0 by factoring")}
-        notes={[
-          tx(t, "mQuad_f1", "we need two numbers with product 6 and sum 5: 2 and 3"),
-          tx(t, "mQuad_f2", "so x² − 5x + 6 = (x − 2)(x − 3)"),
-          tx(t, "mQuad_f3", "the product is 0 when x − 2 = 0 or x − 3 = 0: x = 2 or x = 3"),
-        ]}>
-        {r`x^2 - 5x + 6 = (x - 2)(x - 3) = 0 \;\Rightarrow\; x = 2 \text{ or } x = 3`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mQuad_eqFact", "Solving x² − 5x + 6 = 0 by factoring")}
+        steps={[
+          { full: true, tex: r`x^2 - 5x + 6 = 0` },
+          { full: true, tex: r`\amber{2} \cdot \amber{3} = 6, \quad \amber{2} + \amber{3} = 5`, why: tx(t, "mQuad_f1", "we need two numbers with product 6 and sum 5: 2 and 3") },
+          { full: true, tex: r`(x - \amber{2})(x - \amber{3}) = 0`, why: tx(t, "mQuad_f2", "so x² − 5x + 6 = (x − 2)(x − 3)") },
+          { full: true, tex: r`\green{x = 2} \;\text{ or }\; \green{x = 3}`, why: tx(t, "mQuad_f3", "the product is 0 when x − 2 = 0 or x − 3 = 0: x = 2 or x = 3") },
+        ]} />
       <Callout type="warn" t={t}>
         {tx(t, "mQuad_divWarn", "Never divide both sides by x to \"simplify\" x² = 3x. That silently assumes x ≠ 0 and loses the solution x = 0. Instead move everything to one side and factor: x² − 3x = x(x − 3) = 0, so x = 0 or x = 3.")}
       </Callout>
@@ -95,39 +114,56 @@ export function QuadraticsContent({ t }: { t: TrackTranslations }) {
 
       <CompleteSquareFigure t={t} />
 
-      <Equation label={tx(t, "mQuad_eqCs", "Solving x² + 6x − 7 = 0 by completing the square")}
-        notes={[
-          tx(t, "mQuad_c1", "move the constant: x² + 6x = 7"),
-          tx(t, "mQuad_c2", "half of 6 is 3, and 3² = 9: add 9 to both sides, x² + 6x + 9 = 16"),
-          tx(t, "mQuad_c3", "the left side is now a perfect square: (x + 3)² = 16"),
-          tx(t, "mQuad_c4", "square roots: x + 3 = ±4, so x = 1 or x = −7"),
-        ]}>
-        {r`x^2 + 6x = 7 \;\to\; (x + 3)^2 = 16 \;\to\; x = -3 \pm 4`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mQuad_eqCs", "Solving x² + 6x − 7 = 0 by completing the square")}
+        steps={[
+          { full: true, tex: r`x^2 + 6x - 7 = 0` },
+          { full: true, tex: r`x^2 + 6x = 7`, why: tx(t, "mQuad_c1", "move the constant: x² + 6x = 7") },
+          { full: true, tex: r`x^2 + 6x \amber{+ 9} = 7 \amber{+ 9}`, why: tx(t, "mQuad_c2", "half of 6 is 3, and 3² = 9: add 9 to both sides, x² + 6x + 9 = 16") },
+          { full: true, tex: r`(x + 3)^2 = 16`, why: tx(t, "mQuad_c3", "the left side is now a perfect square: (x + 3)² = 16") },
+          { full: true, tex: r`x + 3 = \pm 4 \;\Rightarrow\; \green{x = 1} \text{ or } \green{x = -7}`, why: tx(t, "mQuad_c4", "square roots: x + 3 = ±4, so x = 1 or x = −7") },
+        ]} />
 
       <H2>{tx(t, "mQuad_formulaTitle", "The quadratic formula")}</H2>
       <p>
         {tx(t, "mAlg_completeBody",
           "The formula comes from a trick called completing the square. Divide by a: x² + (b/a)x + c/a = 0. The first two terms are the start of a perfect square: (x + b/2a)² = x² + (b/a)x + b²/4a². So add and subtract b²/4a²: (x + b/2a)² = b²/4a² − c/a = (b² − 4ac)/4a². Take the square root of both sides (both signs) and subtract b/2a.")}
       </p>
+      <Derivation t={t} label={tx(t, "mQuad_dFormula", "Where the formula comes from")}
+        steps={[
+          { full: true, tex: r`a x^2 + b x + c = 0` },
+          { full: true, tex: r`x^2 + \frac{b}{a}x = -\frac{c}{a}`, why: tx(t, "mQuad_dF1", "divide every term by a (allowed, a ≠ 0) and move the constant to the right") },
+          { full: true, tex: r`x^2 + \frac{b}{a}x \amber{+ \frac{b^2}{4a^2}} = \amber{\frac{b^2}{4a^2}} - \frac{c}{a}`, why: tx(t, "mQuad_dF2", "the x coefficient is b/a; half of it is b/2a, so the missing corner is (b/2a)² = b²/4a². Add it to both sides") },
+          { full: true, tex: r`\left(x + \frac{b}{2a}\right)^2 = \frac{b^2 - 4ac}{4a^2}`, why: tx(t, "mQuad_dF3", "the left side is now a perfect square; on the right, write c/a as 4ac/4a² to use one denominator") },
+          { full: true, tex: r`x + \frac{b}{2a} = \pm\frac{\sqrt{b^2 - 4ac}}{2a}`, why: tx(t, "mQuad_dF4", "square root of both sides, both signs; the root of 4a² is 2a (the ± already covers its sign)") },
+          { full: true, tex: r`\green{x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}}`, why: tx(t, "mQuad_dF5", "subtract b/2a from both sides and put everything over 2a") },
+        ]} />
       <Equation label={tx(t, "mAlg_eqQuad", "The quadratic formula")}
         where={[
           [r`a, b, c`, tx(t, "mAlg_wABC", "the coefficients of ax² + bx + c = 0, with a ≠ 0")],
-          [r`\Delta = b^2 - 4ac`, tx(t, "mAlg_wDisc", "the discriminant. Δ > 0: two real solutions; Δ = 0: one (the parabola touches the axis); Δ < 0: none, because no real number squares to a negative")],
+          [r`\sym{disc}{\amber{\Delta}} = b^2 - 4ac`, tx(t, "mAlg_wDisc", "the discriminant. Δ > 0: two real solutions; Δ = 0: one (the parabola touches the axis); Δ < 0: none, because no real number squares to a negative")],
           [r`-\tfrac{b}{2a}`, tx(t, "mAlg_wVertex", "the x of the vertex, the parabola's turning point. The roots sit symmetrically around it")],
           [r`\pm\tfrac{\sqrt\Delta}{2a}`, tx(t, "mAlg_wSpread", "how far each root is from the vertex")],
-        ]}>
-        {r`x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}`}
+        ]}
+        words={tx(t, "mAlg_quadWords", "Start at minus b over 2a, the vertex, and step the square root of the discriminant over 2a to each side: those two points are the roots.")}>
+        {r`x = \frac{-b \pm \sqrt{\sym{disc}{\amber{b^2 - 4ac}}}}{2a}`}
       </Equation>
-      <Equation label={tx(t, "mQuad_eqUse", "Using it on 2x² + 3x − 5 = 0")}
-        notes={[
-          tx(t, "mQuad_u1", "read off a = 2, b = 3, c = −5 (the sign belongs to the coefficient)"),
-          tx(t, "mQuad_u2", "discriminant: Δ = 3² − 4 · 2 · (−5) = 9 + 40 = 49 > 0, two roots"),
-          tx(t, "mQuad_u3", "x = (−3 ± 7)/4: x = 4/4 = 1 or x = −10/4 = −2.5"),
-          tx(t, "mQuad_u4", "check x = 1: 2 + 3 − 5 = 0 ✓"),
-        ]}>
-        {r`x = \frac{-3 \pm \sqrt{49}}{4} = \frac{-3 \pm 7}{4} \;\Rightarrow\; x = 1,\; x = -2.5`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mQuad_eqUse", "Using it on 2x² + 3x − 5 = 0")}
+        steps={[
+          { full: true, tex: r`2x^2 + 3x - 5 = 0` },
+          { full: true, tex: r`a = 2,\; b = 3,\; c = -5`, why: tx(t, "mQuad_u1", "read off a = 2, b = 3, c = −5 (the sign belongs to the coefficient)") },
+          { full: true, tex: r`\amber{\Delta} = 3^2 - 4 \cdot 2 \cdot (-5) = 9 + 40 = \amber{49}`, why: tx(t, "mQuad_u2", "discriminant: Δ = 3² − 4 · 2 · (−5) = 9 + 40 = 49 > 0, two roots") },
+          { full: true, tex: r`x = \frac{-3 \pm 7}{4} \;\Rightarrow\; \green{x = 1},\; \green{x = -2.5}`, why: tx(t, "mQuad_u3", "x = (−3 ± 7)/4: x = 4/4 = 1 or x = −10/4 = −2.5") },
+          { full: true, tex: r`2 + 3 - 5 = 0 \;\checkmark`, why: tx(t, "mQuad_u4", "check x = 1: 2 + 3 − 5 = 0 ✓") },
+        ]} />
+      <LiveFormula label={tx(t, "mQuad_liveRoots", "Try it: the formula on any quadratic")}
+        tex={r`x = \frac{-b \pm \sqrt{\sym{disc}{\amber{\Delta}}}}{2a}, \qquad \sym{disc}{\amber{\Delta}} = b^2 - 4ac`}
+        vars={[
+          { id: "a", label: "a", min: -5, max: 5, step: 1, value: 2, fmt: num },
+          { id: "b", label: "b", min: -10, max: 10, step: 1, value: 3, fmt: num },
+          { id: "c", label: "c", min: -10, max: 10, step: 1, value: -5, fmt: num },
+        ]}
+        compute={v => rootNumbers(v, t)}
+        note={tx(t, "mQuad_liveRootsNote", "It starts on the worked example. Make c large and positive with a positive a: Δ turns negative and the roots disappear. Try a = 1, b = −4, c = 4: Δ = 0 and the two roots merge into one.")} />
 
       <QuadraticFigure t={t} />
 
@@ -140,7 +176,8 @@ export function QuadraticsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`x_1 + x_2`, tx(t, "mQuad_wSum", "the sum of the roots, −b/a. For 2x² + 3x − 5: 1 + (−2.5) = −1.5 = −3/2 ✓")],
           [r`x_1\,x_2`, tx(t, "mQuad_wProd", "the product of the roots, c/a. Here 1 · (−2.5) = −2.5 = −5/2 ✓")],
-        ]}>
+        ]}
+        words={tx(t, "mQuad_vietaWords", "The two roots add up to minus b over a and multiply to c over a.")}>
         {r`x_1 + x_2 = -\frac{b}{a} \qquad x_1\,x_2 = \frac{c}{a}`}
       </Equation>
 

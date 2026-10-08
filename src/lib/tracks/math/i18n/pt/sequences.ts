@@ -77,6 +77,24 @@ const text: Record<string, string> = {
   mAlg_wArith: "a série aritmética: n(n + 1)/2. Uma pilha de toras com 1 no topo, 2 abaixo, … 20 na base tem 20 · 21/2 = 210 toras",
   mAlg_wGeo: "a série geométrica: (1 − rⁿ)/(1 − r) para r ≠ 1. Multiplique a soma S por r e subtraia: S − rS = 1 − rⁿ, porque todos os termos do meio se cancelam",
   mAlg_wInf: "o limite da série geométrica quando n → ∞, se |r| < 1. Com r = ½: 1 + ½ + ¼ + … = 2. Cada termo é metade do anterior, e juntos nunca passam do dobro do primeiro",
+
+  // ── In words, derivations, live formula (2026-10-07) ──
+  mSeq_arithWords: "Comece no primeiro termo e dê n − 1 passos de tamanho d.",
+  mSeq_geoWords: "Comece no primeiro termo e multiplique por r, n − 1 vezes.",
+  mSeq_arithSumWords: "A soma é o número de termos vezes a média entre o primeiro e o último.",
+  mSeq_infWords: "Se cada termo é uma fração fixa do anterior, menor que 1 em tamanho, a soma sem fim se estabiliza no primeiro termo dividido por um menos a razão.",
+  mSeq_dGauss: "O truque de Gauss para 1 + 2 + … + 100",
+  mSeq_dG1: "escreva a mesma soma de trás para a frente: ela tem o mesmo valor",
+  mSeq_dG2: "some as duas linhas coluna por coluna: cada par é 1 + 100 = 101",
+  mSeq_dG3: "há 100 colunas, uma por termo",
+  mSeq_dG4: "cada número foi contado duas vezes, então divida por 2",
+  mSeq_liveArith: "Experimente: qualquer sequência aritmética",
+  mSeq_liveArithNote: "Começa no exemplo dos níveis: 25 níveis custam 14 500 de ouro no total. Ponha a₁ = 1, d = 1, n = 100 para a soma de Gauss, ou a₁ = 1, d = 2 para os números ímpares, cujas somas são sempre um quadrado perfeito.",
+  mSeq_dGeo: "A soma geométrica, passo a passo",
+  mSeq_dS1: "multiplique cada termo por r: cada potência sobe um",
+  mSeq_dS2: "subtraia: os termos do meio em âmbar aparecem nas duas linhas e se cancelam, só sobrevivem o primeiro e o último",
+  mSeq_dS3: "ponha S em evidência à esquerda e a à direita",
+  mSeq_dS4: "divida por 1 − r, o que só é permitido quando r ≠ 1",
 };
 
 export default text;

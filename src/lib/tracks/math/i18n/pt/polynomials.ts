@@ -101,6 +101,12 @@ const text: Record<string, string> = {
   mPoly_m5r: "escreva o coeficiente 0 dela",
   mPoly_m5: "x³ − 1 tem coeficientes 1, 0, 0, −1",
   mPoly_m6: "uma soma de quadrados não tem fatores reais",
+
+  // ── In words, live formula (2026-10-07) ──
+  mPoly_defWords: "Uma soma de termos, cada um um número fixo vezes x elevado a uma potência inteira, escritos da maior potência até a constante.",
+  mPoly_remWords: "Dividir um polinômio por x menos r deixa um resto, e esse resto é simplesmente o valor do polinômio em r.",
+  mPoly_liveHorner: "Experimente: Horner em qualquer x",
+  mPoly_liveHornerNote: "Cada seta é um passo: multiplique o número âmbar por x, depois some o próximo coeficiente (−6, depois 2, depois −1). O número verde no fim é p(x). Experimente x = 3 e compare com a conferência sob a forma de Horner acima.",
 };
 
 export default text;

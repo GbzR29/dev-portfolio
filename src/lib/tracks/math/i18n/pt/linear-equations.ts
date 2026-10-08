@@ -92,6 +92,17 @@ const text: Record<string, string> = {
   mLin_m6w: "sem conferir",
   mLin_m6r: "substitua na original",
   mLin_m6: "conferir leva segundos e pega todo deslize, inclusive na tradução das palavras",
+
+  // ── In words, live formula (2026-10-07) ──
+  mLin_formWords: "Um número vezes x, mais outro número, é igual a zero. Passe a constante para o outro lado e divida pelo coeficiente: x é menos b sobre a.",
+  mLin_ruleWords: "Somar a mesma coisa aos dois lados, ou multiplicar os dois lados pelo mesmo número diferente de zero, dá uma equação com exatamente as mesmas soluções.",
+  mLin_liveTime: "Experimente: quanto tempo até a velocidade v?",
+  mLin_liveU: "velocidade inicial u (m/s)",
+  mLin_liveV: "velocidade-alvo v (m/s)",
+  mLin_liveA: "aceleração a (m/s²)",
+  mLin_liveZero: "divisão por zero: sem resposta",
+  mLin_liveNeg: "antes de o relógio começar",
+  mLin_liveTimeNote: "Ponha a em 0: a fórmula divide por zero, que é o caso que o rearranjo teve de excluir. Deixe v menor que u com a positivo: o tempo sai negativo. A álgebra está certa, mas a pergunta não tem resposta no futuro.",
 };
 
 export default text;

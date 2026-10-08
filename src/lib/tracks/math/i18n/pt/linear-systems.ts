@@ -77,6 +77,13 @@ const text: Record<string, string> = {
   mAlg_wEq1: "a primeira equação",
   mAlg_wEq2: "a segunda equação",
   mAlg_wDet: "o determinante; se for 0, as retas são paralelas e a fórmula divide por zero",
+
+  // ── In words, live formula (2026-10-07) ──
+  mSys_formWords: "Duas condições sobre as mesmas duas incógnitas, x e y, que precisam ser verdadeiras ao mesmo tempo.",
+  mSys_cramerWords: "Cada incógnita é uma diferença de dois produtos cruzados dividida pelo determinante ad − bc. Se o determinante é zero, não há uma resposta única.",
+  mSys_liveCramer: "Experimente: qualquer sistema 2 × 2",
+  mSys_liveNoUnique: "nenhuma solução única: as retas são paralelas ou iguais",
+  mSys_liveCramerNote: "Começa no exemplo acima. Agora faça a segunda linha ser um múltiplo da primeira, por exemplo a = 1, b = 2, c = 2, d = 4: o determinante cai para 0 e a fórmula não tem por quanto dividir.",
 };
 
 export default text;

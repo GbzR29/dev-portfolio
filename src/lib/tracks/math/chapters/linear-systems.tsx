@@ -7,12 +7,33 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { LinesFigure } from "@/components/lesson/figures/math/LinesFigure";
 
 const r = String.raw;
+
+// ── Live Cramer's rule ───────────────────────────────────────────────────────
+
+const num = (v: number) => String(Math.round(v * 100) / 100);
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+function cramerNumbers(v: Record<string, number>, t: TrackTranslations) {
+  const { a, b, c, d, e, f } = v;
+  const det = a * d - b * c;
+  const detTex = r`\sym{det}{\amber{ad - bc}} = ${par(a)}\cdot${par(d)} - ${par(b)}\cdot${par(c)} = \amber{${num(det)}}`;
+  if (det === 0) return { tex: r`${detTex} \qquad \text{${tx(t, "mSys_liveNoUnique", "no single solution: the lines are parallel or the same")}}` };
+  const nx = e * d - b * f, ny = a * f - e * c;
+  return {
+    tex: r`\begin{gathered} ${detTex} \\[4pt] \begin{aligned}
+      x &=\frac{${par(e)}\cdot${par(d)} - ${par(b)}\cdot${par(f)}}{${num(det)}} = \frac{${num(nx)}}{${num(det)}} = \green{${num(nx / det)}} \\
+      y &= \frac{${par(a)}\cdot${par(f)} - ${par(e)}\cdot${par(c)}}{${num(det)}} = \frac{${num(ny)}}{${num(det)}} = \green{${num(ny / det)}}
+    \end{aligned} \end{gathered}`,
+  };
+}
 
 export function LinearSystemsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -32,7 +53,8 @@ export function LinearSystemsContent({ t }: { t: TrackTranslations }) {
           [r`x,\ y`, tx(t, "mSys_wXY", "the two unknowns; the solution is a pair (x, y)")],
           [r`a, b, c, d`, tx(t, "mSys_wCoef", "the coefficients, known numbers multiplying the unknowns")],
           [r`e, f`, tx(t, "mSys_wRhs", "the right-hand sides, also known numbers")],
-        ]}>
+        ]}
+        words={tx(t, "mSys_formWords", "Two conditions on the same two unknowns, x and y, that must both be true at the same time.")}>
         {r`\begin{cases} a\,x + b\,y = e \\ c\,x + d\,y = f \end{cases}`}
       </Equation>
 
@@ -49,30 +71,28 @@ export function LinearSystemsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSys_subBody",
           "Solve one equation for one unknown, then substitute that expression into the other equation. The other equation then has only one unknown, and you already know how to solve that. Finally put the value back to find the second unknown. Substitution is best when one equation already has a lone x or y with coefficient 1.")}
       </p>
-      <Equation label={tx(t, "mSys_eqSub", "Substitution on x + y = 10, x − y = 4")}
-        notes={[
-          tx(t, "mSys_s1", "solve the first equation for x: x = 10 − y"),
-          tx(t, "mSys_s2", "substitute into the second: (10 − y) − y = 4, so 10 − 2y = 4"),
-          tx(t, "mSys_s3", "solve: −2y = −6, so y = 3"),
-          tx(t, "mSys_s4", "back-substitute: x = 10 − 3 = 7. Check both equations: 7 + 3 = 10 ✓, 7 − 3 = 4 ✓"),
-        ]}>
-        {r`x = 10 - y \;\to\; (10 - y) - y = 4 \;\to\; y = 3,\; x = 7`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mSys_eqSub", "Substitution on x + y = 10, x − y = 4")}
+        steps={[
+          { full: true, tex: r`x + y = 10, \qquad x - y = 4` },
+          { full: true, tex: r`\amber{x = 10 - y}`, why: tx(t, "mSys_s1", "solve the first equation for x: x = 10 − y") },
+          { full: true, tex: r`\amber{(10 - y)} - y = 4 \;\Rightarrow\; 10 - 2y = 4`, why: tx(t, "mSys_s2", "substitute into the second: (10 − y) − y = 4, so 10 − 2y = 4") },
+          { full: true, tex: r`-2y = -6 \;\Rightarrow\; \green{y = 3}`, why: tx(t, "mSys_s3", "solve: −2y = −6, so y = 3") },
+          { full: true, tex: r`\green{x = 10 - 3 = 7} \qquad 7 + 3 = 10\;\checkmark \quad 7 - 3 = 4\;\checkmark`, why: tx(t, "mSys_s4", "back-substitute: x = 10 − 3 = 7. Check both equations: 7 + 3 = 10 ✓, 7 − 3 = 4 ✓") },
+        ]} />
 
       <H2>{tx(t, "mSys_elimTitle", "Method 2: elimination")}</H2>
       <p>
         {tx(t, "mSys_elimBody",
           "If two equations are true, their sum is true too (you add equal things to equal things), and so is any multiple of one of them. Elimination uses that: multiply the equations by numbers chosen so that one unknown has opposite coefficients, then add them, and that unknown vanishes. This is the method computers use (as Gaussian elimination), because it works the same way for any number of equations.")}
       </p>
-      <Equation label={tx(t, "mSys_eqElim", "Elimination on 2x + 3y = 12, 5x − 2y = 11")}
-        notes={[
-          tx(t, "mSys_e1", "to eliminate y, make its coefficients +6 and −6: multiply the first equation by 2 and the second by 3"),
-          tx(t, "mSys_e2", "4x + 6y = 24 and 15x − 6y = 33"),
-          tx(t, "mSys_e3", "add them: 19x = 57, so x = 3"),
-          tx(t, "mSys_e4", "back into the first equation: 6 + 3y = 12, so y = 2. Check the second: 15 − 4 = 11 ✓"),
-        ]}>
-        {r`\begin{array}{rcl} 4x + 6y &=& 24 \\ 15x - 6y &=& 33 \\ \hline 19x &=& 57 \end{array} \quad\Rightarrow\quad x = 3,\; y = 2`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mSys_eqElim", "Elimination on 2x + 3y = 12, 5x − 2y = 11")}
+        steps={[
+          { full: true, tex: r`2x + 3y = 12, \qquad 5x - 2y = 11` },
+          { full: true, tex: r`\amber{2}\cdot(2x + 3y) = \amber{2}\cdot 12, \qquad \amber{3}\cdot(5x - 2y) = \amber{3}\cdot 11`, why: tx(t, "mSys_e1", "to eliminate y, make its coefficients +6 and −6: multiply the first equation by 2 and the second by 3") },
+          { full: true, tex: r`\begin{array}{rcl} 4x \amber{+ 6y} &=& 24 \\ 15x \amber{- 6y} &=& 33 \end{array}`, why: tx(t, "mSys_e2", "4x + 6y = 24 and 15x − 6y = 33") },
+          { full: true, tex: r`19x = 57 \;\Rightarrow\; \green{x = 3}`, why: tx(t, "mSys_e3", "add them: 19x = 57, so x = 3") },
+          { full: true, tex: r`6 + 3y = 12 \;\Rightarrow\; \green{y = 2} \qquad 15 - 4 = 11\;\checkmark`, why: tx(t, "mSys_e4", "back into the first equation: 6 + 3y = 12, so y = 2. Check the second: 15 − 4 = 11 ✓") },
+        ]} />
       <Callout type="tip" t={t}>
         {tx(t, "mSys_whichTip", "Which method? Substitution when a coefficient is 1 or −1 (nothing to divide), elimination otherwise. Both always give the same answer; they are the same algebra in a different order. Graphing is for understanding and for a rough estimate, not for exact values.")}
       </Callout>
@@ -102,9 +122,22 @@ export function LinearSystemsContent({ t }: { t: TrackTranslations }) {
           [r`c x + d y = f`, tx(t, "mAlg_wEq2", "the second equation")],
           [r`ad - bc`, tx(t, "mAlg_wDet", "the determinant; if it is 0 the lines are parallel and the formula divides by zero")],
         ]}
+        words={tx(t, "mSys_cramerWords", "Each unknown is a difference of two cross products divided by the determinant ad − bc. If the determinant is zero, there is no single answer.")}
         note={tx(t, "mSys_cramerNote", "Check with 2x + 3y = 12, 5x − 2y = 11: ad − bc = 2(−2) − 3 · 5 = −19. x = (12(−2) − 3 · 11)/(−19) = −57/−19 = 3, and y = (2 · 11 − 12 · 5)/(−19) = −38/−19 = 2 ✓.")}>
         {r`x = \frac{e\,d - b\,f}{a\,d - b\,c}, \qquad y = \frac{a\,f - e\,c}{a\,d - b\,c}`}
       </Equation>
+      <LiveFormula label={tx(t, "mSys_liveCramer", "Try it: any 2 × 2 system")}
+        tex={r`\begin{cases} a\,x + b\,y = e \\ c\,x + d\,y = f \end{cases} \qquad x = \frac{e\,d - b\,f}{\sym{det}{\amber{ad - bc}}}, \quad y = \frac{a\,f - e\,c}{\sym{det}{\amber{ad - bc}}}`}
+        vars={[
+          { id: "a", label: "a", min: -5, max: 5, step: 1, value: 2, fmt: num },
+          { id: "b", label: "b", min: -5, max: 5, step: 1, value: 3, fmt: num },
+          { id: "c", label: "c", min: -5, max: 5, step: 1, value: 5, fmt: num },
+          { id: "d", label: "d", min: -5, max: 5, step: 1, value: -2, fmt: num },
+          { id: "e", label: "e", min: -15, max: 15, step: 1, value: 12, fmt: num },
+          { id: "f", label: "f", min: -15, max: 15, step: 1, value: 11, fmt: num },
+        ]}
+        compute={v => cramerNumbers(v, t)}
+        note={tx(t, "mSys_liveCramerNote", "It starts on the example above. Now make the second row a multiple of the first, for example a = 1, b = 2, c = 2, d = 4: the determinant drops to 0 and the formula has nothing to divide by.")} />
       <p>
         {tx(t, "mSys_detBody",
           "The determinant will return in the linear algebra section, where the coefficients a, b, c, d become a 2 × 2 matrix and ad − bc turns out to measure how much that matrix scales areas. A zero determinant means the matrix squashes the plane onto a line, which is the geometric reason there is no unique solution.")}
@@ -115,15 +148,14 @@ export function LinearSystemsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSys_threeBody",
           "With three unknowns you need three equations. Each linear equation in x, y, z is a plane in 3D, and the solution is the point where all three planes meet. The method is the same elimination, applied twice: use two pairs of equations to eliminate the same unknown, which leaves a 2 × 2 system; solve it; then back-substitute. For larger systems this procedure, organised in a table of coefficients, is Gaussian elimination, and it is what numerical libraries run under the hood.")}
       </p>
-      <Equation label={tx(t, "mSys_eq3", "A 3 × 3 example")}
-        notes={[
-          tx(t, "mSys_t1", "add the first two equations: z cancels, 3x + y = 9"),
-          tx(t, "mSys_t2", "subtract the first from the third: z cancels again, x + 2y = 8"),
-          tx(t, "mSys_t3", "solve the 2 × 2 system 3x + y = 9, x + 2y = 8: x = 2, y = 3"),
-          tx(t, "mSys_t4", "back into the first equation: 2 + 3 + z = 6, so z = 1"),
-        ]}>
-        {r`\begin{cases} x + y + z = 6 \\ 2x - z = 3 \\ 2x + 3y + z = 14 \end{cases} \;\Rightarrow\; (x, y, z) = (2, 3, 1)`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mSys_eq3", "A 3 × 3 example")}
+        steps={[
+          { full: true, tex: r`\begin{cases} x + y + z = 6 \\ 2x - z = 3 \\ 2x + 3y + z = 14 \end{cases}` },
+          { full: true, tex: r`3x + y = 9`, why: tx(t, "mSys_t1", "add the first two equations: z cancels, 3x + y = 9") },
+          { full: true, tex: r`x + 2y = 8`, why: tx(t, "mSys_t2", "subtract the first from the third: z cancels again, x + 2y = 8") },
+          { full: true, tex: r`\green{x = 2,\; y = 3}`, why: tx(t, "mSys_t3", "solve the 2 × 2 system 3x + y = 9, x + 2y = 8: x = 2, y = 3") },
+          { full: true, tex: r`2 + 3 + z = 6 \;\Rightarrow\; \green{z = 1}`, why: tx(t, "mSys_t4", "back into the first equation: 2 + 3 + z = 6, so z = 1") },
+        ]} />
 
       <H2>{tx(t, "mSys_exTitle", "Worked examples")}</H2>
       <p>

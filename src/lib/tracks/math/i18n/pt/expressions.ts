@@ -92,6 +92,14 @@ const text: Record<string, string> = {
   mExpr_m4: "um menos antes de um parêntese troca todos os sinais de dentro",
   mExpr_m5: "faltam os dois retângulos a·b; teste a = b = 1: 4 ≠ 2",
   mExpr_m6: "substitua entre parênteses; a potência vem antes do menos",
+
+  // ── In words, live formula (2026-10-07) ──
+  mExpr_likeWords: "Três x mais dois x são cinco x: para juntar termos semelhantes, some os coeficientes e mantenha a parte da variável.",
+  mExpr_distWords: "Um número na frente de um parêntese multiplica cada termo de dentro, um por um, e os produtos são somados.",
+  mExpr_foilWords: "Cada termo do primeiro parêntese multiplica cada termo do segundo: quatro produtos, e os dois do meio são ambos termos em x, então se juntam.",
+  mExpr_specialWords: "O quadrado de uma soma é o primeiro ao quadrado, mais duas vezes o produto, mais o segundo ao quadrado. A soma vezes a diferença dos mesmos dois números é a diferença dos quadrados.",
+  mExpr_liveHorner: "Experimente: as duas formas para qualquer x",
+  mExpr_liveHornerNote: "Qualquer que seja o x escolhido, as duas linhas terminam no mesmo número: são a mesma expressão escrita de dois jeitos. A linha aninhada só multiplica por x duas vezes, e o parêntese em âmbar é o único número intermediário que você precisa guardar.",
 };
 
 export default text;

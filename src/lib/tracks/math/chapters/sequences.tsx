@@ -7,12 +7,30 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { SequenceFigure } from "@/components/lesson/figures/math/SequenceFigure";
 
 const r = String.raw;
+
+// ── Live arithmetic sequence: the n-th term and the sum so far ───────────────
+
+const num = (v: number) => String(Math.round(v * 100) / 100);
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+function arithNumbers(v: Record<string, number>) {
+  const { a, d, n } = v;
+  const an = a + (n - 1) * d, s = (n * (a + an)) / 2;
+  return {
+    tex: r`\begin{gathered}
+      \sym{an}{\amber{a_{${n}}}} = ${num(a)} + (${n} - 1)\cdot${par(d)} = \amber{${num(an)}} \\[4pt]
+      S_{${n}} = ${n} \cdot \frac{${num(a)} + ${par(an)}}{2} = \green{${num(s)}}
+    \end{gathered}`,
+  };
+}
 
 export function SequencesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -46,6 +64,7 @@ export function SequencesContent({ t }: { t: TrackTranslations }) {
           [r`d`, tx(t, "mSeq_wD", "the common difference, a₂ − a₁ (or any term minus the one before it)")],
           [r`n - 1`, tx(t, "mSeq_wSteps", "the number of steps from the first term to the n-th; the most common off-by-one error is writing n")],
         ]}
+        words={tx(t, "mSeq_arithWords", "Start at the first term and take n − 1 steps of size d.")}
         note={tx(t, "mSeq_eqArithNote", "Example: a level-up costs 100 gold at level 1 and 40 more each level. At level 25: 100 + 24 · 40 = 1060 gold.")}>
         {r`a_n = a_1 + (n - 1)\,d`}
       </Equation>
@@ -61,6 +80,7 @@ export function SequencesContent({ t }: { t: TrackTranslations }) {
           [r`r`, tx(t, "mSeq_wR", "the common ratio, a₂ / a₁ (any term divided by the one before it)")],
           [r`r^{n-1}`, tx(t, "mSeq_wRn", "n − 1 multiplications by r")],
         ]}
+        words={tx(t, "mSeq_geoWords", "Start at the first term and multiply by r, n − 1 times.")}
         note={tx(t, "mSeq_eqGeoNote", "Example: a bouncing ball keeps 70% of its height each bounce. Dropped from 5 m, its peak heights are 5, 3.5, 2.45, …, and the 6th term, the peak after the 5th bounce, is 5 · 0.7⁵ ≈ 0.84 m.")}>
         {r`a_n = a_1 \cdot r^{\,n-1}`}
       </Equation>
@@ -92,15 +112,41 @@ export function SequencesContent({ t }: { t: TrackTranslations }) {
           [r`\tfrac{a_1 + a_n}{2}`, tx(t, "mSeq_wAvg", "the average of the first and last term, which is also the average of all the terms")],
           [r`n`, tx(t, "mSeq_wCount", "the number of terms")],
         ]}
+        words={tx(t, "mSeq_arithSumWords", "The sum is the number of terms times the average of the first and the last.")}
         note={tx(t, "mSeq_eqArithSumNote", "The total gold for levels 1 to 25 in the example above: 25 · (100 + 1060)/2 = 14 500.")}>
         {r`S_n = n \cdot \frac{a_1 + a_n}{2} \qquad\text{in particular}\qquad 1 + 2 + \dots + n = \frac{n(n+1)}{2}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mSeq_dGauss", "Gauss's trick for 1 + 2 + … + 100")}
+        steps={[
+          { full: true, tex: r`S = 1 + 2 + 3 + \dots + 100` },
+          { full: true, tex: r`S = 100 + 99 + 98 + \dots + 1`, why: tx(t, "mSeq_dG1", "write the same sum backwards: it has the same value") },
+          { full: true, tex: r`2S = \amber{101} + \amber{101} + \amber{101} + \dots + \amber{101}`, why: tx(t, "mSeq_dG2", "add the two lines column by column: every pair is 1 + 100 = 101") },
+          { full: true, tex: r`2S = 100 \cdot 101`, why: tx(t, "mSeq_dG3", "there are 100 columns, one per term") },
+          { full: true, tex: r`S = \frac{100 \cdot 101}{2} = \green{5050}`, why: tx(t, "mSeq_dG4", "each number was counted twice, so halve it") },
+        ]} />
+      <LiveFormula label={tx(t, "mSeq_liveArith", "Try it: any arithmetic sequence")}
+        tex={r`\sym{an}{\amber{a_n}} = a_1 + (n - 1)\,d \qquad S_n = n \cdot \frac{a_1 + \sym{an}{\amber{a_n}}}{2}`}
+        vars={[
+          { id: "a", label: "a₁", min: -20, max: 200, step: 1, value: 100, fmt: num },
+          { id: "d", label: "d", min: -10, max: 50, step: 1, value: 40, fmt: num },
+          { id: "n", label: "n", min: 1, max: 100, step: 1, value: 25, fmt: num },
+        ]}
+        compute={arithNumbers}
+        note={tx(t, "mSeq_liveArithNote", "It starts on the level-up example: 25 levels cost 14 500 gold in total. Set a₁ = 1, d = 1, n = 100 for Gauss's sum, or a₁ = 1, d = 2 for the odd numbers, whose sums are always a perfect square.")} />
 
       <H3>{tx(t, "mSeq_geoSumTitle", "Adding a geometric sequence")}</H3>
       <p>
         {tx(t, "mSeq_geoSumBody",
           "Call the sum S = a + ar + ar² + … + arⁿ⁻¹. Multiply it by r: rS = ar + ar² + … + arⁿ. The two lists share every term except the first of S and the last of rS, so subtracting leaves S − rS = a − arⁿ. Factor: S(1 − r) = a(1 − rⁿ), and divide by 1 − r (allowed when r ≠ 1; if r = 1 every term is a and S = na).")}
       </p>
+      <Derivation t={t} label={tx(t, "mSeq_dGeo", "The geometric sum, step by step")}
+        steps={[
+          { full: true, tex: r`S = a + \amber{ar + ar^2 + \dots + ar^{n-1}}` },
+          { full: true, tex: r`rS = \amber{ar + ar^2 + \dots + ar^{n-1}} + ar^n`, why: tx(t, "mSeq_dS1", "multiply every term by r: each power goes up by one") },
+          { full: true, tex: r`S - rS = a - ar^n`, why: tx(t, "mSeq_dS2", "subtract: the amber middle terms appear in both lines and cancel, only the first and the last survive") },
+          { full: true, tex: r`S\,(1 - r) = a\,(1 - r^n)`, why: tx(t, "mSeq_dS3", "factor S out on the left and a on the right") },
+          { full: true, tex: r`\green{S = a\,\frac{1 - r^n}{1 - r}} \qquad (r \neq 1)`, why: tx(t, "mSeq_dS4", "divide by 1 − r, which is allowed only when r ≠ 1") },
+        ]} />
       <Equation label={tx(t, "mAlg_eqSums", "Sigma notation and two closed forms")}
         where={[
           [r`\textstyle\sum_{k=1}^{n} k`, tx(t, "mAlg_wArith", "the arithmetic series: n(n + 1)/2. A stack of logs with 1 on top, 2 below, … 20 at the bottom holds 20 · 21/2 = 210 logs")],
@@ -120,6 +166,7 @@ export function SequencesContent({ t }: { t: TrackTranslations }) {
           [r`|r| < 1`, tx(t, "mSeq_wCond", "required; otherwise there is no finite sum")],
           [r`\tfrac{a}{1 - r}`, tx(t, "mSeq_wLim", "the value the partial sums approach")],
         ]}
+        words={tx(t, "mSeq_infWords", "If each term is a fixed fraction of the one before, smaller than 1 in size, the endless sum settles at the first term divided by one minus the ratio.")}
         note={tx(t, "mSeq_eqInfNote", "Example: 0.999… = 0.9 + 0.09 + 0.009 + … is geometric with a = 0.9 and r = 0.1, so it equals 0.9/(1 − 0.1) = 0.9/0.9 = 1 exactly.")}>
         {r`a + ar + ar^2 + \dots = \frac{a}{1 - r} \qquad (|r| < 1)`}
       </Equation>
