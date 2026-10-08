@@ -2,7 +2,11 @@
 
 const text: Record<string, string> = {
   mId_intro: "O capítulo de transformações só conseguia girar formas em quartos de volta, porque qualquer outra coisa precisava de seno e cosseno. Agora eles estão disponíveis, e este capítulo termina o serviço: uma fórmula gira um ponto por qualquer ângulo. Dessa fórmula saem as identidades da soma de ângulos, o punhado de fatos trigonométricos em que o resto da matemática, do cálculo aos números complexos, continua se apoiando. Tudo é deduzido, nada é para decorar às cegas.",
-  mId_whatTitle: "O que é uma identidade",
+  mId_goal0: "Girar um ponto por qualquer ângulo, em torno da origem ou de qualquer outro ponto.",
+  mId_goal1: "Deduzir as fórmulas de sin(α + β) e cos(α + β) em vez de decorá-las.",
+  mId_goal2: "Reescrever sin 2α e cos² α em formas mais simples.",
+  mId_goal3: "Mostrar, passo a passo, que duas expressões trigonométricas são iguais.",
+  mId_whatTitle:"O que é uma identidade",
   mId_whatBody: "Uma equação como 2x + 1 = 7 é verdadeira para um valor de x. Uma identidade é verdadeira para todo valor: (a + b)² = a² + 2ab + b² do capítulo de expressões é uma. Identidades trigonométricas são igualdades entre senos e cossenos que valem para todo ângulo. Elas são ferramentas de reescrita: trocar uma expressão cara ou incômoda por uma igual que é mais barata, mais simples ou mais fácil de usar num raciocínio. Duas já foram deduzidas nesta seção, direto do círculo unitário.",
   mId_eqBasic: "Identidades do círculo unitário",
   mId_wPyth: "Pitágoras: o ponto (cos θ, sin θ) está à distância 1 da origem",

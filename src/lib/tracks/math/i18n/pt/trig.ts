@@ -2,7 +2,12 @@
 
 const text: Record<string, string> = {
   mRt_intro: "A trigonometria começou como o estudo dos triângulos, para medir terras e navegar pelas estrelas. Ela é a ponte entre ângulos e comprimentos: pelo ângulo de uma escada, quão alto ela alcança; pelo ângulo até o topo de um morro, qual a altura do morro; pela inclinação de uma estrada, o ângulo em que ela sobe. O assunto todo cresce de uma única observação sobre triângulos retângulos, que este capítulo torna precisa. Os capítulos seguintes a estendem para todo ângulo, para qualquer triângulo, para a rotação e para as ondas.",
-  mRt_sidesTitle: "Nomeando os lados a partir de um ângulo",
+  mRt_goal0: "Achar qualquer lado de um triângulo retângulo a partir de um ângulo e de outro lado.",
+  mRt_goal1: "Achar um ângulo de um triângulo retângulo a partir de dois dos seus lados.",
+  mRt_goal2: "Dar o seno, o cosseno e a tangente de 30°, 45° e 60° exatos, sem calculadora.",
+  mRt_goal3: "Calcular a altura de algo em que você não consegue subir, a partir de um ângulo e de uma distância.",
+  mRt_goal4: "Transformar a inclinação de uma estrada ou de uma reta no seu ângulo, e o contrário.",
+  mRt_sidesTitle:"Nomeando os lados a partir de um ângulo",
   mRt_sidesBody: "Pegue um triângulo retângulo e escolha um dos seus dois ângulos agudos; chame-o de θ, a letra grega teta. Os lados ganham nomes em relação a esse ângulo. A hipotenusa é o maior lado, oposto ao ângulo reto, como no capítulo de Pitágoras. O cateto oposto é o que fica em frente a θ, sem encostar nele. O cateto adjacente é o outro lado que encosta em θ (“adjacente” quer dizer “ao lado”). Se você escolher o outro ângulo agudo, oposto e adjacente trocam de lugar, enquanto a hipotenusa continua a mesma.",
   mRt_whyTitle: "As razões só dependem do ângulo",
   mRt_whyBody: "Aqui está o fato-chave. Quaisquer dois triângulos retângulos com o mesmo ângulo θ têm dois ângulos iguais (θ e o ângulo reto), então pelo critério AA do capítulo de semelhança eles são semelhantes: um é uma cópia ampliada do outro. Ampliar multiplica todo lado pelo mesmo fator k, então a razão entre dois lados quaisquer, como oposto dividido pela hipotenusa, não muda: k se cancela. As razões são, portanto, propriedades só do ângulo, não do triângulo específico. Cada uma das três razões úteis tem um nome.",

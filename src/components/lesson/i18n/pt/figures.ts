@@ -180,6 +180,10 @@ const text: Record<string, string> = {
   figLab_learned: "o que você viu",
   figLab_again: "fazer de novo",
 
+  // Chapter boxes shared by every track (lesson/Prose.tsx)
+  goals: "Ao final você vai conseguir",
+  keyIdeas: "Ideias-chave",
+
   // Transport: the playback bar under an animated drawing (kit/Transport.tsx)
   figT_play: "rodar",
   figT_pause: "pausar",

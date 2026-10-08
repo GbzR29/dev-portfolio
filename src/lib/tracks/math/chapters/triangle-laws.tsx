@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TriangleLawFigure } from "@/components/lesson/figures/math/TriangleLawFigure";
 
 const r = String.raw;
@@ -46,6 +46,14 @@ export function TriangleLawsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mTl_intro",
           "SOH-CAH-TOA needs a right angle, and most triangles do not have one: the triangle between two lighthouses and a ship, the two parts of an arm and the point it reaches for, three towns on a map. Two laws handle every triangle. The law of cosines is Pythagoras with a correction term; the law of sines links each side to the angle facing it. Both come from a single trick: cut the triangle into two right triangles with a height.")}
       </Lead>
+
+      <Goals t={t} id="mTl" items={[
+        "Find the missing sides and angles of any triangle, not only right triangles.",
+        "Choose which law to use from the measurements you are given.",
+        "Spot when the measurements fit two different triangles, or none.",
+        "Find a triangle's area from two sides and the angle between them.",
+        "Work out the joint angles of a two-part arm reaching for a point.",
+      ]} />
 
       <H2>{tx(t, "mTl_namesTitle", "Naming the parts")}</H2>
       <p>

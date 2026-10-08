@@ -2,7 +2,12 @@
 
 const text: Record<string, string> = {
   mTl_intro: "SOH-CAH-TOA precisa de um ângulo reto, e a maioria dos triângulos não tem um: o triângulo entre dois faróis e um navio, as duas partes de um braço e o ponto que ele quer alcançar, três cidades num mapa. Duas leis resolvem todo triângulo. A lei dos cossenos é Pitágoras com um termo de correção; a lei dos senos liga cada lado ao ângulo em frente a ele. As duas vêm de um único truque: cortar o triângulo em dois triângulos retângulos com uma altura.",
-  mTl_namesTitle: "Nomeando as partes",
+  mTl_goal0: "Achar os lados e ângulos que faltam em qualquer triângulo, não só nos retângulos.",
+  mTl_goal1: "Escolher qual lei usar a partir das medidas que você tem.",
+  mTl_goal2: "Perceber quando as medidas servem para dois triângulos diferentes, ou para nenhum.",
+  mTl_goal3: "Achar a área de um triângulo a partir de dois lados e do ângulo entre eles.",
+  mTl_goal4: "Calcular os ângulos das juntas de um braço de duas partes que alcança um ponto.",
+  mTl_namesTitle:"Nomeando as partes",
   mTl_namesBody: "Chame os cantos de A, B e C, e use as mesmas letras maiúsculas para os ângulos neles. Cada lado ganha a letra minúscula do canto em frente: o lado a é oposto ao canto A (liga B e C), b é oposto a B, c é oposto a C. Com esses nomes toda fórmula abaixo se lê do mesmo jeito, seja qual for o canto pelo qual você começa; troque as letras de lugar e ela continua verdadeira.",
   mTl_cosTitle: "A lei dos cossenos",
   mTl_cosBody: "Baixe a altura de B reto até a reta que passa por C e A, encontrando-a em D. A altura forma dois triângulos retângulos. No triângulo BDC a hipotenusa é a e o ângulo em C é C, então CD = a cos C e a altura BD = a sin C, pelas definições do primeiro capítulo desta seção. O resto da base é DA = b − a cos C. Agora aplique Pitágoras ao outro triângulo retângulo, BDA, cuja hipotenusa é c.",

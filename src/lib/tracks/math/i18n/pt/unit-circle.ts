@@ -2,7 +2,12 @@
 
 const text: Record<string, string> = {
   mUc_intro: "Um triângulo retângulo só tem ângulos até 90°, mas os ângulos do mundo vão além: o ponteiro de um relógio varre 135° e 270°, uma porta volta a −30°, uma roda gira milhares de graus. Este capítulo liberta o seno e o cosseno do triângulo pondo-os num círculo, onde eles funcionam para todo ângulo, inclusive negativos e além de uma volta completa. No caminho ele apresenta o radiano, a unidade de ângulo que a matemática e a física preferem.",
-  mUc_whyBody2: "Por que a razão s/ρ não depende do círculo? Todos os círculos são semelhantes (o capítulo do círculo), então ampliar o círculo amplia o arco e o raio pelo mesmo fator. A conversão vem de uma volta completa, passo a passo.",
+  mUc_goal0: "Converter um ângulo entre graus e radianos.",
+  mUc_goal1: "Achar o comprimento de um arco, a área de uma fatia de círculo e a velocidade da borda de uma roda a partir de um ângulo em radianos.",
+  mUc_goal2: "Dar o seno e o cosseno de qualquer ângulo, negativo ou além de uma volta, com os sinais certos.",
+  mUc_goal3: "Achar o seno e o cosseno exatos de 30°, 45°, 60° e dos seus reflexos em todo o círculo.",
+  mUc_goal4: "Pôr um ponto num ângulo dado sobre qualquer círculo.",
+  mUc_whyBody2:"Por que a razão s/ρ não depende do círculo? Todos os círculos são semelhantes (o capítulo do círculo), então ampliar o círculo amplia o arco e o raio pelo mesmo fator. A conversão vem de uma volta completa, passo a passo.",
   mUc_tDeg: "Graus",
   mUc_tRad: "Radianos",
   mUc_arcTitle: "Comprimento de arco e velocidade angular",

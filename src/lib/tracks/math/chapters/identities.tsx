@@ -12,7 +12,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RotationFigure } from "@/components/lesson/figures/math/RotationFigure";
 
 const r = String.raw;
@@ -48,6 +48,13 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mId_intro",
           "The transformations chapter could only turn shapes by quarter turns, because anything else needed sine and cosine. Now they are available, and this chapter finishes the job: one formula rotates a point by any angle. Out of that formula fall the angle-sum identities, the handful of trigonometric facts that the rest of mathematics, from calculus to complex numbers, keeps relying on. Everything is derived, nothing is to be memorised blindly.")}
       </Lead>
+
+      <Goals t={t} id="mId" items={[
+        "Rotate a point by any angle, around the origin or around any other point.",
+        "Derive the formulas for sin(α + β) and cos(α + β) instead of memorising them.",
+        "Rewrite sin 2α and cos² α in simpler forms.",
+        "Show that two trigonometric expressions are equal, step by step.",
+      ]} />
 
       <H2>{tx(t, "mId_whatTitle", "What an identity is")}</H2>
       <p>

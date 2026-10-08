@@ -2,7 +2,12 @@
 
 const text: Record<string, string> = {
   mPol_intro: "Uma tela de radar, o feixe de um farol, um aspersor de jardim, uma galáxia espiral, a concha de um caracol: algumas posições se descrevem mais naturalmente por “a que distância, em que direção” do que por “quanto à direita, quanto para cima”. Essa descrição são as coordenadas polares. Este capítulo converte entre os dois sistemas, apresenta o atan2, a regra que responde “em que direção está aquilo?” para o círculo inteiro, e aprende a lidar com o fato de que uma direção tem infinitos nomes de ângulo.",
-  mPol_defTitle: "Coordenadas polares",
+  mPol_goal0: "Converter um ponto entre (x, y) e “a que distância, em que direção”, nos dois sentidos.",
+  mPol_goal1: "Achar a direção de qualquer ponto, em todos os quadrantes do plano.",
+  mPol_goal2: "Achar o menor giro de uma direção até outra.",
+  mPol_goal3: "Esboçar curvas polares simples: círculos, espirais e rosáceas.",
+  mPol_goal4: "Reescrever uma equação em x e y na forma polar, e o contrário.",
+  mPol_defTitle:"Coordenadas polares",
   mPol_defBody: "Em vez de (x, y), descreva um ponto pela sua distância r até a origem (o polo) e pelo ângulo θ que sua direção faz com o eixo x positivo. Ir de polar para cartesiano é de novo o capítulo do círculo unitário: a direção no ângulo θ é (cos θ, sin θ), e andar r ao longo dela dá (r cos θ, r sin θ). Na volta, r é a fórmula da distância, √(x² + y²). O ângulo é a parte difícil: ele precisa de uma função inversa, e as inversas comuns não dão conta do recado.",
   mPol_invTitle: "As funções inversas só enxergam metade do círculo",
   mPol_invBody: "Todo valor de seno entre −1 e 1 é atingido por dois ângulos em cada volta (sin 30° = sin 150° = 0,5), e por infinitos quando se somam voltas inteiras. Uma função precisa devolver uma resposta só, então cada inversa escolhe uma faixa principal e fica nela. asin devolve ângulos de −90° a 90°, a metade direita do círculo. acos devolve de 0° a 180°, a metade de cima. atan devolve de −90° a 90° de novo. Nenhuma delas sozinha cobre uma volta completa, então nenhuma consegue distinguir todas as direções.",

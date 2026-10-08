@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { UnitCircleFigure } from "@/components/lesson/figures/math/UnitCircleFigure";
 import { TrigGraphFigure } from "@/components/lesson/figures/math/TrigGraphFigure";
 
@@ -56,6 +56,14 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mUc_intro",
           "A right triangle only has angles up to 90°, but angles in the world go further: a clock hand sweeps through 135° and 270°, a door swings back to −30°, a wheel turns through thousands of degrees. This chapter frees sine and cosine from the triangle by putting them on a circle, where they work for every angle, including negative ones and ones past a full turn. On the way it introduces the radian, the unit of angle that mathematics and physics prefer.")}
       </Lead>
+
+      <Goals t={t} id="mUc" items={[
+        "Convert an angle between degrees and radians.",
+        "Find the length of an arc, the area of a slice of a circle and the speed of a turning rim from an angle in radians.",
+        "Give the sine and cosine of any angle, negative or past a full turn, with the right signs.",
+        "Find the exact sine and cosine of 30°, 45°, 60° and their mirror images all round the circle.",
+        "Place a point at a given angle on any circle.",
+      ]} />
 
       <H2>{tx(t, "mTrig_radTitle", "Degrees and radians")}</H2>
       <p>

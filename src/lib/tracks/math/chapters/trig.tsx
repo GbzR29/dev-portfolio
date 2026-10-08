@@ -12,7 +12,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RightTriangleFigure } from "@/components/lesson/figures/math/RightTriangleFigure";
 
 const r = String.raw;
@@ -46,6 +46,14 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mRt_intro",
           "Trigonometry began as the study of triangles, for surveying land and navigating by the stars. It is the bridge between angles and lengths: from the angle of a ladder, how high it reaches; from the angle to a hilltop, how tall the hill is; from the steepness of a road, the angle it climbs at. The whole subject grows from one observation about right triangles, which this chapter makes precise. The following chapters extend it to every angle, to any triangle, to rotation and to waves.")}
       </Lead>
+
+      <Goals t={t} id="mRt" items={[
+        "Find any side of a right triangle from one angle and one other side.",
+        "Find an angle of a right triangle from two of its sides.",
+        "Give sin, cos and tan of 30°, 45° and 60° exactly, without a calculator.",
+        "Work out the height of something you cannot climb from an angle and a distance.",
+        "Turn the steepness of a road or a line into its angle, and back.",
+      ]} />
 
       <H2>{tx(t, "mRt_sidesTitle", "Naming the sides from an angle")}</H2>
       <p>

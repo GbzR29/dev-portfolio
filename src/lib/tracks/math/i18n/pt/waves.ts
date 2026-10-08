@@ -2,7 +2,12 @@
 
 const text: Record<string, string> = {
   mWv_intro: "Coisas que vão e voltam estão em toda parte: um balanço, um relógio de pêndulo, uma corda de violão, as marés, a duração do dia ao longo do ano, o som, a corrente alternada na tomada. Quase todas são feitas de uma única forma, a senoide, esticada, deslocada e somada. Este capítulo mostra de onde vem a onda, o que cada um dos seus números controla e como combinar ondas dá ondas quadradas, batimentos, oitos e movimentos que vão morrendo.",
-  mWv_circTitle: "Um círculo visto de lado",
+  mWv_goal0: "Ler a altura, a rapidez, o ponto de partida e a linha central de uma onda a partir da fórmula ou do gráfico.",
+  mWv_goal1: "Escrever a fórmula de uma onda que bate com um gráfico.",
+  mWv_goal2: "Juntar um seno e um cosseno de mesma rapidez numa única onda.",
+  mWv_goal3: "Explicar por que duas notas próximas pulsam, e como somar ondas monta uma onda quadrada.",
+  mWv_goal4: "Descrever um movimento que vai morrendo, como um balanço deixado sozinho ou uma corda tocada.",
+  mWv_circTitle:"Um círculo visto de lado",
   mWv_circBody: "Deixe um ponto dar voltas no círculo unitário a uma velocidade angular constante ω (radianos por segundo, do capítulo do círculo unitário). Depois de t segundos seu ângulo é ωt, então sua posição é (cos ωt, sin ωt). Agora olhe o círculo de lado, de modo que só a altura seja visível: o ponto sobe e desce entre −1 e 1, rápido no meio e devagar nas pontas, onde dá meia-volta. Esse movimento, y = sin ωt, se chama movimento harmônico simples. É como se movem uma massa numa mola e um pêndulo (em oscilações pequenas), e é o vaivém mais suave possível.",
   mWv_phaseTitle: "Período, frequência e fase",
   mWv_phaseBody: "Frequência e período são duas visões de um mesmo número: 4 ciclos por segundo quer dizer que cada ciclo leva ¼ s. A frequência angular ω = 2πf é a mesma velocidade medida em radianos por segundo, a unidade que a função seno quer. A fase é um deslocamento ao longo do ciclo medido como ângulo; convertida em tempo ela é um atraso de φ/ω segundos, com o sinal invertido: sin(ω(t − d)) = sin(ωt − ωd), então um atraso d é uma fase de −ωd. Uma fase de π/2 transforma seno em cosseno e uma fase de π vira a onda de cabeça para baixo.",

@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { Atan2Figure } from "@/components/lesson/figures/math/Atan2Figure";
 import { PolarFigure } from "@/components/lesson/figures/math/PolarFigure";
 
@@ -50,6 +50,14 @@ export function PolarContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPol_intro",
           "A radar screen, a lighthouse beam, a garden sprinkler, a spiral galaxy, a snail's shell: some positions are more naturally described by \"how far, in which direction\" than by \"how far right, how far up\". That description is polar coordinates. This chapter converts between the two systems, meets atan2, the rule that answers \"which direction is that?\" for the whole circle, and learns to handle the fact that one direction has infinitely many angle names.")}
       </Lead>
+
+      <Goals t={t} id="mPol" items={[
+        "Convert a point between (x, y) and \"how far, in which direction\", both ways.",
+        "Find the direction of any point, in every quarter of the plane.",
+        "Find the shortest turn from one direction to another.",
+        "Sketch simple polar curves: circles, spirals and roses.",
+        "Rewrite an equation in x and y in polar form, and back.",
+      ]} />
 
       <H2>{tx(t, "mPol_defTitle", "Polar coordinates")}</H2>
       <p>

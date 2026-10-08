@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { WaveFigure } from "@/components/lesson/figures/math/WaveFigure";
 import { HarmonicsFigure } from "@/components/lesson/figures/math/HarmonicsFigure";
 
@@ -54,6 +54,14 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mWv_intro",
           "Things that go back and forth are everywhere: a swing, a pendulum clock, a guitar string, the tides, the length of the day over a year, sound, the alternating current in a wall socket. Almost all of them are built from one shape, the sine wave, stretched, shifted and added together. This chapter shows where the wave comes from, what each of its numbers controls, and how combining waves gives square waves, beats, figure eights and motion that dies down.")}
       </Lead>
+
+      <Goals t={t} id="mWv" items={[
+        "Read a wave's height, speed, starting point and centre line from its formula or its graph.",
+        "Write the formula of a wave that matches a graph.",
+        "Combine a sine and a cosine of the same speed into a single wave.",
+        "Explain why two close notes throb, and how adding waves builds a square wave.",
+        "Describe motion that dies down, like a swing left alone or a plucked string.",
+      ]} />
 
       <H2>{tx(t, "mWv_circTitle", "A circle seen from the side")}</H2>
       <p>
