@@ -8,12 +8,26 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { TransformFigure } from "@/components/lesson/figures/math/TransformFigure";
 
 const r = String.raw;
+
+// ── Live formula: quarter turns of one point ──────────────────────────────────
+
+const num = (v: number) => String(v).replace("-", "−");
+
+function quarterNumbers(v: Record<string, number>) {
+  let x = v.x, y = v.y;
+  const chain = [r`(${num(x)},\ ${num(y)})`];
+  for (let i = 0; i < v.q; i++) { [x, y] = [-y, x]; chain.push(r`(${num(x)},\ ${num(y)})`); }
+  chain[chain.length - 1] = r`\green{${chain[chain.length - 1]}}`;
+  return { tex: chain.join(r` \xrightarrow{90^\circ} `) };
+}
 
 export function TransformationsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -41,6 +55,7 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
           [r`a`, tx(t, "mTf_wA", "the horizontal step; negative moves left")],
           [r`b`, tx(t, "mTf_wB", "the vertical step; negative moves down")],
         ]}
+        words={tx(t, "mTf_transWords", "Add a to every x and b to every y: the whole shape slides, unchanged.")}
         note={tx(t, "mTf_transNote", "Example: moving (2, 5) by (−3, 1) gives (−1, 6). Someone walking due east at 1.5 m/s for 4 s is translated by (1.5 · 4, 0) = (6, 0) metres.")}>
         {r`(x, y) \mapsto (x + a,\ y + b)`}
       </Equation>
@@ -67,6 +82,12 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
       <Callout type="tip" t={t}>
         {tx(t, "mTf_flipTip", "To reflect across a vertical line x = c that is not the y-axis, use x' = 2c − x (y stays). The reason: the mirror line is halfway between a point and its image, so c = (x + x') / 2, and solving for x' gives 2c − x. Reflecting twice across the same line returns every point home.")}
       </Callout>
+      <Derivation t={t} label={tx(t, "mTf_derMirror", "Why the image is at 2c − x")}
+        steps={[
+          { full: true, tex: r`c = \frac{x + x'}{2}`, why: tx(t, "mTf_dm1", "the mirror line is exactly halfway between the point and its image") },
+          { full: true, tex: r`2c = x + x'`, why: tx(t, "mTf_dm2", "multiply both sides by 2") },
+          { full: true, tex: r`\green{x' = 2c - x}`, why: tx(t, "mTf_dm3", "subtract x from both sides") },
+        ]} />
 
       <H2>{tx(t, "mTf_rotTitle", "Rotation: turn")}</H2>
       <p>
@@ -79,22 +100,31 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
           [r`180^\circ`, tx(t, "mTf_w180", "a half turn: negate both, the same as reflecting in both axes")],
           [r`270^\circ`, tx(t, "mTf_w270", "a quarter turn clockwise")],
         ]}
+        words={tx(t, "mTf_rotWords", "For a quarter turn anticlockwise, swap the two coordinates and change the sign of the new x. Do it twice for a half turn, three times for three quarters.")}
         note={tx(t, "mTf_rotNote", "Example: (3, 1) turned 90° becomes (−1, 3); turned again, (−3, −1); again, (1, −3); a fourth time, back to (3, 1).")}>
         {r`90^\circ: (x, y) \mapsto (-y,\ x) \qquad 180^\circ: (x, y) \mapsto (-x,\ -y) \qquad 270^\circ: (x, y) \mapsto (y,\ -x)`}
       </Equation>
+      <LiveFormula label={tx(t, "mTf_liveRot", "Try it: quarter turns")}
+        tex={r`(x, y) \xrightarrow{90^\circ} (-y,\ x)`}
+        vars={[
+          { id: "x", label: "x", min: -5, max: 5, step: 1, value: 3, fmt: num },
+          { id: "y", label: "y", min: -5, max: 5, step: 1, value: 1, fmt: num },
+          { id: "q", label: tx(t, "mTf_liveQ", "quarter turns"), min: 0, max: 4, step: 1, value: 1, fmt: v => `${v} · 90°` },
+        ]}
+        compute={quarterNumbers}
+        note={tx(t, "mTf_liveRotNote", "Four quarter turns always bring the point home. Two quarter turns give (−x, −y) whatever the point: the half turn.")} />
       <H3>{tx(t, "mTf_pivotTitle", "Turning about another point")}</H3>
       <p>
         {tx(t, "mTf_pivotBody",
           "The rules above turn about the origin. To turn about a pivot P = (pₓ, p_y), use three steps: translate so that P lands on the origin (subtract P), turn, then translate back (add P). This \"move there, do it, move back\" pattern appears everywhere in graphics: it is how a door swings on its hinge instead of around the centre of the world, and how the dilation about a centre in the similarity chapter was built.")}
       </p>
-      <Equation label={tx(t, "mTf_eqPivot", "90° about the pivot P")}
-        notes={[
-          tx(t, "mTf_pv1", "subtract P: the offset from the pivot"),
-          tx(t, "mTf_pv2", "turn the offset a quarter turn"),
-          tx(t, "mTf_pv3", "add P back"),
-        ]}>
-        {r`(x, y) \to (x - p_x,\ y - p_y) \to \big({-(y - p_y)},\ x - p_x\big) \to \big(p_x - (y - p_y),\ p_y + (x - p_x)\big)`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mTf_eqPivot", "90° about the pivot P")}
+        steps={[
+          { full: true, tex: r`(x,\ y)` },
+          { full: true, tex: r`\to (x - p_x,\ y - p_y)`, why: tx(t, "mTf_pv1", "subtract P: the offset from the pivot") },
+          { full: true, tex: r`\to \big({-(y - p_y)},\ x - p_x\big)`, why: tx(t, "mTf_pv2", "turn the offset a quarter turn") },
+          { full: true, tex: r`\to \green{\big(p_x - (y - p_y),\ p_y + (x - p_x)\big)}`, why: tx(t, "mTf_pv3", "add P back") },
+        ]} />
 
       <H2>{tx(t, "mTf_rigidTitle", "Rigid motions and congruence")}</H2>
       <p>
@@ -113,6 +143,7 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
           [r`k`, tx(t, "mTf_wK", "the shear factor: how far a row moves per unit of height")],
           [r`s_x s_y`, tx(t, "mTf_wArea", "how much a scale multiplies areas; negative means the winding flipped")],
         ]}
+        words={tx(t, "mTf_scaleWords", "Scaling multiplies x by one factor and y by another; a shear adds k times the height to x and leaves y alone.")}
         note={tx(t, "mTf_scaleNote", "Example: scaling by (2, 0.5) turns a 4 × 4 square (area 16) into an 8 × 2 rectangle (area 16, since 2 · 0.5 = 1). Scaling by (−1, 1) is the reflection across the y-axis.")}>
         {r`\text{scale: } (x, y) \mapsto (s_x\,x,\ s_y\,y) \qquad \text{shear: } (x, y) \mapsto (x + k\,y,\ y)`}
       </Equation>
@@ -133,13 +164,12 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mTf_compBody",
           "Applying one transformation and then another is a composition. Translations can be done in any order (moving 2 right then 1 up is the same as 1 up then 2 right), but mixing kinds usually cannot. In the order mode of the figure, turning the F a quarter turn about the origin and then moving it 3 to the left puts it somewhere else than moving it first and turning after: the turn is about the origin, and moving first changed where the F sits relative to the origin, so the turn swings it to a different place. Directions in everyday life work the same way: \"turn left, then walk 10 m\" and \"walk 10 m, then turn left\" leave you in different places. So a description of several moves is incomplete without their order. A safe habit: scale and turn a shape while it sits at the origin, and move it to its final place last.")}
       </p>
-      <Equation label={tx(t, "mTf_eqComp", "Two orders, two results")}
-        notes={[
-          tx(t, "mTf_c1", "turn 90° first, then move (−3, 0)"),
-          tx(t, "mTf_c2", "move (−3, 0) first, then turn 90°"),
-        ]}>
-        {r`(x, y) \to (-y,\ x) \to (-y - 3,\ x) \qquad (x, y) \to (x - 3,\ y) \to (-y,\ x - 3)`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mTf_eqComp", "Two orders, two results")}
+        steps={[
+          { full: true, tex: r`(x, y) \to (-y,\ x) \to \amber{(-y - 3,\ x)}`, why: tx(t, "mTf_c1", "turn 90° first, then move (−3, 0)") },
+          { full: true, tex: r`(x, y) \to (x - 3,\ y) \to \blue{(-y,\ x - 3)}`, why: tx(t, "mTf_c2", "move (−3, 0) first, then turn 90°") },
+          { full: true, tex: r`(1, 0):\quad \amber{(-3,\ 1)} \;\ne\; \blue{(0,\ -2)}`, why: tx(t, "mTf_c3", "try one point: the two orders send (1, 0) to different places") },
+        ]} />
       <H3>{tx(t, "mTf_twoReflTitle", "Two reflections make a slide or a turn")}</H3>
       <p>
         {tx(t, "mTf_twoReflBody",

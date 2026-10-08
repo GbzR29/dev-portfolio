@@ -8,12 +8,32 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { PythagorasFigure } from "@/components/lesson/figures/math/PythagorasFigure";
 
 const r = String.raw;
+
+// ── Live formulas: the hypotenuse, and classifying a triangle by its sides ────
+
+const num = (v: number) => String(Math.round(v * 1000) / 1000);
+
+function hypNumbers(v: Record<string, number>) {
+  const s = v.a * v.a + v.b * v.b, c = Math.sqrt(s);
+  const exact = Number.isInteger(c);
+  return { tex: r`c = \sqrt{${num(v.a)}^2 + ${num(v.b)}^2} = \sqrt{${num(v.a * v.a)} + ${num(v.b * v.b)}} = \sqrt{${num(s)}} ${exact ? "=" : r`\approx`} \green{${num(c)}}` };
+}
+
+function classifyNumbers(v: Record<string, number>, t: TrackTranslations) {
+  const [a, b, c] = [v.a, v.b, v.c].sort((x, y) => x - y);
+  const lhs = c * c, rhs = a * a + b * b;
+  if (a + b <= c) return { tex: r`${num(a)} + ${num(b)} \le ${num(c)} \;\Rightarrow\; \red{\text{${tx(t, "mPy_liveNoTri", "no triangle")}}}` };
+  const [rel, kind] = lhs < rhs ? ["<", tx(t, "mPy_liveAcute", "acute")] : lhs === rhs ? ["=", tx(t, "mPy_liveRight", "right")] : [">", tx(t, "mPy_liveObtuse", "obtuse")];
+  return { tex: r`${num(c)}^2 = ${num(lhs)} \;${rel}\; ${num(a)}^2 + ${num(b)}^2 = ${num(rhs)} \;\Rightarrow\; \green{\text{${kind}}}` };
+}
 
 export function PythagorasContent({ t }: { t: TrackTranslations }) {
   return (
@@ -34,6 +54,7 @@ export function PythagorasContent({ t }: { t: TrackTranslations }) {
           [r`c`, tx(t, "mPy_wC", "the hypotenuse: the side opposite the right angle, the longest")],
           [r`a^2`, tx(t, "mPy_wSq", "a squared, a · a: the area of a square with side a")],
         ]}
+        words={tx(t, "mPy_thmWords", "In a right triangle, the square built on the longest side has exactly the area of the two squares built on the other two sides put together.")}
         note={tx(t, "mPy_thmNote", "It holds only when the angle between a and b is exactly 90°. For other triangles the Trigonometry section adds a correction term (the law of cosines).")}>
         {r`a^2 + b^2 = c^2`}
       </Equation>
@@ -50,14 +71,12 @@ export function PythagorasContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPy_algBody",
           "The first arrangement can also be written as an equation. The big square's area is (a + b)². It is made of the tilted square, c², and four triangles, each with area ½ab (half the rectangle a × b, from the area chapter). Expanding the bracket, as in the expressions chapter, finishes the proof.")}
       </p>
-      <Equation label={tx(t, "mPy_eqAlg", "Algebraic proof")}
-        notes={[
-          tx(t, "mPy_a1", "big square = tilted square + four triangles"),
-          tx(t, "mPy_a2", "expand (a + b)² = a² + 2ab + b², and 4 · ½ab = 2ab"),
-          tx(t, "mPy_a3", "subtract 2ab from both sides"),
-        ]}>
-        {r`(a + b)^2 = c^2 + 4\cdot\tfrac12 ab \;\Rightarrow\; a^2 + 2ab + b^2 = c^2 + 2ab \;\Rightarrow\; a^2 + b^2 = c^2`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mPy_eqAlg", "Algebraic proof")}
+        steps={[
+          { full: true, tex: r`(a + b)^2 = c^2 + 4\cdot\tfrac12 ab`, why: tx(t, "mPy_a1", "big square = tilted square + four triangles") },
+          { full: true, tex: r`a^2 + 2ab + b^2 = c^2 + 2ab`, why: tx(t, "mPy_a2", "expand (a + b)² = a² + 2ab + b², and 4 · ½ab = 2ab") },
+          { full: true, tex: r`\green{a^2 + b^2 = c^2}`, why: tx(t, "mPy_a3", "subtract 2ab from both sides") },
+        ]} />
 
       <H2>{tx(t, "mPy_findTitle", "Finding a missing side")}</H2>
       <p>
@@ -71,6 +90,14 @@ export function PythagorasContent({ t }: { t: TrackTranslations }) {
         ]}>
         {r`c = \sqrt{a^2 + b^2} \qquad a = \sqrt{c^2 - b^2} \qquad b = \sqrt{c^2 - a^2}`}
       </Equation>
+      <LiveFormula label={tx(t, "mPy_liveHyp", "Try it: the hypotenuse")}
+        tex={r`c = \sqrt{a^2 + b^2}`}
+        vars={[
+          { id: "a", label: tx(t, "mPy_liveA", "leg a"), min: 1, max: 30, step: 1, value: 3, fmt: num },
+          { id: "b", label: tx(t, "mPy_liveB", "leg b"), min: 1, max: 30, step: 1, value: 4, fmt: num },
+        ]}
+        compute={hypNumbers}
+        note={tx(t, "mPy_liveHypNote", "Most pairs give a long decimal. Hunt for the ones where the root comes out whole: 3 and 4, 5 and 12, 8 and 15, 7 and 24, and their multiples.")} />
       <p>
         {tx(t, "mPy_findEx",
           "Examples. A TV is sold by its diagonal: a screen 48 inches wide and 27 inches tall has a diagonal of √(48² + 27²) = √(2304 + 729) = √3033 ≈ 55.1, so it is a \"55-inch\" TV. A 5 m ladder with its foot 3 m from a wall reaches √(5² − 3²) = √(25 − 9) = √16 = 4 m up the wall. A square with side 1 has a diagonal of √(1 + 1) = √2 ≈ 1.414, so cutting diagonally across a square park with 100 m sides is about 141 m of walking instead of 200 m along two edges.")}
@@ -105,6 +132,15 @@ export function PythagorasContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mPy_convNote", "Example: 5, 6, 8. The longest is 8: 5² + 6² = 25 + 36 = 61 and 8² = 64 > 61, so the triangle is obtuse. With 6, 7, 8: 36 + 49 = 85 > 64, acute.")}>
         {r`c^2 < a^2 + b^2 \Rightarrow \text{acute} \qquad c^2 = a^2 + b^2 \Rightarrow \text{right} \qquad c^2 > a^2 + b^2 \Rightarrow \text{obtuse}`}
       </Equation>
+      <LiveFormula label={tx(t, "mPy_liveClass", "Try it: name a triangle from its sides")}
+        tex={r`c^2 \;\lessgtr\; a^2 + b^2 \qquad (c = \text{${tx(t, "mPy_liveLongest", "the longest side")}})`}
+        vars={[
+          { id: "a", label: "a", min: 1, max: 15, step: 1, value: 5, fmt: num },
+          { id: "b", label: "b", min: 1, max: 15, step: 1, value: 6, fmt: num },
+          { id: "c", label: "c", min: 1, max: 15, step: 1, value: 8, fmt: num },
+        ]}
+        compute={v => classifyNumbers(v, t)}
+        note={tx(t, "mPy_liveClassNote", "The sides are sorted first, so any slider can hold the longest one. Start from 5, 6, 8 (obtuse) and lower the 8 one step at a time: at 7 the triangle turns acute, and the right triangle sits between them at √61 ≈ 7.8, which is not a whole number.")} />
 
       <H2>{tx(t, "mPy_distTitle", "The distance between two points")}</H2>
       <p>
@@ -118,6 +154,7 @@ export function PythagorasContent({ t }: { t: TrackTranslations }) {
           [r`\Delta y = y_2 - y_1`, tx(t, "mPy_wDy", "the vertical change, the other leg")],
           [r`d`, tx(t, "mPy_wD", "the straight-line distance, the hypotenuse; never negative")],
         ]}
+        words={tx(t, "mPy_distWords", "The distance between two points is the hypotenuse of the right triangle whose legs are the horizontal and the vertical change between them.")}
         note={tx(t, "mPy_distNote", "Example: from (−4, −2) to (3, 2): Δx = 7, Δy = 4, d = √(49 + 16) = √65 ≈ 8.06.")}>
         {r`d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2} = \sqrt{\Delta x^2 + \Delta y^2}`}
       </Equation>
@@ -126,14 +163,18 @@ export function PythagorasContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPy_3dBody",
           "In a 3D world a point has a third coordinate, z. Apply the theorem twice. On the floor, the distance across is √(Δx² + Δy²). That floor distance and the height change Δz are perpendicular too (height goes straight up from the floor), so they are the legs of a second right triangle. Squaring the first root undoes it, and the result is simply one more squared term under the root. The same pattern continues for any number of dimensions, which is how machine learning measures distance between vectors of hundreds of numbers.")}
       </p>
-      <Equation label={tx(t, "mPy_eq3d", "The distance formula in 3D")}
+      <Derivation t={t} label={tx(t, "mPy_eq3d", "The distance formula in 3D")}
         where={[
           [r`\Delta z = z_2 - z_1`, tx(t, "mPy_wDz", "the change in height, the third leg")],
-          [r`\sqrt{\Delta x^2 + \Delta y^2}`, tx(t, "mPy_wFloor", "the distance across the floor, the first hypotenuse")],
+          [r`\blue{f} = \sqrt{\Delta x^2 + \Delta y^2}`, tx(t, "mPy_wFloor", "the distance across the floor, the first hypotenuse")],
         ]}
-        note={tx(t, "mPy_3dNote", "Example: the diagonal of a 1 × 1 × 1 cube is √(1 + 1 + 1) = √3 ≈ 1.732. A 3 × 4 × 12 box has a diagonal of √(9 + 16 + 144) = √169 = 13.")}>
-        {r`d = \sqrt{\left(\sqrt{\Delta x^2 + \Delta y^2}\right)^2 + \Delta z^2} = \sqrt{\Delta x^2 + \Delta y^2 + \Delta z^2}`}
-      </Equation>
+        note={tx(t, "mPy_3dNote", "Example: the diagonal of a 1 × 1 × 1 cube is √(1 + 1 + 1) = √3 ≈ 1.732. A 3 × 4 × 12 box has a diagonal of √(9 + 16 + 144) = √169 = 13.")}
+        steps={[
+          { tex: r`d` },
+          { tex: r`= \sqrt{\blue{f}^{\,2} + \Delta z^2}`, why: tx(t, "mPy_d3b", "the right triangle standing up: one leg is the distance f across the floor, the other the height change Δz") },
+          { tex: r`= \sqrt{\left(\blue{\sqrt{\Delta x^2 + \Delta y^2}}\right)^2 + \Delta z^2}`, why: tx(t, "mPy_d3c", "f is itself the hypotenuse of a right triangle on the floor, with legs Δx and Δy") },
+          { tex: r`= \green{\sqrt{\Delta x^2 + \Delta y^2 + \Delta z^2}}`, why: tx(t, "mPy_d3d", "squaring a square root undoes it") },
+        ]} />
 
       <H2>{tx(t, "mPy_sqTitle", "Comparing distances without square roots")}</H2>
       <p>

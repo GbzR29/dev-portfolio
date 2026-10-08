@@ -7,12 +7,34 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { TriangleFigure } from "@/components/lesson/figures/math/TriangleFigure";
 
 const r = String.raw;
+
+// ── Live formulas: the third angle, and whether three lengths close ───────────
+
+const num = (v: number) => String(Math.round(v * 100) / 100);
+const degf = (v: number) => `${v}°`;
+
+function thirdAngle(v: Record<string, number>, t: TrackTranslations) {
+  const C = 180 - v.A - v.B;
+  if (C <= 0) return { tex: r`C = 180^\circ - (${v.A}^\circ + ${v.B}^\circ) = \red{${C}^\circ} \quad \text{${tx(t, "mTri_liveNoTri", "no triangle")}}` };
+  const big = Math.max(v.A, v.B, C);
+  const kind = big === 90 ? tx(t, "mTri_n5", "right") : big > 90 ? tx(t, "mTri_n6", "obtuse") : tx(t, "mTri_n4", "acute");
+  return { tex: r`C = 180^\circ - (${v.A}^\circ + ${v.B}^\circ) = \green{${C}^\circ} \qquad \varepsilon_C = A + B = ${v.A + v.B}^\circ \qquad \text{${kind}}` };
+}
+
+function closes(v: Record<string, number>, t: TrackTranslations) {
+  const [s, m, l] = [v.a, v.b, v.c].sort((x, y) => x - y);
+  const sum = s + m;
+  const verdict = sum > l ? r`\green{\text{${tx(t, "mTri_liveYes", "a triangle")}}}` : sum === l ? r`\amber{\text{${tx(t, "mTri_liveFlat", "flat")}}}` : r`\red{\text{${tx(t, "mTri_liveNo", "no triangle")}}}`;
+  return { tex: r`${num(s)} + ${num(m)} = ${num(sum)} \;${sum > l ? ">" : sum === l ? "=" : "<"}\; ${num(l)} \quad\Rightarrow\quad ${verdict}` };
+}
 
 export function TrianglesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -47,9 +69,25 @@ export function TrianglesContent({ t }: { t: TrackTranslations }) {
           [r`A,\ B,\ C`, tx(t, "mTri_wABC", "the three interior angles of the triangle, in degrees")],
           [r`180^{\circ}`, tx(t, "mTri_w180", "a straight angle: the three angles, placed side by side, fill a line")],
         ]}
+        words={tx(t, "mTri_sumWords", "The three angles of any triangle, put side by side, make a straight line.")}
         note={tx(t, "mTri_sumNote", "Consequences: a triangle has at most one right or obtuse angle (two of them would already make 180° or more), and if you know two angles the third is 180° minus their sum.")}>
         {r`A + B + C = 180^{\circ}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mTri_derSum", "The proof, one step at a time")}
+        steps={[
+          { full: true, tex: r`\alpha + C + \beta = 180^{\circ}`, why: tx(t, "mTri_ds1", "through C draw the line parallel to AB; the three angles at C along it, α on the left and β on the right, fill a straight angle") },
+          { full: true, tex: r`\alpha = A`, why: tx(t, "mTri_ds2", "α and A are alternate angles: AC crosses the two parallel lines") },
+          { full: true, tex: r`\beta = B`, why: tx(t, "mTri_ds3", "β and B are alternate angles: BC crosses the two parallel lines") },
+          { full: true, tex: r`\green{A + C + B = 180^{\circ}}`, why: tx(t, "mTri_ds4", "put A in place of α and B in place of β in the first line") },
+        ]} />
+      <LiveFormula label={tx(t, "mTri_liveThird", "Try it: the third angle")}
+        tex={r`C = 180^\circ - (A + B)`}
+        vars={[
+          { id: "A", label: tx(t, "mTri_liveA", "angle A"), min: 5, max: 175, step: 5, value: 48, fmt: degf },
+          { id: "B", label: tx(t, "mTri_liveB", "angle B"), min: 5, max: 175, step: 5, value: 67, fmt: degf },
+        ]}
+        compute={v => thirdAngle(v, t)}
+        note={tx(t, "mTri_liveThirdNote", "Push A + B up to 180° or more and nothing is left for C: no triangle. The exterior angle at C, A + B, is shown too; the next paragraph explains it.")} />
 
       <TriangleFigure t={t} />
 
@@ -58,13 +96,16 @@ export function TrianglesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mTri_extBody",
           "Extend one side past a vertex, say side BC past C. The angle between the extension and side CA is an exterior angle. It sits next to the interior angle C on a straight line, so it equals 180° − C. And since A + B = 180° − C as well, the exterior angle equals A + B, the sum of the two interior angles at the other corners. This is a handy shortcut: it gives the outside angle without ever computing C.")}
       </p>
-      <Equation label={tx(t, "mTri_eqExt", "The exterior angle at C")}
+      <Derivation t={t} label={tx(t, "mTri_eqExt", "The exterior angle at C")}
         where={[
           [r`\varepsilon_C`, tx(t, "mTri_wExt", "the exterior angle at C (epsilon), between side CA and the extension of BC")],
           [r`180^{\circ} - C`, tx(t, "mTri_wSupp", "it is supplementary to the interior angle C")],
-        ]}>
-        {r`\varepsilon_C = 180^{\circ} - C = A + B`}
-      </Equation>
+        ]}
+        steps={[
+          { full: true, tex: r`\varepsilon_C = 180^{\circ} - C`, why: tx(t, "mTri_de1", "ε_C and C sit side by side on the line BC: supplementary") },
+          { full: true, tex: r`A + B = 180^{\circ} - C`, why: tx(t, "mTri_de2", "the angle sum A + B + C = 180°, with C moved to the right") },
+          { full: true, tex: r`\green{\varepsilon_C = A + B}`, why: tx(t, "mTri_de3", "both equal 180° − C, so they equal each other") },
+        ]} />
 
       <H2>{tx(t, "mTri_kindsTitle", "Naming triangles")}</H2>
       <p>
@@ -97,9 +138,19 @@ export function TrianglesContent({ t }: { t: TrackTranslations }) {
           [r`a, b, c`, tx(t, "mTri_wSides", "the three side lengths, all positive")],
           [r`<`, tx(t, "mTri_wLess", "strictly less; with = the triangle is flat (degenerate)")],
         ]}
+        words={tx(t, "mTri_ineqWords", "Every side is shorter than the other two put together: going straight is always shorter than taking a detour through the third corner.")}
         note={tx(t, "mTri_ineqNote", "In practice you only need one check: the longest side must be shorter than the sum of the other two. The other two inequalities then hold automatically.")}>
         {r`a < b + c \qquad b < a + c \qquad c < a + b`}
       </Equation>
+      <LiveFormula label={tx(t, "mTri_liveClose", "Try it: does it close?")}
+        tex={r`\text{${tx(t, "mTri_liveS", "shortest")}} + \text{${tx(t, "mTri_liveM", "middle")}} > \text{${tx(t, "mTri_liveL", "longest")}}`}
+        vars={[
+          { id: "a", label: "a", min: 0.5, max: 12, step: 0.5, value: 4, fmt: num },
+          { id: "b", label: "b", min: 0.5, max: 12, step: 0.5, value: 7, fmt: num },
+          { id: "c", label: "c", min: 0.5, max: 12, step: 0.5, value: 12, fmt: num },
+        ]}
+        compute={v => closes(v, t)}
+        note={tx(t, "mTri_liveCloseNote", "The formula sorts the three lengths first, so only one comparison is needed. Make the two short ones add up exactly to the long one to see the flat, degenerate case.")} />
 
       <H2>{tx(t, "mTri_congTitle", "Congruence: when two triangles are the same")}</H2>
       <p>
@@ -135,6 +186,7 @@ export function TrianglesContent({ t }: { t: TrackTranslations }) {
           [r`(x_A, y_A), \dots`, tx(t, "mTri_wCoords", "the coordinates of the three vertices")],
           [r`G`, tx(t, "mTri_wG", "the centroid, where the three medians meet; it lies two thirds of the way from each vertex to the midpoint of the opposite side")],
         ]}
+        words={tx(t, "mTri_centroidWords", "The balance point's x is the average of the three corners' x values, and its y the average of their y values.")}
         note={tx(t, "mTri_centroidNote", "Example: A = (0, 0), B = (6, 0), C = (3, 9) gives G = ((0 + 6 + 3)/3, (0 + 0 + 9)/3) = (3, 3).")}>
         {r`G = \left( \frac{x_A + x_B + x_C}{3},\ \frac{y_A + y_B + y_C}{3} \right)`}
       </Equation>

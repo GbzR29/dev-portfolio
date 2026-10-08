@@ -77,6 +77,26 @@ const text: Record<string, string> = {
   mArea_m6w: "esquecer a última aresta Pₙ → P₁",
   mArea_m6r: "inclua sempre a aresta de volta ao início",
   mArea_m6: "o contorno precisa ser fechado",
+
+  // ── In words, derivation, live formula (2026-10-08) ──
+  mArea_perimWords: "Dê uma volta na forma e some o comprimento de cada lado por onde você passa.",
+  mArea_areasWords: "Um retângulo ou paralelogramo é base vezes altura. Um triângulo é metade disso. Um trapézio é a média dos seus dois lados paralelos, vezes a altura.",
+  mArea_derTrap: "A fórmula do trapézio, passo a passo",
+  mArea_dt0a: "trapézio",
+  mArea_dt0b: "paralelogramo",
+  mArea_dt1: "gire uma cópia meia volta e encoste-a no lado inclinado: as duas formam um paralelogramo",
+  mArea_dtBase: "base",
+  mArea_dtHeight: "altura",
+  mArea_dt2: "o lado curto a da cópia continua o lado longo b do original; a altura não muda",
+  mArea_dt3: "um paralelogramo é base vezes altura",
+  mArea_dt4: "um trapézio é metade das duas cópias",
+  mArea_scaleWords: "Multiplique cada comprimento por k e o perímetro cresce k vezes, mas a área cresce k vezes k vezes, porque é um comprimento vezes um comprimento.",
+  mArea_liveScale: "Experimente: amplie um retângulo",
+  mArea_liveB: "base b",
+  mArea_liveH: "altura h",
+  mArea_liveK: "fator de escala k",
+  mArea_liveScaleNote: "Imagine k = 100: um piso de 3 m × 2 m medido em centímetros. Com k = 0,5 a área cai para um quarto, não para a metade.",
+  mArea_shoeWords: "Para cada lado, multiplique em cruz (o x deste vértice vezes o y do próximo, menos o x do próximo vezes o y deste), some todos os resultados e divida o total por dois.",
 };
 
 export default text;

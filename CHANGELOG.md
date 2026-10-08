@@ -12,6 +12,14 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ## Outubro de 2026
 
+### 2026-10-08
+
+- **Matemática → Geometria interativa (9 capítulos)**: terceira seção a receber laboratórios, barra de reprodução e fórmulas dinâmicas.
+  - **Laboratórios guiados** (6 a 8 passos cada, com objetivos, dicas, testes rápidos, insights e resumo final) em 13 dos 15 widgets da seção: ângulo, paralelas e transversal, triângulos, fórmulas de área, fórmula do cadarço, Pitágoras, semelhança, partes do círculo, área do círculo, volumes, geometria com coordenadas, cônicas e transformações. Vários passos pedem para "quebrar" o widget (achatar o triângulo, cruzar o contorno do polígono, inclinar a reta "paralela") e explicam o que deu errado.
+  - **Barra de reprodução** no lugar dos controles que eram animações escondidas: rearranjar paralelogramo, triângulo e trapézio, deslizar os triângulos da prova de Pitágoras, montar a pizza do πr², chover dardos, rolar a roda e dobrar os lados do polígono de Arquimedes, desdobrar a caixa, encher as camadas e despejar os cones, levar P pela cônica, girar um quarto de volta e aplicar dois movimentos um de cada vez.
+  - **Fórmulas**: "em palavras" nas principais; deduções passo a passo (ângulos opostos pelo vértice, soma 180°, ângulo externo, prova algébrica de Pitágoras, distância em 3D, trapézio, dobra de Arquimedes, ângulo no semicírculo, volume e superfície da esfera, completar o quadrado duas vezes, parábola pelo foco, espelho em x = c, giro em torno de um pivô, ordem da composição); fórmulas ao vivo (menor giro entre rumos, ponteiros do relógio, terceiro ângulo, "ele fecha?", ampliar um retângulo, hipotenusa, nomear o triângulo pelos lados, altura pela sombra, perspectiva, setor, cilindro e cone, pele contra volume, dentro ou fora do círculo, quartos de volta).
+  - Tradução PT de tudo o que é novo.
+
 ### 2026-10-07
 
 - **Matemática → Álgebra interativa (9 capítulos)**: segunda seção a receber laboratórios, barra de reprodução e fórmulas dinâmicas.

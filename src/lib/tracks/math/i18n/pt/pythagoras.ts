@@ -85,6 +85,24 @@ const text: Record<string, string> = {
   mPy_m6w: "Δx² com Δx negativo dá negativo",
   mPy_m6r: "(−7)² = +49",
   mPy_m6: "um quadrado nunca é negativo; o sentido não importa",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mPy_thmWords: "Num triângulo retângulo, o quadrado construído sobre o lado maior tem exatamente a área dos dois quadrados construídos sobre os outros dois lados juntos.",
+  mPy_liveHyp: "Experimente: a hipotenusa",
+  mPy_liveA: "cateto a",
+  mPy_liveB: "cateto b",
+  mPy_liveHypNote: "A maioria dos pares dá um decimal comprido. Procure os que dão raiz inteira: 3 e 4, 5 e 12, 8 e 15, 7 e 24, e os seus múltiplos.",
+  mPy_liveClass: "Experimente: nomeie um triângulo pelos lados",
+  mPy_liveLongest: "o lado maior",
+  mPy_liveNoTri: "não há triângulo",
+  mPy_liveAcute: "acutângulo",
+  mPy_liveRight: "retângulo",
+  mPy_liveObtuse: "obtusângulo",
+  mPy_liveClassNote: "Os lados são ordenados primeiro, então qualquer controle pode ter o maior. Comece de 5, 6, 8 (obtusângulo) e diminua o 8 um passo de cada vez: no 7 o triângulo vira acutângulo, e o retângulo fica entre os dois, em √61 ≈ 7,8, que não é um número inteiro.",
+  mPy_distWords: "A distância entre dois pontos é a hipotenusa do triângulo retângulo cujos catetos são a variação horizontal e a variação vertical entre eles.",
+  mPy_d3b: "o triângulo retângulo em pé: um cateto é a distância f pelo chão, o outro a variação de altura Δz",
+  mPy_d3c: "f é ela mesma a hipotenusa de um triângulo retângulo no chão, com catetos Δx e Δy",
+  mPy_d3d: "elevar uma raiz quadrada ao quadrado a desfaz",
 };
 
 export default text;

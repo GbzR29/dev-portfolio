@@ -3,14 +3,16 @@
 import { useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Figure, Row, Readout, Slider, Sliders, Btn, C } from "@/components/lesson/kit/figure";
+import { Figure, Row, Readout, Slider, Sliders, Btn, C, useRaf } from "@/components/lesson/kit/figure";
 import { makeProjector, useOrbit, lerp3, type V3 } from "@/components/lesson/kit/scene3d";
+import { Transport } from "@/components/lesson/kit/Transport";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A box a × b × c unfolds into its net: six rectangles lying flat. The
 // surface area is the area of the net, three pairs of equal rectangles:
 // 2(ab + bc + ca). The four walls are hinged on the floor's edges and the lid
-// on the back wall's top edge, so one slider opens the box like a carton.
+// on the back wall's top edge, so one motion opens the box like a carton; the
+// Transport plays it (and folds it back up once it is flat).
 
 const W = 560, H = 320;
 const n2 = (v: number) => (+v.toFixed(2)).toString();
@@ -41,7 +43,21 @@ function netFaces(a: number, b: number, c: number, f: number): Face[] {
 export function NetFigure({ t }: { t?: TrackTranslations }) {
   const [a, setA] = useState(3), [b, setB] = useState(2), [c, setC] = useState(1.5);
   const [f, setF] = useState(0.4);
+  const [playing, setPlaying] = useState(false);
+  const [dir, setDir] = useState(1);                   // +1 unfolds, −1 folds back up
   const orb = useOrbit({ yaw: -0.5, pitch: 0.75, zoom: 1 });
+
+  const ref = useRaf(playing, dt => {
+    const nf = Math.max(0, Math.min(1, f + dir * dt * 0.5));
+    setF(nf);
+    if (nf <= 0 || nf >= 1) setPlaying(false);
+  });
+  const play = () => {
+    if (playing) { setPlaying(false); return; }
+    // Unfold when closed or halfway, fold back when already flat
+    setDir(f >= 1 ? -1 : 1);
+    setPlaying(true);
+  };
 
   const proj = makeProjector(orb.orbit, W / 2, H / 2, 48, 26);
   const centre = lerp3([a / 2, c / 2, b / 2], [a / 2, 0, b], f);
@@ -58,7 +74,6 @@ export function NetFigure({ t }: { t?: TrackTranslations }) {
       head={<Btn onClick={orb.reset}>{tx(t, "figNet_view", "reset view")}</Btn>}
       controls={<>
         <Sliders>
-          <Slider label={tx(t, "figNet_open", "unfold")} value={f} min={0} max={1} step={0.01} onChange={setF} fmt={v => `${Math.round(v * 90)}°`} />
           <Slider label="a" value={a} min={1} max={3.5} step={0.5} onChange={setA} fmt={n2} />
           <Slider label="b" value={b} min={1} max={2.5} step={0.5} onChange={setB} fmt={n2} />
           <Slider label="c" value={c} min={0.5} max={2} step={0.5} onChange={setC} fmt={n2} />
@@ -72,20 +87,29 @@ export function NetFigure({ t }: { t?: TrackTranslations }) {
         </Row>
       </>}
       note={<>
-        {tx(t, "figNet_note", "Slide \"unfold\" to open the box flat. The surface is made of six rectangles in three matching pairs: floor and lid (a × b, blue), front and back (a × c, amber), left and right (b × c, pink). Their total is the surface area, the amount of cardboard, paint or texture the box needs; the volume is what fits inside.")}{" "}
+        {tx(t, "figNet_note2", "Press play to open the box flat, and again to fold it back up. The surface is made of six rectangles in three matching pairs: floor and lid (a × b, blue), front and back (a × c, amber), left and right (b × c, pink). Their total is the surface area, the amount of cardboard, paint or texture the box needs; the volume is what fits inside.")}{" "}
         <span data-mouse-only>{tx(t, "figNet_drag", "Drag to turn the view.")}</span>
         <span data-touch-only>{tx(t, "figNet_dragTouch", "Swipe to turn the view.")}</span>
       </>}
     >
-      <svg ref={orb.ref} {...orb.handlers} viewBox={`0 0 ${W} ${H}`} className="w-full h-auto cursor-grab" style={{ touchAction: "none" }}>
-        {faces.map((fc, i) => {
-          const cx = fc.sp.reduce((s, q) => s + q.x, 0) / 4, cy = fc.sp.reduce((s, q) => s + q.y, 0) / 4;
-          return <g key={i}>
-            <path d={"M" + fc.sp.map(q => `${q.x.toFixed(1)},${q.y.toFixed(1)}`).join("L") + "Z"} fill={fc.col} fillOpacity={0.35} stroke={fc.col} strokeWidth={1.6} strokeLinejoin="round" />
-            {f > 0.85 && <text x={cx} y={cy + 4} fontSize={10} textAnchor="middle" fontFamily="monospace" fontWeight={700} fill={fc.col} pointerEvents="none">{n2(area(fc.label))}</text>}
-          </g>;
-        })}
-      </svg>
+      <div ref={ref}>
+        <svg ref={orb.ref} {...orb.handlers} viewBox={`0 0 ${W} ${H}`} className="w-full h-auto cursor-grab" style={{ touchAction: "none" }}>
+          {faces.map((fc, i) => {
+            const cx = fc.sp.reduce((s, q) => s + q.x, 0) / 4, cy = fc.sp.reduce((s, q) => s + q.y, 0) / 4;
+            return <g key={i}>
+              <path d={"M" + fc.sp.map(q => `${q.x.toFixed(1)},${q.y.toFixed(1)}`).join("L") + "Z"} fill={fc.col} fillOpacity={0.35} stroke={fc.col} strokeWidth={1.6} strokeLinejoin="round" />
+              {f > 0.85 && <text x={cx} y={cy + 4} fontSize={10} textAnchor="middle" fontFamily="monospace" fontWeight={700} fill={fc.col} pointerEvents="none">{n2(area(fc.label))}</text>}
+            </g>;
+          })}
+        </svg>
+        {/* Step and back move a third of the way (30°) at a time */}
+        <Transport t={t} speed playing={playing} onPlay={play}
+          playLabel={f >= 1 ? tx(t, "figNet_fold", "fold it up") : tx(t, "figNet_unfold", "unfold")}
+          onStep={f < 1 ? () => { setPlaying(false); setF(Math.min(1, Math.floor(f * 3 + 1e-9) / 3 + 1 / 3)); } : undefined}
+          onBack={f > 0 ? () => { setPlaying(false); setF(Math.max(0, Math.ceil(f * 3 - 1e-9) / 3 - 1 / 3)); } : undefined}
+          onReset={() => { setPlaying(false); setF(0); }}
+          readout={`${Math.round(f * 90)}°`} />
+      </div>
     </Figure>
   );
 }

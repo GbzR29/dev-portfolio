@@ -7,6 +7,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -15,6 +17,18 @@ import { PiFigure } from "@/components/lesson/figures/math/PiFigure";
 import { PiAreaFigure } from "@/components/lesson/figures/math/PiAreaFigure";
 
 const r = String.raw;
+
+// ── Live formula: arc length and sector area ──────────────────────────────────
+
+const num = (v: number) => String(Math.round(v * 100) / 100);
+
+function sectorNumbers(v: Record<string, number>) {
+  const f = v.theta / 360;
+  return {
+    tex: r`\frac{${v.theta}}{360} = ${num(f)} \qquad s = ${num(f)} \cdot 2\pi \cdot ${num(v.r)} \approx \green{${num(f * 2 * Math.PI * v.r)}} \qquad A = ${num(f)} \cdot \pi \cdot ${num(v.r)}^2 \approx \green{${num(f * Math.PI * v.r * v.r)}}`,
+    meter: f, meterLabel: `${num(f * 100)}%`,
+  };
+}
 
 export function CircleContent({ t }: { t: TrackTranslations }) {
   return (
@@ -55,6 +69,7 @@ export function CircleContent({ t }: { t: TrackTranslations }) {
           [r`d,\ r`, tx(t, "mCir_wDR", "the diameter and the radius, with d = 2r")],
           [r`\pi`, tx(t, "mCir_wPi", "C divided by d, the same for every circle: 3.14159265…")],
         ]}
+        words={tx(t, "mCir_cWords", "Every circle's circumference is a little over three times its diameter, π times exactly; and the diameter is two radii.")}
         note={tx(t, "mCir_cNote", "Example: a wheel of diameter 0.7 m travels π · 0.7 ≈ 2.2 m each time it turns once. A circle of radius 10 has a circumference of 2π · 10 ≈ 62.8.")}>
         {r`\pi = \frac{C}{d} \quad\Longrightarrow\quad C = \pi d = 2\pi r`}
       </Equation>
@@ -70,16 +85,23 @@ export function CircleContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mCir_doubleBody",
           "The doubling step is one piece of Pythagoras. A side s of the inside polygon is a chord. From the centre to the middle of that chord is a distance a, and half the chord, s/2, and the radius 1 form a right triangle, so a = √(1 − (s/2)²). The point of the circle straight past the middle of the chord is at distance 1 − a from it. The new side joins that point to an end of the old chord; it is the hypotenuse of a triangle with legs s/2 and 1 − a. Squaring and simplifying (a² = 1 − s²/4 cancels the s²/4) gives a formula that uses only square roots. For the outside polygon, enlarge the inside one about the centre until its sides touch the circle: the centre-to-side distance goes from a to 1, so by similarity every side is multiplied by 1/a.")}
       </p>
-      <Equation label={tx(t, "mCir_eqArch", "Archimedes' doubling (radius 1)")}
+      <Derivation t={t} label={tx(t, "mCir_eqArch", "Archimedes' doubling (radius 1)")}
         where={[
           [r`s_n`, tx(t, "mCir_wSn", "the side of the inside polygon with n sides; the hexagon has s₆ = 1")],
           [r`a = \sqrt{1 - (s_n/2)^2}`, tx(t, "mCir_wA", "the distance from the centre to the middle of a side")],
           [r`t_n = s_n / a`, tx(t, "mCir_wTn", "the side of the outside polygon, by similar triangles")],
           [r`n\,s_n/2,\ n\,t_n/2`, tx(t, "mCir_wBounds", "perimeter over diameter for each polygon: a lower and an upper bound for π")],
         ]}
-        note={tx(t, "mCir_archNote", "Hexagon: 3 < π < 3.4641. With 96 sides: 3.1410 < π < 3.1427. Archimedes, doing the square roots by hand, reached 3 10/71 < π < 3 1/7, that is 3.1408 < π < 3.1429.")}>
-        {r`s_{2n} = \sqrt{\left(\tfrac{s_n}{2}\right)^2 + (1 - a)^2} = \sqrt{2 - \sqrt{4 - s_n^2}}`}
-      </Equation>
+        note={tx(t, "mCir_archNote", "Hexagon: 3 < π < 3.4641. With 96 sides: 3.1410 < π < 3.1427. Archimedes, doing the square roots by hand, reached 3 10/71 < π < 3 1/7, that is 3.1408 < π < 3.1429.")}
+        steps={[
+          { tex: r`s_{2n}^2` },
+          { tex: r`= \left(\tfrac{s_n}{2}\right)^2 + (1 - a)^2`, why: tx(t, "mCir_ar1", "Pythagoras: the new side is the hypotenuse, with legs s/2 and 1 − a") },
+          { tex: r`= \tfrac{s_n^2}{4} + 1 - 2a + a^2`, why: tx(t, "mCir_ar2", "expand the square (1 − a)²") },
+          { tex: r`= \tfrac{s_n^2}{4} + 1 - 2a + 1 - \tfrac{s_n^2}{4}`, why: tx(t, "mCir_ar3", "a² = 1 − s²/4, from the right triangle with the radius as hypotenuse") },
+          { tex: r`= 2 - 2a`, why: tx(t, "mCir_ar4", "the two s²/4 cancel") },
+          { tex: r`= 2 - \sqrt{4 - s_n^2}`, why: tx(t, "mCir_ar5", "2a = 2√(1 − s²/4) = √(4 − s²): the 2 goes inside the root as 4") },
+          { full: true, tex: r`\green{s_{2n} = \sqrt{2 - \sqrt{4 - s_n^2}}}`, why: tx(t, "mCir_ar6", "take the square root of both sides") },
+        ]} />
       <Callout type="info" t={t}>
         {tx(t, "mCir_irrInfo", "π is irrational: its decimals never end and never repeat, so no fraction equals it exactly (that was proved in 1761). Good fractions exist: 22/7 = 3.1428… is off by 0.04%, and 355/113 = 3.14159292… is right to six decimals. In code, never type 3.14; use the library constant, which is correct to the last bit of a double.")}
       </Callout>
@@ -94,6 +116,7 @@ export function CircleContent({ t }: { t: TrackTranslations }) {
           [r`A`, tx(t, "mCir_wArea", "the area inside the circle")],
           [r`r^2`, tx(t, "mCir_wR2", "the radius squared: the area of a square with side r")],
         ]}
+        words={tx(t, "mCir_aWords", "A circle covers π times the square built on its radius: a bit more than three such squares.")}
         note={tx(t, "mCir_aNote", "So a circle covers π ≈ 3.14 of the squares built on its radius. The square that just holds the circle has side 2r and area 4r², and the circle fills π/4 ≈ 78.5% of it. Example: a 12-inch pizza (r = 6) has 36π ≈ 113 square inches; two 8-inch pizzas (r = 4) have 2 · 16π ≈ 100.5. The single big one has more.")}>
         {r`A = \underbrace{\pi r}_{\text{width}} \cdot \underbrace{r}_{\text{height}} = \pi r^2`}
       </Equation>
@@ -118,9 +141,18 @@ export function CircleContent({ t }: { t: TrackTranslations }) {
           [r`s`, tx(t, "mCir_wS", "the length of the arc")],
           [r`A_\text{sector}`, tx(t, "mCir_wAs", "the area of the slice")],
         ]}
+        words={tx(t, "mCir_secWords", "A slice with angle θ is the fraction θ/360 of the whole circle, so its arc is that fraction of the circumference and its area that fraction of the disc.")}
         note={tx(t, "mCir_secNote", "Example: a lawn sprinkler set to a 90° arc throws water 8 m. The wet patch is a quarter sector: its area is ¼ · π · 8² ≈ 50.3 m², and its curved edge is ¼ · 2π · 8 ≈ 12.6 m long.")}>
         {r`s = \frac{\theta}{360} \cdot 2\pi r \qquad A_\text{sector} = \frac{\theta}{360} \cdot \pi r^2`}
       </Equation>
+      <LiveFormula label={tx(t, "mCir_liveSector", "Try it: a slice of the circle")}
+        tex={r`s = \frac{\theta}{360} \cdot 2\pi r \qquad A = \frac{\theta}{360} \cdot \pi r^2`}
+        vars={[
+          { id: "theta", label: tx(t, "mCir_liveTheta", "angle θ"), min: 5, max: 360, step: 5, value: 90, fmt: v => `${v}°` },
+          { id: "r", label: tx(t, "mCir_liveR", "radius r"), min: 1, max: 20, step: 1, value: 8, fmt: num },
+        ]}
+        compute={sectorNumbers}
+        note={tx(t, "mCir_liveSectorNote", "The bar shows θ/360, the share of the whole circle. Both the arc and the area take exactly that share; only the area also grows with r².")} />
 
       <H2>{tx(t, "mCir_tanTitle", "Tangents and right angles")}</H2>
       <p>
@@ -132,6 +164,14 @@ export function CircleContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mCir_thalesBody",
           "Join the ends A and B of a diameter to any other point P of the circle: the angle at P is always exactly 90°. The third mode of the figure lets you drag P; the note under it has the proof, which uses only isosceles triangles and the 180° angle sum. Turned around, it gives a construction: the circle with diameter AB is exactly the set of points that see AB at a right angle.")}
       </p>
+      <Derivation t={t} label={tx(t, "mCir_derThales", "Why the angle at P is 90°")}
+        steps={[
+          { full: true, tex: r`OA = OB = OP = r`, why: tx(t, "mCir_th1", "all three are radii") },
+          { full: true, tex: r`\angle OAP = \angle OPA = x \qquad \angle OBP = \angle OPB = y`, why: tx(t, "mCir_th2", "triangles OAP and OBP are isosceles, so their base angles are equal") },
+          { full: true, tex: r`x + y + (x + y) = 180^\circ`, why: tx(t, "mCir_th3", "the angles of the big triangle APB: x at A, y at B, and x + y at P") },
+          { full: true, tex: r`2(x + y) = 180^\circ`, why: tx(t, "mCir_th4", "collect the terms") },
+          { full: true, tex: r`\green{\angle APB = x + y = 90^\circ}`, why: tx(t, "mCir_th5", "divide both sides by 2") },
+        ]} />
 
       <H2>{tx(t, "mCir_exTitle", "Worked examples")}</H2>
       <p>

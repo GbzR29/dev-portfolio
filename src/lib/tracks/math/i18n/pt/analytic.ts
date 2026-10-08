@@ -110,6 +110,26 @@ const text: Record<string, string> = {
   mAn_m5w: "elipse: c² = a² + b²",
   mAn_m5r: "elipse c² = a² − b², hipérbole c² = a² + b²",
   mAn_m5: "os focos de uma elipse ficam dentro dela, então c < a",
+
+  // ── In words, derivations, live formula (2026-10-08) ──
+  mAn_midWords: "O ponto médio é a média dos dois pontos, uma coordenada de cada vez. Para ir a uma fração t do caminho, comece no primeiro ponto e some t vezes o passo até o segundo.",
+  mAn_perpWords: "Retas paralelas têm a mesma inclinação. Uma reta perpendicular tem a inclinação invertida e com o sinal trocado, então as duas inclinações multiplicadas dão −1.",
+  mAn_circWords: "Um ponto está na circunferência quando a sua distância ao centro, ao quadrado, é igual ao raio ao quadrado.",
+  mAn_liveCirc: "Experimente: dentro ou fora? (centro (2, −1))",
+  mAn_liveR: "raio r",
+  mAn_liveIn: "dentro",
+  mAn_liveOut: "fora",
+  mAn_liveOn: "na circunferência",
+  mAn_liveCircNote: "Não precisa de raiz quadrada: compare a distância ao quadrado com r². Experimente (5, −1) com r = 3: exatamente na circunferência, bem à direita do centro.",
+  mAn_cs2b: "cada grupo agora é um quadrado perfeito: x² − 6x + 9 = (x − 3)², y² + 4y + 4 = (y + 2)²",
+  mAn_csCentre: "centro",
+  mAn_pa1: "distância ao foco = distância à diretriz",
+  mAn_pa2: "eleve os dois lados ao quadrado para tirar a raiz (os dois lados são distâncias, nunca negativas)",
+  mAn_pa3: "desenvolva os dois quadrados",
+  mAn_pa4: "y² e p² se cancelam; some 2py aos dois lados",
+  mAn_pa5: "divida os dois lados por 4p",
+  mAn_ellWords: "Uma elipse é uma circunferência com x medido em unidades de a e y em unidades de b; os focos ficam a c do centro, onde c² = a² − b².",
+  mAn_hypWords: "A equação da elipse com um sinal de menos: dois ramos em vez de um laço fechado, e os focos agora mais afastados, c² = a² + b².",
 };
 
 export default text;

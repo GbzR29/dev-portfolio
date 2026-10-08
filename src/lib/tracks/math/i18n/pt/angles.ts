@@ -132,6 +132,23 @@ const text: Record<string, string> = {
   mAng_m5w: "rumo novo − rumo antigo como o giro",
   mAng_m5r: "traga a diferença para (−180°, 180°]",
   mAng_m5: "ângulos se repetem a cada 360°",
+
+  // ── In words, live formula (2026-10-08) ──
+  mAng_turnWords: "Uma volta completa tem 360 graus, então qualquer fração de volta é essa fração de 360: meia volta é 180°, um quarto 90°, um oitavo 45°.",
+  mAng_pairsWords: "Dois ângulos que preenchem um ângulo reto somam 90°, dois que preenchem uma linha reta somam 180°, e todos os ângulos em volta de um ponto somam 360°.",
+  mAng_wrapWords: "Tire (ou devolva) voltas inteiras de 360° até o ângulo ficar maior ou igual a 0° e menor que 360°; a direção para onde ele aponta não muda.",
+  mAng_clockWords: "Ache para onde cada ponteiro aponta, medindo a partir do 12, e faça a diferença; se passar de 180°, o ângulo menor é 360° menos ela.",
+  mAng_liveTurn: "Experimente: o menor giro",
+  mAng_liveFrom: "rumo antigo θ₁",
+  mAng_liveTo: "rumo novo θ₂",
+  mAng_liveCw: "horário",
+  mAng_liveAcw: "anti-horário",
+  mAng_liveNone: "sem giro",
+  mAng_liveTurnNote: "Troque os dois rumos e a resposta só muda de sinal: o mesmo giro, para o outro lado. A resposta nunca passa de 180° para nenhum dos lados.",
+  mAng_liveClock: "Experimente: os ponteiros do relógio",
+  mAng_liveH: "hora h",
+  mAng_liveM: "minutos m",
+  mAng_liveClockNote: "Experimente 12:00 (h = 0, m = 0): os dois ponteiros no 12, 0°. Depois 6:00: 180°, os ponteiros numa única linha reta. Às 3:15 a resposta não é 0°: o ponteiro das horas já avançou 7,5° além do 3.",
 };
 
 export default text;

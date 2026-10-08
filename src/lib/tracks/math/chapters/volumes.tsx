@@ -7,6 +7,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -14,6 +16,20 @@ import { VolumeFigure } from "@/components/lesson/figures/math/VolumeFigure";
 import { NetFigure } from "@/components/lesson/figures/math/NetFigure";
 
 const r = String.raw;
+
+// ── Live formulas: cylinder against cone, a ball's skin against its bulk ──────
+
+const num = (v: number) => String(Math.round(v * 10) / 10);
+
+function cylConeNumbers(v: Record<string, number>) {
+  const cyl = Math.PI * v.r * v.r * v.h;
+  return { tex: r`V_\text{cyl} = \pi \cdot ${num(v.r)}^2 \cdot ${num(v.h)} \approx \green{${num(cyl)}} \qquad V_\text{cone} = \tfrac13 \cdot ${num(cyl)} \approx \green{${num(cyl / 3)}}` };
+}
+
+function ballNumbers(v: Record<string, number>) {
+  const S = 4 * Math.PI * v.r * v.r, V = (4 / 3) * Math.PI * v.r ** 3;
+  return { tex: r`S = 4\pi \cdot ${num(v.r)}^2 \approx ${num(S)} \qquad V = \tfrac43\pi \cdot ${num(v.r)}^3 \approx ${num(V)} \qquad \frac{S}{V} = \frac{3}{${num(v.r)}} = \green{${(3 / v.r).toFixed(2)}}` };
+}
 
 export function VolumesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -41,6 +57,7 @@ export function VolumesContent({ t }: { t: TrackTranslations }) {
           [r`B`, tx(t, "mVol_wB", "the area of the base, the cross-section that repeats all the way up")],
           [r`h`, tx(t, "mVol_wH", "the height, measured perpendicular to the base")],
         ]}
+        words={tx(t, "mVol_prismWords", "Any solid whose cross-section stays the same all the way up holds its base area once for every unit of height: base area times height.")}
         note={tx(t, "mVol_prismNote", "Example: a triangular tent with a triangle base 2 m wide and 1.5 m tall, 3 m long: B = ½ · 2 · 1.5 = 1.5 m², V = 1.5 · 3 = 4.5 m³.")}>
         {r`V_\text{box} = a\,b\,c \qquad V_\text{cube} = s^3 \qquad V_\text{prism} = B\,h`}
       </Equation>
@@ -57,6 +74,7 @@ export function VolumesContent({ t }: { t: TrackTranslations }) {
           [r`\pi r^2`, tx(t, "mVol_wDisc", "the area of the circular base, from the circle chapter")],
           [r`h`, tx(t, "mVol_wHc", "the height between the two circles, measured perpendicular to them")],
         ]}
+        words={tx(t, "mVol_cylWords", "A cylinder is a prism with a round base: the disc's area times the height.")}
         note={tx(t, "mVol_cylNote", "Example: a drink can with radius 3.3 cm and height 12 cm: V = π · 3.3² · 12 ≈ 410 cm³ ≈ 0.41 L.")}>
         {r`V_\text{cylinder} = \pi r^2 h`}
       </Equation>
@@ -75,20 +93,28 @@ export function VolumesContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mVol_coneNote", "Example: an ice-cream cone with radius 2.5 cm and height 10 cm holds ⅓ · π · 2.5² · 10 ≈ 65 cm³. The Great Pyramid, with a 230 m square base and 146 m height, is about ⅓ · 230² · 146 ≈ 2.6 million m³.")}>
         {r`V_\text{pyramid} = \tfrac13 B\,h \qquad V_\text{cone} = \tfrac13 \pi r^2 h`}
       </Equation>
+      <LiveFormula label={tx(t, "mVol_liveCone", "Try it: a cylinder and its cone")}
+        tex={r`V_\text{cyl} = \pi r^2 h \qquad V_\text{cone} = \tfrac13 \pi r^2 h`}
+        vars={[
+          { id: "r", label: tx(t, "mVol_liveR", "radius r"), min: 0.5, max: 10, step: 0.5, value: 2.5, fmt: num },
+          { id: "h", label: tx(t, "mVol_liveH", "height h"), min: 1, max: 30, step: 1, value: 10, fmt: num },
+        ]}
+        compute={cylConeNumbers}
+        note={tx(t, "mVol_liveConeNote", "Double the radius and both volumes grow 4 times (r is squared); double the height and they only double. The cone is always exactly a third.")} />
 
       <H2>{tx(t, "mVol_sphereTitle", "The sphere")}</H2>
       <p>
         {tx(t, "mVol_sphereBody",
           "A sphere is the 3D circle: every point at distance r from a centre. Archimedes found its volume with the slicing idea, and the last mode of the figure repeats his argument with Pythagoras. Put a hemisphere (half a sphere) of radius r next to a cylinder of radius r and height r, from which a cone has been scooped out, point down. Cut both at height h. The hemisphere's slice is a disc whose radius ρ, the height h and the radius r form a right triangle: ρ² = r² − h², so the slice has area π(r² − h²). The other slice is a ring: the cylinder's disc πr² minus the cone's disc, whose radius is h (the cone is as wide as it is high), so πr² − πh². The two slices are always equal, so the volumes are equal.")}
       </p>
-      <Equation label={tx(t, "mVol_eqSphere", "Volume of a sphere")}
-        notes={[
-          tx(t, "mVol_s1", "hemisphere = cylinder (height r) − cone (height r), by Cavalieri"),
-          tx(t, "mVol_s2", "πr² · r − ⅓πr² · r = ⅔πr³"),
-          tx(t, "mVol_s3", "a whole sphere is two hemispheres"),
-        ]}>
-        {r`V_\text{hemi} = \pi r^3 - \tfrac13 \pi r^3 = \tfrac23 \pi r^3 \;\Rightarrow\; V_\text{sphere} = \tfrac43 \pi r^3`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mVol_eqSphere", "Volume of a sphere")}
+        steps={[
+          { tex: r`V_\text{hemi}` },
+          { tex: r`= V_\text{cyl} - V_\text{cone}`, why: tx(t, "mVol_s1", "hemisphere = cylinder (height r) − cone (height r), by Cavalieri") },
+          { tex: r`= \pi r^2 \cdot r - \tfrac13 \pi r^2 \cdot r`, why: tx(t, "mVol_s1b", "both have base radius r and height r") },
+          { tex: r`= \tfrac23 \pi r^3`, why: tx(t, "mVol_s2", "πr² · r − ⅓πr² · r = ⅔πr³") },
+          { full: true, tex: r`\green{V_\text{sphere} = 2 \cdot \tfrac23 \pi r^3 = \tfrac43 \pi r^3}`, why: tx(t, "mVol_s3", "a whole sphere is two hemispheres") },
+        ]} />
       <p>
         {tx(t, "mVol_sphereEx",
           "Example: a football with radius 11 cm has V = 4/3 · π · 11³ ≈ 5575 cm³ ≈ 5.6 L. A sphere fills 4/3 π r³ out of the (2r)³ = 8r³ of the cube around it: π/6 ≈ 52%. That is why a sphere collider around a boxy crate always leaves a lot of empty space.")}
@@ -112,7 +138,8 @@ export function VolumesContent({ t }: { t: TrackTranslations }) {
           [r`2\pi r h`, tx(t, "mVol_wSide", "the cylinder's unrolled side: a 2πr × h rectangle")],
           [r`l = \sqrt{r^2 + h^2}`, tx(t, "mVol_wSlant", "the cone's slant height, apex to rim")],
           [r`\pi r l`, tx(t, "mVol_wConeSide", "the cone's unrolled side, a sector of radius l")],
-        ]}>
+        ]}
+        words={tx(t, "mVol_surfWords", "Unfold each solid and add up the flat pieces: a box is three pairs of rectangles; a cylinder two discs and a rolled-out rectangle; a cone one disc and a rolled-out pizza slice.")}>
         {r`S_\text{box} = 2(ab + bc + ca) \qquad S_\text{cyl} = 2\pi r^2 + 2\pi r h \qquad S_\text{cone} = \pi r^2 + \pi r l`}
       </Equation>
       <H3>{tx(t, "mVol_sphSurfTitle", "The sphere's surface")}</H3>
@@ -120,13 +147,21 @@ export function VolumesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mVol_sphSurfBody",
           "A sphere cannot be unrolled flat without stretching (that is why every world map distorts something), so it needs another argument. Cover the surface with tiny patches and join each one to the centre: the sphere becomes many thin pyramids, each with a patch as its base and height r. Their volumes add up to the sphere's: ⅓ · (all the patches) · r = ⅓ · S · r. Setting that equal to 4/3 πr³ and dividing by r/3 gives S = 4πr², exactly four times the area of the circle through the sphere's middle.")}
       </p>
-      <Equation label={tx(t, "mVol_eqSphS", "Surface of a sphere")}
+      <Derivation t={t} label={tx(t, "mVol_eqSphS", "Surface of a sphere")}
         where={[
           [r`S`, tx(t, "mVol_wSs", "the area of the whole sphere's skin")],
           [r`\tfrac13 S\,r`, tx(t, "mVol_wPyr", "all the thin pyramids together: bases S, height r")],
-        ]}>
-        {r`\tfrac13\,S\,r = \tfrac43 \pi r^3 \;\Rightarrow\; S_\text{sphere} = 4\pi r^2`}
-      </Equation>
+        ]}
+        steps={[
+          { full: true, tex: r`\tfrac13\,S\,r = \tfrac43 \pi r^3`, why: tx(t, "mVol_ss1", "the thin pyramids fill the sphere exactly") },
+          { full: true, tex: r`S\,r = 4 \pi r^3`, why: tx(t, "mVol_ss2", "multiply both sides by 3") },
+          { full: true, tex: r`\green{S_\text{sphere} = 4\pi r^2}`, why: tx(t, "mVol_ss3", "divide both sides by r") },
+        ]} />
+      <LiveFormula label={tx(t, "mVol_liveBall", "Try it: skin against bulk")}
+        tex={r`S = 4\pi r^2 \qquad V = \tfrac43 \pi r^3 \qquad \frac{S}{V} = \frac{3}{r}`}
+        vars={[{ id: "r", label: tx(t, "mVol_liveBallR", "radius r"), min: 0.5, max: 20, step: 0.5, value: 1, fmt: num }]}
+        compute={ballNumbers}
+        note={tx(t, "mVol_liveBallNote", "The surface per unit of volume is 3/r: a ball twice as big has half as much skin for its bulk. That is the next section's square–cube law in one number.")} />
 
       <H2>{tx(t, "mVol_scaleTitle", "Scaling: k² for skin, k³ for bulk")}</H2>
       <p>

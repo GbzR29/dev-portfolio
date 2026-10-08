@@ -96,6 +96,19 @@ const text: Record<string, string> = {
   mTf_m5w: "esticar mantém a forma semelhante",
   mTf_m5r: "só fatores iguais mantêm",
   mTf_m5: "sₓ ≠ s_y muda os ângulos",
+
+  // ── In words, derivations, live formula (2026-10-08) ──
+  mTf_transWords: "Some a a todo x e b a todo y: a forma inteira desliza, sem mudar.",
+  mTf_derMirror: "Por que a imagem fica em 2c − x",
+  mTf_dm1: "a reta do espelho fica exatamente no meio entre o ponto e a sua imagem",
+  mTf_dm2: "multiplique os dois lados por 2",
+  mTf_dm3: "subtraia x dos dois lados",
+  mTf_rotWords: "Para um quarto de volta anti-horário, troque as duas coordenadas e mude o sinal do novo x. Faça duas vezes para meia volta, três vezes para três quartos.",
+  mTf_liveRot: "Experimente: quartos de volta",
+  mTf_liveQ: "quartos de volta",
+  mTf_liveRotNote: "Quatro quartos de volta sempre trazem o ponto de volta. Dois quartos de volta dão (−x, −y), qualquer que seja o ponto: a meia volta.",
+  mTf_scaleWords: "A escala multiplica x por um fator e y por outro; o cisalhamento soma k vezes a altura ao x e deixa o y como está.",
+  mTf_c3: "teste um ponto: as duas ordens levam (1, 0) a lugares diferentes",
 };
 
 export default text;

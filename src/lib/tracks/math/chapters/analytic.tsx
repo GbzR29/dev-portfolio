@@ -8,6 +8,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -15,6 +17,18 @@ import { CoordFigure } from "@/components/lesson/figures/math/CoordFigure";
 import { ConicFigure } from "@/components/lesson/figures/math/ConicFigure";
 
 const r = String.raw;
+
+// ── Live formula: inside, on or outside a circle ──────────────────────────────
+
+const num = (v: number) => String(Math.round(v * 100) / 100).replace("-", "−");
+const sub = (v: number, c: number) => (c < 0 ? `${num(v)} + ${num(-c)}` : `${num(v)} - ${num(c)}`);
+
+function insideNumbers(v: Record<string, number>, t: TrackTranslations) {
+  const H = 2, K = -1;                                  // the example's centre
+  const lhs = (v.x - H) ** 2 + (v.y - K) ** 2, rr = v.r * v.r;
+  const [rel, where] = lhs < rr - 1e-9 ? ["<", tx(t, "mAn_liveIn", "inside")] : lhs > rr + 1e-9 ? [">", tx(t, "mAn_liveOut", "outside")] : ["=", tx(t, "mAn_liveOn", "on the circle")];
+  return { tex: r`(${sub(v.x, H)})^2 + (${sub(v.y, K)})^2 = ${num(lhs)} \;${rel}\; ${num(v.r)}^2 = ${num(rr)} \;\Rightarrow\; \green{\text{${where}}}` };
+}
 
 export function AnalyticContent({ t }: { t: TrackTranslations }) {
   return (
@@ -35,6 +49,7 @@ export function AnalyticContent({ t }: { t: TrackTranslations }) {
           [r`M`, tx(t, "mAn_wM", "the midpoint, the average of the end points")],
           [r`t`, tx(t, "mAn_wT", "the fraction of the way from A to B, usually between 0 and 1")],
         ]}
+        words={tx(t, "mAn_midWords", "The midpoint is the average of the two points, one coordinate at a time. To go a fraction t of the way, start at the first point and add t times the step to the second.")}
         note={tx(t, "mAn_midNote", "Example: A = (−4, −2), B = (3, 2): M = (−0.5, 0). A quarter of the way, t = 0.25: (−4 + 0.25 · 7, −2 + 0.25 · 4) = (−2.25, −1).")}>
         {r`M = \left(\frac{x_1 + x_2}{2},\ \frac{y_1 + y_2}{2}\right) \qquad P(t) = \big(x_1 + t\,(x_2 - x_1),\ y_1 + t\,(y_2 - y_1)\big)`}
       </Equation>
@@ -66,6 +81,7 @@ export function AnalyticContent({ t }: { t: TrackTranslations }) {
           [r`m_1,\ m_2`, tx(t, "mAn_wM12", "the slopes of the two lines")],
           [r`-\tfrac{1}{m_1}`, tx(t, "mAn_wNegRec", "the negative reciprocal: flip the fraction and change the sign")],
         ]}
+        words={tx(t, "mAn_perpWords", "Parallel lines have the same slope. A perpendicular line has the slope flipped upside down and with the opposite sign, so the two slopes multiply to −1.")}
         note={tx(t, "mAn_perpNote", "Example: a wall along y = ½x + 1 has slope ½, so a line straight out of the wall has slope −2. Check: ½ · (−2) = −1. Horizontal and vertical lines are perpendicular too, but the rule breaks there because a vertical line has no slope.")}>
         {r`\text{parallel: } m_1 = m_2 \qquad \text{perpendicular: } m_2 = -\frac{1}{m_1} \iff m_1\,m_2 = -1`}
       </Equation>
@@ -81,22 +97,31 @@ export function AnalyticContent({ t }: { t: TrackTranslations }) {
           [r`r`, tx(t, "mAn_wR", "the radius; the right side is r², not r")],
           [r`x - h`, tx(t, "mAn_wXH", "how far the point is from the centre horizontally, as in the distance formula")],
         ]}
+        words={tx(t, "mAn_circWords", "A point is on the circle when its squared distance from the centre equals the squared radius.")}
         note={tx(t, "mAn_circNote", "Example: centre (2, −1), radius 3: (x − 2)² + (y + 1)² = 9. Is (4, 1) inside? (2)² + (2)² = 8 < 9, yes, just.")}>
         {r`(x - h)^2 + (y - k)^2 = r^2`}
       </Equation>
+      <LiveFormula label={tx(t, "mAn_liveCirc", "Try it: inside or outside? (centre (2, −1))")}
+        tex={r`(x - 2)^2 + (y + 1)^2 \;\lesseqgtr\; r^2`}
+        vars={[
+          { id: "x", label: "x", min: -6, max: 8, step: 0.5, value: 4, fmt: num },
+          { id: "y", label: "y", min: -6, max: 6, step: 0.5, value: 1, fmt: num },
+          { id: "r", label: tx(t, "mAn_liveR", "radius r"), min: 0.5, max: 6, step: 0.5, value: 3, fmt: num },
+        ]}
+        compute={v => insideNumbers(v, t)}
+        note={tx(t, "mAn_liveCircNote", "No square root needed: compare the squared distance with r². Try (5, −1) with r = 3: exactly on the circle, straight to the right of the centre.")} />
       <H3>{tx(t, "mAn_csTitle", "Reading a circle from an expanded equation")}</H3>
       <p>
         {tx(t, "mAn_csBody",
           "Multiplied out, a circle's equation looks like x² + y² + Dx + Ey + F = 0, and the centre and radius are hidden. Completing the square, from the quadratics chapter, brings them back: group the x terms and the y terms, add the square of half each linear coefficient to both sides, and fold each group into a square.")}
       </p>
-      <Equation label={tx(t, "mAn_eqCs", "Completing the square twice")}
-        notes={[
-          tx(t, "mAn_cs1", "the expanded equation; group x terms and y terms"),
-          tx(t, "mAn_cs2", "half of −6 is −3, squared 9; half of 4 is 2, squared 4; add both to both sides"),
-          tx(t, "mAn_cs3", "centre (3, −2), radius √16 = 4"),
-        ]}>
-        {r`x^2 - 6x + y^2 + 4y = 3 \;\Rightarrow\; (x^2 - 6x + 9) + (y^2 + 4y + 4) = 3 + 9 + 4 \;\Rightarrow\; (x - 3)^2 + (y + 2)^2 = 16`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mAn_eqCs", "Completing the square twice")}
+        steps={[
+          { full: true, tex: r`x^2 - 6x + y^2 + 4y = 3`, why: tx(t, "mAn_cs1", "the expanded equation; group x terms and y terms") },
+          { full: true, tex: r`(x^2 - 6x + \amber{9}) + (y^2 + 4y + \amber{4}) = 3 + \amber{9} + \amber{4}`, why: tx(t, "mAn_cs2", "half of −6 is −3, squared 9; half of 4 is 2, squared 4; add both to both sides") },
+          { full: true, tex: r`(x - 3)^2 + (y + 2)^2 = 16`, why: tx(t, "mAn_cs2b", "each group is now a perfect square: x² − 6x + 9 = (x − 3)², y² + 4y + 4 = (y + 2)²") },
+          { full: true, tex: r`\green{\text{${tx(t, "mAn_csCentre", "centre")}}\ (3, -2), \quad r = \sqrt{16} = 4}`, why: tx(t, "mAn_cs3", "centre (3, −2), radius √16 = 4") },
+        ]} />
       <H3>{tx(t, "mAn_lcTitle", "Where a line meets a circle")}</H3>
       <p>
         {tx(t, "mAn_lcBody",
@@ -116,14 +141,19 @@ export function AnalyticContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mAn_parabBody",
           "A parabola is every point as far from a fixed point, the focus, as from a fixed line, the directrix. Put the focus at (0, p) and the directrix at y = −p. A point (x, y) is at distance √(x² + (y − p)²) from the focus and y + p from the line. Setting them equal and squaring leaves x² − 2py = 2py after the y² and p² cancel, so y = x²/(4p). That is the familiar parabola y = ax² of the quadratics chapter, with a = 1/(4p): every such graph has a focus. Its reflecting property, rays parallel to the axis bounce into the focus, is why satellite dishes, telescope mirrors and car headlights are parabolic.")}
       </p>
-      <Equation label={tx(t, "mAn_eqParab", "Parabola with focus (0, p) and directrix y = −p")}
+      <Derivation t={t} label={tx(t, "mAn_eqParab", "Parabola with focus (0, p) and directrix y = −p")}
         where={[
           [r`p`, tx(t, "mAn_wP", "the distance from the vertex to the focus (and to the directrix)")],
           [r`\sqrt{x^2 + (y - p)^2}`, tx(t, "mAn_wPF", "the distance from (x, y) to the focus")],
           [r`y + p`, tx(t, "mAn_wPD", "the distance from (x, y) down to the directrix")],
-        ]}>
-        {r`\sqrt{x^2 + (y - p)^2} = y + p \;\Rightarrow\; x^2 = 4 p y \;\Rightarrow\; y = \frac{x^2}{4p}`}
-      </Equation>
+        ]}
+        steps={[
+          { full: true, tex: r`\sqrt{x^2 + (y - p)^2} = y + p`, why: tx(t, "mAn_pa1", "distance to the focus = distance to the directrix") },
+          { full: true, tex: r`x^2 + (y - p)^2 = (y + p)^2`, why: tx(t, "mAn_pa2", "square both sides to drop the root (both sides are distances, never negative)") },
+          { full: true, tex: r`x^2 + y^2 - 2py + p^2 = y^2 + 2py + p^2`, why: tx(t, "mAn_pa3", "expand both squares") },
+          { full: true, tex: r`x^2 = 4py`, why: tx(t, "mAn_pa4", "y² and p² cancel; add 2py to both sides") },
+          { full: true, tex: r`\green{y = \frac{x^2}{4p}}`, why: tx(t, "mAn_pa5", "divide both sides by 4p") },
+        ]} />
 
       <H3>{tx(t, "mAn_ellTitle", "The ellipse: two foci, a constant sum")}</H3>
       <p>
@@ -136,6 +166,7 @@ export function AnalyticContent({ t }: { t: TrackTranslations }) {
           [r`b`, tx(t, "mAn_wEb", "the semi-minor axis: half the height")],
           [r`c`, tx(t, "mAn_wEc", "the distance from the centre to each focus")],
         ]}
+        words={tx(t, "mAn_ellWords", "An ellipse is a circle with x measured in units of a and y in units of b; the foci sit c from the centre, where c² = a² − b².")}
         note={tx(t, "mAn_ellNote", "Example: a = 5, b = 3 gives c = √(25 − 9) = 4, foci at (±4, 0). The point (3, 2.4) is on it: 9/25 + 5.76/9 = 0.36 + 0.64 = 1. With a = b the foci merge (c = 0) and the ellipse is a circle.")}>
         {r`\frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \qquad c^2 = a^2 - b^2`}
       </Equation>
@@ -150,7 +181,8 @@ export function AnalyticContent({ t }: { t: TrackTranslations }) {
           [r`2a`, tx(t, "mAn_wHa", "the constant difference of the distances; the branches cross the x-axis at ±a")],
           [r`c`, tx(t, "mAn_wHc", "the distance from the centre to each focus, now bigger than a")],
           [r`y = \pm\tfrac{b}{a}x`, tx(t, "mAn_wAsym", "the asymptotes, the lines the branches approach")],
-        ]}>
+        ]}
+        words={tx(t, "mAn_hypWords", "The ellipse's equation with a minus sign: two branches instead of a closed loop, and the foci now farther out, c² = a² + b².")}>
         {r`\frac{x^2}{a^2} - \frac{y^2}{b^2} = 1 \qquad c^2 = a^2 + b^2`}
       </Equation>
 

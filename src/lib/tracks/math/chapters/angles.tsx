@@ -7,6 +7,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -14,6 +16,23 @@ import { AngleFigure } from "@/components/lesson/figures/math/AngleFigure";
 import { ParallelFigure } from "@/components/lesson/figures/math/ParallelFigure";
 
 const r = String.raw;
+
+// ── Live formulas: shortest turn between bearings, angle between clock hands ──
+
+const num = (v: number) => String(Math.round(v * 100) / 100);
+const deg = (v: number) => `${num(v).replace("-", "−")}°`;
+const wrap = (v: number) => ((v % 360) + 360) % 360;
+
+function turnNumbers(v: Record<string, number>, t: TrackTranslations) {
+  const d = v.to - v.from, w = wrap(d), s = w > 180 ? w - 360 : w;
+  const way = r`\text{${s > 0 ? tx(t, "mAng_liveCw", "clockwise") : s < 0 ? tx(t, "mAng_liveAcw", "anticlockwise") : tx(t, "mAng_liveNone", "no turn")}}`;
+  return { tex: r`${num(v.to)}^\circ - ${num(v.from)}^\circ = ${num(d)}^\circ \;\to\; ${num(w)}^\circ \;\to\; \green{${num(s)}^\circ}\ (${way})` };
+}
+
+function clockNumbers(v: Record<string, number>) {
+  const hand = 30 * v.h + 0.5 * v.m, minute = 6 * v.m, a = Math.abs(hand - minute), small = a > 180 ? 360 - a : a;
+  return { tex: r`|\,(30 \cdot ${v.h} + 0.5 \cdot ${v.m}) - 6 \cdot ${v.m}\,| = |\,${num(hand)} - ${num(minute)}\,| = ${num(a)}^\circ` + (a > 180 ? r` \;\to\; 360^\circ - ${num(a)}^\circ = \green{${num(small)}^\circ}` : r` = \green{${num(small)}^\circ}`) };
+}
 
 export function AnglesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -57,7 +76,8 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`1\ \text{turn}`, tx(t, "mAng_wTurn", "one complete rotation around the vertex")],
           [r`^{\circ}`, tx(t, "mAng_wDeg", "the degree symbol; one degree is 1/360 of a turn")],
-        ]}>
+        ]}
+        words={tx(t, "mAng_turnWords", "A full turn is 360 degrees, so any fraction of a turn is that fraction of 360: half a turn is 180°, a quarter 90°, an eighth 45°.")}>
         {r`1\ \text{turn} = 360^{\circ} \qquad \tfrac12\ \text{turn} = 180^{\circ} \qquad \tfrac14\ \text{turn} = 90^{\circ} \qquad \tfrac18\ \text{turn} = 45^{\circ}`}
       </Equation>
 
@@ -90,7 +110,8 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
           [r`90^{\circ}`, tx(t, "mAng_w90", "complementary angles together make a right angle; each is the other's complement")],
           [r`180^{\circ}`, tx(t, "mAng_w180", "supplementary angles together make a straight line; each is the other's supplement")],
           [r`360^{\circ}`, tx(t, "mAng_w360", "all the angles around one point make a full turn")],
-        ]}>
+        ]}
+        words={tx(t, "mAng_pairsWords", "Two angles that fill a right angle add to 90°, two that fill a straight line add to 180°, and all the angles around one point add to 360°.")}>
         {r`\alpha + \beta = 90^{\circ} \qquad \alpha + \beta = 180^{\circ} \qquad \alpha_1 + \alpha_2 + \dots + \alpha_n = 360^{\circ}`}
       </Equation>
       <H3>{tx(t, "mAng_vertTitle", "Vertical angles are equal")}</H3>
@@ -98,15 +119,13 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mAng_vertBody",
           "When two lines cross they make four angles. The two that face each other across the crossing are called vertical angles (vertical here means \"sharing a vertex\", not \"up and down\"), and they are always equal. The reason is a two-line proof, and it is worth reading because it is the pattern of most geometry proofs: call the angles around the crossing α, β, γ going round. α and β sit on a straight line, so α + β = 180°. β and γ sit on the other line, so β + γ = 180°. Both sums equal 180°, so α + β = β + γ, and subtracting β from both sides leaves α = γ.")}
       </p>
-      <Equation label={tx(t, "mAng_eqVert", "Why vertical angles are equal")}
-        notes={[
-          tx(t, "mAng_v1", "α and β are adjacent on one line: they are supplementary"),
-          tx(t, "mAng_v2", "β and γ are adjacent on the other line: also supplementary"),
-          tx(t, "mAng_v3", "equal things equal to the same thing: α + β = β + γ"),
-          tx(t, "mAng_v4", "subtract β from both sides (the balance rule from linear equations): α = γ"),
-        ]}>
-        {r`\alpha + \beta = 180^{\circ} = \beta + \gamma \;\Rightarrow\; \alpha = \gamma`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mAng_eqVert", "Why vertical angles are equal")}
+        steps={[
+          { full: true, tex: r`\alpha + \beta = 180^{\circ}`, why: tx(t, "mAng_v1", "α and β are adjacent on one line: they are supplementary") },
+          { full: true, tex: r`\beta + \gamma = 180^{\circ}`, why: tx(t, "mAng_v2", "β and γ are adjacent on the other line: also supplementary") },
+          { full: true, tex: r`\alpha + \beta = \beta + \gamma`, why: tx(t, "mAng_v3", "equal things equal to the same thing: α + β = β + γ") },
+          { full: true, tex: r`\green{\alpha = \gamma}`, why: tx(t, "mAng_v4", "subtract β from both sides (the balance rule from linear equations): α = γ") },
+        ]} />
 
       <H2>{tx(t, "mAng_perpTitle", "Perpendicular and parallel lines")}</H2>
       <p>
@@ -154,7 +173,8 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
         [r`\theta`, tx(t, "mAng_wWrapTheta", "the angle you got from adding or subtracting turns, in degrees")],
         [r`k`, tx(t, "mAng_wWrapK", "a whole number of full turns, chosen so the result lands in the range; it can be negative")],
         [r`360^\circ`, tx(t, "mAng_wWrap360", "one full turn, which leaves the direction unchanged")],
-      ]}>{r`\theta_{\text{wrapped}} = \theta - 360^\circ\cdot k, \qquad 0^\circ \le \theta_{\text{wrapped}} < 360^\circ`}</Equation>
+      ]}
+        words={tx(t, "mAng_wrapWords", "Take away (or add back) whole turns of 360° until the angle is at least 0° and less than 360°; the direction it points does not change.")}>{r`\theta_{\text{wrapped}} = \theta - 360^\circ\cdot k, \qquad 0^\circ \le \theta_{\text{wrapped}} < 360^\circ`}</Equation>
       <LessonTable
         headers={[tx(t, "mAng_tStart", "Angle"), tx(t, "mAng_tStep", "Step"), tx(t, "mAng_tResult", "Bearing")]}
         rows={[
@@ -181,6 +201,14 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
       <Callout type="tip" t={t}>
         {tx(t, "mAng_bearTip", "Exactly 180° is the one tie: both ways are the same length, so either direction is correct.")}
       </Callout>
+      <LiveFormula label={tx(t, "mAng_liveTurn", "Try it: the shortest turn")}
+        tex={r`\Delta = \theta_2 - \theta_1 \;\to\; [0^\circ, 360^\circ) \;\to\; \Delta > 180^\circ \Rightarrow \Delta - 360^\circ`}
+        vars={[
+          { id: "from", label: tx(t, "mAng_liveFrom", "old bearing θ₁"), min: 0, max: 355, step: 5, value: 350, fmt: deg },
+          { id: "to", label: tx(t, "mAng_liveTo", "new bearing θ₂"), min: 0, max: 355, step: 5, value: 10, fmt: deg },
+        ]}
+        compute={v => turnNumbers(v, t)}
+        note={tx(t, "mAng_liveTurnNote", "Swap the two bearings and the answer only changes sign: the same turn, the other way. The answer never goes past 180° either way.")} />
 
       <H3>{tx(t, "mAng_clockTitle", "The angle between the hands of a clock")}</H3>
       <p>
@@ -192,7 +220,16 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
         [r`m`, tx(t, "mAng_wM", "the minutes past the hour (0 to 59)")],
         [r`30h + 0.5m`, tx(t, "mAng_wHour", "where the hour hand points: 30° for every whole hour plus 0.5° for every minute")],
         [r`6m`, tx(t, "mAng_wMin", "where the minute hand points: 6° for every minute")],
-      ]}>{r`\text{angle} = \left|\,(30h + 0.5m) - 6m\,\right| = \left|\,30h - 5.5m\,\right|`}</Equation>
+      ]}
+        words={tx(t, "mAng_clockWords", "Find where each hand points, measured from 12 o'clock, and take the difference; if it is over 180°, the smaller angle is 360° minus it.")}>{r`\text{angle} = \left|\,(30h + 0.5m) - 6m\,\right| = \left|\,30h - 5.5m\,\right|`}</Equation>
+      <LiveFormula label={tx(t, "mAng_liveClock", "Try it: the hands of a clock")}
+        tex={r`\text{angle} = \left|\,(30h + 0.5m) - 6m\,\right|`}
+        vars={[
+          { id: "h", label: tx(t, "mAng_liveH", "hour h"), min: 0, max: 11, step: 1, value: 3, fmt: num },
+          { id: "m", label: tx(t, "mAng_liveM", "minutes m"), min: 0, max: 59, step: 1, value: 40, fmt: num },
+        ]}
+        compute={clockNumbers}
+        note={tx(t, "mAng_liveClockNote", "Try 12:00 (h = 0, m = 0): both hands on 12, 0°. Then 6:00: 180°, the hands in one straight line. At 3:15 the answer is not 0°: the hour hand has already crept 7.5° past the 3.")} />
       <p>
         {tx(t, "mAng_clockEx",
           "At 3:40: h = 3, m = 40. The hour hand is at 30 × 3 + 0.5 × 40 = 90 + 20 = 110°; the minute hand at 6 × 40 = 240°. The difference is |110 − 240| = 130°. If a result is more than 180°, the smaller angle between the hands is 360° minus it: at 9:00 the formula gives |270 − 0| = 270°, and the hands actually make 360° − 270° = 90°.")}

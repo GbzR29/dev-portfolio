@@ -112,6 +112,32 @@ const text: Record<string, string> = {
   mTri_m5w: "quaisquer três pontos formam um triângulo",
   mTri_m5r: "três pontos numa reta não formam",
   mTri_m5: "pontos colineares não cercam área nenhuma: o “triângulo” é plano",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mTri_sumWords: "Os três ângulos de qualquer triângulo, postos lado a lado, formam uma linha reta.",
+  mTri_derSum: "A prova, um passo de cada vez",
+  mTri_ds1: "por C trace a reta paralela a AB; os três ângulos em C ao longo dela, α à esquerda e β à direita, preenchem um ângulo raso",
+  mTri_ds2: "α e A são ângulos alternos: AC cruza as duas retas paralelas",
+  mTri_ds3: "β e B são ângulos alternos: BC cruza as duas retas paralelas",
+  mTri_ds4: "ponha A no lugar de α e B no lugar de β na primeira linha",
+  mTri_liveThird: "Experimente: o terceiro ângulo",
+  mTri_liveA: "ângulo A",
+  mTri_liveB: "ângulo B",
+  mTri_liveNoTri: "não há triângulo",
+  mTri_liveThirdNote: "Leve A + B até 180° ou mais e não sobra nada para C: não há triângulo. O ângulo externo em C, A + B, também aparece; o próximo parágrafo o explica.",
+  mTri_de1: "ε_C e C ficam lado a lado sobre a reta BC: são suplementares",
+  mTri_de2: "a soma dos ângulos A + B + C = 180°, com C passado para a direita",
+  mTri_de3: "os dois valem 180° − C, então são iguais entre si",
+  mTri_ineqWords: "Cada lado é menor que os outros dois juntos: ir em linha reta é sempre mais curto que dar a volta pelo terceiro vértice.",
+  mTri_liveClose: "Experimente: ele fecha?",
+  mTri_liveS: "menor",
+  mTri_liveM: "do meio",
+  mTri_liveL: "maior",
+  mTri_liveYes: "triângulo",
+  mTri_liveFlat: "plano",
+  mTri_liveNo: "não há triângulo",
+  mTri_liveCloseNote: "A fórmula ordena os três comprimentos primeiro, então basta uma comparação. Faça os dois menores somarem exatamente o maior para ver o caso plano, degenerado.",
+  mTri_centroidWords: "O x do ponto de equilíbrio é a média dos x dos três vértices, e o seu y a média dos y.",
 };
 
 export default text;

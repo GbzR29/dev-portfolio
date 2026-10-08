@@ -97,6 +97,23 @@ const text: Record<string, string> = {
   mSim_m5w: "área no mapa = área no papel × escala",
   mSim_m5r: "multiplique pela escala ao quadrado",
   mSim_m5: "uma área é um comprimento vezes um comprimento, então cada um é escalado",
+
+  // ── In words, derivation, live formulas (2026-10-08) ──
+  mSim_kWords: "Divida qualquer comprimento da cópia pelo comprimento correspondente do original: o resultado é sempre o mesmo número, k.",
+  mSim_dilWords: "Pegue o afastamento do ponto em relação ao centro, multiplique por k e some o centro de volta.",
+  mSim_p2b: "ponha os três comprimentos conhecidos",
+  mSim_parWords: "Uma reta paralela a um lado corta os outros dois lados na mesma fração do caminho a partir do vértice comum, e o corte é essa mesma fração do lado paralelo.",
+  mSim_liveShadow: "Experimente: uma altura pela sombra",
+  mSim_liveH1: "altura da vareta h₁ (m)",
+  mSim_liveS1: "sombra da vareta s₁ (m)",
+  mSim_liveS2: "sombra do prédio s₂ (m)",
+  mSim_liveShadowNote: "A fração h₁/s₁ é fixada pela altura do sol naquele momento. Ao meio-dia no verão as sombras são curtas e a fração é grande; no fim da tarde as sombras se esticam e ela fica pequena, mas é a mesma para todo objeto no mesmo instante.",
+  mSim_projWords: "A altura de um ponto na imagem é a sua altura real multiplicada por d sobre a sua distância: quanto mais longe, menor.",
+  mSim_liveProj: "Experimente: perspectiva",
+  mSim_liveD: "distância da imagem d",
+  mSim_liveY: "altura y (m)",
+  mSim_liveZ: "distância z (m)",
+  mSim_liveProjNote: "Dobre z e a imagem cai pela metade; dobre y e z juntos e nada muda. Esse segundo fato é a perspectiva forçada.",
 };
 
 export default text;

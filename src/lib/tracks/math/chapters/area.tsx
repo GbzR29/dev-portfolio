@@ -8,6 +8,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -15,6 +17,18 @@ import { AreaFigure } from "@/components/lesson/figures/math/AreaFigure";
 import { ShoelaceFigure } from "@/components/lesson/figures/math/ShoelaceFigure";
 
 const r = String.raw;
+
+// ── Live formula: scaling a rectangle by k ────────────────────────────────────
+
+const num = (v: number) => String(Math.round(v * 100) / 100);
+
+function scaleNumbers(v: Record<string, number>) {
+  const { b, h, k } = v, P = 2 * (b + h), A = b * h;
+  return {
+    tex: r`P' = \sym{k}{\amber{${num(k)}}} \cdot 2(${num(b)} + ${num(h)}) = \sym{k}{\amber{${num(k)}}} \cdot ${num(P)} = \green{${num(k * P)}}`
+      + r` \qquad A' = \sym{k}{\amber{${num(k)}}}^2 \cdot ${num(b)} \cdot ${num(h)} = ${num(k * k)} \cdot ${num(A)} = \green{${num(k * k * A)}}`,
+  };
+}
 
 export function AreaContent({ t }: { t: TrackTranslations }) {
   return (
@@ -35,7 +49,8 @@ export function AreaContent({ t }: { t: TrackTranslations }) {
           [r`b,\ h`, tx(t, "mArea_wBH", "the base and height (the two side lengths) of a rectangle")],
           [r`s`, tx(t, "mArea_wS", "the side of a square, whose four sides are equal")],
           [r`s_1, \dots, s_n`, tx(t, "mArea_wSi", "the n side lengths of any polygon")],
-        ]}>
+        ]}
+        words={tx(t, "mArea_perimWords", "Walk once around the shape and add up the length of every side you pass.")}>
         {r`P_{\text{rect}} = 2(b + h) \qquad P_{\text{square}} = 4s \qquad P_{\text{polygon}} = s_1 + s_2 + \dots + s_n`}
       </Equation>
 
@@ -69,9 +84,17 @@ export function AreaContent({ t }: { t: TrackTranslations }) {
           [r`h`, tx(t, "mArea_wH", "the height: the perpendicular distance from the base to the opposite side or corner")],
           [r`a`, tx(t, "mArea_wA2", "a trapezoid's second parallel side")],
           [r`\tfrac12`, tx(t, "mArea_wHalf", "a triangle is half a parallelogram; a trapezoid is half of two copies")],
-        ]}>
+        ]}
+        words={tx(t, "mArea_areasWords", "A rectangle or parallelogram is base times height. A triangle is half of that. A trapezoid is the average of its two parallel sides, times the height.")}>
         {r`A_{\text{rect}} = b\,h \qquad A_{\text{square}} = s^2 \qquad A_{\text{para}} = b\,h \qquad A_{\triangle} = \tfrac12\,b\,h \qquad A_{\text{trap}} = \tfrac12\,(a + b)\,h`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mArea_derTrap", "The trapezoid formula, step by step")}
+        steps={[
+          { full: true, tex: r`2 \times \text{${tx(t, "mArea_dt0a", "trapezoid")}} = \text{${tx(t, "mArea_dt0b", "parallelogram")}}`, why: tx(t, "mArea_dt1", "turn a copy half a turn and put it against the slanted side: the two make a parallelogram") },
+          { full: true, tex: r`\text{${tx(t, "mArea_dtBase", "base")}} = a + b,\quad \text{${tx(t, "mArea_dtHeight", "height")}} = h`, why: tx(t, "mArea_dt2", "the copy's short side a continues the original's long side b; the height does not change") },
+          { full: true, tex: r`A_{2} = (a + b)\,h`, why: tx(t, "mArea_dt3", "a parallelogram is base times height") },
+          { full: true, tex: r`\green{A_{\text{trap}} = \tfrac12\,(a + b)\,h}`, why: tx(t, "mArea_dt4", "one trapezoid is half of the two copies") },
+        ]} />
 
       <H2>{tx(t, "mArea_compTitle", "Composite shapes")}</H2>
       <p>
@@ -89,12 +112,22 @@ export function AreaContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mArea_eqScale", "Scaling by a factor k")}
         where={[
-          [r`k`, tx(t, "mArea_wK", "the scale factor; every length is multiplied by k")],
+          [r`\sym{k}{\amber{k}}`, tx(t, "mArea_wK", "the scale factor; every length is multiplied by k")],
           [r`P,\ A`, tx(t, "mArea_wPA", "perimeter and area before scaling")],
         ]}
+        words={tx(t, "mArea_scaleWords", "Scale every length by k and the perimeter grows k times, but the area grows k times k times, because it is a length times a length.")}
         note={tx(t, "mArea_unitNote", "The same law converts units. 1 m = 100 cm, so 1 m² = 100 cm × 100 cm = 10 000 cm², not 100 cm². A 3 m × 2 m floor is 6 m² = 60 000 cm².")}>
-        {r`P' = k\,P \qquad A' = k^2\,A`}
+        {r`P' = \sym{k}{\amber{k}}\,P \qquad A' = \sym{k}{\amber{k}}^2\,A`}
       </Equation>
+      <LiveFormula label={tx(t, "mArea_liveScale", "Try it: scale a rectangle")}
+        tex={r`P' = \sym{k}{\amber{k}} \cdot 2(b + h) \qquad A' = \sym{k}{\amber{k}}^2 \cdot b\,h`}
+        vars={[
+          { id: "b", label: tx(t, "mArea_liveB", "base b"), min: 1, max: 10, step: 1, value: 3, fmt: num },
+          { id: "h", label: tx(t, "mArea_liveH", "height h"), min: 1, max: 10, step: 1, value: 2, fmt: num },
+          { id: "k", label: tx(t, "mArea_liveK", "scale factor k"), min: 0.5, max: 10, step: 0.5, value: 2, fmt: num },
+        ]}
+        compute={scaleNumbers}
+        note={tx(t, "mArea_liveScaleNote", "Set k = 100 in your head: a 3 m × 2 m floor measured in centimetres. With k = 0.5 the area drops to a quarter, not a half.")} />
 
       <H2>{tx(t, "mArea_shoeTitle", "Any polygon: the shoelace formula")}</H2>
       <p>
@@ -109,6 +142,7 @@ export function AreaContent({ t }: { t: TrackTranslations }) {
           [r`\sum`, tx(t, "mArea_wSum", "add the term for every edge, i = 1 to n")],
           [r`A_{\pm}`, tx(t, "mArea_wSigned", "the signed area: positive if the corners go anticlockwise, negative if clockwise. Its absolute value is the area")],
         ]}
+        words={tx(t, "mArea_shoeWords", "For every edge, multiply crosswise (this corner's x times the next corner's y, minus the next corner's x times this corner's y), add all the results, and halve the total.")}
         note={tx(t, "mArea_shoeNote", "Check with the rectangle (0, 0), (4, 0), (4, 3), (0, 3): the terms are 0·0 − 4·0 = 0, 4·3 − 4·0 = 12, 4·3 − 0·3 = 12, 0·0 − 0·3 = 0. Sum 24, area 12 = 4 · 3 ✓.")}>
         {r`A_{\pm} = \frac12 \sum_{i=1}^{n} \left( x_i\,y_{i+1} - x_{i+1}\,y_i \right)`}
       </Equation>

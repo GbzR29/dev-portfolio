@@ -97,6 +97,22 @@ const text: Record<string, string> = {
   mVol_m6w: "contar a face onde dois pedaços se encontram",
   mVol_m6r: "só as faces externas contam como superfície",
   mVol_m6: "uma face compartilhada fica escondida dentro do objeto",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mVol_prismWords: "Todo sólido cuja seção transversal é a mesma de baixo a cima comporta a área da base uma vez para cada unidade de altura: área da base vezes altura.",
+  mVol_cylWords: "Um cilindro é um prisma de base redonda: a área do disco vezes a altura.",
+  mVol_liveCone: "Experimente: um cilindro e o seu cone",
+  mVol_liveR: "raio r",
+  mVol_liveH: "altura h",
+  mVol_liveConeNote: "Dobre o raio e os dois volumes crescem 4 vezes (r está ao quadrado); dobre a altura e eles só dobram. O cone é sempre exatamente um terço.",
+  mVol_s1b: "os dois têm base de raio r e altura r",
+  mVol_surfWords: "Desdobre cada sólido e some os pedaços planos: uma caixa são três pares de retângulos; um cilindro, dois discos e um retângulo desenrolado; um cone, um disco e uma fatia de pizza desenrolada.",
+  mVol_ss1: "as pirâmides finas enchem a esfera exatamente",
+  mVol_ss2: "multiplique os dois lados por 3",
+  mVol_ss3: "divida os dois lados por r",
+  mVol_liveBall: "Experimente: pele contra volume",
+  mVol_liveBallR: "raio r",
+  mVol_liveBallNote: "A superfície por unidade de volume é 3/r: uma bola duas vezes maior tem metade da pele para o seu volume. É a lei do quadrado e do cubo da próxima seção num único número.",
 };
 
 export default text;

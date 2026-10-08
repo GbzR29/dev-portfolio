@@ -97,6 +97,27 @@ const text: Record<string, string> = {
   mCir_m6w: "tirar uma raiz quadrada para testar um ponto",
   mCir_m6r: "compare dx² + dy² com r²",
   mCir_m6: "mesma resposta, sem raiz quadrada",
+
+  // ── In words, derivations, live formula (2026-10-08) ──
+  mCir_cWords: "A circunferência de todo círculo é um pouco mais que três vezes o seu diâmetro, exatamente π vezes; e o diâmetro são dois raios.",
+  mCir_ar1: "Pitágoras: o novo lado é a hipotenusa, com catetos s/2 e 1 − a",
+  mCir_ar2: "desenvolva o quadrado (1 − a)²",
+  mCir_ar3: "a² = 1 − s²/4, pelo triângulo retângulo que tem o raio como hipotenusa",
+  mCir_ar4: "os dois s²/4 se cancelam",
+  mCir_ar5: "2a = 2√(1 − s²/4) = √(4 − s²): o 2 entra na raiz como 4",
+  mCir_ar6: "tire a raiz quadrada dos dois lados",
+  mCir_aWords: "Um círculo cobre π vezes o quadrado construído sobre o seu raio: um pouco mais que três desses quadrados.",
+  mCir_secWords: "Uma fatia de ângulo θ é a fração θ/360 do círculo inteiro, então o seu arco é essa fração da circunferência e a sua área essa fração do disco.",
+  mCir_liveSector: "Experimente: uma fatia do círculo",
+  mCir_liveTheta: "ângulo θ",
+  mCir_liveR: "raio r",
+  mCir_liveSectorNote: "A barra mostra θ/360, a parte do círculo inteiro. O arco e a área ficam exatamente com essa parte; só a área também cresce com r².",
+  mCir_derThales: "Por que o ângulo em P é 90°",
+  mCir_th1: "os três são raios",
+  mCir_th2: "os triângulos OAP e OBP são isósceles, então os seus ângulos da base são iguais",
+  mCir_th3: "os ângulos do triângulo grande APB: x em A, y em B, e x + y em P",
+  mCir_th4: "junte os termos",
+  mCir_th5: "divida os dois lados por 2",
 };
 
 export default text;
