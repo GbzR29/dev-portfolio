@@ -43,7 +43,7 @@ const text: Record<string, string> = {
   mWv_fitTitle: "Encontrando a equação a partir de medidas",
   mWv_fitBody: "Faça o esboço ao contrário. Medidas de uma onda mostram um maior valor de 7, um menor de 1 e picos em t = 0,5 s e t = 2,5 s. Então C = (7 + 1)/2 = 4 e A = (7 − 1)/2 = 3. Os picos estão a 2 s um do outro, então T = 2 s e ω = 2π/T = π. Um seno simples atinge o pico um quarto de período (0,5 s) depois de começar; aqui o pico está em 0,5 s, então a onda começa em t = 0 e d = 0. Resultado: y = 3 sin(πt) + 4, a onda da tabela acima.",
   mWv_combTitle: "Combinando um seno e um cosseno, passo a passo",
-  mWv_combBody: "Escreva 3 sin t + 4 cos t como uma onda só R sin(t + φ). (1) Desenvolva o alvo com a fórmula da soma de ângulos: R sin t cos φ + R cos t sin φ. (2) Iguale os coeficientes: R cos φ = 3 e R sin φ = 4. (3) Eleve ao quadrado e some: R² (cos² φ + sin² φ) = 9 + 16, então R² = 25 e R = 5. (4) Divida: tan φ = 4/3, e como cos φ e sin φ são ambos positivos, φ está no quadrante I: φ = arctan(4/3) ≈ 53,1°. Então 3 sin t + 4 cos t = 5 sin(t + 53,1°); seu maior valor é 5, atingido quando t + 53,1° = 90°, em t = 36,9°.",
+  mWv_combBody2: "Escreva 3 sin t + 4 cos t como uma onda só R sin(t + φ). Desenvolva o alvo, iguale-o termo a termo com a mistura dada e depois resolva para R e φ.",
   mWv_mistakesTitle: "Erros comuns",
   mWv_tWrong: "Errado",
   mWv_tRight: "Certo",
@@ -69,6 +69,29 @@ const text: Record<string, string> = {
   mTrig_wOmega: "a frequência angular ω, em radianos por segundo: converte segundos num ângulo para que um período seja uma volta completa",
   mTrig_wPhi: "a fase: uma vantagem inicial ao longo do ciclo, em radianos. Dois pêndulos com os mesmos A e f mas φ diferentes balançam no mesmo ritmo, um adiantado em relação ao outro",
   mTrig_wC: "o deslocamento: a linha central",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mTrig_waveWords: "Dê voltas num círculo f vezes por segundo, começando φ adiantado; pegue a altura, estique-a por A e suba-a por C.",
+  mWv_relWords: "O período é um sobre a frequência; a frequência angular é uma volta completa, 2π, por período; e atrasar uma onda em d segundos é o mesmo que uma fase de −ωd.",
+  mWv_liveMix: "Experimente: um seno mais um cosseno",
+  mWv_liveMixNote: "a = 3 e b = 4 dão R = 5 e φ ≈ 53,1°, o exemplo acima. Ponha b = 0: sem cosseno, então R = a e φ = 0. Ponha a = b: partes iguais, φ = 45°. Um a negativo leva φ para além de 90°, e é por isso que se usa atan2, não arctan.",
+  mWv_squareWords: "Some os harmônicos ímpares, cada um tantas vezes mais fraco quanto é mais rápido, e a soma se achata numa onda quadrada.",
+  mWv_liveDamp: "Experimente: quanto balanço sobra",
+  mWv_liveEnv: "envoltória",
+  mWv_liveDampNote: "Começa no exemplo do carro: A = 5 cm, λ = 4, depois de 0,5 s sobram cerca de 0,68 cm, 13,5% do início. A barra é a fração da amplitude inicial que sobrou. Cada meia-vida corta pela metade de novo.",
+  mWv_liveFit: "Experimente: uma onda a partir de três medidas",
+  mWv_liveMax: "maior valor",
+  mWv_liveMin: "menor valor",
+  mWv_liveT: "de pico a pico T (s)",
+  mWv_liveMaxMin: "o maior valor precisa ficar acima do menor",
+  mWv_liveFitNote: "Começa nas medidas acima: 7, 1 e 2 s dão y = 3 sin(πt) + 4 (ω ≈ 3,142 é π). A fase ainda precisa ser lida de onde fica o primeiro pico, um quarto de período depois do início da onda.",
+  mWv_eqComb: "3 sin t + 4 cos t como uma onda só",
+  mWv_combNote: "O maior valor da onda combinada é R = 5, atingido quando t + 53,1° = 90°, em t = 36,9°.",
+  mWv_cb1: "desenvolva o alvo com a fórmula da soma de ângulos",
+  mWv_cb2: "iguale os coeficientes de sin t e de cos t com 3 sin t + 4 cos t",
+  mWv_cb3: "eleve as duas equações ao quadrado e some; o parêntese é 1, então R² = 25",
+  mWv_cb4: "divida a segunda equação pela primeira; cos φ e sin φ são ambos positivos, então φ está no quadrante I",
+  mWv_cb5: "ponha R e φ de volta no alvo",
 };
 
 export default text;

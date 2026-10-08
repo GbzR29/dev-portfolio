@@ -9,7 +9,8 @@ const text: Record<string, string> = {
   mTl_eqDerive: "Deduzindo a lei dos cossenos",
   mTl_d1: "Pitágoras no triângulo retângulo BDA: altura² + (resto da base)²",
   mTl_d2: "desenvolva o parêntese: (b − a cos C)² = b² − 2ab cos C + a² cos² C",
-  mTl_d3: "junte a² sin² C + a² cos² C = a²(sin² C + cos² C) = a²",
+  mTl_d3a: "agrupe os dois termos que têm a² e ponha a² em evidência",
+  mTl_d3b: "sin² C + cos² C = 1, do primeiro capítulo desta seção",
   mTl_eqCos: "Lei dos cossenos",
   mTl_wAB: "os dois lados que se encontram no ângulo C",
   mTl_wC: "o lado oposto a C",
@@ -95,6 +96,20 @@ const text: Record<string, string> = {
   mTrig_wCside: "o terceiro lado, oposto ao ângulo γ (a distância do ombro até o ponto)",
   mTrig_wGamma: "o ângulo entre a e b (o cotovelo). Isolando: cos γ = (a² + b² − c²) / 2ab",
   mTrig_eqCosLawNote: "Se c > a + b, o ponto está fora de alcance e a fração fica abaixo de −1. Nenhum ângulo tem cosseno abaixo de −1: é a fórmula dizendo que esse triângulo não existe (a desigualdade triangular do capítulo de triângulos).",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mTl_cosWords: "O lado oposto a um ângulo, ao quadrado, é a soma dos quadrados dos outros dois lados menos uma correção que mede o quanto o ângulo está longe de um ângulo reto.",
+  mTl_liveCos: "Experimente: o terceiro lado a partir de dois lados e do ângulo entre eles",
+  mTl_liveCosNote2: "Começa nas duas estradas do primeiro exemplo resolvido abaixo (30 km e 45 km a 50°). Varra C do pequeno ao grande: em 90° a correção é 0 e c é a hipotenusa de Pitágoras; depois de 90° a correção é somada, e quando C se aproxima de 180° o triângulo achata e c se aproxima de a + b.",
+  mTl_eqSinDer: "Deduzindo a lei dos senos",
+  mTl_s1why: "a altura h de C até o lado c, achada no triângulo retângulo em A (hipotenusa b) e no triângulo em B (hipotenusa a)",
+  mTl_s2why: "as duas são a mesma altura",
+  mTl_s3why: "divida os dois lados por sin A · sin B; uma altura a partir de outro vértice acrescenta c / sin C do mesmo jeito",
+  mTl_sinWords: "Cada lado dividido pelo seno do ângulo oposto a ele dá o mesmo número para os três lados: o diâmetro do círculo que passa pelos vértices.",
+  mTl_areaWords: "Metade de um lado vezes o outro, vezes o seno do ângulo entre eles: o seno transforma o segundo lado na altura.",
+  mTl_liveArea: "Experimente: abra a dobradiça",
+  mTl_liveAreaNote: "Duas varetas de comprimento fixo unidas por uma dobradiça: a barra mostra sin C, a fração da maior área possível. Ela fica cheia em 90° e volta a 0 quando o triângulo fecha (0°) ou achata (180°). 30° e 150° dão a mesma área, porque sin(180° − C) = sin C.",
+  mTrig_ikWords: "Sabendo os dois comprimentos do braço e a distância até o alvo, a lei dos cossenos ao contrário diz quanto o cotovelo precisa dobrar.",
 };
 
 export default text;

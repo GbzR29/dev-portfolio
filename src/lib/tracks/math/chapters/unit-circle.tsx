@@ -7,6 +7,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -14,6 +16,38 @@ import { UnitCircleFigure } from "@/components/lesson/figures/math/UnitCircleFig
 import { TrigGraphFigure } from "@/components/lesson/figures/math/TrigGraphFigure";
 
 const r = String.raw;
+
+// ── Live formulas: degrees to radians, the reference angle ────────────────────
+
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+const deg = (v: number) => `${v}°`;
+const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
+/** Whole degrees as a fraction of π in TeX: 135 → \frac{3\pi}{4}. */
+function piTex(d: number) {
+  if (d === 0) return "0";
+  const g = gcd(d, 180), n = d / g, m = 180 / g;
+  const top = `${n === 1 ? "" : n}\\pi`;
+  return m === 1 ? top : r`\frac{${top}}{${m}}`;
+}
+
+function radNumbers(v: Record<string, number>) {
+  const d = v.d;
+  return { tex: r`${d}^\circ \cdot \frac{\pi}{180} = ${piTex(d)} \approx \green{${num((d * Math.PI) / 180)}}\ \text{rad}` };
+}
+
+function refNumbers(v: Record<string, number>, t: TrackTranslations) {
+  const d = v.d, rad = (d * Math.PI) / 180;
+  const s = Math.sin(rad), c = Math.cos(rad);
+  if (d % 90 === 0) return { tex: r`${d}^\circ:\ \text{${tx(t, "mUc_liveAxis", "on an axis")}} \qquad \cos = ${num(c)} \qquad \sin = ${num(s)}` };
+  const q = Math.floor(d / 90) + 1;
+  const [name, ref, rule] = [
+    ["I", d, r`\theta`], ["II", 180 - d, r`180^\circ - \theta`], ["III", d - 180, r`\theta - 180^\circ`], ["IV", 360 - d, r`360^\circ - \theta`],
+  ][q - 1] as [string, number, string];
+  const sign = (x: number) => (x < 0 ? "-" : "+");
+  return {
+    tex: r`\begin{aligned} \text{${tx(t, "mUc_liveQuad", "quadrant")} ${name}}:\ \theta' &= ${rule} = ${ref}^\circ \\ \cos\theta &= ${sign(c)}\cos ${ref}^\circ = \green{${num(c)}} \\ \sin\theta &= ${sign(s)}\sin ${ref}^\circ = \green{${num(s)}} \end{aligned}`,
+  };
+}
 
 export function UnitCircleContent({ t }: { t: TrackTranslations }) {
   return (
@@ -34,13 +68,26 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
           [r`s`, tx(t, "mTrig_wS", "the length of the arc between the two sides of the angle")],
           [r`\rho`, tx(t, "mTrig_wRho", "the radius of the circle. Because s grows in proportion to ρ, the ratio does not depend on the circle's size")],
         ]}
+        words={tx(t, "mTrig_radWords", "An angle in radians is how many radii long the arc it cuts out is. To convert from degrees, multiply by π and divide by 180.")}
         note={tx(t, "mTrig_eqRadNote", "Useful values: 90° = π/2, 180° = π, 360° = 2π, 1 rad ≈ 57.3°. Scientific calculators have a DEG/RAD switch: it decides which unit the sin key expects.")}>
         {r`\theta = \frac{s}{\rho} \qquad \theta_{\text{rad}} = \theta_{\text{deg}}\cdot\frac{\pi}{180}`}
       </Equation>
       <p>
-        {tx(t, "mUc_whyBody",
-          "Why does the ratio s/ρ not depend on the circle? All circles are similar (the circle chapter), so scaling the circle scales the arc and the radius by the same factor. The conversion follows from one full turn: 360° is the whole circumference divided by the radius, 2πρ/ρ = 2π. So 180° = π, and one degree is π/180 radians.")}
+        {tx(t, "mUc_whyBody2",
+          "Why does the ratio s/ρ not depend on the circle? All circles are similar (the circle chapter), so scaling the circle scales the arc and the radius by the same factor. The conversion follows from one full turn, step by step.")}
       </p>
+      <Derivation t={t} label={tx(t, "mUc_eqConv", "Where π/180 comes from")}
+        steps={[
+          { full: true, tex: r`360^\circ \;\longleftrightarrow\; \frac{2\pi\rho}{\rho} = 2\pi`, why: tx(t, "mUc_c1", "a full turn: the arc is the whole circumference 2πρ, divided by the radius ρ") },
+          { full: true, tex: r`180^\circ \;\longleftrightarrow\; \pi`, why: tx(t, "mUc_c2", "half a turn: halve both sides") },
+          { full: true, tex: r`1^\circ \;\longleftrightarrow\; \frac{\pi}{180}`, why: tx(t, "mUc_c3", "one degree: divide both sides by 180") },
+          { full: true, tex: r`\green{\theta_{\text{rad}} = \theta_{\text{deg}}\cdot\frac{\pi}{180}}`, why: tx(t, "mUc_c4", "an angle of θ degrees is θ copies of one degree") },
+        ]} />
+      <LiveFormula label={tx(t, "mUc_liveRad", "Try it: degrees to radians")}
+        tex={r`\theta_{\text{rad}} = \theta_{\text{deg}}\cdot\frac{\pi}{180}`}
+        vars={[{ id: "d", label: tx(t, "mUc_liveDeg", "angle in degrees"), min: 0, max: 720, step: 15, value: 135, fmt: deg }]}
+        compute={radNumbers}
+        note={tx(t, "mUc_liveRadNote", "The fraction of π is the fraction of half a turn: 135° is three quarters of 180°, so it is 3π/4. Past 360° the angle keeps growing: 720° is two full turns, 4π.")} />
       <LessonTable
         headers={[tx(t, "mUc_tDeg", "Degrees"), "0°", "30°", "45°", "60°", "90°", "180°", "270°", "360°"]}
         rows={[[tx(t, "mUc_tRad", "Radians"), "0", "π/6", "π/4", "π/3", "π/2", "π", "3π/2", "2π"]]}
@@ -57,6 +104,7 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
           [r`\omega`, tx(t, "mUc_wOmega", "the angular speed, in radians per second")],
           [r`v = \omega r`, tx(t, "mUc_wV", "the speed of a point at distance r from the centre")],
         ]}
+        words={tx(t, "mUc_arcWords", "With the angle in radians, the arc is the radius times the angle, and a point on a turning wheel moves at the turning speed times its distance from the centre.")}
         note={tx(t, "mUc_arcNote", "Example: a 0.35 m wheel turning at 20 rad/s moves the car at 20 · 0.35 = 7 m/s. The minute hand of a clock, 12 cm long, turns 2π rad per hour, so its tip travels 2π · 12 ≈ 75.4 cm every hour.")}>
         {r`s = r\,\theta \qquad A = \tfrac12\,r^2\,\theta \qquad v = \omega\,r`}
       </Equation>
@@ -71,7 +119,8 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
           [r`\theta`, tx(t, "mUc_wAny", "any angle: positive turns anticlockwise from the positive x-axis, negative turns clockwise")],
           [r`(\cos\theta,\ \sin\theta)`, tx(t, "mUc_wPoint", "the point reached on the circle of radius 1: cosine is its x, sine its y")],
           [r`\tan\theta`, tx(t, "mUc_wTan", "sin θ / cos θ, the slope of the radius; undefined when cos θ = 0")],
-        ]}>
+        ]}
+        words={tx(t, "mUc_defWords", "Walk an angle θ around the circle of radius 1, starting from (1, 0): cosine is how far right you end up, sine how far up.")}>
         {r`P(\theta) = (\cos\theta,\ \sin\theta) \qquad \tan\theta = \frac{\sin\theta}{\cos\theta}`}
       </Equation>
 
@@ -94,6 +143,11 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mUc_refNote", "Example: 150° is in quadrant II, reference angle 30°, so sin 150° = +sin 30° = 0.5 and cos 150° = −cos 30° ≈ −0.866. And 225° is in III, reference 45°: both values are −√2/2 ≈ −0.707.")}>
         {r`\text{I: } \theta' = \theta \qquad \text{II: } \theta' = 180^\circ - \theta \qquad \text{III: } \theta' = \theta - 180^\circ \qquad \text{IV: } \theta' = 360^\circ - \theta`}
       </Equation>
+      <LiveFormula label={tx(t, "mUc_liveRef", "Try it: any angle from a sharp one")}
+        tex={r`\sin\theta = \pm\sin\theta' \qquad \cos\theta = \pm\cos\theta'`}
+        vars={[{ id: "d", label: "θ", min: 0, max: 360, step: 5, value: 150, fmt: deg }]}
+        compute={v => refNumbers(v, t)}
+        note={tx(t, "mUc_liveRefNote", "First the quadrant, then the reference angle θ′ by that quadrant's rule, then the signs: cos is negative in II and III, sin in III and IV. Try 150°, 210° and 330°: the same 30° each time, with different signs.")} />
 
       <TrigGraphFigure t={t} />
 
@@ -107,7 +161,8 @@ export function UnitCircleContent({ t }: { t: TrackTranslations }) {
           [r`k`, tx(t, "mUc_wK", "any whole number of extra turns, positive or negative")],
           [r`\sin(-\theta) = -\sin\theta`, tx(t, "mUc_wOdd", "sine is odd")],
           [r`\cos(-\theta) = \cos\theta`, tx(t, "mUc_wEven", "cosine is even")],
-        ]}>
+        ]}
+        words={tx(t, "mUc_periodWords", "One more full turn brings the point back to where it was, so sine and cosine repeat; half a turn already gives the tangent its old value.")}>
         {r`\sin(\theta + 2\pi k) = \sin\theta \qquad \cos(\theta + 2\pi k) = \cos\theta \qquad \tan(\theta + \pi k) = \tan\theta`}
       </Equation>
       <H3>{tx(t, "mUc_graphTitle", "The graphs")}</H3>

@@ -7,6 +7,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
@@ -14,6 +16,36 @@ import { WaveFigure } from "@/components/lesson/figures/math/WaveFigure";
 import { HarmonicsFigure } from "@/components/lesson/figures/math/HarmonicsFigure";
 
 const r = String.raw;
+
+// ── Live formulas: a wave from measurements, sine plus cosine, damping ────────
+
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+
+function fitNumbers(v: Record<string, number>, t: TrackTranslations) {
+  if (v.max <= v.min) return { tex: r`\red{\text{${tx(t, "mWv_liveMaxMin", "the highest value must be above the lowest")}}}` };
+  const C = (v.max + v.min) / 2, A = (v.max - v.min) / 2, w = (2 * Math.PI) / v.T;
+  return {
+    tex: r`\begin{aligned} C &= \tfrac{${num(v.max)} + ${num(v.min)}}{2} = \green{${num(C)}} \qquad A = \tfrac{${num(v.max)} - ${num(v.min)}}{2} = \green{${num(A)}} \\ \omega &= \tfrac{2\pi}{${num(v.T)}} \approx \green{${num(w)}} \qquad y = ${num(A)}\sin(${num(w)}\,t) + ${num(C)} \end{aligned}`,
+  };
+}
+
+function mixNumbers(v: Record<string, number>) {
+  const R = Math.hypot(v.a, v.b);
+  if (R === 0) return { tex: r`0` };
+  const phi = (Math.atan2(v.b, v.a) * 180) / Math.PI;
+  return {
+    tex: r`${num(v.a)}\sin t ${v.b < 0 ? "-" : "+"} ${num(Math.abs(v.b))}\cos t = \green{${num(R)}}\,\sin(t ${phi < 0 ? "-" : "+"} \green{${num(Math.abs(phi))}^\circ})`,
+  };
+}
+
+function dampNumbers(v: Record<string, number>) {
+  const env = v.A * Math.exp(-v.lam * v.t);
+  return {
+    tex: r`A\,e^{-\lambda t} = ${num(v.A)}\cdot e^{-${num(v.lam * v.t)}} \approx \green{${num(env)}} \qquad \tfrac{\ln 2}{\lambda} = ${v.lam > 0 ? r`${num(Math.LN2 / v.lam)}\ \text{s}` : r`\infty`}`,
+    meter: env / v.A,
+    meterLabel: `${num((100 * env) / v.A)}%`,
+  };
+}
 
 export function WavesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -41,7 +73,8 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
           [r`2\pi f`, tx(t, "mTrig_wOmega", "the angular frequency ω, in radians per second: it converts seconds into an angle so that one period is one full turn")],
           [r`\varphi`, tx(t, "mTrig_wPhi", "the phase: a head start along the cycle, in radians. Two pendulums with the same A and f but different φ swing with the same rhythm, one ahead of the other")],
           [r`C`, tx(t, "mTrig_wC", "the offset: the centre line")],
-        ]}>
+        ]}
+        words={tx(t, "mTrig_waveWords", "Go round a circle f times a second, starting φ ahead; take the height, stretch it by A and lift it by C.")}>
         {r`y(t) = A\,\sin(2\pi f\,t + \varphi) + C`}
       </Equation>
 
@@ -58,6 +91,7 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
           [r`\omega`, tx(t, "mWv_wW", "the angular frequency, in radians per second")],
           [r`d`, tx(t, "mWv_wD", "a delay in seconds")],
         ]}
+        words={tx(t, "mWv_relWords", "The period is one over the frequency; the angular frequency is a full turn, 2π, per period; and delaying a wave by d seconds is the same as a phase of −ωd.")}
         note={tx(t, "mWv_relNote", "Example: a warning light pulses twice per second: f = 2 Hz, T = 0.5 s, ω = 4π ≈ 12.57 rad/s. To make a second light lag a quarter cycle behind, delay it by T/4 = 0.125 s, which is a phase of −π/2.")}>
         {r`T = \frac{1}{f} \qquad \omega = 2\pi f = \frac{2\pi}{T} \qquad \sin\big(\omega(t - d)\big) = \sin(\omega t - \omega d)`}
       </Equation>
@@ -83,6 +117,14 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mWv_mixNote", "Example: 3 sin t + 4 cos t = 5 sin(t + 53.1°). Two equal waves in phase double the amplitude; half a cycle apart (φ = π) they cancel completely, which is how noise-cancelling headphones work.")}>
         {r`a\sin\omega t + b\cos\omega t = R\,\sin(\omega t + \varphi)`}
       </Equation>
+      <LiveFormula label={tx(t, "mWv_liveMix", "Try it: a sine plus a cosine")}
+        tex={r`a\sin t + b\cos t = R\,\sin(t + \varphi) \qquad R = \sqrt{a^2 + b^2},\ \ \varphi = \operatorname{atan2}(b, a)`}
+        vars={[
+          { id: "a", label: "a", min: -5, max: 5, step: 1, value: 3, fmt: num },
+          { id: "b", label: "b", min: -5, max: 5, step: 1, value: 4, fmt: num },
+        ]}
+        compute={mixNumbers}
+        note={tx(t, "mWv_liveMixNote", "a = 3 and b = 4 give R = 5 and φ ≈ 53.1°, the example above. Set b = 0: no cosine, so R = a and φ = 0. Set a = b: equal parts, φ = 45°. A negative a puts φ past 90°, which is why atan2, not arctan, is needed.")} />
       <p>
         {tx(t, "mWv_beatsBody",
           "Waves with slightly different frequencies drift in and out of step: in step they reinforce, out of step they cancel, and the sum swells and fades at the difference of the two frequencies. The second-wave button of the figure above shows these beats. Waves with frequencies that are whole multiples of a base frequency, f, 2f, 3f and so on, are its harmonics. Adding harmonics with the right amplitudes builds almost any repeating shape; that is Fourier's discovery, and the harmonics mode below builds a square wave and a sawtooth out of plain sines.")}
@@ -94,7 +136,8 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\sin(k x)/k`, tx(t, "mWv_wK", "the k-th harmonic: k times the frequency, 1/k of the amplitude")],
           [r`\tfrac{4}{\pi}`, tx(t, "mWv_w4pi", "a scale factor that makes the flat parts come out at exactly ±1")],
-        ]}>
+        ]}
+        words={tx(t, "mWv_squareWords", "Add the odd harmonics, each one as many times weaker as it is faster, and the sum flattens into a square wave.")}>
         {r`\text{square}(x) = \frac{4}{\pi}\left(\sin x + \frac{\sin 3x}{3} + \frac{\sin 5x}{5} + \frac{\sin 7x}{7} + \cdots\right)`}
       </Equation>
 
@@ -112,6 +155,15 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mWv_dampNote", "Example: a car body bouncing with A = 5 cm and λ = 4 per second is down to 5 · e^(−2) ≈ 0.68 cm after half a second (λt = 4 · 0.5 = 2), and its amplitude halves every ln 2 / 4 ≈ 0.17 s.")}>
         {r`y(t) = A\,e^{-\lambda t}\,\sin(2\pi f t + \varphi)`}
       </Equation>
+      <LiveFormula label={tx(t, "mWv_liveDamp", "Try it: how much swing is left")}
+        tex={r`\text{${tx(t, "mWv_liveEnv", "envelope")}} = A\,e^{-\lambda t}`}
+        vars={[
+          { id: "A", label: "A", min: 1, max: 10, step: 1, value: 5, fmt: num },
+          { id: "lam", label: "λ", min: 0, max: 8, step: 0.5, value: 4, fmt: num },
+          { id: "t", label: "t (s)", min: 0, max: 3, step: 0.1, value: 0.5, fmt: num },
+        ]}
+        compute={dampNumbers}
+        note={tx(t, "mWv_liveDampNote", "Starts on the car example: A = 5 cm, λ = 4, after 0.5 s about 0.68 cm, 13.5% of the start. The bar is the share of the starting amplitude that is left. Every half-life cuts it in half again.")} />
 
       <H2>{tx(t, "mWv_lissTitle", "Two directions at once: Lissajous figures")}</H2>
       <p>
@@ -152,11 +204,29 @@ export function WavesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mWv_fitBody",
           "Reverse the sketch. Measurements of a wave show a highest value of 7, a lowest of 1, and peaks at t = 0.5 s and t = 2.5 s. Then C = (7 + 1)/2 = 4 and A = (7 − 1)/2 = 3. The peaks are 2 s apart, so T = 2 s and ω = 2π/T = π. A plain sine peaks a quarter period (0.5 s) after it starts; here the peak is at 0.5 s, so the wave starts at t = 0 and d = 0. Result: y = 3 sin(πt) + 4, the wave of the table above.")}
       </p>
+      <LiveFormula label={tx(t, "mWv_liveFit", "Try it: a wave from three measurements")}
+        tex={r`C = \frac{\max + \min}{2} \qquad A = \frac{\max - \min}{2} \qquad \omega = \frac{2\pi}{T}`}
+        vars={[
+          { id: "max", label: tx(t, "mWv_liveMax", "highest value"), min: -5, max: 10, step: 0.5, value: 7, fmt: num },
+          { id: "min", label: tx(t, "mWv_liveMin", "lowest value"), min: -5, max: 10, step: 0.5, value: 1, fmt: num },
+          { id: "T", label: tx(t, "mWv_liveT", "peak to peak T (s)"), min: 0.5, max: 12, step: 0.5, value: 2, fmt: num },
+        ]}
+        compute={v => fitNumbers(v, t)}
+        note={tx(t, "mWv_liveFitNote", "It starts on the measurements above: 7, 1 and 2 s give y = 3 sin(πt) + 4 (ω ≈ 3.142 is π). The phase still has to be read from where the first peak sits, a quarter period after the wave starts.")} />
       <H3>{tx(t, "mWv_combTitle", "Combining a sine and a cosine, step by step")}</H3>
       <p>
-        {tx(t, "mWv_combBody",
-          "Write 3 sin t + 4 cos t as one wave R sin(t + φ). (1) Expand the target with the angle-sum formula: R sin t cos φ + R cos t sin φ. (2) Match the coefficients: R cos φ = 3 and R sin φ = 4. (3) Square and add: R² (cos² φ + sin² φ) = 9 + 16, so R² = 25 and R = 5. (4) Divide: tan φ = 4/3, and since both cos φ and sin φ are positive, φ is in quadrant I: φ = arctan(4/3) ≈ 53.1°. So 3 sin t + 4 cos t = 5 sin(t + 53.1°); its largest value is 5, reached when t + 53.1° = 90°, at t = 36.9°.")}
+        {tx(t, "mWv_combBody2",
+          "Write 3 sin t + 4 cos t as one wave R sin(t + φ). Expand the target, match it term by term with the given mix, then solve for R and φ.")}
       </p>
+      <Derivation t={t} label={tx(t, "mWv_eqComb", "3 sin t + 4 cos t as one wave")}
+        note={tx(t, "mWv_combNote", "The combined wave's largest value is R = 5, reached when t + 53.1° = 90°, at t = 36.9°.")}
+        steps={[
+          { full: true, tex: r`R\sin(t + \varphi) = R\cos\varphi\,\sin t + R\sin\varphi\,\cos t`, why: tx(t, "mWv_cb1", "expand the target with the angle-sum formula") },
+          { full: true, tex: r`R\cos\varphi = 3 \qquad R\sin\varphi = 4`, why: tx(t, "mWv_cb2", "match the coefficients of sin t and of cos t with 3 sin t + 4 cos t") },
+          { full: true, tex: r`R^2(\cos^2\varphi + \sin^2\varphi) = 9 + 16 \;\Rightarrow\; R = 5`, why: tx(t, "mWv_cb3", "square both equations and add them; the bracket is 1, so R² = 25") },
+          { full: true, tex: r`\tan\varphi = \tfrac43 \;\Rightarrow\; \varphi \approx 53.1^\circ`, why: tx(t, "mWv_cb4", "divide the second equation by the first; cos φ and sin φ are both positive, so φ is in quadrant I") },
+          { full: true, tex: r`\green{3\sin t + 4\cos t = 5\sin(t + 53.1^\circ)}`, why: tx(t, "mWv_cb5", "put R and φ back into the target") },
+        ]} />
 
       <H2>{tx(t, "mWv_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable

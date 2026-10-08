@@ -7,12 +7,37 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { TriangleLawFigure } from "@/components/lesson/figures/math/TriangleLawFigure";
 
 const r = String.raw;
+
+// ── Live formulas: the third side (SAS), the area ─────────────────────────────
+
+const RAD = Math.PI / 180;
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+const deg = (v: number) => `${v}°`;
+
+function cosLawNumbers(v: Record<string, number>) {
+  const cos = Math.cos(v.C * RAD), corr = 2 * v.a * v.b * cos;
+  const c2 = v.a * v.a + v.b * v.b - corr;
+  return {
+    tex: r`\begin{aligned} c^2 &= ${num(v.a)}^2 + ${num(v.b)}^2 - 2\cdot ${num(v.a)}\cdot ${num(v.b)}\cdot \cos ${v.C}^\circ \\ &\approx ${num(v.a * v.a + v.b * v.b)} ${corr < 0 ? "+" : "-"} ${num(Math.abs(corr))} = ${num(c2)} \\ c &\approx \green{${num(Math.sqrt(c2))}} \end{aligned}`,
+  };
+}
+
+function areaNumbers(v: Record<string, number>) {
+  const s = Math.sin(v.C * RAD), A = 0.5 * v.a * v.b * s;
+  return {
+    tex: r`\text{area} = \tfrac12\cdot ${num(v.a)}\cdot ${num(v.b)}\cdot \sin ${v.C}^\circ \approx ${num(0.5 * v.a * v.b)}\cdot ${num(s)} \approx \green{${num(A)}}`,
+    meter: s,
+    meterLabel: `sin C = ${num(s)}`,
+  };
+}
 
 export function TriangleLawsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -33,23 +58,33 @@ export function TriangleLawsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mTl_cosBody",
           "Drop the height from B straight down onto the line through C and A, meeting it at D. The height makes two right triangles. In triangle BDC the hypotenuse is a and the angle at C is C, so CD = a cos C and the height BD = a sin C, by the definitions of the first chapter of this section. The rest of the base is DA = b − a cos C. Now apply Pythagoras to the other right triangle, BDA, whose hypotenuse is c.")}
       </p>
-      <Equation label={tx(t, "mTl_eqDerive", "Deriving the law of cosines")}
-        notes={[
-          tx(t, "mTl_d1", "Pythagoras in the right triangle BDA: height² + (rest of base)²"),
-          tx(t, "mTl_d2", "expand the bracket: (b − a cos C)² = b² − 2ab cos C + a² cos² C"),
-          tx(t, "mTl_d3", "collect a² sin² C + a² cos² C = a²(sin² C + cos² C) = a²"),
-        ]}>
-        {r`c^2 = (a\sin C)^2 + (b - a\cos C)^2 = a^2\sin^2 C + b^2 - 2ab\cos C + a^2\cos^2 C = a^2 + b^2 - 2ab\cos C`}
-      </Equation>
+      <Derivation t={t} label={tx(t, "mTl_eqDerive", "Deriving the law of cosines")}
+        steps={[
+          { tex: r`c^2` },
+          { tex: r`= (a\sin C)^2 + (b - a\cos C)^2`, why: tx(t, "mTl_d1", "Pythagoras in the right triangle BDA: height² + (rest of base)²") },
+          { tex: r`= a^2\sin^2 C + b^2 - 2ab\cos C + a^2\cos^2 C`, why: tx(t, "mTl_d2", "expand the bracket: (b − a cos C)² = b² − 2ab cos C + a² cos² C") },
+          { tex: r`= a^2(\sin^2 C + \cos^2 C) + b^2 - 2ab\cos C`, why: tx(t, "mTl_d3a", "group the two terms that contain a² and factor a² out") },
+          { tex: r`= \green{a^2 + b^2 - 2ab\cos C}`, why: tx(t, "mTl_d3b", "sin² C + cos² C = 1, from the first chapter of this section") },
+        ]} />
       <Equation label={tx(t, "mTl_eqCos", "Law of cosines")}
         where={[
           [r`a,\ b`, tx(t, "mTl_wAB", "the two sides that meet at the angle C")],
           [r`c`, tx(t, "mTl_wC", "the side opposite C")],
           [r`2ab\cos C`, tx(t, "mTl_wCorr", "the correction to Pythagoras: 0 when C = 90°, positive when C is acute, negative when C is obtuse")],
         ]}
+        words={tx(t, "mTl_cosWords", "The side facing an angle squared is the other two sides squared, minus a correction that measures how far the angle is from a right angle.")}
         note={tx(t, "mTl_cosNote", "The second form finds an angle from three sides. Example: sides 5, 7, 8. The angle facing 7 has cos = (5² + 8² − 7²)/(2 · 5 · 8) = 40/80 = 0.5, so it is exactly 60°.")}>
         {r`c^2 = a^2 + b^2 - 2ab\cos C \qquad\Longleftrightarrow\qquad \cos C = \frac{a^2 + b^2 - c^2}{2ab}`}
       </Equation>
+      <LiveFormula label={tx(t, "mTl_liveCos", "Try it: the third side from two sides and the angle between")}
+        tex={r`c = \sqrt{a^2 + b^2 - 2ab\cos C}`}
+        vars={[
+          { id: "a", label: "a", min: 1, max: 60, step: 1, value: 30, fmt: num },
+          { id: "b", label: "b", min: 1, max: 60, step: 1, value: 45, fmt: num },
+          { id: "C", label: "C", min: 1, max: 179, step: 1, value: 50, fmt: deg },
+        ]}
+        compute={cosLawNumbers}
+        note={tx(t, "mTl_liveCosNote2", "It starts on the two roads of the first worked example below (30 km and 45 km at 50°). Sweep C from small to large: at 90° the correction is 0 and c is the Pythagorean hypotenuse; past 90° the correction is added, and as C approaches 180° the triangle flattens and c approaches a + b.")} />
       <p>
         {tx(t, "mTl_cosCases",
           "The correction term explains the Pythagoras chapter's classification of triangles. When C = 90°, cos C = 0 and the law is Pythagoras. When C is acute its cosine is positive, so c² is less than a² + b². When C is obtuse its cosine is negative (quadrant II, from the unit circle chapter), so c² exceeds a² + b². In the figure's first mode, drag C past 90° and watch D slide outside the triangle.")}
@@ -62,11 +97,18 @@ export function TriangleLawsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mTl_sinBody",
           "The height from C onto side c can be computed from either side of it. From corner A it is b sin A (the hypotenuse is b); from corner B it is a sin B. Both are the same height, so b sin A = a sin B, and dividing by sin A sin B gives a / sin A = b / sin B. The same argument with another height brings in c. The common value has a geometric meaning, shown in the second mode of the figure: it is the diameter 2R of the circle through the three corners, the circumscribed circle.")}
       </p>
+      <Derivation t={t} label={tx(t, "mTl_eqSinDer", "Deriving the law of sines")}
+        steps={[
+          { full: true, tex: r`h = b\sin A \qquad h = a\sin B`, why: tx(t, "mTl_s1why", "the height h from C onto side c, found in the right triangle at A (hypotenuse b) and in the one at B (hypotenuse a)") },
+          { full: true, tex: r`b\sin A = a\sin B`, why: tx(t, "mTl_s2why", "both are the same height") },
+          { full: true, tex: r`\green{\frac{a}{\sin A} = \frac{b}{\sin B}}`, why: tx(t, "mTl_s3why", "divide both sides by sin A · sin B; a height from another corner adds c / sin C in the same way") },
+        ]} />
       <Equation label={tx(t, "mTl_eqSin", "Law of sines")}
         where={[
           [r`a / \sin A`, tx(t, "mTl_wRatio", "a side divided by the sine of the angle facing it")],
           [r`R`, tx(t, "mTl_wR", "the radius of the circumscribed circle, through A, B and C")],
         ]}
+        words={tx(t, "mTl_sinWords", "Each side divided by the sine of the angle facing it gives the same number for all three sides: the diameter of the circle through the corners.")}
         note={tx(t, "mTl_sinNote", "Example: A = 40°, B = 60°, a = 10. Then C = 80° and the common ratio is 10 / sin 40° ≈ 15.56, so b = 15.56 · sin 60° ≈ 13.47 and c = 15.56 · sin 80° ≈ 15.32.")}>
         {r`\frac{a}{\sin A} = \frac{b}{\sin B} = \frac{c}{\sin C} = 2R`}
       </Equation>
@@ -81,9 +123,19 @@ export function TriangleLawsContent({ t }: { t: TrackTranslations }) {
           [r`a,\ b`, tx(t, "mTl_wAreaAB", "two sides")],
           [r`C`, tx(t, "mTl_wAreaC", "the angle between them")],
         ]}
+        words={tx(t, "mTl_areaWords", "Half of one side times the other, times the sine of the angle between them: the sine turns the second side into the height.")}
         note={tx(t, "mTl_areaNote", "Example: sides 6 and 9 with 30° between them: ½ · 6 · 9 · 0.5 = 13.5. The largest area for two given sides comes at C = 90°, where sin C = 1.")}>
         {r`\text{area} = \tfrac12\,a\,b\,\sin C`}
       </Equation>
+      <LiveFormula label={tx(t, "mTl_liveArea", "Try it: open the hinge")}
+        tex={r`\text{area} = \tfrac12\,a\,b\,\sin C`}
+        vars={[
+          { id: "a", label: "a", min: 1, max: 12, step: 1, value: 6, fmt: num },
+          { id: "b", label: "b", min: 1, max: 12, step: 1, value: 9, fmt: num },
+          { id: "C", label: "C", min: 0, max: 180, step: 5, value: 30, fmt: deg },
+        ]}
+        compute={areaNumbers}
+        note={tx(t, "mTl_liveAreaNote", "Two sticks of fixed length joined by a hinge: the bar shows sin C, the share of the largest possible area. It is full at 90° and drops back to 0 as the triangle closes (0°) or flattens (180°). 30° and 150° give the same area, because sin(180° − C) = sin C.")} />
 
       <H2>{tx(t, "mTl_whichTitle", "Which law for which data")}</H2>
       <p>
@@ -119,6 +171,7 @@ export function TriangleLawsContent({ t }: { t: TrackTranslations }) {
           [r`c`, tx(t, "mTrig_wCside", "the third side, opposite the angle γ (shoulder-to-target distance)")],
           [r`\gamma`, tx(t, "mTrig_wGamma", "the angle between a and b (the elbow). Solving for it: cos γ = (a² + b² − c²) / 2ab")],
         ]}
+        words={tx(t, "mTrig_ikWords", "Knowing the two arm lengths and how far away the target is, the law of cosines run backwards gives how much the elbow must bend.")}
         note={tx(t, "mTrig_eqCosLawNote", "If c > a + b the point is out of reach and the fraction falls below −1. No angle has a cosine below −1, and that is the formula saying that no such triangle exists (the triangle inequality of the triangles chapter).")}>
         {r`c^2 = a^2 + b^2 - 2ab\cos\gamma \qquad\Longrightarrow\qquad \gamma = \arccos\frac{a^2 + b^2 - c^2}{2ab}`}
       </Equation>

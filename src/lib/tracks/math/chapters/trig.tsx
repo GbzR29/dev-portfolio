@@ -8,12 +8,36 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { RightTriangleFigure } from "@/components/lesson/figures/math/RightTriangleFigure";
 
 const r = String.raw;
+
+// ── Live formulas: sides from an angle, a height from two angles ──────────────
+
+const DEG = Math.PI / 180;
+const num = (v: number) => String(Math.round(v * 1000) / 1000);
+const deg = (v: number) => `${v}°`;
+
+function sidesNumbers(v: Record<string, number>) {
+  const s = Math.sin(v.th * DEG), c = Math.cos(v.th * DEG);
+  return {
+    tex: r`\begin{aligned} \text{opp} &= ${num(v.hyp)}\cdot\sin ${v.th}^\circ \approx ${num(v.hyp)}\cdot ${num(s)} \approx \green{${num(v.hyp * s)}} \\ \text{adj} &= ${num(v.hyp)}\cdot\cos ${v.th}^\circ \approx ${num(v.hyp)}\cdot ${num(c)} \approx \green{${num(v.hyp * c)}} \end{aligned}`,
+  };
+}
+
+function twoAngleNumbers(v: Record<string, number>, t: TrackTranslations) {
+  if (v.b <= v.a) return { tex: r`\beta \le \alpha \;\Rightarrow\; \red{\text{${tx(t, "mRt_liveCloser", "walk closer: β must be larger than α")}}}` };
+  const ta = Math.tan(v.a * DEG), tb = Math.tan(v.b * DEG);
+  const h = (v.d * ta * tb) / (tb - ta);
+  return {
+    tex: r`h = \frac{${num(v.d)}\cdot ${num(ta)}\cdot ${num(tb)}}{${num(tb)} - ${num(ta)}} \approx \frac{${num(v.d * ta * tb)}}{${num(tb - ta)}} \approx \green{${num(h)}}`,
+  };
+}
 
 export function TrigContent({ t }: { t: TrackTranslations }) {
   return (
@@ -41,6 +65,7 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
           [r`\text{adj}`, tx(t, "mRt_wAdj", "the side next to θ that is not the hypotenuse")],
           [r`\text{hyp}`, tx(t, "mRt_wHyp", "the hypotenuse, opposite the right angle")],
         ]}
+        words={tx(t, "mRt_sohWords", "Sine is the fraction of the hypotenuse that the opposite side measures; cosine is the fraction that the adjacent side measures; tangent compares the opposite side with the adjacent one.")}
         note={tx(t, "mRt_sohNote", "The mnemonic SOH-CAH-TOA lists them: Sine = Opposite/Hypotenuse, Cosine = Adjacent/Hypotenuse, Tangent = Opposite/Adjacent. Dividing the first by the second, the hypotenuses cancel: tan θ = sin θ / cos θ.")}>
         {r`\sin\theta = \frac{\text{opp}}{\text{hyp}} \qquad \cos\theta = \frac{\text{adj}}{\text{hyp}} \qquad \tan\theta = \frac{\text{opp}}{\text{adj}} = \frac{\sin\theta}{\cos\theta}`}
       </Equation>
@@ -51,13 +76,17 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mRt_unitBody",
           "The small purple triangle in the figure is the one worth remembering. With hypotenuse 1, the definitions say that the adjacent side is exactly cos θ and the opposite side exactly sin θ. Any other right triangle with the angle θ is that one scaled by its hypotenuse: its sides are hyp · cos θ and hyp · sin θ. Since the legs are shorter than the hypotenuse, sine and cosine of an acute angle are always between 0 and 1; the tangent can be any positive number, growing without limit as θ approaches 90°.")}
       </p>
-      <Equation label={tx(t, "mRt_eqPyth", "Pythagoras in trigonometric form")}
+      <Derivation t={t} label={tx(t, "mRt_eqPyth", "Pythagoras in trigonometric form")}
         where={[
           [r`\sin^2\theta`, tx(t, "mRt_wSq", "short for (sin θ)², the square of the sine")],
         ]}
-        note={tx(t, "mRt_pythNote", "Apply Pythagoras to the triangle with hypotenuse 1: its legs are cos θ and sin θ. Knowing one of the two gives the other: if sin θ = 0.6, then cos θ = √(1 − 0.36) = 0.8.")}>
-        {r`\cos^2\theta + \sin^2\theta = 1`}
-      </Equation>
+        note={tx(t, "mRt_pythNote", "Apply Pythagoras to the triangle with hypotenuse 1: its legs are cos θ and sin θ. Knowing one of the two gives the other: if sin θ = 0.6, then cos θ = √(1 − 0.36) = 0.8.")}
+        steps={[
+          { full: true, tex: r`\text{adj}^2 + \text{opp}^2 = \text{hyp}^2`, why: tx(t, "mRt_p1", "Pythagoras in the right triangle: the legs squared add up to the hypotenuse squared") },
+          { full: true, tex: r`\frac{\text{adj}^2}{\text{hyp}^2} + \frac{\text{opp}^2}{\text{hyp}^2} = 1`, why: tx(t, "mRt_p2", "divide both sides by hyp²; the right side becomes 1") },
+          { full: true, tex: r`\left(\frac{\text{adj}}{\text{hyp}}\right)^2 + \left(\frac{\text{opp}}{\text{hyp}}\right)^2 = 1`, why: tx(t, "mRt_p3", "a square divided by a square is the square of the fraction") },
+          { full: true, tex: r`\green{\cos^2\theta + \sin^2\theta = 1}`, why: tx(t, "mRt_p4", "adj/hyp is cos θ and opp/hyp is sin θ") },
+        ]} />
 
       <H3>{tx(t, "mRt_coTitle", "Complementary angles: the \"co\" in cosine")}</H3>
       <p>
@@ -67,7 +96,8 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
       <Equation label={tx(t, "mRt_eqCo", "Complementary angles")}
         where={[
           [r`90^\circ - \theta`, tx(t, "mRt_wComp", "the other acute angle of the same right triangle")],
-        ]}>
+        ]}
+        words={tx(t, "mRt_coWords", "The side opposite one sharp angle is the side next to the other, so the sine of one angle is the cosine of its partner.")}>
         {r`\sin\theta = \cos(90^\circ - \theta) \qquad \cos\theta = \sin(90^\circ - \theta)`}
       </Equation>
 
@@ -101,6 +131,14 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mRt_solveNote", "Example: a 4 m ladder leans at 70° to the ground. Its top is 4 · sin 70° ≈ 3.76 m up the wall and its foot 4 · cos 70° ≈ 1.37 m out from it.")}>
         {r`\text{opp} = \text{hyp}\cdot\sin\theta \qquad \text{adj} = \text{hyp}\cdot\cos\theta \qquad \text{opp} = \text{adj}\cdot\tan\theta`}
       </Equation>
+      <LiveFormula label={tx(t, "mRt_liveSides", "Try it: a ladder against a wall")}
+        tex={r`\text{opp} = \text{hyp}\cdot\sin\theta \qquad \text{adj} = \text{hyp}\cdot\cos\theta`}
+        vars={[
+          { id: "th", label: tx(t, "mRt_liveTh", "angle θ"), min: 1, max: 89, step: 1, value: 70, fmt: deg },
+          { id: "hyp", label: tx(t, "mRt_liveHyp", "hypotenuse (ladder)"), min: 1, max: 20, step: 0.5, value: 4, fmt: num },
+        ]}
+        compute={sidesNumbers}
+        note={tx(t, "mRt_liveSidesNote", "opp is how high the ladder reaches, adj how far its foot stands from the wall. Raise θ toward 90°: the height approaches the full ladder and the gap shrinks to nothing. At 45° the two are equal, about 0.707 of the ladder each.")} />
       <H3>{tx(t, "mRt_invTitle", "Inverse functions: from a ratio back to the angle")}</H3>
       <p>
         {tx(t, "mRt_invBody",
@@ -111,6 +149,7 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
           [r`\arcsin`, tx(t, "mRt_wAsin", "the inverse of sine; its input must be between −1 and 1")],
           [r`\arctan`, tx(t, "mRt_wAtan", "the inverse of tangent; any input works")],
         ]}
+        words={tx(t, "mRt_invWords", "Divide two sides you know, and the inverse function hands back the angle that produces that ratio.")}
         note={tx(t, "mRt_invNote", "Example: a ramp rises 1 m over a run of 4 m. Its angle is arctan(1/4) ≈ 14.0°. The notation sin⁻¹ means the inverse function, not 1/sin; the reciprocal 1/sin θ has its own name, the cosecant, and this course rarely needs it.")}>
         {r`\theta = \arcsin\frac{\text{opp}}{\text{hyp}} = \arccos\frac{\text{adj}}{\text{hyp}} = \arctan\frac{\text{opp}}{\text{adj}}`}
       </Equation>
@@ -124,7 +163,8 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`m`, tx(t, "mRt_wM", "the slope of the line, rise over run")],
           [r`\theta`, tx(t, "mRt_wIncl", "the angle between the line and the horizontal")],
-        ]}>
+        ]}
+        words={tx(t, "mRt_slopeWords", "How much a line rises for each step of run is the tangent of the angle it climbs at; arctan turns that number back into the angle.")}>
         {r`m = \frac{\text{rise}}{\text{run}} = \tan\theta \qquad \theta = \arctan m`}
       </Equation>
 
@@ -135,19 +175,34 @@ export function TrigContent({ t }: { t: TrackTranslations }) {
       </p>
       <H3>{tx(t, "mRt_twoTitle", "When you cannot reach the foot: two angles")}</H3>
       <p>
-        {tx(t, "mRt_twoBody",
-          "Often the distance to the foot of a mountain is unknown, because the foot is across a river or inside a forest. Measure the angle of elevation twice instead: α from a first point, then walk d closer along a straight line and measure a larger angle β. Call the unknown height h and the unknown remaining distance x. The two right triangles give h = x · tan β and h = (x + d) · tan α. Both equal h, so x · tan β = (x + d) · tan α. Expand: x · tan β = x · tan α + d · tan α. Collect the x terms: x (tan β − tan α) = d · tan α, so x = d · tan α / (tan β − tan α), and then h = x · tan β.")}
+        {tx(t, "mRt_twoBody2",
+          "Often the distance to the foot of a mountain is unknown, because the foot is across a river or inside a forest. Measure the angle of elevation twice instead: α from a first point, then walk d closer along a straight line and measure a larger angle β. Call the unknown height h and the unknown remaining distance x. Each measurement gives one right triangle, and both share the height h, which is enough to find x and then h.")}
       </p>
-      <Equation label={tx(t, "mRt_eqTwo", "Height from two angles of elevation")}
+      <Derivation t={t} label={tx(t, "mRt_eqTwo", "Height from two angles of elevation")}
         where={[
-          [r`lpha`, tx(t, "mRt_wAlpha", "the angle of elevation from the farther point")],
-          [r`eta`, tx(t, "mRt_wBeta", "the angle from the nearer point, which is larger")],
+          [r`\alpha`, tx(t, "mRt_wAlpha", "the angle of elevation from the farther point")],
+          [r`\beta`, tx(t, "mRt_wBeta", "the angle from the nearer point, which is larger")],
           [r`d`, tx(t, "mRt_wD", "the distance walked between the two measurements")],
+          [r`x`, tx(t, "mRt_wX", "the unknown distance from the nearer point to the foot")],
           [r`h`, tx(t, "mRt_wH", "the height of the top above eye level")],
         ]}
-        note={tx(t, "mRt_twoNote", "Numbers: α = 30°, β = 45°, d = 100 m. tan 30° ≈ 0.577 and tan 45° = 1, so x = 100 · 0.577 / (1 − 0.577) ≈ 136.6 m and h ≈ 136.6 · 1 = 136.6 m.")}>
-        {r`h = \frac{d\,\tan\alpha\,\tan\beta}{\tan\beta - \tan\alpha}`}
-      </Equation>
+        note={tx(t, "mRt_twoNote", "Numbers: α = 30°, β = 45°, d = 100 m. tan 30° ≈ 0.577 and tan 45° = 1, so x = 100 · 0.577 / (1 − 0.577) ≈ 136.6 m and h ≈ 136.6 · 1 = 136.6 m.")}
+        steps={[
+          { full: true, tex: r`h = x\tan\beta \qquad h = (x + d)\tan\alpha`, why: tx(t, "mRt_tw1", "h = adjacent · tan θ in the near triangle and in the far one, whose adjacent side is x + d") },
+          { full: true, tex: r`x\tan\beta = x\tan\alpha + d\tan\alpha`, why: tx(t, "mRt_tw2", "both equal h, so they equal each other; expand the bracket") },
+          { full: true, tex: r`x\,(\tan\beta - \tan\alpha) = d\tan\alpha`, why: tx(t, "mRt_tw3", "subtract x tan α from both sides and factor x out") },
+          { full: true, tex: r`x = \frac{d\tan\alpha}{\tan\beta - \tan\alpha}`, why: tx(t, "mRt_tw4", "divide by tan β − tan α, which is positive because β is larger than α") },
+          { full: true, tex: r`\green{h = x\tan\beta = \frac{d\,\tan\alpha\,\tan\beta}{\tan\beta - \tan\alpha}}`, why: tx(t, "mRt_tw5", "put x back into h = x tan β") },
+        ]} />
+      <LiveFormula label={tx(t, "mRt_liveTwo", "Try it: a mountain you cannot reach")}
+        tex={r`h = \frac{d\,\tan\alpha\,\tan\beta}{\tan\beta - \tan\alpha}`}
+        vars={[
+          { id: "a", label: "α", min: 5, max: 80, step: 1, value: 30, fmt: deg },
+          { id: "b", label: "β", min: 6, max: 85, step: 1, value: 45, fmt: deg },
+          { id: "d", label: "d", min: 10, max: 500, step: 10, value: 100, fmt: v => `${v} m` },
+        ]}
+        compute={v => twoAngleNumbers(v, t)}
+        note={tx(t, "mRt_liveTwoNote", "Bring β down toward α: the bottom of the fraction shrinks and h shoots up. Two nearly equal angles mean you barely got closer compared with how far away the mountain is, so a tiny reading error changes the answer a lot. Surveyors walk far enough that the two angles differ clearly.")} />
 
       <H2>{tx(t, "mRt_exTitle", "Worked examples")}</H2>
       <p>

@@ -8,12 +8,38 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
 import { RotationFigure } from "@/components/lesson/figures/math/RotationFigure";
 
 const r = String.raw;
+
+// ── Live formulas: rotating a point, the range of a throw ─────────────────────
+
+const RAD = Math.PI / 180;
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+const deg = (v: number) => `${v}°`;
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+function rotNumbers(v: Record<string, number>) {
+  const c = Math.cos(v.th * RAD), s = Math.sin(v.th * RAD);
+  const x2 = v.x * c - v.y * s, y2 = v.x * s + v.y * c;
+  return {
+    tex: r`\begin{aligned} x' &= ${par(v.x)}\cdot ${par(c)} - ${par(v.y)}\cdot ${par(s)} = \green{${num(x2)}} \\ y' &= ${par(v.x)}\cdot ${par(s)} + ${par(v.y)}\cdot ${par(c)} = \green{${num(y2)}} \end{aligned}`,
+  };
+}
+
+function rangeNumbers(v: Record<string, number>) {
+  const s2 = Math.sin(2 * v.a * RAD), R = (v.v * v.v * s2) / 9.8;
+  return {
+    tex: r`R = \frac{${num(v.v)}^2 \cdot \sin ${2 * v.a}^\circ}{9.8} \approx \frac{${num(v.v * v.v)}\cdot ${num(s2)}}{9.8} \approx \green{${num(R)}\ \text{m}}`,
+    meter: s2,
+    meterLabel: `sin 2α = ${num(s2)}`,
+  };
+}
 
 export function IdentitiesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -34,7 +60,8 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
           [r`\sin(-\theta) = -\sin\theta`, tx(t, "mId_wOdd", "turning the other way mirrors the point in the x-axis: y changes sign")],
           [r`\cos(-\theta) = \cos\theta`, tx(t, "mId_wEven", "…and x does not")],
           [r`\sin(\pi - \theta) = \sin\theta`, tx(t, "mId_wSupp", "mirroring in the y-axis keeps the height: 150° and 30° have the same sine")],
-        ]}>
+        ]}
+        words={tx(t, "mId_basicWords", "The point on the unit circle is always 1 from the centre; mirroring it in the x-axis flips only its height, and mirroring it in the y-axis keeps its height.")}>
         {r`\cos^2\theta + \sin^2\theta = 1 \qquad \sin(-\theta) = -\sin\theta \qquad \cos(-\theta) = \cos\theta \qquad \sin(\pi - \theta) = \sin\theta`}
       </Equation>
 
@@ -49,22 +76,46 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
           [r`(x', y')`, tx(t, "mTrig_wXY2", "the rotated point")],
           [r`\theta`, tx(t, "mTrig_wRotTheta", "the rotation angle, counter-clockwise for positive θ (with y pointing up)")],
         ]}
+        words={tx(t, "mTrig_rotWords", "Take the same x steps and y steps as before, but along the two directions turned by θ: right becomes (cos θ, sin θ) and up becomes (−sin θ, cos θ).")}
         note={tx(t, "mTrig_eqRotNote", "To rotate around another point c, subtract c, rotate, add c back. Check θ = 90°: (1, 0) goes to (0, 1). Check θ = 180°: every point (x, y) goes to (−x, −y), the half turn of the transformations chapter.")}>
         {r`x' = x\cos\theta - y\sin\theta \qquad y' = x\sin\theta + y\cos\theta`}
       </Equation>
+      <LiveFormula label={tx(t, "mId_liveRot", "Try it: rotate a point")}
+        tex={r`x' = x\cos\theta - y\sin\theta \qquad y' = x\sin\theta + y\cos\theta`}
+        vars={[
+          { id: "x", label: "x", min: -5, max: 5, step: 1, value: 2, fmt: num },
+          { id: "y", label: "y", min: -5, max: 5, step: 1, value: 1, fmt: num },
+          { id: "th", label: "θ", min: -180, max: 180, step: 15, value: 60, fmt: deg },
+        ]}
+        compute={rotNumbers}
+        note={tx(t, "mId_liveRotNote", "Starts on the first worked example below: (2, 1) turned by 60° lands at about (0.134, 2.232). Try θ = 90°: the result is (−y, x). Whatever you pick, x'² + y'² equals x² + y².")} />
 
       <RotationFigure t={t} />
 
       <p>
-        {tx(t, "mId_rotCheck",
-          "Check it against what you know. θ = 90°: cos = 0, sin = 1, so (x, y) → (−y, x), the quarter-turn rule. θ = 180°: (−x, −y). θ = 0: nothing moves. And the distance from the origin never changes: x'² + y'² expands to (x² + y²)(cos² θ + sin² θ) = x² + y², so rotation is a rigid motion, as it should be. The Linear Algebra section will write the two turned unit steps as the columns of a 2 × 2 matrix, the rotation matrix of every graphics API.")}
+        {tx(t, "mId_rotCheck2",
+          "Check it against what you know. θ = 90°: cos = 0, sin = 1, so (x, y) → (−y, x), the quarter-turn rule. θ = 180°: (−x, −y). θ = 0: nothing moves. And the distance from the origin never changes, so rotation is a rigid motion, as it should be; the derivation below shows why. The Linear Algebra section will write the two turned unit steps as the columns of a 2 × 2 matrix, the rotation matrix of every graphics API.")}
       </p>
+      <Derivation t={t} label={tx(t, "mId_eqLen", "Rotation keeps the distance from the origin")}
+        steps={[
+          { tex: r`x'^2 + y'^2` },
+          { tex: r`= (x\cos\theta - y\sin\theta)^2 + (x\sin\theta + y\cos\theta)^2`, why: tx(t, "mId_l1", "put in the rotation formula") },
+          { tex: r`= x^2(\cos^2\theta + \sin^2\theta) + y^2(\sin^2\theta + \cos^2\theta)`, why: tx(t, "mId_l2", "expand both squares: the two 2xy sin θ cos θ terms have opposite signs and cancel; group what multiplies x² and y²") },
+          { tex: r`= \green{x^2 + y^2}`, why: tx(t, "mId_l3", "cos² θ + sin² θ = 1") },
+        ]} />
 
       <H2>{tx(t, "mId_sumTitle", "The angle-sum formulas")}</H2>
       <p>
         {tx(t, "mId_sumBody",
           "Take the point at angle α on the unit circle, (cos α, sin α), and rotate it by β. Turning adds angles, so it lands at angle α + β, the point (cos(α + β), sin(α + β)). The rotation formula computes the same point with x = cos α and y = sin α. Two descriptions of one point must have equal coordinates, which gives two identities at once. The second mode of the figure checks them for any α and β.")}
       </p>
+      <Derivation t={t} label={tx(t, "mId_eqSumDer", "Deriving the angle-sum formulas")}
+        steps={[
+          { full: true, tex: r`(x,\ y) = (\cos\alpha,\ \sin\alpha)`, why: tx(t, "mId_sd1", "the point at angle α on the unit circle") },
+          { full: true, tex: r`x' = \cos\alpha\cos\beta - \sin\alpha\sin\beta`, why: tx(t, "mId_sd2", "the rotation formula with θ = β: x' = x cos β − y sin β") },
+          { full: true, tex: r`y' = \cos\alpha\sin\beta + \sin\alpha\cos\beta`, why: tx(t, "mId_sd3", "and y' = x sin β + y cos β") },
+          { full: true, tex: r`\green{(x',\ y') = (\cos(\alpha + \beta),\ \sin(\alpha + \beta))}`, why: tx(t, "mId_sd4", "turning adds angles, so the rotated point is the point at angle α + β; matching coordinates gives the two formulas") },
+        ]} />
       <Equation label={tx(t, "mTrig_eqIds", "Core identities")}
         where={[
           [r`\sin^2\theta + \cos^2\theta = 1`, tx(t, "mTrig_wPyth2", "Pythagoras on the unit circle: the point is at distance 1 from the origin")],
@@ -99,6 +150,22 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mId_doubleNote", "Check with α = 30°: sin 60° = 2 · ½ · (√3/2) = √3/2 ✓, and cos² 30° = (1 + cos 60°)/2 = (1 + ½)/2 = ¾ = (√3/2)² ✓.")}>
         {r`\sin 2\alpha = 2\sin\alpha\cos\alpha \qquad \cos 2\alpha = \cos^2\alpha - \sin^2\alpha = 2\cos^2\alpha - 1 \qquad \cos^2\alpha = \frac{1 + \cos 2\alpha}{2}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mId_eqHalfDer", "From the double angle to the square")}
+        steps={[
+          { tex: r`\cos 2\alpha` },
+          { tex: r`= \cos^2\alpha - \sin^2\alpha`, why: tx(t, "mId_h1", "the sum formula for cos(α + β) with β = α") },
+          { tex: r`= \cos^2\alpha - (1 - \cos^2\alpha)`, why: tx(t, "mId_h2", "replace sin² α by 1 − cos² α, from cos² α + sin² α = 1") },
+          { tex: r`= 2\cos^2\alpha - 1`, why: tx(t, "mId_h3", "remove the bracket and collect the two cos² α") },
+          { full: true, tex: r`\green{\cos^2\alpha = \frac{1 + \cos 2\alpha}{2}}`, why: tx(t, "mId_h4", "add 1 to both sides and divide by 2: the square is gone") },
+        ]} />
+      <LiveFormula label={tx(t, "mId_liveRange", "Try it: how far a ball flies")}
+        tex={r`R = \frac{v^2 \cdot 2\sin\alpha\cos\alpha}{g} = \frac{v^2 \sin 2\alpha}{g}`}
+        vars={[
+          { id: "v", label: tx(t, "mId_liveV", "speed v (m/s)"), min: 5, max: 40, step: 1, value: 20, fmt: num },
+          { id: "a", label: tx(t, "mId_liveA", "angle α"), min: 0, max: 90, step: 5, value: 30, fmt: deg },
+        ]}
+        compute={rangeNumbers}
+        note={tx(t, "mId_liveRangeNote", "g = 9.8 m/s² is the pull of gravity. The bar shows sin 2α, the share of the longest possible throw: full at α = 45°. Angles that add up to 90°, such as 30° and 60°, land at the same spot, because their doubles 60° and 120° have the same sine.")} />
 
       <H2>{tx(t, "mId_pivotTitle", "Rotating about a pivot and chaining rotations")}</H2>
       <p>
@@ -109,7 +176,8 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`(c_x, c_y)`, tx(t, "mId_wC", "the pivot, the one point that stays put")],
           [r`x - c_x,\ y - c_y`, tx(t, "mId_wOff", "the offset from the pivot, which is what actually gets rotated")],
-        ]}>
+        ]}
+        words={tx(t, "mId_pivotWords", "Measure the point from the pivot, turn that offset as if the pivot were the origin, then measure from the pivot again.")}>
         {r`x' = c_x + (x - c_x)\cos\theta - (y - c_y)\sin\theta \qquad y' = c_y + (x - c_x)\sin\theta + (y - c_y)\cos\theta`}
       </Equation>
       <Callout type="tip" t={t}>
@@ -150,18 +218,29 @@ export function IdentitiesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mId_tanBody",
           "Divide sin(α + β) by cos(α + β), then divide the top and the bottom by cos α cos β. Each term becomes a tangent: the top turns into tan α + tan β, and the bottom into 1 − tan α tan β. Check with α = β = 45°: (1 + 1)/(1 − 1) divides by zero, and indeed tan 90° is undefined.")}
       </p>
-      <Equation label={tx(t, "mId_eqTan", "Tangent of a sum")}
+      <Derivation t={t} label={tx(t, "mId_eqTan", "Tangent of a sum")}
         where={[
           [r`\tan\alpha,\ \tan\beta`, tx(t, "mId_wTans", "the tangents of the two angles being added")],
         ]}
-        note={tx(t, "mId_tanNote", "Example: tan 75° = tan(45° + 30°) = (1 + 1/√3)/(1 − 1/√3). Multiply top and bottom by √3: (√3 + 1)/(√3 − 1) ≈ 2.732/0.732 ≈ 3.732 = 2 + √3.")}>
-        {r`\tan(\alpha + \beta) = \frac{\tan\alpha + \tan\beta}{1 - \tan\alpha\tan\beta}`}
-      </Equation>
+        note={tx(t, "mId_tanNote", "Example: tan 75° = tan(45° + 30°) = (1 + 1/√3)/(1 − 1/√3). Multiply top and bottom by √3: (√3 + 1)/(√3 − 1) ≈ 2.732/0.732 ≈ 3.732 = 2 + √3.")}
+        steps={[
+          { tex: r`\tan(\alpha + \beta)` },
+          { tex: r`= \frac{\sin\alpha\cos\beta + \cos\alpha\sin\beta}{\cos\alpha\cos\beta - \sin\alpha\sin\beta}`, why: tx(t, "mId_t1", "tan = sin / cos, with the two angle-sum formulas on top and bottom") },
+          { tex: r`= \frac{\frac{\sin\alpha}{\cos\alpha} + \frac{\sin\beta}{\cos\beta}}{1 - \frac{\sin\alpha}{\cos\alpha}\cdot\frac{\sin\beta}{\cos\beta}}`, why: tx(t, "mId_t2", "divide every term on top and bottom by cos α cos β; the fraction's value does not change") },
+          { tex: r`= \green{\frac{\tan\alpha + \tan\beta}{1 - \tan\alpha\tan\beta}}`, why: tx(t, "mId_t3", "each sin / cos is a tangent") },
+        ]} />
       <H3>{tx(t, "mId_proveTitle", "Proving an identity")}</H3>
       <p>
-        {tx(t, "mId_proveBody",
-          "To prove that an identity holds, start from one side and transform it, step by step with known rules, until it becomes the other side. Do not move terms across the = sign as when solving an equation: that assumes the very equality you want to show. Example: (sin x + cos x)² = 1 + sin 2x. Expand the left side with (a + b)² = a² + 2ab + b²: sin² x + 2 sin x cos x + cos² x. Regroup: (sin² x + cos² x) + 2 sin x cos x. The bracket is 1 by Pythagoras and the rest is sin 2x by the double-angle formula, so the left side equals 1 + sin 2x. Testing one angle, say x = 30°, is a good check but not a proof.")}
+        {tx(t, "mId_proveBody2",
+          "To prove that an identity holds, start from one side and transform it, step by step with known rules, until it becomes the other side. Do not move terms across the = sign as when solving an equation: that assumes the very equality you want to show. Example: prove (sin x + cos x)² = 1 + sin 2x, starting from the left side. Testing one angle, say x = 30°, is a good check but not a proof.")}
       </p>
+      <Derivation t={t} label={tx(t, "mId_eqProve", "Proof: (sin x + cos x)² = 1 + sin 2x")}
+        steps={[
+          { tex: r`(\sin x + \cos x)^2` },
+          { tex: r`= \sin^2 x + 2\sin x\cos x + \cos^2 x`, why: tx(t, "mId_pr1", "expand with (a + b)² = a² + 2ab + b²") },
+          { tex: r`= (\sin^2 x + \cos^2 x) + 2\sin x\cos x`, why: tx(t, "mId_pr2", "regroup the two squares together") },
+          { tex: r`= \green{1 + \sin 2x}`, why: tx(t, "mId_pr3", "the bracket is 1 by Pythagoras, and 2 sin x cos x is sin 2x by the double-angle formula") },
+        ]} />
 
       <H2>{tx(t, "mId_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable

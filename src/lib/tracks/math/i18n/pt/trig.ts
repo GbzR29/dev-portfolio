@@ -43,7 +43,7 @@ const text: Record<string, string> = {
   mRt_heightTitle: "Alturas e distâncias que não dá para medir",
   mRt_heightBody: "O terceiro modo da figura é o truque do agrimensor. De uma distância conhecida d, meça o ângulo até o topo de algo alto; então h = d · tan θ. Também funciona ao contrário: um arqueiro numa muralha de 10 m vê um alvo num ângulo de 20° abaixo da horizontal, então o alvo está a 10 / tan 20° ≈ 27,5 m pelo chão.",
   mRt_twoTitle: "Quando não dá para chegar ao pé: dois ângulos",
-  mRt_twoBody: "Muitas vezes a distância até o pé de uma montanha é desconhecida, porque o pé fica do outro lado de um rio ou dentro de uma floresta. Em vez disso, meça o ângulo de elevação duas vezes: α de um primeiro ponto, depois ande d mais perto em linha reta e meça um ângulo maior β. Chame a altura desconhecida de h e a distância restante desconhecida de x. Os dois triângulos retângulos dão h = x · tan β e h = (x + d) · tan α. Os dois são iguais a h, então x · tan β = (x + d) · tan α. Desenvolva: x · tan β = x · tan α + d · tan α. Junte os termos em x: x (tan β − tan α) = d · tan α, então x = d · tan α / (tan β − tan α), e depois h = x · tan β.",
+  mRt_twoBody2: "Muitas vezes a distância até o pé de uma montanha é desconhecida, porque o pé fica do outro lado de um rio ou dentro de uma floresta. Em vez disso, meça o ângulo de elevação duas vezes: α de um primeiro ponto, depois ande d mais perto em linha reta e meça um ângulo maior β. Chame a altura desconhecida de h e a distância restante desconhecida de x. Cada medida dá um triângulo retângulo, e os dois compartilham a altura h, o que basta para achar x e depois h.",
   mRt_eqTwo: "Altura a partir de dois ângulos de elevação",
   mRt_wAlpha: "o ângulo de elevação do ponto mais distante",
   mRt_wBeta: "o ângulo do ponto mais próximo, que é maior",
@@ -85,6 +85,29 @@ const text: Record<string, string> = {
   mRt_m5r: "use as leis dos senos e dos cossenos",
   mRt_m5: "as razões são definidas em triângulos retângulos",
   mTrig_undef: "indefinida",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mRt_sohWords: "O seno é a fração da hipotenusa que o cateto oposto mede; o cosseno é a fração que o cateto adjacente mede; a tangente compara o cateto oposto com o adjacente.",
+  mRt_p1: "Pitágoras no triângulo retângulo: os catetos ao quadrado somam a hipotenusa ao quadrado",
+  mRt_p2: "divida os dois lados por hip²; o lado direito vira 1",
+  mRt_p3: "um quadrado dividido por um quadrado é o quadrado da fração",
+  mRt_p4: "adj/hip é cos θ e op/hip é sin θ",
+  mRt_coWords: "O cateto oposto a um ângulo agudo é o cateto ao lado do outro, então o seno de um ângulo é o cosseno do seu parceiro.",
+  mRt_liveSides: "Experimente: uma escada encostada na parede",
+  mRt_liveTh: "ângulo θ",
+  mRt_liveHyp: "hipotenusa (escada)",
+  mRt_liveSidesNote: "op é a altura que a escada alcança, adj a distância do pé dela até a parede. Suba θ em direção a 90°: a altura se aproxima da escada inteira e o vão encolhe até sumir. Em 45° os dois são iguais, cerca de 0,707 da escada cada um.",
+  mRt_invWords: "Divida dois lados que você conhece, e a função inversa devolve o ângulo que produz essa razão.",
+  mRt_slopeWords: "Quanto uma reta sobe a cada passo para o lado é a tangente do ângulo em que ela sobe; o arctan transforma esse número de volta no ângulo.",
+  mRt_wX: "a distância desconhecida do ponto mais próximo até o pé",
+  mRt_tw1: "h = adjacente · tan θ no triângulo próximo e no distante, cujo cateto adjacente é x + d",
+  mRt_tw2: "os dois são iguais a h, então são iguais entre si; desenvolva o parêntese",
+  mRt_tw3: "subtraia x tan α dos dois lados e ponha x em evidência",
+  mRt_tw4: "divida por tan β − tan α, que é positivo porque β é maior que α",
+  mRt_tw5: "ponha x de volta em h = x tan β",
+  mRt_liveTwo: "Experimente: uma montanha que não dá para alcançar",
+  mRt_liveCloser: "chegue mais perto: β precisa ser maior que α",
+  mRt_liveTwoNote: "Desça β em direção a α: o denominador encolhe e h dispara. Dois ângulos quase iguais querem dizer que você mal se aproximou comparado com a distância da montanha, então um errinho de leitura muda muito a resposta. Agrimensores andam o bastante para os dois ângulos ficarem bem diferentes.",
 };
 
 export default text;

@@ -2,7 +2,7 @@
 
 const text: Record<string, string> = {
   mUc_intro: "Um triângulo retângulo só tem ângulos até 90°, mas os ângulos do mundo vão além: o ponteiro de um relógio varre 135° e 270°, uma porta volta a −30°, uma roda gira milhares de graus. Este capítulo liberta o seno e o cosseno do triângulo pondo-os num círculo, onde eles funcionam para todo ângulo, inclusive negativos e além de uma volta completa. No caminho ele apresenta o radiano, a unidade de ângulo que a matemática e a física preferem.",
-  mUc_whyBody: "Por que a razão s/ρ não depende do círculo? Todos os círculos são semelhantes (o capítulo do círculo), então ampliar o círculo amplia o arco e o raio pelo mesmo fator. A conversão vem de uma volta completa: 360° é a circunferência inteira dividida pelo raio, 2πρ/ρ = 2π. Então 180° = π, e um grau é π/180 radianos.",
+  mUc_whyBody2: "Por que a razão s/ρ não depende do círculo? Todos os círculos são semelhantes (o capítulo do círculo), então ampliar o círculo amplia o arco e o raio pelo mesmo fator. A conversão vem de uma volta completa, passo a passo.",
   mUc_tDeg: "Graus",
   mUc_tRad: "Radianos",
   mUc_arcTitle: "Comprimento de arco e velocidade angular",
@@ -68,6 +68,24 @@ const text: Record<string, string> = {
   mTrig_eqRadNote: "Valores úteis: 90° = π/2, 180° = π, 360° = 2π, 1 rad ≈ 57,3°. Calculadoras científicas têm uma chave DEG/RAD: ela decide qual unidade a tecla sen espera.",
   mTrig_unitTitle: "O círculo unitário",
   mTrig_unitBody: "Triângulos só dão ângulos até 90°. O círculo unitário estende as definições para todo ângulo. Coloque um círculo de raio 1 na origem e ande no sentido anti-horário a partir do ponto (1, 0) por um ângulo θ. O ponto a que você chega tem coordenadas (cos θ, sen θ). Para ângulos abaixo de 90°, isso é a definição do triângulo com hip = 1; para ângulos maiores ou negativos, simplesmente continua a volta no círculo, com sinais que seguem o quadrante.",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mTrig_radWords: "Um ângulo em radianos é quantos raios de comprimento tem o arco que ele recorta. Para converter de graus, multiplique por π e divida por 180.",
+  mUc_eqConv: "De onde vem π/180",
+  mUc_c1: "uma volta completa: o arco é a circunferência inteira 2πρ, dividida pelo raio ρ",
+  mUc_c2: "meia volta: divida os dois lados por 2",
+  mUc_c3: "um grau: divida os dois lados por 180",
+  mUc_c4: "um ângulo de θ graus é θ cópias de um grau",
+  mUc_liveRad: "Experimente: de graus para radianos",
+  mUc_liveDeg: "ângulo em graus",
+  mUc_liveRadNote: "A fração de π é a fração de meia volta: 135° são três quartos de 180°, então são 3π/4. Depois de 360° o ângulo continua crescendo: 720° são duas voltas completas, 4π.",
+  mUc_arcWords: "Com o ângulo em radianos, o arco é o raio vezes o ângulo, e um ponto de uma roda girando anda à velocidade de giro vezes a sua distância ao centro.",
+  mUc_defWords: "Ande um ângulo θ em volta do círculo de raio 1, começando em (1, 0): o cosseno é quanto você termina para a direita, o seno quanto termina para cima.",
+  mUc_liveRef: "Experimente: qualquer ângulo a partir de um agudo",
+  mUc_liveAxis: "sobre um eixo",
+  mUc_liveQuad: "quadrante",
+  mUc_liveRefNote: "Primeiro o quadrante, depois o ângulo de referência θ′ pela regra daquele quadrante, depois os sinais: o cos é negativo em II e III, o sin em III e IV. Tente 150°, 210° e 330°: os mesmos 30° em todos, com sinais diferentes.",
+  mUc_periodWords: "Mais uma volta completa traz o ponto de volta para onde estava, então seno e cosseno se repetem; meia volta já devolve à tangente o seu valor antigo.",
 };
 
 export default text;

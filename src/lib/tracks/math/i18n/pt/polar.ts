@@ -64,6 +64,25 @@ const text: Record<string, string> = {
   mTrig_tFix: "Correção",
   mTrig_c3: "diferença de ângulos crua",
   mTrig_f3: "leve a diferença para (−π, π]",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mPol_rangesWords: "Cada função inversa responde com um ângulo da sua própria metade do círculo: arcsin e arctan da metade direita, arccos da metade de cima.",
+  mPol_polarWords: "Um ponto está tão longe da origem quanto Pitágoras diz, na direção que o atan2 acha; para voltar, ande essa distância nessa direção.",
+  mPol_livePolar: "Experimente: de (x, y) para polar",
+  mPol_liveNoDir: "a origem não tem direção",
+  mPol_liveDivZero: "divide por 0",
+  mPol_livePolarNote: "Começa no primeiro exemplo resolvido abaixo, (−3, 3). A última linha é o arctan(y/x) ingênuo; ela fica vermelha sempre que discorda do atan2, o que acontece em todo ponto com x < 0, e falha de vez quando x = 0.",
+  mPol_eqAtan2: "atan2, caso a caso",
+  mPol_wNaive: "a resposta de meio círculo, certa só quando x > 0",
+  mPol_wHalf: "meia volta, para levar a resposta para a metade esquerda; o sinal a mantém dentro de (−π, π]",
+  mPol_atan2Words: "Use arctan(y/x) na metade direita; na metade esquerda gire o resultado meia volta, para cima ou para baixo conforme o sinal de y; sobre o eixo y responda direto para cima ou para baixo.",
+  mPol_wrapWords: "Primeiro ache o caminho curto de a até b embrulhando a diferença; depois qualquer mistura é a mais aquela fração do caminho curto.",
+  mPol_liveTurn: "Experimente: o caminho curto",
+  mPol_liveTurnNote: "Começa em 170° e −170°: a diferença bruta é −340°, embrulhada é +20°, e a direção do meio é 180°, não os 0° que a média simples daria. ↺ é anti-horário, ↻ horário.",
+  mPol_eqCircle: "Um círculo na forma polar",
+  mPol_ci1: "o círculo na forma cartesiana",
+  mPol_ci2: "troque x² + y² por r² e x por r cos θ",
+  mPol_ci3: "divida os dois lados por r; só o polo r = 0 poderia se perder, e r = 4 cos θ ainda passa por ele em θ = 90°",
 };
 
 export default text;
