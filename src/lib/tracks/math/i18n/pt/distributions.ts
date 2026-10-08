@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/distributions.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mDist_goal0: "Reconhecer qual distribuição comum serve para uma situação.",
+  mDist_goal1: "Calcular probabilidades com as distribuições binomial, geométrica e de Poisson.",
+  mDist_goal2: "Usar as distribuições uniforme e exponencial para tempos de espera contínuos.",
+  mDist_goal3: "Trabalhar com a distribuição normal.",
   mDist_intro: "Muitas situações aleatórias parecem diferentes na superfície, mas compartilham a mesma estrutura: contar sucessos em tentativas repetidas, esperar pelo primeiro sucesso, contar eventos raros num período de tempo, medir uma grandeza feita de muitas pequenas influências. Cada estrutura dá uma família de distribuições com nome, fórmula e um ou dois parâmetros, os botões que escolhem um membro da família. Este capítulo deduz as seis famílias que você vai encontrar com mais frequência, cada uma a partir da sua história, e calcula suas médias e variâncias com as ferramentas do capítulo anterior.",
   mDist_binTitle: "Bernoulli e binomial: sucessos em n tentativas",
   mDist_bernBody: "A variável aleatória mais simples tem dois valores: 1 (“sucesso”) com probabilidade p e 0 (“fracasso”) com probabilidade 1 − p. Essa é uma variável Bernoulli(p): um lançamento de moeda, um paciente que se recupera ou não, uma peça defeituosa ou não. Pelo capítulo de esperança, sua média é p e sua variância p(1 − p). Agora repita a tentativa n vezes, de forma independente, com o mesmo p a cada vez, e conte os sucessos K. K tem a distribuição binomial, Binomial(n, p).",

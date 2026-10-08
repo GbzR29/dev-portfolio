@@ -13,7 +13,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DescriptiveFigure } from "@/components/lesson/figures/math/DescriptiveFigure";
 
 const r = String.raw;
@@ -25,6 +25,13 @@ export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDesc_intro",
           "Statistics starts with data: a list of numbers someone measured, such as test scores, heights or waiting times, and the wish to understand them. The first step is to describe them honestly: draw them, find their centre, measure their spread and spot anything unusual. Everything here needs only arithmetic. The rest of this section then goes the other way, from a model such as a fair die to the data it should produce, and the ideas you meet here (mean, spread, histogram) come back there with probabilities in place of frequencies. Some tools, like the median and the box plot, are worth having because they stay reliable when a few values are strange.")}
       </Lead>
+
+      <Goals t={t} id="mDesc" items={[
+        "Sum up data with a frequency table and a histogram.",
+        "Find the mean, median, mode, quartiles and standard deviation.",
+        "Draw a box plot, and compare values with z-scores and percentiles.",
+        "Spot Simpson's paradox when groups are combined.",
+      ]} />
 
       <H2>{tx(t, "mDesc_dataTitle", "Data, populations and samples")}</H2>
       <p>

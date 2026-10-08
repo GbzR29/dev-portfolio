@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/cpp/chapters/concepts.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp06_goal0: "Transformar os requisitos escondidos de um template num concept que dá um erro legível.",
+  cpp06_goal1: "Escrever o seu próprio concept com requires.",
+  cpp06_goal2: "Usar os concepts da biblioteca padrão que você mais vai encontrar.",
+  cpp06_goal3: "Sobrecarregar funções pelas suas restrições.",
   cpp06_intro: "Antes do C++20, um template não dizia nada sobre o que o seu argumento de tipo precisava suportar. Você descobria passando o tipo errado e lendo quatrocentas linhas de backtrace de instanciação. Concepts permitem declarar o requisito logo de início, então o erro aponta para o local da chamada e diz o que está faltando.",
   cpp06_beforeTitle: "Antes e depois",
   cpp06_writingTitle: "Escrevendo um concept",

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/matrices.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mMat_goal0: "Multiplicar uma matriz por um vetor, de duas formas.",
+  mMat_goal1: "Ler as colunas de uma matriz como os lugares onde os eixos vão parar.",
+  mMat_goal2: "Multiplicar matrizes para encadear transformações.",
+  mMat_goal3: "Acrescentar uma coordenada extra para que mover um ponto também seja uma matriz.",
   mMat_intro: "O capítulo de transformações escreveu cada movimento como uma regra própria, e o capítulo de identidades encontrou a regra da rotação por qualquer ângulo. Olhe essas regras lado a lado e todas têm a mesma forma: o novo x é uma certa quantidade do x antigo mais uma certa quantidade do y antigo, e o mesmo para o novo y. Quatro números decidem tudo. Escritos numa pequena grade, esses quatro números são uma matriz, um dos objetos centrais da matemática, usada sempre que grandezas se misturam em proporção direta. Este capítulo constrói as matrizes a partir dessa única observação.",
   mMat_shapeTitle: "Uma forma para toda regra",
   mMat_shapeBody: "Eis regras que você já conhece. Escalar por 2 na horizontal: x' = 2x, y' = y. Espelhar no eixo y: x' = −x, y' = y. O quarto de volta: x' = −y, y' = x. Rotação por θ: x' = cos θ · x − sin θ · y, y' = sin θ · x + cos θ · y. Cada uma tem a forma x' = ax + by, y' = cx + dy para certos números a, b, c, d (no quarto de volta a = 0, b = −1, c = 1, d = 0). Então, em vez de uma fórmula diferente para cada movimento, podemos guardar os quatro números e usar uma fórmula só para todos eles.",

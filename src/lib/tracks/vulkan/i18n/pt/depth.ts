@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/depth.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkDepth_goal0: "Adicionar um depth buffer para que superfícies mais perto escondam as mais longe.",
+  vkDepth_goal1: "Escolher um formato de profundidade e explicar para onde vai a precisão.",
+  vkDepth_goal2: "Ligar o descarte de faces traseiras com a ordem de vértices certa.",
+  vkDepth_goal3: "Desenhar cubos em vez de quadrados chapados.",
   vkDepth_intro: "Observe os dois quadrados do capítulo anterior onde eles se cruzam: o desenhado por último fica sempre na frente, mesmo onde está atrás. Desenhar primeiro o que está longe (o algoritmo do pintor) não resolve, porque os quadrados se interceptam: ao longo da linha em que se cruzam, cada um está na frente de um lado. A correção é por pixel. Um depth buffer guarda, para cada pixel, a que distância está a superfície mais próxima desenhada até agora, e cada fragmento novo é comparado com ele. Este capítulo acrescenta um depth attachment, liga o teste de profundidade e o descarte de faces traseiras, e troca os quadrados por dois cubos com textura que atravessam um ao outro.",
 
   vkDepth_testTitle: "O teste de profundidade, fragmento a fragmento",

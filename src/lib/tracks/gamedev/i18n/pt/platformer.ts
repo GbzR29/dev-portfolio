@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/gamedev/chapters/platformer.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  gdPlat_goal0: "Explicar por que o personagem do jogador é movido pelo próprio código, não pelo motor de física.",
+  gdPlat_goal1: "Projetar um pulo a partir da altura e do tempo até o topo.",
+  gdPlat_goal2: "Adicionar coyote time e buffer de pulo para perdoar comandos atrasados.",
+  gdPlat_goal3: "Usar os outros truques que deixam um jogo de plataforma justo.",
   gdPlat_intro: "Os capítulos anteriores deixaram a física mais fiel. Um herói de jogo de plataforma precisa do contrário: controles que fazem o que o jogador quis, mesmo quando ele atrasou alguns quadros. Mario, Celeste e Hollow Knight entortam a física de propósito: pulam mais alto do que caem, param quase na hora, dão direção no ar e perdoam um pulo apertado logo depois de sair correndo de uma beirada. Este capítulo constrói um controlador assim passo a passo, deduzindo o pulo dos dois números em que um designer de fato pensa, e termina numa pequena fase onde cada truque pode ser desligado para sentir o que ele faz.",
 
   gdPlat_kinTitle: "Cinemático, não dinâmico",

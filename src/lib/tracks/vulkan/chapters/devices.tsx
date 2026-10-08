@@ -12,7 +12,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { QueueFamilyFigure } from "@/components/lesson/figures/vulkan/QueueFamilyFigure";
 import { VulkanObjectsFigure } from "@/components/lesson/figures/vulkan/VulkanObjectsFigure";
 
@@ -23,6 +23,12 @@ export function DevicesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkDev_intro",
           "A computer can have several GPUs: a laptop often has a slow, efficient one built into the processor and a fast discrete card. Vulkan shows every GPU to the program and lets it choose, and then asks the program to state exactly what it will use of the chosen one: which features, which extensions and how many queues of which kind. The answer becomes the logical device, the VkDevice from which almost every later object is created. This chapter lists the GPUs, checks what each can do, picks the best one and opens it.")}
       </Lead>
+
+      <Goals t={t} id="vkDev" items={[
+        "List the GPUs in a computer and choose one by what it supports.",
+        "Find the queue families that can draw and present.",
+        "Create a logical device with exactly the features and extensions you need.",
+      ]} />
 
       <H2>{tx(t, "vkDev_physTitle", "Physical devices")}</H2>
       <p>

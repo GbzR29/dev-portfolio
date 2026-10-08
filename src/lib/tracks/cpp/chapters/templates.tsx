@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2 } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function TemplatesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function TemplatesContent({ t }: { t: TrackTranslations }) {
           "A template is a recipe the compiler follows to generate code, once per set of types you use it with. That is why templates are fast — there is no indirection at runtime — and why they blow up compile times and error messages. This chapter covers the mechanics; the next one fixes the error messages."
         )}
       </p>
+
+      <Goals t={t} id="cpp05" items={[
+        "Write function templates and class templates.",
+        "Replace tag dispatch with if constexpr.",
+        "Accept any number of arguments with a parameter pack and combine them with a fold.",
+        "Avoid the two template mistakes that cost everyone a day.",
+      ]} />
 
       <H2>{tx(t, "cpp05_basicsTitle", "Function and class templates")}</H2>
 

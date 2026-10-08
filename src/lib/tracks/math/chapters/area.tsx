@@ -12,7 +12,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { AreaFigure } from "@/components/lesson/figures/math/AreaFigure";
 import { ShoelaceFigure } from "@/components/lesson/figures/math/ShoelaceFigure";
 
@@ -37,6 +37,13 @@ export function AreaContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mArea_intro",
           "How much fence does a field need, and how much seed? The first question is about perimeter, the length around a shape; the second is about area, the amount of surface inside it. The same two questions come up when you skirt a room with trim, tile a floor, paint a wall or buy a plot of land. This chapter derives the area formulas for the basic shapes instead of just listing them, shows how area behaves when a shape is scaled, and ends with one formula that gives the area of any polygon from its corner coordinates.")}
       </Lead>
+
+      <Goals t={t} id="mArea" items={[
+        "Find the perimeter and area of rectangles, triangles, parallelograms and trapezoids.",
+        "Split a complicated shape into simple ones.",
+        "Predict how the area changes when a shape is scaled.",
+        "Find the area of any polygon from its corners with the shoelace formula.",
+      ]} />
 
       <H2>{tx(t, "mArea_perimTitle", "Perimeter: the length around")}</H2>
       <p>

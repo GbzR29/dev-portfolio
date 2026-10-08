@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/sdl3/chapters/textures.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  sdl06_goal0: "Diferenciar uma surface de uma texture e dizer onde cada uma fica.",
+  sdl06_goal1: "Carregar uma imagem do disco e desenhá-la como sprites.",
+  sdl06_goal2: "Renderizar numa textura e reaproveitar o resultado.",
+  sdl06_goal3: "Mudar os pixels de uma textura a cada quadro com uma streaming texture.",
   sdl06_intro: "O SDL tem dois tipos de imagem, e eles vivem em lugares diferentes. Uma SDL_Surface são pixels na RAM do sistema, que a CPU pode ler e escrever. Uma SDL_Texture são pixels na memória da GPU, que o renderer desenha rápido, mas em que você não mexe com facilidade. Carregar significa criar uma surface, enviá-la e jogar a surface fora.",
   sdl06_h0: "",
   sdl06_r0: "Fica em",

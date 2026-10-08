@@ -1,6 +1,14 @@
 // PT text for src/lib/tracks/gamedev/chapters/procedural.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  gdRand_goal0: "Explicar por que uma seed decide uma sequência inteira de números aleatórios.",
+  gdRand_goal1: "Escolher um bom gerador de números aleatórios.",
+  gdRand_goal2: "Tirar valores aleatórios de coordenadas com um hash, sem guardar nada.",
+  gdRand_goal3: "Moldar números aleatórios: faixas, escolhas com peso e pontos bem espalhados.",
+  gdPerlin_goal0: "Explicar como o ruído difere de números aleatórios simples.",
+  gdPerlin_goal1: "Construir value noise e Perlin noise passo a passo.",
+  gdPerlin_goal2: "Somar oitavas para fazer terreno fractal.",
+  gdPerlin_goal3: "Escolher um tipo de ruído para uma tarefa num jogo.",
   gdRand_intro: "Jogos usam aleatoriedade em todo lugar: acertos críticos, loot, surgimento de inimigos, direções de partículas, mundos inteiros. Mas um processador não sabe jogar uma moeda. Cada instrução que ele executa é determinística, então os números \"aleatórios\" de um jogo vêm de uma fórmula cuja saída só parece aleatória. Entender essa fórmula, e a sua única entrada, a seed, é o que permite gerar um planeta a partir de um único número e reproduzir uma partida exatamente.",
   gdRand_prngTitle: "Geradores de números pseudoaleatórios",
   gdRand_prngBody: "Um gerador de números pseudoaleatórios (PRNG) guarda um pequeno estado escondido, normalmente de um a quatro inteiros. Cada chamada embaralha o estado num novo estado e tira dele um número de saída. Como o próximo estado depende só do atual, a sequência inteira fica decidida no momento em que o estado é inicializado; esse valor inicial é a seed. Três propriedades importam: o período (quantos números até a sequência se repetir), a qualidade (se testes estatísticos conseguem distinguir a saída de aleatoriedade de verdade) e a velocidade.",

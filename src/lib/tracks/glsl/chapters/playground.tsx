@@ -5,7 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { INTRO_PRESETS } from "../presets/basics";
 
@@ -16,6 +16,13 @@ export function PlaygroundContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslPg_intro",
           "From here on, almost every chapter has a live shader you can edit. The code is real GLSL ES 3.00, the same language as desktop GLSL 3.30+ apart from a precision line at the top, and it recompiles as you type. This chapter shows what the playground gives your shader, so you can focus on the maths in the rest of the track.")}
       </Lead>
+
+      <Goals t={t} id="glslPg" items={[
+        "Use what the playground hands your shader: resolution, time, mouse and textures.",
+        "Write a first shader, line by line.",
+        "Add sliders, colour pickers and toggles with a comment.",
+        "Debug a shader by turning its values into colours.",
+      ]} />
 
       <ShaderPlayground presets={INTRO_PRESETS} t={t} id="glslPgIntro" />
 

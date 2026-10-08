@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/circle.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mCir_goal0: "Explicar o que é π e por que ele é o mesmo para todo círculo.",
+  mCir_goal1: "Achar o comprimento e a área de um círculo.",
+  mCir_goal2: "Achar o comprimento de um arco e a área de uma fatia do círculo.",
+  mCir_goal3: "Usar o ângulo reto entre a tangente e o raio.",
   mCir_intro: "Rodas, mostradores de relógio, moedas, mesas redondas, luas em órbita, as ondinhas num lago: há círculos em toda parte. Medi-los exige um número especial, π, que não é uma fórmula que alguém inventou, e sim um fato sobre todo círculo que existe. Este capítulo torna π visível de quatro jeitos diferentes (rolando uma roda, espremendo-o entre polígonos, cortando uma pizza, jogando dardos) e depois o põe para trabalhar.",
   mCir_defTitle: "O que é um círculo",
   mCir_defBody: "Escolha um ponto, o centro O, e uma distância r, o raio. A circunferência é todo ponto cuja distância a O é exatamente r: nem mais, nem menos. Essa definição, junto com a fórmula da distância do capítulo de Pitágoras, é tudo de que um computador precisa para decidir se um ponto está sobre a circunferência, dentro dela (distância menor que r) ou fora (maior que r). A rigor, “circunferência” é só a curva; a região plana dentro dela é o círculo (ou disco). A linguagem do dia a dia usa “círculo” para as duas coisas, e este capítulo também, quando o sentido estiver claro.",

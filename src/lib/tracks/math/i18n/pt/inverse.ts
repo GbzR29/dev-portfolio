@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/inverse.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mInv_goal0: "Inverter uma matriz 2 × 2 com a fórmula.",
+  mInv_goal1: "Resolver um sistema Ax = b com eliminação de Gauss.",
+  mInv_goal2: "Converter entre coordenadas do mundo e locais com uma mudança de base.",
+  mInv_goal3: "Perceber uma matriz quase singular antes que ela dê problema.",
   mInv_intro: "Uma matriz move pontos. Muitas vezes você precisa voltar: de um ponto no mapa de volta ao lugar no terreno, de uma mensagem codificada de volta à original, do efeito à causa. A matriz que desfaz outra é a sua inversa. Encontrá-la é o mesmo problema que resolver um sistema de equações lineares, o problema do capítulo de sistemas, agora com qualquer número de incógnitas. Este capítulo trata dos dois, e do método de eliminação que os resolve.",
   mInv_whatTitle: "O que é uma inversa",
   mInv_whatBody: "A inversa de A, escrita A⁻¹ (“A inversa”), é a matriz que desfaz A: aplique A e depois A⁻¹ e todo ponto volta aonde começou. Em símbolos, A⁻¹A = I, a identidade, e também AA⁻¹ = I (desfazer e depois refazer também não muda nada). O −1 vem emprestado dos números, onde 5⁻¹ = 1/5 desfaz a multiplicação por 5; mas não existe divisão por uma matriz, só multiplicação pela sua inversa.",

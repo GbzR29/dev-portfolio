@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2 } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function VocabularyContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function VocabularyContent({ t }: { t: TrackTranslations }) {
           "Vocabulary types exist so that two libraries which have never heard of each other can still agree on what 'a string I do not own' or 'maybe a value' looks like. Using them at your API boundaries is what makes code composable."
         )}
       </p>
+
+      <Goals t={t} id="cpp10" items={[
+        "Pass borrowed strings and arrays with string_view and span, without copying them.",
+        "Hold one of several types safely with variant.",
+        "Unpack pairs, tuples and structs with structured bindings.",
+        "Format output with std::format and std::print.",
+      ]} />
 
       <H2>{tx(t, "cpp10_svTitle", "string_view and span — borrowed data")}</H2>
       <p>

@@ -10,7 +10,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { AlgebraTilesFigure } from "@/components/lesson/figures/math/AlgebraTilesFigure";
 
 const r = String.raw;
@@ -37,6 +37,13 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mExpr_intro",
           "Arithmetic works with particular numbers: 3 × 4 + 2. Algebra starts the moment you replace one of those numbers with a name, 3 × n + 2, and say \"this works for any n\". That one change turns a single calculation into a rule you can reuse, rearrange and reason about. This chapter is about the objects algebra manipulates, expressions: how they are built, how to evaluate them, and the handful of rewriting rules, all of them old friends from arithmetic, that let you turn one expression into a simpler equal one.")}
       </Lead>
+
+      <Goals t={t} id="mExpr" items={[
+        "Name the parts of an expression.",
+        "Work out an expression by putting numbers in place of its letters.",
+        "Combine like terms and multiply out brackets.",
+        "Rewrite an expression in nested form so it takes fewer steps to work out.",
+      ]} />
 
       <H2>{tx(t, "mExpr_varTitle", "Variables: names for numbers")}</H2>
       <p>

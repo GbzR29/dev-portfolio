@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { BinarySearchFigure } from "@/components/lesson/figures/algo/BinarySearchFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function SearchingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alSrch_intro",
           "Finding something is the most common thing programs do: a name in a contact list, a word in a dictionary, a record by its ID. This chapter starts with the obvious method, looking at everything, and then shows how keeping the data sorted lets you find any item among a billion in 30 steps. Binary search is short, but it is famous for being easy to get subtly wrong, so we will write it carefully, prove it correct and list its traps.")}
       </Lead>
+
+      <Goals t={t} id="alSrch" items={[
+        "Write binary search without off-by-one mistakes, and explain why it is correct.",
+        "Find the first and last position of a value with lower_bound and upper_bound.",
+        "Binary-search for the answer of a problem instead of an item in an array.",
+        "Decide whether sorting first is worth it.",
+      ]} />
 
       <H2>{tx(t, "alSrch_linearTitle", "Linear search: look at everything")}</H2>
       <p>

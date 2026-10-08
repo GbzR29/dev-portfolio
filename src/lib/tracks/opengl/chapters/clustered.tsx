@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { LightBinningFigure } from "@/components/lesson/figures/perf/LightBinningFigure";
 import { ForwardPlusFigure } from "@/components/lesson/figures/perf/ForwardPlusFigure";
 
@@ -19,6 +19,12 @@ export function ClusteredContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglClus_intro",
           "A night scene with street lamps, muzzle flashes, spells and neon signs can easily have a thousand lights. Plain forward shading loops over every light for every pixel of every object. Deferred shading fixes that but pays in memory bandwidth and gives up MSAA and easy transparency. Tiled and clustered shading keep forward rendering's strengths and add one idea: work out once, per screen region, which lights can possibly matter there.")}
       </Lead>
+
+      <Goals t={t} id="oglClus" items={[
+        "Explain why each light costs time at every pixel it might touch.",
+        "Assign lights to screen tiles with Forward+.",
+        "Assign them to 3D clusters, and build the lists on the GPU.",
+      ]} />
 
       <H2>{tx(t, "oglClus_costTitle", "The cost of a light")}</H2>
       <Equation label={tx(t, "oglClus_costLabel", "Shading work per frame")}

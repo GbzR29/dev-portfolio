@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { OverfitFigure } from "@/components/lesson/figures/ai/OverfitFigure";
 import { ThresholdFigure } from "@/components/lesson/figures/ai/ThresholdFigure";
 
@@ -26,6 +26,13 @@ export function GeneralisationContent({ t }: { t: TrackTranslations }) {
         {tx(t, "aiGen_intro",
           "A model is only useful on examples it has never seen: next week's deliveries, tomorrow's emails. Fitting the training data well is easy, and it can even be a bad sign. This chapter is about the gap between the two: how models fail by being too simple or too flexible, how to measure performance honestly with validation and cross-validation, and which numbers to report for a classifier when \"percentage correct\" is misleading. Everything here applies to every model in the rest of the track.")}
       </Lead>
+
+      <Goals t={t} id="aiGen" items={[
+        "Explain why a low training error proves nothing on its own.",
+        "Recognize underfitting and overfitting from the two errors.",
+        "Choose between models with a validation set.",
+        "Measure a classifier with a confusion matrix, precision and recall.",
+      ]} />
 
       <H2>{tx(t, "aiGen_lieTitle", "Training error lies")}</H2>
       <p>

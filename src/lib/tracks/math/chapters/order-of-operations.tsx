@@ -9,7 +9,7 @@ import { Equation } from "@/components/lesson/Tex";
 import { Derivation } from "@/components/lesson/Derivation";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ExpressionTreeFigure } from "@/components/lesson/figures/math/ExpressionTreeFigure";
 
 const r = String.raw;
@@ -21,6 +21,12 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mOrd_intro",
           "What is 2 + 3 × 4? Working left to right gives 5 × 4 = 20; doing the multiplication first gives 2 + 12 = 14. Both readings are reasonable, so mathematics needs an agreement about which one is meant, and everyone, from textbooks to calculators, uses the same one: the answer is 14. This chapter explains that agreement, where it comes from, how to see any expression as a tree that makes the order obvious, and how to work through long expressions with nested brackets by hand without losing track.")}
       </Lead>
+
+      <Goals t={t} id="mOrd" items={[
+        "Work out any expression in the right order.",
+        "Draw an expression as a tree to see what happens first.",
+        "Avoid the usual traps with minus signs, powers and division.",
+      ]} />
 
       <H2>{tx(t, "mOrd_whyTitle", "Why a convention is needed")}</H2>
       <p>

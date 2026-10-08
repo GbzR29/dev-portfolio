@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/cpp/chapters/landscape.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp01_goal0: "Dizer o que separa o C++ escrito hoje do C++ antigo.",
+  cpp01_goal1: "Escolher um padrão da linguagem e ativá-lo no seu compilador.",
+  cpp01_goal2: "Compilar e rodar um primeiro programa escrito no estilo moderno.",
   cpp01_intro: "O C++ lança um padrão novo a cada três anos. Esse ritmo significa que a linguagem que você aprendeu há cinco anos não é a que as pessoas escrevem hoje. Esta trilha ensina o C++ que um programador de gráficos e de jogos realmente escreve em 2026: semântica de valor, RAII, computação em tempo de compilação e a biblioteca padrão que substituiu a maior parte do código feito à mão dos anos 2000.",
   cpp01_trainTitle: "O trem de lançamentos a cada três anos",
   cpp01_trainBody: "Desde o C++11, o comitê congela recursos num calendário fixo e publica o que estiver pronto. Um padrão publicado não é o mesmo que o seu compilador implementá-lo — para os recursos maiores, costuma haver de dois a quatro anos entre um e outro.",

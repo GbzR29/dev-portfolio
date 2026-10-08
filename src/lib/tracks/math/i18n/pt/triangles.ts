@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/triangles.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mTri_goal0: "Explicar por que os ângulos de um triângulo somam 180°.",
+  mTri_goal1: "Classificar um triângulo pelos lados e pelos ângulos.",
+  mTri_goal2: "Dizer se três comprimentos formam um triângulo.",
+  mTri_goal3: "Decidir se dois triângulos são congruentes, e achar o baricentro de um triângulo.",
   mTri_intro: "Agrimensores mapeiam países inteiros dividindo o terreno em triângulos, e treliças de telhado, pontes e quadros de bicicleta são construídos com eles. Há um motivo: o triângulo é a forma mais simples que cerca uma área, ele é sempre plano e seus três lados fixam sua forma por completo. Este capítulo trata do que todo triângulo tem em comum: seus ângulos sempre somam 180°, seus lados obedecem à desigualdade triangular, e algumas medidas bastam para determiná-lo exatamente.",
   mTri_partsTitle: "Partes e nomes",
   mTri_partsBody: "Um triângulo são três pontos que não estão numa mesma reta (não colineares), ligados por três segmentos. Os pontos são seus vértices ou cantos, os segmentos são seus lados, e em cada vértice os dois lados formam um ângulo interno. Nomeamos um triângulo pelos vértices, △ABC. A convenção padrão, usada em toda fórmula desta trilha, dá a cada lado o nome do vértice oposto a ele: o lado a fica em frente ao vértice A, b em frente a B, c em frente a C. A mesma letra maiúscula também é usada para o ângulo naquele vértice, então A pode querer dizer tanto o canto quanto o seu ângulo.",

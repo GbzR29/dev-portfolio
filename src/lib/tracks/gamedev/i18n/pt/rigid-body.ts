@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/gamedev/chapters/rigid-body.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  gdRb_goal0: "Descrever um corpo rígido pela posição, pelo ângulo e por quão rápido cada um muda.",
+  gdRb_goal1: "Calcular o torque de uma força aplicada fora do centro.",
+  gdRb_goal2: "Aplicar um impulso num ponto e atualizar tanto a velocidade quanto o giro.",
+  gdRb_goal3: "Resolver contatos entre caixas e ajustar um mundo de corpos rígidos.",
   gdRb_intro: "Até aqui todo corpo foi um ponto com massa: podia se mover, mas não girar. Um caixote atingido na quina tomba; uma tábua atingida numa ponta gira; uma caixa descendo uma rampa pode capotar. Um corpo rígido acrescenta rotação: um corpo que mantém a sua forma, de modo que saber onde está o seu centro e o quanto ele girou diz onde está cada parte dele. Este capítulo estende o solver de impulsos do anterior com um ângulo, uma velocidade angular e um momento de inércia, e depois constrói caixas que empilham, tombam e rolam.",
 
   gdRb_stateTitle: "O estado de um corpo rígido",

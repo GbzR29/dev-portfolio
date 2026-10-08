@@ -1,5 +1,9 @@
 // PT text for src/lib/tracks/math/chapters/number-line.tsx. Keys match the tx() calls there; English is the fallback in the code.
 const text: Record<string, string> = {
+  mNL_goal0: "Colocar números inteiros, frações e números negativos na reta numérica.",
+  mNL_goal1: "Dizer o que significa cada uma das quatro operações.",
+  mNL_goal2: "Multiplicar e dividir números negativos com as regras de sinais.",
+  mNL_goal3: "Achar a distância entre dois números com o valor absoluto.",
   mNL_intro: "Tudo nesta trilha, das frações aos quatérnios, se apoia num punhado de ideias sobre números comuns: o que eles são, como se ordenam, o que as quatro operações realmente fazem e quais rearranjos são sempre permitidos. Nada disso é difícil, mas todo capítulo seguinte usa essas ideias sem comentar, então vale a pena deixá-las totalmente firmes. Este capítulo começa na contagem e termina nas leis da aritmética, com a reta numérica como a imagem que amarra tudo.",
   mNL_countTitle: "Contagem e o zero",
   mNL_countBody: "Os números começam como respostas a “quantos?”: quantas maçãs há na fruteira, quantas pessoas há na sala, quantas moedas há na bolsa. Essas respostas são 0, 1, 2, 3 e assim por diante, e se chamam números naturais. Zero é a resposta quando não há nenhum, e é um número como qualquer outro: dá para somá-lo, compará-lo e guardá-lo. (Alguns livros começam os naturais no 1; esta trilha inclui o 0, já que “nenhum” é uma resposta perfeitamente boa para “quantos?”.)",

@@ -14,7 +14,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { FrameSyncFigure } from "@/components/lesson/figures/vulkan/FrameSyncFigure";
 import { BarrierFigure } from "@/components/lesson/figures/vulkan/BarrierFigure";
 import { VulkanObjectsFigure } from "@/components/lesson/figures/vulkan/VulkanObjectsFigure";
@@ -28,6 +28,12 @@ export function SynchronizationContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkSync_intro",
           "Three things run at the same time in a Vulkan program: the CPU, the GPU, and the presentation engine that owns the screen. vkQueueSubmit2 returns as soon as the work is queued, long before the GPU runs it; vkAcquireNextImageKHR can return an image index before that image has left the screen; the GPU overlaps one command with the next whenever it can. OpenGL's driver inserted waits for you, conservatively, everywhere. Vulkan inserts none. This chapter introduces the three tools that say \"wait\" (fences, semaphores and barriers), writes the frame loop with them, and puts the first triangle on screen.")}
       </Lead>
+
+      <Goals t={t} id="vkSync" items={[
+        "Choose between a fence, a semaphore and a barrier for an ordering problem.",
+        "Write a frame loop that waits, acquires, records, submits and presents in the right order.",
+        "Write a pipeline barrier with the right stages and access masks.",
+      ]} />
 
       <H2>{tx(t, "vkSync_toolsTitle", "Three tools, three directions")}</H2>
       <LessonTable

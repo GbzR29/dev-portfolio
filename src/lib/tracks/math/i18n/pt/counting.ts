@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/counting.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mCnt_goal0: "Contar escolhas feitas uma depois da outra com o princípio multiplicativo.",
+  mCnt_goal1: "Dizer quando a ordem importa, e contar permutações e combinações.",
+  mCnt_goal2: "Usar o triângulo de Pascal e o binômio de Newton.",
+  mCnt_goal3: "Contar grupos que se sobrepõem uma vez só com inclusão e exclusão.",
   mCnt_intro: "A probabilidade começa com contagem. Quando todo resultado de um experimento é igualmente provável, a probabilidade de um evento é o número de resultados nele dividido pelo número total de resultados. Contar poucos resultados é fácil: basta listá-los. Mas de quantos jeitos uma loteria pode sortear seis números de sessenta, ou dez pessoas podem se sentar numa fileira? Listar falha muito antes dessas respostas, que chegam aos milhões. Este capítulo constrói as ferramentas de contagem que o resto da seção de Probabilidade e estatística usa: o princípio multiplicativo, permutações, combinações, o triângulo de Pascal e a inclusão–exclusão.",
   mCnt_multTitle: "O princípio multiplicativo",
   mCnt_multBody: "Você tem 3 camisas e 4 calças. Quantas combinações de roupa consegue montar? Para cada camisa há 4 calças para acompanhar, então 3 grupos de 4: 3 · 4 = 12. Um diagrama de árvore mostra por quê: o primeiro nível se ramifica de 3 jeitos (a camisa), e todo ramo se divide de novo de 4 jeitos (a calça), então há 12 folhas no fim. Acrescente 2 pares de sapatos e cada uma das 12 folhas se divide em 2: 24 combinações.",

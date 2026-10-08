@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation, Tex } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { IntegratorFigure } from "@/components/lesson/figures/advgl/IntegratorFigure";
 import { ParticlesFigure } from "@/components/lesson/figures/advgl/ParticlesFigure";
 import { RainFigure } from "@/components/lesson/figures/advgl/RainFigure";
@@ -20,6 +20,13 @@ export function ParticlesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglPart_intro",
           "Fire, smoke, sparks, rain, dust, magic: none of these are meshes. They are thousands of tiny, short-lived, semi-transparent sprites, each following simple rules. A particle system has three jobs: spawn particles at the right rate, move them every frame, and draw all of them cheaply. Each job has a well-known right way and a well-known wrong way.")}
       </Lead>
+
+      <Goals t={t} id="oglPart" items={[
+        "Store, spawn and move particles without drift.",
+        "Keep them in a pool and remove dead ones quickly.",
+        "Draw them all in one instanced call, with the right blending.",
+        "Move the simulation to the GPU.",
+      ]} />
 
       <H2>{tx(t, "oglPart_dataTitle", "A particle is a few floats")}</H2>
       <CodeBlock lang="cpp" filename="particle.h" t={t}>{`struct Particle {

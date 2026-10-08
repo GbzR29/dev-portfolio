@@ -1,5 +1,9 @@
 // PT text for src/lib/tracks/math/chapters/fractions.tsx. Keys match the tx() calls there; English is the fallback in the code.
 const text: Record<string, string> = {
+  mFrac_goal0: "Simplificar uma fração e achar frações iguais a ela.",
+  mFrac_goal1: "Somar, subtrair, multiplicar e dividir frações.",
+  mFrac_goal2: "Converter entre frações e decimais.",
+  mFrac_goal3: "Arredondar um número para uma precisão dada.",
   mFrac_intro: "Números inteiros contam coisas; frações medem as partes no meio. Meia hora, três quartos de xícara de farinha, um quarto de pizza, um preço de 2,35: o dia a dia está cheio de quantidades que não são inteiras. Este capítulo constrói as frações a partir da ideia de cortar um inteiro em partes iguais, deduz cada regra de cálculo a partir de figuras em vez de decorá-las e depois mostra como os decimais são apenas frações disfarçadas, inclusive por que alguns nunca terminam.",
   mFrac_whatTitle: "O que é uma fração",
   mFrac_whatBody: "Corte um inteiro, uma barra, uma pizza, o segmento de 0 a 1 na reta numérica, em b partes iguais. Cada parte é um b-ésimo do inteiro, escrito 1/b. Pegar a dessas partes dá a fração a/b. O número de baixo, o denominador, dá nome ao tamanho das partes (ele as “denomina”: terços, quartos, décimos). O número de cima, o numerador, conta quantas partes você tem. Então 3/4 são três partes, cada uma um quarto do inteiro.",

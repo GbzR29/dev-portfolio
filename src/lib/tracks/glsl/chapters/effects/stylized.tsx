@@ -5,7 +5,7 @@ import { Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { STYLE_PRESETS } from "../../presets/stylized";
 
@@ -22,6 +22,12 @@ export function StylizedContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslSty_intro",
           "Stylised shaders break physical rules on purpose, and each one is built from the same few quantities as realistic lighting: N·L, N·V, N·H, a noise value and a threshold. Quantise them, compare them, or add them up in unusual ways, and you get cartoons, disintegration and sci-fi projections.")}
       </Lead>
+
+      <Goals t={t} id="glslSty" items={[
+        "Cut lighting into bands for toon shading, with outlines.",
+        "Dissolve an object with noise and a glowing edge.",
+        "Build a hologram from Fresnel, scanlines and flicker.",
+      ]} />
 
       <H2>{tx(t, "glslSty_toonTitle", "Toon shading")}</H2>
       <Equation label={tx(t, "glslSty_toonLabel", "Quantised lighting")}

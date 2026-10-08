@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/markov-chains.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mMk_goal0: "Escrever a matriz de transição de um processo com estados.",
+  mMk_goal1: "Achar onde o processo deve estar depois de qualquer número de passos.",
+  mMk_goal2: "Achar a distribuição de longo prazo resolvendo πP = π.",
+  mMk_goal3: "Achar onde uma cadeia absorvente termina e quanto tempo isso leva.",
   mMk_intro: "Muitos processos aleatórios acontecem um passo de cada vez: uma peça de jogo de tabuleiro anda casa por casa, o tempo muda dia após dia, um leitor clica de página em página. Muitas vezes o próximo passo depende de onde o processo está agora, mas não do longo caminho que o trouxe até ali. Um processo assim é uma cadeia de Markov, em homenagem ao matemático russo Andrei Markov, que as estudou em 1906. Este capítulo define a propriedade de Markov, guarda as regras de uma cadeia numa matriz de transição e explica o fato que torna tudo calculável: as probabilidades de n passos são as entradas da n-ésima potência dessa matriz. Um exercício completo é resolvido pelo caminho. Depois vêm o longo prazo (a distribuição estacionária, para passeios e para qualquer cadeia, e quando a cadeia de fato chega nela) e as cadeias absorventes: onde termina um passeio que pode ficar preso, e quanto tempo isso leva. Toda figura tem um botão \"explorar\" que a abre em tela cheia como um laboratório guiado.",
 
   mMk_seqTitle: "Uma sequência de variáveis aleatórias",

@@ -7,7 +7,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { PoolFigure } from "@/components/lesson/figures/gamedev/PoolFigure";
 
 const r = String.raw;
@@ -19,6 +19,13 @@ export function ObjectPoolContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdPool_intro",
           "Bullets, sparks, damage numbers, footstep decals, enemies in a horde mode: games create and destroy huge numbers of short-lived objects. An object pool keeps a fixed set of them alive for the whole level and recycles them, so creating a bullet becomes \"take one from the shelf\" and destroying it becomes \"put it back\". It is one of the most common patterns in game code, and building it well (O(1) operations, safe references, no stale state) teaches a lot about memory.")}
       </Lead>
+
+      <Goals t={t} id="gdPool" items={[
+        "Explain what creating and destroying objects costs during play.",
+        "Build a pool with a free list.",
+        "Hand out handles that notice when an object has been recycled.",
+        "Choose a pool's size and loop over it efficiently.",
+      ]} />
 
       <H2>{tx(t, "gdPool_costTitle", "What creating an object costs")}</H2>
       <p>

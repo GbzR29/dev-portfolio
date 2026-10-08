@@ -10,7 +10,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { IndexedGridFigure } from "@/components/lesson/figures/glintro/IndexedGridFigure";
 
 export function EBOContent({ t }: { t: TrackTranslations }) {
@@ -20,6 +20,12 @@ export function EBOContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglEbo_intro",
           "Real meshes are made of triangles that share corners: in a grid every inner point belongs to six triangles. glDrawArrays reads vertices strictly in order, three per triangle, so every shared corner has to be stored again for each triangle that uses it. An Element Buffer Object (EBO), also called an index buffer, fixes this: each unique vertex is stored once, and a separate list of small integers says which three vertices form each triangle. This chapter shows how the GPU follows that list, how much memory it saves, and the few rules that make it work.")}
       </Lead>
+
+      <Goals t={t} id="oglEbo" items={[
+        "Share vertices between triangles with an index buffer.",
+        "Draw with glDrawElements.",
+        "Build an indexed grid and check it in wireframe mode.",
+      ]} />
 
       <H2>{tx(t, "oglEbo_dupTitle", "The duplication problem")}</H2>
       <p>

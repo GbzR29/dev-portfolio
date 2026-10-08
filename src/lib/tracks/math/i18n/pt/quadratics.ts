@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/quadratics.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mQuad_goal0: "Esboçar uma parábola a partir da equação.",
+  mQuad_goal1: "Resolver uma equação do segundo grau por fatoração e completando o quadrado.",
+  mQuad_goal2: "Usar a fórmula quadrática, e saber por ela quantas soluções existem.",
+  mQuad_goal3: "Descrever uma situação real com uma equação do segundo grau.",
   mQuad_intro: "Equações do primeiro grau descrevem coisas que mudam a uma taxa constante. No momento em que algo acelera, uma bola lançada, uma pedra caindo, um carro freando, a incógnita aparece ao quadrado, e você tem uma equação do segundo grau. Elas também aparecem sempre que dois comprimentos desconhecidos se multiplicam, como na área de um retângulo. Este capítulo explica a forma dos seus gráficos, três jeitos de resolvê-las, de onde vem a famosa fórmula e como as raízes se ligam aos coeficientes.",
   mQuad_formTitle: "A forma geral e a parábola",
   mQuad_formBody: "Uma expressão do segundo grau tem um termo ao quadrado como maior potência: ax² + bx + c, com a ≠ 0 (se a fosse 0 ela seria do primeiro grau). Seu gráfico y = ax² + bx + c é uma parábola, uma forma de U simétrica. A mais simples, y = x², tem seu ponto mais baixo na origem e sobe igualmente dos dois lados, porque (−x)² = x². Toda outra parábola é essa mesma curva deslocada e esticada, usando as transformações do capítulo de funções.",

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/ftc.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mFtc_goal0: "Explicar por que a área sob uma curva cresce na taxa da altura da curva.",
+  mFtc_goal1: "Achar antiderivadas, constante de integração incluída.",
+  mFtc_goal2: "Calcular uma integral definida com uma antiderivada.",
+  mFtc_goal3: "Tirar a posição da velocidade e a velocidade da aceleração.",
   mFtc_intro: "Inclinações e áreas parecem problemas sem relação: um é sobre um único ponto, o outro sobre um intervalo inteiro. O teorema fundamental do cálculo diz que são operações inversas, como multiplicação e divisão. Integrar uma taxa dá a variação total; derivar um total acumulado devolve a taxa. Na prática isso quer dizer que o doloroso limite de somas do capítulo anterior quase sempre pode ser trocado por rodar a tabela de derivadas ao contrário e subtrair dois números.",
   mFtc_accTitle: "A área como função",
   mFtc_accBody: "Fixe a ponta esquerda a de uma integral e deixe a ponta direita se mover. A área de a até x é então um número para cada x: uma função nova, a função acumulada A(x). A variável de integração é renomeada t para que a letra x fique livre para a ponta que se move (o nome de uma variável muda não importa). Se f é uma vazão de água entrando num tanque em litros por segundo, A(x) é a água acumulada até o instante x. A figura desenha f em cima com a área sombreada, e A embaixo.",

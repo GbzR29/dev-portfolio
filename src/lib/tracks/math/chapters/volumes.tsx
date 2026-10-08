@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { VolumeFigure } from "@/components/lesson/figures/math/VolumeFigure";
 import { NetFigure } from "@/components/lesson/figures/math/NetFigure";
 
@@ -38,6 +38,13 @@ export function VolumesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mVol_intro",
           "The world is 3D, so sooner or later you need to know how much space a thing fills and how much skin it has. Volume tells you how much water a tank holds, how much concrete a foundation needs and, with the density of the material, how heavy an object is. Surface area tells you how much paint a barrel needs, how much wrapping a gift takes and how fast something heats up or cools down. This chapter builds every standard formula from the area chapter, the circle chapter and one clever idea about slices.")}
       </Lead>
+
+      <Goals t={t} id="mVol" items={[
+        "Find the volume of prisms, cylinders, pyramids, cones and spheres.",
+        "Find a solid's surface area by unfolding it.",
+        "Predict how surface and volume change with scale.",
+        "Estimate real objects as combinations of simple solids.",
+      ]} />
 
       <H2>{tx(t, "mVol_unitTitle", "Volume: counting unit cubes")}</H2>
       <p>

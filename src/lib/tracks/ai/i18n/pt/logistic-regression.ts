@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/ai/chapters/logistic-regression.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  aiLog_goal0: "Transformar uma pontuação numa probabilidade com a sigmoide.",
+  aiLog_goal1: "Explicar por que a classificação usa entropia cruzada em vez do erro quadrático.",
+  aiLog_goal2: "Treinar um classificador e desenhar a sua fronteira de decisão.",
+  aiLog_goal3: "Estendê-lo para mais de duas classes com a softmax.",
   aiLog_intro: "A regressão linear prevê um número. Muitas perguntas têm resposta sim ou não: este aluno vai passar, este e-mail é spam, este jogador vai desistir na semana que vem? Isso é classificação, e a resposta que um modelo deve dar não é um \"sim\" seco, mas uma probabilidade: \"82% de chance de passar\". A regressão logística é o modelo mais simples que faz isso. É um modelo linear com uma função a mais por cima, treinado com descida do gradiente numa perda nova, e é também exatamente o que um neurônio de uma rede neural calcula. Este capítulo o constrói do zero e o resolve à mão num pequeno conjunto de dados de uma prova.",
 
   aiLog_whyTitle: "Por que não uma reta?",

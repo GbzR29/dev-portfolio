@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CsmSplitFigure } from "@/components/lesson/figures/advlighting/CsmSplitFigure";
 import { CsmFigure } from "@/components/lesson/figures/advlighting/CsmFigure";
 
@@ -19,6 +19,13 @@ export function CascadedShadowsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglCsm_intro",
           "The shadow-mapping chapter fitted one orthographic light frustum around a small scene. Outdoors that breaks down. The sun lights everything the camera can see, from the grass at your feet to the mountains a kilometre away, and a single 2048² map spread over that range gives each texel half a metre of ground. Cascaded shadow maps (CSM) use several maps instead: a small, dense one near the camera and progressively larger, coarser ones further out.")}
       </Lead>
+
+      <Goals t={t} id="oglCsm" items={[
+        "Explain why one shadow map is not enough for a large outdoor scene.",
+        "Split the view into slices and fit a light frustum to each one.",
+        "Render the cascades and sample the right one.",
+        "Handle the details: blending between cascades and stopping shimmer.",
+      ]} />
 
       <H2>{tx(t, "oglCsm_whyTitle", "Perspective aliasing, in numbers")}</H2>
       <p>

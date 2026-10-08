@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/glsl/chapters/shader-class.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glsl06_goal0: "Carregar shaders de arquivos em vez de strings literais.",
+  glsl06_goal1: "Escrever uma classe Shader que compila, liga e relata erros.",
+  glsl06_goal2: "Definir uniforms por ela e desenhar um quadro.",
+  glsl06_goal3: "Recarregar shaders com o programa rodando.",
   glsl06_intro: "Embutir código de shader em string literals do C++ funciona para exemplos pequenos, mas quebra rapidamente em projetos reais. Uma classe Shader dedicada que carrega, compila e gerencia arquivos GLSL torna a iteração dramaticamente mais rápida.",
   glsl06_problemTitle: "O problema com string literals",
   glsl06_problemBody2: "Quando o GLSL vive dentro de uma string C++, três coisas dão errado. Primeiro, cada ajuste numa cor ou constante exige recompilar e religar o programa C++, o que leva segundos ou minutos, em vez dos milissegundos que o driver da GPU precisa para compilar o shader em si. Segundo, o editor enxerga uma string longa, então você perde destaque de sintaxe GLSL, autocompletar e marcação de erros. Terceiro, as mensagens de erro do driver informam linhas de dentro do shader, que você precisa mapear à mão para linhas de uma string C++ cheia de aspas e escapes \\n.",

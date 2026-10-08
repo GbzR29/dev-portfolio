@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/csm.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglCsm_goal0: "Explicar por que um shadow map só não basta para uma cena externa grande.",
+  oglCsm_goal1: "Dividir a visão em fatias e ajustar um frustum de luz a cada uma.",
+  oglCsm_goal2: "Renderizar as cascatas e amostrar a certa.",
+  oglCsm_goal3: "Cuidar dos detalhes: transição entre cascatas e fim da tremulação.",
   oglCsm_intro: "O capítulo de shadow mapping ajustou um único frustum ortográfico de luz em volta de uma cena pequena. Ao ar livre, isso não funciona. O sol ilumina tudo o que a câmera vê, da grama aos seus pés às montanhas a um quilômetro, e um único mapa de 2048² espalhado por essa faixa dá a cada texel meio metro de chão. Os cascaded shadow maps (CSM) usam vários mapas: um pequeno e denso perto da câmera e outros progressivamente maiores e mais grosseiros mais longe.",
   oglCsm_whyTitle: "O aliasing de perspectiva, em números",
   oglCsm_whyBody: "O que importa é o tamanho de um texel de sombra comparado com um pixel de tela no mesmo lugar. A perspectiva deixa os pixels próximos minúsculos em unidades do mundo. Um shadow map ortográfico tem o mesmo tamanho de texel em todo lugar, então perto da câmera um texel cobre muitos pixels:",

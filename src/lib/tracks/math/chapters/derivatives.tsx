@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DerivativeFigure } from "@/components/lesson/figures/math/DerivativeFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function DerivativesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDer_intro",
           "The slope of a straight line tells you how fast it climbs, and it is the same everywhere. A curve climbs at different rates at different places. The derivative measures that rate at a single point: how fast the output changes per unit change of the input, right there. It is speed from position, acceleration from speed, the steepness of a hill under your feet, and the key to finding the highest and lowest points of anything.")}
       </Lead>
+
+      <Goals t={t} id="mDer" items={[
+        "Go from an average rate of change to the rate at one instant.",
+        "Compute a derivative from its definition.",
+        "Read a derivative's units and notation, and take a second derivative.",
+        "Spot where a derivative does not exist, and estimate one from data.",
+      ]} />
 
       <H2>{tx(t, "mDer_avgTitle", "Average rate of change")}</H2>
       <p>

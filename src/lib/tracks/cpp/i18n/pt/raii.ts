@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/cpp/chapters/raii.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp04_goal0: "Explicar por que a limpeza manual vaza em retornos antecipados e exceções.",
+  cpp04_goal1: "Escolher entre unique_ptr, shared_ptr e uma referência simples para um dado.",
+  cpp04_goal2: "Embrulhar um handle de biblioteca C para que ele seja liberado sozinho.",
+  cpp04_goal3: "Dizer quanto o shared_ptr custa em tempo de execução.",
   cpp04_intro: "RAII — Resource Acquisition Is Initialization, \"aquisição de recurso é inicialização\" — é a ideia que o C++ tem e a maioria das outras linguagens não. Um recurso é adquirido num construtor e liberado num destrutor, então o compilador gera a limpeza para você em todo caminho de saída: retorno normal, retorno antecipado, break e exceção lançada. Não existe bloco finally porque não há nada para lembrar.",
   cpp04_whyTitle: "Por que a limpeza manual falha",
   cpp04_ownershipTitle: "Escolhendo o tipo de posse",

@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function MoveContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function MoveContent({ t }: { t: TrackTranslations }) {
           "Move semantics is the feature that made 'return by value' the right default. Before C++11, returning a large container copied every element; now the compiler transfers ownership of the internal buffer and leaves the source empty. Understanding when a move happens — and when it silently does not — is what separates fast C++ from C++ that looks fast."
         )}
       </p>
+
+      <Goals t={t} id="cpp03" items={[
+        "Tell whether an expression can be moved from or only copied.",
+        "Explain why std::move on its own moves nothing.",
+        "Decide whether a class needs zero, three or five special member functions.",
+        "Return large objects by value without extra copies.",
+      ]} />
 
       <H2>{tx(t, "cpp03_valueTitle", "Value categories in one table")}</H2>
       <LessonTable

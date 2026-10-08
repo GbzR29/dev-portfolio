@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/glsl/chapters/effects/underwater.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glslUnder_goal0: "Explicar por que o céu aparece como um disco quando você olha para cima debaixo d'água.",
+  glslUnder_goal1: "Tratar a água como um meio que absorve e espalha a luz.",
+  glslUnder_goal2: "Avançar um raio pela água e adicionar feixes de luz.",
   glslUnder_intro: "Mergulhe sob a superfície do Laboratório de Água e três coisas mudam. A superfície vira um teto que mostra o céu só num disco bem acima de você, e espelha as profundezas em todo o resto. A água entre você e tudo o que você olha deixa de ser uma camada fina atravessada uma vez: ela é a cena inteira, e colore, escurece e embaça tudo com a distância. E a luz do sol que desce pelas ondas desenha feixes em movimento nessa névoa. Este capítulo constrói as três coisas sobre a malha e o fundo do Laboratório de Água.",
 
   glslUnder_snellTitle: "Olhando para cima: a janela de Snell",

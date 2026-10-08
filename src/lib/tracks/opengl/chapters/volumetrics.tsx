@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { PhaseFigure } from "@/components/lesson/figures/tech/PhaseFigure";
 import { SKY_PRESETS } from "../presets/atmosphere";
@@ -20,6 +20,13 @@ export function VolumetricsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglVol_intro",
           "Everything so far assumed light travels through empty space between surfaces. Real air is full of molecules, dust and droplets, and every one of them absorbs a little light and scatters a little in new directions. That is why the sky is blue, sunsets are red, distant mountains fade, and sunbeams through a window are visible at all. Rendering it means integrating light along the view ray through a \"participating medium\" rather than stopping at the first surface.")}
       </Lead>
+
+      <Goals t={t} id="oglVol" items={[
+        "Say what absorption and scattering do to light in a medium.",
+        "Choose a phase function.",
+        "Explain why the sky is blue and sunsets are red.",
+        "Build volumetric fog in a real renderer.",
+      ]} />
 
       <H2>{tx(t, "oglVol_mediumTitle", "What a medium does to light")}</H2>
       <Equation label={tx(t, "oglVol_coeffLabel", "The coefficients of a medium")}

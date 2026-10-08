@@ -5,6 +5,7 @@
 import { TrackTranslations } from "@/lib/tracks/types";
 import { CodeBlock, Callout, H2 } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 
 export function InputContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function InputContent({ t }: { t: TrackTranslations }) {
           "SDL delivers everything the user does as an SDL_Event: a tagged union where the type field tells you which member is valid. The distinction that trips up every newcomer is events versus state — events tell you something changed, state tells you what is true right now, and gameplay needs both."
         )}
       </p>
+
+      <Goals t={t} id="sdl04" items={[
+        "Read events from the SDL_Event union safely.",
+        "Choose between events and current state for each kind of input.",
+        "Pick scancodes or keycodes depending on what a key means in your game.",
+        "Handle the mouse, gamepads and typed text.",
+      ]} />
 
       <H2>{tx(t, "sdl04_loopTitle", "The event union")}</H2>
 

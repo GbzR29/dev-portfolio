@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function PerformanceContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function PerformanceContent({ t }: { t: TrackTranslations }) {
           "At 60 frames per second you have 16.6 milliseconds for everything. On modern hardware the limiting factor is almost never arithmetic — it is waiting for memory. A cache miss costs a few hundred cycles, enough time to have done a hundred multiplications. Data-oriented design is the practice of laying out data so those misses do not happen."
         )}
       </p>
+
+      <Goals t={t} id="cpp13" items={[
+        "Estimate what a cache miss costs compared with arithmetic.",
+        "Choose between an array of structs and a struct of arrays.",
+        "Take allocations out of a hot loop.",
+        "Pick a container that fits how the data is accessed.",
+      ]} />
 
       <H2>{tx(t, "cpp13_cacheTitle", "The numbers that drive every decision")}</H2>
       <LessonTable

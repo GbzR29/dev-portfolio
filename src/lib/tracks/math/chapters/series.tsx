@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TaylorFigure } from "@/components/lesson/figures/math/TaylorFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function SeriesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSer_intro",
           "Polynomials are the friendliest functions there are: to evaluate one you only add and multiply, which can be done by hand to any accuracy. Sine, the exponential and the logarithm are not like that; there is no finite recipe of additions and multiplications that gives sin 0.3 exactly. Taylor series close the gap. They build, for a given function, a polynomial that copies the function's value, slope, bend and every further derivative at one point, and they let the degree grow forever. For the functions of this course the result, an infinite sum, is the function itself.")}
       </Lead>
+
+      <Goals t={t} id="mSer" items={[
+        "Build a polynomial that copies a function near a point.",
+        "Write the standard series for eˣ, sin x, cos x and others.",
+        "Tell when a series converges, and bound the error of a cut-off.",
+        "Derive Euler's formula from the series.",
+      ]} />
 
       <H2>{tx(t, "mSer_matchTitle", "Copying a function one derivative at a time")}</H2>
       <p>

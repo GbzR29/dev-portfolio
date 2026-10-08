@@ -12,7 +12,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DriverCostFigure } from "@/components/lesson/figures/vulkan/DriverCostFigure";
 import { VulkanObjectsFigure } from "@/components/lesson/figures/vulkan/VulkanObjectsFigure";
 
@@ -23,6 +23,13 @@ export function WhyVulkanContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkWhy_intro",
           "Vulkan is a graphics and compute API, like OpenGL: a set of C functions your program calls to make the GPU draw triangles and run shaders. The GPU is the same, the shaders are almost the same, the triangles come out the same. What changes is who is responsible for what. OpenGL hides a large, clever driver between you and the hardware; Vulkan removes most of that driver and hands its decisions to you. This chapter explains what the driver used to do, why removing it is worth the extra code, and how the pieces of Vulkan fit together, so that the following chapters, which build a renderer object by object, always have a map to return to.")}
       </Lead>
+
+      <Goals t={t} id="vkWhy" items={[
+        "Say which jobs the OpenGL driver did that Vulkan hands to you.",
+        "Explain what Vulkan gains in return, and what it costs.",
+        "Recognize the create-info pattern that every Vulkan object follows.",
+        "Set up a project ready for the rest of the track.",
+      ]} />
       <Callout type="info" t={t}>
         {tx(t, "vkWhy_prereq", "This track assumes the OpenGL track (or equivalent experience): vertex buffers, shaders, textures, the depth buffer and the transform pipeline are not re-explained here, only how Vulkan does them. It also assumes the C++ track: pointers, structs, RAII and std::vector. All code uses the plain C API of Vulkan from C++20, with SDL3 for the window.")}
       </Callout>

@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { FractionFigure } from "@/components/lesson/figures/math/FractionFigure";
 import { DecimalFigure } from "@/components/lesson/figures/math/DecimalFigure";
 
@@ -39,6 +39,13 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mFrac_intro",
           "Whole numbers count things; fractions measure the parts in between. Half an hour, three quarters of a cup of flour, a quarter of a pizza, a price of 2.35: everyday life is full of quantities that are not whole. This chapter builds fractions from the idea of cutting a whole into equal parts, derives every rule for computing with them from pictures rather than memorising them, and then shows how decimals are just fractions in disguise, including why some of them never end.")}
       </Lead>
+
+      <Goals t={t} id="mFrac" items={[
+        "Simplify a fraction and find fractions equal to it.",
+        "Add, subtract, multiply and divide fractions.",
+        "Convert between fractions and decimals.",
+        "Round a number to a given precision.",
+      ]} />
 
       <H2>{tx(t, "mFrac_whatTitle", "What a fraction is")}</H2>
       <p>

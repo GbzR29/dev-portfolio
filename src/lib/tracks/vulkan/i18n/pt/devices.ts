@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/vulkan/chapters/devices.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkDev_goal0: "Listar as GPUs de um computador e escolher uma pelo que ela suporta.",
+  vkDev_goal1: "Achar as famílias de filas que conseguem desenhar e apresentar.",
+  vkDev_goal2: "Criar um dispositivo lógico com exatamente os recursos e extensões de que você precisa.",
   vkDev_intro: "Um computador pode ter várias GPUs: um notebook muitas vezes tem uma lenta e econômica embutida no processador e uma placa dedicada rápida. O Vulkan mostra toda GPU ao programa e o deixa escolher, e então pede ao programa que declare exatamente o que vai usar da escolhida: quais recursos, quais extensões e quantas filas de cada tipo. A resposta vira o dispositivo lógico, o VkDevice a partir do qual quase todo objeto posterior é criado. Este capítulo lista as GPUs, confere o que cada uma sabe fazer, escolhe a melhor e a abre.",
 
   vkDev_physTitle: "Dispositivos físicos",

@@ -5,7 +5,7 @@ import { CodeBlock, Callout, H2, H3 } from "@/components/lesson/LessonComponents
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { FogLabFigure } from "@/components/lesson/figures/fog/FogLabFigure";
 import { FogCurveFigure } from "@/components/lesson/glsl/FogCurveFigure";
@@ -24,6 +24,13 @@ export function FogContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslFog_intro",
           "Fog does more than hide the far plane. It sets the depth of a scene, since distant things are paler, and it sets the mood: morning mist, a smoky room, alien haze. Physically it is light being absorbed and scattered by particles along the view ray, and a few formulas cover almost every use.")}
       </Lead>
+
+      <Goals t={t} id="glslFog" items={[
+        "Say where the fog formulas come from.",
+        "Choose between linear, exponential and squared exponential fog.",
+        "Add height fog that stays near the ground.",
+        "Tint the fog toward the sun.",
+      ]} />
 
       <H2>{tx(t, "glslFog_physTitle", "Where the formulas come from")}</H2>
       <p>

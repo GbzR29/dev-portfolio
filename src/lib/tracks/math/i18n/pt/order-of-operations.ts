@@ -1,5 +1,8 @@
 // PT text for src/lib/tracks/math/chapters/order-of-operations.tsx. Keys match the tx() calls there; English is the fallback in the code.
 const text: Record<string, string> = {
+  mOrd_goal0: "Calcular qualquer expressão na ordem certa.",
+  mOrd_goal1: "Desenhar uma expressão como árvore para ver o que acontece primeiro.",
+  mOrd_goal2: "Evitar as armadilhas comuns com sinais de menos, potências e divisão.",
   mOrd_intro: "Quanto é 2 + 3 × 4? Indo da esquerda para a direita dá 5 × 4 = 20; fazendo a multiplicação primeiro dá 2 + 12 = 14. As duas leituras são razoáveis, então a matemática precisa de um acordo sobre qual é a pretendida, e todo mundo, dos livros às calculadoras, usa o mesmo: a resposta é 14. Este capítulo explica esse acordo, de onde ele vem, como enxergar qualquer expressão como uma árvore que deixa a ordem óbvia e como resolver à mão expressões longas com parênteses aninhados sem se perder.",
   mOrd_whyTitle: "Por que uma convenção é necessária",
   mOrd_whyBody: "Uma expressão é uma receita escrita numa linha: números ligados por operações. Uma linha não tem espaço para mostrar qual operação deve acontecer primeiro, então, sem uma regra combinada, a mesma linha pode significar receitas diferentes. Parênteses tiram toda a dúvida, (2 + 3) × 4 ou 2 + (3 × 4), mas escrevê-los em todo lugar seria cansativo. A ordem das operações é a regra que diz onde estão os parênteses invisíveis quando você os omite.",

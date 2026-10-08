@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { TextureFigure } from "@/components/lesson/figures/TextureFigure";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 
 export function TexturesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -22,6 +22,13 @@ export function TexturesContent({ t }: { t: TrackTranslations }) {
           "A texture is a 2D image stored in GPU VRAM that your fragment shader can sample per pixel. Vertex data alone gives you solid colors — textures give you detail, surface variety, and photorealism without adding geometry."
         )}
       </Lead>
+
+      <Goals t={t} id="ch07" items={[
+        "Map an image onto a shape with texture coordinates.",
+        "Load an image with stb_image and create a texture from it.",
+        "Choose the filtering and mipmap modes.",
+        "Avoid black, rejected and skewed textures.",
+      ]} />
 
       <H2>{tx(t, "ch07_alongTitle", "What this chapter adds to main.cpp")}</H2>
       <p>

@@ -5,7 +5,7 @@ import { Callout, H2, H3 } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { WindowLabFigure } from "@/components/lesson/figures/glass/WindowLabFigure";
 import { FresnelFigure } from "@/components/lesson/glsl/FresnelFigure";
@@ -24,6 +24,13 @@ export function GlassContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslGlass_intro",
           "Every transparent material follows two rules. Snell's law says where light goes when it crosses into another medium. The Fresnel equations say how much of it reflects instead. GLSL has both built in: refract() and, with one line of Schlick, the Fresnel term. Together they make glass, water, gems and soap bubbles.")}
       </Lead>
+
+      <Goals t={t} id="glslGlass" items={[
+        "Bend rays through glass with refract().",
+        "Compute how much light reflects with the Fresnel term.",
+        "Add dispersion and coloured absorption.",
+        "Render rain running down a window.",
+      ]} />
 
       <H2>{tx(t, "glslGlass_snellTitle", "Refraction")}</H2>
       <Equation label={tx(t, "glslGlass_snellLabel", "Snell's law, and what refract() computes")}

@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/glsl/chapters/fragcoord.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glsl03_goal0: "Transformar gl_FragCoord em coordenadas UV que vão de 0 a 1.",
+  glsl03_goal1: "Centralizar as coordenadas e corrigir a proporção da tela.",
+  glsl03_goal2: "Animar um shader com o tempo.",
   glsl03_intro: "O fragment shader tem acesso à posição do pixel na tela através de gl_FragCoord. Combinado com um uniform de resolução, isso dá a base para escrever efeitos que cobrem a tela inteira.",
   glsl03_fragcoordTitle: "gl_FragCoord",
   glsl03_fragcoordBody: "gl_FragCoord.xy dá a posição do pixel em coordenadas de janela, onde (0,0) é o canto inferior esquerdo. O componente z é o valor de profundidade em [0,1].",

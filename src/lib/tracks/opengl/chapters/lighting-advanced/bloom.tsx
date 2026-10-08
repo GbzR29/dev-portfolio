@@ -10,7 +10,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { BloomFigure } from "@/components/lesson/figures/advlighting/BloomFigure";
@@ -29,6 +29,12 @@ export function BloomContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglBloom_intro",
           "Real lenses and eyes scatter a little of very bright light onto its surroundings, so a lamp glows. A monitor cannot actually be that bright, but reproducing the glow tells the brain it is. Bloom needs HDR: only with values above 1.0 do we know what is bright enough to bleed.")}
       </Lead>
+
+      <Goals t={t} id="oglBloom" items={[
+        "Extract the bright parts of an image.",
+        "Blur them cheaply with two separable passes.",
+        "Add the glow back to the scene.",
+      ]} />
 
       <BloomFigure t={t} />
 

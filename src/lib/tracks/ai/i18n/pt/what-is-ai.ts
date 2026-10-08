@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/ai/chapters/what-is-ai.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  aiIntro_goal0: "Dizer como um programa que aprende difere de um cujas regras são escritas à mão.",
+  aiIntro_goal1: "Citar os quatro ingredientes de todo programa que aprende.",
+  aiIntro_goal2: "Diferenciar aprendizado supervisionado, não supervisionado e por reforço.",
+  aiIntro_goal3: "Ajustar um primeiro modelo à mão e avaliá-lo em dados que ele não viu.",
   aiIntro_intro: "Inteligência artificial é a parte da computação que constrói programas que tomam decisões que chamaríamos de inteligentes: reconhecer o que há numa foto, prever quanto tempo uma entrega vai levar, escolher a próxima jogada num jogo, responder a uma pergunta. Esta trilha constrói esses programas do nada, em C++ puro, sem bibliotecas: cada matriz, cada derivada, cada loop de treino é escrito à mão, para que nada seja mágica. Este primeiro capítulo mostra o que é a área, o que \"aprender\" quer dizer com precisão, e os quatro ingredientes que todo programa que aprende tem.",
 
   aiIntro_rulesTitle: "Duas maneiras de fazer um programa decidir",

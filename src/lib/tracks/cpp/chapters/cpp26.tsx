@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function Cpp26Content({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,12 @@ export function Cpp26Content({ t }: { t: TrackTranslations }) {
           "C++26 is the largest release since C++11, and its headline feature — compile-time reflection — changes what is possible in the language rather than just adding convenience. This chapter is a tour of what is coming and what it means for engine code."
         )}
       </p>
+
+      <Goals t={t} id="cpp14" items={[
+        "Explain what static reflection lets code do that it could not before.",
+        "Name the other main additions of C++26.",
+        "Plan how to adopt the new features in an existing codebase.",
+      ]} />
 
       <H2>{tx(t, "cpp14_reflTitle", "Static reflection")}</H2>
       <p>

@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function ConceptsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function ConceptsContent({ t }: { t: TrackTranslations }) {
           "Before C++20, a template said nothing about what its type argument had to support. You found out by passing the wrong type and reading four hundred lines of instantiation backtrace. Concepts let you state the requirement up front, so the error points at the call site and says what is missing."
         )}
       </p>
+
+      <Goals t={t} id="cpp06" items={[
+        "Turn a template's hidden requirements into a concept that gives a readable error.",
+        "Write your own concept with requires.",
+        "Use the standard concepts you will meet most often.",
+        "Overload functions on their constraints.",
+      ]} />
 
       <H2>{tx(t, "cpp06_beforeTitle", "Before and after")}</H2>
 

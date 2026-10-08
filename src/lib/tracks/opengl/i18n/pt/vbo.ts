@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/vbo.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglVbo_goal0: "Pôr dados de vértices na memória da GPU com um vertex buffer.",
+  oglVbo_goal1: "Contar os bytes que você envia.",
+  oglVbo_goal2: "Escolher uma dica de uso, e atualizar ou apagar um buffer.",
   oglVbo_intro: "O pipeline começa com os dados de vértice, e até agora esses dados são um array C++ na memória do seu programa. O vertex shader não consegue ler um array C++: ele roda na GPU e lê de buffer objects, blocos de memória que o OpenGL gerencia e põe onde a GPU os lê mais rápido. Um Vertex Buffer Object (VBO) é um buffer object que guarda dados de vértice. Este capítulo explica por que os dados precisam mudar de lugar, o que exatamente é copiado, como criar, preencher, atualizar e apagar um VBO, e por que um VBO sozinho ainda não desenha nada.",
 
   oglVbo_whereTitle: "Onde os dados de vértice moram",

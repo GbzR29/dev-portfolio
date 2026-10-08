@@ -7,7 +7,7 @@ import { Callout, H2, H3 } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RayPathsFigure } from "@/components/lesson/figures/blackhole/RayPathsFigure";
 import { DopplerFigure } from "@/components/lesson/figures/blackhole/DopplerFigure";
 import { BlackHoleLabFigure } from "@/components/lesson/figures/blackhole/BlackHoleLabFigure";
@@ -21,6 +21,13 @@ export function BlackHoleContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslBh_intro",
           "In 2014 the film Interstellar showed a black hole wrapped in a glowing disk whose far side bends up over the top and down under the bottom of the hole. That image came from a renderer written with the physicist Kip Thorne, and five years later the Event Horizon Telescope photographed a real one, M87*: a dark shadow in a lopsided ring of light. Both pictures follow from one idea that fits in a fragment shader. Light near a black hole does not travel in straight lines, so instead of stepping along a straight ray, the shader integrates the path light really takes. This chapter derives that path, finds the shadow and the photon sphere, and shades the disk with the temperature, Doppler shift and gravitational redshift of its gas.")}
       </Lead>
+
+      <Goals t={t} id="glslBh" items={[
+        "Trace light backwards along the bent paths around a black hole.",
+        "Explain the photon sphere and the black hole's shadow.",
+        "Draw the glowing disk, brighter on the side that moves toward you.",
+        "Bend the sky behind the hole.",
+      ]} />
 
       <H2>{tx(t, "glslBh_planTitle", "What the shader does")}</H2>
       <p>

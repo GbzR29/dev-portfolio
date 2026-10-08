@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/vao.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglVao_goal0: "Descrever o formato dos seus dados de vértice com glVertexAttribPointer.",
+  oglVao_goal1: "Dizer o que um VAO guarda e o que não guarda.",
+  oglVao_goal2: "Montar vários VAOs e alternar entre eles.",
   oglVao_intro: "O VBO guarda os seus vértices como bytes crus. O vertex shader pede entradas com nome e tipo: um vec3 aPos no location 0, um vec3 aColor no location 1. Algo precisa ligar os dois, dizendo onde nos bytes ficam os valores de cada entrada e como lê-los. Essa descrição é o layout de vértice, e o objeto que a guarda é o Vertex Array Object (VAO). Este capítulo explica cada número da descrição, deixa você quebrá-la de propósito para ver o que cada um faz, e mostra exatamente o que um VAO lembra, para que desenhar uma malha vire um único bind.",
 
   oglVao_inputsTitle: "De bytes a entradas do shader",

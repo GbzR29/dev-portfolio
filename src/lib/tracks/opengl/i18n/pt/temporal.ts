@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/temporal.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglTaa_goal0: "Tremer a câmera para que cada quadro amostre pontos diferentes.",
+  oglTaa_goal1: "Misturar cada quadro num histórico acumulado.",
+  oglTaa_goal2: "Achar onde um pixel estava no quadro anterior com motion vectors.",
+  oglTaa_goal3: "Rejeitar histórico errado, e explicar como o upscaling temporal parte daí.",
   oglTaa_intro: "O supersampling corrige o aliasing fazendo shading de muitas amostras por pixel, o que custa várias vezes o trabalho. O anti-aliasing temporal tira as mesmas amostras, mas uma por quadro. A cada quadro a imagem inteira é deslocada por uma quantidade subpixel diferente, e os resultados são promediados ao longo do tempo. A 60 quadros por segundo, 16 amostras levam um quarto de segundo para serem coletadas. A parte difícil não é a média. É manter as coisas em movimento nítidas enquanto seus pixels mudam por baixo da média. Este capítulo monta o TAA peça por peça, e a figura permite ligar cada peça.",
   oglTaa_jitTitle: "1. Jitter: uma amostra diferente a cada quadro",
   oglTaa_jitBody: "A rasterização amostra cada pixel no seu centro. Para amostrar em outro lugar, a projeção inteira é deslocada por um offset subpixel (j_x, j_y), diferente a cada quadro. O offset é somado em clip space depois da projeção, então move tudo na tela exatamente por essa fração de pixel, seja qual for a profundidade.",

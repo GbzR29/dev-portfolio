@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function ConcurrencyContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function ConcurrencyContent({ t }: { t: TrackTranslations }) {
           "A modern game runs on eight to sixteen cores and a rendering thread that must not stall. C++ gives you portable threads, but the interesting part is not starting a thread — it is the memory model that says when one thread is allowed to see another thread's writes."
         )}
       </p>
+
+      <Goals t={t} id="cpp12" items={[
+        "Start a thread with jthread and stop it cleanly.",
+        "Pick the right synchronization tool to share data between threads.",
+        "Choose a memory order for an atomic and say what it guarantees.",
+        "Spot false sharing and fix it.",
+      ]} />
 
       <H2>{tx(t, "cpp12_jthreadTitle", "jthread — the one you should use")}</H2>
 

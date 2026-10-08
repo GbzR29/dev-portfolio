@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ExpectationFigure } from "@/components/lesson/figures/math/ExpectationFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mExpv_intro",
           "A random variable is described completely by its distribution, but a whole table or curve is a lot to carry around. Two numbers summarise most of what we need: where the values sit on average, the expectation, and how widely they scatter around that average, the variance. This chapter defines both for discrete and continuous variables, computes them by hand, and proves the rules that make them so useful: expectations add, even for dependent variables, and variances add for independent ones. The last rule explains why averaging many measurements makes them more precise.")}
       </Lead>
+
+      <Goals t={t} id="mExpv" items={[
+        "Compute the expected value of a discrete or continuous variable.",
+        "Use the fact that expected values always add.",
+        "Compute the variance and the standard deviation, and apply their rules.",
+        "Bound how far a value can stray from the mean with Chebyshev's inequality.",
+      ]} />
 
       <H2>{tx(t, "mExp_avgTitle", "The long-run average")}</H2>
       <p>
@@ -231,7 +238,7 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
         ]}
       />
 
-      <KeyIdeas t={t} id="mExp" items={[
+      <KeyIdeas t={t} id="mExpv" items={[
         "E[X] = Σ x p(x) or ∫ x f(x) dx: the probability-weighted average and the balance point of the distribution.",
         "E[g(X)] weights g(x) by p(x); in general E[g(X)] ≠ g(E[X]).",
         "Expectation is linear, E[aX + b] = aE[X] + b and E[X + Y] = E[X] + E[Y], with no independence needed.",

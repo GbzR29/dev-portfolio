@@ -12,7 +12,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { PythagorasFigure } from "@/components/lesson/figures/math/PythagorasFigure";
 
 const r = String.raw;
@@ -42,6 +42,13 @@ export function PythagorasContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPy_intro",
           "How long a ladder do you need to reach a window? How far apart are two towns on a map drawn on a grid? Is this corner of a new wall really square? What does \"a 55-inch TV\" actually measure? Each is the Pythagorean theorem, a 2500-year-old fact about right triangles. This chapter states it precisely, proves it in two ways (one of them you can slide around with your mouse), and turns it into the distance formula that the rest of this track uses in almost every chapter.")}
       </Lead>
+
+      <Goals t={t} id="mPy" items={[
+        "Explain why a² + b² = c² is true.",
+        "Find the missing side of a right triangle.",
+        "Test whether a triangle has a right angle.",
+        "Find the distance between two points.",
+      ]} />
 
       <H2>{tx(t, "mPy_stmtTitle", "The statement")}</H2>
       <p>

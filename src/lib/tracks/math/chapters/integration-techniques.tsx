@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { IntegrationFigure } from "@/components/lesson/figures/math/IntegrationFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function IntegrationTechniquesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mTech_intro",
           "The fundamental theorem turned integration into a search: find a function whose derivative is the integrand. The reversed derivative table handles single terms, but most integrands are products, compositions or fractions, and there is no reversed product rule or chain rule that works blindly. Instead there is a small toolbox of rewrites, each one a derivative rule read backwards or an algebra trick, that turn a hard integral into one from the table. This chapter works through them by hand, one at a time, and ends with integrals over intervals that never end.")}
       </Lead>
+
+      <Goals t={t} id="mTech" items={[
+        "Integrate by substitution and by parts.",
+        "Split a fraction into partial fractions to integrate it.",
+        "Use a trigonometric substitution to find the area of a circle.",
+        "Decide which method to try, and handle integrals that run to infinity.",
+      ]} />
 
       <H2>{tx(t, "mTech_subTitle", "Substitution: the chain rule backwards")}</H2>
       <p>

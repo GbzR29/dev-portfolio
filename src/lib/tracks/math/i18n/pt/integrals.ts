@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/integrals.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mInt_goal0: "Tirar a distância percorrida da velocidade somando faixas.",
+  mInt_goal1: "Aproximar uma área com uma soma de Riemann, e melhorá-la com trapézios e a regra de Simpson.",
+  mInt_goal2: "Ler a integral definida como área com sinal, e usar as suas regras.",
+  mInt_goal3: "Achar o valor médio de uma função.",
   mInt_intro: "A derivada desmonta algo em taxas. A integral monta de volta: ela soma uma grandeza que não para de mudar, cortando-a em pedaços tão finos que cada um é quase constante. Distância a partir de uma velocidade que muda, área sob uma curva, volume de uma forma, chuva total de uma tempestade que vai diminuindo: tudo isso são integrais. Este capítulo define a integral como um limite de somas e calcula uma exatamente; o próximo mostra o atalho que liga integrais a derivadas.",
   mInt_distTitle: "Distância a partir da velocidade",
   mInt_distBody: "Dirija a 60 km/h constantes por 2 horas e você percorre 120 km. Num gráfico de velocidade contra tempo isso é um retângulo, 60 de altura e 2 de largura: a distância é a área sob o gráfico da velocidade. Quando a velocidade muda, a região sob o gráfico deixa de ser um retângulo, mas você pode cortar o tempo em intervalos curtos, fingir que a velocidade é constante em cada um (um retângulo fino) e somar as áreas. Intervalos mais curtos tornam o fingimento mais preciso. Eis um carro cujo velocímetro é lido uma vez por segundo, acelerando a partir do repouso.",

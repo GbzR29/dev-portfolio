@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CountingFigure } from "@/components/lesson/figures/math/CountingFigure";
 import { PascalFigure } from "@/components/lesson/figures/math/PascalFigure";
 
@@ -24,6 +24,13 @@ export function CountingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mCnt_intro",
           "Probability starts with counting. When every outcome of an experiment is equally likely, the probability of an event is the number of outcomes in it divided by the number of outcomes altogether. Counting a few outcomes is easy: just list them. But how many ways can a lottery draw six numbers from sixty, or ten people sit in a row? Listing fails long before those answers, which run into millions. This chapter builds the counting tools that the rest of the Probability & Statistics section uses: the multiplication principle, permutations, combinations, Pascal's triangle and inclusion–exclusion.")}
       </Lead>
+
+      <Goals t={t} id="mCnt" items={[
+        "Count choices made one after another with the multiplication principle.",
+        "Tell when order matters, and count permutations and combinations.",
+        "Use Pascal's triangle and the binomial theorem.",
+        "Count overlapping groups only once with inclusion–exclusion.",
+      ]} />
 
       <H2>{tx(t, "mCnt_multTitle", "The multiplication principle")}</H2>
       <p>

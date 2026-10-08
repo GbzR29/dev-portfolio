@@ -10,7 +10,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { StackFigure } from "@/components/lesson/figures/algo/StackFigure";
 
 export function StacksContent({ t }: { t: TrackTranslations }) {
@@ -20,6 +20,13 @@ export function StacksContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alStack_intro",
           "The two previous chapters built structures that can do many things. A stack deliberately does very little: you may only add at the top, look at the top and remove from the top. That restriction is what makes it powerful. Whenever a problem has nesting, something opened that must be closed in the reverse order, or work that must be put aside and resumed later, a stack is the natural tool. You have already been using one: the call stack of the Recursion chapter.")}
       </Lead>
+
+      <Goals t={t} id="alStack" items={[
+        "Build a stack on top of an array or a list.",
+        "Check that brackets are balanced.",
+        "Evaluate a postfix expression and convert an ordinary expression into postfix.",
+        "Replace a recursion with an explicit stack, and solve problems with a monotonic stack.",
+      ]} />
 
       <H2>{tx(t, "alStack_defTitle", "Last in, first out")}</H2>
       <p>

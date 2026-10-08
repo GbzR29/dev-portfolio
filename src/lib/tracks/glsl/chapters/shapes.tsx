@@ -6,7 +6,7 @@ import { Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { PaletteFigure } from "@/components/lesson/glsl/PaletteFigure";
 import { PATTERN_PRESETS, COLOR_PRESETS } from "../presets/basics";
@@ -24,6 +24,12 @@ export function PatternsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslPat_intro",
           "A fragment shader never moves a shape. It moves the space the shape is evaluated in. To draw a circle to the right, you ask whether the point p − offset is inside a circle at the origin. To rotate, scale, repeat or mirror anything, you transform p before evaluating the shape, and every one of those transforms is a line or two of GLSL.")}
       </Lead>
+
+      <Goals t={t} id="glslPat" items={[
+        "Move, rotate and scale a shape by transforming the point instead.",
+        "Repeat a shape across the screen with fract, floor and mod.",
+        "Give every tile its own random variation.",
+      ]} />
 
       <H2>{tx(t, "glslPat_invTitle", "Transform the point, not the shape")}</H2>
       <Equation label={tx(t, "glslPat_invLabel", "Moving a shape = the inverse transform on p")}
@@ -110,6 +116,13 @@ export function ColorContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslCol_intro",
           "A shader's last line writes a colour, and most shaders spend much of their creativity choosing it. This chapter covers generating gradients from four vectors, working in HSV when you want to rotate hues, mixing in linear light so gradients don't turn muddy, and the blend modes artists know from image editors.")}
       </Lead>
+
+      <Goals t={t} id="glslCol" items={[
+        "Make a whole gradient from a cosine palette.",
+        "Rotate hues and change saturation in HSV.",
+        "Mix colours in linear light so gradients stay clean.",
+        "Write the common blend modes in one line each.",
+      ]} />
 
       <H2>{tx(t, "glslCol_palTitle", "Cosine palettes")}</H2>
       <Equation label={tx(t, "glslCol_palLabel", "Íñigo Quílez's procedural palette")}

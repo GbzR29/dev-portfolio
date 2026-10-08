@@ -1,6 +1,13 @@
 // PT text for src/lib/tracks/glsl/chapters/shapes.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glslPat_goal0: "Mover, girar e escalar uma forma transformando o ponto em vez dela.",
+  glslPat_goal1: "Repetir uma forma pela tela com fract, floor e mod.",
+  glslPat_goal2: "Dar a cada ladrilho a sua própria variação aleatória.",
+  glslCol_goal0: "Fazer um gradiente inteiro a partir de uma paleta de cossenos.",
+  glslCol_goal1: "Girar matizes e mudar a saturação em HSV.",
+  glslCol_goal2: "Misturar cores em luz linear para os gradientes ficarem limpos.",
+  glslCol_goal3: "Escrever os modos de mesclagem comuns em uma linha cada.",
   glslPat_intro: "Um fragment shader nunca move uma forma. Ele move o espaço em que a forma é avaliada. Para desenhar um círculo mais à direita, você pergunta se o ponto p − deslocamento está dentro de um círculo na origem. Para girar, escalar, repetir ou espelhar qualquer coisa, você transforma p antes de avaliar a forma, e cada uma dessas transformações é uma ou duas linhas de GLSL.",
   glslPat_invTitle: "Transforme o ponto, não a forma",
   glslPat_invLabel: "Mover uma forma = a transformação inversa em p",

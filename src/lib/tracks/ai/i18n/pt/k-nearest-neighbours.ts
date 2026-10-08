@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/ai/chapters/k-nearest-neighbours.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  aiKnn_goal0: "Classificar e prever deixando os exemplos mais próximos votarem.",
+  aiKnn_goal1: "Escolher uma distância, e escalar os atributos para que ela seja justa.",
+  aiKnn_goal2: "Escolher o k.",
+  aiKnn_goal3: "Explicar por que os vizinhos mais próximos falham quando há muitos atributos.",
   aiKnn_intro: "Os modelos até aqui comprimem os dados de treino em poucos parâmetros e depois jogam os dados fora. O k-vizinhos mais próximos (k-NN) faz o contrário: guarda todos os exemplos e não aprende nada antecipadamente. Para prever para uma entrada nova, ele encontra os k exemplos de treino mais parecidos com ela e os deixa votar. É o algoritmo de aprendizado mais simples que existe, desenha fronteiras de qualquer forma, e torna impossível ignorar o papel da distância, da escala e da dimensão.",
 
   aiKnn_algoTitle: "O algoritmo",

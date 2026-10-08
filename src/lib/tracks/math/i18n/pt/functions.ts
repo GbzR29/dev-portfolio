@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/functions.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mFn_goal0: "Ler os valores de uma função pela fórmula e pelo gráfico.",
+  mFn_goal1: "Achar a inclinação e a equação de uma reta.",
+  mFn_goal2: "Deslocar, esticar e espelhar um gráfico mudando a fórmula.",
+  mFn_goal3: "Juntar duas funções numa só, e achar uma função que desfaz outra.",
   mFn_intro: "Os capítulos anteriores resolviam para um único valor desconhecido. Uma função descreve uma relação inteira de uma vez: como o preço depende do peso, como a temperatura depende da hora do dia, como uma posição depende do tempo. É uma das ideias mais importantes de toda a matemática, porque quase toda grandeza que nos interessa depende de alguma outra grandeza. Este capítulo define funções com cuidado, mostra como lê-las como gráficos e dá as ferramentas para construir funções novas deslocando, esticando, combinando e invertendo funções conhecidas.",
   mFn_eqNotation: "Notação de função",
   mFn_wF: "o nome da função, a própria regra. Outras letras também servem: g, h, ou nomes descritivos como custo",

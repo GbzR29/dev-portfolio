@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ComplexFigure } from "@/components/lesson/figures/math/ComplexFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function ComplexContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mCx_intro",
           "Two chapters ended at the same wall. The polynomials chapter said x² + 1 = 0 has no real solutions, since no real number squared is negative. The eigenvalues chapter found that a rotation's eigenvalues need the square root of a negative number. Complex numbers break through that wall with one new number, i, whose square is −1. It sounds like a trick, but the result has a beautifully concrete meaning: complex numbers are points of the plane, and multiplying them rotates and scales. They are the algebra of 2D rotation, and the stepping stone to quaternions, the algebra of 3D rotation.")}
       </Lead>
+
+      <Goals t={t} id="mCx" items={[
+        "Add, multiply and divide complex numbers.",
+        "Read multiplication as a turn plus a scale.",
+        "Find powers and roots with the polar form.",
+        "Use Euler's formula, and draw the Mandelbrot set by hand.",
+      ]} />
 
       <H2>{tx(t, "mCx_iTitle", "The imaginary unit")}</H2>
       <p>

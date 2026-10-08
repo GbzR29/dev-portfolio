@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { PresentModeFigure } from "@/components/lesson/figures/vulkan/PresentModeFigure";
 
 const r = String.raw;
@@ -25,6 +25,13 @@ export function SwapchainContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkSwap_intro",
           "In OpenGL the window came with a default framebuffer: you drew, called SwapBuffers, and the picture appeared. Vulkan has no default framebuffer. The images a window shows belong to the operating system's presentation engine (the compositor on Windows and Linux desktops, the display controller on a phone), and a program borrows them through a swapchain: a small ring of images that travel between you and the screen. This chapter creates the swapchain, chooses its format, size, number of images and present mode, wraps each image in a view we can render into, and rebuilds everything when the window changes size.")}
       </Lead>
+
+      <Goals t={t} id="vkSwap" items={[
+        "Create a window surface and a swapchain that fits it.",
+        "Choose an image format, a present mode and an image count.",
+        "Create views for the swapchain's images.",
+        "Recreate the swapchain when the window changes size.",
+      ]} />
 
       <H2>{tx(t, "vkSwap_surfaceTitle", "The surface")}</H2>
       <p>

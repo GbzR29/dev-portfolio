@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/shaders.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglSh_goal0: "Escrever um vertex shader e um fragment shader em GLSL.",
+  oglSh_goal1: "Passar dados de um estágio para o seguinte.",
+  oglSh_goal2: "Definir uniforms pelo C++.",
+  oglSh_goal3: "Compilar e ligar shaders, e ler as mensagens de erro.",
   oglSh_intro: "O buffer e o vertex array entregam a posição e a cor de cada vértice. O que acontece com elas depois depende de dois pequenos programas que você escreve: o vertex shader e o fragment shader. Eles são escritos em GLSL, a OpenGL Shading Language, que parece C com tipos de vetor e de matriz embutidos. Este capítulo ensina GLSL suficiente para escrever os dois shaders com segurança: os tipos e o jeito como a linguagem trabalha com vetores inteiros de uma vez, como os valores viajam de um estágio para o próximo, e como o seu programa C++ passa valores para dentro. Um editor ao vivo deixa você mudar os shaders e ver o triângulo responder.",
 
   oglSh_whatTitle: "O que é um shader",

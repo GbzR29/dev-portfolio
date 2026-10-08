@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/textures.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  ch07_goal0: "Mapear uma imagem numa forma com coordenadas de textura.",
+  ch07_goal1: "Carregar uma imagem com stb_image e criar uma textura a partir dela.",
+  ch07_goal2: "Escolher os modos de filtragem e de mipmap.",
+  ch07_goal3: "Evitar texturas pretas, rejeitadas e tortas.",
   ch07_intro: "Uma textura é uma imagem 2D armazenada na VRAM da GPU que seu fragment shader pode amostrar por pixel. Dados de vértice sozinhos dão cores sólidas — texturas dão detalhe e fotorrealismo sem adicionar geometria.",
   ch07_uvTitle: "Coordenadas UV / de textura",
   ch07_uvBody: "Cada vértice carrega um par de floats (U, V) que dizem à GPU qual parte da textura mapeia para aquele ponto. Em OpenGL, (0,0) é o canto inferior esquerdo e (1,1) é o canto superior direito.",

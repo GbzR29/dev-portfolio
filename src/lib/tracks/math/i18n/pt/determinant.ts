@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/determinant.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mDet_goal0: "Calcular um determinante 2 × 2 e um 3 × 3.",
+  mDet_goal1: "Ler o determinante como o fator que escala toda área ou volume.",
+  mDet_goal2: "Dizer pelo sinal se uma transformação vira as coisas do avesso.",
+  mDet_goal3: "Reconhecer um determinante zero como o espaço se achatando.",
   mDet_intro: "O número ad − bc já apareceu três vezes: como denominador da regra de Cramer no capítulo de sistemas, como o produto vetorial 2D e na fórmula do cadarço para áreas. Ele é o determinante da matriz [[a, b], [c, d]], e tem um significado geométrico claro: quanto a matriz escala as áreas, e se ela vira o plano do avesso. Este capítulo o deduz a partir de uma figura e depois o põe para trabalhar.",
   mDet_scaleTitle: "Toda área é escalada pelo mesmo fator",
   mDet_scaleBody: "Uma transformação linear mantém as linhas da grade retas, paralelas e igualmente espaçadas. Então todo quadradinho da grade vira o mesmo paralelogramo, só que em outro lugar. Se um quadrado unitário vira um paralelogramo de área 3, todo quadrado vira, e qualquer forma, que pode ser coberta por quadradinhos, também tem sua área multiplicada por 3. Um único número descreve o que a matriz faz com todas as áreas. Para encontrá-lo, olhe o quadrado mais fácil: o quadrado unitário de cantos (0, 0), (1, 0), (1, 1), (0, 1). Seus lados são î e ĵ, então depois da matriz ele é o paralelogramo gerado pelas duas colunas, (a, c) e (b, d).",

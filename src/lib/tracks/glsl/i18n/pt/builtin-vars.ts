@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/glsl/chapters/builtin-vars.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glslBv_goal0: "Escrever gl_Position e as outras saídas de um vertex shader.",
+  glslBv_goal1: "Definir o tamanho e a textura de pontos com gl_PointSize e gl_PointCoord.",
+  glslBv_goal2: "Recortar geometria contra os seus próprios planos.",
+  glslBv_goal3: "Ler as entradas embutidas do fragment shader, e escolher como as saídas são interpoladas.",
   glslBv_intro: "Suas próprias variáveis in e out ligam um shader ao próximo. As variáveis embutidas ligam um shader às partes fixas do pipeline: a que busca os vértices, o rasterizador, o teste de profundidade. Todas começam com gl_, um prefixo reservado a elas, e cada estágio tem o seu conjunto. gl_Position e gl_FragCoord são as duas que você já conhece; este capítulo cobre as outras que importam na prática.",
   glslBv_vsTitle: "No vertex shader",
   glslBv_h0: "Variável",

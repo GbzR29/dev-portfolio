@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { InequalityFigure } from "@/components/lesson/figures/math/InequalityFigure";
 
 const r = String.raw;
@@ -33,6 +33,13 @@ export function InequalitiesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mIneq_intro",
           "Many questions are not \"exactly how much?\" but \"how much is enough?\" or \"which values are allowed?\". Is the house within walking distance of the school? How many boxes can the lift carry before it is overloaded? What speeds keep a trip under two hours? Those are inequalities. Their answers are not single numbers but whole ranges of numbers, and solving them uses almost exactly the same moves as equations, with one important exception that this chapter explains until it is obvious.")}
       </Lead>
+
+      <Goals t={t} id="mIneq" items={[
+        "Solve a linear inequality and write the answer as a range.",
+        "Know when the inequality sign has to flip.",
+        "Solve compound inequalities and inequalities with absolute value.",
+        "Check an answer with test points.",
+      ]} />
 
       <H2>{tx(t, "mIneq_symTitle", "The four order symbols")}</H2>
       <p>

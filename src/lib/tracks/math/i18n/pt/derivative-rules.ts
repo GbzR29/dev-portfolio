@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/derivative-rules.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mRule_goal0: "Derivar potências, somas e múltiplos por constante.",
+  mRule_goal1: "Aplicar as regras do produto, do quociente e da cadeia.",
+  mRule_goal2: "Derivar seno, cosseno, a exponencial e o logaritmo.",
+  mRule_goal3: "Derivar uma função complicada passo a passo.",
   mRule_intro: "Calcular toda derivada pela definição de limite é lento. Felizmente toda fórmula que você vai encontrar é feita de algumas funções básicas (potências, seno e cosseno, exponenciais, logaritmos) combinadas somando, multiplicando, dividindo e pondo uma dentro da outra. Aprenda a derivada de cada peça básica e uma regra para cada jeito de combiná-las, e você deriva qualquer coisa mecanicamente. Este capítulo prova cada regra, então nada disso é mágica.",
   mRule_linTitle: "Constantes, múltiplos e somas",
   mRule_linBody: "Três regras saem direto da definição e das propriedades dos limites. Uma constante nunca muda, então sua derivada é 0. Multiplicar uma função por uma constante c multiplica cada subida por c enquanto o andar fica igual, então a inclinação é multiplicada por c. A subida de uma soma é a soma das subidas, então a derivada de uma soma é a soma das derivadas. Juntas, elas dizem que a derivação é linear, a mesma palavra do capítulo de matrizes: ela respeita somas e escalas. É por isso que um polinômio pode ser derivado termo a termo.",

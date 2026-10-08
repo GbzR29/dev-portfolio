@@ -8,7 +8,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { AttenuationFigure } from "@/components/lesson/figures/lighting/AttenuationFigure";
 import { SpotlightFigure } from "@/components/lesson/figures/lighting/SpotlightFigure";
 import { LightingSceneFigure } from "@/components/lesson/figures/lighting/LightingSceneFigure";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 
 const r = String.raw;
 
@@ -23,6 +23,12 @@ export function LightCastersContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglCast_intro",
           "So far the light was a point hanging next to the object. Real scenes need three kinds of light source, and each one differs in just one thing: how the direction to the light, and how much of it arrives, change from fragment to fragment.")}
       </Lead>
+
+      <Goals t={t} id="oglCast" items={[
+        "Light a scene with a directional light, like the sun.",
+        "Add point lights that fade with distance.",
+        "Add a spotlight with a soft edge.",
+      ]} />
 
       <LessonTable
         headers={[tx(t, "oglCast_tType", "Caster"), tx(t, "oglCast_tDir", "Direction to light"), tx(t, "oglCast_tAmount", "How much arrives")]}

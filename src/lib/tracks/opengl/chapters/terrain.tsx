@@ -7,7 +7,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TerrainFigure } from "@/components/lesson/figures/tech/TerrainFigure";
 
 const r = String.raw;
@@ -19,6 +19,12 @@ export function TerrainContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglTerr_intro",
           "Landscapes are the one kind of geometry almost every open-world game has, and they break the usual rules. A single terrain can be tens of kilometres across, far too big to be one mesh at full detail. It is also too big to texture with one image, and too visible from afar to leave out. Terrain rendering is a toolbox for those three problems. The shape comes from a heightmap, the surface is textured by rules instead of by hand, and the mesh loses detail smoothly with distance.")}
       </Lead>
+
+      <Goals t={t} id="oglTerr" items={[
+        "Build terrain from a heightmap.",
+        "Blend several textures across it with splatting.",
+        "Split it into chunks with levels of detail, without cracks.",
+      ]} />
 
       <H2>{tx(t, "oglTerr_hmTitle", "Heightmaps")}</H2>
       <p>

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/derivatives.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mDer_goal0: "Passar de uma taxa média de variação para a taxa num instante.",
+  mDer_goal1: "Calcular uma derivada pela definição.",
+  mDer_goal2: "Ler as unidades e a notação de uma derivada, e tirar a segunda derivada.",
+  mDer_goal3: "Perceber onde uma derivada não existe, e estimar uma a partir de dados.",
   mDer_intro: "A inclinação de uma reta diz quão rápido ela sobe, e é a mesma em todo lugar. Uma curva sobe em ritmos diferentes em lugares diferentes. A derivada mede esse ritmo num único ponto: quão rápido a saída muda por unidade de mudança da entrada, bem ali. Ela é a velocidade a partir da posição, a aceleração a partir da velocidade, a inclinação de um morro sob seus pés, e a chave para encontrar os pontos mais altos e mais baixos de qualquer coisa.",
   mDer_avgTitle: "Taxa média de variação",
   mDer_avgBody: "Uma bola rola rampa abaixo, e sua distância até o início depois de t segundos é s(t) = t² metros. Entre t = 1 e t = 3 ela vai de s = 1 a s = 9: 8 metros em 2 segundos, uma velocidade média de 4 m/s. No gráfico essa média é a inclinação da reta que passa pelos dois pontos (1, 1) e (3, 9), quanto sobe sobre quanto anda, como no capítulo de funções. Uma reta por dois pontos de uma curva se chama secante (do latim “que corta”). Sua inclinação é a taxa média de variação no intervalo.",

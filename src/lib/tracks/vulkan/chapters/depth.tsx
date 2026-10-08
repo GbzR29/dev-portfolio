@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DepthTestFigure } from "@/components/lesson/figures/vulkan/DepthTestFigure";
 import { DepthPrecisionFigure } from "@/components/lesson/figures/vulkan/DepthPrecisionFigure";
 import { PipelineStateFigure } from "@/components/lesson/figures/vulkan/PipelineStateFigure";
@@ -27,6 +27,13 @@ export function DepthContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkDepth_intro",
           "Watch the two quads of the last chapter where they cross: the one drawn second is always in front, even where it is behind. Drawing far things first (the painter's algorithm) cannot fix that, because the quads intersect: along the line where they cross, each is in front on one side. The fix is per pixel. A depth buffer stores, for every pixel, how far away the nearest surface drawn so far is, and each new fragment is compared with it. This chapter adds a depth attachment, turns on the depth test and back-face culling, and replaces the quads with two textured cubes that pass through each other.")}
       </Lead>
+
+      <Goals t={t} id="vkDepth" items={[
+        "Add a depth buffer so nearer surfaces hide farther ones.",
+        "Choose a depth format and explain where depth precision goes.",
+        "Turn on back-face culling with the right winding order.",
+        "Draw cubes instead of flat quads.",
+      ]} />
 
       <H2>{tx(t, "vkDepth_testTitle", "The depth test, per fragment")}</H2>
       <p>

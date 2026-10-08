@@ -5,7 +5,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { PbrSpheresFigure } from "@/components/lesson/figures/pbr/PbrSpheresFigure";
 
 const r = String.raw;
@@ -22,6 +22,13 @@ export function IblSpecularContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglIblS_intro",
           "The specular integral is harder: the BRDF depends on both ωᵢ and ωₒ, so there is no single variable to precompute against. Epic Games' split sum approximation (Karis, 2013) breaks it into two pieces that can each be baked into a texture. It is what nearly every real-time PBR renderer ships.")}
       </Lead>
+
+      <Goals t={t} id="oglIblS" items={[
+        "Explain the split sum approximation.",
+        "Prefilter the environment map for each roughness with importance sampling.",
+        "Build the BRDF integration map.",
+        "Combine everything into the final ambient term.",
+      ]} />
 
       <H2>{tx(t, "oglIblS_splitTitle", "The split sum approximation")}</H2>
       <Equation label={tx(t, "oglIblS_specLabel", "The specular integral")}>

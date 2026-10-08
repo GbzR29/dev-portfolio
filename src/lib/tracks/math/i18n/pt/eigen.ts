@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/eigen.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mEig_goal0: "Achar autovalores e autovetores a partir de det(A − λI) = 0.",
+  mEig_goal1: "Reconhecer os autovetores de esticamentos, reflexões e rotações.",
+  mEig_goal2: "Prever o que acontece quando uma matriz é aplicada várias vezes seguidas.",
+  mEig_goal3: "Achar o autovetor dominante por iteração de potência.",
   mEig_intro: "Uma matriz normalmente gira os vetores além de esticá-los. Mas a maioria das matrizes tem algumas direções especiais em que não gira nada: um vetor apontando para lá sai apontando para o mesmo lado (ou exatamente ao contrário), só mais comprido ou mais curto. Esses são os autovetores, e os fatores de esticamento são os autovalores (do alemão eigen, “próprio”: as direções próprias da matriz). Eles revelam o que uma matriz realmente faz, preveem o que acontece quando ela é aplicada de novo e de novo, e encontram o eixo de qualquer rotação 3D.",
   mEig_defTitle: "A definição",
   mEig_defBody: "Um vetor não nulo v é um autovetor da matriz quadrada A se A só o escala: Av = λv para algum número λ (a letra grega lambda), que é o autovalor associado a v. Se λ = 2, v sai duas vezes mais comprido; se λ = 0,5, com metade do comprimento; se λ = −1, com o mesmo comprimento, mas invertido; se λ = 0, ele é esmagado até sumir. Qualquer múltiplo de um autovetor também é um (A(kv) = kAv = kλv = λ(kv)), então o que importa de fato é a reta pela origem naquela direção, a autodireção. O vetor zero é excluído, já que A0 = λ0 para todo λ e não nos diria nada.",

@@ -2,6 +2,9 @@
 // Rewritten for the explanation pass on 2026-10-01.
 
 const text: Record<string, string> = {
+  ch11_goal0: "Explicar os bugs que fazer bind de um objeto só para editá-lo causa.",
+  ch11_goal1: "Criar e editar buffers, texturas e VAOs com DSA, sem fazer bind deles.",
+  ch11_goal2: "Escolher entre o DSA e o estilo clássico.",
   ch11_intro: "Todos os capítulos até aqui usaram bind-to-edit: vincular um objeto, modificá-lo, desvincular. O OpenGL 4.5 introduziu o Direct State Access (DSA): modifique qualquer objeto pelo seu ID, sem vinculá-lo. Os dois produzem comportamento idêntico na GPU; só o código do lado da CPU muda, e com ele uma classe inteira de bugs.",
   ch11_problemTitle: "O problema do bind-to-edit",
   ch11_problemBody2: "O contexto tem pontos de bind: um slot GL_ARRAY_BUFFER, um slot GL_TEXTURE_2D por unidade de textura, um VAO atual, e assim por diante. Uma função de edição como glBufferData ou glTexParameteri não recebe um objeto. Ela recebe um alvo e age sobre o objeto que estiver naquele slot agora. Então o significado de uma linha depende de todas as linhas que rodaram antes dela, inclusive linhas em outros arquivos e em bibliotecas. Insira um glBindBuffer em algum lugar antes e um glBufferData posterior escreve em silêncio num buffer diferente, sem erro, porque a chamada continua perfeitamente válida.",

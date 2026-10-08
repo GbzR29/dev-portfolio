@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { GraphRepFigure } from "@/components/lesson/figures/algo/GraphRepFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function GraphsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alGraph_intro",
           "Cities joined by roads, people joined by friendships, web pages joined by links, tasks that must wait for other tasks, the rooms of a game level joined by doors: all of these are things connected to other things. A graph is the mathematical model of exactly that, and nothing more. Once a problem is seen as a graph, a small set of algorithms answers a surprising number of questions about it: can I get from here to there, what is the shortest way, in what order can these tasks run, what is the cheapest way to connect everything. This last section of the track builds those algorithms, starting here with the vocabulary and with how a graph is stored in memory.")}
       </Lead>
+
+      <Goals t={t} id="alGraph" items={[
+        "Describe a problem as vertices and edges.",
+        "Use the basic words: degree, path, cycle, component, tree.",
+        "Store a graph as an adjacency matrix, an adjacency list or an edge list, and choose between them.",
+        "Work with graphs that are never stored, like grids and game states.",
+      ]} />
 
       <H2>{tx(t, "alGraph_defTitle", "Vertices and edges")}</H2>
       <p>

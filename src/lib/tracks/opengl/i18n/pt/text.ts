@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/text.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglText_goal0: "Dizer o que um arquivo de fonte contém.",
+  oglText_goal1: "Empacotar glifos num atlas e desenhar texto em lotes.",
+  oglText_goal2: "Renderizar texto nítido em qualquer tamanho com campos de distância com sinal.",
   oglText_intro: "O OpenGL não faz ideia do que é uma letra. Ele desenha triângulos, então o texto precisa virar triângulos com texturas. Todo rótulo de UI, número de dano e legenda passa pelo mesmo pipeline: ler o arquivo de fonte, rasterizar cada glifo uma vez num atlas de textura e, para cada string, posicionar um quad texturizado por glifo usando as métricas da fonte. Os detalhes decidem se o texto fica nítido ou borrado, e se custa um draw call ou mil.",
   oglText_fontTitle: "O que há dentro de uma fonte",
   oglText_fontBody: "Um arquivo TrueType ou OpenType guarda cada glifo como contornos: curvas fechadas feitas de retas e segmentos de Bézier quadráticos (TrueType) ou cúbicos (CFF), em \"unidades de fonte\" abstratas, tipicamente 1000 ou 2048 por em. Ele também guarda métricas (quanto avançar depois de cada glifo, até onde sobem as ascendentes), tabelas de kerning e, para escritas complexas, as regras para juntar e substituir glifos. Uma biblioteca como a FreeType transforma um contorno em bitmap num tamanho de pixel pedido e informa as métricas em pixels:",

@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/vulkan/chapters/synchronization.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkSync_goal0: "Escolher entre fence, semáforo e barreira para um problema de ordem.",
+  vkSync_goal1: "Escrever um laço de quadro que espera, adquire, grava, submete e apresenta na ordem certa.",
+  vkSync_goal2: "Escrever uma pipeline barrier com os estágios e as máscaras de acesso certos.",
   vkSync_intro: "Três coisas rodam ao mesmo tempo num programa Vulkan: a CPU, a GPU e o motor de apresentação que é dono da tela. vkQueueSubmit2 retorna assim que o trabalho entra na fila, bem antes de a GPU executá-lo; vkAcquireNextImageKHR pode devolver o índice de uma imagem antes de ela sair da tela; a GPU sobrepõe um comando ao seguinte sempre que pode. O driver do OpenGL inseria esperas por você, de forma conservadora, em todo lugar. O Vulkan não insere nenhuma. Este capítulo apresenta as três ferramentas que dizem \"espere\" (fences, semáforos e barreiras), escreve o laço de frame com elas e coloca o primeiro triângulo na tela.",
 
   vkSync_toolsTitle: "Três ferramentas, três direções",

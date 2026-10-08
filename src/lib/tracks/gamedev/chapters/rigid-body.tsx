@@ -9,7 +9,7 @@ import { Callout, CodeBlock, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ImpulsePointFigure } from "@/components/lesson/figures/gamedev/ImpulsePointFigure";
 import { RigidBoxesFigure } from "@/components/lesson/figures/gamedev/RigidBoxesFigure";
 
@@ -22,6 +22,13 @@ export function RigidBodyContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdRb_intro",
           "So far every body has been a point with a mass: it could move, but not turn. A crate knocked at its corner tips over; a plank hit at one end spins; a box sliding down a ramp may topple. A rigid body adds rotation: a body that keeps its shape, so that knowing where its centre is and how far it has turned tells you where every part of it is. This chapter extends the impulse solver of the previous one with an angle, an angular velocity and a moment of inertia, then builds boxes that stack, tip and tumble.")}
       </Lead>
+
+      <Goals t={t} id="gdRb" items={[
+        "Describe a rigid body by its position, its angle and how fast each changes.",
+        "Compute the torque of a force applied off-centre.",
+        "Apply an impulse at a point and update both the speed and the spin.",
+        "Resolve contacts between boxes and tune a rigid-body world.",
+      ]} />
 
       <H2>{tx(t, "gdRb_stateTitle", "The state of a rigid body")}</H2>
       <p>

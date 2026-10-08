@@ -9,7 +9,7 @@ import { Callout, CodeBlock, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { IntegratorFigure } from "@/components/lesson/figures/gamedev/IntegratorFigure";
 import { StabilityFigure } from "@/components/lesson/figures/gamedev/StabilityFigure";
 
@@ -22,6 +22,13 @@ export function IntegrationContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdInt_intro",
           "Every physics engine is built on one small loop: given where things are and how fast they move now, work out where they will be a moment later. That step is called integration, and the formula that does it is an integrator. The game-loop chapter already met two of them in a jump, and saw that the height came out wrong by an amount that depended on the step. This chapter looks at integrators properly: why the most obvious one quietly adds energy until springs explode and planets fly away, why a one-line change fixes it, and when a more expensive method is worth it.")}
       </Lead>
+
+      <Goals t={t} id="gdInt" items={[
+        "Advance a moving object by one step with an integrator.",
+        "Explain why explicit Euler gains energy, and fix it by swapping two lines.",
+        "Use Verlet and RK4, and say when each is worth it.",
+        "Pick a step size that stays stable.",
+      ]} />
 
       <H2>{tx(t, "gdInt_stateTitle", "State and derivatives")}</H2>
       <p>

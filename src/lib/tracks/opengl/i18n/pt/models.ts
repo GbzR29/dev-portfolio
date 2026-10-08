@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/models.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglModel_goal0: "Carregar um arquivo de modelo com o Assimp.",
+  oglModel_goal1: "Montar uma classe Mesh dona dos seus buffers na GPU.",
+  oglModel_goal2: "Percorrer a árvore de nós da cena para desenhar todas as malhas.",
+  oglModel_goal3: "Carregar cada textura uma vez só.",
   oglModel_intro: "Todo array de vértices até aqui foi digitado à mão. Assets de verdade saem do Blender ou do Maya como OBJ, FBX ou glTF, e escrever um parser para cada um não é um bom uso do seu tempo. O Assimp lê cerca de quarenta formatos e devolve todos numa única estrutura de dados uniforme, que é o único motivo de alguém tolerar o formato FBX.",
   oglModel_structTitle: "Como o Assimp estrutura um arquivo",
   oglModel_structBody: "Um aiScene é a raiz. Ele possui um array plano de malhas e um array plano de materiais, mais uma árvore de nós. Cada nó carrega uma transformação e uma lista de índices no array de malhas — então uma malha é guardada uma vez e pode ser instanciada por vários nós. Você percorre a árvore para preservar a hierarquia que o artista construiu.",

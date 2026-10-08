@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/polynomials.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mPoly_goal0: "Somar e multiplicar polinômios.",
+  mPoly_goal1: "Calcular o valor de um polinômio rápido com o método de Horner.",
+  mPoly_goal2: "Dividir polinômios, e usar o resto para achar fatores.",
+  mPoly_goal3: "Esboçar o gráfico de um polinômio a partir das raízes.",
   mPoly_intro: "Expressões do primeiro grau (x na primeira potência) e do segundo grau (até x²) são os dois primeiros membros de uma família: os polinômios, somas de potências inteiras de x. São as funções que dá para calcular só com multiplicação e adição, o que as torna as mais fáceis de calcular à mão. Elas também aparecem sozinhas: o volume de uma caixa é um produto de três comprimentos, a distância que uma pedra cai cresce com t², e o dinheiro rendendo juros por n anos cresce segundo um polinômio na taxa. Este capítulo trata de como trabalhar com eles, como suas raízes moldam seus gráficos e como calculá-los com eficiência.",
   mPoly_defTitle: "O que é um polinômio",
   mPoly_defBody: "Um polinômio em x é uma soma de termos, cada um sendo um número vezes uma potência inteira de x. As potências precisam ser 0, 1, 2, 3…: nada de potências negativas (1/x não é permitido), nada de potências fracionárias (√x não é permitido) e nada de x dentro de outras funções. Na forma padrão, os termos vão da maior potência para a menor. O grau é a maior potência que aparece; o coeficiente desse termo é o coeficiente dominante.",

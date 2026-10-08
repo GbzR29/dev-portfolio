@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TraversalFigure } from "@/components/lesson/figures/algo/TraversalFigure";
 
 const r = String.raw;
@@ -25,6 +25,13 @@ export function TreesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alTree_intro",
           "Every structure so far has been a line: each element has at most one element after it. Many things are not lines. A folder holds files and other folders, a web page nests elements inside elements, a company has a boss with several managers who each have their own teams, and an arithmetic expression has operations inside operations. All of these are trees, the branching structure this section is about. This chapter builds the vocabulary, counts what a tree can hold, and shows the four standard ways to visit all of its nodes. The next chapters use trees to search, to keep data sorted and to find the maximum quickly.")}
       </Lead>
+
+      <Goals t={t} id="alTree" items={[
+        "Use the words root, leaf, depth and height correctly.",
+        "Write recursive functions that follow a tree's shape.",
+        "Visit every node in pre-order, in-order, post-order and level order.",
+        "Evaluate an expression tree, and save a tree to text and read it back.",
+      ]} />
 
       <H2>{tx(t, "alTree_vocabTitle", "Nodes, edges and family words")}</H2>
       <p>

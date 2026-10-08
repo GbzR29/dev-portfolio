@@ -6,7 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { tx } from "@/lib/tracks/tx";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas } from "@/components/lesson/Prose";
+import { KeyIdeas, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { SDF_PRESETS } from "../presets/basics";
 
@@ -21,6 +21,13 @@ export function SDFContent({ t }: { t: TrackTranslations }) {
           "A Signed Distance Function (SDF) is a function that returns the distance from a point to the nearest surface of a shape. Negative values are inside the shape, positive values are outside, and zero is exactly on the surface edge. SDFs let you draw any shape analytically in the fragment shader with clean, anti-aliased edges."
         )}
       </p>
+
+      <Goals t={t} id="glsl04" items={[
+        "Say what a signed distance tells you inside a shape, outside it and on its edge.",
+        "Write the distance functions of a circle and a rectangle.",
+        "Combine shapes: union, intersection, difference and smooth blends.",
+        "Draw any distance field with a crisp, smooth edge.",
+      ]} />
 
       <H2>{tx(t, "glsl04_conceptTitle", "The concept")}</H2>
       <p>{tx(t, "glsl04_conceptBody", "To render a shape: sample the SDF at the current UV position. If the result is negative (inside), output the shape color. Use smoothstep to anti-alias the edge transition.")}</p>

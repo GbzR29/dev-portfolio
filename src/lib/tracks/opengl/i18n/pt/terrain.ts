@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/terrain.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglTerr_goal0: "Construir terreno a partir de um heightmap.",
+  oglTerr_goal1: "Misturar várias texturas sobre ele com splatting.",
+  oglTerr_goal2: "Dividi-lo em pedaços com níveis de detalhe, sem rachaduras.",
   oglTerr_intro: "Paisagens são o tipo de geometria que quase todo jogo de mundo aberto tem, e elas quebram as regras de sempre. Um único terreno pode ter dezenas de quilômetros de largura, grande demais para ser uma malha em detalhe total. Também é grande demais para texturizar com uma imagem, e visível demais de longe para ser deixado de fora. A renderização de terreno é uma caixa de ferramentas para esses três problemas. A forma vem de um heightmap, a superfície é texturizada por regras em vez de à mão, e a malha perde detalhe suavemente com a distância.",
   oglTerr_hmTitle: "Heightmaps",
   oglTerr_hmBody: "Um heightmap é uma imagem em tons de cinza lida como uma função y = h(x, z): cada texel dá a altura do chão em um ponto de uma grade regular. Ele é compacto (um mapa de 4097² em 16 bits descreve um quadrado de 16 km × 16 km com espaçamento de 4 m em 32 MB), fácil de editar, erodir e fazer streaming, e se mapeia diretamente para uma malha em grade: o vértice (i, j) vai para (i·s, h(i, j), j·s). O que ele não consegue guardar é qualquer coisa com duas alturas no mesmo (x, z): cavernas, saliências, arcos. Isso é adicionado como malhas separadas, ou o terreno é guardado como densidade em voxels.",

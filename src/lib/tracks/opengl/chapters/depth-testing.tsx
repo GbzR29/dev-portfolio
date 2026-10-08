@@ -13,7 +13,7 @@
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DepthTestFigure } from "@/components/lesson/figures/vulkan/DepthTestFigure";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -25,6 +25,13 @@ export function DepthTestingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglDepth_intro",
           "In the Transformations chapter, one line made near faces hide far ones: glEnable(GL_DEPTH_TEST). This chapter opens that line up. You will break it on purpose, look at the depth buffer itself, make two surfaces flicker through each other, and see why the near plane matters so much.")}
       </Lead>
+
+      <Goals t={t} id="oglDepth" items={[
+        "Turn on depth testing so near surfaces hide far ones.",
+        "Choose a depth function, and turn depth writes on and off.",
+        "Show the depth buffer on screen.",
+        "Explain z-fighting, and why precision runs out with distance.",
+      ]} />
 
       {/* ── WHAT CHANGES ────────────────────────────────────────────────── */}
       <H2>{tx(t, "oglDepth_alongTitle", "What this chapter adds to main.cpp")}</H2>

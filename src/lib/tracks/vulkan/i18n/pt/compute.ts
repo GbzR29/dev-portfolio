@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/vulkan/chapters/compute.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkComp_goal0: "Escrever um compute shader e escolher o tamanho do workgroup.",
+  vkComp_goal1: "Despachá-lo entre as barreiras certas.",
+  vkComp_goal2: "Rodar uma simulação de partículas na GPU e desenhar o resultado.",
   vkComp_intro: "Tudo o que a GPU rodou até aqui fazia parte de desenhar: vertex shaders posicionando vértices, fragment shaders colorindo pixels. Um compute shader é o lado de uso geral da GPU: uma função executada muitos milhares de vezes em paralelo, sem triângulos, sem rasterizador e sem attachments, lendo e escrevendo buffers e imagens diretamente. Física, partículas, culling, pós-processamento, filtros de imagem, skinning e boa parte da renderização moderna rodam assim. Este capítulo acrescenta dez mil partículas orbitando os dois cubos: um compute shader as move a cada frame, e o mesmo buffer é depois desenhado como pontos.",
 
   vkComp_dispatchTitle: "Um dispatch: workgroups e invocações",

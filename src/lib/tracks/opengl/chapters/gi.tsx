@@ -8,7 +8,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ShProbeFigure } from "@/components/lesson/figures/advlighting/ShProbeFigure";
 
 const r = String.raw;
@@ -20,6 +20,13 @@ export function GiContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglGi_intro",
           "Every lighting chapter so far computed direct light: from a lamp to a surface to the eye. In reality light keeps bouncing. Sun through a window lights the floor, the floor lights the ceiling, and a red carpet tints the walls pink. That indirect light is often half of everything you see, and without it interiors look black wherever the lamps do not reach. Global illumination (GI) is the name for computing it. Doing it exactly is the path tracing of the GLSL track. This chapter covers how real-time engines approximate it: bake what does not move, store light at sample points in space, and update cheaply what does move.")}
       </Lead>
+
+      <Goals t={t} id="oglGi" items={[
+        "Explain why a constant ambient term is not enough.",
+        "Bake indirect light into lightmaps.",
+        "Store light at probes with spherical harmonics.",
+        "Choose an approach for scenes where things move.",
+      ]} />
 
       <H2>{tx(t, "oglGi_whyTitle", "Why ambient is not enough")}</H2>
       <p>

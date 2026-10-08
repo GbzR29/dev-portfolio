@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { QuadraticFigure } from "@/components/lesson/figures/math/QuadraticFigure";
 import { CompleteSquareFigure } from "@/components/lesson/figures/math/CompleteSquareFigure";
 
@@ -41,6 +41,13 @@ export function QuadraticsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mQuad_intro",
           "Linear equations describe things that change at a constant rate. The moment something accelerates, a thrown ball, a falling stone, a car braking, the unknown appears squared, and you have a quadratic. Quadratics also appear whenever two unknown lengths multiply, as in the area of a rectangle. This chapter explains the shape of their graphs, three ways to solve them, where the famous formula comes from, and how the roots are tied to the coefficients.")}
       </Lead>
+
+      <Goals t={t} id="mQuad" items={[
+        "Sketch a parabola from its equation.",
+        "Solve a quadratic equation by factoring and by completing the square.",
+        "Use the quadratic formula, and tell from it how many solutions there are.",
+        "Describe a real situation with a quadratic.",
+      ]} />
 
       <H2>{tx(t, "mQuad_formTitle", "The standard form and the parabola")}</H2>
       <p>

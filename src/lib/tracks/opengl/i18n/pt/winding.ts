@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/winding.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  ch10_goal0: "Distinguir a frente de um triângulo das costas pela ordem dos seus vértices.",
+  ch10_goal1: "Ligar o descarte de faces.",
+  ch10_goal2: "Corrigir malhas que aparecem do avesso.",
+  ch10_goal3: "Dizer o que o descarte economiza e o que não economiza.",
   ch10_intro: "A ordem na qual você especifica os vértices de um triângulo diz ao OpenGL qual lado da face é a 'frente'. Isso permite que o OpenGL pule o desenho de triângulos voltados para trás, cortando o trabalho do fragment shader em cerca de metade em meshes fechados.",
   ch10_windingTitle: "O que significa a ordem de winding",
   ch10_windingBody: "Ao olhar um triângulo de frente e traçar seus vértices em ordem, se forem counter-clockwise (CCW), o OpenGL trata como face frontal. Se forem clockwise (CW), é face traseira.",

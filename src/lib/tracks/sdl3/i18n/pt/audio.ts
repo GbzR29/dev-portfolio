@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/sdl3/chapters/audio.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  sdl08_goal0: "Abrir um audio stream e deixar o SDL converter o formato por você.",
+  sdl08_goal1: "Gerar som num callback.",
+  sdl08_goal2: "Mixar vários sons num mesmo dispositivo.",
   sdl08_intro: "O SDL3 reescreveu o áudio em torno de streams. No SDL2 você abria um dispositivo num formato específico e convertia tudo sozinho; no SDL3 você abre um stream, diz em que formato estão os seus dados, e o SDL converte e reamostra no caminho até o dispositivo. Vários streams podem alimentar o mesmo dispositivo, e o SDL os mistura.",
   sdl08_conceptTitle: "Streams, dispositivos e dispositivos lógicos",
   sdl08_conceptBody: "Um dispositivo físico é a placa de som. Um dispositivo lógico é o handle do seu programa para ela, e vários podem estar abertos ao mesmo tempo sem brigar. Um stream é uma fila com conversão de formato embutida: você empurra amostras no seu formato, e o SDL as puxa no formato do dispositivo.",

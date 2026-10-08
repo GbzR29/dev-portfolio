@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/clustered.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglClus_goal0: "Explicar por que cada luz custa tempo em todo pixel que ela pode tocar.",
+  oglClus_goal1: "Distribuir as luzes em ladrilhos da tela com o Forward+.",
+  oglClus_goal2: "Distribuí-las em clusters 3D, e montar as listas na GPU.",
   oglClus_intro: "Uma cena noturna com postes de luz, clarões de tiros, feitiços e letreiros de neon pode facilmente ter mil luzes. O forward shading simples percorre todas as luzes para cada pixel de cada objeto. O deferred shading resolve isso, mas paga em largura de banda de memória e abre mão do MSAA e da transparência fácil. O tiled e o clustered shading mantêm os pontos fortes da renderização forward e acrescentam uma ideia: descobrir uma vez, por região da tela, quais luzes podem ter alguma importância ali.",
   oglClus_costTitle: "O custo de uma luz",
   oglClus_costLabel: "Trabalho de sombreamento por frame",

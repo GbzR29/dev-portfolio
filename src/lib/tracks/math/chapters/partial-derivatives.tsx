@@ -12,7 +12,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { GradientFigure } from "@/components/lesson/figures/math/GradientFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function PartialDerivativesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPar_intro",
           "Most quantities depend on more than one thing. The area of a rectangle depends on its width and its height; the volume of a cylinder on its radius and its height; the height of the ground on both map coordinates; the temperature in a room on where you stand. Calculus with several inputs starts from one simple idea: change one input at a time, hold the others still, and use the one-variable derivative you already know. Put those slopes together into a vector and it points uphill.")}
       </Lead>
+
+      <Goals t={t} id="mPar" items={[
+        "Take partial derivatives of a function of two variables.",
+        "Find the gradient and the slope in any direction.",
+        "Estimate how errors in the inputs spread to the output.",
+        "Find peaks, valleys and saddles, with or without a constraint.",
+      ]} />
 
       <H2>{tx(t, "mPar_fnTitle", "Functions of two variables")}</H2>
       <p>

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/cpp/chapters/concurrency.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp12_goal0: "Iniciar uma thread com jthread e pará-la de forma limpa.",
+  cpp12_goal1: "Escolher a ferramenta de sincronização certa para dividir dados entre threads.",
+  cpp12_goal2: "Escolher uma memory order para um atomic e dizer o que ela garante.",
+  cpp12_goal3: "Achar false sharing e corrigi-lo.",
   cpp12_intro: "Um jogo moderno roda em oito a dezesseis núcleos e numa thread de renderização que não pode travar. O C++ oferece threads portáveis, mas a parte interessante não é iniciar uma thread — é o modelo de memória, que diz quando uma thread pode enxergar as escritas de outra.",
   cpp12_jthreadTitle: "jthread — a que você deve usar",
   cpp12_syncTitle: "Primitivas de sincronização",

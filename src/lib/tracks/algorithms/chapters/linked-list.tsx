@@ -11,7 +11,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { LinkedListFigure } from "@/components/lesson/figures/algo/LinkedListFigure";
 
 export function LinkedListContent({ t }: { t: TrackTranslations }) {
@@ -21,6 +21,13 @@ export function LinkedListContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alList_intro",
           "A dynamic array keeps its elements side by side, which makes reading element i instant but inserting at the front slow: everything has to shift. A linked list makes the opposite trade. Each element lives in its own small block, called a node, anywhere in memory, and each node stores the address of the next one. Inserting or removing next to a node you already hold is then a matter of rewriting one or two pointers, whatever the length of the list. This chapter builds singly and doubly linked lists, shows the classic pointer techniques, and ends with an honest comparison, because in practice the array wins more often than its Big-O suggests.")}
       </Lead>
+
+      <Goals t={t} id="alList" items={[
+        "Build a linked list and insert and remove nodes in it.",
+        "Reverse a list in place.",
+        "Use fast and slow pointers to find the middle or a cycle.",
+        "Choose between an array and a list for a job.",
+      ]} />
 
       <H2>{tx(t, "alList_nodeTitle", "Nodes and pointers")}</H2>
       <p>

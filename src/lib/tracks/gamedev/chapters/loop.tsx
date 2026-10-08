@@ -7,7 +7,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { LoopFigure } from "@/components/lesson/figures/gamedev/LoopFigure";
 import { JumpFigure } from "@/components/lesson/figures/gamedev/JumpFigure";
 
@@ -20,6 +20,13 @@ export function GameLoopContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdLoop_intro",
           "A film is a fixed sequence of pictures. A game has to invent every picture as it goes, because it depends on what the player just did. The part of the program that does this is the game loop: read the input, advance the world a little, draw it, and start again, dozens or hundreds of times per second, until the player quits. Almost everything else in this track runs inside that loop, so it is worth getting its timing exactly right.")}
       </Lead>
+
+      <Goals t={t} id="gdLoop" items={[
+        "Write a game loop that reads input, updates the world and draws it.",
+        "Move things by elapsed time, not by frame.",
+        "Run the physics at a fixed timestep with an accumulator.",
+        "Interpolate between steps for smooth drawing, and avoid the spiral of death.",
+      ]} />
 
       <H2>{tx(t, "gdLoop_simpleTitle", "The simplest loop")}</H2>
       <p>

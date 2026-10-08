@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/sdl3/chapters/gpu.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  sdl09_goal0: "Dizer onde o SDL_GPU fica ao lado do OpenGL e do Vulkan, e quando escolhê-lo.",
+  sdl09_goal1: "Fazer um mesmo conjunto de shaders rodar em Vulkan, Direct3D 12 e Metal.",
+  sdl09_goal2: "Criar um dispositivo de GPU e gravar os comandos de um quadro.",
+  sdl09_goal3: "Enviar dados de vértices para a GPU.",
   sdl09_intro: "O SDL_GPU é a grande novidade do SDL3: uma API gráfica moderna que roda sobre Vulkan, Direct3D 12 e Metal. Ela oferece command buffers, pipelines explícitos e shaders de verdade — o modelo moderno — sem as milhares de linhas de configuração que o Vulkan puro exige e sem o estado global escondido do OpenGL.",
   sdl09_whereTitle: "Onde ele se encaixa",
   sdl09_h0: "API",

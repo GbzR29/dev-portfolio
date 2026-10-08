@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { GlyphMetricsFigure } from "@/components/lesson/figures/tech/GlyphMetricsFigure";
 import { SdfTextFigure } from "@/components/lesson/figures/tech/SdfTextFigure";
 
@@ -19,6 +19,12 @@ export function TextContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglText_intro",
           "OpenGL has no idea what a letter is. It draws triangles, so text has to be turned into triangles with textures on them. Every UI label, damage number and subtitle goes through the same pipeline: read the font file, rasterise each glyph once into an atlas texture, then for each string place one textured quad per glyph using the font's metrics. The details decide whether text looks crisp or smudged, and whether it costs one draw call or a thousand.")}
       </Lead>
+
+      <Goals t={t} id="oglText" items={[
+        "Say what a font file contains.",
+        "Pack glyphs into an atlas and draw text in batches.",
+        "Render crisp text at any size with signed distance fields.",
+      ]} />
 
       <H2>{tx(t, "oglText_fontTitle", "What is inside a font")}</H2>
       <p>

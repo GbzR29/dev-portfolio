@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/lighting-basics/light-color.tsx (Light & Color). Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglLC_goal0: "Explicar por que uma cor são três números, e o que significa multiplicar a luz pela superfície.",
+  oglLC_goal1: "Escrever o shader do objeto iluminado e o shader da lâmpada.",
+  oglLC_goal2: "Prever a cor de uma superfície iluminada e conferir na cena.",
   oglLC_intro: "Antes de iluminar uma cena, precisamos concordar sobre o que é cor. Um objeto não é \"vermelho\" por si só — ele é vermelho porque, de toda a luz que o atinge, devolve principalmente a parte vermelha e engole o resto. A computação gráfica modela isso com uma única multiplicação.",
 
   // ── What changes ──

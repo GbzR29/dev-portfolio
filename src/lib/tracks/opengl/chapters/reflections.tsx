@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SsrMarchFigure } from "@/components/lesson/figures/tech/SsrMarchFigure";
 import { SsrFigure } from "@/components/lesson/figures/tech/SsrFigure";
 
@@ -19,6 +19,13 @@ export function ReflectionsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglRefl_intro",
           "A reflection shows, at each point of a shiny surface, what the view ray sees after bouncing off it. A rasteriser draws what the camera sees directly, and anything else has to be faked: by rendering the scene again from a mirrored camera, by pre-capturing the surroundings in cube maps, or by re-using the image already on screen. Real engines combine all three, each covering the others' blind spots.")}
       </Lead>
+
+      <Goals t={t} id="oglRefl" items={[
+        "Compute a reflected ray.",
+        "Render planar reflections through a mirrored camera.",
+        "Use reflection probes with box projection.",
+        "Add screen-space reflections, and know their limits.",
+      ]} />
 
       <H2>{tx(t, "oglRefl_reflectTitle", "The reflected ray")}</H2>
       <Equation label={tx(t, "oglRefl_reflectLabel", "Reflection direction")}

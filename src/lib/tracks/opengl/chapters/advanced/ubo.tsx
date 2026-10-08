@@ -9,7 +9,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Std140Figure } from "@/components/lesson/figures/advgl/Std140Figure";
@@ -25,6 +25,12 @@ export function UBOContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglUbo_intro",
           "Uniforms belong to a program. Ten shaders that all need the view and projection matrices means ten glUniformMatrix4fv calls every frame with identical data. A uniform buffer object stores that data once in GPU memory and binds it to a binding point that any number of shaders can read from.")}
       </Lead>
+
+      <Goals t={t} id="oglUbo" items={[
+        "Share uniforms between shaders with a uniform block.",
+        "Connect blocks and buffers through binding points.",
+        "Lay out the block by the std140 padding rules.",
+      ]} />
 
       <H2>{tx(t, "oglUbo_whyTitle", "What plain uniforms repeat")}</H2>
       <p>

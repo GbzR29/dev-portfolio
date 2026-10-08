@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DiceFigure } from "@/components/lesson/figures/math/DiceFigure";
 import { CardFigure } from "@/components/lesson/figures/math/CardFigure";
 
@@ -24,6 +24,13 @@ export function ProbabilityContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPr_intro",
           "A coin toss, a die, tomorrow's weather: we cannot say what will happen, but we are not completely in the dark either. A die shows six about one time in six, and this is a precise statement, not a vague feeling. Probability is the mathematics that turns \"how likely?\" into a number between 0 (impossible) and 1 (certain), with rules for combining such numbers. This chapter sets up the language (sample spaces and events), the rules (three axioms and their consequences) and the first method for computing probabilities: counting equally likely outcomes.")}
       </Lead>
+
+      <Goals t={t} id="mPr" items={[
+        "Describe an experiment by its outcomes and events.",
+        "Compute probabilities by counting equally likely outcomes.",
+        "Use the rules of probability and the complement trick.",
+        "Find probabilities from areas.",
+      ]} />
 
       <H2>{tx(t, "mPr_spaceTitle", "Experiments, outcomes and events")}</H2>
       <p>

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/sdl3/chapters/setup.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  sdl02_goal0: "Adicionar o SDL3 a um projeto com CMake e FetchContent.",
+  sdl02_goal1: "Abrir uma janela que fecha direito.",
+  sdl02_goal2: "Iniciar e encerrar só os subsistemas que você usa.",
+  sdl02_goal3: "Embrulhar a inicialização e a limpeza do SDL em RAII.",
   sdl02_intro: "Colocar o SDL3 num projeto é a parte que a maioria dos tutoriais faz mal. O caminho recomendado hoje é CMake com FetchContent: nenhuma instalação no sistema, nenhuma caça a pacotes de desenvolvimento, e a versão exata que você fixou é a que toda máquina compila.",
   sdl02_cmakeTitle: "O arquivo de build",
   sdl02_installTip: "Se o SDL3 já estiver instalado no sistema (vcpkg, um pacote da distro ou um build manual), troque o bloco FetchContent por find_package(SDL3 REQUIRED). O nome do target, SDL3::SDL3, é o mesmo nos dois casos, então o resto do arquivo nunca muda.",

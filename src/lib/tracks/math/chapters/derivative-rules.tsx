@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DerivRulesFigure } from "@/components/lesson/figures/math/DerivRulesFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function DerivativeRulesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mRule_intro",
           "Working out every derivative from the limit definition is slow. Fortunately every formula you will meet is built from a few basic functions (powers, sine and cosine, exponentials, logarithms) combined by adding, multiplying, dividing and plugging one into another. Learn the derivative of each basic piece and one rule for each way of combining them, and you can differentiate anything mechanically. This chapter proves each rule, so none of it is magic.")}
       </Lead>
+
+      <Goals t={t} id="mRule" items={[
+        "Differentiate powers, sums and constant multiples.",
+        "Apply the product, quotient and chain rules.",
+        "Differentiate sine, cosine, the exponential and the logarithm.",
+        "Differentiate a complicated function step by step.",
+      ]} />
 
       <H2>{tx(t, "mRule_linTitle", "Constants, multiples and sums")}</H2>
       <p>

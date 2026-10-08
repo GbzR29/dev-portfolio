@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/analytic.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mAn_goal0: "Achar o ponto médio de um segmento, e o ponto que o divide em qualquer razão.",
+  mAn_goal1: "Escrever a equação de uma reta e de um círculo.",
+  mAn_goal2: "Reconhecer elipses, parábolas e hipérboles pelas equações.",
+  mAn_goal3: "Dizer se uma reta passa longe de um círculo, encosta nele ou o corta.",
   mAn_intro: "Em 1637 René Descartes juntou as duas metades da matemática: ponha uma grade no plano, e todo ponto vira um par de números e toda forma uma equação. Perguntas de geometria (estas retas se encontram? este ponto está dentro do círculo?) viram perguntas de álgebra que você resolve com um lápis, e a álgebra ganha imagens em troca. Este capítulo reúne as ferramentas: pontos entre pontos, retas e suas inclinações, a circunferência como equação e as quatro curvas que os gregos obtiveram cortando um cone.",
   mAn_midTitle: "Pontos entre pontos",
   mAn_midBody: "O ponto médio de um segmento de A = (x₁, y₁) a B = (x₂, y₂) se encontra uma coordenada de cada vez: seu x fica no meio entre x₁ e x₂, que é a média deles, e o mesmo para y. Mais geralmente, o ponto a uma fração t do caminho de A até B começa em A e soma t vezes o passo B − A; é a interpolação linear do capítulo de razões, aplicada às duas coordenadas. t = 0 dá A, t = 1 dá B, t = ½ dá o ponto médio.",

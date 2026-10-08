@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/color.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglColor_goal0: "Dizer o que define um espaço de cor.",
+  oglColor_goal1: "Distinguir valores que descrevem a cena de valores feitos para uma tela.",
+  oglColor_goal2: "Escolher um tone mapper como o ACES, e saber o que ele faz com a cor.",
+  oglColor_goal3: "Dizer o que muda numa tela HDR.",
   oglColor_intro: "vec3(1.0, 0.0, 0.0) não é \"vermelho\". Quer dizer \"quantidade total da primeira primária de algum espaço de cor, nada das outras\", e qual vermelho é esse depende do espaço. Num monitor sRGB é um vermelho, num celular P3 é um bem mais saturado, num pipeline HDR é outra coisa ainda. Este capítulo mostra o que os números de uma cor realmente significam, por que os renderizadores fazem as contas num espaço e exibem em outro, e como o tone mapper espreme uma luz sem limite no que uma tela consegue mostrar.",
   oglColor_spaceTitle: "O que define um espaço de cor",
   oglColor_thPart: "Parte",

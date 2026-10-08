@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function RaiiContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function RaiiContent({ t }: { t: TrackTranslations }) {
           "RAII — Resource Acquisition Is Initialization — is the single idea that C++ has and most other languages do not. A resource is acquired in a constructor and released in a destructor, so the compiler emits the cleanup for you on every exit path: normal return, early return, break, and thrown exception. There is no finally block because there is nothing to remember."
         )}
       </p>
+
+      <Goals t={t} id="cpp04" items={[
+        "Explain why manual cleanup leaks on early returns and exceptions.",
+        "Choose between unique_ptr, shared_ptr and a plain reference for a piece of data.",
+        "Wrap a C library handle so it is released automatically.",
+        "Say what shared_ptr costs at run time.",
+      ]} />
 
       <H2>{tx(t, "cpp04_whyTitle", "Why manual cleanup fails")}</H2>
 

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/ai/chapters/perceptron.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  aiPerc_goal0: "Calcular a saída de um neurônio a partir dos pesos e do viés.",
+  aiPerc_goal1: "Montar portas AND, OR e NAND com um único neurônio.",
+  aiPerc_goal2: "Treinar um perceptron com a sua regra de aprendizado.",
+  aiPerc_goal3: "Explicar por que um neurônio sozinho não aprende o XOR.",
   aiPerc_intro: "Toda rede neural, de um leitor de dígitos a um grande modelo de linguagem, é feita de uma unidade pequena: o neurônio artificial. Ele recebe alguns números, dá um peso a cada um, soma tudo e decide. O perceptron, inventado por Frank Rosenblatt em 1958, é esse neurônio mais uma regra para aprender os pesos a partir de exemplos. Foi a primeira máquina que aprendia. Este capítulo o constrói, o treina à mão, prova quando a regra funciona e encontra o único problema simples que ele não consegue resolver. Essa falha é exatamente o motivo de as redes terem camadas.",
 
   aiPerc_neuronTitle: "De uma célula do cérebro a uma fórmula",

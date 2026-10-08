@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/regression.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mReg_goal0: "Medir como duas variáveis andam juntas com covariância e correlação.",
+  mReg_goal1: "Ajustar a reta de mínimos quadrados.",
+  mReg_goal2: "Avaliar o ajuste com resíduos e o R².",
+  mReg_goal3: "Endireitar dados curvos para que uma reta se ajuste a eles.",
   mReg_intro: "Muitas vezes medimos duas coisas em cada indivíduo: horas de estudo e nota na prova, a altura de uma pessoa e sua envergadura, a temperatura e o número de sorvetes vendidos. A pergunta é como elas se movem juntas. Este capítulo mede a força de uma relação em linha reta com um único número, a correlação, e encontra a reta que melhor prevê uma variável a partir da outra, a reta de mínimos quadrados. Sua dedução usa as derivadas parciais da seção de cálculo e o produto escalar da seção de álgebra linear, e o método inteiro é trabalhado à mão.",
   mReg_scatterTitle: "Diagramas de dispersão",
   mReg_scatterBody: "Desenhe cada indivíduo como um ponto (x, y). Leia a nuvem procurando quatro coisas. Direção: subindo (associação positiva: x maior anda com y maior) ou descendo (negativa). Forma: mais ou menos ao longo de uma reta, ou curva. Força: quão perto os pontos abraçam essa forma. Pontos incomuns: indivíduos longe do padrão. Por convenção x é a variável explicativa, a que usamos para prever, e y a resposta.",

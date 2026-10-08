@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { Std140Figure } from "@/components/lesson/figures/vulkan/Std140Figure";
 import { DescriptorChainFigure } from "@/components/lesson/figures/vulkan/DescriptorChainFigure";
 import { VulkanObjectsFigure } from "@/components/lesson/figures/vulkan/VulkanObjectsFigure";
@@ -27,6 +27,13 @@ export function DescriptorsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkDesc_intro",
           "Vertices are not the only data a shader needs. The camera's matrices, a material's colour, a light's position and, soon, textures all come from outside the draw's vertex stream. In OpenGL you called glUniformMatrix4fv on the bound program and the driver stored the value somewhere. Vulkan offers two explicit mechanisms: push constants, a few bytes written straight into the command buffer, and descriptors, which point the shader at buffers and images and are grouped into descriptor sets. This chapter uses both: a uniform buffer for the camera, shared by every draw, and a push constant for each object's model matrix. The quad becomes two quads, turning in perspective.")}
       </Lead>
+
+      <Goals t={t} id="vkDesc" items={[
+        "Choose between push constants and descriptors for a piece of shader data.",
+        "Lay out a uniform block by the std140 rules.",
+        "Build the layout, pool and set that connect a shader to a buffer.",
+        "Set up a camera's matrices for Vulkan's conventions.",
+      ]} />
 
       <H2>{tx(t, "vkDesc_freqTitle", "How often does the data change?")}</H2>
       <p>

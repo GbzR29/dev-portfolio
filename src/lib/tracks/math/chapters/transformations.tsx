@@ -12,7 +12,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TransformFigure } from "@/components/lesson/figures/math/TransformFigure";
 
 const r = String.raw;
@@ -36,6 +36,13 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mTf_intro",
           "Sliding a sofa across a floor plan, seeing your face in a mirror, turning a key and enlarging a photo are all transformations: rules that take every point of a shape to a new point. Tiled floors, wallpaper and kaleidoscopes are built by repeating one shape with them. This chapter writes each basic move as a rule on coordinates, shows what it keeps and what it changes, and explains why doing two of them in a different order gives a different result. The Linear Algebra section will later pack all of these into matrices.")}
       </Lead>
+
+      <Goals t={t} id="mTf" items={[
+        "Slide, flip and turn shapes with rules on their coordinates.",
+        "Scale and shear a shape, and say which moves keep its size and form.",
+        "Apply several moves in a row, in the right order.",
+        "Find a shape's symmetries.",
+      ]} />
 
       <H2>{tx(t, "mTf_whatTitle", "A transformation is a rule on points")}</H2>
       <p>

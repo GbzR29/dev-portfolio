@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DoubleIntegralFigure } from "@/components/lesson/figures/math/DoubleIntegralFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function MultipleIntegralsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mMul_intro",
           "A one-variable integral adds up thin strips to get an area. Its two-variable cousin adds up thin boxes to get a volume: the space under a surface z = f(x, y) and above a region of the floor. The same idea covers the total rain falling on a field whose rainfall varies from place to place, the mass of a plate whose thickness varies, or the average height of a landscape. And the good news of this chapter is that no new integration rules are needed: a double integral is computed as two ordinary integrals, one inside the other.")}
       </Lead>
+
+      <Goals t={t} id="mMul" items={[
+        "Compute a volume as an integral inside an integral.",
+        "Set the limits for regions bounded by curves.",
+        "Find areas, averages, masses and balance points.",
+        "Integrate in polar coordinates and in three dimensions.",
+      ]} />
 
       <H2>{tx(t, "mMul_boxTitle", "Volume by boxes")}</H2>
       <p>

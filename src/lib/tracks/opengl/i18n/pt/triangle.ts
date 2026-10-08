@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/triangle.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglTri_goal0: "Desenhar o seu primeiro triângulo.",
+  oglTri_goal1: "Explicar o que cada parte do programa completo faz.",
+  oglTri_goal2: "Achar a causa quando a tela fica preta.",
   oglTri_intro: "Todas as peças estão no lugar: uma janela e um contexto, um buffer com os vértices, um vertex array que os descreve e um par de shaders. Este capítulo junta tudo num programa completo, o tradicional primeiro programa de computação gráfica, e depois faz o que todo programador gráfico passa boa parte do tempo fazendo: descobrir por que a tela está preta. A figura deixa você tirar qualquer chamada do programa e ver exatamente o que quebra.",
 
   oglTri_drawTitle: "As três linhas que faltam",

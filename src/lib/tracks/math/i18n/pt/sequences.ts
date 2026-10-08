@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/sequences.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mSeq_goal0: "Achar qualquer termo de uma progressão aritmética ou geométrica.",
+  mSeq_goal1: "Ler e escrever somas com Σ.",
+  mSeq_goal2: "Somar os termos de uma progressão aritmética ou geométrica com uma fórmula.",
+  mSeq_goal3: "Dizer quando uma soma infinita dá um total finito.",
   mSeq_intro: "O dia a dia está cheio de listas de números que seguem uma regra: a numeração das poltronas em cada fileira de um teatro, o saldo de uma poupança ano após ano, a altura de cada quique de uma bola que cai, os coelhos num campo geração após geração. Essas listas são sequências, e somar seus termos dá séries. Este capítulo mostra os dois tipos básicos, a progressão aritmética (somar o mesmo passo) e a geométrica (multiplicar pelo mesmo fator), como pular direto para qualquer termo sem calcular todos os anteriores e como somar muitos termos, até infinitos, com uma fórmula só.",
   mSeq_whatTitle: "Termos e índices",
   mSeq_whatBody: "Uma sequência é uma lista ordenada de números: a₁, a₂, a₃, …. Cada número é um termo, e o numerozinho embaixo é seu índice, a posição do termo na lista. aₙ quer dizer “o n-ésimo termo”, para um n qualquer. A maioria dos livros começa a contar no 1, mas alguns começam em a₀; antes de usar uma fórmula, confira qual delas ela supõe. Uma sequência pode ser dada de dois jeitos, e ajuda saber passar de um para o outro.",

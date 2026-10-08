@@ -4,6 +4,7 @@
 
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { InteractiveUV } from "@/components/lesson/InteractiveUV";
 
@@ -16,6 +17,12 @@ export function FragCoordContent({ t }: { t: TrackTranslations }) {
           "The fragment shader has access to the pixel's screen position through gl_FragCoord. Combined with a resolution uniform, this gives you the foundation for writing shader effects that cover the entire screen — the basis of everything from post-processing to live shader art."
         )}
       </p>
+
+      <Goals t={t} id="glsl03" items={[
+        "Turn gl_FragCoord into UV coordinates that run from 0 to 1.",
+        "Center the coordinates and correct for the screen's aspect ratio.",
+        "Animate a shader with time.",
+      ]} />
 
       <H2>{tx(t, "glsl03_fragcoordTitle", "gl_FragCoord")}</H2>
       <p>{tx(t, "glsl03_fragcoordBody", "gl_FragCoord.xy gives you the pixel position in window coordinates, where (0,0) is the bottom-left corner. The z component is the depth value in [0,1], and w is 1/clipW for perspective division.")}</p>

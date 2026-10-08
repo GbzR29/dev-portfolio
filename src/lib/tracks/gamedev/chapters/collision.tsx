@@ -8,7 +8,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { OverlapFigure } from "@/components/lesson/figures/gamedev/OverlapFigure";
 import { TunnelFigure } from "@/components/lesson/figures/gamedev/TunnelFigure";
 import { SatFigure } from "@/components/lesson/figures/gamedev/SatFigure";
@@ -26,6 +26,13 @@ export function CollisionContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdCol_intro",
           "A physics engine spends most of its time answering one question: are these two things touching? And if so, by how much, and in which direction? The first part is collision detection, the second is the contact information that collision response needs to push them apart. This chapter covers the shapes games use for that, the three tests every 2D game starts with, and the bug that lets fast bullets fly through walls.")}
       </Lead>
+
+      <Goals t={t} id="gdCol" items={[
+        "Test circles and axis-aligned boxes for overlap.",
+        "Find the contact normal and how deep the overlap is.",
+        "Push overlapping objects apart.",
+        "Stop fast objects from passing through walls.",
+      ]} />
 
       <H2>{tx(t, "gdCol_shapesTitle", "Why simple shapes")}</H2>
       <p>
@@ -203,6 +210,12 @@ export function SatContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdSat_intro",
           "Circles and axis-aligned boxes cover a lot, but a rotating crate, a car or a spaceship needs a shape that can turn and has corners. The Separating Axis Theorem (SAT) is the standard test for any two convex polygons, and it generalises the AABB test you already know: there, you checked for a gap on the x axis and on the y axis. SAT checks for a gap on a few more, carefully chosen, axes.")}
       </Lead>
+
+      <Goals t={t} id="gdSat" items={[
+        "Tell whether a shape is convex.",
+        "Test two convex polygons for collision with separating axes.",
+        "Find the smallest push that separates them.",
+      ]} />
 
       <H2>{tx(t, "gdSat_convexTitle", "Convex shapes")}</H2>
       <p>

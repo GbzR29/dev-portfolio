@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/picking.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglPick_goal0: "Transformar a posição do mouse num raio no mundo.",
+  oglPick_goal1: "Testar esse raio contra esferas, caixas e triângulos.",
+  oglPick_goal2: "Selecionar objetos com exatidão usando um ID buffer.",
   oglPick_intro: "Clicar em uma unidade num jogo de estratégia, selecionar uma malha num editor, mirar num inimigo: todos fazem a mesma pergunta, qual objeto está sob este pixel, e muitas vezes onde nele. A GPU desenhou a imagem, mas não lembra o que desenhou onde. Há dois jeitos de descobrir: disparar um raio de volta para a cena matematicamente, ou pedir à GPU que desenhe ids de objetos e ler o pixel.",
   oglPick_unprojTitle: "De um pixel de volta a um raio",
   oglPick_unprojBody: "A renderização levou um ponto do mundo pela view, pela projeção, pela divisão de perspectiva e pelo viewport até chegar a um pixel. O picking percorre essa cadeia ao contrário. Um pixel não corresponde a um ponto, já que a profundidade se perdeu na divisão. Ele corresponde a uma linha inteira de pontos, que é exatamente o raio que queremos. Desprojete o pixel no plano near (z = −1) e no plano far (z = +1), e o raio vai do primeiro ponto passando pelo segundo:",

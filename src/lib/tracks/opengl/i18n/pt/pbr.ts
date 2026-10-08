@@ -1,6 +1,20 @@
 // PT text for src/lib/tracks/opengl/chapters/pbr/*.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglPbrT_goal0: "Descrever uma superfície como muitos espelhinhos.",
+  oglPbrT_goal1: "Ler a equação de refletância termo por termo.",
+  oglPbrT_goal2: "Estimar uma integral com um laço.",
+  oglPbrT_goal3: "Montar materiais com o fluxo metallic-roughness.",
+  oglPbrL_goal0: "Escrever as três partes da BRDF de Cook-Torrance: D, G e F.",
+  oglPbrL_goal1: "Combiná-las num shader PBR que funciona.",
+  oglPbrL_goal2: "Alimentar o shader com texturas.",
+  oglIblD_goal0: "Separar a integral de iluminação numa parte difusa e numa parte especular.",
+  oglIblD_goal1: "Carregar um ambiente HDR e transformá-lo num cube map.",
+  oglIblD_goal2: "Pré-calcular um irradiance map por convolução.",
+  oglIblS_goal0: "Explicar a aproximação da soma dividida.",
+  oglIblS_goal1: "Pré-filtrar o environment map para cada rugosidade com amostragem por importância.",
+  oglIblS_goal2: "Montar o mapa de integração da BRDF.",
+  oglIblS_goal3: "Juntar tudo no termo ambiente final.",
   oglPbrT_intro: "A renderização baseada em física não é um algoritmo, mas uma promessa: cada termo da equação de iluminação tem um significado físico e uma unidade física. Os artistas param de ajustar intensidades especulares por luz; um material criado uma vez fica certo sob o sol do meio-dia, uma vela ou uma HDRI de estúdio. Este capítulo constrói a teoria — os próximos três a transformam em shaders.",
   oglPbrT_three: "Um modelo de iluminação é considerado baseado em física quando satisfaz três condições:",
   oglPbrT_c1: "É construído sobre o modelo de superfície de microfacetas.",

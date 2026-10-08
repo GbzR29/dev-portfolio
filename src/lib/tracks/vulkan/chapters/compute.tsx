@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DispatchFigure } from "@/components/lesson/figures/vulkan/DispatchFigure";
 import { ParticleFigure } from "@/components/lesson/figures/vulkan/ParticleFigure";
 
@@ -26,6 +26,12 @@ export function ComputeContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkComp_intro",
           "Everything the GPU has run so far was part of drawing: vertex shaders placing vertices, fragment shaders colouring pixels. A compute shader is the GPU's general-purpose side: a function run many thousands of times in parallel, with no triangles, no rasterizer and no attachments, reading and writing buffers and images directly. Physics, particles, culling, post-processing, image filters, skinning and much of modern rendering run this way. This chapter adds ten thousand particles orbiting the two cubes: a compute shader moves them every frame, and the same buffer is then drawn as points.")}
       </Lead>
+
+      <Goals t={t} id="vkComp" items={[
+        "Write a compute shader and choose its workgroup size.",
+        "Dispatch it between the right barriers.",
+        "Run a particle simulation on the GPU and draw the result.",
+      ]} />
 
       <H2>{tx(t, "vkComp_dispatchTitle", "A dispatch: workgroups and invocations")}</H2>
       <p>

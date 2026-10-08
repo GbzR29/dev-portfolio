@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MergeFigure } from "@/components/lesson/figures/algo/MergeFigure";
 import { SortFigure } from "@/components/lesson/figures/algo/SortFigure";
 
@@ -25,6 +25,13 @@ export function MergeSortContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alMerge_intro",
           "The previous chapter ended with a limit: sorting by swapping neighbours costs Θ(n²) on average, because each swap fixes only one inversion. Merge sort gets around it with a different strategy: cut the array in half, sort each half, and then merge the two sorted halves in a single pass. The result is Θ(n log n) comparisons in every case, which for a million elements means about 20 million steps instead of 250 billion.")}
       </Lead>
+
+      <Goals t={t} id="alMerge" items={[
+        "Merge two sorted runs in one pass.",
+        "Sort with merge sort, top-down and bottom-up.",
+        "Explain why merge sort takes n log n steps in every case.",
+        "Count inversions with a small change to merge sort.",
+      ]} />
 
       <H2>{tx(t, "alMerge_dcTitle", "Divide and conquer")}</H2>
       <p>

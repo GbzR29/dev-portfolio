@@ -12,7 +12,7 @@
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CameraLookAtFigure } from "@/components/lesson/figures/CameraLookAtFigure";
 import { YawPitchFigure } from "@/components/lesson/figures/YawPitchFigure";
 import { tx } from "@/lib/tracks/tx";
@@ -25,6 +25,13 @@ export function CameraContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglCam_intro",
           "OpenGL has no camera. In the last chapter, the \"camera\" was one line: translate the whole world by (0, 0, −3). This chapter turns that line into a real camera. First it circles the scene on its own. Then you walk with the keyboard, look around with the mouse and zoom with the scroll wheel, like in a first-person game.")}
       </Lead>
+
+      <Goals t={t} id="oglCam" items={[
+        "Build a view matrix with glm::lookAt.",
+        "Walk with W, A, S, D at the same speed on any machine.",
+        "Look around with the mouse and zoom with the scroll wheel.",
+        "Wrap it all in a Camera class.",
+      ]} />
 
       {/* ── WHAT CHANGES ────────────────────────────────────────────────── */}
       <H2>{tx(t, "oglCam_alongTitle", "What this chapter adds to main.cpp")}</H2>

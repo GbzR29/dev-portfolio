@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/similarity.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mSim_goal0: "Achar o fator de escala entre duas figuras com a mesma forma.",
+  mSim_goal1: "Mostrar que dois triângulos são semelhantes, e usar isso para achar comprimentos.",
+  mSim_goal2: "Prever como comprimentos, áreas e volumes mudam com a escala.",
+  mSim_goal3: "Usar escalas de mapas e plantas, e explicar por que o que está longe parece menor.",
   mSim_intro: "Uma foto e sua miniatura, um mapa e o terreno que ele mostra, uma miniatura de carro e o carro de verdade: cada par tem a mesma forma num tamanho diferente. A geometria chama essas formas de semelhantes. A ideia parece modesta, mas é o motivo de uma câmera conseguir transformar um mundo 3D numa imagem 2D, o motivo de a trigonometria funcionar, e o motivo de uma estátua construída duas vezes mais alta precisar de quatro vezes a tinta e oito vezes o bronze. Este capítulo a constrói a partir do capítulo de razões e do capítulo de triângulos.",
   mSim_defTitle: "Mesma forma: o fator de escala",
   mSim_defBody: "Duas figuras são semelhantes, escrito ∼, quando uma é uma ampliação ou redução exata da outra, possivelmente também deslocada, girada ou espelhada. Com precisão: seus ângulos correspondentes são iguais, e todo comprimento de uma é o mesmo número k vezes o comprimento correspondente da outra. Esse número é o fator de escala (a razão de semelhança). Se k > 1 a cópia é maior (uma ampliação), se 0 < k < 1 ela é menor (uma redução), e se k = 1 as duas são congruentes, o que faz da congruência o caso particular da semelhança sem mudança de tamanho. “Correspondente” quer dizer “no mesmo lugar”: a parede esquerda de uma casa corresponde à parede esquerda da outra, nunca ao telhado.",

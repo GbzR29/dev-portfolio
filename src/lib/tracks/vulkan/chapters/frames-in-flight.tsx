@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { FramesInFlightFigure } from "@/components/lesson/figures/vulkan/FramesInFlightFigure";
 import { SwapchainRetireFigure } from "@/components/lesson/figures/vulkan/SwapchainRetireFigure";
 
@@ -25,6 +25,13 @@ export function FramesInFlightContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkFif_intro",
           "Since the Synchronization chapter, drawFrame has started by waiting for the GPU to finish the previous frame. That wait keeps things simple and safe: there is one command buffer, one uniform buffer, one fence, and the CPU never touches them while the GPU uses them. It also means the CPU and the GPU take turns, each idle while the other works. This chapter gives every frame its own set of those objects so the CPU can record the next frame while the GPU draws the current one, and then removes the last vkDeviceWaitIdle from the render loop: the one in swapchain recreation.")}
       </Lead>
+
+      <Goals t={t} id="vkFif" items={[
+        "Explain why waiting for every frame leaves the CPU and the GPU idle.",
+        "Choose how many frames to keep in flight.",
+        "Duplicate exactly the resources each frame needs, and no more.",
+        "Resize the window without stalling the whole GPU.",
+      ]} />
 
       <H2>{tx(t, "vkFif_whyTitle", "Why one frame in flight is slow")}</H2>
       <p>

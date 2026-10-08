@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/cpp/chapters/ranges.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp08_goal0: "Chamar algoritmos no contêiner inteiro em vez de pares begin/end.",
+  cpp08_goal1: "Encadear views com | num pipeline preguiçoso.",
+  cpp08_goal2: "Reescrever um laço que filtra e transforma como uma única expressão de ranges.",
   cpp08_intro: "Os algoritmos do C++98 recebiam dois iteradores, o que significava que toda chamada começava com begin() e end() e nenhuma chamada podia ser encadeada. Ranges recebem o próprio container e se compõem com o operador pipe, então um loop de cinco linhas vira uma expressão legível que continua compilando para um loop.",
   cpp08_algosTitle: "Algoritmos de range",
   cpp08_viewsTitle: "Views são pipelines preguiçosos",

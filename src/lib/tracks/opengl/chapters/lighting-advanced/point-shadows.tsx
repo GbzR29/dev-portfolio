@@ -10,7 +10,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { PointShadowFigure } from "@/components/lesson/figures/advlighting/PointShadowFigure";
@@ -28,6 +28,12 @@ export function PointShadowsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglPShadow_intro",
           "A shadow map is a picture taken from the light, and a picture only covers what is in front of the camera. A bulb in the middle of a room shines in every direction at once — so it needs a picture in every direction at once: a cube map.")}
       </Lead>
+
+      <Goals t={t} id="oglPShadow" items={[
+        "Render the shadows of a point light into a cube map.",
+        "Store distances instead of depths.",
+        "Soften the edges by filtering in a cube map.",
+      ]} />
 
       <PointShadowFigure t={t} />
 

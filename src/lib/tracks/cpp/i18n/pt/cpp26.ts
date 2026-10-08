@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/cpp/chapters/cpp26.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp14_goal0: "Explicar o que a reflexão estática permite fazer que antes não dava.",
+  cpp14_goal1: "Citar as outras novidades principais do C++26.",
+  cpp14_goal2: "Planejar como adotar os recursos novos num código que já existe.",
   cpp14_intro: "O C++26 é a maior versão desde o C++11, e seu recurso principal — reflexão em tempo de compilação — muda o que é possível na linguagem, em vez de só acrescentar conveniências. Este capítulo é um tour pelo que está chegando e pelo que isso significa para código de engine.",
   cpp14_reflTitle: "Reflexão estática",
   cpp14_reflBody: "A reflexão permite que o código inspecione tipos em tempo de compilação: enumerar membros, ler nomes, percorrer enumeradores. Toda engine hoje resolve isso com macros, geradores de código ou uma IDL separada — serialização, painéis de propriedades do editor, bindings de script e replicação de rede são todos o mesmo problema. A reflexão elimina essa categoria inteira de ferramentas de build.",

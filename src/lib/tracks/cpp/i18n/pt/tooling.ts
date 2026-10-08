@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/cpp/chapters/tooling.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp15_goal0: "Montar um projeto com CMake baseado em targets e presets.",
+  cpp15_goal1: "Ligar os sanitizers e ler o que eles relatam.",
+  cpp15_goal2: "Adicionar dependências com um gerenciador de pacotes.",
+  cpp15_goal3: "Rodar um formatador e um analisador estático no CI.",
   cpp15_intro: "O C++ não tem sistema de build, gerenciador de pacotes nem formatador oficiais, o que significa que o ecossistema escolheu vários de cada. Este capítulo é a configuração da qual um projeto novo em 2026 deveria partir — CMake moderno, um gerenciador de pacotes, sanitizers ligados por padrão em debug e um linter na CI.",
   cpp15_cmakeTitle: "CMake baseado em targets",
   cpp15_cmakeBody: "A regra que separa o CMake moderno do estilo antigo: nunca defina uma variável global. Prenda tudo a um target, e marque cada propriedade como PUBLIC se quem consome precisar dela ou PRIVATE se ela parar neste target.",

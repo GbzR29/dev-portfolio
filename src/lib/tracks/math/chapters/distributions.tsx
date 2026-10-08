@@ -13,7 +13,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DistributionFigure } from "@/components/lesson/figures/math/DistributionFigure";
 
 const r = String.raw;
@@ -25,6 +25,13 @@ export function DistributionsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDist_intro",
           "Many random situations look different on the surface but share the same structure: counting successes in repeated trials, waiting for the first success, counting rare events in a period of time, measuring a quantity made of many small influences. Each structure gives a family of distributions with a name, a formula and one or two parameters, the knobs that pick one member of the family. This chapter derives the six families you will meet most often, each from its story, and computes their means and variances with the tools of the previous chapter.")}
       </Lead>
+
+      <Goals t={t} id="mDist" items={[
+        "Recognize which common distribution fits a situation.",
+        "Compute probabilities with the binomial, geometric and Poisson distributions.",
+        "Use the uniform and exponential distributions for continuous waiting times.",
+        "Work with the normal distribution.",
+      ]} />
 
       <H2>{tx(t, "mDist_binTitle", "Bernoulli and binomial: successes in n trials")}</H2>
       <p>

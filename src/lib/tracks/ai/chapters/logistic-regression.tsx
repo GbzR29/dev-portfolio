@@ -11,7 +11,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SigmoidFitFigure } from "@/components/lesson/figures/ai/SigmoidFitFigure";
 import { LogisticBoundaryFigure } from "@/components/lesson/figures/ai/LogisticBoundaryFigure";
 
@@ -24,6 +24,13 @@ export function LogisticRegressionContent({ t }: { t: TrackTranslations }) {
         {tx(t, "aiLog_intro",
           "Linear regression predicts a number. Many questions have a yes-or-no answer instead: will this student pass, is this email spam, will this player quit next week? That is classification, and the answer a model should give is not a bare \"yes\" but a probability: \"82% likely to pass\". Logistic regression is the simplest model that does this. It is a linear model with one extra function on top, trained with gradient descent on a new loss, and it is also exactly what one neuron of a neural network computes. This chapter builds it from the ground up and works it by hand on a small exam dataset.")}
       </Lead>
+
+      <Goals t={t} id="aiLog" items={[
+        "Turn a score into a probability with the sigmoid.",
+        "Explain why classification uses cross-entropy instead of squared error.",
+        "Train a classifier and draw its decision boundary.",
+        "Extend it to more than two classes with softmax.",
+      ]} />
 
       <H2>{tx(t, "aiLog_whyTitle", "Why not a straight line?")}</H2>
       <p>

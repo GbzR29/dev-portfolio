@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CallStackFigure } from "@/components/lesson/figures/algo/CallStackFigure";
 import { HanoiFigure } from "@/components/lesson/figures/algo/HanoiFigure";
 
@@ -25,6 +25,13 @@ export function RecursionContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alRec_intro",
           "A recursive function solves a problem by calling itself on a smaller version of the same problem. It sounds circular, and at first it feels like cheating, yet it is one of the most useful ideas in this whole track: sorting by merging, searching trees, exploring graphs and dynamic programming are all most naturally written this way. This chapter explains what happens inside the machine when a function calls itself, how to design recursive functions without getting lost, and how to work out what they cost.")}
       </Lead>
+
+      <Goals t={t} id="alRec" items={[
+        "Write a recursive function with a correct base case.",
+        "Trace the call stack of a recursive call by hand.",
+        "Write the recurrence for a recursion's cost and solve it.",
+        "Explore every combination of choices with backtracking, and turn a recursion into a loop.",
+      ]} />
 
       <H2>{tx(t, "alRec_ideaTitle", "The two parts of every recursion")}</H2>
       <p>

@@ -12,7 +12,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CoordFigure } from "@/components/lesson/figures/math/CoordFigure";
 import { ConicFigure } from "@/components/lesson/figures/math/ConicFigure";
 
@@ -37,6 +37,13 @@ export function AnalyticContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mAn_intro",
           "In 1637 René Descartes joined the two halves of mathematics: put a grid on the plane, and every point becomes a pair of numbers and every shape an equation. Geometry questions (do these lines meet? is this point inside the circle?) become algebra questions you can settle with a pencil, and algebra gets pictures in return. This chapter collects the tools: points between points, lines and their slopes, the circle as an equation, and the four curves the Greeks got by slicing a cone.")}
       </Lead>
+
+      <Goals t={t} id="mAn" items={[
+        "Find the midpoint of a segment, and the point that splits it in any ratio.",
+        "Write the equation of a line and of a circle.",
+        "Recognize ellipses, parabolas and hyperbolas from their equations.",
+        "Tell whether a line misses a circle, touches it or cuts through it.",
+      ]} />
 
       <H2>{tx(t, "mAn_midTitle", "Points between points")}</H2>
       <p>

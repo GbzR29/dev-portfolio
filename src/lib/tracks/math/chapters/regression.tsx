@@ -13,7 +13,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RegressionFigure } from "@/components/lesson/figures/math/RegressionFigure";
 
 const r = String.raw;
@@ -25,6 +25,13 @@ export function RegressionContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mReg_intro",
           "Often we measure two things on each individual: hours studied and exam score, a person's height and their arm span, the temperature and the number of ice creams sold. The question is how they move together. This chapter measures the strength of a straight-line relationship with one number, the correlation, and finds the straight line that best predicts one variable from the other, the least-squares line. Its derivation uses the partial derivatives of the calculus section and the dot product of the linear algebra section, and the whole method is worked through by hand.")}
       </Lead>
+
+      <Goals t={t} id="mReg" items={[
+        "Measure how two variables move together with covariance and correlation.",
+        "Fit the least-squares line.",
+        "Judge the fit with residuals and R².",
+        "Straighten curved data so a line fits it.",
+      ]} />
 
       <H2>{tx(t, "mReg_scatterTitle", "Scatter plots")}</H2>
       <p>

@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/oit.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglOit_goal0: "Explicar por que superfícies transparentes dependem da ordem em que são desenhadas.",
+  oglOit_goal1: "Comparar métodos exatos como o depth peeling.",
+  oglOit_goal2: "Implementar transparência independente de ordem com blending ponderado.",
   oglOit_intro: "O capítulo de Blending terminou com uma regra: desenhe os objetos transparentes de trás para frente. A regra existe porque a equação de blending depende da ordem. Ordenar funciona para objetos separados, mas falha para objetos que se cruzam, objetos que contêm outros ou uma única malha que se dobra sobre si mesma (cabelo, folhagem, uma garrafa de vidro). As técnicas de transparência independente de ordem (OIT) chegam a resultados corretos ou quase corretos sem ordenar.",
   oglOit_overTitle: "Por que a ordem importa",
   oglOit_overLabel: "O operador \"over\", aplicado camada por camada",

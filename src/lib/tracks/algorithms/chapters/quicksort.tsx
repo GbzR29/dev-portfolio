@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { PartitionFigure } from "@/components/lesson/figures/algo/PartitionFigure";
 import { SortFigure } from "@/components/lesson/figures/algo/SortFigure";
 
@@ -26,6 +26,13 @@ export function QuicksortContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alQuick_intro",
           "Quicksort is also divide and conquer, but it puts the work in the other place. Merge sort splits blindly and does its work when combining. Quicksort does its work when splitting: it rearranges the array so that all the small elements come before all the large ones, and after that nothing needs combining at all. It sorts in place, its inner loop is tiny, and on average it is the fastest general-purpose comparison sort in practice. It also has a famous weakness, a quadratic worst case, and this chapter shows exactly when it strikes and how to make it practically impossible.")}
       </Lead>
+
+      <Goals t={t} id="alQuick" items={[
+        "Partition an array around a pivot by hand.",
+        "Explain when quicksort is fast, when it is slow, and how random pivots help.",
+        "Handle many equal keys and keep the recursion shallow.",
+        "Find the k-th smallest element with quickselect.",
+      ]} />
 
       <H2>{tx(t, "alQuick_partTitle", "Partitioning")}</H2>
       <p>

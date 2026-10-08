@@ -9,7 +9,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { GammaFigure } from "@/components/lesson/figures/advlighting/GammaFigure";
@@ -27,6 +27,13 @@ export function GammaContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglGamma_intro",
           "Every lighting formula so far assumed that doubling a colour value doubles the light it produces. Your monitor disagrees. Getting this wrong makes lighting look too harsh and too dark, falloff look wrong, and blending look muddy — and fixing it takes two lines.")}
       </Lead>
+
+      <Goals t={t} id="oglGamma" items={[
+        "Explain what the display does to the numbers you write.",
+        "Light in linear space and convert to sRGB only for display.",
+        "Mark which textures are sRGB and which are linear.",
+        "Explain why attenuation looked wrong without gamma correction.",
+      ]} />
 
       <H2>{tx(t, "oglGamma_displayTitle", "What the display does")}</H2>
       <p>

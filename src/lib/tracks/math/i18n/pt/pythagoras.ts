@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/pythagoras.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mPy_goal0: "Explicar por que a² + b² = c² é verdade.",
+  mPy_goal1: "Achar o lado que falta num triângulo retângulo.",
+  mPy_goal2: "Testar se um triângulo tem um ângulo reto.",
+  mPy_goal3: "Achar a distância entre dois pontos.",
   mPy_intro: "De que tamanho precisa ser uma escada para alcançar uma janela? A que distância estão duas cidades num mapa desenhado numa grade? Este canto de uma parede nova está mesmo no esquadro? O que “uma TV de 55 polegadas” mede de fato? Cada uma dessas perguntas é o teorema de Pitágoras, um fato de 2500 anos sobre triângulos retângulos. Este capítulo o enuncia com precisão, prova-o de dois jeitos (um deles você pode deslizar com o mouse) e o transforma na fórmula da distância que o resto desta trilha usa em quase todo capítulo.",
   mPy_stmtTitle: "O enunciado",
   mPy_stmtBody: "Num triângulo retângulo, os dois lados que formam o canto de 90° são os catetos, normalmente chamados de a e b. O terceiro lado, oposto ao ângulo reto, é a hipotenusa, c; ela é sempre o maior lado (fica em frente ao maior ângulo, como mostrou o capítulo de triângulos). O teorema diz que o quadrado da hipotenusa é igual à soma dos quadrados dos catetos. “Quadrado” pode ser lido ao pé da letra: construa um quadrado sobre cada lado, e as áreas dos dois quadrados pequenos juntas são exatamente a área do grande.",

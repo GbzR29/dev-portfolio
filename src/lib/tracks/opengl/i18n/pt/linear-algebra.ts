@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/linear-algebra.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglMat_goal0: "Multiplicar uma matriz por um vetor, e ler as colunas como os novos eixos.",
+  oglMat_goal1: "Montar matrizes de escala, rotação e translação.",
+  oglMat_goal2: "Explicar por que gráficos 3D usam matrizes 4 × 4.",
+  oglMat_goal3: "Combinar transformações na ordem certa com GLM.",
   oglMat_intro: "Um modelo tem centenas ou milhares de vértices. Para movê-lo, girá-lo ou redimensioná-lo, todos eles precisam mudar do mesmo jeito. Uma matriz é uma receita compacta para uma mudança dessas, e a GPU a aplica em todo vértice. Este capítulo monta essa ideia um passo de cada vez: o que é uma matriz, como ela muda um vetor, as matrizes que escalam, giram e movem, e como encadeá-las. Ele usa as operações com vetores do capítulo anterior, principalmente o produto escalar.",
 
   oglMat_whatTitle: "O que é uma matriz",

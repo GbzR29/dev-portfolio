@@ -10,7 +10,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { AccumulationFigure } from "@/components/lesson/figures/math/AccumulationFigure";
 
 const r = String.raw;
@@ -22,6 +22,13 @@ export function FtcContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mFtc_intro",
           "Slopes and areas look like unrelated problems: one is about a single point, the other about a whole interval. The fundamental theorem of calculus says they are inverse operations, like multiplication and division. Integrating a rate gives the total change; differentiating an accumulated total gives back the rate. In practice it means the painful limit of sums from the last chapter can almost always be replaced by running the derivative table backwards and subtracting two numbers.")}
       </Lead>
+
+      <Goals t={t} id="mFtc" items={[
+        "Explain why the area under a curve grows at the rate of the curve's height.",
+        "Find antiderivatives, constant of integration included.",
+        "Evaluate a definite integral with an antiderivative.",
+        "Get position from velocity and velocity from acceleration.",
+      ]} />
 
       <H2>{tx(t, "mFtc_accTitle", "Area as a function")}</H2>
       <p>

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/sdl3/chapters/platform.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  sdl10_goal0: "Medir o tempo com os relógios do SDL.",
+  sdl10_goal1: "Pôr os arquivos de save no lugar certo em cada plataforma.",
+  sdl10_goal2: "Rodar trabalho em threads e escrever logs pelo SDL.",
+  sdl10_goal3: "Preparar um build para distribuir.",
   sdl10_intro: "Os últimos vinte por cento de lançar um jogo são tudo o que está em volta do jogo: onde fica o arquivo de save em cada plataforma, como o log é escrito, o que acontece num notebook com tela de 90 Hz. O SDL cobre a maior parte disso, e usar as abstrações dele em vez das da plataforma é o que torna o port para a próxima plataforma algo sem surpresas.",
   sdl10_timeTitle: "Tempo",
   sdl10_refreshTip: "Não fixe 60 FPS no código. Consulte o modo de tela com SDL_GetCurrentDisplayMode e leia o refresh_rate — os jogadores têm telas de 60, 90, 120, 144 e 165 Hz, e um jogo que presume 60 ou roda na metade da velocidade ou gasta bateria renderizando frames que ninguém vê.",

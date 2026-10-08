@@ -10,7 +10,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TriangleDebugFigure } from "@/components/lesson/figures/glintro/TriangleDebugFigure";
 
 export function TriangleContent({ t }: { t: TrackTranslations }) {
@@ -20,6 +20,12 @@ export function TriangleContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglTri_intro",
           "Every piece is now in place: a window and a context, a buffer holding the vertices, a vertex array describing them, and a pair of shaders. This chapter puts them together into one complete program, the traditional first program of graphics, and then does what every graphics programmer spends a good part of their time doing: working out why the screen is black. The figure lets you remove any call from the program and see exactly what breaks.")}
       </Lead>
+
+      <Goals t={t} id="oglTri" items={[
+        "Draw your first triangle.",
+        "Explain what each part of the complete program does.",
+        "Find the cause when the screen stays black.",
+      ]} />
 
       <H2>{tx(t, "oglTri_drawTitle", "The three missing lines")}</H2>
       <p>

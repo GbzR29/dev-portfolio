@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/tooling.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglDebug_goal0: "Ligar o callback de debug e ler as mensagens dele.",
+  oglDebug_goal1: "Procurar erros com glGetError quando não há saída de debug.",
+  oglDebug_goal2: "Dar nome aos seus objetos do OpenGL para as ferramentas os mostrarem claramente.",
+  oglDebug_goal3: "Seguir a lista de checagem da tela preta.",
   oglDebug_intro: "O OpenGL falha em silêncio. Um enum errado, um buffer ligado ao alvo errado, um uniform definido no programa errado — nada disso lança exceção, nada imprime coisa alguma, e o resultado é uma tela preta sem nenhuma informação. Este capítulo é sobre fazer a API dizer o que deu errado, porque fazer isso uma vez vale mais do que qualquer tempo encarando código de shader.",
   oglDebug_callbackTitle: "O debug callback",
   oglDebug_callbackBody: "O OpenGL 4.3 adicionou uma saída de depuração de verdade: você registra uma função e o driver a chama com uma mensagem legível sempre que algo está errado, obsoleto ou só lento. Isso substitui o velho hábito de espalhar glGetError por todo lado, e informa muito mais do que glGetError jamais conseguiria.",

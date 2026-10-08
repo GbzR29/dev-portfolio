@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function LandscapeContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,12 @@ export function LandscapeContent({ t }: { t: TrackTranslations }) {
           "C++ ships a new standard every three years. That cadence means the language you learned five years ago is not the language people write today. This track teaches the C++ that a graphics and game programmer actually writes in 2026: value semantics, RAII, compile-time computation, and the standard library that replaced most of the hand-rolled code of the 2000s."
         )}
       </p>
+
+      <Goals t={t} id="cpp01" items={[
+        "Say what separates the C++ people write today from older C++.",
+        "Pick a language standard and turn it on in your compiler.",
+        "Build and run a first program written in the modern style.",
+      ]} />
 
       <H2>{tx(t, "cpp01_trainTitle", "The three-year release train")}</H2>
       <p>

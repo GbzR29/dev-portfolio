@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/glsl/chapters/noise.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glsl05_goal0: "Escrever um hash que transforma coordenadas em números com cara de aleatórios.",
+  glsl05_goal1: "Construir value noise a partir de um hash e de uma transição suave.",
+  glsl05_goal2: "Somar oitavas para obter movimento browniano fracionário.",
+  glsl05_goal3: "Diferenciar ruído de valor, de gradiente e de células.",
   glsl05_intro: "Ruído é a base de texturas procedurais, geração de terreno, variação de materiais e efeitos orgânicos. O GLSL não tem função de ruído embutida (o histórico noise() foi removido), então você escreve a sua usando funções hash.",
   glsl05_hashTitle: "Função hash",
   glsl05_hashBody: "Uma função hash mapeia um valor para um número pseudo-aleatório. No GLSL, a abordagem clássica usa produto escalar + sin + fract para gerar floats pseudo-aleatórios de uma entrada vec2.",

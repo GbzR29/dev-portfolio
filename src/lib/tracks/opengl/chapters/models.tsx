@@ -3,6 +3,7 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 import type { TrackTranslations } from "@/lib/tracks/types";
 
 // ── Model Loading with Assimp ────────────────────────────────────────────────
@@ -16,6 +17,13 @@ export function ModelLoadingContent({ t }: { t: TrackTranslations }) {
           "Every vertex array so far has been typed by hand. Real assets come out of Blender or Maya as OBJ, FBX or glTF, and writing a parser for each is not a good use of your time. Assimp reads about forty formats and hands them all back through one uniform data structure, which is the only reason anyone tolerates the FBX format."
         )}
       </p>
+
+      <Goals t={t} id="oglModel" items={[
+        "Load a model file with Assimp.",
+        "Build a Mesh class that owns its GPU buffers.",
+        "Walk the scene's node tree to draw every mesh.",
+        "Load each texture only once.",
+      ]} />
 
       <H2>{tx(t, "oglModel_structTitle", "How Assimp structures a file")}</H2>
       <p>

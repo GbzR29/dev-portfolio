@@ -10,7 +10,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MatrixFigure } from "@/components/lesson/figures/math/MatrixFigure";
 
 const r = String.raw;
@@ -22,6 +22,13 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mMat_intro",
           "The transformations chapter wrote each move as its own rule, and the identities chapter found the rule for rotation by any angle. Look at those rules side by side and they all have the same shape: the new x is some amount of the old x plus some amount of the old y, and likewise for the new y. Four numbers decide everything. Written as a small grid, those four numbers are a matrix, one of the central objects of mathematics, used wherever quantities are mixed in straight proportion. This chapter builds matrices from that one observation.")}
       </Lead>
+
+      <Goals t={t} id="mMat" items={[
+        "Multiply a matrix by a vector, in two ways.",
+        "Read a matrix's columns as the places where the axes land.",
+        "Multiply matrices to chain transformations.",
+        "Add an extra coordinate so that moving a point is a matrix too.",
+      ]} />
 
       <H2>{tx(t, "mMat_shapeTitle", "One shape for every rule")}</H2>
       <p>

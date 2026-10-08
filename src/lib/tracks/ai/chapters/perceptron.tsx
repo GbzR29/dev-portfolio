@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { NeuronFigure } from "@/components/lesson/figures/ai/NeuronFigure";
 import { PerceptronFigure } from "@/components/lesson/figures/ai/PerceptronFigure";
 
@@ -26,6 +26,13 @@ export function PerceptronContent({ t }: { t: TrackTranslations }) {
         {tx(t, "aiPerc_intro",
           "Every neural network, from a digit reader to a large language model, is built from one small unit: the artificial neuron. It takes a few numbers, weighs them, adds them up and decides. The perceptron, invented by Frank Rosenblatt in 1958, is that neuron plus a rule for learning its weights from examples. It was the first machine that learned. This chapter builds it, trains it by hand, proves when its rule works, and finds the one simple problem it cannot solve. That failure is exactly why networks have layers.")}
       </Lead>
+
+      <Goals t={t} id="aiPerc" items={[
+        "Compute a neuron's output from its weights and bias.",
+        "Build AND, OR and NAND gates out of a single neuron.",
+        "Train a perceptron with its learning rule.",
+        "Explain why one neuron cannot learn XOR.",
+      ]} />
 
       <H2>{tx(t, "aiPerc_neuronTitle", "From a brain cell to a formula")}</H2>
       <p>

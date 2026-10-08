@@ -5,6 +5,7 @@
 import { TrackTranslations } from "@/lib/tracks/types";
 import { CodeBlock, Callout, H2 } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 
 export function AudioContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,12 @@ export function AudioContent({ t }: { t: TrackTranslations }) {
           "SDL3 rewrote audio around streams. In SDL2 you opened a device in one specific format and converted everything yourself; in SDL3 you open a stream, tell it the format your data is in, and SDL converts and resamples on the way to the device. Several streams can feed the same device and SDL mixes them."
         )}
       </p>
+
+      <Goals t={t} id="sdl08" items={[
+        "Open an audio stream and let SDL convert the format for you.",
+        "Generate sound in a callback.",
+        "Mix several sounds on one device.",
+      ]} />
 
       <H2>{tx(t, "sdl08_conceptTitle", "Streams, devices and logical devices")}</H2>
       <p>

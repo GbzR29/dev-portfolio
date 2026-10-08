@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/stencil.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglSten_goal0: "Dizer onde o teste de stencil fica e o que fazem os seus três resultados.",
+  oglSten_goal1: "Desenhar contornos em volta de objetos com o stencil buffer.",
+  oglSten_goal2: "Usar o stencil buffer para espelhos, portais e máscaras.",
   oglSten_intro: "O depth buffer responde a uma pergunta fixa por pixel: este fragmento está mais perto do que o que já está ali? O stencil buffer é um segundo buffer por pixel, geralmente de 8 bits, cujo significado fica totalmente por sua conta. Você escreve pequenos inteiros nele ao desenhar alguns objetos, e draws posteriores são permitidos ou rejeitados com base nesses valores. Contornos, espelhos, portais, decals, shadow volumes e volumes de luz do deferred são todos construídos sobre ele.",
   oglSten_whereTitle: "Onde o teste fica",
   oglSten_whereBody: "Depois do fragment shader, todo fragmento passa pelos testes por fragmento numa ordem fixa: scissor, depois stencil, depois profundidade, depois blending. Os valores de stencil e de profundidade vivem lado a lado, empacotados em uma palavra de 32 bits por pixel como GL_DEPTH24_STENCIL8. É por isso que os dois testes são configurados juntos, e por isso você os anexa juntos a um framebuffer.",

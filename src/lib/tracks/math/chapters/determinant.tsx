@@ -10,7 +10,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DeterminantFigure } from "@/components/lesson/figures/math/DeterminantFigure";
 
 const r = String.raw;
@@ -22,6 +22,13 @@ export function DeterminantContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDet_intro",
           "The number ad − bc has turned up three times already: as the denominator of Cramer's rule in the systems chapter, as the 2D cross product, and in the shoelace formula for area. It is the determinant of the matrix [[a, b], [c, d]], and it has a clear geometric meaning: how much the matrix scales areas, and whether it flips the plane over. This chapter derives it from a picture and then puts it to work.")}
       </Lead>
+
+      <Goals t={t} id="mDet" items={[
+        "Compute a 2 × 2 and a 3 × 3 determinant.",
+        "Read the determinant as the factor that scales every area or volume.",
+        "Tell from its sign whether a transformation flips things over.",
+        "Recognize a determinant of zero as space collapsing.",
+      ]} />
 
       <H2>{tx(t, "mDet_scaleTitle", "Every area is scaled by the same factor")}</H2>
       <p>

@@ -2,6 +2,10 @@
 // Moved out of tooling.ts and extended for the explanation pass on 2026-10-01.
 
 const text: Record<string, string> = {
+  oglCompute_goal0: "Explicar como o trabalho de compute se divide em workgroups.",
+  oglCompute_goal1: "Escrever numa textura a partir de um compute shader.",
+  oglCompute_goal2: "Compartilhar dados dentro de um workgroup com memória compartilhada e barrier().",
+  oglCompute_goal3: "Ler e escrever dados grandes com shader storage buffers.",
   oglCompute_intro: "Todo shader até aqui ficava dentro do pipeline de rasterização: recebia vértices ou fragmentos e tinha que produzir geometria ou cor. Um compute shader não tem pipeline em volta. Você despacha uma grade de threads, elas leem e escrevem buffers e imagens, e esse é o modelo inteiro. É assim que simulação de partículas, culling, física e processamento de imagem vão para a GPU.",
   oglCompute_modelTitle: "O modelo de execução",
   oglCompute_modelBody: "O trabalho é organizado em dois níveis. Você despacha work groups; cada work group roda um número fixo de invocações declarado no shader. Invocações dentro de um grupo podem compartilhar memória e se sincronizar entre si. Invocações em grupos diferentes não podem — talvez nem rodem ao mesmo tempo.",

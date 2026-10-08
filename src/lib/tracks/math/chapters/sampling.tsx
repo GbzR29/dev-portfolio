@@ -13,7 +13,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SamplingFigure } from "@/components/lesson/figures/math/SamplingFigure";
 
 const r = String.raw;
@@ -25,6 +25,13 @@ export function SamplingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSamp_intro",
           "A poll asks 1000 people and announces what a whole country thinks. A factory measures 50 bolts and certifies a million. How can a small sample say anything reliable about a huge population, and how reliable is it? This chapter joins the two halves of the section: the data of the descriptive chapter are treated as random variables, and the rules of expectation and the normal distribution tell us how far a sample result is likely to be from the truth. The answers are the law of large numbers, the central limit theorem, confidence intervals and hypothesis tests.")}
       </Lead>
+
+      <Goals t={t} id="mSamp" items={[
+        "Tell a population's parameters from a sample's statistics.",
+        "Explain how the sample mean behaves with the law of large numbers and the central limit theorem.",
+        "Build a confidence interval.",
+        "Run a hypothesis test and read its result.",
+      ]} />
 
       <H2>{tx(t, "mSamp_paramTitle", "Parameters, statistics and random samples")}</H2>
       <p>

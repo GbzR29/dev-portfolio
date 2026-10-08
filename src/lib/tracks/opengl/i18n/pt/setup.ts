@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/setup.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglSetup_goal0: "Criar uma janela e um contexto OpenGL com GLFW e GLAD.",
+  oglSetup_goal1: "Configurar o build com CMake.",
+  oglSetup_goal2: "Escrever um laço de renderização com double buffering, vsync e redimensionamento.",
+  oglSetup_goal3: "Saber o que cada capítulo seguinte acrescenta ao main.cpp.",
   oglSetup_intro: "OpenGL é uma especificação, não uma biblioteca. Não existe um opengl.dll contra o qual você linka que contenha as funções modernas — a implementação vive dentro do driver gráfico, e os pontos de entrada precisam ser buscados em tempo de execução. Além disso, o OpenGL não sabe nada sobre janelas, teclados ou monitores. Duas bibliotecas extras preenchem essas lacunas, e este capítulo configura as duas.",
   oglSetup_stackNote: "O que esta trilha usa: C++, com GLFW para a janela, GLAD para carregar as funções do OpenGL e GLM para a matemática, compilando com CMake. É a combinação mais comum em livros e tutoriais, então é a que tem mais respostas quando você trava. Se você já usa SDL, SFML ou Java com LWJGL, pode continuar com ela: só umas dez linhas, as que criam a janela e rodam o loop, são diferentes. A seção \"Usando outra biblioteca de janelas\", perto do fim, mostra essas linhas lado a lado. Toda chamada gl… e todo shader são exatamente iguais em todas elas.",
   oglSetup_glad2Tip: "Existem duas versões do GLAD. Esta trilha usa o GLAD 1 (gerador em glad.dav1d.de): header glad/glad.h, carregado com gladLoadGLLoader((GLADloadproc)glfwGetProcAddress). O GLAD 2, mais novo (gen.glad.sh), funciona do mesmo jeito mas dá outros nomes: header glad/gl.h e a chamada gladLoadGL(glfwGetProcAddress). Qualquer um serve; só não misture o header de um com a chamada do outro.",

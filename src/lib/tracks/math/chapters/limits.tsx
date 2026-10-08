@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { LimitFigure } from "@/components/lesson/figures/math/LimitFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function LimitsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mLim_intro",
           "Calculus is the mathematics of change and accumulation: how fast something is changing at one instant, and how much piles up when tiny changes add together. Both questions lead to the same obstacle, a division by zero or a sum of infinitely many pieces, and both are answered by one new idea: the limit, the value a quantity gets as close as you like to. This chapter builds that idea carefully, because every later chapter of the section stands on it.")}
       </Lead>
+
+      <Goals t={t} id="mLim" items={[
+        "Say what a limit means, and find one from a graph or a table of values.",
+        "Compute limits, one-sided limits and limits at infinity.",
+        "Tell whether a function is continuous, and where it breaks.",
+        "Find a root by bisection, using the intermediate value theorem.",
+      ]} />
 
       <H2>{tx(t, "mLim_whyTitle", "Why we need a new idea")}</H2>
       <p>

@@ -10,7 +10,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { DispatchFigure } from "@/components/lesson/figures/advgl/DispatchFigure";
@@ -26,6 +26,13 @@ export function ComputeContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglCompute_intro",
           "Every shader so far sat inside the rasterization pipeline: it received vertices or fragments and had to produce geometry or colour. A compute shader has no pipeline around it. You dispatch a grid of threads, they read and write buffers and images, and that is the whole model. It is how particle simulation, culling, physics and image processing move onto the GPU.")}
       </Lead>
+
+      <Goals t={t} id="oglCompute" items={[
+        "Explain how compute work is split into workgroups.",
+        "Write into a texture from a compute shader.",
+        "Share data inside a workgroup with shared memory and barrier().",
+        "Read and write large data with shader storage buffers.",
+      ]} />
 
       <H2>{tx(t, "oglCompute_modelTitle", "The execution model")}</H2>
       <p>

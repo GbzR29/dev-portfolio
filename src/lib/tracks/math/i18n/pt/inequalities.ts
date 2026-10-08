@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/inequalities.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mIneq_goal0: "Resolver uma inequação do primeiro grau e escrever a resposta como um intervalo.",
+  mIneq_goal1: "Saber quando o sinal da desigualdade tem de virar.",
+  mIneq_goal2: "Resolver inequações compostas e inequações com valor absoluto.",
+  mIneq_goal3: "Conferir uma resposta com pontos de teste.",
   mIneq_intro: "Muitas perguntas não são “quanto exatamente?”, e sim “quanto basta?” ou “quais valores são permitidos?”. A casa fica a uma distância que dá para ir a pé até a escola? Quantas caixas o elevador aguenta antes de ficar sobrecarregado? Que velocidades mantêm uma viagem abaixo de duas horas? Isso são inequações. As respostas delas não são números isolados, e sim faixas inteiras de números, e resolvê-las usa quase exatamente os mesmos movimentos das equações, com uma exceção importante que este capítulo explica até ficar óbvia.",
   mIneq_symTitle: "Os quatro símbolos de ordem",
   mIneq_symBody: "Na reta numérica, a < b quer dizer que a fica à esquerda de b. A ponta do símbolo aponta para o número menor, o lado aberto fica virado para o maior. Todo par de números reais está em exatamente uma de três relações: a < b, a = b ou a > b. Os símbolos “ou igual” combinam duas delas: a ≤ b quer dizer a < b ou a = b.",

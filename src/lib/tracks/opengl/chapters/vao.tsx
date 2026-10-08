@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { VertexLayoutFigure } from "@/components/lesson/figures/glintro/VertexLayoutFigure";
 import { VaoRecordFigure } from "@/components/lesson/figures/glintro/VaoRecordFigure";
 
@@ -26,6 +26,12 @@ export function VAOContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglVao_intro",
           "The VBO holds your vertices as raw bytes. The vertex shader asks for named, typed inputs: a vec3 aPos at location 0, a vec3 aColor at location 1. Something has to connect the two by saying where in the bytes each input's values are and how to read them. That description is the vertex layout, and the object that stores it is the Vertex Array Object (VAO). This chapter explains every number in the description, lets you break it on purpose to see what each one does, and shows exactly what a VAO remembers, so that drawing a mesh becomes a single bind.")}
       </Lead>
+
+      <Goals t={t} id="oglVao" items={[
+        "Describe the layout of your vertex data with glVertexAttribPointer.",
+        "Say what a VAO remembers and what it does not.",
+        "Set up several VAOs and switch between them.",
+      ]} />
 
       <H2>{tx(t, "oglVao_inputsTitle", "From bytes to shader inputs")}</H2>
       <p>

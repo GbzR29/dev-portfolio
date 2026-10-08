@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/differential-equations.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mOde_goal0: "Ler uma equação diferencial como um campo de inclinações.",
+  mOde_goal1: "Resolver crescimento e decaimento, e outras equações separáveis.",
+  mOde_goal2: "Seguir uma solução passo a passo com o método de Euler.",
+  mOde_goal3: "Dizer se uma solução se acomoda ou dispara, e resolver a equação da mola.",
   mOde_intro: "As leis da natureza raramente são escritas como fórmulas para uma grandeza. Elas são escritas como regras de quão rápido ela muda: uma bebida quente esfria mais rápido quanto mais quente está, uma população cresce em proporção ao seu tamanho, uma mola puxa mais forte quanto mais é esticada. Uma regra assim é uma equação diferencial, uma equação cuja incógnita é uma função inteira e que envolve as derivadas dessa função. O capítulo do teorema fundamental conseguia integrar uma aceleração conhecida de antemão; aqui a taxa depende da própria incógnita, e é preciso um conjunto novo de ideias. Este capítulo fecha a seção de Cálculo.",
   mOde_whatTitle: "O que é uma equação diferencial",
   mOde_whatBody: "Uma equação diferencial ordinária (EDO) relaciona uma função desconhecida y(t) de uma variável com suas derivadas: y′ = −0,5y, ou y″ = −4y, ou y′ = t − y. “Ordinária” quer dizer uma variável de entrada; com várias entradas e derivadas parciais seria uma equação diferencial parcial, além deste curso. A ordem é a maior derivada que aparece: y′ = −0,5y é de primeira ordem, y″ = −4y de segunda ordem. Uma solução é uma função que torna a equação verdadeira para todo t. Conferir uma é só derivar e substituir: para y = 3e^(−0,5t), y′ = −1,5e^(−0,5t) = −0,5 · 3e^(−0,5t) = −0,5y ✓.",

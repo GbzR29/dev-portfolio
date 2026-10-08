@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { LearningRateFigure } from "@/components/lesson/figures/ai/LearningRateFigure";
 import { DescentPathFigure } from "@/components/lesson/figures/ai/DescentPathFigure";
 
@@ -25,6 +25,13 @@ export function GradientDescentContent({ t }: { t: TrackTranslations }) {
         {tx(t, "aiGd_intro",
           "In the first chapter you lowered the loss by dragging the line and watching the number. An algorithm cannot see the picture, and a neural network has millions of parameters instead of two, but it can compute the gradient: for every parameter, how the loss would change if that parameter grew a little. Gradient descent takes a small step against it, recomputes, and repeats. It is the optimiser behind almost all of modern machine learning. This chapter works it out by hand on the deliveries, shows exactly when it converges and when it explodes, and writes the training loop the rest of the track reuses.")}
       </Lead>
+
+      <Goals t={t} id="aiGd" items={[
+        "Apply the gradient descent update by hand.",
+        "Choose a learning rate, and recognize one that is too large.",
+        "Choose between batch, mini-batch and stochastic descent.",
+        "Check a gradient numerically.",
+      ]} />
 
       <H2>{tx(t, "aiGd_ruleTitle", "The update rule")}</H2>
       <p>

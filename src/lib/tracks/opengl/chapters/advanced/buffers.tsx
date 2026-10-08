@@ -3,6 +3,7 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 import type { TrackTranslations } from "@/lib/tracks/types";
 
 // ── Buffer Data: update, map, copy ───────────────────────────────────────────
@@ -16,6 +17,13 @@ export function BufferDataContent({ t }: { t: TrackTranslations }) {
           "So far every buffer was filled once, whole, with glBufferData. Real programs also change part of a buffer, write into one through a pointer, lay out attributes in different ways and copy data from one buffer to another. None of this needs a new kind of object. A buffer is just a block of memory managed by OpenGL, and a handful of calls cover everything you will ever do to one."
         )}
       </p>
+
+      <Goals t={t} id="oglBuf" items={[
+        "Update part of a buffer with glBufferSubData.",
+        "Write into a buffer through a mapped pointer.",
+        "Choose between interleaved and batched attributes.",
+        "Copy data between buffers on the GPU.",
+      ]} />
 
       <H2>{tx(t, "oglBuf_targetsTitle", "Targets are only binding points")}</H2>
       <p>

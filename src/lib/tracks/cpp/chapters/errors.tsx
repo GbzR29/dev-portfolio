@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function ErrorsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function ErrorsContent({ t }: { t: TrackTranslations }) {
           "C++ has three error-handling mechanisms and a long-running argument about which to use. Game engines commonly build with exceptions disabled; the standard library assumes they are on. C++23 added std::expected, which finally gives the 'errors are values' camp a vocabulary type instead of everyone inventing their own Result."
         )}
       </p>
+
+      <Goals t={t} id="cpp09" items={[
+        "Choose between optional, expected and exceptions for a given failure.",
+        "Return an error together with its reason using std::expected.",
+        "Explain what exceptions cost and why engines often turn them off.",
+        "Say what contracts add in C++26.",
+      ]} />
 
       <H2>{tx(t, "cpp09_optionalTitle", "optional — absence is not an error")}</H2>
 

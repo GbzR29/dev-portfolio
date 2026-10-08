@@ -3,13 +3,14 @@
 // name in the current language (trackName_<id> in the learning bundle).
 
 import type { Crumb } from "@/components/lesson/LearnTopBar";
-import { getTrack } from "./index";
+import { TRACK_CATALOG } from "./catalog";
 
 type Strings = Record<string, string | undefined>;
 
+/** Looked up in the catalog, so "coming soon" tracks (no chapters yet) are named too. */
 export function trackName(t: Strings, trackPath: string): string {
-  const track = getTrack(trackPath);
-  return (track && t[`trackName_${track.id}`]) ?? track?.title ?? trackPath;
+  const info = TRACK_CATALOG.find((i) => i.path === trackPath);
+  return (info && t[`trackName_${info.id}`]) ?? info?.title ?? trackPath;
 }
 
 export function trackCrumbs(t: Strings, trackPath: string): Crumb[] {

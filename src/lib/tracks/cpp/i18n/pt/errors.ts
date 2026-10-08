@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/cpp/chapters/errors.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp09_goal0: "Escolher entre optional, expected e exceções para uma falha.",
+  cpp09_goal1: "Retornar um erro junto com o motivo usando std::expected.",
+  cpp09_goal2: "Explicar quanto as exceções custam e por que engines costumam desligá-las.",
+  cpp09_goal3: "Dizer o que os contratos acrescentam no C++26.",
   cpp09_intro: "O C++ tem três mecanismos de tratamento de erro e uma discussão antiga sobre qual usar. Engines de jogos costumam compilar com exceções desligadas; a biblioteca padrão presume que estão ligadas. O C++23 acrescentou std::expected, que finalmente dá ao grupo do \"erros são valores\" um tipo de vocabulário, em vez de cada um inventar o seu próprio Result.",
   cpp09_optionalTitle: "optional — ausência não é erro",
   cpp09_expectedTitle: "expected — um erro com motivo",

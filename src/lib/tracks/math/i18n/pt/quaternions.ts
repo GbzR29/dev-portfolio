@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/quaternions.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mQuat_goal0: "Explicar o que dá errado com ângulos de Euler e com matrizes de rotação.",
+  mQuat_goal1: "Multiplicar quatérnios e girar um vetor com um deles.",
+  mQuat_goal2: "Combinar rotações e desfazê-las.",
+  mQuat_goal3: "Misturar orientações com nlerp e slerp, e transformar um quatérnio numa matriz.",
   mQuat_intro: "Em 2D uma orientação é um ângulo, e o capítulo de números complexos mostrou que um número complexo unitário a guarda perfeitamente: multiplique para girar, multiplique para combinar. O 3D é mais difícil. Descrever para onde um avião, um satélite ou um pião está virado, combinar dois giros num só e encontrar a orientação no meio de outras duas são coisas surpreendentemente incômodas. Três ângulos falham, matrizes são volumosas e se degradam. Os quatérnios, quatro números inventados por William Rowan Hamilton em 1843, fazem o trabalho melhor, e o controle de atitude de naves espaciais e a robótica dependem deles. Este capítulo os constrói a partir dos números complexos e dos produtos escalar e vetorial.",
   mQuat_optionsTitle: "Três jeitos que quase funcionam",
   mQuat_eulerTitle: "Ângulos de Euler e o gimbal lock",

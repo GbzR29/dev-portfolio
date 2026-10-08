@@ -5,6 +5,7 @@
 import { TrackTranslations } from "@/lib/tracks/types";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 
 export function SetupContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function SetupContent({ t }: { t: TrackTranslations }) {
           "Getting SDL3 into a project is the part most tutorials handle badly. The recommended path today is CMake plus FetchContent: no system install, no hunting for development packages, and the exact version you pinned is what every machine builds."
         )}
       </p>
+
+      <Goals t={t} id="sdl02" items={[
+        "Add SDL3 to a project with CMake and FetchContent.",
+        "Open a window that closes properly.",
+        "Start and shut down only the subsystems you use.",
+        "Wrap SDL's setup and cleanup in RAII.",
+      ]} />
 
       <H2>{tx(t, "sdl02_cmakeTitle", "The build file")}</H2>
 

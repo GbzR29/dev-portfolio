@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/reflections.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglRefl_goal0: "Calcular um raio refletido.",
+  oglRefl_goal1: "Renderizar reflexos planares por uma câmera espelhada.",
+  oglRefl_goal2: "Usar sondas de reflexo com projeção em caixa.",
+  oglRefl_goal3: "Adicionar reflexos em espaço de tela, e conhecer os seus limites.",
   oglRefl_intro: "Um reflexo mostra, em cada ponto de uma superfície brilhante, o que o raio de visão vê depois de quicar nela. Um rasterizador desenha o que a câmera vê diretamente, e todo o resto precisa ser simulado: renderizando a cena de novo a partir de uma câmera espelhada, pré-capturando os arredores em cube maps, ou reaproveitando a imagem que já está na tela. Engines reais combinam os três, cada um cobrindo os pontos cegos dos outros.",
   oglRefl_reflectTitle: "O raio refletido",
   oglRefl_reflectLabel: "Direção de reflexão",

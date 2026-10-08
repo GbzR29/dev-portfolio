@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/descriptive-stats.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mDesc_goal0: "Resumir dados com uma tabela de frequências e um histograma.",
+  mDesc_goal1: "Achar a média, a mediana, a moda, os quartis e o desvio padrão.",
+  mDesc_goal2: "Desenhar um box plot, e comparar valores com escores z e percentis.",
+  mDesc_goal3: "Perceber o paradoxo de Simpson quando grupos são juntados.",
   mDesc_intro: "A estatística começa com dados: uma lista de números que alguém mediu, como notas de prova, alturas ou tempos de espera, e a vontade de entendê-los. O primeiro passo é descrevê-los com honestidade: desenhá-los, encontrar seu centro, medir sua dispersão e notar qualquer coisa incomum. Tudo aqui só precisa de aritmética. O resto desta seção depois faz o caminho contrário, de um modelo como um dado honesto até os dados que ele deveria produzir, e as ideias que você encontra aqui (média, dispersão, histograma) voltam lá com probabilidades no lugar de frequências. Algumas ferramentas, como a mediana e o boxplot, valem a pena porque continuam confiáveis quando alguns valores são estranhos.",
   mDesc_dataTitle: "Dados, populações e amostras",
   mDesc_dataBody: "A população é o grupo inteiro que nos interessa: todo eleitor de um país, todo parafuso que uma fábrica faz. Normalmente só conseguimos medir uma amostra, uma parte dele, e o capítulo de amostragem vai perguntar o que uma amostra diz sobre sua população. Aqui só descrevemos a própria amostra. Cada propriedade medida é uma variável. Variáveis categóricas separam os indivíduos em grupos (cor dos olhos, tipo sanguíneo); as numéricas são contagens (filhos numa família) ou medidas (altura, tempo). O que faz sentido depende do tipo: uma cor de olhos média não quer dizer nada, mas a mais comum quer.",

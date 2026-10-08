@@ -8,7 +8,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { VectorFigure } from "@/components/lesson/figures/math/VectorFigure";
 import { DotFigure } from "@/components/lesson/figures/math/DotFigure";
 import { CrossFigure } from "@/components/lesson/figures/math/CrossFigure";
@@ -27,6 +27,13 @@ export function VectorsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mVec_intro",
           "A number can say how fast; it cannot say which way. A vector carries both: a magnitude and a direction, stored as one number per axis. Velocities, forces, displacements, winds and currents are all vectors, and geometry and physics are full of them. This chapter builds every operation from its geometric meaning and then computes it by hand, so that each formula draws a picture in your head.")}
       </Lead>
+
+      <Goals t={t} id="mVec" items={[
+        "Write a vector as components and draw it as an arrow.",
+        "Add, subtract and scale vectors.",
+        "Find a vector's length and turn it into a unit vector.",
+        "Write any vector as a combination of basis vectors.",
+      ]} />
 
       <H2>{tx(t, "mVec_whatTitle", "Arrows and components")}</H2>
       <p>
@@ -148,6 +155,13 @@ export function DotContent({ t }: { t: TrackTranslations }) {
           "If you learn one vector operation well, make it the dot product. It turns two vectors into a single number that measures how much they point the same way. From that one number come angles, the test for perpendicular lines, projections, the work done by a force, reflections and the distance from a point to a plane.")}
       </Lead>
 
+      <Goals t={t} id="mDot" items={[
+        "Compute the dot product in two ways.",
+        "Find the angle between two vectors.",
+        "Project one vector onto another.",
+        "Reflect a direction off a surface, and find a point's distance to a plane.",
+      ]} />
+
       <H2>{tx(t, "mDot_defTitle", "Two definitions, one number")}</H2>
       <p>
         {tx(t, "mDot_defBody",
@@ -263,6 +277,13 @@ export function CrossContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mCross_intro",
           "The dot product measures how much two vectors agree. The cross product builds something new: a third vector perpendicular to both. That is exactly what you need for the plane through three points, the area of a triangle in space, the axis of a rotation or the torque of a force. Its 2D cousin, a single number, answers \"left or right?\" and \"clockwise or counter-clockwise?\".")}
       </Lead>
+
+      <Goals t={t} id="mCross" items={[
+        "Compute the cross product of two 3D vectors.",
+        "Use it to find a surface's normal and a parallelogram's area.",
+        "Tell left from right, and clockwise from counter-clockwise, with the 2D cross product.",
+        "Find a volume with the scalar triple product.",
+      ]} />
 
       <H2>{tx(t, "mCross_defTitle", "Definition")}</H2>
       <p>

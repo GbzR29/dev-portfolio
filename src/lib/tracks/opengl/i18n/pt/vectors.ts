@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/vectors.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglVec_goal0: "Somar, escalar e normalizar vetores.",
+  oglVec_goal1: "Usar o produto escalar para medir quanto duas direções concordam.",
+  oglVec_goal2: "Usar o produto vetorial para obter uma direção perpendicular a duas outras.",
+  oglVec_goal3: "Escrever as mesmas operações com GLM.",
   oglVec_intro: "Até aqui o quadrado fica parado em coordenadas fixas. Para movê-lo, girá-lo e olhá-lo por uma câmera, você precisa de duas ferramentas: vetores e matrizes. Este capítulo é sobre vetores; o próximo, sobre matrizes. Cada operação aparece de quatro jeitos: em palavras, num desenho, com números de verdade e como código GLM que você pode rodar.",
 
   oglVec_whatTitle: "O que é um vetor",

@@ -12,7 +12,7 @@
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { VectorFigure } from "@/components/lesson/figures/math/VectorFigure";
 import { VectorOpsFigure } from "@/components/lesson/figures/VectorOpsFigure";
 import { tx } from "@/lib/tracks/tx";
@@ -25,6 +25,13 @@ export function VectorsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglVec_intro",
           "So far the square sits still at fixed coordinates. To move it, spin it, and look at it through a camera, you need two tools: vectors and matrices. This chapter is about vectors. The next one is about matrices. Every operation is shown four ways: in words, in a picture, with real numbers, and as GLM code you can run.")}
       </Lead>
+
+      <Goals t={t} id="oglVec" items={[
+        "Add, scale and normalize vectors.",
+        "Use the dot product to measure how much two directions agree.",
+        "Use the cross product to get a direction perpendicular to two others.",
+        "Write the same operations with GLM.",
+      ]} />
 
       {/* ── WHAT A VECTOR IS ────────────────────────────────────────────── */}
       <H2>{tx(t, "oglVec_whatTitle", "What a vector is")}</H2>

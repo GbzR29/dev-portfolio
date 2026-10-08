@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/sdl3/chapters/renderer.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  sdl05_goal0: "Desenhar um quadro: limpar, desenhar, apresentar.",
+  sdl05_goal1: "Manter o jogo do mesmo tamanho em qualquer janela com a apresentação lógica.",
+  sdl05_goal2: "Controlar o ritmo dos quadros com VSync.",
+  sdl05_goal3: "Desenhar os seus próprios triângulos com geometria personalizada.",
   sdl05_intro: "O SDL_Renderer é uma API 2D acelerada por hardware que roda sobre o backend que a plataforma oferecer — Direct3D, Metal, Vulkan ou OpenGL. Você ganha sprites, formas e blending sem escrever um único shader. Para um jogo 2D, muitas vezes é tudo de que você precisa, e é o jeito mais rápido de colocar algo na tela enquanto aprende o resto.",
   sdl05_basicsTitle: "Limpar, desenhar, apresentar",
   sdl05_alphaTip: "O alfa em SDL_SetRenderDrawColor não faz nada até você ligar o blending com SDL_SetRenderDrawBlendMode(r, SDL_BLENDMODE_BLEND). O padrão é SDL_BLENDMODE_NONE, que grava o alfa direto no destino e parece que foi ignorado.",

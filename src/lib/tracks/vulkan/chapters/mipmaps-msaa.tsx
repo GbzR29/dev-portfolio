@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MipmapFigure } from "@/components/lesson/figures/vulkan/MipmapFigure";
 import { MsaaFigure } from "@/components/lesson/figures/vulkan/MsaaFigure";
 
@@ -25,6 +25,13 @@ export function MipmapsMsaaContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkMip_intro",
           "Two kinds of jagged, flickering pixels are left in the scene. When the cubes turn edge-on or move away, their texture shimmers, because each pixel then covers many texels and picks one of them almost at random. And the cube silhouettes are staircases, because each pixel is either inside a triangle or outside it. Both are aliasing: a signal with more detail than the pixel grid can hold, sampled once per pixel. This chapter fixes the first with mipmaps, pre-filtered smaller copies of the texture, and the second with multisample anti-aliasing (MSAA), which tests coverage at several points per pixel.")}
       </Lead>
+
+      <Goals t={t} id="vkMip" items={[
+        "Explain why textures shimmer and edges look like staircases.",
+        "Generate a mip chain on the GPU.",
+        "Turn on multisampling and choose the sample count.",
+        "Set up multisampled render targets that resolve into the swapchain.",
+      ]} />
 
       <H2>{tx(t, "vkMip_aliasTitle", "Minification: when a pixel covers many texels")}</H2>
       <p>

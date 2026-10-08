@@ -47,6 +47,8 @@ export const learningTranslations = {
     trackName_algorithms: "Algorithms",
     trackName_vulkan: "Vulkan",
     trackName_ai: "AI",
+    trackName_physics: "Physics",
+    trackName_chemistry: "Chemistry",
     learnCrumb: "learn",
     lessonChapterOf: "chapter {n} of {total}",
     lessonOnThisPage: "On this page",
@@ -159,6 +161,12 @@ export const learningTranslations = {
     trackName_algorithms: "Algoritmos",
     trackName_vulkan: "Vulkan",
     trackName_ai: "IA",
+    trackName_physics: "Física",
+    trackName_chemistry: "Química",
+    trackPhysicsDesc:
+      "Física desde a base: movimento, forças, energia e momento, rotação, gravidade e órbitas, oscilações e ondas, e depois fluidos, calor, luz e eletromagnetismo — cada lei deduzida, cada ideia simulada.",
+    trackChemistryDesc:
+      "Química desde a base: átomos e tabela periódica, ligações e moléculas, mol e reações, gases e soluções, energia e velocidade das reações, equilíbrio, ácidos e bases — cada fórmula explicada, cada ideia interativa.",
     learnCrumb: "aprender",
     lessonChapterOf: "capítulo {n} de {total}",
     lessonOnThisPage: "Nesta página",

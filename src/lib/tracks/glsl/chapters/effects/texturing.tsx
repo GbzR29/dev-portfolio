@@ -5,7 +5,7 @@ import { Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { TEXTURE_PRESETS } from "../../presets/texturing";
 
@@ -22,6 +22,12 @@ export function TexturingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslTex_intro",
           "texture(sampler, uv) looks like an array read, but it is one of the most sophisticated operations a GPU does. It picks a mip level from how fast uv changes across neighbouring pixels, blends four texels (or eight, or sixteen with anisotropy), and handles wrapping. Knowing what it does lets you bend it: distort the UV, project textures without UVs, or read exact texels when filtering would get in the way.")}
       </Lead>
+
+      <Goals t={t} id="glslTex" items={[
+        "Choose between texture, textureLod, textureGrad and texelFetch.",
+        "Distort a texture with noise, and scroll layers to suggest motion.",
+        "Texture a surface that has no UVs with triplanar projection.",
+      ]} />
 
       <H2>{tx(t, "glslTex_funcTitle", "The sampling functions")}</H2>
       <LessonTable

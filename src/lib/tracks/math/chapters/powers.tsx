@@ -10,7 +10,7 @@ import { Equation } from "@/components/lesson/Tex";
 import { Derivation } from "@/components/lesson/Derivation";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { PowerFigure } from "@/components/lesson/figures/math/PowerFigure";
 
 const r = String.raw;
@@ -22,6 +22,13 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPow_intro",
           "Multiplication is repeated addition; a power is repeated multiplication. Powers measure how areas and volumes grow with size, how brightness falls off with distance, how fast savings with compound interest climb, and they are the only sane way to write the size of a galaxy or of an atom. Roots run powers backwards, and the square root in particular is inside every distance formula. This chapter covers whole-number exponents and roots; the Exponents & Logarithms chapter in the Algebra section extends exponents to every real number and introduces logarithms.")}
       </Lead>
+
+      <Goals t={t} id="mPow" items={[
+        "Apply the laws of exponents, zero and negative exponents included.",
+        "Write very large and very small numbers in scientific notation.",
+        "Compute a square root by hand.",
+        "Compute a large power quickly by squaring again and again.",
+      ]} />
 
       <H2>{tx(t, "mPow_powTitle", "Powers as repeated multiplication")}</H2>
       <p>

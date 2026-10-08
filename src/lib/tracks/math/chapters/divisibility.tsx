@@ -10,7 +10,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DivisibilityFigure } from "@/components/lesson/figures/math/DivisibilityFigure";
 
 const r = String.raw;
@@ -32,6 +32,13 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDiv_intro",
           "Some questions about whole numbers have nothing to do with size and everything to do with how they split: can 36 chairs be set out in 5 equal rows? What is the biggest square tile that covers a 48 × 36 floor exactly? Two lighthouses flash every 6 and every 8 seconds; after how long do they flash together again? The answers come from divisibility, prime numbers, the greatest common divisor and the least common multiple. This chapter builds all four from ordinary division, and they are used immediately: the gcd reduces fractions, the lcm finds common denominators.")}
       </Lead>
+
+      <Goals t={t} id="mDiv" items={[
+        "Divide with a remainder and test whether one number divides another.",
+        "Break a number into its prime factors.",
+        "Find the greatest common divisor with Euclid's algorithm, and the least common multiple from it.",
+        "Calculate with remainders, like the hours on a clock.",
+      ]} />
 
       <H2>{tx(t, "mDiv_remTitle", "Division with remainder")}</H2>
       <p>

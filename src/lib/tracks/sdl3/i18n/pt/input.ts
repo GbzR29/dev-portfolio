@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/sdl3/chapters/input.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  sdl04_goal0: "Ler eventos da union SDL_Event com segurança.",
+  sdl04_goal1: "Escolher entre eventos e estado atual para cada tipo de entrada.",
+  sdl04_goal2: "Escolher scancodes ou keycodes conforme o que a tecla significa no seu jogo.",
+  sdl04_goal3: "Tratar o mouse, os controles e o texto digitado.",
   sdl04_intro: "O SDL entrega tudo o que o usuário faz como um SDL_Event: uma union com etiqueta, em que o campo type diz qual membro é válido. A distinção que confunde todo iniciante é evento versus estado — eventos dizem que algo mudou, o estado diz o que é verdade agora, e a jogabilidade precisa dos dois.",
   sdl04_loopTitle: "A union de eventos",
   sdl04_scanTitle: "Scancode versus keycode",

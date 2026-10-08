@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/exponents.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mExp_goal0: "Descrever crescimento e decaimento com funções exponenciais.",
+  mExp_goal1: "Desfazer uma exponencial com um logaritmo.",
+  mExp_goal2: "Aplicar as regras dos logaritmos.",
+  mExp_goal3: "Resolver uma equação cuja incógnita está no expoente.",
   mExp_intro: "Algumas grandezas mudam somando: um carro em velocidade constante ganha a mesma distância a cada segundo. Outras mudam multiplicando: uma população que dobra a cada geração, um som que perde metade da energia a cada metro de parede, o dinheiro numa poupança que rende juros sobre os juros. A mudança multiplicativa é descrita por exponenciais, e a ferramenta que transforma multiplicações de volta em somas é o logaritmo. A ciência usa os dois o tempo todo: meias-vidas, decibéis, pH, terremotos, juros compostos.",
   mExp_powTitle: "Potências e suas regras",
   mExp_powBody: "bⁿ, com n inteiro, significa n cópias de b multiplicadas entre si: 2⁵ = 2·2·2·2·2 = 32. b é a base, n o expoente. Toda regra de expoentes sai de contar cópias. Multiplicar 2³ por 2² coloca 3 + 2 cópias lado a lado, então os expoentes somam. Elevar 2³ à potência 2 forma 2 grupos de 3 cópias, então os expoentes multiplicam. As regras para expoentes zero, negativos e fracionários são então escolhidas para que essas leis continuem valendo.",

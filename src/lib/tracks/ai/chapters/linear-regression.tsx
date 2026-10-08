@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { LossSurfaceFigure } from "@/components/lesson/figures/ai/LossSurfaceFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function LinearRegressionContent({ t }: { t: TrackTranslations }) {
         {tx(t, "aiLin_intro",
           "Linear regression is the simplest model that learns: the prediction is a weighted sum of the features plus a constant. It is worth studying slowly, because everything later is built on it. A neuron in a neural network computes exactly this weighted sum before bending it; the loss, its gradient and the training loop here are the same ones used for networks with millions of weights. This chapter defines the model, looks at its loss as a surface, finds its lowest point exactly, and computes the gradient that the next chapter follows downhill.")}
       </Lead>
+
+      <Goals t={t} id="aiLin" items={[
+        "Make a prediction with a weighted sum of features.",
+        "Compute the mean squared error and explain why the errors are squared.",
+        "Find the best line exactly, and compute the gradient for any number of features.",
+        "Judge how good a fit is with R².",
+      ]} />
 
       <H2>{tx(t, "aiLin_modelTitle", "The model")}</H2>
       <p>

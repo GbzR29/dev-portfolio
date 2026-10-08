@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { QuaternionFigure } from "@/components/lesson/figures/math/QuaternionFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mQuat_intro",
           "In 2D an orientation is one angle, and the complex numbers chapter showed that a unit complex number stores it perfectly: multiply to rotate, multiply to combine. 3D is harder. Describing which way an aircraft, a satellite or a spinning top is facing, combining two turns into one, and finding the orientation halfway between two others are all surprisingly awkward. Three angles break down, matrices are bulky and drift. Quaternions, four numbers invented by William Rowan Hamilton in 1843, do the job best, and spacecraft attitude control and robotics rely on them. This chapter builds them from the complex numbers and the dot and cross products.")}
       </Lead>
+
+      <Goals t={t} id="mQuat" items={[
+        "Explain what goes wrong with Euler angles and with rotation matrices.",
+        "Multiply quaternions and rotate a vector with one.",
+        "Combine rotations and undo them.",
+        "Blend between orientations with nlerp and slerp, and turn a quaternion into a matrix.",
+      ]} />
 
       <H2>{tx(t, "mQuat_optionsTitle", "Three ways that almost work")}</H2>
       <H3>{tx(t, "mQuat_eulerTitle", "Euler angles and gimbal lock")}</H3>

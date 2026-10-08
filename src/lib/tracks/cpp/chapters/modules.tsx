@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function ModulesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function ModulesContent({ t }: { t: TrackTranslations }) {
           "The #include model is textual: the preprocessor pastes the entire header into every file that includes it, and the compiler parses it again every single time. A project including <vector> in a hundred files parses <vector> a hundred times. Modules replace that with a compiled artifact that is parsed once."
         )}
       </p>
+
+      <Goals t={t} id="cpp11" items={[
+        "Explain why #include makes large builds slow.",
+        "Write a module and import it.",
+        "Split a large module into partitions.",
+        "Judge whether your compiler and build system are ready for modules.",
+      ]} />
 
       <H2>{tx(t, "cpp11_problemTitle", "What headers actually cost")}</H2>
       <ul className="space-y-3 ml-1">

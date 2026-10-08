@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/sdl3/chapters/whats-new.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  sdl01_goal0: "Explicar por que o SDL3 não é uma simples troca de versão do SDL2.",
+  sdl01_goal1: "Reconhecer as mudanças que quebram código SDL2, e corrigi-las.",
+  sdl01_goal2: "Citar o que o SDL3 traz que o SDL2 nunca teve.",
   sdl01_intro: "O SDL é a camada entre o seu jogo e o sistema operacional: ele abre a janela, lê o teclado, toca o áudio e te entrega um contexto gráfico. O SDL 3.2.0 — lançado em janeiro de 2025 — foi o primeiro SDL3 estável, e ele não é uma atualização direta do SDL2. Este capítulo cobre o que mudou, porque quase todo tutorial que você vai encontrar na internet ainda foi escrito para o SDL2.",
   sdl01_whyTitle: "Por que uma nova versão principal",
   sdl01_whyBody: "O SDL2 saiu em 2013 e manteve a compatibilidade de ABI por mais de uma década, o que significou uma década de inconsistências acumuladas que nunca podiam ser corrigidas. O SDL3 gastou esse crédito de compatibilidade de uma vez: normalizou os nomes, deixou as convenções de retorno consistentes, acrescentou uma abstração moderna de GPU e reestruturou o loop principal para que o mesmo código rode em desktop, mobile e na web.",

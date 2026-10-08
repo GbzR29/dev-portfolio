@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/cpp/chapters/performance.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp13_goal0: "Estimar quanto custa um cache miss comparado com uma conta.",
+  cpp13_goal1: "Escolher entre um array de structs e um struct de arrays.",
+  cpp13_goal2: "Tirar alocações de dentro de um laço quente.",
+  cpp13_goal3: "Escolher um contêiner que combine com a forma como os dados são acessados.",
   cpp13_intro: "A 60 quadros por segundo, você tem 16,6 milissegundos para tudo. No hardware moderno, o fator limitante quase nunca é a aritmética — é esperar pela memória. Um cache miss custa algumas centenas de ciclos, tempo suficiente para ter feito cem multiplicações. Design orientado a dados é a prática de organizar os dados para que esses misses não aconteçam.",
   cpp13_cacheTitle: "Os números que guiam cada decisão",
   cpp13_h0: "Acesso",

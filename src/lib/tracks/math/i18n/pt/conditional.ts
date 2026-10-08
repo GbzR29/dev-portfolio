@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/conditional.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mCond_goal0: "Atualizar uma probabilidade quando chega uma informação nova.",
+  mCond_goal1: "Calcular cadeias de eventos com uma árvore.",
+  mCond_goal2: "Testar se dois eventos são independentes.",
+  mCond_goal3: "Raciocinar de trás para frente, da evidência à causa, com o teorema de Bayes.",
   mCond_intro: "As probabilidades mudam quando aprendemos algo. A chance de uma carta ser um rei é 4/52, mas se você vê de relance que é uma figura, ela vira 4/12. A chance de um paciente ter uma doença depende de um exame ter dado positivo, e em quanto é uma das perguntas mais mal entendidas do raciocínio do dia a dia. Este capítulo define a probabilidade condicional, usa-a para multiplicar probabilidades ao longo dos ramos de uma árvore, define a independência com precisão e chega ao teorema de Bayes: a regra para transformar evidências em probabilidades atualizadas.",
   mCond_defTitle: "Informação nova encolhe o espaço amostral",
   mCond_defBody: "Role dois dados. A chance de a soma ser 8 é 5/36: os resultados (2,6), (3,5), (4,4), (5,3), (6,2). Agora suponha que contam a você que o primeiro dado mostra 3. Só os 6 resultados (3,1), …, (3,6) continuam possíveis, todos ainda igualmente prováveis, e exatamente um deles, (3,5), tem soma 8. Então a probabilidade de “soma 8” dado “primeiro dado 3” é 1/6. Saber que B aconteceu faz duas coisas: os resultados fora de B são jogados fora, e os de dentro de B são reescalados para voltarem a somar 1. Os resultados favoráveis agora são os de A que também estão em B.",

@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MemoryFigure } from "@/components/lesson/figures/algo/MemoryFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function MemoryContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alMem_intro",
           "A data structure is a way of arranging data in memory so that some operations become fast. An array, a linked list, a hash table and a tree can all hold the same thousand numbers; what differs is where each number sits and how you get from one to the next. So before building any of them we need a clear picture of memory itself: what an address is, how an array is laid out, what a pointer holds, where memory comes from and why reading it in order is so much faster than jumping around. Every chapter of this track relies on this picture, and every structure in it is written by hand in C++, so nothing is hidden inside a library.")}
       </Lead>
+
+      <Goals t={t} id="alMem" items={[
+        "Work out the address of any element of an array, in one or two dimensions.",
+        "Read and write through pointers, and say what a pointer holds.",
+        "Predict the size of a struct, padding included.",
+        "Tell stack memory from heap memory, and explain why the cache rewards data stored side by side.",
+      ]} />
 
       <H2>{tx(t, "alMem_bytesTitle", "Bytes and addresses")}</H2>
       <p>

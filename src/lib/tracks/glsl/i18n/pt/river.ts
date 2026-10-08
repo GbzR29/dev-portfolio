@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/glsl/chapters/effects/river.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glslRiver_goal0: "Explicar por que só deslizar uma textura não funciona para um rio.",
+  glslRiver_goal1: "Levar uma textura ao longo de um flow map com duas fases.",
+  glslRiver_goal2: "Fazer um flow map e sombrear a água em movimento.",
+  glslRiver_goal3: "Adicionar reflexos planares para um lago calmo.",
   glslRiver_intro: "Os oceanos e a piscina dos últimos capítulos têm ondas que viajam pela água enquanto a própria água fica no lugar. Um rio é o contrário: a água se move, e leva junto as suas pequenas ondulações e a sua espuma, rápidas e agitadas nas corredeiras, rasgadas em branco atrás de cada pedra, quase paradas onde o rio se abre num lago. Os jogos desenham isso com um flow map, uma textura que guarda uma velocidade em cada ponto da água. A Valve apresentou a técnica em Portal 2 (Alex Vlachos, 2010), e ela ainda move rios, lava e até nuvens na maioria das engines. Este capítulo a constrói, calcula um flow map a partir da forma de um rio, e termina num lago calmo que espelha o seu vale.",
 
   glslRiver_scrollTitle: "Rolando uma textura",

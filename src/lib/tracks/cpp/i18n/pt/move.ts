@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/cpp/chapters/move.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp03_goal0: "Dizer se uma expressão pode ser movida ou só copiada.",
+  cpp03_goal1: "Explicar por que std::move sozinho não move nada.",
+  cpp03_goal2: "Decidir se uma classe precisa de zero, três ou cinco funções membro especiais.",
+  cpp03_goal3: "Retornar objetos grandes por valor sem cópias extras.",
   cpp03_intro: "A semântica de movimento é o recurso que tornou \"devolver por valor\" o padrão certo. Antes do C++11, devolver um container grande copiava cada elemento; agora o compilador transfere a posse do buffer interno e deixa a origem vazia. Entender quando um movimento acontece — e quando ele silenciosamente não acontece — é o que separa C++ rápido de C++ que parece rápido.",
   cpp03_valueTitle: "Categorias de valor numa tabela",
   cpp03_h0: "Categoria",

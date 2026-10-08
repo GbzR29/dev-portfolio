@@ -11,7 +11,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { LayerStackFigure } from "@/components/lesson/figures/vulkan/LayerStackFigure";
 
 export function InstanceContent({ t }: { t: TrackTranslations }) {
@@ -21,6 +21,13 @@ export function InstanceContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkInst_intro",
           "The first Vulkan object any program creates is the instance, a VkInstance. It is the connection between your program and the Vulkan system on this computer: creating it loads the drivers, switches on the extensions and layers you ask for, and gives you the handle every later object is traced back to. This chapter opens a window, creates the instance with the validation layer switched on, and sets up a callback that prints the layer's messages, so that from here on every mistake we make is reported the moment we make it.")}
       </Lead>
+
+      <Goals t={t} id="vkInst" items={[
+        "Create a Vulkan instance with the extensions a window needs.",
+        "Turn on the validation layer and send its messages to your console.",
+        "Read a validation message and find the mistake it points at.",
+        "Shut everything down in the right order.",
+      ]} />
 
       <H2>{tx(t, "vkInst_loaderTitle", "The loader and the drivers")}</H2>
       <p>

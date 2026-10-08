@@ -9,7 +9,7 @@ import { Equation } from "@/components/lesson/Tex";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { BaseFigure } from "@/components/lesson/figures/math/BaseFigure";
 
 const r = String.raw;
@@ -33,6 +33,13 @@ export function BasesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mBase_intro",
           "We count in tens because we have ten fingers; nothing about numbers requires it. Other bases are all around us: an hour has 60 minutes and a minute 60 seconds, a leftover from Babylonian base 60; eggs come in dozens; and computers count in twos, because a wire either carries a voltage or does not. This chapter shows that base 2, base 16 and base 60 work exactly like base 10, how to convert between bases by hand, and how to add in binary with the same carrying you learned for decimal.")}
       </Lead>
+
+      <Goals t={t} id="mBase" items={[
+        "Read a number written in any base, digit by digit.",
+        "Convert between decimal, binary and hexadecimal.",
+        "Add numbers in binary.",
+        "Explain why 0.1 cannot be stored exactly in binary.",
+      ]} />
 
       <H2>{tx(t, "mBase_placeTitle", "Place value in any base")}</H2>
       <p>

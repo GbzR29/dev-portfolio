@@ -5,7 +5,7 @@ import { Callout, H2, H3 } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SnellWindowFigure } from "@/components/lesson/figures/underwater/SnellWindowFigure";
 import { UnderwaterLabFigure } from "@/components/lesson/figures/underwater/UnderwaterLabFigure";
 
@@ -22,6 +22,12 @@ export function UnderwaterContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslUnder_intro",
           "Dive under the Water Lab's surface and three things change. The surface turns into a ceiling that shows the sky only in a disc straight overhead, and mirrors the depths everywhere else. The water between you and everything you look at is no longer a thin layer to cross once: it is the whole scene, and it colours, dims and hazes everything with distance. And sunlight coming down through the waves draws moving shafts in that haze. This chapter builds all three on top of the Water Lab's mesh and bed.")}
       </Lead>
+
+      <Goals t={t} id="glslUnder" items={[
+        "Explain why the sky shows as a disc when you look up from under the water.",
+        "Treat water as a medium that absorbs and scatters light.",
+        "March a ray through the water and add light shafts.",
+      ]} />
 
       <H2>{tx(t, "glslUnder_snellTitle", "Looking up: Snell's window")}</H2>
       <p>

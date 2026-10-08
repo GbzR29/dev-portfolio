@@ -5,7 +5,7 @@ import { CodeBlock, Callout, H2 } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { HemisphereFigure } from "@/components/lesson/figures/pbr/HemisphereFigure";
 import { PbrSpheresFigure } from "@/components/lesson/figures/pbr/PbrSpheresFigure";
 
@@ -23,6 +23,12 @@ export function IblDiffuseContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglIblD_intro",
           "Point lights are a convenient lie. In reality light arrives from every direction: the sky, the ground, the walls. Image-based lighting treats an environment map as the light source, where every texel is a tiny light. Evaluating the reflectance equation against millions of lights per pixel is out of the question, so we precompute.")}
       </Lead>
+
+      <Goals t={t} id="oglIblD" items={[
+        "Split the lighting integral into a diffuse part and a specular part.",
+        "Load an HDR environment and turn it into a cube map.",
+        "Precompute an irradiance map by convolution.",
+      ]} />
 
       <H2>{tx(t, "oglIblD_splitTitle", "Splitting the integral")}</H2>
       <p>

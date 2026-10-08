@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation, Tex } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { StencilOpsFigure } from "@/components/lesson/figures/advgl/StencilOpsFigure";
 import { StencilOutlineFigure } from "@/components/lesson/figures/advgl/StencilOutlineFigure";
 
@@ -19,6 +19,12 @@ export function StencilContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglSten_intro",
           "The depth buffer answers one fixed question per pixel: is this fragment closer than what is already there? The stencil buffer is a second per-pixel buffer, usually 8 bits, whose meaning is entirely up to you. You write small integers into it while drawing some objects, and later draws are allowed or rejected based on those values. Outlines, mirrors, portals, decals, shadow volumes and deferred light volumes are all built on it.")}
       </Lead>
+
+      <Goals t={t} id="oglSten" items={[
+        "Say where the stencil test sits and what its three outcomes do.",
+        "Draw outlines around objects with the stencil buffer.",
+        "Use the stencil buffer for mirrors, portals and masks.",
+      ]} />
 
       <H2>{tx(t, "oglSten_whereTitle", "Where the test sits")}</H2>
       <p>

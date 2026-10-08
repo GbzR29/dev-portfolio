@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/glsl/chapters/blackhole.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glslBh_goal0: "Seguir a luz de trás para frente pelos caminhos curvos em volta de um buraco negro.",
+  glslBh_goal1: "Explicar a esfera de fótons e a sombra do buraco negro.",
+  glslBh_goal2: "Desenhar o disco brilhante, mais claro do lado que vem na sua direção.",
+  glslBh_goal3: "Curvar o céu atrás do buraco.",
   glslBh_intro: "Em 2014 o filme Interstellar mostrou um buraco negro envolto num disco brilhante cujo lado de trás se curva para cima, por cima do buraco, e para baixo, por baixo dele. A imagem saiu de um renderizador escrito com o físico Kip Thorne, e cinco anos depois o Event Horizon Telescope fotografou um de verdade, o M87*: uma sombra escura num anel de luz torto. As duas imagens vêm de uma ideia que cabe num fragment shader. Perto de um buraco negro a luz não anda em linha reta, então, em vez de avançar por um raio reto, o shader integra o caminho que a luz realmente faz. Este capítulo deduz esse caminho, encontra a sombra e a esfera de fótons, e sombreia o disco com a temperatura, o desvio Doppler e o redshift gravitacional do seu gás.",
 
   glslBh_planTitle: "O que o shader faz",

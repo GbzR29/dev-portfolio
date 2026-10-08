@@ -5,7 +5,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { GerstnerFigure } from "@/components/lesson/glsl/GerstnerFigure";
 import { WaterLabFigure } from "@/components/lesson/figures/water/WaterLabFigure";
@@ -25,6 +25,13 @@ export function WaterContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslWater_intro",
           "Water is three problems: the shape of the surface (waves), how light leaves it (reflection vs refraction, decided by Fresnel), and small-scale detail (ripples, normal maps, foam). This chapter builds each part from its formula, from raindrops on a pool to an open ocean displaced in the vertex shader.")}
       </Lead>
+
+      <Goals t={t} id="glslWater" items={[
+        "Build a water surface from a sum of sines and compute its normals.",
+        "Use Gerstner waves for sharp crests.",
+        "Add ripples, foam and rain.",
+        "Mix reflection and refraction with Fresnel in a complete water shader.",
+      ]} />
 
       <H2>{tx(t, "glslWater_sineTitle", "Sums of sines, and their normals")}</H2>
       <Equation label={tx(t, "glslWater_sineLabel", "A travelling sine wave and its slope")}

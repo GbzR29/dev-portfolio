@@ -9,7 +9,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { HdrFigure } from "@/components/lesson/figures/advlighting/HdrFigure";
@@ -28,6 +28,12 @@ export function HdrContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglHdr_intro",
           "The sun is thousands of times brighter than a lamp, which is brighter than a shaded wall — but a default framebuffer stores each channel in 8 bits clamped to [0, 1]. High dynamic range rendering keeps the real values while lighting and only squeezes them into the displayable range at the very end.")}
       </Lead>
+
+      <Goals t={t} id="oglHdr" items={[
+        "Explain what clamping colours to 1.0 destroys.",
+        "Render into a floating-point framebuffer.",
+        "Bring HDR values back to the screen with a tone-mapping operator.",
+      ]} />
 
       <H2>{tx(t, "oglHdr_problemTitle", "What clamping destroys")}</H2>
       <p>

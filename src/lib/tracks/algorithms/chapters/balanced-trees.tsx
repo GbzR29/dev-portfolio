@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { AVLFigure } from "@/components/lesson/figures/algo/AVLFigure";
 
 const r = String.raw;
@@ -25,6 +25,13 @@ export function BalancedTreesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alBal_intro",
           "A binary search tree is only as fast as it is short, and a plain one can grow into a chain when keys arrive in sorted order. A balanced search tree does a little extra work on every insertion and deletion to keep its height O(log n) for every possible input. This chapter builds the one tool they all use, the rotation, then the AVL tree in full, and then explains the red-black tree that sits inside std::map. After this chapter, \"a search tree\" means O(log n) per operation, guaranteed.")}
       </Lead>
+
+      <Goals t={t} id="alBal" items={[
+        "Perform a rotation and say what it keeps and what it changes.",
+        "Keep an AVL tree balanced after an insertion.",
+        "Check and keep the rules of a red-black tree.",
+        "Choose between AVL and red-black trees.",
+      ]} />
 
       <H2>{tx(t, "alBal_whatTitle", "What balanced should mean")}</H2>
       <p>

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/glsl/chapters/effects/ocean.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glslOcean_goal0: "Descrever o mar como um espectro de ondas definido pelo vento.",
+  glslOcean_goal1: "Gerar um ladrilho de oceano a partir desse espectro e animá-lo.",
+  glslOcean_goal2: "Explicar o que a transformada rápida de Fourier faz, e por que ela torna isso possível em tempo real.",
+  glslOcean_goal3: "Esconder a repetição com cascatas, e adicionar espuma que demora a sumir.",
   glslOcean_intro: "O Laboratório de Água soma oito ondas de Gerstner. Observe por um minuto e o padrão se entrega: as mesmas poucas cristas, marchando nas mesmas poucas direções. Um mar de verdade é a soma de inúmeras ondas de todos os comprimentos, cada uma com uma fase aleatória, e os oceanógrafos mediram como a energia se reparte entre elas. Este capítulo constrói o método por trás dos oceanos da maioria dos jogos modernos, a partir das notas de curso de Tessendorf de 2001: sortear um mar aleatório com as estatísticas medidas, avaliar 65.536 ondas por tile com uma transformada rápida de Fourier na GPU a cada frame e guardar a espuma onde as ondas quebram.",
 
   glslOcean_specTitle: "O mar como um espectro",

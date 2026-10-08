@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MemoryTypeFigure } from "@/components/lesson/figures/vulkan/MemoryTypeFigure";
 import { SubAllocFigure } from "@/components/lesson/figures/vulkan/SubAllocFigure";
 import { VulkanObjectsFigure } from "@/components/lesson/figures/vulkan/VulkanObjectsFigure";
@@ -27,6 +27,13 @@ export function BuffersMemoryContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkBuf_intro",
           "The first triangle kept its three corners inside the vertex shader. Real meshes have thousands of vertices loaded from files, so they must live in GPU-readable memory that the program fills. OpenGL did this in one call, glBufferData, and the driver decided where the bytes went. Vulkan splits it into three decisions you make yourself: a buffer object that describes the bytes, a block of memory of a type you choose, and the binding of one to the other. This chapter makes those decisions, moves the vertices into a vertex buffer, adds an index buffer, and draws a quad.")}
       </Lead>
+
+      <Goals t={t} id="vkBuf" items={[
+        "Create a buffer, find a memory type that suits it and bind the two.",
+        "Say what each memory property flag means and pick one for a job.",
+        "Put vertex data in a buffer and draw from it.",
+        "Explain why real programs sub-allocate instead of allocating once per buffer.",
+      ]} />
 
       <H2>{tx(t, "vkBuf_twoTitle", "Two objects: the buffer and its memory")}</H2>
       <p>

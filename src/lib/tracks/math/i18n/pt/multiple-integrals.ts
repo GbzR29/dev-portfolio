@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/multiple-integrals.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mMul_goal0: "Calcular um volume como uma integral dentro de outra.",
+  mMul_goal1: "Definir os limites para regiões delimitadas por curvas.",
+  mMul_goal2: "Achar áreas, médias, massas e pontos de equilíbrio.",
+  mMul_goal3: "Integrar em coordenadas polares e em três dimensões.",
   mMul_intro: "Uma integral de uma variável soma faixas finas para obter uma área. Sua prima de duas variáveis soma caixinhas finas para obter um volume: o espaço sob uma superfície z = f(x, y) e acima de uma região do chão. A mesma ideia cobre a chuva total que cai num terreno cuja precipitação varia de lugar para lugar, a massa de uma placa cuja espessura varia, ou a altura média de uma paisagem. E a boa notícia deste capítulo é que nenhuma regra de integração nova é necessária: uma integral dupla é calculada como duas integrais comuns, uma dentro da outra.",
   mMul_boxTitle: "Volume por caixas",
   mMul_boxBody: "Pegue um retângulo R do chão, a ≤ x ≤ b e c ≤ y ≤ d, e uma superfície z = f(x, y) acima dele. Corte R em pequenos retângulos de largura Δx e profundidade Δy, então cada um tem área ΔA = Δx Δy. Sobre cada um, levante uma caixa cuja altura é o valor de f num ponto de amostra daquele pequeno retângulo (seu centro, digamos). Seu volume é f · ΔA. Somar todas as caixas dá uma soma de Riemann dupla, e conforme os retângulos encolhem a soma se aproxima do volume sob a superfície. Esse limite é a integral dupla. Partes da superfície abaixo do chão contam como negativas, como em uma variável.",

@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { HeapFigure } from "@/components/lesson/figures/algo/HeapFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function HeapsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alHeap_intro",
           "A queue serves the oldest element first. Often that is not what we want: a hospital treats the most urgent patient first, an operating system runs the most important task, a game processes the event with the earliest time stamp, and the shortest-path algorithm of the Graphs section always extends the closest unfinished place. A priority queue serves the element with the highest priority first. The binary heap implements it in a plain array with no pointers at all, O(log n) per change and O(1) to look at the top, and as a bonus gives a sorting algorithm that never needs extra memory.")}
       </Lead>
+
+      <Goals t={t} id="alHeap" items={[
+        "Store a heap in an array and find any node's parent and children.",
+        "Add and remove elements by sifting up and down.",
+        "Build a heap in linear time and sort with heapsort.",
+        "Use a priority queue to always serve the most urgent item first.",
+      ]} />
 
       <H2>{tx(t, "alHeap_pqTitle", "The priority queue")}</H2>
       <p>

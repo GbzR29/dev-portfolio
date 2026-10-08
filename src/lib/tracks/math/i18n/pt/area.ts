@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/area.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mArea_goal0: "Achar o perímetro e a área de retângulos, triângulos, paralelogramos e trapézios.",
+  mArea_goal1: "Dividir uma forma complicada em formas simples.",
+  mArea_goal2: "Prever como a área muda quando uma forma é ampliada.",
+  mArea_goal3: "Achar a área de qualquer polígono a partir dos vértices com a fórmula do cadarço.",
   mArea_intro: "Quanta cerca um terreno precisa, e quanta semente? A primeira pergunta é sobre perímetro, o comprimento em volta de uma forma; a segunda é sobre área, a quantidade de superfície dentro dela. As mesmas duas perguntas aparecem quando você põe rodapé numa sala, assenta piso, pinta uma parede ou compra um lote. Este capítulo deduz as fórmulas de área das formas básicas em vez de só listá-las, mostra como a área se comporta quando uma forma é ampliada e termina com uma fórmula que dá a área de qualquer polígono a partir das coordenadas dos cantos.",
   mArea_perimTitle: "Perímetro: o comprimento em volta",
   mArea_perimBody: "O perímetro de uma forma é o comprimento total da sua borda: dê uma volta nela e meça quanto andou. Para um polígono (uma forma delimitada por segmentos retos) é só a soma dos comprimentos dos lados. Um perímetro é um comprimento, então tem unidades de comprimento: metros, centímetros, pixels, casas de uma grade. Num retângulo, dois lados medem b (a base) e dois medem h (a altura), então o perímetro é b + h + b + h.",

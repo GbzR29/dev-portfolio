@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/ebo.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglEbo_goal0: "Compartilhar vértices entre triângulos com um index buffer.",
+  oglEbo_goal1: "Desenhar com glDrawElements.",
+  oglEbo_goal2: "Montar uma grade indexada e conferi-la no modo wireframe.",
   oglEbo_intro: "Malhas de verdade são feitas de triângulos que dividem cantos: numa grade, todo ponto interno pertence a seis triângulos. glDrawArrays lê os vértices estritamente em ordem, três por triângulo, então cada canto compartilhado precisa ser guardado de novo para cada triângulo que o usa. Um Element Buffer Object (EBO), também chamado de index buffer, resolve isso: cada vértice único é guardado uma vez, e uma lista separada de inteiros pequenos diz quais três vértices formam cada triângulo. Este capítulo mostra como a GPU segue essa lista, quanta memória ela economiza, e as poucas regras que a fazem funcionar.",
 
   oglEbo_dupTitle: "O problema da duplicação",

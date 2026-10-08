@@ -9,7 +9,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { DeferredFigure } from "@/components/lesson/figures/advlighting/DeferredFigure";
@@ -28,6 +28,12 @@ export function DeferredContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglDeferred_intro",
           "Forward rendering lights every fragment of every object, including the ones later hidden behind something else. Deferred shading splits rendering in two: first record what is visible at each pixel, then light each pixel exactly once.")}
       </Lead>
+
+      <Goals t={t} id="oglDeferred" items={[
+        "Store positions, normals and colours in a G-buffer.",
+        "Light many lights cheaply with light volumes.",
+        "Draw transparent and other forward-rendered objects afterwards.",
+      ]} />
 
       <Equation label={tx(t, "oglDeferred_costLabel", "Where the cost goes")}
         where={[

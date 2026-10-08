@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/volumes.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mVol_goal0: "Achar o volume de prismas, cilindros, pirâmides, cones e esferas.",
+  mVol_goal1: "Achar a área da superfície de um sólido desdobrando-o.",
+  mVol_goal2: "Prever como a superfície e o volume mudam com a escala.",
+  mVol_goal3: "Estimar objetos reais como combinações de sólidos simples.",
   mVol_intro: "O mundo é 3D, então cedo ou tarde você precisa saber quanto espaço uma coisa ocupa e quanta pele ela tem. O volume diz quanta água uma caixa-d'água comporta, quanto concreto uma fundação precisa e, com a densidade do material, quanto um objeto pesa. A área de superfície diz quanta tinta um barril precisa, quanto papel um presente gasta e quão rápido algo esquenta ou esfria. Este capítulo constrói toda fórmula padrão a partir do capítulo de área, do capítulo do círculo e de uma ideia esperta sobre fatias.",
   mVol_unitTitle: "Volume: contando cubos unitários",
   mVol_unitBody: "A área conta quadrados unitários; o volume conta cubos unitários, cubos cujas arestas medem 1 unidade. Um cubo de 1 cm de aresta tem volume de 1 centímetro cúbico, escrito 1 cm³. O pequeno ³ está ali porque um volume é um comprimento vezes um comprimento vezes um comprimento. É também por isso que as conversões de unidade de volume vão ao cubo: 1 m = 100 cm, então 1 m³ = 100 × 100 × 100 cm³ = 1 000 000 cm³. Líquidos são medidos em litros: 1 litro (L) é exatamente 1000 cm³, o volume de um cubo de 10 cm, então 1 m³ comporta 1000 L.",

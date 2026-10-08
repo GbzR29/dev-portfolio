@@ -5,7 +5,7 @@
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { tx } from "@/lib/tracks/tx";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
-import { KeyIdeas } from "@/components/lesson/Prose";
+import { KeyIdeas, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { SWIZZLE_PRESETS } from "../presets/basics";
 
@@ -18,6 +18,13 @@ export function TypesContent({ t }: { t: TrackTranslations }) {
           "GLSL has a richer type system than C++ in one specific area: built-in vector and matrix types that map directly to GPU registers. Understanding them and how to manipulate them efficiently is the foundation of every shader you will write."
         )}
       </p>
+
+      <Goals t={t} id="glsl01" items={[
+        "Pick the right scalar, vector or matrix type for a value.",
+        "Read and reorder vector components with swizzles.",
+        "Build vectors and matrices with constructors, and convert between types.",
+        "Avoid the int-versus-float mistakes that stop a shader compiling.",
+      ]} />
 
       <H2>{tx(t, "glsl01_scalarsTitle", "Scalar types")}</H2>
       <p>{tx(t, "glsl01_scalarsBody", "GLSL has four scalar types. float is the workhorse — most math in shaders uses it. Integer types are limited on older hardware; prefer float arithmetic unless you genuinely need integer semantics.")}</p>

@@ -14,7 +14,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { LightingSceneFigure } from "@/components/lesson/figures/lighting/LightingSceneFigure";
 import { LightSumFigure } from "@/components/lesson/figures/lighting/LightSumFigure";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 
 const r = String.raw;
 
@@ -29,6 +29,12 @@ export function MultipleLightsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglMulti_intro",
           "Light adds up. Two lamps on the same wall make it exactly as bright as each lamp alone, summed. That makes many lights easy in principle: compute each light's contribution with the formulas from the last chapters and add them all together.")}
       </Lead>
+
+      <Goals t={t} id="oglMulti" items={[
+        "Explain why the light from several sources simply adds up.",
+        "Organize the shader with one function per kind of light.",
+        "Choose a light's radius, and estimate what many lights cost.",
+      ]} />
 
       <H2>{tx(t, "oglMulti_whyTitle", "Why light simply adds")}</H2>
       <p>

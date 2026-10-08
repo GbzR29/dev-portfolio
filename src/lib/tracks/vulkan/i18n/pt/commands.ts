@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/commands.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkCmd_goal0: "Criar um command pool e os seus command buffers.",
+  vkCmd_goal1: "Gravar os comandos de um quadro com dynamic rendering.",
+  vkCmd_goal2: "Passar uma imagem de um layout para outro com uma barreira.",
+  vkCmd_goal3: "Dizer em que estado um command buffer está e o que você pode fazer com ele.",
   vkCmd_intro: "Uma chamada do OpenGL como glDrawArrays parece desenhar, mas o driver só escreve o pedido num command buffer escondido e envia esse buffer à GPU depois, quando ele decide. O Vulkan entrega esse buffer a você. Você grava comandos num VkCommandBuffer, o que custa tempo de CPU e nada mais, e depois submete o buffer pronto a uma fila, onde a GPU o executa. Gravar e executar são coisas separadas, então um buffer pode ser gravado em qualquer thread, reaproveitado e submetido exatamente quando você escolher. Este capítulo cria o pool e o buffer, e grava tudo o que um frame do triângulo precisa.",
 
   vkCmd_poolTitle: "Command pools",

@@ -7,7 +7,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TaaFigure } from "@/components/lesson/figures/post/TaaFigure";
 
 const r = String.raw;
@@ -19,6 +19,13 @@ export function TaaContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglTaa_intro",
           "Supersampling fixes aliasing by shading many samples per pixel, which costs many times the work. Temporal anti-aliasing takes the same samples, but one per frame. Each frame the whole image is shifted by a different sub-pixel amount, and the results are averaged over time. At 60 frames per second, 16 samples take a quarter of a second to gather. The hard part is not the averaging. It is keeping moving things sharp while their pixels change underneath the average. This chapter builds TAA piece by piece, and the figure lets you switch each piece on.")}
       </Lead>
+
+      <Goals t={t} id="oglTaa" items={[
+        "Jitter the camera so every frame samples different points.",
+        "Blend each frame into a running history.",
+        "Find where a pixel was in the last frame with motion vectors.",
+        "Reject history that is wrong, and explain how temporal upscaling builds on this.",
+      ]} />
 
       <H2>{tx(t, "oglTaa_jitTitle", "1. Jitter: a different sample every frame")}</H2>
       <p>

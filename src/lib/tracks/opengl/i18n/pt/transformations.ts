@@ -2,6 +2,9 @@
 
 const text: Record<string, string> = {
   // ── Intro and what changes ──
+  oglTr_goal0: "Mover uma forma com uma matriz no vertex shader.",
+  oglTr_goal1: "Seguir um vértice pelos espaços de modelo, de visão e de projeção.",
+  oglTr_goal2: "Escolher entre projeção perspectiva e ortográfica.",
   oglTr_intro: "Até agora, todo vértice que você escreveu ia direto para a tela. O x e o y dele já eram coordenadas NDC, de −1 a 1. Este capítulo coloca as matrizes dos dois capítulos anteriores entre o vértice e a tela. Primeiro o quadrado texturizado se move e gira. Depois ele é visto em perspectiva, e então vira um cubo 3D girando.",
   oglTr_alongTitle: "O que este capítulo acrescenta ao main.cpp",
   oglTr_alongBody: "Ele continua o main.cpp do fim do capítulo Textures, em três passos. Rode o programa depois de cada um; cada passo diz o que você deve ver. O checkpoint no fim mostra o arquivo inteiro.",

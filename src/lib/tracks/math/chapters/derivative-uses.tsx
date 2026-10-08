@@ -11,7 +11,7 @@ import { H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ExtremaFigure } from "@/components/lesson/figures/math/ExtremaFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function DerivativeUsesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mUse_intro",
           "Knowing the slope everywhere tells you a surprising amount about a function without drawing it: where it rises and falls, where its peaks and valleys are, how it bends. That turns \"what is the best choice?\" questions into equations, lets you approximate hard functions with easy ones, and gives the fastest general method for solving equations there is. This chapter collects those uses.")}
       </Lead>
+
+      <Goals t={t} id="mUse" items={[
+        "Find where a function rises, falls and bends.",
+        "Find the largest or smallest value in a real problem.",
+        "Approximate a function with its tangent line, and find roots with Newton's method.",
+        "Solve related-rates problems, and evaluate tricky limits with L'Hôpital's rule.",
+      ]} />
 
       <H2>{tx(t, "mUse_signTitle", "Rising, falling and flat")}</H2>
       <p>

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/ai/chapters/decision-trees.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  aiTree_goal0: "Seguir uma árvore de decisão até uma previsão.",
+  aiTree_goal1: "Medir quão misturado está um nó com a impureza de Gini ou a entropia.",
+  aiTree_goal2: "Crescer uma árvore pequena à mão, escolhendo a melhor pergunta em cada passo.",
+  aiTree_goal3: "Impedir que uma árvore faça overfitting, e dizer como florestas e boosting combinam muitas árvores.",
   aiTree_intro: "Uma árvore de decisão é um fluxograma de perguntas de sim ou não: \"dormiu menos de 5,25 h?\", depois \"estudou menos de 3,25 h?\", até chegar a uma resposta. As pessoas a leem como um conjunto de regras, ela lida com atributos em quaisquer unidades sem padronização, e desenha fronteiras que nenhuma reta conseguiria. Aprender uma árvore significa escolher as perguntas, e há um jeito simples e guloso de fazer isso: a cada passo, faça a pergunta que melhor separa as classes. Este capítulo mede o \"melhor\" com impureza, cresce uma árvore à mão nos alunos, e mostra por que uma árvore sozinha sofre overfitting com tanta facilidade e o que as florestas fazem a respeito.",
 
   aiTree_howTitle: "Como uma árvore prevê",

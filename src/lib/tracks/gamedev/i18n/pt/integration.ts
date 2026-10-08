@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/gamedev/chapters/integration.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  gdInt_goal0: "Avançar um objeto em movimento um passo com um integrador.",
+  gdInt_goal1: "Explicar por que o Euler explícito ganha energia, e corrigir isso trocando duas linhas.",
+  gdInt_goal2: "Usar Verlet e RK4, e dizer quando cada um compensa.",
+  gdInt_goal3: "Escolher um tamanho de passo que continue estável.",
   gdInt_intro: "Todo motor de física é construído sobre um laço pequeno: sabendo onde as coisas estão e com que velocidade se movem agora, calcular onde estarão um instante depois. Esse passo se chama integração, e a fórmula que o faz é um integrador. O capítulo do game loop já encontrou dois deles num pulo, e viu que a altura saía errada por uma quantidade que dependia do passo. Este capítulo olha os integradores com calma: por que o mais óbvio acrescenta energia em silêncio até molas explodirem e planetas fugirem, por que trocar duas linhas resolve isso, e quando um método mais caro vale a pena.",
 
   gdInt_stateTitle: "Estado e derivadas",

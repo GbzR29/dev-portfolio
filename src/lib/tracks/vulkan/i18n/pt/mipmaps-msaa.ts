@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/mipmaps-msaa.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkMip_goal0: "Explicar por que as texturas cintilam e as bordas parecem escadinhas.",
+  vkMip_goal1: "Gerar uma cadeia de mipmaps na GPU.",
+  vkMip_goal2: "Ligar o multisampling e escolher a quantidade de amostras.",
+  vkMip_goal3: "Montar render targets multiamostrados que se resolvem na swapchain.",
   vkMip_intro: "Sobraram na cena dois tipos de pixels serrilhados e trêmulos. Quando os cubos ficam de lado ou se afastam, a textura cintila, porque cada pixel passa a cobrir muitos texels e escolhe um deles quase ao acaso. E as silhuetas dos cubos são escadinhas, porque cada pixel está dentro de um triângulo ou fora dele. Os dois são aliasing: um sinal com mais detalhe do que a grade de pixels consegue guardar, amostrado uma vez por pixel. Este capítulo corrige o primeiro com mipmaps, cópias menores e pré-filtradas da textura, e o segundo com anti-aliasing por multiamostragem (MSAA), que testa a cobertura em vários pontos de cada pixel.",
 
   vkMip_aliasTitle: "Minificação: quando um pixel cobre muitos texels",

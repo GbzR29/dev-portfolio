@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { AiMapFigure } from "@/components/lesson/figures/ai/AiMapFigure";
 import { FitByHandFigure } from "@/components/lesson/figures/ai/FitByHandFigure";
 
@@ -25,6 +25,13 @@ export function WhatIsAiContent({ t }: { t: TrackTranslations }) {
         {tx(t, "aiIntro_intro",
           "Artificial intelligence is the part of computing that builds programs which make decisions we would call intelligent: recognising what is in a picture, predicting how long a delivery will take, choosing the next move in a game, answering a question. This track builds those programs from nothing, in plain C++, without libraries: every matrix, every derivative, every training loop is written by hand, so that nothing is magic. This first chapter sets out what the field is, what \"learning\" means precisely, and the four ingredients every learning program has.")}
       </Lead>
+
+      <Goals t={t} id="aiIntro" items={[
+        "Say how a program that learns differs from one whose rules are written by hand.",
+        "Name the four ingredients every learning program has.",
+        "Tell supervised, unsupervised and reinforcement learning apart.",
+        "Fit a first model by hand and judge it on data it has not seen.",
+      ]} />
 
       <H2>{tx(t, "aiIntro_rulesTitle", "Two ways to make a program decide")}</H2>
       <p>

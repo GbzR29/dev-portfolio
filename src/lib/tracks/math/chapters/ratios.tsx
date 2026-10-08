@@ -10,7 +10,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RatioFigure } from "@/components/lesson/figures/math/RatioFigure";
 
 const r = String.raw;
@@ -33,6 +33,13 @@ export function RatiosContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mRat_intro",
           "A fraction answers \"how much of a whole?\". A ratio answers \"how much of one thing for each amount of another?\": flour per egg in a recipe, kilometres per hour, width per height of a screen. Percentages are ratios with 100 as the reference, and the fraction-of-the-way idea behind them is the same one behind converting a temperature from Celsius to Fahrenheit or a test score into a grade. This chapter covers them together because they are one idea seen from different sides.")}
       </Lead>
+
+      <Goals t={t} id="mRat" items={[
+        "Work with ratios and rates, units included.",
+        "Solve a proportion.",
+        "Compute percentages, percentage changes and percentages of percentages.",
+        "Find the value a given fraction of the way between two others.",
+      ]} />
 
       <H2>{tx(t, "mRat_ratioTitle", "Ratios")}</H2>
       <p>

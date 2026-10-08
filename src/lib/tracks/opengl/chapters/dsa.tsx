@@ -8,7 +8,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { BindTargetFigure } from "@/components/lesson/figures/advgl/BindTargetFigure";
@@ -23,6 +23,12 @@ export function DSAContent({ t }: { t: TrackTranslations }) {
         {tx(t, "ch11_intro",
           "Every chapter so far used bind-to-edit: bind an object, modify it, unbind. OpenGL 4.5 introduced Direct State Access (DSA): modify any object by its ID, without binding it. Both produce identical GPU behaviour; only the CPU-side code differs, and with it a whole class of bugs.")}
       </Lead>
+
+      <Goals t={t} id="ch11" items={[
+        "Explain the bugs that binding an object just to edit it causes.",
+        "Create and edit buffers, textures and VAOs with DSA, without binding them.",
+        "Choose between DSA and the classic style.",
+      ]} />
 
       <H2>{tx(t, "ch11_problemTitle", "The bind-to-edit problem")}</H2>
       <p>

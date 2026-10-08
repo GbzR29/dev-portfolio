@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/cpp/chapters/values.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp02_goal0: "Escolher a forma certa de inicializar uma variável e achar uma que ficou sem inicializar.",
+  cpp02_goal1: "Diferenciar const, constexpr e constinit e escolher entre eles.",
+  cpp02_goal2: "Usar auto e a dedução de argumentos de template de classe sem perder de vista o tipo.",
   cpp02_intro: "O C++ tem mais formas de inicializar uma variável do que qualquer outra linguagem popular, e elas não significam todas a mesma coisa. Errar isso deixa você com uma variável guardando os bytes que por acaso estavam na pilha — a fonte clássica do \"funciona em debug, mas não em release\".",
   cpp02_zooTitle: "O zoológico da inicialização",
   cpp02_h0: "Forma",

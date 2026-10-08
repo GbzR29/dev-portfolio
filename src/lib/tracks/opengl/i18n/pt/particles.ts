@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/particles.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglPart_goal0: "Guardar, criar e mover partículas sem deriva.",
+  oglPart_goal1: "Mantê-las num pool e remover as mortas rapidamente.",
+  oglPart_goal2: "Desenhá-las todas numa chamada instanciada, com o blending certo.",
+  oglPart_goal3: "Levar a simulação para a GPU.",
   oglPart_intro: "Fogo, fumaça, faíscas, chuva, poeira, magia: nada disso é malha. São milhares de sprites minúsculos, de vida curta e semitransparentes, cada um seguindo regras simples. Um sistema de partículas tem três tarefas: criar partículas na taxa certa, movê-las a cada frame e desenhar todas de forma barata. Cada tarefa tem um jeito certo e um jeito errado bem conhecidos.",
   oglPart_dataTitle: "Uma partícula são alguns floats",
   oglPart_tBody: "Quase toda propriedade visual é uma função da idade normalizada ",

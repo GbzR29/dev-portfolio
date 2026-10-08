@@ -5,7 +5,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { BrdfTermsFigure } from "@/components/lesson/figures/pbr/BrdfTermsFigure";
 import { PbrSpheresFigure } from "@/components/lesson/figures/pbr/PbrSpheresFigure";
 
@@ -22,6 +22,12 @@ export function PbrLightingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglPbrL_intro",
           "The Cook-Torrance BRDF splits the material into a diffuse part and a specular part. The specular part is the product of three factors, each answering one physical question about the microfacets. This chapter derives each one, shows it on its own, and assembles the full shader for point lights.")}
       </Lead>
+
+      <Goals t={t} id="oglPbrL" items={[
+        "Write the three parts of the Cook-Torrance BRDF: D, G and F.",
+        "Combine them into a working PBR shader.",
+        "Drive the shader with textures.",
+      ]} />
 
       <Equation label={tx(t, "oglPbrL_ctLabel", "Cook-Torrance BRDF")}
         where={[

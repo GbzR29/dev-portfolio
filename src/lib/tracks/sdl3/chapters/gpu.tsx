@@ -5,6 +5,7 @@
 import { TrackTranslations } from "@/lib/tracks/types";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 
 export function GpuContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function GpuContent({ t }: { t: TrackTranslations }) {
           "SDL_GPU is the headline addition in SDL3: one modern graphics API that runs on Vulkan, Direct3D 12 and Metal. It gives you command buffers, explicit pipelines and real shaders — the modern model — without the several thousand lines of setup that raw Vulkan demands, and without OpenGL's hidden global state."
         )}
       </p>
+
+      <Goals t={t} id="sdl09" items={[
+        "Say where SDL_GPU sits next to OpenGL and Vulkan, and when to choose it.",
+        "Get one set of shaders running on Vulkan, Direct3D 12 and Metal.",
+        "Create a GPU device and record the commands of one frame.",
+        "Upload vertex data to the GPU.",
+      ]} />
 
       <H2>{tx(t, "sdl09_whereTitle", "Where it sits")}</H2>
       <LessonTable

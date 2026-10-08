@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { LinesFigure } from "@/components/lesson/figures/math/LinesFigure";
 
 const r = String.raw;
@@ -42,6 +42,13 @@ export function LinearSystemsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSys_intro",
           "One equation can pin down one unknown. Real problems often have several unknowns tied together by several conditions: where do two roads cross, what mix of two coffees gives exactly the price you want, which line passes through two given points. A set of equations that must all be true at the same time is a system. This chapter solves systems of two linear equations in two unknowns in three ways (by graph, substitution and elimination), shows why some have no solution or infinitely many, and turns it all into one formula.")}
       </Lead>
+
+      <Goals t={t} id="mSys" items={[
+        "Solve two equations together by substitution and by elimination.",
+        "Picture the system as two lines and find the answer where they cross.",
+        "Tell when a system has one solution, none or infinitely many.",
+        "Solve it with Cramer's rule.",
+      ]} />
 
       <H2>{tx(t, "mSys_whatTitle", "What a system is")}</H2>
       <p>

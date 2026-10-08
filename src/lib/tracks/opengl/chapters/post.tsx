@@ -7,7 +7,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation, Tex } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { KernelFigure } from "@/components/lesson/figures/post/KernelFigure";
 import { PostFxFigure } from "@/components/lesson/figures/post/PostFxFigure";
 import { SsaoKernelFigure } from "@/components/lesson/figures/post/SsaoKernelFigure";
@@ -30,6 +30,13 @@ export function PostProcessingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglPost_intro",
           "Render the scene into a texture, then draw one fullscreen triangle whose fragment shader reads that texture. Every pixel of the output can now look at any pixel of the input. That one trick, from the Framebuffers chapter, powers almost every modern screen effect: blur, bloom, colour grading, depth of field, motion blur, outlines, film grain.")}
       </Lead>
+
+      <Goals t={t} id="oglPost" items={[
+        "Write effects that change each pixel on its own: inversion, greyscale, colour grading.",
+        "Apply a convolution kernel to blur, sharpen or find edges.",
+        "Blur with two separable Gaussian passes.",
+        "Add lens and film effects, in the right order in the frame.",
+      ]} />
 
       <H2>{tx(t, "oglPost_pointTitle", "Point operations: one pixel in, one pixel out")}</H2>
       <p>
@@ -180,6 +187,12 @@ export function SsaoContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglSsao_intro",
           "The ambient term from the Phong chapter is a constant: every point receives the same amount of \"light from everywhere\". In reality, creases, corners and the space under a sofa receive less, because nearby geometry blocks most of the sky they could see. Ambient occlusion estimates how much is blocked. Screen-space ambient occlusion (Crytek, 2007) estimates it from the depth buffer alone, every frame.")}
       </Lead>
+
+      <Goals t={t} id="oglSsao" items={[
+        "Explain what ambient occlusion measures.",
+        "Estimate it from the depth buffer with a kernel of samples.",
+        "Blur the result and use it in the lighting.",
+      ]} />
 
       <H2>{tx(t, "oglSsao_defTitle", "What ambient occlusion measures")}</H2>
       <Equation label={tx(t, "oglSsao_defLabel", "Ambient occlusion")}
@@ -338,6 +351,12 @@ export function ParallaxContent({ t }: { t: TrackTranslations }) {
           "Normal mapping fakes the lighting of a bumpy surface, but the texture stays glued to the flat polygon. Look at a brick wall at a grazing angle and the bricks should hide the mortar behind them, which normal mapping cannot do. Parallax mapping shifts the texture coordinates per pixel, using a depth map, to show what you would see if the surface really had depth.")}
       </Lead>
 
+      <Goals t={t} id="oglPar" items={[
+        "Shift texture coordinates to fake depth on a flat surface.",
+        "March through layers for steep parallax.",
+        "Interpolate between layers for parallax occlusion mapping.",
+      ]} />
+
       <H2>{tx(t, "oglPar_ideaTitle", "The offset")}</H2>
       <p>
         {tx(t, "oglPar_ideaBody",
@@ -463,6 +482,12 @@ export function AntiAliasingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglAa_intro",
           "A screen is a grid of samples, and the scene is continuous. When the scene changes faster than the grid can represent (an edge, a thin wire, a fine pattern), the samples get it wrong in a structured way: staircases on edges, dotted lines instead of wires, shimmering and crawling as the camera moves. That is aliasing, and anti-aliasing is the family of techniques that fights it.")}
       </Lead>
+
+      <Goals t={t} id="oglAa" items={[
+        "Explain why jagged edges come from sampling.",
+        "Compare SSAA, MSAA and FXAA: what each costs and what it fixes.",
+        "Turn on MSAA and add an FXAA pass.",
+      ]} />
 
       <H2>{tx(t, "oglAa_theoryTitle", "Why it happens: sampling")}</H2>
       <Equation label={tx(t, "oglAa_nyquistLabel", "Nyquist–Shannon sampling theorem")}

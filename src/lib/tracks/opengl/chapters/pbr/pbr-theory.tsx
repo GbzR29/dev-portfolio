@@ -5,7 +5,7 @@ import { Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation, Tex } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { HemisphereFigure } from "@/components/lesson/figures/pbr/HemisphereFigure";
 import { MicrofacetFigure } from "@/components/lesson/figures/pbr/MicrofacetFigure";
 
@@ -23,6 +23,13 @@ export function PbrTheoryContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglPbrT_intro",
           "Physically based rendering is not one algorithm but a promise: every term in the lighting equation has a physical meaning and a physical unit. Artists stop tweaking specular strengths per light; a material authored once looks right under noon sun, a candle, or a studio HDRI. This chapter builds the theory — the next three turn it into shaders.")}
       </Lead>
+
+      <Goals t={t} id="oglPbrT" items={[
+        "Describe a surface as many tiny mirrors.",
+        "Read the reflectance equation term by term.",
+        "Estimate an integral with a loop.",
+        "Set up materials with the metallic-roughness workflow.",
+      ]} />
 
       <p>{tx(t, "oglPbrT_three", "A lighting model counts as physically based when it satisfies three conditions:")}</p>
       <ol className="list-decimal pl-6 space-y-1.5">

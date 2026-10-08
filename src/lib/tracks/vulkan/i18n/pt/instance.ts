@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/instance.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkInst_goal0: "Criar uma instância do Vulkan com as extensões que uma janela precisa.",
+  vkInst_goal1: "Ligar a camada de validação e mandar as mensagens dela para o console.",
+  vkInst_goal2: "Ler uma mensagem de validação e achar o erro que ela aponta.",
+  vkInst_goal3: "Encerrar tudo na ordem certa.",
   vkInst_intro: "O primeiro objeto Vulkan que qualquer programa cria é a instance, uma VkInstance. Ela é a conexão entre o seu programa e o sistema Vulkan deste computador: criá-la carrega os drivers, liga as extensões e layers que você pedir e entrega o handle até o qual todo objeto posterior pode ser rastreado. Este capítulo abre uma janela, cria a instance com a validation layer ligada e configura um callback que imprime as mensagens da layer, para que daqui em diante todo erro que cometermos seja reportado no momento em que o cometemos.",
 
   vkInst_loaderTitle: "O loader e os drivers",

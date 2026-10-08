@@ -5,6 +5,7 @@
 import { TrackTranslations } from "@/lib/tracks/types";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 
 export function TexturesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -25,6 +26,13 @@ export function TexturesContent({ t }: { t: TrackTranslations }) {
           [tx(t, "sdl06_r9", "Use it for"),    tx(t, "sdl06_r10", "Loading, and per-pixel work"), tx(t, "sdl06_r11", "Everything you actually draw")],
         ]}
       />
+
+      <Goals t={t} id="sdl06" items={[
+        "Tell a surface from a texture and say where each one lives.",
+        "Load an image from disk and draw it as sprites.",
+        "Render into a texture and reuse the result.",
+        "Change a texture's pixels every frame with a streaming texture.",
+      ]} />
 
       <H2>{tx(t, "sdl06_loadTitle", "Loading an image")}</H2>
 

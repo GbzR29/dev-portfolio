@@ -4,6 +4,7 @@
 
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 
 export function ShaderClassContent({ t }: { t: TrackTranslations }) {
@@ -16,7 +17,14 @@ export function ShaderClassContent({ t }: { t: TrackTranslations }) {
         )}
       </p>
 
-      {/* ── The problem ─────────────────────────────────────────── */}
+      <Goals t={t} id="glsl06" items={[
+        "Load shaders from files instead of string literals.",
+        "Write a Shader class that compiles, links and reports errors.",
+        "Set uniforms through it and draw a frame.",
+        "Reload shaders while the program is running.",
+      ]} />
+
+      {/* ── The problem─────────────────────────────────────────── */}
       <H2>{tx(t, "glsl06_problemTitle", "The problem with string literals")}</H2>
       <p>{tx(t, "glsl06_problemBody2", "When GLSL lives inside a C++ string, three things go wrong. First, every tweak to a colour or a constant means recompiling and relinking the C++ program, which can take seconds or minutes, instead of the milliseconds the GPU driver needs to compile the shader itself. Second, the editor sees one long string, so you lose GLSL syntax highlighting, autocompletion and error squiggles. Third, the driver's error messages report line numbers inside the shader, which you then have to map by hand to lines inside a C++ string full of quotes and \\n escapes.")}</p>
       <p>{tx(t, "glsl06_problemFix", "The fix is to keep each shader stage in its own text file (shader.vert, shader.frag), read the file at run time, and hand the text to OpenGL. The C++ program never changes when the shader changes, and that is what later makes hot reload possible.")}</p>

@@ -9,7 +9,7 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { DivisorFigure } from "@/components/lesson/figures/advgl/DivisorFigure";
@@ -25,6 +25,13 @@ export function InstancingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglInst_intro",
           "Drawing ten thousand asteroids with ten thousand draw calls is slow, and the bottleneck is not the GPU — it is the CPU-side validation and command submission per call. Instancing sends the geometry once and tells the GPU to draw it N times, with each copy pulling its own per-instance data from a buffer.")}
       </Lead>
+
+      <Goals t={t} id="oglInst" items={[
+        "Explain what a draw call costs.",
+        "Draw thousands of copies of a mesh in one call.",
+        "Give each copy its own data with instance arrays.",
+        "Update the instance data every frame.",
+      ]} />
 
       <H2>{tx(t, "oglInst_costTitle", "What a draw call costs")}</H2>
       <p>

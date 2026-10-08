@@ -10,7 +10,7 @@ import { Equation } from "@/components/lesson/Tex";
 import { Derivation } from "@/components/lesson/Derivation";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { NumberLineFigure } from "@/components/lesson/figures/math/NumberLineFigure";
 
 const r = String.raw;
@@ -22,6 +22,13 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mNL_intro",
           "Everything in this track, from fractions to quaternions, is built on a handful of ideas about ordinary numbers: what they are, how they are ordered, what the four operations really do, and which rearrangements are always allowed. None of it is difficult, but every later chapter uses it without comment, so it is worth getting completely solid. This chapter starts from counting and ends with the laws of arithmetic, with the number line as the picture that ties it all together.")}
       </Lead>
+
+      <Goals t={t} id="mNL" items={[
+        "Place whole numbers, fractions and negative numbers on the number line.",
+        "Say what each of the four operations means.",
+        "Multiply and divide negative numbers with the sign rules.",
+        "Find the distance between two numbers with absolute value.",
+      ]} />
 
       <H2>{tx(t, "mNL_countTitle", "Counting and zero")}</H2>
       <p>

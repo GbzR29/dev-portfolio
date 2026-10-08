@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { HashTableFigure } from "@/components/lesson/figures/algo/HashTableFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function HashTableContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alHash_intro",
           "Binary search finds a key among a billion in 30 steps. A hash table usually finds it in one or two. It computes where the key should be stored directly from the key itself, and looks only there. It is the structure behind every dictionary, symbol table, cache and \"have I seen this before?\" check, and after the dynamic array it is probably the most used data structure in practice. It builds on everything in this section: an array of buckets, linked lists inside them, and doubling to grow.")}
       </Lead>
+
+      <Goals t={t} id="alHash" items={[
+        "Map keys to buckets with a hash function, strings included.",
+        "Handle collisions with separate chaining and with linear probing.",
+        "Keep the load factor in check by growing the table.",
+        "Explain the worst case and how attackers can trigger it.",
+      ]} />
 
       <H2>{tx(t, "alHash_goalTitle", "Sets and maps")}</H2>
       <p>

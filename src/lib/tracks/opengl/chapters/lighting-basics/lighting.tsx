@@ -9,7 +9,7 @@ import { PhongFigure } from "@/components/lesson/figures/PhongFigure";
 import { LambertFigure } from "@/components/lesson/figures/lighting/LambertFigure";
 import { ReflectFigure } from "@/components/lesson/figures/lighting/ReflectFigure";
 import { NormalMatrixFigure } from "@/components/lesson/figures/lighting/NormalMatrixFigure";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 
 const r = String.raw;
 
@@ -24,6 +24,13 @@ export function BasicLightingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglPhong_intro",
           "Real light bounces around a scene countless times before reaching the eye. The Phong model skips all of that and approximates what we see with three cheap terms — ambient, diffuse and specular — each built from a few unit vectors at the point being shaded.")}
       </Lead>
+
+      <Goals t={t} id="oglPhong" items={[
+        "Add ambient, diffuse and specular light to a surface.",
+        "Compute diffuse light with Lambert's cosine law.",
+        "Transform normals correctly with the normal matrix.",
+        "Shape the highlight with the shininess exponent.",
+      ]} />
 
       <Equation label={tx(t, "oglPhong_eqLabel", "The Phong reflection model")}
         where={[

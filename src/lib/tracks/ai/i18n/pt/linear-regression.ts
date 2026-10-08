@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/ai/chapters/linear-regression.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  aiLin_goal0: "Fazer uma previsão com uma soma ponderada dos atributos.",
+  aiLin_goal1: "Calcular o erro quadrático médio e explicar por que os erros são elevados ao quadrado.",
+  aiLin_goal2: "Achar a melhor reta exatamente, e calcular o gradiente para qualquer número de atributos.",
+  aiLin_goal3: "Avaliar quão bom é um ajuste com o R².",
   aiLin_intro: "A regressão linear é o modelo mais simples que aprende: a previsão é uma soma ponderada dos atributos mais uma constante. Vale a pena estudá-la devagar, porque tudo depois é construído sobre ela. Um neurônio numa rede neural calcula exatamente esta soma ponderada antes de curvá-la; a perda, o seu gradiente e o loop de treino daqui são os mesmos usados em redes com milhões de pesos. Este capítulo define o modelo, olha a sua perda como uma superfície, encontra o seu ponto mais baixo com exatidão, e calcula o gradiente que o próximo capítulo segue morro abaixo.",
 
   aiLin_modelTitle: "O modelo",

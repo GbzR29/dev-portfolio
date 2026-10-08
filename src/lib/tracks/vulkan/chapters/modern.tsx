@@ -11,7 +11,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { BindlessFigure } from "@/components/lesson/figures/vulkan/BindlessFigure";
 import { TimelineFigure } from "@/components/lesson/figures/vulkan/TimelineFigure";
 
@@ -22,6 +22,13 @@ export function ModernContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkMod_intro",
           "Vulkan 1.0 (2016) was designed around fixed descriptor sets, vertex buffers bound through fixed-function state, and binary semaphores plus fences. The later versions kept all of that working and added features that make large renderers simpler and faster. This track has used two of them from the start: dynamic rendering and synchronization2. This last chapter adds three more, all core since Vulkan 1.2: bindless descriptors, buffer device addresses and timeline semaphores. Together they are the base of GPU-driven rendering, where the GPU decides what to draw. The chapter ends with Vulkan 1.4, the extensions worth knowing, and where to go from here.")}
       </Lead>
+
+      <Goals t={t} id="vkMod" items={[
+        "Turn on the Vulkan 1.2 features that modern renderers rely on.",
+        "Make every texture available to every draw with bindless descriptors.",
+        "Read buffers in shaders through device addresses.",
+        "Replace fences and binary semaphores with timeline semaphores.",
+      ]} />
 
       <H2>{tx(t, "vkMod_featTitle", "Enabling the 1.2 features")}</H2>
       <p>

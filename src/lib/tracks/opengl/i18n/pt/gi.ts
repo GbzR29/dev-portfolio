@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/gi.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglGi_goal0: "Explicar por que um termo ambiente constante não basta.",
+  oglGi_goal1: "Gravar a luz indireta em lightmaps.",
+  oglGi_goal2: "Guardar a luz em sondas com harmônicos esféricos.",
+  oglGi_goal3: "Escolher uma abordagem para cenas em que as coisas se movem.",
   oglGi_intro: "Todo capítulo de iluminação até aqui calculou luz direta: de uma lâmpada para uma superfície e para o olho. Na realidade, a luz continua rebatendo. O sol que entra por uma janela ilumina o chão, o chão ilumina o teto, e um tapete vermelho tinge as paredes de rosa. Essa luz indireta muitas vezes é metade de tudo o que você vê, e sem ela os interiores ficam pretos onde as lâmpadas não chegam. Iluminação global (GI) é o nome de calcular isso. Fazê-lo exatamente é o path tracing da trilha de GLSL. Este capítulo cobre como as engines em tempo real a aproximam: pré-calcular o que não se move, guardar luz em pontos de amostragem no espaço e atualizar de forma barata o que se move.",
   oglGi_whyTitle: "Por que a luz ambiente não basta",
   oglGi_whyBody: "Os capítulos de Phong fingiram a luz indireta com um termo ambiente constante: a mesma cor fraca em todo lugar, vinda de todas as direções. A luz indireta de verdade varia nas duas coisas. Um canto recebe menos que uma parede aberta (oclusão ambiente, veja SSAO). Um chão branco sob um céu azul é iluminado em tom azulado de cima e em tom quente por uma parede ensolarada ao lado. As técnicas de GI substituem essa constante por uma luz que depende da posição e da direção para onde a superfície está virada. Elas diferem em onde essa informação é guardada e com que frequência é atualizada.",

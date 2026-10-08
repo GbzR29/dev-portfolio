@@ -7,7 +7,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RandomFigure } from "@/components/lesson/figures/gamedev/RandomFigure";
 import { ScatterFigure } from "@/components/lesson/figures/gamedev/ScatterFigure";
 import { PerlinStepsFigure } from "@/components/lesson/figures/gamedev/PerlinStepsFigure";
@@ -26,6 +26,13 @@ export function RandomContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdRand_intro",
           "Games use randomness everywhere: critical hits, loot, enemy spawns, particle directions, whole worlds. But a processor cannot flip a coin. Every instruction it executes is deterministic, so the \"random\" numbers in a game come from a formula whose output merely looks random. Understanding that formula, and its one input, the seed, is what lets you generate a planet from a single number and replay a match exactly.")}
       </Lead>
+
+      <Goals t={t} id="gdRand" items={[
+        "Explain why one seed decides a whole sequence of random numbers.",
+        "Pick a good random number generator.",
+        "Get random values from coordinates with a hash, without storing anything.",
+        "Shape random numbers: ranges, weighted choices and evenly scattered points.",
+      ]} />
 
       <H2>{tx(t, "gdRand_prngTitle", "Pseudo-random number generators")}</H2>
       <p>
@@ -186,6 +193,13 @@ export function PerlinContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdPerlin_intro",
           "Ask a random number generator for the height of every point of a landscape and you get static: each point unrelated to its neighbour. Real landscapes, clouds, marble and fire are random at a large scale but smooth up close. Ken Perlin invented a function with exactly that property in 1983, after working on the film Tron, and won a technical Academy Award for it in 1997. Almost every procedural world since then, from Minecraft's terrain to shader clouds, starts with some form of his noise.")}
       </Lead>
+
+      <Goals t={t} id="gdPerlin" items={[
+        "Explain how noise differs from plain random numbers.",
+        "Build value noise and Perlin noise step by step.",
+        "Add octaves together to make fractal terrain.",
+        "Choose a kind of noise for a job in a game.",
+      ]} />
 
       <H2>{tx(t, "gdPerlin_wantTitle", "What we want from noise")}</H2>
       <p>

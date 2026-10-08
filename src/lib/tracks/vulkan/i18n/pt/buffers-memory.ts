@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/buffers-memory.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkBuf_goal0: "Criar um buffer, achar um tipo de memória que sirva para ele e ligar os dois.",
+  vkBuf_goal1: "Dizer o que cada flag de propriedade de memória significa e escolher uma para cada uso.",
+  vkBuf_goal2: "Pôr dados de vértices num buffer e desenhar a partir dele.",
+  vkBuf_goal3: "Explicar por que programas reais sub-alocam em vez de fazer uma alocação por buffer.",
   vkBuf_intro: "O primeiro triângulo guardava os seus três cantos dentro do vertex shader. Malhas de verdade têm milhares de vértices carregados de arquivos, então elas precisam morar numa memória que a GPU lê e que o programa preenche. O OpenGL fazia isso numa chamada, glBufferData, e o driver decidia para onde os bytes iam. O Vulkan divide isso em três decisões que você toma: um objeto buffer que descreve os bytes, um bloco de memória de um tipo que você escolhe, e a ligação de um ao outro. Este capítulo toma essas decisões, move os vértices para um vertex buffer, acrescenta um index buffer e desenha um quadrado.",
 
   vkBuf_twoTitle: "Dois objetos: o buffer e a sua memória",

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/sampling.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mSamp_goal0: "Diferenciar os parâmetros de uma população das estatísticas de uma amostra.",
+  mSamp_goal1: "Explicar como a média amostral se comporta pela lei dos grandes números e pelo teorema central do limite.",
+  mSamp_goal2: "Montar um intervalo de confiança.",
+  mSamp_goal3: "Fazer um teste de hipótese e ler o resultado.",
   mSamp_intro: "Uma pesquisa ouve 1000 pessoas e anuncia o que um país inteiro pensa. Uma fábrica mede 50 parafusos e certifica um milhão. Como uma amostra pequena pode dizer algo confiável sobre uma população enorme, e quão confiável? Este capítulo junta as duas metades da seção: os dados do capítulo descritivo são tratados como variáveis aleatórias, e as regras da esperança e a distribuição normal dizem a que distância da verdade um resultado de amostra provavelmente está. As respostas são a lei dos grandes números, o teorema central do limite, os intervalos de confiança e os testes de hipótese.",
   mSamp_paramTitle: "Parâmetros, estatísticas e amostras aleatórias",
   mSamp_paramBody: "Um parâmetro é um número fixo que descreve a população, normalmente desconhecido: a altura média μ de todos os adultos, a proporção p de eleitores que apoiam uma proposta. Uma estatística é um número calculado a partir da amostra: x̄, s, a proporção amostral p̂. A estatística é usada para estimar o parâmetro. O passo-chave é ver que, antes de a amostra ser sorteada, a estatística é uma variável aleatória: outra amostra daria outro x̄. Sua distribuição sobre todas as amostras possíveis se chama distribuição amostral, e ela diz quanto confiar no único valor que obtivemos.",

@@ -5,6 +5,7 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 import type { TrackTranslations } from "@/lib/tracks/types";
 
 // ── Debugging OpenGL ─────────────────────────────────────────────────────────
@@ -18,6 +19,13 @@ export function DebuggingContent({ t }: { t: TrackTranslations }) {
           "OpenGL fails silently. A wrong enum, a buffer bound to the wrong target, a uniform set on the wrong program — none of it throws, none of it prints anything, and the result is a black screen with no information. This chapter is about making the API tell you what went wrong, because doing that once is worth more than any amount of staring at shader code."
         )}
       </p>
+
+      <Goals t={t} id="oglDebug" items={[
+        "Turn on the debug callback and read its messages.",
+        "Check for errors with glGetError when there is no debug output.",
+        "Name your OpenGL objects so tools show them clearly.",
+        "Work through the black-screen checklist.",
+      ]} />
 
       <H2>{tx(t, "oglDebug_callbackTitle", "The debug callback")}</H2>
       <p>

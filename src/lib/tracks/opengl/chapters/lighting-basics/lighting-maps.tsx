@@ -14,7 +14,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { LightingMapsFigure } from "@/components/lesson/figures/lighting/LightingMapsFigure";
 import { TexelProbeFigure } from "@/components/lesson/figures/lighting/TexelProbeFigure";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 
 const r = String.raw;
 
@@ -29,6 +29,13 @@ export function LightingMapsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglMaps_intro",
           "A real crate is wood held together by steel: two materials on one object. One set of material values for the whole mesh cannot express that. The fix is to store material properties in textures — one value per texel instead of one per object.")}
       </Lead>
+
+      <Goals t={t} id="oglMaps" items={[
+        "Vary a surface's colour texel by texel with a diffuse map.",
+        "Control where highlights appear with a specular map.",
+        "Make parts of a surface glow with an emission map.",
+        "Bind several textures to the right texture units.",
+      ]} />
 
       <H2>{tx(t, "oglMaps_perTexelTitle", "From one value per object to one per texel")}</H2>
       <p>

@@ -6,7 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { tx } from "@/lib/tracks/tx";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas } from "@/components/lesson/Prose";
+import { KeyIdeas, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { Noise1DFigure } from "@/components/lesson/glsl/Noise1DFigure";
 import { NOISE_PRESETS } from "../presets/noise";
@@ -22,6 +22,13 @@ export function NoiseContent({ t }: { t: TrackTranslations }) {
           "Noise is the foundation of procedural textures, terrain generation, material variation, and organic-looking effects. GLSL has no built-in noise function (the historical noise() was removed from the spec), so you write your own using hash functions."
         )}
       </p>
+
+      <Goals t={t} id="glsl05" items={[
+        "Write a hash that turns coordinates into random-looking numbers.",
+        "Build value noise from a hash and a smooth fade.",
+        "Add octaves together to get fractal Brownian motion.",
+        "Tell value, gradient and cell noise apart.",
+      ]} />
 
       <H2>{tx(t, "glsl05_hashTitle", "Hash function")}</H2>
       <p>{tx(t, "glsl05_hashBody", "A hash function maps a value to a pseudo-random number. In GLSL, the classic approach uses dot product + sin + fract to generate repeatable pseudo-random floats from a vec2 input.")}</p>

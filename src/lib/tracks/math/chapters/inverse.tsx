@@ -10,7 +10,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { InverseFigure } from "@/components/lesson/figures/math/InverseFigure";
 
 const r = String.raw;
@@ -22,6 +22,13 @@ export function InverseContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mInv_intro",
           "A matrix moves points. Very often you need to go back: from a point on a map back to the place on the ground, from a coded message back to the plain one, from the effect to the cause. The matrix that undoes another is its inverse. Finding it is the same problem as solving a system of linear equations, the problem of the systems chapter, now with any number of unknowns. This chapter covers both, and the elimination method that solves them.")}
       </Lead>
+
+      <Goals t={t} id="mInv" items={[
+        "Invert a 2 × 2 matrix with the formula.",
+        "Solve a system Ax = b with Gaussian elimination.",
+        "Convert between world and local coordinates with a change of basis.",
+        "Spot a nearly singular matrix before it causes trouble.",
+      ]} />
 
       <H2>{tx(t, "mInv_whatTitle", "What an inverse is")}</H2>
       <p>

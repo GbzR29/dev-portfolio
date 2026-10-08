@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation, Tex } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { GsEmitFigure } from "@/components/lesson/figures/advgl/GsEmitFigure";
 import { GsEffectsFigure } from "@/components/lesson/figures/advgl/GsEffectsFigure";
 import { TessDomainFigure } from "@/components/lesson/figures/advgl/TessDomainFigure";
@@ -25,6 +25,13 @@ export function GeometryShaderContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglGs_intro",
           "A vertex shader sees one vertex and cannot create or destroy anything. A geometry shader sees a whole primitive (a point, a line or a triangle, all its vertices at once) and decides what comes out: nothing, the same primitive, or several new ones. It sits after the vertex (and tessellation) stages and before the rasterizer.")}
       </Lead>
+
+      <Goals t={t} id="oglGs" items={[
+        "Write a geometry shader that emits new vertices.",
+        "Do per-triangle work, such as exploding a mesh or drawing its normals.",
+        "Render to several layers at once.",
+        "Explain why geometry shaders fell out of favour.",
+      ]} />
 
       <H2>{tx(t, "oglGs_ioTitle", "Inputs, outputs, EmitVertex")}</H2>
       <p>
@@ -186,6 +193,13 @@ export function TessellationContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglTess_intro",
           "Tessellation lets the GPU create the detail. You send coarse patches (a terrain made of 64 quads, a character made of a few thousand triangles), and for every patch the GPU decides, per frame, how finely to subdivide it, then places each new vertex wherever you like, typically on a heightmap. Detail goes where the camera is looking, and nowhere else.")}
       </Lead>
+
+      <Goals t={t} id="oglTess" items={[
+        "Name the three tessellation stages and what each one does.",
+        "Set tessellation levels, and choose them so no cracks appear.",
+        "Turn domain coordinates into points on a surface in the evaluation shader.",
+        "Smooth a mesh with Phong tessellation.",
+      ]} />
 
       <H2>{tx(t, "oglTess_stagesTitle", "Three stages, one of them fixed")}</H2>
       <LessonTable

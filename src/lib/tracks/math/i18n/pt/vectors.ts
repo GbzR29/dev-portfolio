@@ -1,6 +1,18 @@
 // PT text for src/lib/tracks/math/chapters/vectors.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mVec_goal0: "Escrever um vetor em componentes e desenhá-lo como uma seta.",
+  mVec_goal1: "Somar, subtrair e escalar vetores.",
+  mVec_goal2: "Achar o comprimento de um vetor e transformá-lo num vetor unitário.",
+  mVec_goal3: "Escrever qualquer vetor como combinação dos vetores da base.",
+  mDot_goal0: "Calcular o produto escalar de duas formas.",
+  mDot_goal1: "Achar o ângulo entre dois vetores.",
+  mDot_goal2: "Projetar um vetor sobre outro.",
+  mDot_goal3: "Refletir uma direção numa superfície, e achar a distância de um ponto a um plano.",
+  mCross_goal0: "Calcular o produto vetorial de dois vetores 3D.",
+  mCross_goal1: "Usá-lo para achar a normal de uma superfície e a área de um paralelogramo.",
+  mCross_goal2: "Distinguir esquerda de direita, e horário de anti-horário, com o produto vetorial 2D.",
+  mCross_goal3: "Achar um volume com o produto misto.",
   mVec_intro: "Um número consegue dizer quão rápido; não consegue dizer para onde. Um vetor carrega os dois: uma magnitude e uma direção, guardadas como um número por eixo. Velocidades, forças, deslocamentos, ventos e correntezas são todos vetores, e a geometria e a física estão cheias deles. Este capítulo constrói cada operação a partir do seu significado geométrico e depois a calcula à mão, para que cada fórmula desenhe uma imagem na sua cabeça.",
   mVec_whatTitle: "Setas e componentes",
   mVec_whatBody: "Imagine um vetor como uma seta: o comprimento é a magnitude, o rumo é a direção, e onde você a desenha não importa. Uma seta 3 unidades para a direita e 1 para cima é o mesmo vetor, comece onde começar. Para calcular com ela, anote quanto ela anda ao longo de cada eixo, as suas componentes: v = (3, 1) em 2D, v = (3, 1, −2) em 3D. A forma em componentes é aquela com que você calcula; a seta é o que você deve imaginar.",

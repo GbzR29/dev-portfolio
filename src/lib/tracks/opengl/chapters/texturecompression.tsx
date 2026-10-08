@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MipAnisoFigure } from "@/components/lesson/figures/perf/MipAnisoFigure";
 import { Bc1Figure } from "@/components/lesson/figures/perf/Bc1Figure";
 
@@ -19,6 +19,12 @@ export function TextureCompressionContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglTexc_intro",
           "Textures are usually the biggest thing in video memory and the biggest consumer of memory bandwidth. Two techniques make them affordable and good-looking. Mipmaps prepare smaller, pre-filtered copies so distant surfaces sample the right amount of detail. Block compression stores texels in fixed-size blocks the GPU decodes on the fly, at a quarter or an eighth of the size. Both are nearly free, and skipping either one is one of the most common reasons a renderer looks noisy or runs out of memory.")}
       </Lead>
+
+      <Goals t={t} id="oglTexc" items={[
+        "Explain why distant textures shimmer.",
+        "Build mipmaps and use them.",
+        "Choose a block-compression format for each kind of texture.",
+      ]} />
 
       <H2>{tx(t, "oglTexc_aliasTitle", "Why distant textures shimmer")}</H2>
       <p>

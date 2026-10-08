@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/sdl3/chapters/text.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  sdl07_goal0: "Transformar uma string numa textura com o SDL3_ttf.",
+  sdl07_goal1: "Escolher um modo de renderização para texto nítido ou para texto rápido.",
+  sdl07_goal2: "Desenhar texto que muda a cada quadro com o text engine.",
+  sdl07_goal3: "Medir o texto para posicioná-lo na tela.",
   sdl07_intro: "O SDL básico não consegue desenhar texto nenhum — não há rasterizador de fontes nele. O SDL3_ttf embrulha o FreeType e oferece dois caminhos: renderizar uma string numa surface e enviá-la como textura, ou usar o text engine, que gerencia atlas de glifos para você. O segundo é o que você quer para qualquer coisa que muda a cada frame.",
   sdl07_basicTitle: "O caminho clássico: da string para a textura",
   sdl07_perfWarn: "Nunca faça isso a cada frame. Rasterizar uma string e enviar uma textura é ordens de grandeza mais caro que desenhar uma, então um contador de frames reconstruído 60 vezes por segundo vai custar mais que a sua cena inteira. Guarde a textura em cache e reconstrua-a só quando a string realmente mudar.",

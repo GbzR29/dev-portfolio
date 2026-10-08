@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DijkstraFigure } from "@/components/lesson/figures/algo/DijkstraFigure";
 
 const r = String.raw;
@@ -25,6 +25,13 @@ export function ShortestPathsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alSp_intro",
           "A navigation app does not want the route with the fewest roads; it wants the one that takes the least time. When edges have weights, the length of a path is the sum of its weights, and the shortest path can use many edges. BFS counts edges, so it no longer answers the question. This chapter builds the algorithms that do: Dijkstra's for nonnegative weights, the one inside every route planner and the basis of A* in games; Bellman–Ford, slower but able to handle negative weights and to detect when \"shortest\" stops making sense; and Floyd–Warshall, which computes the distance between every pair of vertices at once.")}
       </Lead>
+
+      <Goals t={t} id="alSp" items={[
+        "Relax an edge and explain why every shortest-path algorithm is built on it.",
+        "Run Dijkstra's algorithm by hand.",
+        "Handle negative weights with Bellman–Ford, and find all pairs with Floyd–Warshall.",
+        "Aim the search at a target with A*.",
+      ]} />
 
       <H2>{tx(t, "alSp_defTitle", "Distance in a weighted graph")}</H2>
       <p>

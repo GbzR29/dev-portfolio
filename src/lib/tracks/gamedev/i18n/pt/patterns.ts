@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/gamedev/chapters/patterns.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  gdPool_goal0: "Explicar quanto custa criar e destruir objetos durante o jogo.",
+  gdPool_goal1: "Montar um pool com uma free list.",
+  gdPool_goal2: "Entregar handles que percebem quando um objeto foi reciclado.",
+  gdPool_goal3: "Escolher o tamanho de um pool e percorrê-lo com eficiência.",
   gdPool_intro: "Balas, faíscas, números de dano, marcas de passos, inimigos num modo horda: jogos criam e destroem quantidades enormes de objetos de vida curta. Um object pool mantém um conjunto fixo deles vivo durante a fase inteira e os recicla, então criar uma bala vira \"pegar uma da prateleira\" e destruí-la vira \"devolvê-la\". É um dos padrões mais comuns em código de jogo, e construí-lo bem (operações O(1), referências seguras, nenhum estado velho) ensina muito sobre memória.",
   gdPool_costTitle: "Quanto custa criar um objeto",
   gdPool_costBody: "new em C++ (ou malloc em C) pede memória a um alocador de uso geral. O alocador precisa encontrar um bloco livre do tamanho certo, registrar que ele está em uso e talvez pedir mais memória ao sistema operacional; um delete posterior precisa devolver o bloco e talvez fundi-lo com os vizinhos. O caso comum é rápido, dezenas de nanossegundos, mas o pior caso não é, e é imprevisível: um frame que por acaso precise de uma chamada de sistema ou de uma trava segurada por outra thread paga por isso. Três outros custos muitas vezes são maiores que a chamada em si:",

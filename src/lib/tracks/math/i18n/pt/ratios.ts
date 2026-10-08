@@ -1,5 +1,9 @@
 // PT text for src/lib/tracks/math/chapters/ratios.tsx. Keys match the tx() calls there; English is the fallback in the code.
 const text: Record<string, string> = {
+  mRat_goal0: "Trabalhar com razões e taxas, unidades incluídas.",
+  mRat_goal1: "Resolver uma proporção.",
+  mRat_goal2: "Calcular porcentagens, variações percentuais e porcentagens de porcentagens.",
+  mRat_goal3: "Achar o valor a uma fração dada do caminho entre dois outros.",
   mRat_intro: "Uma fração responde “quanto de um todo?”. Uma razão responde “quanto de uma coisa para cada quantidade de outra?”: farinha por ovo numa receita, quilômetros por hora, largura por altura de uma tela. Porcentagens são razões com 100 como referência, e a ideia de “fração do caminho” por trás delas é a mesma por trás de converter uma temperatura de Celsius para Fahrenheit ou a pontuação de uma prova em nota. Este capítulo trata delas juntas porque são uma ideia só, vista de lados diferentes.",
   mRat_ratioTitle: "Razões",
   mRat_ratioBody: "Uma razão compara duas quantidades por divisão. Se uma turma tem 12 alunos e 4 computadores, a razão de alunos para computadores é 12 : 4, lida “12 para 4”, e quer dizer 12/4 = 3 alunos para cada computador. Como uma fração, uma razão pode ser simplificada dividindo os dois lados pelo mesmo número (12 : 4 = 3 : 1) sem mudar o que ela diz. A ordem importa: computadores para alunos é 4 : 12 = 1 : 3.",

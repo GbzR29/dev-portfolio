@@ -8,7 +8,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RayTreeFigure } from "@/components/lesson/figures/rt/RayTreeFigure";
 import { WhittedFigure } from "@/components/lesson/figures/rt/WhittedFigure";
 import { MonteCarloFigure } from "@/components/lesson/figures/rt/MonteCarloFigure";
@@ -28,6 +28,11 @@ export function RayTracingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslRt_intro",
           "Raymarching walks along a ray in steps until a distance function says it has arrived. Ray tracing solves for the hit directly: for spheres, planes and triangles, where a ray meets a surface is the root of an equation. Turner Whitted's 1980 paper added the idea that made ray tracing famous: when a ray hits a mirror or glass, trace new rays from the hit point, recursively. Shadows, reflections and refraction all follow from one rule, with no special cases.")}
       </Lead>
+
+      <Goals t={t} id="glslRt" items={[
+        "Intersect a ray with spheres and planes, and keep the nearest hit.",
+        "Add shadow rays, reflection and refraction with Whitted's recursion.",
+      ]} />
 
       <H2>{tx(t, "glslRt_rayTitle", "A ray, and the first thing it hits")}</H2>
       <p>
@@ -136,6 +141,12 @@ export function PathTracingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslPt_intro",
           "A path tracer answers the question Whitted skipped: how much light reaches this point from every direction, not just from the lights and the mirror direction? The answer is an integral over the hemisphere, the rendering equation. It is estimated the only way such integrals can be: by averaging random samples. Each sample is one random path of light, bouncing from the camera through the scene. Average enough of them and the result is a physically correct image, with soft shadows, colour bleeding, glossy reflections and caustics, all falling out of the same loop.")}
       </Lead>
+
+      <Goals t={t} id="glslPt" items={[
+        "Read the rendering equation term by term.",
+        "Estimate an integral by averaging random samples.",
+        "Trace one path per sample and average the paths into an image.",
+      ]} />
 
       <H2>{tx(t, "glslPt_reTitle", "The rendering equation")}</H2>
       <Equation label={tx(t, "glslPt_reLabel", "Kajiya's rendering equation (1986)")}
@@ -263,6 +274,13 @@ export function RtAccelContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslRtA_intro",
           "The figures in the last two chapters test every ray against every object, which is fine for seven objects. A game scene has millions of triangles, and a path-traced frame needs hundreds of millions of rays. Two ideas make that feasible: a spatial hierarchy, so each ray tests a few dozen triangles instead of all of them, and a denoiser, so a handful of samples per pixel looks like thousands. Together with ray-tracing hardware, they are how real-time ray tracing works in games today.")}
       </Lead>
+
+      <Goals t={t} id="glslRtA" items={[
+        "Explain how a bounding volume hierarchy saves work.",
+        "Intersect a ray with a box using the slab test.",
+        "Say how denoisers make a few samples look clean.",
+        "Say what ray-tracing hardware does for you.",
+      ]} />
 
       <H2>{tx(t, "glslRtA_bvhTitle", "Bounding volume hierarchies")}</H2>
       <p>

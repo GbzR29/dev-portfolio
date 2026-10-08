@@ -12,7 +12,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RandomVariableFigure } from "@/components/lesson/figures/math/RandomVariableFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function RandomVariablesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mRv_intro",
           "So far outcomes were things: pairs of dice faces, cards, sequences of heads and tails. But usually we care about a number that the outcome determines: the sum of the dice, how many heads, how long we wait, how tall a person picked at random is. A random variable is exactly that, a number attached to every outcome. Once outcomes become numbers, we can draw their probabilities as a graph, add them up with sums and integrals, and, in the next chapters, compute averages and spreads. This chapter covers discrete variables, whose values can be listed, and continuous ones, which fill whole intervals.")}
       </Lead>
+
+      <Goals t={t} id="mRv" items={[
+        "Turn outcomes into numbers with a random variable.",
+        "Write a probability table and the cumulative distribution.",
+        "Handle two random variables together.",
+        "Find probabilities as areas under a density.",
+      ]} />
 
       <H2>{tx(t, "mRv_defTitle", "A number for every outcome")}</H2>
       <p>

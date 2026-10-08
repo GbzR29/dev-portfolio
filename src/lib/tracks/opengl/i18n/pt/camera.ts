@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/camera.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglCam_goal0: "Montar uma matriz de visão com glm::lookAt.",
+  oglCam_goal1: "Andar com W, A, S, D na mesma velocidade em qualquer máquina.",
+  oglCam_goal2: "Olhar em volta com o mouse e dar zoom com a roda.",
+  oglCam_goal3: "Embrulhar tudo numa classe Camera.",
   oglCam_intro: "O OpenGL não tem câmera. No capítulo anterior, a \"câmera\" era uma linha: transladar o mundo inteiro por (0, 0, −3). Este capítulo transforma essa linha numa câmera de verdade. Primeiro ela circula a cena sozinha. Depois você anda com o teclado, olha em volta com o mouse e dá zoom com a rodinha, como num jogo em primeira pessoa.",
 
   // ── O que muda ──

@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/sdl3/chapters/main-loop.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  sdl03_goal0: "Explicar por que um while simples não funciona no navegador nem no celular.",
+  sdl03_goal1: "Organizar um programa em torno dos quatro callbacks principais do SDL3.",
+  sdl03_goal2: "Atualizar um jogo com timestep fixo, seja qual for a taxa de quadros.",
   sdl03_intro: "O game loop clássico é dono do processo: o seu while roda até o jogador sair. Esse modelo quebra em plataformas em que o sistema operacional é dono do loop e chama você — o navegador, o iOS e o Android funcionam assim. Os main callbacks do SDL3 invertem o fluxo de controle para que um único arquivo-fonte rode em todo lugar.",
   sdl03_problemTitle: "Por que o while é um problema de portabilidade",
   sdl03_problemBody: "No navegador, o JavaScript é single-threaded e a página precisa voltar ao event loop para que qualquer coisa seja desenhada. Um while(true) em C++ compilado para WebAssembly congela a aba. O contorno do Emscripten é entregar o corpo do seu loop ao requestAnimationFrame, que é exatamente o que os callbacks do SDL3 padronizam.",

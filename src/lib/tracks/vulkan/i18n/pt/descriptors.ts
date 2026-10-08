@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/descriptors.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkDesc_goal0: "Escolher entre push constants e descritores para um dado do shader.",
+  vkDesc_goal1: "Organizar um bloco uniform pelas regras do std140.",
+  vkDesc_goal2: "Montar o layout, o pool e o set que ligam um shader a um buffer.",
+  vkDesc_goal3: "Preparar as matrizes de uma câmera para as convenções do Vulkan.",
   vkDesc_intro: "Vértices não são os únicos dados de que um shader precisa. As matrizes da câmera, a cor de um material, a posição de uma luz e, em breve, texturas, tudo isso vem de fora do fluxo de vértices do desenho. No OpenGL você chamava glUniformMatrix4fv no programa vinculado e o driver guardava o valor em algum lugar. O Vulkan oferece dois mecanismos explícitos: push constants, alguns bytes escritos direto no command buffer, e descritores, que apontam o shader para buffers e imagens e são agrupados em descriptor sets. Este capítulo usa os dois: um uniform buffer para a câmera, compartilhado por todos os desenhos, e uma push constant para a matriz de modelo de cada objeto. O quadrado vira dois quadrados, girando em perspectiva.",
 
   vkDesc_freqTitle: "Com que frequência o dado muda?",

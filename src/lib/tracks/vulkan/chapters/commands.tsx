@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CmdLifecycleFigure } from "@/components/lesson/figures/vulkan/CmdLifecycleFigure";
 import { LoadStoreFigure } from "@/components/lesson/figures/vulkan/LoadStoreFigure";
 
@@ -26,6 +26,13 @@ export function CommandsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkCmd_intro",
           "An OpenGL call like glDrawArrays looks like it draws, but the driver only writes the request into a hidden command buffer and sends that buffer to the GPU later, when it decides to. Vulkan hands you that buffer. You record commands into a VkCommandBuffer, which costs CPU time and nothing else, and later submit the finished buffer to a queue, where the GPU executes it. Recording and executing are separate, so a buffer can be recorded on any thread, reused, and submitted exactly when you choose. This chapter creates the pool and buffer, and records everything one frame of the triangle needs.")}
       </Lead>
+
+      <Goals t={t} id="vkCmd" items={[
+        "Create a command pool and its command buffers.",
+        "Record the commands of one frame with dynamic rendering.",
+        "Move an image from one layout to another with a barrier.",
+        "Say which state a command buffer is in and what you may do with it.",
+      ]} />
 
       <H2>{tx(t, "vkCmd_poolTitle", "Command pools")}</H2>
       <p>

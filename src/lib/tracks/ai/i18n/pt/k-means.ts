@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/ai/chapters/k-means.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  aiKm_goal0: "Agrupar dados sem rótulos em clusters com o algoritmo de Lloyd.",
+  aiKm_goal1: "Rodar o k-means à mão e perceber um resultado ruim causado por um começo ruim.",
+  aiKm_goal2: "Começar melhor com o k-means++ e escolher o k.",
+  aiKm_goal3: "Dizer que formatos de cluster o k-means consegue achar e quais não consegue.",
   aiKm_intro: "Todos os modelos até aqui aprenderam a partir de rótulos: o tempo de entrega, passou ou reprovou. Muitas vezes não há rótulo nenhum, só dados: as sessões de jogo dos jogadores, as cores de uma imagem, as compras dos clientes. O aprendizado não supervisionado procura estrutura só nos dados, e a estrutura mais básica são grupos de exemplos parecidos, os clusters. O k-means encontra k clusters com um loop de dois passos simples o bastante para rodar à mão, e continua sendo um dos algoritmos mais usados na prática. Este capítulo define o que ele otimiza, roda-o à mão, mostra como ele empaca e como o k-means++ evita isso, e trata de como escolher k.",
 
   aiKm_goalTitle: "O que é um bom agrupamento",

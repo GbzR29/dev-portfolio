@@ -13,7 +13,7 @@
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TransformOrderFigure } from "@/components/lesson/figures/TransformOrderFigure";
 import { FrustumFigure } from "@/components/lesson/figures/FrustumFigure";
 import { VertexJourneyFigure } from "@/components/lesson/figures/VertexJourneyFigure";
@@ -27,6 +27,12 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglTr_intro",
           "Until now, every vertex you wrote went straight to the screen. Its x and y were already NDC coordinates, from −1 to 1. This chapter puts the matrices from the previous two chapters between the vertex and the screen. First the textured square moves and spins. Then it is seen in perspective, and then it becomes a spinning 3D cube.")}
       </Lead>
+
+      <Goals t={t} id="oglTr" items={[
+        "Move a shape with a matrix in the vertex shader.",
+        "Follow a vertex through model, view and projection space.",
+        "Choose between perspective and orthographic projection.",
+      ]} />
 
       {/* ── WHAT CHANGES ────────────────────────────────────────────────── */}
       <H2>{tx(t, "oglTr_alongTitle", "What this chapter adds to main.cpp")}</H2>

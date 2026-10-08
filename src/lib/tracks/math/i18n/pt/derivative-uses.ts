@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/derivative-uses.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mUse_goal0: "Achar onde uma função sobe, desce e se curva.",
+  mUse_goal1: "Achar o maior ou o menor valor num problema real.",
+  mUse_goal2: "Aproximar uma função pela reta tangente, e achar raízes com o método de Newton.",
+  mUse_goal3: "Resolver problemas de taxas relacionadas, e calcular limites difíceis com a regra de L'Hôpital.",
   mUse_intro: "Conhecer a inclinação em todo lugar diz uma quantidade surpreendente sobre uma função sem desenhá-la: onde ela sobe e desce, onde estão seus picos e vales, como ela se curva. Isso transforma perguntas do tipo “qual é a melhor escolha?” em equações, permite aproximar funções difíceis por fáceis e dá o método geral mais rápido que existe para resolver equações. Este capítulo reúne esses usos.",
   mUse_signTitle: "Subindo, descendo e plana",
   mUse_signBody: "Onde f′(x) > 0 a tangente aponta morro acima, então f é crescente: x maior, f(x) maior. Onde f′(x) < 0, f é decrescente. Um ponto onde f′(x) = 0 (ou onde f′ não existe) é um ponto crítico: a tangente é horizontal, ou há uma quina. Picos e vales só podem acontecer em pontos críticos ou nas pontas do domínio, porque em qualquer outro lugar a função ainda está subindo de um lado e descendo do outro. O teste da derivada primeira diz qual é: se f′ muda de + para − quando x passa pelo ponto, a função subiu e depois desceu, então é um máximo local; de − para + é um mínimo local; se o sinal não muda, não é nenhum dos dois.",

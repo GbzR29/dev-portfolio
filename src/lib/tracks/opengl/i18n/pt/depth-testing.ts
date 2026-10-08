@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/depth-testing.tsx (Depth Testing). Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglDepth_goal0: "Ligar o teste de profundidade para que superfícies próximas escondam as distantes.",
+  oglDepth_goal1: "Escolher uma função de profundidade, e ligar e desligar a escrita de profundidade.",
+  oglDepth_goal2: "Mostrar o depth buffer na tela.",
+  oglDepth_goal3: "Explicar o z-fighting, e por que a precisão acaba com a distância.",
   oglDepth_intro: "No capítulo de Transformações, uma linha fez as faces da frente esconderem as de trás: glEnable(GL_DEPTH_TEST). Este capítulo abre essa linha. Você vai quebrá-la de propósito, olhar o próprio depth buffer, fazer duas superfícies piscarem uma através da outra e ver por que o plano near importa tanto.",
 
   // ── What changes ──

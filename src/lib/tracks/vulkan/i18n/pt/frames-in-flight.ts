@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/frames-in-flight.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkFif_goal0: "Explicar por que esperar cada quadro deixa a CPU e a GPU paradas.",
+  vkFif_goal1: "Escolher quantos quadros manter em andamento.",
+  vkFif_goal2: "Duplicar exatamente os recursos de que cada quadro precisa, e nada mais.",
+  vkFif_goal3: "Redimensionar a janela sem travar a GPU inteira.",
   vkFif_intro: "Desde o capítulo de sincronização, o drawFrame começa esperando a GPU terminar o frame anterior. Essa espera deixa tudo simples e seguro: há um command buffer, um uniform buffer, uma fence, e a CPU nunca mexe neles enquanto a GPU os usa. Ela também faz a CPU e a GPU se revezarem, cada uma parada enquanto a outra trabalha. Este capítulo dá a cada frame o seu próprio conjunto desses objetos, para a CPU gravar o próximo frame enquanto a GPU desenha o atual, e depois tira o último vkDeviceWaitIdle do loop de renderização: o da recriação da swapchain.",
 
   vkFif_whyTitle: "Por que um frame em voo é lento",

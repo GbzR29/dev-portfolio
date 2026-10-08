@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TriangleFigure } from "@/components/lesson/figures/math/TriangleFigure";
 
 const r = String.raw;
@@ -43,6 +43,13 @@ export function TrianglesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mTri_intro",
           "Surveyors map whole countries by splitting the land into triangles, and roof trusses, bridges and bicycle frames are built from them. There is a reason: the triangle is the simplest shape that encloses an area, it is always flat, and its three sides fix its shape completely. This chapter covers what every triangle has in common: its angles always add up to 180°, its sides obey the triangle inequality, and a few measurements are enough to pin it down exactly.")}
       </Lead>
+
+      <Goals t={t} id="mTri" items={[
+        "Explain why the angles of a triangle add up to 180°.",
+        "Name a triangle by its sides and by its angles.",
+        "Tell whether three lengths can make a triangle.",
+        "Decide whether two triangles are congruent, and find a triangle's centroid.",
+      ]} />
 
       <H2>{tx(t, "mTri_partsTitle", "Parts and names")}</H2>
       <p>

@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DynArrayFigure } from "@/components/lesson/figures/algo/DynArrayFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function DynamicArrayContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alDyn_intro",
           "An array is the fastest structure there is for reading element i: one multiplication and one addition give its address (Memory chapter). Its weakness is that its size is fixed when it is created, and most programs do not know in advance how much data they will get. The dynamic array keeps the array's speed and removes that limit. It is the most used data structure in C++ (std::vector), and building it teaches a new kind of cost analysis, the amortised cost, which the rest of the track uses again and again.")}
       </Lead>
+
+      <Goals t={t} id="alDyn" items={[
+        "Build a growable array with a size and a capacity.",
+        "Explain why doubling the capacity makes adding at the end cost O(1) on average.",
+        "Shrink the array without reallocating back and forth.",
+        "Avoid using pointers into a vector after it has grown.",
+      ]} />
 
       <H2>{tx(t, "alDyn_ideaTitle", "Size and capacity")}</H2>
       <p>

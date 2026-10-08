@@ -9,7 +9,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { BlinnMathFigure } from "@/components/lesson/figures/advlighting/BlinnMathFigure";
@@ -28,6 +28,12 @@ export function BlinnPhongContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglBlinn_intro",
           "Phong's specular term has a flaw that only shows in some situations — low shininess, grazing angles — but when it shows, it is ugly: the highlight stops along a hard edge. Jim Blinn's fix in 1977 replaced one vector and became the default specular model in OpenGL's fixed pipeline for decades.")}
       </Lead>
+
+      <Goals t={t} id="oglBlinn" items={[
+        "Explain where Phong's highlight breaks.",
+        "Compute the halfway vector and the Blinn-Phong highlight.",
+        "Compare both models on one fragment, and adjust the shininess so they match.",
+      ]} />
 
       <H2>{tx(t, "oglBlinn_problemTitle", "Where Phong breaks")}</H2>
       <p>

@@ -1,6 +1,14 @@
 // PT text for src/lib/tracks/gamedev/chapters/motion.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  gdEase_goal0: "Interpolar entre dois valores e converter um valor de uma faixa para outra.",
+  gdEase_goal1: "Escolher uma curva de easing para coisas que chegam, saem ou passam.",
+  gdEase_goal2: "Montar um tween que toca uma mudança ao longo do tempo.",
+  gdEase_goal3: "Seguir um alvo em movimento de forma suave, seja qual for a taxa de quadros.",
+  gdSpring_goal0: "Escrever a equação de uma mola amortecida.",
+  gdSpring_goal1: "Ajustar uma mola com uma frequência e uma razão de amortecimento.",
+  gdSpring_goal2: "Avançar uma mola no código sem ela explodir.",
+  gdSpring_goal3: "Adicionar tremor de tela guiado por um valor de trauma.",
   gdEase_intro: "Quando um menu desliza para dentro, uma moeda voa até o contador de pontos ou a câmera desliza até um novo alvo, a diferença entre \"funciona\" e \"é gostoso\" quase nunca está no destino. Está no ritmo: como o movimento começa, como ele para. Este capítulo constrói esse ritmo a partir de uma função minúscula, a interpolação linear, e de uma família de curvas que remodelam a sua entrada.",
   gdEase_lerpTitle: "Interpolação linear",
   gdEase_lerpBody: "A interpolação linear, lerp para os íntimos, responde à pergunta \"o que fica a t do caminho de a até b?\". Com t = 0 você está em a, com t = 1 em b, com t = 0,5 exatamente no meio. Funciona com qualquer coisa que dê para somar e escalar: números, posições, cores, volumes.",

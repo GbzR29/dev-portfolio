@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/integration-techniques.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mTech_goal0: "Integrar por substituição e por partes.",
+  mTech_goal1: "Separar uma fração em frações parciais para integrá-la.",
+  mTech_goal2: "Usar uma substituição trigonométrica para achar a área do círculo.",
+  mTech_goal3: "Decidir qual método tentar, e lidar com integrais que vão até o infinito.",
   mTech_intro: "O teorema fundamental transformou a integração numa busca: encontre uma função cuja derivada é o integrando. A tabela de derivadas ao contrário resolve termos isolados, mas a maioria dos integrandos são produtos, composições ou frações, e não existe regra do produto nem regra da cadeia ao contrário que funcione às cegas. Em vez disso há uma pequena caixa de ferramentas de reescritas, cada uma uma regra de derivação lida ao contrário ou um truque de álgebra, que transformam uma integral difícil numa da tabela. Este capítulo as trabalha à mão, uma de cada vez, e termina com integrais em intervalos que nunca acabam.",
   mTech_subTitle: "Substituição: a regra da cadeia ao contrário",
   mTech_subBody: "A regra da cadeia diz que a derivada de F(g(x)) é F′(g(x)) · g′(x): a derivada de fora, calculada no miolo, vezes a derivada do miolo. Então, sempre que um integrando tem exatamente essa forma, uma função de alguma expressão de dentro g(x) multiplicada por g′(x), sua primitiva é F(g(x)). A substituição é a contabilidade que enxerga isso. Dê um nome novo ao miolo, u = g(x). Sua derivada du/dx = g′(x) é escrita como o par du = g′(x) dx, que diz: uma pequena mudança dx em x causa uma mudança du = g′(x) dx em u. O produto g′(x) dx no integrando é então trocado por du, e a integral inteira fica escrita só em u.",

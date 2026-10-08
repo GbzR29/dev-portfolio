@@ -14,7 +14,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ClipSpaceFigure } from "@/components/lesson/figures/vulkan/ClipSpaceFigure";
 import { PipelineStateFigure } from "@/components/lesson/figures/vulkan/PipelineStateFigure";
 import { VulkanObjectsFigure } from "@/components/lesson/figures/vulkan/VulkanObjectsFigure";
@@ -28,6 +28,13 @@ export function PipelineContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkPipe_intro",
           "In OpenGL, drawing state was a set of switches you flipped one at a time: bind a program, enable blending, set the cull face, change the polygon mode, then draw. The driver only learned the full combination at the draw call, and if that combination was new it had to compile machine code for it right there, in the middle of your frame. Vulkan asks for the whole combination up front. A VkPipeline holds the shaders and every fixed-function setting together, is compiled once when you create it, and cannot change afterwards. This chapter writes the first triangle's shaders, compiles them to SPIR-V, and fills in every part of a graphics pipeline.")}
       </Lead>
+
+      <Goals t={t} id="vkPipe" items={[
+        "Compile GLSL shaders to SPIR-V and load them.",
+        "Build a graphics pipeline, one piece of state at a time.",
+        "Decide which state to make dynamic, so a resize needs no new pipeline.",
+        "Allow for Vulkan's clip space, which differs from OpenGL's.",
+      ]} />
 
       <H2>{tx(t, "vkPipe_whyTitle", "Why one immutable object")}</H2>
       <p>

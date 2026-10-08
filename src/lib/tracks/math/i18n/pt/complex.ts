@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/complex.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mCx_goal0: "Somar, multiplicar e dividir números complexos.",
+  mCx_goal1: "Ler a multiplicação como um giro mais uma escala.",
+  mCx_goal2: "Achar potências e raízes com a forma polar.",
+  mCx_goal3: "Usar a fórmula de Euler, e desenhar o conjunto de Mandelbrot à mão.",
   mCx_intro: "Dois capítulos terminaram no mesmo muro. O capítulo de polinômios disse que x² + 1 = 0 não tem soluções reais, já que nenhum número real ao quadrado é negativo. O capítulo de autovalores descobriu que os autovalores de uma rotação precisam da raiz quadrada de um número negativo. Os números complexos atravessam esse muro com um único número novo, i, cujo quadrado é −1. Parece um truque, mas o resultado tem um significado lindamente concreto: números complexos são pontos do plano, e multiplicá-los gira e escala. Eles são a álgebra da rotação 2D, e o degrau para os quatérnios, a álgebra da rotação 3D.",
   mCx_iTitle: "A unidade imaginária",
   mCx_iBody: "Os números negativos também já foram chamados de absurdos: “3 − 5” não tinha resposta até as pessoas aceitarem acrescentar números novos à reta e conferirem que todas as regras antigas continuavam valendo. Os números complexos são o mesmo movimento. Declare um número novo i com a única propriedade i² = −1, e mantenha todas as regras usuais da aritmética (comutativa, associativa, distributiva, do capítulo da reta numérica). Nada se contradiz, e agora x² + 1 = 0 tem as soluções x = i e x = −i, já que (−i)² = i² = −1 também. O nome “imaginário” é um acidente histórico; i não é menos real que −1, ele só não mora na reta numérica.",

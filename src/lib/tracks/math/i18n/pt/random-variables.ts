@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/random-variables.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mRv_goal0: "Transformar resultados em números com uma variável aleatória.",
+  mRv_goal1: "Escrever uma tabela de probabilidades e a distribuição acumulada.",
+  mRv_goal2: "Lidar com duas variáveis aleatórias juntas.",
+  mRv_goal3: "Achar probabilidades como áreas sob uma densidade.",
   mRv_intro: "Até aqui os resultados eram coisas: pares de faces de dados, cartas, sequências de caras e coroas. Mas normalmente nos interessa um número que o resultado determina: a soma dos dados, quantas caras, quanto tempo esperamos, quão alta é uma pessoa escolhida ao acaso. Uma variável aleatória é exatamente isso, um número ligado a cada resultado. Quando os resultados viram números, podemos desenhar suas probabilidades como gráfico, somá-las com somatórios e integrais e, nos próximos capítulos, calcular médias e dispersões. Este capítulo trata das variáveis discretas, cujos valores podem ser listados, e das contínuas, que preenchem intervalos inteiros.",
   mRv_defTitle: "Um número para cada resultado",
   mRv_defBody: "Uma variável aleatória X é uma regra que associa um número X(ω) a cada resultado ω do espaço amostral. Apesar do nome, ela é uma função, e não é aleatória em si: a aleatoriedade está em qual resultado ocorre. Rolando dois dados, S = a soma associa S(2, 5) = 7, S(6, 6) = 12, e assim por diante. Várias variáveis diferentes podem viver no mesmo experimento: M = a maior das duas faces, D = primeira menos segunda. Variáveis aleatórias são escritas com letras maiúsculas e seus valores possíveis com minúsculas.",

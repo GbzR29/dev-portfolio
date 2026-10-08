@@ -1,6 +1,14 @@
 // PT text for src/lib/tracks/opengl/chapters/shader-stages.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglGs_goal0: "Escrever um geometry shader que emite vértices novos.",
+  oglGs_goal1: "Fazer trabalho por triângulo, como explodir uma malha ou desenhar as suas normais.",
+  oglGs_goal2: "Renderizar em várias camadas de uma vez.",
+  oglGs_goal3: "Explicar por que os geometry shaders caíram em desuso.",
+  oglTess_goal0: "Citar os três estágios de tesselação e o que cada um faz.",
+  oglTess_goal1: "Definir níveis de tesselação, e escolhê-los para não surgirem rachaduras.",
+  oglTess_goal2: "Transformar coordenadas do domínio em pontos de uma superfície no shader de avaliação.",
+  oglTess_goal3: "Suavizar uma malha com tesselação de Phong.",
   oglGs_intro: "Um vertex shader vê um vértice e não pode criar nem destruir nada. Um geometry shader vê uma primitiva inteira (um ponto, uma linha ou um triângulo, todos os seus vértices de uma vez) e decide o que sai: nada, a mesma primitiva ou várias novas. Ele fica depois dos estágios de vértice (e tessellation) e antes do rasterizador.",
   oglGs_ioTitle: "Entradas, saídas, EmitVertex",
   oglGs_ioBody: "Duas declarações de layout definem o contrato do shader. O tipo de entrada precisa bater com o que o draw call envia (GL_POINTS → points, GL_TRIANGLES → triangles). A saída é sempre um de três tipos de strip, e max_vertices é um limite superior rígido que o driver usa para dimensionar seus buffers:",

@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SequenceFigure } from "@/components/lesson/figures/math/SequenceFigure";
 
 const r = String.raw;
@@ -39,6 +39,13 @@ export function SequencesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSeq_intro",
           "Everyday life is full of lists of numbers that follow a rule: the seat numbers in each row of a theatre, the balance of a savings account year after year, the height of each bounce of a dropped ball, the rabbits in a field generation after generation. Those lists are sequences, and adding their terms up gives series. This chapter shows the two basic kinds, arithmetic (add the same step) and geometric (multiply by the same factor), how to jump straight to any term without computing all the ones before it, and how to add many terms, even infinitely many, with a single formula.")}
       </Lead>
+
+      <Goals t={t} id="mSeq" items={[
+        "Find any term of an arithmetic or a geometric sequence.",
+        "Read and write sums with Σ.",
+        "Add up the terms of an arithmetic or geometric sequence with a formula.",
+        "Tell when an infinite sum adds up to a finite total.",
+      ]} />
 
       <H2>{tx(t, "mSeq_whatTitle", "Terms and indices")}</H2>
       <p>

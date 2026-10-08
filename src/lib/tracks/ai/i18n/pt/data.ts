@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/ai/chapters/data.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  aiData_goal0: "Transformar um conjunto de exemplos numa tabela de números que um modelo consegue usar.",
+  aiData_goal1: "Codificar categorias como números do jeito certo.",
+  aiData_goal2: "Escalar atributos para que possam ser comparados.",
+  aiData_goal3: "Dividir os dados em treino, validação e teste, e dizer por quê.",
   aiData_intro: "Um modelo só aprende com o que lhe mostram, e ele só enxerga o mundo como números. Antes de qualquer aprendizado, os dados precisam virar uma tabela de números que o modelo consiga usar: cada exemplo descrito pela mesma lista de medidas, em unidades comparáveis, com uma parte guardada a sete chaves para um teste honesto. A maior parte do trabalho real de machine learning é este passo. Este capítulo monta o vocabulário, a estrutura de dados em C++ que o resto da trilha usa, e as duas operações de que quase todo projeto precisa: escala e divisão.",
 
   aiData_vocabTitle: "Exemplos, atributos e rótulos",

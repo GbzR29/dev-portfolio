@@ -11,7 +11,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RiemannFigure } from "@/components/lesson/figures/math/RiemannFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function IntegralsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mInt_intro",
           "The derivative takes something apart into rates. The integral puts it back together: it adds up a quantity that keeps changing, by cutting it into pieces so thin that each one is almost constant. Distance from a changing speed, area under a curve, volume of a shape, total rain from a storm that slowly eases off: all are integrals. This chapter defines the integral as a limit of sums and computes one exactly; the next shows the shortcut that connects integrals to derivatives.")}
       </Lead>
+
+      <Goals t={t} id="mInt" items={[
+        "Get the distance travelled from the speed by adding up strips.",
+        "Approximate an area with a Riemann sum, and improve it with trapezoids and Simpson's rule.",
+        "Read the definite integral as signed area, and use its rules.",
+        "Find a function's average value.",
+      ]} />
 
       <H2>{tx(t, "mInt_distTitle", "Distance from speed")}</H2>
       <p>

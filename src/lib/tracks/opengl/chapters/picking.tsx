@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SlabFigure } from "@/components/lesson/figures/tech/SlabFigure";
 import { PickingFigure } from "@/components/lesson/figures/tech/PickingFigure";
 
@@ -19,6 +19,12 @@ export function PickingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglPick_intro",
           "Clicking a unit in a strategy game, selecting a mesh in an editor, aiming at an enemy: all ask the same question, which object is under this pixel, and often where on it. The GPU drew the image but does not remember what it drew where. There are two ways to find out: shoot a ray back into the scene mathematically, or ask the GPU to draw object ids and read the pixel.")}
       </Lead>
+
+      <Goals t={t} id="oglPick" items={[
+        "Turn a mouse position into a ray in the world.",
+        "Test that ray against spheres, boxes and triangles.",
+        "Pick objects exactly with an ID buffer.",
+      ]} />
 
       <H2>{tx(t, "oglPick_unprojTitle", "From a pixel back to a ray")}</H2>
       <p>

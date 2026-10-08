@@ -11,6 +11,7 @@ import { SkyFormatsFigure } from "@/components/lesson/figures/sky/SkyFormatsFigu
 import { ProceduralSkyFigure } from "@/components/lesson/figures/sky/ProceduralSkyFigure";
 import { SkyBuilderFigure } from "@/components/lesson/figures/sky/SkyBuilderFigure";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 import type { TrackTranslations } from "@/lib/tracks/types";
 
 const r = String.raw;
@@ -26,6 +27,13 @@ export function CubemapsContent({ t }: { t: TrackTranslations }) {
           "A cubemap is six square textures treated as the inside faces of a cube, sampled with a direction vector rather than a UV pair. You hand it a vec3 and it returns whatever colour lies that way. That single property makes it the natural representation for a sky, for environment reflections, and for omnidirectional shadow maps."
         )}
       </p>
+
+      <Goals t={t} id="oglCube" items={[
+        "Sample a cube map with a direction.",
+        "Load the six faces, or convert a cross or a panorama.",
+        "Draw a skybox behind everything else.",
+        "Reflect and refract the surroundings on objects.",
+      ]} />
 
       <H2>{tx(t, "oglCube_dirTitle", "Sampling with a direction")}</H2>
       <p>

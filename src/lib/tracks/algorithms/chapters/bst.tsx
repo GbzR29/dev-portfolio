@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { BSTFigure } from "@/components/lesson/figures/algo/BSTFigure";
 
 const r = String.raw;
@@ -25,6 +25,13 @@ export function BstContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alBst_intro",
           "A sorted array finds any key in O(log n) with binary search, but inserting or deleting a key means shifting everything after it: O(n). A linked list inserts in O(1) once you are at the right place, but finding that place is O(n). A binary search tree combines the good halves: it stores the keys in a binary tree arranged so that a search can throw away one whole subtree at every step, just as binary search throws away half the array, and so that inserting and deleting only change a few pointers. When the tree stays bushy, all three operations are O(log n).")}
       </Lead>
+
+      <Goals t={t} id="alBst" items={[
+        "Search, insert and delete keys in a binary search tree.",
+        "List the keys in sorted order with an in-order walk.",
+        "Answer ordered questions: smallest, next larger, everything in a range.",
+        "Predict how the insertion order shapes the tree.",
+      ]} />
 
       <H2>{tx(t, "alBst_propTitle", "The search-tree property")}</H2>
       <p>

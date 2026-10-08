@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SrgbFigure } from "@/components/lesson/figures/vulkan/SrgbFigure";
 import { TextureUploadFigure } from "@/components/lesson/figures/vulkan/TextureUploadFigure";
 import { SamplerFigure } from "@/components/lesson/figures/vulkan/SamplerFigure";
@@ -27,6 +27,13 @@ export function TexturesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkTex_intro",
           "A texture is an image the fragment shader reads colours from. In OpenGL, glTexImage2D took the pixels and the driver did the rest: it allocated memory, chose a memory arrangement, copied, and tracked how the texture was being used. In Vulkan each of those is a step you write. This chapter creates a VkImage and its memory, decodes a PNG, uploads it through a staging buffer with two layout transitions, creates a sampler that says how to filter it, and hands both to the shader in a second descriptor set. The two quads become textured.")}
       </Lead>
+
+      <Goals t={t} id="vkTex" items={[
+        "Create an image, give it memory and make a view of it.",
+        "Upload a PNG to the GPU and move it to a layout shaders can read.",
+        "Choose between an sRGB and a linear format for a texture.",
+        "Create a sampler and bind the texture to a shader.",
+      ]} />
 
       <H2>{tx(t, "vkTex_imagesTitle", "Images are not buffers")}</H2>
       <p>

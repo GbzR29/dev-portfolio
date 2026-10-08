@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DecalFigure } from "@/components/lesson/figures/tech/DecalFigure";
 
 const r = String.raw;
@@ -18,6 +18,12 @@ export function DecalsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglDecal_intro",
           "Bullet holes, blood splatter, graffiti, tyre marks, footprints, puddles, road markings, dirt on a wall: all are decals, images stuck onto existing surfaces without changing their meshes or textures. Most are added at runtime, anywhere, on any surface. The modern way to do it doesn't touch the geometry at all. It projects the image onto whatever the depth buffer says is there.")}
       </Lead>
+
+      <Goals t={t} id="oglDecal" items={[
+        "Explain the limits of mesh decals.",
+        "Project decals onto any surface with a box.",
+        "Write decals into a deferred G-buffer.",
+      ]} />
 
       <H2>{tx(t, "oglDecal_meshTitle", "Mesh decals and their limits")}</H2>
       <p>

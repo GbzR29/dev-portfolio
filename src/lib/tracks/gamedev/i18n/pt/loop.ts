@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/gamedev/chapters/loop.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  gdLoop_goal0: "Escrever um game loop que lê a entrada, atualiza o mundo e o desenha.",
+  gdLoop_goal1: "Mover as coisas pelo tempo que passou, não por quadro.",
+  gdLoop_goal2: "Rodar a física com timestep fixo usando um acumulador.",
+  gdLoop_goal3: "Interpolar entre passos para desenhar suave, e evitar a espiral da morte.",
   gdLoop_intro: "Um filme é uma sequência fixa de imagens. Um jogo precisa inventar cada imagem enquanto acontece, porque ela depende do que o jogador acabou de fazer. A parte do programa que faz isso é o game loop: ler a entrada, avançar um pouco o mundo, desenhá-lo e começar de novo, dezenas ou centenas de vezes por segundo, até o jogador sair. Quase todo o resto desta trilha roda dentro desse loop, então vale acertar o seu tempo com precisão.",
   gdLoop_simpleTitle: "O loop mais simples",
   gdLoop_simpleBody: "O game loop mais curto possível tem três chamadas. processInput lê o teclado, o mouse e o gamepad. update avança o mundo: personagens andam, balas voam, temporizadores contam. render desenha o estado atual do mundo numa imagem e a mostra. Cada passada pelo loop produz um frame, e o número de frames por segundo (FPS) é quantas passadas o computador consegue fazer.",

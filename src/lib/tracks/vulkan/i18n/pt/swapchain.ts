@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/swapchain.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkSwap_goal0: "Criar a superfície da janela e uma swapchain que combine com ela.",
+  vkSwap_goal1: "Escolher um formato de imagem, um modo de apresentação e uma quantidade de imagens.",
+  vkSwap_goal2: "Criar views para as imagens da swapchain.",
+  vkSwap_goal3: "Recriar a swapchain quando a janela muda de tamanho.",
   vkSwap_intro: "No OpenGL a janela vinha com um framebuffer padrão: você desenhava, chamava SwapBuffers e a imagem aparecia. O Vulkan não tem framebuffer padrão. As imagens que uma janela mostra pertencem ao motor de apresentação do sistema operacional (o compositor nos desktops Windows e Linux, o controlador de tela num celular), e um programa as pega emprestadas por uma swapchain: um pequeno anel de imagens que viajam entre você e a tela. Este capítulo cria a swapchain, escolhe o seu formato, tamanho, número de imagens e modo de apresentação, embrulha cada imagem numa view em que podemos renderizar, e reconstrói tudo quando a janela muda de tamanho.",
 
   vkSwap_surfaceTitle: "A surface",

@@ -2,6 +2,18 @@
 // mExp_tWhy is shared with exponents.ts (same word); the intro uses mExpv_ to avoid clashing with the exponents chapter.
 
 const text: Record<string, string> = {
+  mExpv_key0: "E[X] = Σ x p(x) ou ∫ x f(x) dx: a média ponderada pelas probabilidades e o ponto de equilíbrio da distribuição.",
+  mExpv_key1: "E[g(X)] pondera g(x) por p(x); em geral E[g(X)] ≠ g(E[X]).",
+  mExpv_key2: "A esperança é linear, E[aX + b] = aE[X] + b e E[X + Y] = E[X] + E[Y], sem precisar de independência.",
+  mExpv_key3: "Indicadoras transformam contagens esperadas em somas de probabilidades.",
+  mExpv_key4: "Var X = E[(X − μ)²] = E[X²] − μ²; σ = √Var tem as unidades de X; Var(aX + b) = a² Var X.",
+  mExpv_key5: "Var(X + Y) = Var X + Var Y + 2 Cov; para variáveis independentes a covariância é 0.",
+  mExpv_key6: "A média de n cópias independentes tem média μ e desvio padrão σ/√n.",
+  mExpv_key7: "Z = (X − μ)/σ mede a distância em desvios padrão; Chebyshev limita P(|Z| ≥ k) por 1/k².",
+  mExpv_goal0: "Calcular o valor esperado de uma variável discreta ou contínua.",
+  mExpv_goal1: "Usar o fato de que os valores esperados sempre se somam.",
+  mExpv_goal2: "Calcular a variância e o desvio padrão, e aplicar as suas regras.",
+  mExpv_goal3: "Limitar o quanto um valor pode se afastar da média com a desigualdade de Chebyshev.",
   mExpv_intro: "Uma variável aleatória é descrita por completo pela sua distribuição, mas uma tabela ou curva inteira é muita coisa para carregar. Dois números resumem quase tudo de que precisamos: onde os valores ficam em média, a esperança, e quão longe eles se espalham em volta dessa média, a variância. Este capítulo define as duas para variáveis discretas e contínuas, calcula-as à mão e prova as regras que as tornam tão úteis: esperanças se somam, mesmo para variáveis dependentes, e variâncias se somam para variáveis independentes. A última regra explica por que tirar a média de muitas medidas as torna mais precisas.",
   mExp_avgTitle: "A média a longo prazo",
   mExp_avgBody: "Role um dado 600 vezes. Pela interpretação de frequência do capítulo de probabilidade, cada face aparece cerca de 100 vezes, então o total de todas as rolagens é cerca de 100 · 1 + 100 · 2 + … + 100 · 6 = 2100, e a média por rolagem é cerca de 2100/600 = 3,5. Divida cada contagem por 600 antes de somar e a mesma conta fica 1 · 1/6 + 2 · 1/6 + … + 6 · 1/6 = 21/6 = 3,5. A média de muitos resultados é a soma de cada valor vezes sua probabilidade. Esse número é a esperança, ou valor esperado, ou média, de X.",

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/probability.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mPr_goal0: "Descrever um experimento pelos resultados e eventos.",
+  mPr_goal1: "Calcular probabilidades contando resultados igualmente prováveis.",
+  mPr_goal2: "Usar as regras da probabilidade e o truque do complementar.",
+  mPr_goal3: "Achar probabilidades a partir de áreas.",
   mPr_intro: "Um lançamento de moeda, um dado, o tempo de amanhã: não sabemos dizer o que vai acontecer, mas também não estamos totalmente no escuro. Um dado mostra seis mais ou menos uma vez em seis, e essa é uma afirmação precisa, não uma sensação vaga. A probabilidade é a matemática que transforma “quão provável?” num número entre 0 (impossível) e 1 (certo), com regras para combinar esses números. Este capítulo monta a linguagem (espaços amostrais e eventos), as regras (três axiomas e suas consequências) e o primeiro método para calcular probabilidades: contar resultados igualmente prováveis.",
   mPr_spaceTitle: "Experimentos, resultados e eventos",
   mPr_spaceBody: "Um experimento é qualquer coisa com resultado incerto que poderia, pelo menos em princípio, ser repetida: lançar uma moeda, rolar um dado, tirar uma carta. Cada resultado possível é um resultado, e o conjunto de todos os resultados é o espaço amostral, escrito Ω (ômega maiúsculo). Para uma moeda, Ω = {Ca, Co}; para um dado, Ω = {1, 2, 3, 4, 5, 6}. Um evento é qualquer coleção de resultados, um subconjunto de Ω, descrito por uma afirmação que é verdadeira ou falsa quando o experimento termina. “O dado mostra um número par” é o evento A = {2, 4, 6}; ele acontece se o resultado for 2, 4 ou 6.",

@@ -9,7 +9,7 @@ import { Callout, CodeBlock, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ImpactLineFigure } from "@/components/lesson/figures/gamedev/ImpactLineFigure";
 import { BallPitFigure } from "@/components/lesson/figures/gamedev/BallPitFigure";
 
@@ -22,6 +22,13 @@ export function CollisionResponseContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdResp_intro",
           "The collision chapters answered \"do these two shapes overlap, and along which normal?\". Response answers \"so what happens now?\". Against a wall that never moves, the Collision Shapes chapter simply reflected the velocity. When both objects move, the heavier one should barely notice a light one, two equal billiard balls should swap speeds, and a pile of crates should rest instead of sinking or buzzing. All of that follows from one idea, the impulse, and two laws: conservation of momentum and a rule for how bouncy the contact is.")}
       </Lead>
+
+      <Goals t={t} id="gdResp" items={[
+        "Resolve a collision with an impulse that conserves momentum.",
+        "Set how bouncy a contact is with restitution.",
+        "Add friction to a contact.",
+        "Keep stacks of objects from sinking and jittering.",
+      ]} />
 
       <H2>{tx(t, "gdResp_impTitle", "Momentum and impulse")}</H2>
       <p>

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/angles.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mAng_goal0: "Dar nome a pontos, retas, semirretas, segmentos e aos tipos de ângulo.",
+  mAng_goal1: "Usar pares de ângulos que somam 90° ou 180°, e ângulos opostos pelo vértice.",
+  mAng_goal2: "Achar todos os ângulos onde uma reta corta duas paralelas.",
+  mAng_goal3: "Descobrir ângulos desconhecidos numa figura, um passo de cada vez.",
   mAng_intro: "Geometria é a matemática da forma, do tamanho e da posição. Ela começou como medição de terras (o nome quer dizer “medir a terra”), e ainda é o que um carpinteiro, um agrimensor ou um navegador usa todo dia: uma planta baixa são retângulos, um telhado são triângulos, uma rota no mapa são segmentos e curvas. Esta seção constrói essa geometria desde o começo, e este primeiro capítulo apresenta as menores peças: pontos, retas e os ângulos entre elas. Ângulos são como descrevemos direção e giro, que é o que uma bússola, um volante ou os ponteiros de um relógio fazem o dia inteiro.",
   mAng_objTitle: "Pontos, retas, semirretas e segmentos",
   mAng_objBody: "A geometria parte de alguns objetos que são descritos em vez de definidos. Um ponto é uma posição exata, sem tamanho nenhum; nomeamos pontos com letras maiúsculas, como A ou P. Uma reta é perfeitamente reta, não tem espessura e continua para sempre nos dois sentidos; quaisquer dois pontos diferentes estão em exatamente uma reta. As partes de uma reta que de fato desenhamos também têm nomes. Um segmento é o pedaço entre duas extremidades, e tem um comprimento. Uma semirreta começa num ponto e continua para sempre num sentido, como um feixe de laser. Um plano é uma superfície perfeitamente plana que continua para sempre, como uma folha de papel sem fim. Tudo nesta seção acontece num plano, que é o mundo 2D dos gráficos do capítulo de funções.",

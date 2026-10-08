@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ChromaticityFigure } from "@/components/lesson/figures/advlighting/ChromaticityFigure";
 import { ToneMapFigure } from "@/components/lesson/figures/advlighting/ToneMapFigure";
 
@@ -19,6 +19,13 @@ export function ColorSpacesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglColor_intro",
           "vec3(1.0, 0.0, 0.0) is not \"red\". It means \"full amount of the first primary of some colour space, none of the others\", and which red that is depends on the space. On an sRGB monitor it is one red, on a P3 phone a noticeably more saturated one, in an HDR pipeline something else again. This chapter covers what the numbers in a colour actually mean, why renderers do their maths in one space and display in another, and how the tone mapper squeezes unbounded light into what a screen can show.")}
       </Lead>
+
+      <Goals t={t} id="oglColor" items={[
+        "Say what defines a colour space.",
+        "Tell values that describe the scene from values meant for a display.",
+        "Choose a tone mapper such as ACES, and know what it does to colour.",
+        "Say what changes on an HDR display.",
+      ]} />
 
       <H2>{tx(t, "oglColor_spaceTitle", "What defines a colour space")}</H2>
       <LessonTable

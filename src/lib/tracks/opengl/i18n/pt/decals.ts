@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/decals.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglDecal_goal0: "Explicar os limites dos decals de malha.",
+  oglDecal_goal1: "Projetar decals sobre qualquer superfície com uma caixa.",
+  oglDecal_goal2: "Gravar decals num G-buffer deferido.",
   oglDecal_intro: "Buracos de bala, manchas de sangue, grafite, marcas de pneu, pegadas, poças, faixas de rua, sujeira numa parede: tudo isso são decals, imagens coladas sobre superfícies existentes sem mudar as suas malhas nem texturas. A maioria é acrescentada em tempo de execução, em qualquer lugar, em qualquer superfície. O jeito moderno de fazer isso nem toca na geometria. Ele projeta a imagem sobre o que quer que o depth buffer diga que está ali.",
   oglDecal_meshTitle: "Decals em malha e os seus limites",
   oglDecal_meshBody: "A abordagem clássica recorta os triângulos da malha-alvo contra a caixa do decal na CPU, constrói uma pequena malha nova com os pedaços e a desenha levemente deslocada com glPolygonOffset para evitar z-fighting. É exata e barata de desenhar, mas construí-la significa ler a malha na CPU, o que exclui geometria com skinning ou deformada na GPU. Cada decal também vira mais uma malha e mais uma draw call.",

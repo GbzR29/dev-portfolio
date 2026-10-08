@@ -1,6 +1,13 @@
 // PT text for src/lib/tracks/gamedev/chapters/collision.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  gdCol_goal0: "Testar se círculos e caixas alinhadas aos eixos se sobrepõem.",
+  gdCol_goal1: "Achar a normal de contato e a profundidade da sobreposição.",
+  gdCol_goal2: "Empurrar objetos sobrepostos para longe um do outro.",
+  gdCol_goal3: "Impedir que objetos rápidos atravessem paredes.",
+  gdSat_goal0: "Dizer se uma forma é convexa.",
+  gdSat_goal1: "Testar a colisão entre dois polígonos convexos com eixos separadores.",
+  gdSat_goal2: "Achar o menor empurrão que os separa.",
   gdCol_intro: "Um motor de física passa a maior parte do tempo respondendo a uma pergunta: essas duas coisas estão se tocando? E, se estão, quanto e em que direção? A primeira parte é a detecção de colisão; a segunda é a informação de contato de que a resposta à colisão precisa para separá-las. Este capítulo cobre as formas que os jogos usam para isso, os três testes com que todo jogo 2D começa e o bug que deixa balas rápidas atravessarem paredes.",
   gdCol_shapesTitle: "Por que formas simples",
   gdCol_shapesBody: "O sprite de um personagem pode ter milhares de pixels, e um modelo 3D, milhares de triângulos, mas testar esses detalhes uns contra os outros é lento demais para fazer em todo par de objetos, a cada passo. Então cada objeto ganha um substituto simples e invisível, um collider ou volume envolvente, e a física só enxerga isso. O compromisso é entre encaixe e velocidade: uma forma justa dá contatos convincentes, uma forma simples dá testes rápidos.",

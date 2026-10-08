@@ -18,7 +18,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { ColorMixFigure } from "@/components/lesson/figures/lighting/ColorMixFigure";
 import { SpectrumFigure } from "@/components/lesson/figures/lighting/SpectrumFigure";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 
 const r = String.raw;
 
@@ -29,6 +29,12 @@ export function LightColorContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglLC_intro",
           "Before lighting a scene we need to agree on what colour even is. An object is not \"red\" by itself — it is red because, of all the light that hits it, it throws back mostly the red part and swallows the rest. Computer graphics models that with one multiplication.")}
       </Lead>
+
+      <Goals t={t} id="oglLC" items={[
+        "Explain why a colour is three numbers, and what multiplying light by a surface means.",
+        "Write the shader for the lit object and the shader for the lamp.",
+        "Predict the colour of a lit surface and check it in the scene.",
+      ]} />
 
       {/* ── WHAT CHANGES ────────────────────────────────────────────────── */}
       <H2>{tx(t, "oglLC_alongTitle", "What this chapter adds to main.cpp")}</H2>

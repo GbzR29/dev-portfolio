@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/skeletal.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglSkel_goal0: "Montar um esqueleto como uma hierarquia de transformações.",
+  oglSkel_goal1: "Usar a pose de bind e as matrizes de bind inversas.",
+  oglSkel_goal2: "Deformar uma malha com pesos e linear blend skinning.",
+  oglSkel_goal3: "Tocar keyframes, corrigir a torção de papel de bala e misturar animações.",
   oglSkel_intro: "Uma malha de personagem tem dezenas de milhares de vértices. Animar cada um à mão, quadro a quadro, seria impossível de produzir e dados demais para armazenar. Em vez disso, a malha recebe um esqueleto de algumas dezenas de ossos. Animadores posicionam os ossos, e cada vértice segue os ossos aos quais está preso. Isso é skinning, e quase todo personagem animado de todo jogo funciona assim.",
   oglSkel_hierTitle: "O esqueleto é uma hierarquia de transformações",
   oglSkel_hierBody: "Cada osso guarda sua transformação relativa ao pai: a rotação do antebraço é \"quanto o antebraço está dobrado em relação ao braço\", não em relação ao mundo. Para saber onde um osso realmente está, multiplique descendo a cadeia a partir da raiz. Girar o ombro então leva o braço inteiro junto, que é exatamente o que queremos. Girar só o cotovelo move o antebraço e a mão, mas deixa o braço como está.",

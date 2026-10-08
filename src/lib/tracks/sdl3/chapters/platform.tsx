@@ -5,6 +5,7 @@
 import { TrackTranslations } from "@/lib/tracks/types";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 
 export function PlatformContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function PlatformContent({ t }: { t: TrackTranslations }) {
           "The last twenty percent of shipping a game is everything around the game: where the save file goes on each platform, how the log gets written, what happens on a laptop with a 90 Hz display. SDL covers most of it, and using its abstractions instead of the platform's is what makes the port to the next platform boring."
         )}
       </p>
+
+      <Goals t={t} id="sdl10" items={[
+        "Measure time with SDL's clocks.",
+        "Put save files in the right place on every platform.",
+        "Run work on threads and write logs through SDL.",
+        "Prepare a build for shipping.",
+      ]} />
 
       <H2>{tx(t, "sdl10_timeTitle", "Time")}</H2>
 

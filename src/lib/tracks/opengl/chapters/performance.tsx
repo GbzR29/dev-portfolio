@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { FrameTimelineFigure } from "@/components/lesson/figures/perf/FrameTimelineFigure";
 import { BottleneckLabFigure } from "@/components/lesson/figures/perf/BottleneckLabFigure";
 import { FrustumCullFigure } from "@/components/lesson/figures/perf/FrustumCullFigure";
@@ -27,6 +27,13 @@ export function ProfilingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglProf_intro",
           "Optimising without measuring is guessing, and in graphics the guesses are usually wrong. The GPU runs asynchronously, far behind the CPU, so a slow line of C++ may cost nothing while an innocent-looking call stalls everything. This chapter is about finding the actual bottleneck before touching any code. The rest of the section is about what to do once you know it.")}
       </Lead>
+
+      <Goals t={t} id="oglProf" items={[
+        "Measure the cost of a frame in milliseconds instead of FPS.",
+        "Time GPU work with timer queries.",
+        "Find out by experiment whether the CPU or the GPU is the bottleneck.",
+        "Pick the right profiling tool.",
+      ]} />
 
       <H2>{tx(t, "oglProf_msTitle", "Think in milliseconds, not FPS")}</H2>
       <Equation label={tx(t, "oglProf_msLabel", "Frame time and frame rate")}
@@ -139,6 +146,13 @@ export function FrustumCullingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglCull_intro",
           "The fastest draw call is the one you never make. The GPU would clip an off-screen object anyway, but only after the CPU has issued its draw and the GPU has transformed every vertex. Culling decides on the CPU, or earlier on the GPU, that an object cannot be visible, using a cheap bounding volume instead of its triangles. In a typical open scene more than half of everything is behind or beside the camera.")}
       </Lead>
+
+      <Goals t={t} id="oglCull" items={[
+        "Describe the view frustum as six planes.",
+        "Test bounding spheres and boxes against it.",
+        "Skip whole groups of objects with a hierarchy.",
+        "Skip objects hidden behind others with occlusion culling.",
+      ]} />
 
       <H2>{tx(t, "oglCull_planesTitle", "The frustum as six planes")}</H2>
       <p>
@@ -273,6 +287,12 @@ export function DrawCallsContent({ t }: { t: TrackTranslations }) {
           "A draw call itself is cheap for the GPU. The cost is on the CPU: before each draw the driver checks that the state is valid, resolves bindings, may recompile a shader variant for the current state, and writes commands. With OpenGL that is typically a few microseconds per draw, so 5 000 naive draws can eat most of a 16 ms frame on the CPU while the GPU sits half idle. The cure is to draw less often and change state less often.")}
       </Lead>
 
+      <Goals t={t} id="oglDraw" items={[
+        "Rank state changes by how much they cost.",
+        "Sort draws with a key so state changes less often.",
+        "Draw less often by merging and batching.",
+      ]} />
+
       <H2>{tx(t, "oglDraw_costTitle", "Not all state costs the same")}</H2>
       <p>
         {tx(t, "oglDraw_costBody",
@@ -377,6 +397,12 @@ export function LodContent({ t }: { t: TrackTranslations }) {
           "A rock 200 m away is eight pixels tall. Drawing it with the same 5 000 triangles as when it sits at your feet wastes vertex work, and worse: triangles smaller than a pixel shade very inefficiently. Level of detail (LOD) keeps several versions of each mesh and picks, per frame, the cheapest one that still looks the same at its current size on screen.")}
       </Lead>
 
+      <Goals t={t} id="oglLod" items={[
+        "Choose a level of detail from an object's size on screen.",
+        "Hide the switch between levels with hysteresis and cross-fades.",
+        "Say where the simpler levels come from.",
+      ]} />
+
       <H2>{tx(t, "oglLod_metricTitle", "Choosing by projected size")}</H2>
       <p>
         {tx(t, "oglLod_metricBody",
@@ -475,6 +501,13 @@ export function StreamingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglStream_intro",
           "Every frame something has to travel from the CPU to the GPU: instance transforms, particle positions, UI vertices, skinning matrices. Upload it the wrong way and the CPU quietly waits for the GPU, destroying the overlap the whole pipeline depends on. Getting it right is about one idea: never write memory the GPU might still be reading.")}
       </Lead>
+
+      <Goals t={t} id="oglStream" items={[
+        "Explain how the driver stalls when you write a buffer the GPU is still using.",
+        "Stream data with buffer orphaning.",
+        "Use persistent mapping with fences.",
+        "Read data back from the GPU without stalling.",
+      ]} />
 
       <H2>{tx(t, "oglStream_implicitTitle", "Implicit synchronisation")}</H2>
       <p>

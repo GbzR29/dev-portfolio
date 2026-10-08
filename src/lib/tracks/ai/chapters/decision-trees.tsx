@@ -11,7 +11,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TreeFigure } from "@/components/lesson/figures/ai/TreeFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function DecisionTreesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "aiTree_intro",
           "A decision tree is a flowchart of yes-or-no questions: \"slept less than 5.25 h?\", then \"studied less than 3.25 h?\", until it reaches an answer. People read it like a set of rules, it handles features in any units without scaling, and it draws boundaries no straight line could. Learning a tree means choosing the questions, and there is a simple, greedy way to do it: at every step, ask the question that best separates the classes. This chapter measures \"best\" with impurity, grows a tree on the students by hand, and shows why a lone tree overfits so easily and what forests do about it.")}
       </Lead>
+
+      <Goals t={t} id="aiTree" items={[
+        "Follow a decision tree down to a prediction.",
+        "Measure how mixed a node is with Gini impurity or entropy.",
+        "Grow a small tree by hand, choosing the best question at each step.",
+        "Stop a tree from overfitting, and say how forests and boosting combine many trees.",
+      ]} />
 
       <H2>{tx(t, "aiTree_howTitle", "How a tree predicts")}</H2>
       <p>

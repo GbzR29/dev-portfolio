@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SortFigure } from "@/components/lesson/figures/algo/SortFigure";
 
 const r = String.raw;
@@ -24,6 +24,12 @@ export function ElementarySortsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alElem_intro",
           "Sorting puts data in order, and the previous chapter showed what that buys: binary search, duplicates next to each other, the smallest and largest at the ends. This chapter builds the three simplest sorting algorithms, selection, bubble and insertion sort. They are all slow on large inputs, and the reason they are slow, the idea of inversions, explains exactly what the faster algorithms of the next chapters must do differently. Insertion sort, the best of the three, is also still used inside every fast sort for small pieces of data.")}
       </Lead>
+
+      <Goals t={t} id="alElem" items={[
+        "Sort an array by hand with selection, bubble and insertion sort.",
+        "Count the inversions in an array and use them to predict the work.",
+        "Say which of the three sorts are stable, and why that matters.",
+      ]} />
 
       <H2>{tx(t, "alElem_defTitle", "What sorting means")}</H2>
       <p>

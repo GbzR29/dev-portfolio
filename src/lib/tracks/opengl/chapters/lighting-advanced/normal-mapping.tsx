@@ -10,7 +10,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { NormalMapFigure } from "@/components/lesson/figures/advlighting/NormalMapFigure";
@@ -29,6 +29,12 @@ export function NormalMappingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglNMap_intro",
           "Lighting depends on the normal, not on the geometry. So instead of modelling every groove in a brick wall with triangles, store how the normal would tilt at each texel and light a flat quad as if the grooves were there.")}
       </Lead>
+
+      <Goals t={t} id="oglNMap" items={[
+        "Read a normal map and turn its colours back into normals.",
+        "Explain tangent space.",
+        "Build the TBN matrix and light the surface with the mapped normals.",
+      ]} />
 
       <NormalMapFigure t={t} />
 

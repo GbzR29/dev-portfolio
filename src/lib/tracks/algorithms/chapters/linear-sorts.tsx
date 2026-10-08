@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CountingSortFigure } from "@/components/lesson/figures/algo/CountingSortFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function LinearSortsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alLin_intro",
           "Merge sort and quicksort both need about n log n comparisons. Is that just the best anyone has found so far, or a law? This chapter proves it is a law: no algorithm that learns about the data only by comparing elements can do better. Then it breaks the law's assumption. When the keys are small whole numbers, or digits, or spread evenly over a range, an algorithm can use the key values themselves as positions, and sort in linear time.")}
       </Lead>
+
+      <Goals t={t} id="alLin" items={[
+        "Explain why no sort that only compares elements can beat n log n.",
+        "Sort small integer keys with counting sort.",
+        "Sort longer keys one digit at a time with radix sort.",
+        "Choose the right sort for a given kind of data.",
+      ]} />
 
       <H2>{tx(t, "alLin_boundTitle", "Why comparison sorts need n log n")}</H2>
       <p>

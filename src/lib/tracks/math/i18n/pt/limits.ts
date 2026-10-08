@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/limits.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mLim_goal0: "Dizer o que um limite significa, e achá-lo por um gráfico ou uma tabela de valores.",
+  mLim_goal1: "Calcular limites, limites laterais e limites no infinito.",
+  mLim_goal2: "Dizer se uma função é contínua, e onde ela se quebra.",
+  mLim_goal3: "Achar uma raiz por bissecção, usando o teorema do valor intermediário.",
   mLim_intro: "O cálculo é a matemática da mudança e do acúmulo: quão rápido algo está mudando num instante, e quanto se acumula quando mudanças minúsculas se somam. As duas perguntas levam ao mesmo obstáculo, uma divisão por zero ou uma soma de infinitos pedaços, e as duas são respondidas por uma única ideia nova: o limite, o valor de que uma grandeza chega tão perto quanto se queira. Este capítulo constrói essa ideia com cuidado, porque todo capítulo seguinte da seção se apoia nela.",
   mLim_whyTitle: "Por que precisamos de uma ideia nova",
   mLim_whyBody: "O velocímetro de um carro mostra 60 km/h. Velocidade é distância dividida por tempo, mas num único instante o carro percorre distância nenhuma em tempo nenhum: 0/0, que não tem valor. Mesmo assim o velocímetro não está mentindo. Num segundo antes e depois, a velocidade média fica bem perto de 60; num décimo de segundo, mais perto ainda. A velocidade “num instante” é o número em que essas médias se fixam conforme o intervalo de tempo encolhe. Isso é um limite. O mesmo padrão aparece numa forma algébrica mais simples: a função f(x) = (x² − 1)/(x − 1) não é definida em x = 1 (dá 0/0), mas você ainda pode perguntar o que acontece perto de 1.",

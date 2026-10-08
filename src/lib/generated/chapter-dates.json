@@ -1,407 +1,407 @@
 {
   "ai/what-is-ai": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "ai/data": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "ai/linear-regression": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "ai/gradient-descent": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "ai/logistic-regression": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "ai/generalisation": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "ai/k-nearest-neighbours": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "ai/decision-trees": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "ai/k-means": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "ai/perceptron": {
     "created": "2026-10-04",
-    "updated": "2026-10-04"
+    "updated": "2026-10-08"
   },
   "algorithms/memory": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/complexity": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/recursion": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/searching": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/elementary-sorts": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/merge-sort": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/quicksort": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/linear-sorts": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/dynamic-array": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/linked-list": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/stacks": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/queues": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/hash-table": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/trees": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/bst": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/balanced-trees": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/heaps": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/tries": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/greedy": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/dynamic-programming": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/graphs": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/graph-traversal": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/shortest-paths": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "algorithms/mst": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "cpp/landscape": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/values": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/move": {
     "created": "2026-03-18",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/raii": {
     "created": "2026-03-18",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/templates": {
     "created": "2026-02-10",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/concepts": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/constexpr": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/ranges": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/errors": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/vocabulary": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/modules": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/concurrency": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/performance": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/cpp26": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "cpp/tooling": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "gamedev/game-loop": {
     "created": "2026-09-25",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "gamedev/easing": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "gamedev/springs": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "gamedev/random": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "gamedev/perlin": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "gamedev/collision": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "gamedev/sat": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "gamedev/integration": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "gamedev/collision-response": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "gamedev/rigid-body": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "gamedev/platformer": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "gamedev/object-pool": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "glsl/types": {
     "created": "2026-05-30",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "glsl/builtins": {
     "created": "2026-05-30",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "glsl/fragcoord": {
     "created": "2026-05-30",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "glsl/builtin-vars": {
     "created": "2026-09-27",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "glsl/playground": {
     "created": "2026-09-24",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "glsl/sdf": {
     "created": "2026-05-30",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "glsl/patterns": {
     "created": "2026-09-24",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "glsl/color": {
     "created": "2026-09-24",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "glsl/noise": {
     "created": "2026-05-30",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "glsl/texturing": {
     "created": "2026-09-24",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "glsl/water": {
     "created": "2026-09-24",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "glsl/ocean": {
     "created": "2026-09-27",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "glsl/underwater": {
     "created": "2026-09-27",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "glsl/pool": {
     "created": "2026-09-27",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "glsl/river": {
     "created": "2026-09-28",
-    "updated": "2026-09-28"
+    "updated": "2026-10-08"
   },
   "glsl/glass": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "glsl/fog": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "glsl/stylized": {
     "created": "2026-09-24",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "glsl/raymarching": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "glsl/black-hole": {
     "created": "2026-09-28",
-    "updated": "2026-09-28"
+    "updated": "2026-10-08"
   },
   "glsl/raytracing": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "glsl/pathtracing": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "glsl/rt-accel": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "glsl/shaderclass": {
     "created": "2026-05-30",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "math/number-line": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/order-of-operations": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/fractions": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/ratios": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/divisibility": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/powers": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/bases": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/expressions": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/linear-equations": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/inequalities": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/algebra": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/linear-systems": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/quadratics": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/polynomials": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/exponents": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/sequences": {
     "created": "2026-09-25",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/angles": {
     "created": "2026-09-25",
@@ -465,506 +465,506 @@
   },
   "math/vectors": {
     "created": "2026-09-25",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/dot": {
     "created": "2026-09-25",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/cross": {
     "created": "2026-09-25",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/matrices": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/determinant": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/inverse": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/eigen": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/complex": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/quaternions": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/limits": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/derivatives": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/derivative-rules": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/derivative-uses": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/integrals": {
     "created": "2026-09-26",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/ftc": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/integration-techniques": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/series": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/partial-derivatives": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/multiple-integrals": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/differential-equations": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/descriptive-stats": {
     "created": "2026-09-26",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/counting": {
     "created": "2026-09-26",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/probability": {
     "created": "2026-09-26",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/conditional": {
     "created": "2026-09-26",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/random-variables": {
     "created": "2026-09-26",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/expectation": {
     "created": "2026-09-26",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/distributions": {
     "created": "2026-09-26",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "math/sampling": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/regression": {
     "created": "2026-09-26",
-    "updated": "2026-09-26"
+    "updated": "2026-10-08"
   },
   "math/markov-chains": {
     "created": "2026-09-28",
-    "updated": "2026-10-07"
+    "updated": "2026-10-08"
   },
   "opengl/legacy": {
     "created": "2026-05-30",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "opengl/setup": {
     "created": "2026-09-03",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/pipeline": {
     "created": "2026-03-18",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/vbo": {
     "created": "2026-02-09",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/vao": {
     "created": "2026-02-09",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/shaders": {
     "created": "2026-02-09",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/triangle": {
     "created": "2026-03-18",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/ebo": {
     "created": "2026-05-30",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/textures": {
     "created": "2026-05-30",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/vectors": {
     "created": "2026-10-01",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/linear-algebra": {
     "created": "2026-05-30",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/transformations": {
     "created": "2026-05-30",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/camera": {
     "created": "2026-09-03",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/depth-testing": {
     "created": "2026-09-03",
-    "updated": "2026-10-04"
+    "updated": "2026-10-08"
   },
   "opengl/light-color": {
     "created": "2026-09-24",
-    "updated": "2026-10-04"
+    "updated": "2026-10-08"
   },
   "opengl/lighting": {
     "created": "2026-05-30",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/materials": {
     "created": "2026-09-24",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "opengl/lighting-maps": {
     "created": "2026-09-24",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "opengl/light-casters": {
     "created": "2026-09-03",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "opengl/multiple-lights": {
     "created": "2026-09-24",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "opengl/advanced-lighting": {
     "created": "2026-09-03",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "opengl/gamma": {
     "created": "2026-09-24",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "opengl/shadow-mapping": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/point-shadows": {
     "created": "2026-09-24",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "opengl/cascaded-shadows": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/normal-mapping": {
     "created": "2026-09-24",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "opengl/hdr": {
     "created": "2026-09-24",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "opengl/bloom": {
     "created": "2026-09-24",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "opengl/color-spaces": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/deferred": {
     "created": "2026-09-24",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "opengl/global-illumination": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/pbr-theory": {
     "created": "2026-09-24",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "opengl/pbr-lighting": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/ibl-diffuse": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/ibl-specular": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/post-processing": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/ssao": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/parallax-mapping": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/anti-aliasing": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/taa": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/model-loading": {
     "created": "2026-09-03",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "opengl/stencil-testing": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/blending": {
     "created": "2026-09-03",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "opengl/framebuffers": {
     "created": "2026-09-03",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/cubemaps": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/buffer-data": {
     "created": "2026-09-27",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "opengl/instancing": {
     "created": "2026-09-03",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/particles": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/ubo": {
     "created": "2026-09-03",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/geometry-shader": {
     "created": "2026-09-24",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "opengl/tessellation": {
     "created": "2026-09-24",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "opengl/skeletal-animation": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/text-rendering": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/picking": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/oit": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/reflections": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/volumetrics": {
     "created": "2026-09-24",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "opengl/decals": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/terrain": {
     "created": "2026-09-25",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/profiling": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/winding": {
     "created": "2026-05-30",
-    "updated": "2026-09-27"
+    "updated": "2026-10-08"
   },
   "opengl/frustum-culling": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/draw-calls": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/clustered-shading": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/lod": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/texture-compression": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/streaming": {
     "created": "2026-09-24",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "opengl/dsa": {
     "created": "2026-05-30",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/debugging": {
     "created": "2026-09-03",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "opengl/compute": {
     "created": "2026-09-03",
-    "updated": "2026-10-01"
+    "updated": "2026-10-08"
   },
   "sdl3/whats-new": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "sdl3/setup": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "sdl3/main-loop": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "sdl3/input": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "sdl3/renderer": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "sdl3/textures": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "sdl3/text": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "sdl3/audio": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "sdl3/gpu": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "sdl3/platform": {
     "created": "2026-09-03",
-    "updated": "2026-09-25"
+    "updated": "2026-10-08"
   },
   "vulkan/why-vulkan": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "vulkan/instance": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "vulkan/devices": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "vulkan/swapchain": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "vulkan/pipeline": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "vulkan/commands": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "vulkan/synchronization": {
     "created": "2026-09-29",
-    "updated": "2026-09-29"
+    "updated": "2026-10-08"
   },
   "vulkan/buffers-memory": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "vulkan/staging": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "vulkan/descriptors": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "vulkan/textures": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "vulkan/depth": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "vulkan/frames-in-flight": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "vulkan/mipmaps-msaa": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "vulkan/compute": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   },
   "vulkan/modern": {
     "created": "2026-09-30",
-    "updated": "2026-09-30"
+    "updated": "2026-10-08"
   }
 }

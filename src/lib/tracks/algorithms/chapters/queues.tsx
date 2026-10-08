@@ -11,7 +11,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RingBufferFigure } from "@/components/lesson/figures/algo/RingBufferFigure";
 
 export function QueuesContent({ t }: { t: TrackTranslations }) {
@@ -21,6 +21,13 @@ export function QueuesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alQueue_intro",
           "A queue is the stack's opposite twin: elements leave in the order they arrived, like people in a line at a counter. It is how computers hand out work fairly: keystrokes waiting to be processed, documents waiting for the printer, network packets waiting to be sent, and, later in this track, the nodes waiting to be explored by breadth-first search. The interesting part is not the idea but the storage: done naively, removing from the front is slow. The circular buffer fixes that with nothing more than the remainder operation.")}
       </Lead>
+
+      <Goals t={t} id="alQueue" items={[
+        "Build a queue on a circular buffer whose indices wrap around.",
+        "Tell a full buffer from an empty one.",
+        "Use a deque to add and remove at both ends.",
+        "Find the maximum of every sliding window with a deque.",
+      ]} />
 
       <H2>{tx(t, "alQueue_defTitle", "First in, first out")}</H2>
       <p>

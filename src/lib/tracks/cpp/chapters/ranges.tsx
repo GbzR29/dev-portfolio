@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function RangesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,12 @@ export function RangesContent({ t }: { t: TrackTranslations }) {
           "The C++98 algorithms took two iterators, which meant every call started with begin() and end() and no two calls could be chained. Ranges take the container itself and compose with the pipe operator, so a five-line loop becomes one readable expression that still compiles down to a loop."
         )}
       </p>
+
+      <Goals t={t} id="cpp08" items={[
+        "Call algorithms on whole containers instead of begin/end pairs.",
+        "Chain views with | into a lazy pipeline.",
+        "Rewrite a filter-and-transform loop as one range expression.",
+      ]} />
 
       <H2>{tx(t, "cpp08_algosTitle", "Range algorithms")}</H2>
 

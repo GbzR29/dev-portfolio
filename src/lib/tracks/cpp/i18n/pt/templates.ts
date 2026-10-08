@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/cpp/chapters/templates.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp05_goal0: "Escrever templates de função e templates de classe.",
+  cpp05_goal1: "Trocar o tag dispatch por if constexpr.",
+  cpp05_goal2: "Aceitar qualquer número de argumentos com um parameter pack e combiná-los com um fold.",
+  cpp05_goal3: "Evitar os dois erros de template que custam um dia de todo mundo.",
   cpp05_intro: "Um template é uma receita que o compilador segue para gerar código, uma vez para cada conjunto de tipos com que você o usa. É por isso que templates são rápidos — não há indireção em tempo de execução — e por isso explodem o tempo de compilação e as mensagens de erro. Este capítulo cobre a mecânica; o próximo conserta as mensagens de erro.",
   cpp05_basicsTitle: "Templates de função e de classe",
   cpp05_ifTitle: "if constexpr substitui o tag dispatch",

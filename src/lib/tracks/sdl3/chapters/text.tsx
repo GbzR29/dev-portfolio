@@ -5,6 +5,7 @@
 import { TrackTranslations } from "@/lib/tracks/types";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 
 export function TextContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function TextContent({ t }: { t: TrackTranslations }) {
           "Core SDL cannot draw text at all — there is no font rasterizer in it. SDL3_ttf wraps FreeType and gives you two paths: render a string to a surface and upload it as a texture, or use the text engine that manages glyph atlases for you. The second is what you want for anything that changes every frame."
         )}
       </p>
+
+      <Goals t={t} id="sdl07" items={[
+        "Turn a string into a texture with SDL3_ttf.",
+        "Choose a rendering mode for crisp text or for fast text.",
+        "Draw text that changes every frame with the text engine.",
+        "Measure text to lay it out on screen.",
+      ]} />
 
       <H2>{tx(t, "sdl07_basicTitle", "The classic path: string to texture")}</H2>
 

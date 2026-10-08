@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function ToolingContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function ToolingContent({ t }: { t: TrackTranslations }) {
           "C++ has no official build system, package manager or formatter, which means the ecosystem chose several of each. This chapter is the setup that a new project in 2026 should start from — modern CMake, a package manager, sanitizers on by default in debug, and a linter in CI."
         )}
       </p>
+
+      <Goals t={t} id="cpp15" items={[
+        "Set up a project with target-based CMake and presets.",
+        "Turn on the sanitizers and read what they report.",
+        "Add dependencies with a package manager.",
+        "Run a formatter and a static analyzer in CI.",
+      ]} />
 
       <H2>{tx(t, "cpp15_cmakeTitle", "Target-based CMake")}</H2>
       <p>

@@ -5,7 +5,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SpectrumFigure } from "@/components/lesson/figures/ocean/SpectrumFigure";
 import { OceanLabFigure } from "@/components/lesson/figures/ocean/OceanLabFigure";
 
@@ -22,6 +22,13 @@ export function OceanContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslOcean_intro",
           "The Water Lab sums eight Gerstner waves. Watch it for a minute and the pattern gives itself away: the same few crests, marching in the same few directions. A real sea is the sum of countless waves of every length, each with a random phase, and oceanographers have measured how their energy is shared out. This chapter builds the method behind the oceans of most modern games, from Tessendorf's 2001 course notes: draw a random sea with the measured statistics, evaluate 65,536 waves per tile with a fast Fourier transform on the GPU every frame, and keep foam where waves break.")}
       </Lead>
+
+      <Goals t={t} id="glslOcean" items={[
+        "Describe a sea as a spectrum of waves set by the wind.",
+        "Generate an ocean tile from that spectrum and animate it.",
+        "Explain what the fast Fourier transform does, and why it makes this real-time.",
+        "Hide the repetition with cascades, and add foam that lingers.",
+      ]} />
 
       <H2>{tx(t, "glslOcean_specTitle", "The sea as a spectrum")}</H2>
       <p>

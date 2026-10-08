@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { GrowthFigure } from "@/components/lesson/figures/algo/GrowthFigure";
 import { LoopCountFigure } from "@/components/lesson/figures/algo/LoopCountFigure";
 
@@ -25,6 +25,13 @@ export function ComplexityContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alCx_intro",
           "Two programs can give the same answer and still differ enormously: one finishes in a millisecond, the other would need longer than the age of the universe. The difference is rarely the programming language or the machine; it is how the amount of work grows as the input grows. This chapter builds the tool used to talk about that growth, Big-O notation, from the ground up: first counting the steps of a small algorithm by hand, then seeing why only the fastest-growing part of the count matters, then the formal definition, the rules for applying it to loops, and a way to check an analysis with a stopwatch.")}
       </Lead>
+
+      <Goals t={t} id="alCx" items={[
+        "Count the steps an algorithm takes as a function of its input size.",
+        "Give the Big-O of a piece of code with loops, using the shortcut rules.",
+        "Tell the best, worst and average case apart, and measure the extra memory used.",
+        "Check a growth rate with a doubling experiment.",
+      ]} />
 
       <H2>{tx(t, "alCx_algoTitle", "What an algorithm is")}</H2>
       <p>

@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/cpp/chapters/vocabulary.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp10_goal0: "Passar strings e arrays emprestados com string_view e span, sem copiá-los.",
+  cpp10_goal1: "Guardar um entre vários tipos com segurança usando variant.",
+  cpp10_goal2: "Desempacotar pares, tuplas e structs com structured bindings.",
+  cpp10_goal3: "Formatar a saída com std::format e std::print.",
   cpp10_intro: "Tipos de vocabulário existem para que duas bibliotecas que nunca ouviram falar uma da outra concordem sobre como é \"uma string que não é minha\" ou \"talvez um valor\". Usá-los nas fronteiras das suas APIs é o que torna o código composável.",
   cpp10_svTitle: "string_view e span — dados emprestados",
   cpp10_svBody: "Os dois são um ponteiro e um tamanho. Nenhum dos dois é dono de nada. Eles existem para que uma função aceite qualquer sequência contígua sem virar template sobre o container nem forçar uma cópia.",

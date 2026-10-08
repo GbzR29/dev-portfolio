@@ -5,6 +5,7 @@
 import { TrackTranslations } from "@/lib/tracks/types";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 
 export function MainLoopContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,12 @@ export function MainLoopContent({ t }: { t: TrackTranslations }) {
           "The classic game loop owns the process: your while loop runs until the player quits. That model breaks on platforms where the operating system owns the loop and calls you — the browser, iOS and Android all work that way. SDL3's main callbacks invert the control flow so one source file runs everywhere."
         )}
       </p>
+
+      <Goals t={t} id="sdl03" items={[
+        "Explain why a plain while loop does not work in the browser or on phones.",
+        "Structure a program around SDL3's four main callbacks.",
+        "Update a game at a fixed timestep, whatever the frame rate.",
+      ]} />
 
       <H2>{tx(t, "sdl03_problemTitle", "Why the while loop is a portability problem")}</H2>
       <p>

@@ -13,7 +13,7 @@
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { InteractiveBasis2D } from "@/components/lesson/figures/basis/InteractiveBasis2D";
 import { HomogeneousFigure } from "@/components/lesson/figures/HomogeneousFigure";
 import { tx } from "@/lib/tracks/tx";
@@ -26,6 +26,13 @@ export function LinearAlgebraContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglMat_intro",
           "A model has hundreds or thousands of vertices. To move it, turn it or resize it, every one of them has to change in the same way. A matrix is a compact recipe for such a change, and the GPU applies it to every vertex. This chapter builds that idea one step at a time: what a matrix is, how it changes a vector, the matrices that scale, rotate and move, and how to chain them. It uses the vector operations from the previous chapter, especially the dot product.")}
       </Lead>
+
+      <Goals t={t} id="oglMat" items={[
+        "Multiply a matrix by a vector, and read its columns as the new axes.",
+        "Build scaling, rotation and translation matrices.",
+        "Explain why 3D graphics uses 4 × 4 matrices.",
+        "Combine transformations in the right order with GLM.",
+      ]} />
 
       {/* ── WHAT A MATRIX IS ────────────────────────────────────────────── */}
       <H2>{tx(t, "oglMat_whatTitle", "What a matrix is")}</H2>

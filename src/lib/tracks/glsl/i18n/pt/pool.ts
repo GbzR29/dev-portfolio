@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/glsl/chapters/effects/pool.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glslPool_goal0: "Guardar a água como um campo de alturas numa textura e avançá-la com a equação da onda.",
+  glslPool_goal1: "Fazer uma bola flutuar e empurrar a água.",
+  glslPool_goal2: "Calcular cáusticas a partir de uma malha.",
+  glslPool_goal3: "Desenhar a piscina inteira.",
   glslPool_intro: "Ondas de Gerstner e oceanos por FFT são fórmulas do tempo: não conseguem reagir quando algo toca a água. Este capítulo reconstrói o WebGL Water de Evan Wallace (2011), ainda uma das demos de água mais conhecidas da web: uma piscina pequena onde um clique cria anéis que batem nas paredes, uma bola que flutua e empurra a água para os lados, e cáusticas claras nos azulejos. São três peças: a equação da onda resolvida numa grade de alturas, uma bola com empuxo, e cáusticas feitas projetando a malha da água ao longo da luz do sol refratada.",
 
   glslPool_fieldTitle: "Um campo de alturas",

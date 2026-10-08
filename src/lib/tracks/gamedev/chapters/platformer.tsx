@@ -9,7 +9,7 @@ import { Callout, CodeBlock, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { JumpDesignFigure } from "@/components/lesson/figures/gamedev/JumpDesignFigure";
 import { PlatformerFigure } from "@/components/lesson/figures/gamedev/PlatformerFigure";
 
@@ -22,6 +22,13 @@ export function PlatformerContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdPlat_intro",
           "The previous chapters made physics more faithful. A platformer hero needs the opposite: controls that do what the player meant, even when the player was a few frames late. Mario, Celeste and Hollow Knight all bend physics on purpose: they jump higher than they fall, stop almost instantly, steer in mid-air and forgive a jump pressed just after running off a ledge. This chapter builds such a controller step by step, deriving the jump from the two numbers a designer actually thinks in, and ends in a small level where every trick can be switched off to feel what it does.")}
       </Lead>
+
+      <Goals t={t} id="gdPlat" items={[
+        "Explain why a player character is moved by its own code, not by the physics engine.",
+        "Design a jump from its height and its time to the top.",
+        "Add coyote time and jump buffering to forgive late input.",
+        "Use the other tricks that make a platformer feel fair.",
+      ]} />
 
       <H2>{tx(t, "gdPlat_kinTitle", "Kinematic, not dynamic")}</H2>
       <p>

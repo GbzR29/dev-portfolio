@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/pipeline.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglPipe_goal0: "Citar, em ordem, os estágios por que um triângulo passa.",
+  oglPipe_goal1: "Dizer quais estágios você programa e quais são fixos.",
+  oglPipe_goal2: "Seguir um vértice do clip space até um pixel na tela.",
+  oglPipe_goal3: "Estimar quanto trabalho cada estágio faz.",
   oglPipe_intro: "O seu programa descreve uma cena como números: os cantos dos triângulos, as cores deles, as coordenadas de textura. A tela é uma grade de pixels. O pipeline gráfico é a sequência fixa de passos que a GPU aplica para transformar o primeiro no segundo, e toda chamada OpenGL que você fizer na vida ou alimenta esse pipeline ou configura um dos passos dele. Este capítulo acompanha um único triângulo por todos os passos, com números reais em cada um, para que o resto da trilha sempre tenha um lugar onde encaixar cada ideia nova.",
 
   oglPipe_whyTitle: "Por que um pipeline",

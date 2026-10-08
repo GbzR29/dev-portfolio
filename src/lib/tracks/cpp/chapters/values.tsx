@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function ValuesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,12 @@ export function ValuesContent({ t }: { t: TrackTranslations }) {
           "C++ has more ways to initialize a variable than any other mainstream language, and they do not all mean the same thing. Getting this wrong gives you a variable holding whatever bytes happened to be on the stack — the classic source of 'it works in debug but not in release'."
         )}
       </p>
+
+      <Goals t={t} id="cpp02" items={[
+        "Pick the right way to initialize a variable, and spot one left uninitialized.",
+        "Tell const, constexpr and constinit apart and choose between them.",
+        "Use auto and class template argument deduction without losing track of the type.",
+      ]} />
 
       <H2>{tx(t, "cpp02_zooTitle", "The initialization zoo")}</H2>
 

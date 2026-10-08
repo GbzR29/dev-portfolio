@@ -5,6 +5,7 @@
 import { TrackTranslations } from "@/lib/tracks/types";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 
 export function WhatsNewContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,12 @@ export function WhatsNewContent({ t }: { t: TrackTranslations }) {
           "SDL is the layer between your game and the operating system: it opens the window, reads the keyboard, plays the audio and hands you a graphics context. SDL 3.2.0 — released in January 2025 — was the first stable SDL3, and it is not a drop-in upgrade from SDL2. This chapter covers what changed, because almost every tutorial you will find online is still written for SDL2."
         )}
       </p>
+
+      <Goals t={t} id="sdl01" items={[
+        "Explain why SDL3 is not a drop-in upgrade from SDL2.",
+        "Recognize the changes that break SDL2 code, and fix them.",
+        "Name what SDL3 adds that SDL2 never had.",
+      ]} />
 
       <H2>{tx(t, "sdl01_whyTitle", "Why a new major version")}</H2>
       <p>

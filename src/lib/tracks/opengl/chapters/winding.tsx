@@ -5,7 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { WindingFigure } from "@/components/lesson/figures/WindingFigure";
-import { KeyIdeas } from "@/components/lesson/Prose";
+import { KeyIdeas, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 
@@ -18,6 +18,13 @@ export function WindingContent({ t }: { t: TrackTranslations }) {
           "The order in which you specify a triangle's vertices tells OpenGL which side of the face is the front. OpenGL uses this to skip drawing back-facing triangles entirely, cutting fragment shader work roughly in half on closed meshes."
         )}
       </p>
+
+      <Goals t={t} id="ch10" items={[
+        "Tell the front of a triangle from its back by the order of its corners.",
+        "Turn on face culling.",
+        "Fix meshes that show inside out.",
+        "Say what culling saves and what it does not.",
+      ]} />
 
       <H2>{tx(t, "ch10_windingTitle", "What winding order means")}</H2>
       <p>

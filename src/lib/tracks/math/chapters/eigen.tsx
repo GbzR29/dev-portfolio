@@ -10,7 +10,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { EigenFigure } from "@/components/lesson/figures/math/EigenFigure";
 
 const r = String.raw;
@@ -22,6 +22,13 @@ export function EigenContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mEig_intro",
           "A matrix usually turns vectors as well as stretching them. But most matrices have a few special directions where they do not turn anything: a vector pointing that way comes out pointing the same way (or exactly backwards), only longer or shorter. These are the eigenvectors, and the stretch factors are the eigenvalues (from the German eigen, \"own\": the matrix's own directions). They reveal what a matrix really does, predict what happens when it is applied over and over, and find the axis of any 3D rotation.")}
       </Lead>
+
+      <Goals t={t} id="mEig" items={[
+        "Find eigenvalues and eigenvectors from det(A − λI) = 0.",
+        "Spot the eigenvectors of stretches, reflections and rotations.",
+        "Predict what happens when a matrix is applied again and again.",
+        "Find the dominant eigenvector by power iteration.",
+      ]} />
 
       <H2>{tx(t, "mEig_defTitle", "The definition")}</H2>
       <p>

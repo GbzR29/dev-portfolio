@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { BalanceFigure } from "@/components/lesson/figures/math/BalanceFigure";
 
 const r = String.raw;
@@ -35,6 +35,13 @@ export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mLin_intro",
           "An expression is a value; an equation is a claim: two expressions are equal. \"2x + 3 = 11\" claims that doubling some number and adding 3 gives 11, and solving it means finding every x for which the claim is true. Linear equations, where the unknown appears only to the first power, are the simplest kind and by far the most common: when will the train catch up, how many tickets does the budget buy, what is 30 °C in Fahrenheit. This chapter builds the one rule behind all of them and applies it until it is automatic.")}
       </Lead>
+
+      <Goals t={t} id="mLin" items={[
+        "Solve a linear equation step by step, keeping both sides balanced.",
+        "Handle brackets, fractions and the unknown on both sides.",
+        "Tell when an equation has one solution, none or infinitely many.",
+        "Rearrange a formula, and turn a word problem into an equation.",
+      ]} />
 
       <H2>{tx(t, "mLin_whatTitle", "What an equation says")}</H2>
       <p>

@@ -5,7 +5,7 @@ import { Callout, H2, H3 } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { WaveStringFigure } from "@/components/lesson/figures/pool/WaveStringFigure";
 import { PoolLabFigure } from "@/components/lesson/figures/pool/PoolLabFigure";
 
@@ -22,6 +22,13 @@ export function PoolContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslPool_intro",
           "Gerstner waves and FFT oceans are formulas of time: they cannot react when something touches the water. This chapter rebuilds Evan Wallace's WebGL Water (2011), still one of the best-known water demos on the web: a small pool where a click makes rings that bounce off the walls, a ball that floats and pushes water aside, and bright caustics on the tiles. It takes three pieces: the wave equation solved on a grid of heights, a ball with buoyancy, and caustics made by projecting the water mesh along the refracted sunlight.")}
       </Lead>
+
+      <Goals t={t} id="glslPool" items={[
+        "Store water as a height field in a texture and step it with the wave equation.",
+        "Make a ball float and push the water around.",
+        "Compute caustics from a mesh.",
+        "Draw the whole pool.",
+      ]} />
 
       <H2>{tx(t, "glslPool_fieldTitle", "A height field")}</H2>
       <p>

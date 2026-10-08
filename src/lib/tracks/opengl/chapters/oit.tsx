@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { OitLayersFigure } from "@/components/lesson/figures/tech/OitLayersFigure";
 import { OitSceneFigure } from "@/components/lesson/figures/tech/OitSceneFigure";
 
@@ -19,6 +19,12 @@ export function OitContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglOit_intro",
           "The Blending chapter ended with a rule: draw transparent objects back to front. The rule exists because the blending equation depends on order. Sorting works for separate objects, but fails for objects that intersect, objects that contain each other, or a single mesh folding over itself (hair, foliage, a glass bottle). Order-independent transparency (OIT) techniques get correct or nearly correct results without sorting.")}
       </Lead>
+
+      <Goals t={t} id="oglOit" items={[
+        "Explain why transparent surfaces depend on the order they are drawn in.",
+        "Compare exact methods such as depth peeling.",
+        "Implement weighted blended order-independent transparency.",
+      ]} />
 
       <H2>{tx(t, "oglOit_overTitle", "Why order matters")}</H2>
       <Equation label={tx(t, "oglOit_overLabel", "The \"over\" operator, applied layer by layer")}

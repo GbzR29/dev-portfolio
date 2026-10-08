@@ -1,5 +1,9 @@
 // PT text for src/lib/tracks/math/chapters/powers.tsx. Keys match the tx() calls there; English is the fallback in the code.
 const text: Record<string, string> = {
+  mPow_goal0: "Aplicar as leis das potências, inclusive expoente zero e negativo.",
+  mPow_goal1: "Escrever números muito grandes e muito pequenos em notação científica.",
+  mPow_goal2: "Calcular uma raiz quadrada à mão.",
+  mPow_goal3: "Calcular uma potência grande rápido elevando ao quadrado várias vezes.",
   mPow_intro: "Multiplicação é adição repetida; potência é multiplicação repetida. Potências medem como áreas e volumes crescem com o tamanho, como o brilho cai com a distância, quão rápido sobem as economias com juros compostos, e são o único jeito sensato de escrever o tamanho de uma galáxia ou de um átomo. Raízes fazem as potências ao contrário, e a raiz quadrada em particular está dentro de toda fórmula de distância. Este capítulo trata de expoentes e raízes inteiros; o capítulo Expoentes e logaritmos, na seção de Álgebra, estende os expoentes para todo número real e apresenta os logaritmos.",
   mPow_powTitle: "Potências como multiplicação repetida",
   mPow_powBody: "3 × 3 × 3 × 3 se escreve 3⁴ e se lê “3 elevado a 4” ou “3 à quarta”: 81. O número multiplicado, 3, é a base; o numerozinho no alto, 4, é o expoente, e ele conta quantas cópias da base são multiplicadas. A segunda e a terceira potências têm nomes vindos da geometria. Um quadrado de lado 5 é feito de 5 fileiras de 5 quadradinhos, então sua área é 5 × 5 = 5², “cinco ao quadrado”. Um cubo de lado 5 são 5 camadas de 5², então seu volume é 5³, “cinco ao cubo”.",

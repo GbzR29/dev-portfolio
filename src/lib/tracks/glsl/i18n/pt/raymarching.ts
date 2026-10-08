@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/glsl/chapters/raymarching.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glslRm_goal0: "Montar um raio de câmera para cada pixel.",
+  glslRm_goal1: "Avançar um raio por um campo de distância com sphere tracing.",
+  glslRm_goal2: "Modelar cenas 3D com funções de distância.",
+  glslRm_goal3: "Tirar normais, sombras suaves e oclusão ambiente da mesma função.",
   glslRm_intro: "O capítulo de SDF desenhou formas 2D a partir de funções de distância. A mesma ideia em 3D renderiza cenas inteiras sem malha nenhuma: para cada pixel, lance um raio a partir da câmera e ande por ele até chegar a uma superfície descrita por uma função. É assim que são feitas a maioria das cenas do ShaderToy, muitas intros da demoscene e as nuvens e fractais de vários jogos.",
   glslRm_camTitle: "Um raio por pixel",
   glslRm_camLabel: "Raio da câmera",

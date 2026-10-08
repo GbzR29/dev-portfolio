@@ -12,7 +12,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SlopeFieldFigure } from "@/components/lesson/figures/math/SlopeFieldFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function DifferentialEquationsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mOde_intro",
           "The laws of nature are rarely written as formulas for a quantity. They are written as rules for how fast it changes: a hot drink cools faster the hotter it is, a population grows in proportion to its size, a spring pulls harder the further it is stretched. Such a rule is a differential equation, an equation whose unknown is a whole function and which involves that function's derivatives. The fundamental theorem chapter could integrate an acceleration that was known in advance; here the rate depends on the unknown itself, and a new set of ideas is needed. This chapter closes the Calculus section.")}
       </Lead>
+
+      <Goals t={t} id="mOde" items={[
+        "Read a differential equation as a slope field.",
+        "Solve growth and decay, and other separable equations.",
+        "Follow a solution step by step with Euler's method.",
+        "Tell whether a solution settles or runs away, and solve the spring equation.",
+      ]} />
 
       <H2>{tx(t, "mOde_whatTitle", "What a differential equation is")}</H2>
       <p>

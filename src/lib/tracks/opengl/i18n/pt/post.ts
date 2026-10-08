@@ -1,6 +1,19 @@
 // PT text for src/lib/tracks/opengl/chapters/post.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglPost_goal0: "Escrever efeitos que mudam cada pixel sozinho: inversão, tons de cinza, gradação de cor.",
+  oglPost_goal1: "Aplicar um kernel de convolução para desfocar, dar nitidez ou achar bordas.",
+  oglPost_goal2: "Desfocar com duas passadas gaussianas separáveis.",
+  oglPost_goal3: "Adicionar efeitos de lente e de filme, na ordem certa do quadro.",
+  oglSsao_goal0: "Explicar o que a oclusão ambiente mede.",
+  oglSsao_goal1: "Estimá-la a partir do depth buffer com um kernel de amostras.",
+  oglSsao_goal2: "Desfocar o resultado e usá-lo na iluminação.",
+  oglPar_goal0: "Deslocar coordenadas de textura para simular profundidade numa superfície plana.",
+  oglPar_goal1: "Avançar por camadas no steep parallax.",
+  oglPar_goal2: "Interpolar entre camadas no parallax occlusion mapping.",
+  oglAa_goal0: "Explicar por que bordas serrilhadas vêm da amostragem.",
+  oglAa_goal1: "Comparar SSAA, MSAA e FXAA: quanto cada um custa e o que corrige.",
+  oglAa_goal2: "Ligar o MSAA e adicionar uma passada de FXAA.",
   oglPost_intro: "Renderize a cena em uma textura e depois desenhe um triângulo de tela cheia cujo fragment shader lê essa textura. Cada pixel da saída agora pode olhar para qualquer pixel da entrada. Esse único truque, do capítulo de Framebuffers, move quase todo efeito de tela moderno: blur, bloom, color grading, profundidade de campo, motion blur, contornos, granulação de filme.",
   oglPost_pointTitle: "Operações pontuais: um pixel entra, um pixel sai",
   oglPost_pointBody: "Os efeitos mais simples só olham para o pixel que estão escrevendo. São funções puras de uma cor, então a ordem em que você os encadeia importa, mas custam quase nada:",

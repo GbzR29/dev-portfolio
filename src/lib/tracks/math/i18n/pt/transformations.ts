@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/transformations.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mTf_goal0: "Deslizar, espelhar e girar formas com regras nas suas coordenadas.",
+  mTf_goal1: "Escalar e cisalhar uma forma, e dizer quais movimentos mantêm o tamanho e a forma.",
+  mTf_goal2: "Aplicar vários movimentos seguidos, na ordem certa.",
+  mTf_goal3: "Achar as simetrias de uma forma.",
   mTf_intro: "Arrastar um sofá numa planta baixa, ver o rosto no espelho, girar uma chave e ampliar uma foto são todas transformações: regras que levam cada ponto de uma forma a um ponto novo. Pisos de ladrilhos, papéis de parede e caleidoscópios são construídos repetindo uma forma com elas. Este capítulo escreve cada movimento básico como uma regra sobre coordenadas, mostra o que ele mantém e o que muda, e explica por que fazer dois deles numa ordem diferente dá um resultado diferente. A seção de Álgebra linear vai mais tarde empacotar tudo isso em matrizes.",
   mTf_whatTitle: "Uma transformação é uma regra sobre pontos",
   mTf_whatBody: "Uma transformação pega qualquer ponto (x, y) e devolve um ponto (x', y'), sua imagem. Para transformar uma forma, transforme cada um dos seus cantos e ligue-os de novo, o que funciona porque todo movimento deste capítulo mantém retas retas. A figura usa a letra F de propósito: ela não tem simetria, então toda virada e todo giro aparecem. O primeiro canto é marcado com um ponto tanto no original (azul) quanto na imagem (âmbar), e embaixo do desenho a figura informa a área e a ordem de percurso, o sentido em que você dá a volta ao listar os cantos em ordem.",

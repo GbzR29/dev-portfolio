@@ -3,7 +3,7 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { ShadowAcneFigure } from "@/components/lesson/figures/advlighting/ShadowAcneFigure";
@@ -22,6 +22,13 @@ export function ShadowMappingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglShadow_intro",
           "A shadow is the absence of light, and the only question a shadow algorithm answers is: can this fragment see the light source? Shadow mapping answers it by rendering the scene once from the light's point of view, recording how far the light reaches in every direction, and then checking each fragment against that record.")}
       </Lead>
+
+      <Goals t={t} id="oglShadow" items={[
+        "Render a shadow map from the light's point of view.",
+        "Build the light-space matrix.",
+        "Test whether a fragment is in shadow.",
+        "Fix shadow acne, floating shadows and blocky edges.",
+      ]} />
 
       <ShadowMapFigure t={t} />
 

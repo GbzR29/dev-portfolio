@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/expressions.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mExpr_goal0: "Dar nome às partes de uma expressão.",
+  mExpr_goal1: "Calcular uma expressão pondo números no lugar das letras.",
+  mExpr_goal2: "Juntar termos semelhantes e abrir parênteses.",
+  mExpr_goal3: "Reescrever uma expressão em forma aninhada para calculá-la com menos passos.",
   mExpr_intro: "A aritmética trabalha com números específicos: 3 × 4 + 2. A álgebra começa no momento em que você troca um desses números por um nome, 3 × n + 2, e diz “isto vale para qualquer n”. Essa única mudança transforma uma conta isolada numa regra que você pode reutilizar, rearranjar e usar para raciocinar. Este capítulo trata dos objetos que a álgebra manipula, as expressões: como são montadas, como calculá-las e o punhado de regras de reescrita, todas velhas conhecidas da aritmética, que permitem transformar uma expressão em outra igual e mais simples.",
   mExpr_varTitle: "Variáveis: nomes para números",
   mExpr_varBody: "Uma variável é uma letra (ou uma palavra) que representa um número. Ela tem um de dois papéis. Às vezes ela guarda o lugar de qualquer número: em “a área de um retângulo é w × h”, w e h podem ser qualquer coisa, e a regra vale para todos eles. Às vezes ela é uma incógnita: em “um número dobrado mais 3 dá 11”, existe um número específico que ainda não conhecemos, e o próximo capítulo trata de encontrá-lo. Nos dois casos a letra se comporta exatamente como um número em toda conta, porque ela é um número; só não dissemos qual.",

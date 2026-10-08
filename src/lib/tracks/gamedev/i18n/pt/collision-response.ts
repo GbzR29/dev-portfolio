@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/gamedev/chapters/collision-response.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  gdResp_goal0: "Resolver uma colisão com um impulso que conserva o momento.",
+  gdResp_goal1: "Definir quão elástico é um contato com o coeficiente de restituição.",
+  gdResp_goal2: "Adicionar atrito a um contato.",
+  gdResp_goal3: "Impedir que pilhas de objetos afundem e tremam.",
   gdResp_intro: "Os capítulos de colisão respondiam \"essas duas formas se sobrepõem, e ao longo de qual normal?\". A resposta à colisão responde \"e agora, o que acontece?\". Contra uma parede que nunca se move, o capítulo de formas de colisão simplesmente refletia a velocidade. Quando os dois objetos se movem, o mais pesado deve mal perceber um leve, duas bolas de bilhar iguais devem trocar de velocidade, e uma pilha de caixotes deve ficar parada em vez de afundar ou tremer. Tudo isso sai de uma ideia, o impulso, e de duas leis: a conservação do momento e uma regra para o quanto o contato quica.",
 
   gdResp_impTitle: "Momento e impulso",

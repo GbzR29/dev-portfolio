@@ -12,7 +12,7 @@ import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponen
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CardFigure } from "@/components/lesson/figures/math/CardFigure";
 import { BayesFigure } from "@/components/lesson/figures/math/BayesFigure";
 
@@ -25,6 +25,13 @@ export function ConditionalContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mCond_intro",
           "Probabilities change when we learn something. The chance that a card is a king is 4/52, but if you glimpse that it is a face card, it becomes 4/12. The chance that a patient has a disease depends on whether a test came back positive, and by how much is one of the most misunderstood questions in everyday reasoning. This chapter defines conditional probability, uses it to multiply probabilities along the branches of a tree, defines independence precisely, and arrives at Bayes' theorem: the rule for turning evidence into updated probabilities.")}
       </Lead>
+
+      <Goals t={t} id="mCond" items={[
+        "Update a probability when new information arrives.",
+        "Compute chains of events with a tree.",
+        "Test whether two events are independent.",
+        "Reason backwards from evidence to cause with Bayes' theorem.",
+      ]} />
 
       <H2>{tx(t, "mCond_defTitle", "New information shrinks the sample space")}</H2>
       <p>

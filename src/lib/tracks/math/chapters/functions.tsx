@@ -10,7 +10,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { FunctionFigure } from "@/components/lesson/figures/math/FunctionFigure";
 
 // ── Live piecewise function: the parking fee ─────────────────────────────────
@@ -39,6 +39,13 @@ export function AlgebraContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mFn_intro",
           "The previous chapters solved for one unknown value. A function describes a whole relationship at once: how the price depends on the weight, how the temperature depends on the time of day, how a position depends on time. It is one of the most important ideas in all of mathematics, because almost every quantity we care about depends on some other quantity. This chapter defines functions carefully, shows how to read them as graphs, and gives you the tools to build new functions by moving, stretching, combining and reversing known ones.")}
       </Lead>
+
+      <Goals t={t} id="mFn" items={[
+        "Read a function's values from its formula and from its graph.",
+        "Find the slope and the equation of a straight line.",
+        "Shift, stretch and flip a graph by changing its formula.",
+        "Combine two functions into one, and find a function that undoes another.",
+      ]} />
 
       <H2>{tx(t, "mAlg_fnTitle", "Functions")}</H2>
       <p>

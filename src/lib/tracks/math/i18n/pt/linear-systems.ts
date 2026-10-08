@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/linear-systems.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mSys_goal0: "Resolver duas equações juntas por substituição e por eliminação.",
+  mSys_goal1: "Ver o sistema como duas retas e achar a resposta onde elas se cruzam.",
+  mSys_goal2: "Dizer quando um sistema tem uma solução, nenhuma ou infinitas.",
+  mSys_goal3: "Resolvê-lo com a regra de Cramer.",
   mSys_intro: "Uma equação consegue determinar uma incógnita. Problemas reais costumam ter várias incógnitas amarradas por várias condições: onde duas estradas se cruzam, que mistura de dois cafés dá exatamente o preço que você quer, que reta passa por dois pontos dados. Um conjunto de equações que precisam ser todas verdadeiras ao mesmo tempo é um sistema. Este capítulo resolve sistemas de duas equações do primeiro grau com duas incógnitas de três jeitos (pelo gráfico, por substituição e por eliminação), mostra por que alguns não têm solução ou têm infinitas e transforma tudo numa fórmula só.",
   mSys_whatTitle: "O que é um sistema",
   mSys_whatBody: "Uma equação sozinha com duas incógnitas, como x + y = 10, tem infinitas soluções: (3, 7), (0, 10), (12,5, −2,5)… todo par que soma 10. Uma segunda condição, digamos x − y = 4, também tem infinitas. A solução do sistema é o par que satisfaz as duas ao mesmo tempo, aqui (7, 3): 7 + 3 = 10 e 7 − 3 = 4. A chave agrupa as equações e quer dizer “e”.",

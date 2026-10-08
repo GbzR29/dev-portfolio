@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DPTableFigure } from "@/components/lesson/figures/algo/DPTableFigure";
 
 const r = String.raw;
@@ -25,6 +25,13 @@ export function DynamicProgrammingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alDp_intro",
           "The Recursion chapter ended with a warning and a fix. Naive recursive Fibonacci makes an exponential number of calls because it solves the same small problems again and again; remembering each answer in a table (memoization) made it linear. Dynamic programming turns that fix into a method. Split a problem into subproblems, solve each subproblem exactly once, store its answer, and build bigger answers out of stored ones. It solves problems that greedy cannot, like change-making with any coins or the 0/1 knapsack, and it is behind spell checkers, file comparison, DNA alignment and many shortest-path algorithms.")}
       </Lead>
+
+      <Goals t={t} id="alDp" items={[
+        "Recognize when a problem keeps solving the same subproblems.",
+        "Write a solution top-down with memoization or bottom-up with a table.",
+        "Follow the recipe: state, recurrence, base cases, order.",
+        "Solve coin change, the 0/1 knapsack and edit distance.",
+      ]} />
 
       <H2>{tx(t, "alDp_overlapTitle", "Overlapping subproblems")}</H2>
       <p>

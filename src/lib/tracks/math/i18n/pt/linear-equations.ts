@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/linear-equations.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mLin_goal0: "Resolver uma equação do primeiro grau passo a passo, mantendo os dois lados equilibrados.",
+  mLin_goal1: "Lidar com parênteses, frações e a incógnita dos dois lados.",
+  mLin_goal2: "Dizer quando uma equação tem uma solução, nenhuma ou infinitas.",
+  mLin_goal3: "Isolar uma variável numa fórmula, e transformar um problema em palavras numa equação.",
   mLin_intro: "Uma expressão é um valor; uma equação é uma afirmação: duas expressões são iguais. “2x + 3 = 11” afirma que dobrar um certo número e somar 3 dá 11, e resolvê-la quer dizer encontrar todo x para o qual a afirmação é verdadeira. As equações do primeiro grau, em que a incógnita aparece só na primeira potência, são o tipo mais simples e de longe o mais comum: quando o trem vai alcançar o outro, quantos ingressos o orçamento compra, quanto é 30 °C em Fahrenheit. Este capítulo constrói a regra única por trás de todas elas e a aplica até virar automático.",
   mLin_whatTitle: "O que uma equação diz",
   mLin_whatBody: "Uma equação tem um lado esquerdo e um lado direito ligados por =. Para a maioria dos valores da incógnita a afirmação é falsa: com x = 2, 2x + 3 dá 7, não 11. Para o valor x = 4 ela é verdadeira: 2 · 4 + 3 = 11. Esse valor é uma solução (ou raiz) da equação. Uma equação do primeiro grau numa incógnita é uma que pode ser levada à forma a·x + b = 0; “linear” porque seu gráfico, y = ax + b, é uma reta, e a solução é onde essa reta corta o zero.",

@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { AngleFigure } from "@/components/lesson/figures/math/AngleFigure";
 import { ParallelFigure } from "@/components/lesson/figures/math/ParallelFigure";
 
@@ -41,6 +41,13 @@ export function AnglesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mAng_intro",
           "Geometry is the mathematics of shape, size and position. It began as land measurement (the name means \"earth measuring\"), and it is still what a carpenter, a surveyor or a sailor uses every day: a floor plan is rectangles, a roof is triangles, a route on a map is segments and turns. This section builds that geometry from the ground up, and this first chapter sets out the smallest pieces: points, lines and the angles between them. Angles are how we describe direction and turning, which is what a compass, a steering wheel or the hands of a clock do all day.")}
       </Lead>
+
+      <Goals t={t} id="mAng" items={[
+        "Name points, lines, rays, segments and the kinds of angle.",
+        "Use pairs of angles that add up to 90° or 180°, and opposite angles.",
+        "Find all the angles where a line crosses two parallel lines.",
+        "Work out unknown angles in a figure, one step at a time.",
+      ]} />
 
       <H2>{tx(t, "mAng_objTitle", "Points, lines, rays and segments")}</H2>
       <p>

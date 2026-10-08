@@ -11,7 +11,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { KMeansFigure } from "@/components/lesson/figures/ai/KMeansFigure";
 
 const r = String.raw;
@@ -23,6 +23,13 @@ export function KMeansContent({ t }: { t: TrackTranslations }) {
         {tx(t, "aiKm_intro",
           "Every model so far learned from labels: the delivery time, pass or fail. Often there are no labels at all, just data: players' play sessions, the colours of an image, customers' purchases. Unsupervised learning looks for structure in the data alone, and the most basic structure is groups of similar examples, clusters. k-means finds k clusters with a two-step loop simple enough to run by hand, and it is still one of the most used algorithms in practice. This chapter defines what it optimises, runs it by hand, shows how it gets stuck and how k-means++ avoids that, and covers how to choose k.")}
       </Lead>
+
+      <Goals t={t} id="aiKm" items={[
+        "Group data without labels into clusters with Lloyd's algorithm.",
+        "Run k-means by hand and spot a bad result caused by a bad start.",
+        "Start better with k-means++ and choose k.",
+        "Say which shapes of clusters k-means can find and which it cannot.",
+      ]} />
 
       <H2>{tx(t, "aiKm_goalTitle", "What a good clustering is")}</H2>
       <p>

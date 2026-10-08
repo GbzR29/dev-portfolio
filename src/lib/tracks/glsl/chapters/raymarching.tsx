@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonC
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ShaderPlayground } from "@/components/lesson/glsl/ShaderPlayground";
 import { RaymarchSliceFigure } from "@/components/lesson/glsl/RaymarchSliceFigure";
 import { RAYMARCH_PRESETS } from "../presets/raymarching";
@@ -20,6 +20,13 @@ export function RaymarchingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslRm_intro",
           "The SDF chapter drew 2D shapes from distance functions. The same idea in 3D renders whole scenes with no meshes at all: for each pixel, shoot a ray from the camera and walk along it until it reaches a surface described by a function. It is how most ShaderToy scenes, many demoscene intros and several games' clouds and fractals are made.")}
       </Lead>
+
+      <Goals t={t} id="glslRm" items={[
+        "Build a camera ray for every pixel.",
+        "March a ray through a distance field with sphere tracing.",
+        "Model 3D scenes with distance functions.",
+        "Get normals, soft shadows and ambient occlusion from the same function.",
+      ]} />
 
       <H2>{tx(t, "glslRm_camTitle", "A ray per pixel")}</H2>
       <Equation label={tx(t, "glslRm_camLabel", "Camera ray")}

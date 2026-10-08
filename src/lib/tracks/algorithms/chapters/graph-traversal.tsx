@@ -11,7 +11,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { GraphSearchFigure } from "@/components/lesson/figures/algo/GraphSearchFigure";
 
 export function GraphTraversalContent({ t }: { t: TrackTranslations }) {
@@ -21,6 +21,12 @@ export function GraphTraversalContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alGtr_intro",
           "Most questions about a graph start the same way: begin at one vertex and systematically visit everything that can be reached from it. There are two fundamental orders for doing that. Breadth-first search (BFS) spreads out like a ripple, all vertices one edge away, then all two edges away, and so on, and so it finds shortest paths counted in edges. Depth-first search (DFS) follows one path as deep as it can before backing up, like exploring a maze with one hand on the wall, and the structure it leaves behind detects cycles and orders tasks. Both run in O(V + E), which is as fast as reading the graph at all.")}
       </Lead>
+
+      <Goals t={t} id="alGtr" items={[
+        "Run breadth-first search and get the fewest-edge path to every vertex.",
+        "Run depth-first search, recursively and with a stack.",
+        "Use the searches to find components, detect cycles and order tasks.",
+      ]} />
 
       <H2>{tx(t, "alGtr_visitTitle", "Searching needs a memory")}</H2>
       <p>

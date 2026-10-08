@@ -18,7 +18,7 @@ import { PipelineWalkFigure } from "@/components/lesson/figures/glintro/Pipeline
 import { RasterFigure } from "@/components/lesson/figures/glintro/RasterFigure";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 
 const r = String.raw;
 
@@ -29,6 +29,13 @@ export function PipelineContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglPipe_intro",
           "Your program describes a scene as numbers: the corners of triangles, their colours, their texture coordinates. The screen is a grid of pixels. The graphics pipeline is the fixed sequence of steps the GPU applies to turn the first into the second, and every OpenGL call you will ever make either feeds this pipeline or configures one of its steps. This chapter follows a single triangle through every step, with real numbers at each one, so that the rest of the track always has a place to put each new idea.")}
       </Lead>
+
+      <Goals t={t} id="oglPipe" items={[
+        "Name, in order, the stages a triangle goes through.",
+        "Say which stages you program and which are fixed.",
+        "Follow a vertex from clip space to a pixel on the screen.",
+        "Estimate how much work each stage does.",
+      ]} />
 
       <H2>{tx(t, "oglPipe_whyTitle", "Why a pipeline")}</H2>
       <p>

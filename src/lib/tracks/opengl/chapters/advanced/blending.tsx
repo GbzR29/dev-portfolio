@@ -3,6 +3,7 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 import type { TrackTranslations } from "@/lib/tracks/types";
 
 // ── Blending & Transparency ──────────────────────────────────────────────────
@@ -16,6 +17,13 @@ export function BlendingContent({ t }: { t: TrackTranslations }) {
           "Blending is how a fragment combines with what is already in the framebuffer instead of replacing it. The equation is fixed-function and simple. What is genuinely hard is the ordering problem it creates, and that problem has no cheap correct solution — which is why transparency is still a research topic."
         )}
       </p>
+
+      <Goals t={t} id="oglBlend" items={[
+        "Write the blend equation and choose its factors.",
+        "Change the blend operator.",
+        "Use cut-out transparency where no blending is needed.",
+        "Sort transparent objects so they are drawn correctly.",
+      ]} />
 
       <H2>{tx(t, "oglBlend_equationTitle", "The blend equation")}</H2>
       <p>

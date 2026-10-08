@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/pipeline.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkPipe_goal0: "Compilar shaders GLSL para SPIR-V e carregá-los.",
+  vkPipe_goal1: "Montar um pipeline gráfico, um pedaço de estado por vez.",
+  vkPipe_goal2: "Decidir que estado deixar dinâmico, para um redimensionamento não exigir pipeline novo.",
+  vkPipe_goal3: "Levar em conta o clip space do Vulkan, que é diferente do OpenGL.",
   vkPipe_intro: "No OpenGL, o estado de desenho era um conjunto de chaves que você virava uma de cada vez: vincular um programa, ligar o blending, definir a face de culling, trocar o modo de polígono, e então desenhar. O driver só conhecia a combinação completa na chamada de desenho, e se essa combinação fosse nova ele precisava compilar código de máquina para ela ali mesmo, no meio do seu frame. O Vulkan pede a combinação inteira de antemão. Um VkPipeline guarda os shaders e todas as configurações de função fixa juntos, é compilado uma vez quando você o cria, e não pode mudar depois. Este capítulo escreve os shaders do primeiro triângulo, compila-os para SPIR-V e preenche cada parte de um pipeline gráfico.",
 
   vkPipe_whyTitle: "Por que um único objeto imutável",

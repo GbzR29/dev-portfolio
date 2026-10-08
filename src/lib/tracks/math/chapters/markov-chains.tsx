@@ -16,7 +16,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MarkovChainFigure } from "@/components/lesson/figures/markov/ChainFigure";
 import { MatrixPathsFigure } from "@/components/lesson/figures/markov/PathsFigure";
 import { MarkovDistributionFigure } from "@/components/lesson/figures/markov/DistributionFigure";
@@ -32,6 +32,13 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mMk_intro",
           "Many random processes unfold one step at a time: a board-game token moves square by square, the weather changes day by day, a reader clicks from web page to web page. Often the next step depends on where the process is now, but not on the long road that brought it there. Such a process is a Markov chain, after the Russian mathematician Andrey Markov, who studied them in 1906. This chapter defines the Markov property, stores a chain's rules in a transition matrix, and explains the one fact that makes everything computable: the probabilities of n steps are the entries of the n-th power of that matrix. A full exercise is solved along the way. Then come the long run (the stationary distribution, for walks and for any chain, and when the chain actually reaches it) and absorbing chains: where a walk that can get stuck ends up, and how long that takes. Every figure has an \"explore\" button that opens it full screen as a guided lab.")}
       </Lead>
+
+      <Goals t={t} id="mMk" items={[
+        "Write a transition matrix for a process with states.",
+        "Find where the process is likely to be after any number of steps.",
+        "Find the long-run distribution by solving πP = π.",
+        "Find where an absorbing chain ends up and how long it takes.",
+      ]} />
 
       <H2>{tx(t, "mMk_seqTitle", "A sequence of random variables")}</H2>
       <p>

@@ -6,7 +6,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation, Tex } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SkinningArmFigure } from "@/components/lesson/figures/tech/SkinningArmFigure";
 import { SkinnedTubeFigure } from "@/components/lesson/figures/tech/SkinnedTubeFigure";
 
@@ -19,6 +19,13 @@ export function SkeletalContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglSkel_intro",
           "A character mesh has tens of thousands of vertices. Animating each one by hand, frame by frame, would be impossible to author and far too much data to store. Instead the mesh gets a skeleton of a few dozen bones. Animators pose the bones, and every vertex follows the bones it is attached to. This is skinning, and nearly every animated character in every game works this way.")}
       </Lead>
+
+      <Goals t={t} id="oglSkel" items={[
+        "Build a skeleton as a hierarchy of transforms.",
+        "Use the bind pose and the inverse bind matrices.",
+        "Deform a mesh with weights and linear blend skinning.",
+        "Play keyframes, fix the candy-wrapper twist and blend animations.",
+      ]} />
 
       <H2>{tx(t, "oglSkel_hierTitle", "The skeleton is a hierarchy of transforms")}</H2>
       <p>

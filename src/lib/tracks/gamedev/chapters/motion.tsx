@@ -7,7 +7,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { EasingFigure } from "@/components/lesson/figures/gamedev/EasingFigure";
 import { SmoothingFigure } from "@/components/lesson/figures/gamedev/SmoothingFigure";
 import { SpringFigure } from "@/components/lesson/figures/gamedev/SpringFigure";
@@ -26,6 +26,13 @@ export function EasingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdEase_intro",
           "When a menu slides in, a coin flies to the score counter or the camera glides to a new target, the difference between \"works\" and \"feels good\" is almost never the destination. It is the pacing: how the motion starts, how it stops. This chapter builds that pacing from one tiny function, linear interpolation, and a family of curves that reshape its input.")}
       </Lead>
+
+      <Goals t={t} id="gdEase" items={[
+        "Interpolate between two values and convert a value from one range to another.",
+        "Choose an easing curve for things that arrive, leave or pass through.",
+        "Build a tween that plays a change over time.",
+        "Follow a moving target smoothly, whatever the frame rate.",
+      ]} />
 
       <H2>{tx(t, "gdEase_lerpTitle", "Linear interpolation")}</H2>
       <p>
@@ -214,6 +221,13 @@ export function SpringsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "gdSpring_intro",
           "A spring is the most useful piece of physics in game feel. A camera on a spring lags a little behind a sprinting player and then catches up; a UI panel on a spring overshoots and settles; a weapon on a spring sways after the player turns. This chapter derives the damped spring, rewrites it with two parameters a designer can reason about, and ends with the other half of \"juice\": screen shake.")}
       </Lead>
+
+      <Goals t={t} id="gdSpring" items={[
+        "Write the equation of a damped spring.",
+        "Tune a spring with a frequency and a damping ratio.",
+        "Step a spring in code without it blowing up.",
+        "Add screen shake driven by a trauma value.",
+      ]} />
 
       <H2>{tx(t, "gdSpring_hookeTitle", "Hooke's law plus damping")}</H2>
       <p>

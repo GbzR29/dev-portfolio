@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/series.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mSer_goal0: "Montar um polinômio que copia uma função perto de um ponto.",
+  mSer_goal1: "Escrever as séries conhecidas de eˣ, sen x, cos x e outras.",
+  mSer_goal2: "Dizer quando uma série converge, e limitar o erro de um corte.",
+  mSer_goal3: "Deduzir a fórmula de Euler a partir das séries.",
   mSer_intro: "Os polinômios são as funções mais amigáveis que existem: para calcular um você só soma e multiplica, o que dá para fazer à mão com qualquer precisão. Seno, a exponencial e o logaritmo não são assim; não existe receita finita de somas e multiplicações que dê sin 0,3 exatamente. As séries de Taylor fecham essa lacuna. Elas constroem, para uma dada função, um polinômio que copia o valor da função, a inclinação, a curvatura e toda derivada seguinte num ponto, e deixam o grau crescer para sempre. Para as funções deste curso o resultado, uma soma infinita, é a própria função.",
   mSer_matchTitle: "Copiando uma função uma derivada de cada vez",
   mSer_matchBody: "Escolha um ponto a, o centro. A melhor aproximação constante de f perto de a é a constante f(a). A melhor reta é a tangente f(a) + f′(a)(x − a) do capítulo de derivadas: ela tem o mesmo valor e a mesma inclinação em a. Para copiar também a curvatura, some um termo c₂(x − a)². Ele não atrapalha o valor nem a inclinação em a (o termo e sua derivada primeira são 0 ali), e sua derivada segunda é 2c₂. Para igualar f″(a) precisamos de 2c₂ = f″(a), então c₂ = f″(a)/2. O padrão continua: a k-ésima derivada de (x − a)ᵏ é a constante k · (k − 1) · … · 1, escrita k! (“k fatorial”), e todo outro termo ou se anula em a ou já foi derivado até sumir. Então o coeficiente que copia a k-ésima derivada é f⁽ᵏ⁾(a)/k!.",

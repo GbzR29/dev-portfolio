@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/modern.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkMod_goal0: "Ligar os recursos do Vulkan 1.2 de que os renderizadores modernos dependem.",
+  vkMod_goal1: "Deixar toda textura disponível para todo desenho com descritores bindless.",
+  vkMod_goal2: "Ler buffers nos shaders por endereços de dispositivo.",
+  vkMod_goal3: "Trocar fences e semáforos binários por semáforos de linha do tempo.",
   vkMod_intro: "O Vulkan 1.0 (2016) foi projetado em torno de descriptor sets fixos, vertex buffers vinculados por estado de função fixa, e semáforos binários mais fences. As versões seguintes mantiveram tudo isso funcionando e acrescentaram recursos que deixam renderizadores grandes mais simples e mais rápidos. Esta trilha usa dois deles desde o começo: dynamic rendering e synchronization2. Este último capítulo acrescenta mais três, todos core desde o Vulkan 1.2: descritores bindless, endereços de buffer na GPU (buffer device address) e timeline semaphores. Juntos, eles são a base da renderização guiada pela GPU (GPU-driven), em que a GPU decide o que desenhar. O capítulo termina com o Vulkan 1.4, as extensões que vale a pena conhecer e para onde ir daqui.",
 
   vkMod_featTitle: "Ligando os recursos do 1.2",

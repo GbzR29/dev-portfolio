@@ -1,6 +1,15 @@
 // PT text for src/lib/tracks/glsl/chapters/raytracing.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glslRt_goal0: "Intersectar um raio com esferas e planos, e ficar com o acerto mais próximo.",
+  glslRt_goal1: "Adicionar raios de sombra, reflexão e refração com a recursão de Whitted.",
+  glslPt_goal0: "Ler a equação de renderização termo por termo.",
+  glslPt_goal1: "Estimar uma integral fazendo a média de amostras aleatórias.",
+  glslPt_goal2: "Traçar um caminho por amostra e juntar os caminhos numa imagem.",
+  glslRtA_goal0: "Explicar como uma hierarquia de volumes envolventes economiza trabalho.",
+  glslRtA_goal1: "Intersectar um raio com uma caixa usando o teste das fatias.",
+  glslRtA_goal2: "Dizer como os denoisers fazem poucas amostras parecerem limpas.",
+  glslRtA_goal3: "Dizer o que o hardware de ray tracing faz por você.",
   glslRt_intro: "O raymarching anda por um raio em passos até uma função de distância dizer que chegou. O ray tracing resolve o acerto diretamente: para esferas, planos e triângulos, o ponto em que um raio encontra uma superfície é a raiz de uma equação. O artigo de Turner Whitted de 1980 acrescentou a ideia que tornou o ray tracing famoso: quando um raio atinge um espelho ou um vidro, trace novos raios a partir do ponto de acerto, de forma recursiva. Sombras, reflexos e refração saem todos de uma única regra, sem casos especiais.",
   glslRt_rayTitle: "Um raio, e a primeira coisa que ele atinge",
   glslRt_rayBody: "Um raio é um ponto de partida o e uma direção unitária d. Todo ponto dele é o + t·d para algum t ≥ 0, em que t é a distância percorrida. Intersectar o raio com uma superfície é encontrar os valores de t em que o + t·d está sobre a superfície. O que queremos é o menor t positivo, a primeira superfície à frente do raio. Uma cena é intersectada testando cada objeto e guardando o acerto mais próximo.",

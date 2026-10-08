@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CircleFigure } from "@/components/lesson/figures/math/CircleFigure";
 import { PiFigure } from "@/components/lesson/figures/math/PiFigure";
 import { PiAreaFigure } from "@/components/lesson/figures/math/PiAreaFigure";
@@ -37,6 +37,13 @@ export function CircleContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mCir_intro",
           "Wheels, clock faces, coins, round tables, orbiting moons, the ripples on a pond: circles are everywhere. Measuring them needs one special number, π, which is not a formula anyone invented but a fact about every circle that exists. This chapter makes π visible four different ways (rolling a wheel, squeezing it between polygons, cutting a pizza, throwing darts) and then puts it to work.")}
       </Lead>
+
+      <Goals t={t} id="mCir" items={[
+        "Explain what π is and why it is the same for every circle.",
+        "Find a circle's circumference and area.",
+        "Find the length of an arc and the area of a slice of a circle.",
+        "Use the right angle between a tangent and the radius.",
+      ]} />
 
       <H2>{tx(t, "mCir_defTitle", "What a circle is")}</H2>
       <p>

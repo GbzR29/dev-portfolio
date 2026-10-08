@@ -11,7 +11,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { KnnFigure } from "@/components/lesson/figures/ai/KnnFigure";
 import { DimensionFigure } from "@/components/lesson/figures/ai/DimensionFigure";
 
@@ -24,6 +24,13 @@ export function KNearestNeighboursContent({ t }: { t: TrackTranslations }) {
         {tx(t, "aiKnn_intro",
           "The models so far compress the training data into a few parameters and then throw the data away. k-nearest neighbours does the opposite: it keeps every example and learns nothing in advance. To predict for a new input, it finds the k training examples most similar to it and lets them vote. It is the simplest learning algorithm there is, it draws boundaries of any shape, and it makes the role of distance, scaling and dimension impossible to ignore.")}
       </Lead>
+
+      <Goals t={t} id="aiKnn" items={[
+        "Classify and predict by letting the nearest examples vote.",
+        "Choose a distance, and scale the features so it is fair.",
+        "Choose k.",
+        "Explain why nearest neighbours breaks down when there are many features.",
+      ]} />
 
       <H2>{tx(t, "aiKnn_algoTitle", "The algorithm")}</H2>
       <ol className="list-decimal pl-6 space-y-1.5">

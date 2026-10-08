@@ -13,7 +13,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { UploadFigure } from "@/components/lesson/figures/glintro/UploadFigure";
 import { FloatBytesFigure } from "@/components/lesson/figures/glintro/FloatBytesFigure";
 
@@ -24,6 +24,12 @@ export function VBOContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglVbo_intro",
           "The pipeline starts with vertex data, and so far that data is a C++ array in your program's memory. The vertex shader cannot read a C++ array: it runs on the GPU and reads from buffer objects, blocks of memory that OpenGL manages and places wherever the GPU reads them fastest. A Vertex Buffer Object (VBO) is a buffer object that holds vertex data. This chapter explains why the data has to move, what exactly gets copied, how to create, fill, update and delete a VBO, and why a VBO on its own still does not draw anything.")}
       </Lead>
+
+      <Goals t={t} id="oglVbo" items={[
+        "Put vertex data in GPU memory with a vertex buffer.",
+        "Count the bytes you upload.",
+        "Choose a usage hint, and update or delete a buffer.",
+      ]} />
 
       <H2>{tx(t, "oglVbo_whereTitle", "Where vertex data lives")}</H2>
       <p>

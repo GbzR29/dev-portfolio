@@ -1,5 +1,9 @@
 // PT text for src/lib/tracks/math/chapters/bases.tsx. Keys match the tx() calls there; English is the fallback in the code.
 const text: Record<string, string> = {
+  mBase_goal0: "Ler um número escrito em qualquer base, algarismo por algarismo.",
+  mBase_goal1: "Converter entre decimal, binário e hexadecimal.",
+  mBase_goal2: "Somar números em binário.",
+  mBase_goal3: "Explicar por que 0,1 não pode ser guardado exatamente em binário.",
   mBase_intro: "Contamos de dez em dez porque temos dez dedos; nada nos números exige isso. Outras bases estão por toda parte: uma hora tem 60 minutos e um minuto 60 segundos, uma herança da base 60 babilônica; ovos vêm em dúzias; e computadores contam de dois em dois, porque um fio ou tem tensão ou não tem. Este capítulo mostra que as bases 2, 16 e 60 funcionam exatamente como a base 10, como converter entre bases à mão e como somar em binário com o mesmo “vai um” que você aprendeu no decimal.",
   mBase_placeTitle: "Valor posicional em qualquer base",
   mBase_placeBody: "Em 347, o 7 conta unidades, o 4 conta dezenas e o 3 conta centenas: cada posição vale dez vezes a da direita, e dez algarismos diferentes, de 0 a 9, bastam porque uma contagem de dez “vai um” para a próxima posição. Nada muda se a base for algum outro inteiro B ≥ 2: use os algarismos de 0 a B − 1 e deixe cada posição valer B vezes a da direita. As posições então valem 1, B, B², B³ … a partir da direita, as potências da base do capítulo anterior.",

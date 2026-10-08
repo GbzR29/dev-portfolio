@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/ai/chapters/gradient-descent.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  aiGd_goal0: "Aplicar a atualização da descida do gradiente à mão.",
+  aiGd_goal1: "Escolher uma taxa de aprendizado, e reconhecer uma grande demais.",
+  aiGd_goal2: "Escolher entre descida em lote, em mini-lote e estocástica.",
+  aiGd_goal3: "Conferir um gradiente numericamente.",
   aiGd_intro: "No primeiro capítulo você diminuiu a perda arrastando a reta e observando o número. Um algoritmo não enxerga a figura, e uma rede neural tem milhões de parâmetros em vez de dois, mas ele consegue calcular o gradiente: para cada parâmetro, como a perda mudaria se esse parâmetro crescesse um pouco. A descida do gradiente dá um passo pequeno contra ele, recalcula, e repete. É o otimizador por trás de quase todo o machine learning moderno. Este capítulo o resolve à mão nas entregas, mostra exatamente quando ele converge e quando explode, e escreve o loop de treino que o resto da trilha reutiliza.",
 
   aiGd_ruleTitle: "A regra de atualização",

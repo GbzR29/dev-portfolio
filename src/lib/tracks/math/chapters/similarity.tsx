@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SimilarityFigure } from "@/components/lesson/figures/math/SimilarityFigure";
 
 const r = String.raw;
@@ -35,6 +35,13 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSim_intro",
           "A photo and its thumbnail, a map and the land it shows, a model car and the real one: each pair has the same shape at a different size. Geometry calls such shapes similar. The idea looks modest, but it is the reason a camera can turn a 3D world into a 2D picture, the reason trigonometry works at all, and the reason a statue built twice as tall needs four times the paint and eight times the bronze. This chapter builds it from the ratios chapter and the triangles chapter.")}
       </Lead>
+
+      <Goals t={t} id="mSim" items={[
+        "Find the scale factor between two shapes of the same form.",
+        "Show that two triangles are similar, and use it to find missing lengths.",
+        "Predict how lengths, areas and volumes change with scale.",
+        "Use map and plan scales, and explain why far things look smaller.",
+      ]} />
 
       <H2>{tx(t, "mSim_defTitle", "Same shape: the scale factor")}</H2>
       <p>

@@ -9,7 +9,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { FullscreenTriFigure } from "@/components/lesson/figures/advgl/FullscreenTriFigure";
@@ -25,6 +25,12 @@ export function FramebuffersContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglFbo_intro",
           "Everything so far rendered into the default framebuffer — the one the window system gave you, the one that ends up on screen. A framebuffer object lets you render into a texture instead. That one capability unlocks post-processing, shadow maps, deferred shading, reflections, picking and minimaps. It is the most leveraged object in the API.")}
       </Lead>
+
+      <Goals t={t} id="oglFbo" items={[
+        "Create a framebuffer with colour and depth attachments.",
+        "Render the scene into a texture, then draw that texture on screen in a second pass.",
+        "Write screen effects as fragment shaders.",
+      ]} />
 
       <H2>{tx(t, "oglFbo_whatTitle", "What a framebuffer is")}</H2>
       <p>

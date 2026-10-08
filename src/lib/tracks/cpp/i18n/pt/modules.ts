@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/cpp/chapters/modules.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp11_goal0: "Explicar por que o #include deixa builds grandes lentos.",
+  cpp11_goal1: "Escrever um módulo e importá-lo.",
+  cpp11_goal2: "Dividir um módulo grande em partições.",
+  cpp11_goal3: "Avaliar se o seu compilador e o seu sistema de build estão prontos para módulos.",
   cpp11_intro: "O modelo do #include é textual: o pré-processador cola o header inteiro em todo arquivo que o inclui, e o compilador o analisa de novo toda vez. Um projeto que inclui <vector> em cem arquivos analisa <vector> cem vezes. Módulos substituem isso por um artefato compilado que é analisado uma única vez.",
   cpp11_problemTitle: "Quanto os headers realmente custam",
   cpp11_p1t: "Análise quadrática",

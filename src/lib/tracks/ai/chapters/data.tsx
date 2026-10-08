@@ -10,7 +10,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { FeatureScaleFigure } from "@/components/lesson/figures/ai/FeatureScaleFigure";
 
 const r = String.raw;
@@ -22,6 +22,13 @@ export function DataContent({ t }: { t: TrackTranslations }) {
         {tx(t, "aiData_intro",
           "A model can only learn from what it is shown, and it sees the world only as numbers. Before any learning, the data has to be turned into a table of numbers the model can use: each example described by the same list of measurements, in comparable units, with part of it locked away for honest testing. Most real machine-learning work is this step. This chapter sets up the vocabulary, the C++ data structure the rest of the track uses, and the two operations almost every project needs: scaling and splitting.")}
       </Lead>
+
+      <Goals t={t} id="aiData" items={[
+        "Turn a set of examples into a table of numbers a model can use.",
+        "Encode categories as numbers the right way.",
+        "Scale features so they can be compared.",
+        "Split data into training, validation and test sets, and say why.",
+      ]} />
 
       <H2>{tx(t, "aiData_vocabTitle", "Examples, features and labels")}</H2>
       <p>

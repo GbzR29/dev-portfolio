@@ -6,7 +6,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { tx } from "@/lib/tracks/tx";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
-import { KeyIdeas } from "@/components/lesson/Prose";
+import { KeyIdeas, Goals } from "@/components/lesson/Prose";
 import { FunctionPlotter } from "@/components/lesson/glsl/FunctionPlotter";
 
 const r = String.raw;
@@ -20,6 +20,13 @@ export function BuiltinsContent({ t }: { t: TrackTranslations }) {
           "GLSL ships with a large library of built-in functions implemented natively in hardware — they are faster than anything you could write yourself. Knowing them well means shorter, faster shaders."
         )}
       </p>
+
+      <Goals t={t} id="glsl02" items={[
+        "Shape values with clamp, mix, step and smoothstep.",
+        "Use the geometric functions: length, distance, dot, cross, normalize and reflect.",
+        "Picture a function as a curve before you use it.",
+        "Smooth a hard edge with fwidth.",
+      ]} />
 
       <H2>{tx(t, "glsl02_mathTitle", "Math functions")}</H2>
       <p>{tx(t, "glsl02_mathBody", "The core math functions work component-wise on vectors, which is very useful for per-channel color operations.")}</p>

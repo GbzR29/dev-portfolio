@@ -5,7 +5,7 @@ import { Callout, H2, H3 } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { FlowPhasesFigure } from "@/components/lesson/figures/river/FlowPhasesFigure";
 import { RiverLabFigure } from "@/components/lesson/figures/river/RiverLabFigure";
 
@@ -22,6 +22,13 @@ export function RiverContent({ t }: { t: TrackTranslations }) {
         {tx(t, "glslRiver_intro",
           "The oceans and the pool of the last chapters have waves that travel through the water while the water itself stays put. A river is the other way round: the water moves, and it carries its small ripples and its foam with it, fast and rough in the rapids, torn white behind every rock, almost still where the river opens into a lake. Games draw this with a flow map, a texture that stores a velocity at every point of the water. Valve introduced the technique for Portal 2 (Alex Vlachos, 2010), and it still drives rivers, lava and even clouds in most engines. This chapter builds it, computes a flow map from the shape of a river, and ends in a calm lake that mirrors its valley.")}
       </Lead>
+
+      <Goals t={t} id="glslRiver" items={[
+        "Explain why simply scrolling a texture fails for a river.",
+        "Carry a texture along a flow map with two phases.",
+        "Make a flow map and shade the moving water.",
+        "Add planar reflections for a calm lake.",
+      ]} />
 
       <H2>{tx(t, "glslRiver_scrollTitle", "Scrolling a texture")}</H2>
       <p>

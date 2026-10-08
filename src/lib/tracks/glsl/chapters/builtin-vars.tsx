@@ -4,6 +4,7 @@
 
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 
 export function BuiltinVarsContent({ t }: { t: TrackTranslations }) {
@@ -15,6 +16,13 @@ export function BuiltinVarsContent({ t }: { t: TrackTranslations }) {
           "Your own in and out variables connect one shader to the next. Built-in variables connect a shader to the fixed parts of the pipeline instead: the part that fetches vertices, the rasteriser, the depth test. They all start with gl_, a prefix reserved for them, and each stage has its own set. gl_Position and gl_FragCoord are the two you already know; this chapter covers the rest that matter in practice."
         )}
       </p>
+
+      <Goals t={t} id="glslBv" items={[
+        "Write gl_Position and the other outputs of a vertex shader.",
+        "Size and texture points with gl_PointSize and gl_PointCoord.",
+        "Clip geometry against your own planes.",
+        "Read the fragment shader's built-in inputs, and choose how outputs are interpolated.",
+      ]} />
 
       <H2>{tx(t, "glslBv_vsTitle", "In the vertex shader")}</H2>
       <LessonTable

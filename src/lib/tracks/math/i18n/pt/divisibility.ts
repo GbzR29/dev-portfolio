@@ -1,5 +1,9 @@
 // PT text for src/lib/tracks/math/chapters/divisibility.tsx. Keys match the tx() calls there; English is the fallback in the code.
 const text: Record<string, string> = {
+  mDiv_goal0: "Dividir com resto e testar se um número divide outro.",
+  mDiv_goal1: "Decompor um número em fatores primos.",
+  mDiv_goal2: "Achar o máximo divisor comum com o algoritmo de Euclides, e o mínimo múltiplo comum a partir dele.",
+  mDiv_goal3: "Calcular com restos, como as horas de um relógio.",
   mDiv_intro: "Algumas perguntas sobre números inteiros não têm nada a ver com tamanho e tudo a ver com como eles se dividem: dá para arrumar 36 cadeiras em 5 fileiras iguais? Qual é o maior ladrilho quadrado que cobre exatamente um piso de 48 × 36? Dois faróis piscam a cada 6 e a cada 8 segundos; depois de quanto tempo piscam juntos de novo? As respostas vêm da divisibilidade, dos números primos, do máximo divisor comum e do mínimo múltiplo comum. Este capítulo constrói os quatro a partir da divisão comum, e eles são usados na hora: o mdc simplifica frações, o mmc encontra denominadores comuns.",
   mDiv_remTitle: "Divisão com resto",
   mDiv_remBody: "Antes das frações, a divisão de inteiros já tinha uma resposta: 17 balas divididas entre 5 crianças dão 3 para cada uma, e sobram 2. O 3 é o quociente, o 2 é o resto. O resto é sempre menor que o divisor; senão, cada criança poderia ter ganhado mais uma. Esse “quantas vezes inteiras, e o que sobra” é o ponto de partida de todo o capítulo.",

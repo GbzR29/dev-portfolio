@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/cpp/chapters/constexpr.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  cpp07_goal0: "Escolher entre constexpr, consteval e constinit.",
+  cpp07_goal1: "Calcular uma tabela de consulta em tempo de compilação e gravá-la no binário.",
+  cpp07_goal2: "Dizer o que o C++26 acrescenta ao código em tempo de compilação.",
   cpp07_intro: "Cada ciclo gasto em tempo de compilação é um ciclo a menos gasto a 16,6 milissegundos por frame. O constexpr moderno é quase um interpretador completo de C++ rodando dentro do compilador: loops, alocações, containers e, no C++26, até exceções.",
   cpp07_keywordsTitle: "constexpr, consteval, constinit",
   cpp07_h0: "Palavra-chave",

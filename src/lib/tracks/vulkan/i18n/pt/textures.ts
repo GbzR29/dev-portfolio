@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/textures.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkTex_goal0: "Criar uma imagem, dar memória a ela e fazer uma view dela.",
+  vkTex_goal1: "Enviar um PNG para a GPU e passá-lo para um layout que os shaders conseguem ler.",
+  vkTex_goal2: "Escolher entre um formato sRGB e um linear para uma textura.",
+  vkTex_goal3: "Criar um sampler e ligar a textura a um shader.",
   vkTex_intro: "Uma textura é uma imagem da qual o fragment shader lê cores. No OpenGL, glTexImage2D recebia os pixels e o driver fazia o resto: alocava memória, escolhia um arranjo na memória, copiava e acompanhava como a textura estava sendo usada. No Vulkan cada uma dessas coisas é um passo que você escreve. Este capítulo cria uma VkImage e a sua memória, decodifica um PNG, faz o upload por um staging buffer com duas transições de layout, cria um sampler que diz como filtrá-la e entrega as duas coisas ao shader num segundo descriptor set. Os dois quadrados ganham textura.",
 
   vkTex_imagesTitle: "Imagens não são buffers",

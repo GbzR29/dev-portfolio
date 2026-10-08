@@ -12,7 +12,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SwizzleFigure } from "@/components/lesson/figures/glintro/SwizzleFigure";
 import { TriangleShaderFigure } from "@/components/lesson/figures/glintro/TriangleShaderFigure";
 
@@ -23,6 +23,13 @@ export function ShadersContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglSh_intro",
           "The buffer and the vertex array deliver each vertex's position and colour. What happens to them next is up to two small programs you write: the vertex shader and the fragment shader. They are written in GLSL, the OpenGL Shading Language, which looks like C with vector and matrix types built in. This chapter teaches enough GLSL to write both shaders with confidence: its types and the way it works on whole vectors at once, how values travel from one stage to the next, and how your C++ program passes values in. A live editor lets you change the shaders and see the triangle respond.")}
       </Lead>
+
+      <Goals t={t} id="oglSh" items={[
+        "Write a vertex shader and a fragment shader in GLSL.",
+        "Pass data from one stage to the next.",
+        "Set uniforms from C++.",
+        "Compile and link shaders, and read their error messages.",
+      ]} />
 
       <H2>{tx(t, "oglSh_whatTitle", "What a shader is")}</H2>
       <p>

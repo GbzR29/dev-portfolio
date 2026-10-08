@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/volumetrics.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglVol_goal0: "Dizer o que absorção e espalhamento fazem com a luz num meio.",
+  oglVol_goal1: "Escolher uma função de fase.",
+  oglVol_goal2: "Explicar por que o céu é azul e o pôr do sol é vermelho.",
+  oglVol_goal3: "Montar neblina volumétrica num renderizador real.",
   oglVol_intro: "Tudo até aqui assumiu que a luz viaja pelo espaço vazio entre as superfícies. O ar real está cheio de moléculas, poeira e gotículas, e cada uma delas absorve um pouco de luz e espalha um pouco em novas direções. É por isso que o céu é azul, o pôr do sol é vermelho, montanhas distantes desbotam e raios de sol entrando por uma janela são sequer visíveis. Renderizar isso significa integrar a luz ao longo do raio de visão através de um \"meio participante\", em vez de parar na primeira superfície.",
   oglVol_mediumTitle: "O que um meio faz com a luz",
   oglVol_coeffLabel: "Os coeficientes de um meio",

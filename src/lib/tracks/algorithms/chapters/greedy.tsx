@@ -13,7 +13,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { IntervalFigure } from "@/components/lesson/figures/algo/IntervalFigure";
 import { HuffmanFigure } from "@/components/lesson/figures/algo/HuffmanFigure";
 
@@ -26,6 +26,13 @@ export function GreedyContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alGrd_intro",
           "The chapters so far built data structures. This section is about strategies: general ways of designing an algorithm for a problem nobody has solved for you. The simplest strategy is to be greedy. Build the answer one piece at a time, and at every step take the piece that looks best right now, without ever going back on a choice. Greedy algorithms are short and fast, usually a sort followed by one pass. The catch is that for many problems the locally best choice leads to a bad overall answer. This chapter shows problems where greedy is provably right, one where it is wrong, and the argument that tells them apart.")}
       </Lead>
+
+      <Goals t={t} id="alGrd" items={[
+        "Solve scheduling problems with a greedy choice.",
+        "Prove that a greedy choice is safe with an exchange argument, or find a counterexample.",
+        "Tell the fractional knapsack, where greedy works, from the 0/1 knapsack, where it does not.",
+        "Build a Huffman code.",
+      ]} />
 
       <H2>{tx(t, "alGrd_changeTitle", "Making change")}</H2>
       <p>

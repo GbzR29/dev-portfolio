@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { UploadCostFigure } from "@/components/lesson/figures/vulkan/UploadCostFigure";
 import { StagingStepsFigure } from "@/components/lesson/figures/vulkan/StagingStepsFigure";
 
@@ -25,6 +25,13 @@ export function StagingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "vkStg_intro",
           "The quad's buffers live in memory the CPU can write. On a discrete graphics card that memory is system RAM, on the other side of the PCIe bus, and the GPU fetches every vertex across that bus on every draw. The GPU's own memory, DEVICE_LOCAL, is many times faster, but the CPU cannot write it directly. The standard answer is a staging buffer: the CPU writes into a CPU-visible buffer, and the GPU copies it into device-local memory with a transfer command. This chapter measures why that is worth it, writes the upload path, and shows each step failing when it is left out.")}
       </Lead>
+
+      <Goals t={t} id="vkStg" items={[
+        "Explain why vertex data belongs in the GPU's own memory on a discrete card.",
+        "Upload data through a staging buffer and a copy on the GPU.",
+        "Batch several uploads into one submission.",
+        "Tell when staging is not worth it.",
+      ]} />
 
       <H2>{tx(t, "vkStg_whyTitle", "Where the bytes travel")}</H2>
       <p>

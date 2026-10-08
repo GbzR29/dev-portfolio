@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/staging.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkStg_goal0: "Explicar por que os dados de vértices devem ficar na memória da própria GPU numa placa dedicada.",
+  vkStg_goal1: "Enviar dados por um staging buffer e uma cópia feita na GPU.",
+  vkStg_goal2: "Juntar vários envios numa única submissão.",
+  vkStg_goal3: "Dizer quando o staging não compensa.",
   vkStg_intro: "Os buffers do quadrado moram numa memória que a CPU consegue escrever. Numa placa de vídeo dedicada essa memória é a RAM do sistema, do outro lado do barramento PCIe, e a GPU busca cada vértice atravessando esse barramento a cada desenho. A memória da própria GPU, DEVICE_LOCAL, é muitas vezes mais rápida, mas a CPU não consegue escrevê-la diretamente. A resposta padrão é um staging buffer: a CPU escreve num buffer visível para ela, e a GPU o copia para a memória local com um comando de transferência. Este capítulo mede por que isso vale a pena, escreve o caminho de upload e mostra cada passo falhando quando é deixado de fora.",
 
   vkStg_whyTitle: "Por onde os bytes viajam",

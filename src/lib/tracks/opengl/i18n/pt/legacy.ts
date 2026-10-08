@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/opengl/chapters/legacy.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglLeg_goal0: "Dizer o que o OpenGL é: uma especificação, não uma biblioteca.",
+  oglLeg_goal1: "Distinguir de relance código antigo em modo imediato de OpenGL moderno.",
+  oglLeg_goal2: "Explicar por que o pipeline fixo deu lugar aos shaders.",
+  oglLeg_goal3: "Escolher entre o perfil core e o de compatibilidade.",
   oglLeg_intro: "O OpenGL tem mais de trinta anos, e tutoriais, livros e respostas de fórum de cada um desses anos continuam na internet. Muitos deles ensinam um estilo que não existe mais no OpenGL moderno: glBegin, glVertex, iluminação embutida. Este capítulo explica o que é o OpenGL, como ele mudou e por quê, para que você reconheça código antigo quando o encontrar, e para que o desenho da API moderna, que o resto desta trilha ensina, faça sentido em vez de parecer cerimônia sem necessidade.",
 
   oglLeg_whatTitle: "O que o OpenGL é de fato",

@@ -11,7 +11,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { GLTimelineFigure } from "@/components/lesson/figures/glintro/GLTimelineFigure";
 import { ImmediateCostFigure } from "@/components/lesson/figures/glintro/ImmediateCostFigure";
 
@@ -22,6 +22,13 @@ export function LegacyContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglLeg_intro",
           "OpenGL is more than thirty years old, and tutorials, books and forum answers from every one of those years are still online. Many of them teach a style that no longer exists in modern OpenGL: glBegin, glVertex, built-in lighting. This chapter explains what OpenGL is, how it changed and why, so that you can recognise old code when you meet it, and so that the design of the modern API, which the rest of this track teaches, makes sense instead of looking like needless ceremony.")}
       </Lead>
+
+      <Goals t={t} id="oglLeg" items={[
+        "Say what OpenGL is: a specification, not a library.",
+        "Tell old immediate-mode code from modern OpenGL at a glance.",
+        "Explain why the fixed pipeline gave way to shaders.",
+        "Choose between the core and compatibility profiles.",
+      ]} />
 
       <H2>{tx(t, "oglLeg_whatTitle", "What OpenGL actually is")}</H2>
       <p>

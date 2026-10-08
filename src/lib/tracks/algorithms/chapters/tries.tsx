@@ -12,7 +12,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TrieFigure } from "@/components/lesson/figures/algo/TrieFigure";
 
 export function TriesContent({ t }: { t: TrackTranslations }) {
@@ -22,6 +22,13 @@ export function TriesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alTrie_intro",
           "Type \"alg\" into a search box and it suggests \"algebra\", \"algorithm\", \"algae\". A hash table cannot do that: it can tell whether \"alg\" itself is stored, but the hash of \"alg\" says nothing about the hash of \"algebra\". A search tree can, with a range query, but every comparison inside it compares whole strings. The trie (from retrieval, usually pronounced \"try\") is a tree built for strings: each level handles one character, so words that begin alike share the same path, and every question about prefixes is answered by walking down that path.")}
       </Lead>
+
+      <Goals t={t} id="alTrie" items={[
+        "Insert and look up words in a trie, and test prefixes.",
+        "Build autocomplete, and list words in sorted order for free.",
+        "Estimate the memory a trie uses.",
+        "Choose between a trie, a hash table and a search tree for string keys.",
+      ]} />
 
       <H2>{tx(t, "alTrie_costTitle", "What string keys cost elsewhere")}</H2>
       <p>

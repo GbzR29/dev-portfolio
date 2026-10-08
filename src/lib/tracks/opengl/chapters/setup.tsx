@@ -4,7 +4,7 @@
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { StateMachineFigure } from "@/components/lesson/figures/glintro/StateMachineFigure";
 import { DoubleBufferFigure } from "@/components/lesson/figures/glintro/DoubleBufferFigure";
 
@@ -26,6 +26,13 @@ export function SetupContent({ t }: { t: TrackTranslations }) {
           "OpenGL is a specification, not a library. There is no opengl.dll you link against that contains the modern functions — the implementation lives inside your graphics driver, and the entry points must be looked up at runtime. On top of that, OpenGL knows nothing about windows, keyboards or monitors. Two extra libraries fill those gaps, and this chapter sets both up."
         )}
       </Lead>
+
+      <Goals t={t} id="oglSetup" items={[
+        "Create a window and an OpenGL context with GLFW and GLAD.",
+        "Set up the build with CMake.",
+        "Write a render loop with double buffering, vsync and resizing.",
+        "Know what each later chapter adds to main.cpp.",
+      ]} />
 
       <Callout type="info" t={t}>
         {tx(t, "oglSetup_stackNote",

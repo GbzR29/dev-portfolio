@@ -3,6 +3,10 @@
 const text: Record<string, string> = {
   aiGen_precision: "precisão",
   aiGen_recall: "revocação",
+  aiGen_goal0: "Explicar por que um erro de treino baixo, sozinho, não prova nada.",
+  aiGen_goal1: "Reconhecer underfitting e overfitting pelos dois erros.",
+  aiGen_goal2: "Escolher entre modelos com um conjunto de validação.",
+  aiGen_goal3: "Medir um classificador com matriz de confusão, precisão e revocação.",
   aiGen_intro: "Um modelo só é útil em exemplos que ele nunca viu: as entregas da semana que vem, os e-mails de amanhã. Ajustar bem os dados de treino é fácil, e pode até ser um mau sinal. Este capítulo trata da distância entre as duas coisas: como os modelos falham por serem simples demais ou flexíveis demais, como medir o desempenho com honestidade usando validação e validação cruzada, e quais números relatar para um classificador quando a \"porcentagem de acertos\" engana. Tudo aqui vale para todos os modelos do resto da trilha.",
 
   aiGen_lieTitle: "O erro de treino mente",

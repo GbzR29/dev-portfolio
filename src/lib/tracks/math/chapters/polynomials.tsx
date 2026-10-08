@@ -11,7 +11,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { PolynomialFigure } from "@/components/lesson/figures/math/PolynomialFigure";
 
 const r = String.raw;
@@ -39,6 +39,13 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPoly_intro",
           "Linear expressions (x to the first power) and quadratics (up to x²) are the first two members of a family: polynomials, sums of whole-number powers of x. They are the functions you can evaluate with nothing but multiplication and addition, which makes them the easiest to calculate by hand. They also appear on their own: the volume of a box is a product of three lengths, the distance a stone falls grows with t², and money earning interest for n years grows by a polynomial in the rate. This chapter covers how to work with them, how their roots shape their graphs, and how to evaluate them efficiently.")}
       </Lead>
+
+      <Goals t={t} id="mPoly" items={[
+        "Add and multiply polynomials.",
+        "Work out a polynomial's value quickly with Horner's method.",
+        "Divide polynomials, and use the remainder to find factors.",
+        "Sketch a polynomial's graph from its roots.",
+      ]} />
 
       <H2>{tx(t, "mPoly_defTitle", "What a polynomial is")}</H2>
       <p>

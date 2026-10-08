@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/math/chapters/partial-derivatives.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  mPar_goal0: "Tirar as derivadas parciais de uma função de duas variáveis.",
+  mPar_goal1: "Achar o gradiente e a inclinação em qualquer direção.",
+  mPar_goal2: "Estimar como os erros nas entradas se espalham para a saída.",
+  mPar_goal3: "Achar picos, vales e selas, com ou sem uma restrição.",
   mPar_intro: "A maioria das grandezas depende de mais de uma coisa. A área de um retângulo depende da largura e da altura; o volume de um cilindro, do raio e da altura; a altura do terreno, das duas coordenadas do mapa; a temperatura numa sala, de onde você está. O cálculo com várias entradas parte de uma ideia simples: mude uma entrada de cada vez, segure as outras paradas e use a derivada de uma variável que você já conhece. Junte essas inclinações num vetor e ele aponta morro acima.",
   mPar_fnTitle: "Funções de duas variáveis",
   mPar_fnBody: "Uma função f(x, y) recebe um ponto do plano e devolve um número. Seu gráfico é a superfície z = f(x, y): acima de cada ponto (x, y) do chão, um ponto na altura f(x, y). Uma superfície é difícil de desenhar no papel, então os mapas usam curvas de nível no lugar: a curva onde f(x, y) = c, para alguns valores c igualmente espaçados. Um mapa de trilha é exatamente isso, com f a altura do terreno. Para a tigela f = x² + y² as curvas de nível são circunferências x² + y² = c em volta da origem; para a sela f = x² − y² são hipérboles, e a superfície sobe ao longo de x, mas desce ao longo de y, como uma sela de cavalo ou um desfiladeiro entre montanhas.",

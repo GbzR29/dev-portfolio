@@ -1,6 +1,9 @@
 // PT text for src/lib/tracks/opengl/chapters/texturecompression.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  oglTexc_goal0: "Explicar por que texturas distantes cintilam.",
+  oglTexc_goal1: "Montar mipmaps e usá-los.",
+  oglTexc_goal2: "Escolher um formato de compressão em blocos para cada tipo de textura.",
   oglTexc_intro: "Texturas costumam ser a maior coisa na memória de vídeo e o maior consumidor de largura de banda de memória. Duas técnicas as tornam acessíveis e bonitas. Mipmaps preparam cópias menores e pré-filtradas para que superfícies distantes amostrem a quantidade certa de detalhe. A compressão por blocos guarda os texels em blocos de tamanho fixo que a GPU decodifica na hora, com um quarto ou um oitavo do tamanho. As duas são quase de graça, e pular qualquer uma delas é um dos motivos mais comuns para um renderer parecer ruidoso ou ficar sem memória.",
   oglTexc_aliasTitle: "Por que texturas distantes cintilam",
   oglTexc_aliasBody: "Um pixel num chão distante cobre muitos texels, mas uma leitura de textura amostra em um ponto. É o problema de amostragem do capítulo de anti-aliasing de novo. Quando a textura tem detalhe mais fino que dois pixels (o limite de Nyquist), amostras pontuais têm aliasing. Padrões finos viram falsos padrões grosseiros (moiré) que rastejam conforme a câmera se move. A correção é filtrar passa-baixa a textura antes de amostrar: fazer a média de todos os texels sob o pixel. Fazer isso exatamente por pixel é caro demais, então é feito com antecedência, em algumas escalas fixas.",

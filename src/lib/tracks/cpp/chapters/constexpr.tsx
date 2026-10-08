@@ -5,6 +5,7 @@
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+import { Goals } from "@/components/lesson/Prose";
 
 export function ConstexprContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,12 @@ export function ConstexprContent({ t }: { t: TrackTranslations }) {
           "Every cycle you spend at compile time is a cycle you do not spend at 16.6 milliseconds per frame. Modern constexpr is close to a full interpreter for C++ running inside the compiler: loops, allocations, containers, and in C++26 even exceptions."
         )}
       </p>
+
+      <Goals t={t} id="cpp07" items={[
+        "Choose between constexpr, consteval and constinit.",
+        "Compute a lookup table at compile time and bake it into the binary.",
+        "Say what C++26 adds to compile-time code.",
+      ]} />
 
       <H2>{tx(t, "cpp07_keywordsTitle", "constexpr, consteval, constinit")}</H2>
       <LessonTable

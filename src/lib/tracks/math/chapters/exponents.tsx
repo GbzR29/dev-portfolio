@@ -10,7 +10,7 @@ import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ExpLogFigure } from "@/components/lesson/figures/math/ExpLogFigure";
 
 const r = String.raw;
@@ -33,6 +33,13 @@ export function ExpLogContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mExp_intro",
           "Some quantities change by adding: a car moving at constant speed gains the same distance every second. Others change by multiplying: a population that doubles every generation, a sound that loses half its energy every metre of wall, money in a savings account that earns interest on its interest. Multiplicative change is described by exponentials, and the tool that turns multiplications back into additions is the logarithm. Science uses both constantly: half-lives, decibels, pH, earthquakes, compound interest.")}
       </Lead>
+
+      <Goals t={t} id="mExp" items={[
+        "Describe growth and decay with exponential functions.",
+        "Undo an exponential with a logarithm.",
+        "Apply the rules of logarithms.",
+        "Solve an equation whose unknown is in the exponent.",
+      ]} />
 
       <H2>{tx(t, "mExp_powTitle", "Powers and their rules")}</H2>
       <p>

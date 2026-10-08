@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/glsl/chapters/types.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  glsl01_goal0: "Escolher o tipo escalar, vetor ou matriz certo para um valor.",
+  glsl01_goal1: "Ler e reordenar componentes de vetor com swizzles.",
+  glsl01_goal2: "Montar vetores e matrizes com construtores, e converter entre tipos.",
+  glsl01_goal3: "Evitar os erros de int contra float que impedem um shader de compilar.",
   glsl01_intro: "O GLSL tem um sistema de tipos mais rico que o C++ em uma área específica: tipos embutidos de vetores e matrizes que mapeiam diretamente para registradores da GPU. Entendê-los é a base de todo shader que você escreverá.",
   glsl01_scalarsTitle: "Tipos escalares",
   glsl01_scalarsBody: "O GLSL tem quatro tipos escalares. float é o mais usado — a maior parte da matemática em shaders usa ele. Tipos inteiros são limitados em hardware antigo; prefira aritmética float a menos que precise de semântica inteira.",

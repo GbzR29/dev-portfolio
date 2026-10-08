@@ -5,6 +5,7 @@
 import { TrackTranslations } from "@/lib/tracks/types";
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { tx } from "@/lib/tracks/tx";
+import { Goals } from "@/components/lesson/Prose";
 
 export function RendererContent({ t }: { t: TrackTranslations }) {
   return (
@@ -15,6 +16,13 @@ export function RendererContent({ t }: { t: TrackTranslations }) {
           "SDL_Renderer is a hardware-accelerated 2D API that sits on whatever backend the platform offers — Direct3D, Metal, Vulkan or OpenGL. You get sprites, shapes and blending without writing a single shader. For a 2D game it is often all you need, and it is the fastest way to get something on screen while you learn the rest."
         )}
       </p>
+
+      <Goals t={t} id="sdl05" items={[
+        "Draw a frame: clear, draw, present.",
+        "Keep the game the same size in any window with logical presentation.",
+        "Control frame pacing with VSync.",
+        "Draw your own triangles with custom geometry.",
+      ]} />
 
       <H2>{tx(t, "sdl05_basicsTitle", "Clear, draw, present")}</H2>
 

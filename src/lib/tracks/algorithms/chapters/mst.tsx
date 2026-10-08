@@ -12,7 +12,7 @@ import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/Les
 import { Equation } from "@/components/lesson/Tex";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { KeyIdeas, Article, Lead } from "@/components/lesson/Prose";
+import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MSTFigure } from "@/components/lesson/figures/algo/MSTFigure";
 
 const r = String.raw;
@@ -24,6 +24,13 @@ export function MstContent({ t }: { t: TrackTranslations }) {
         {tx(t, "alMst_intro",
           "A company must connect eight towns with fibre-optic cable. Any two towns can be joined, at a cost given by the edge weight, and a town counts as connected if it can reach every other one through some chain of cables. Which cables should be laid to connect everything at the lowest total cost? The answer is a minimum spanning tree, and two short greedy algorithms find it: Kruskal's, which needs a new data structure, union-find, and Prim's, which is Dijkstra's algorithm with one line changed. This is the last chapter of the track.")}
       </Lead>
+
+      <Goals t={t} id="alMst" items={[
+        "Explain what a minimum spanning tree is and why it has no cycles.",
+        "Use the cut property to show an edge belongs in the tree.",
+        "Build the tree with Kruskal's algorithm and a union-find.",
+        "Build it with Prim's algorithm.",
+      ]} />
 
       <H2>{tx(t, "alMst_defTitle", "Spanning trees")}</H2>
       <p>

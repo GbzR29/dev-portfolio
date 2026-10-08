@@ -1,6 +1,10 @@
 // PT text for src/lib/tracks/vulkan/chapters/why-vulkan.tsx. Keys match the tx() calls there; English is the fallback in the code.
 
 const text: Record<string, string> = {
+  vkWhy_goal0: "Dizer quais tarefas o driver do OpenGL fazia e que o Vulkan passa para você.",
+  vkWhy_goal1: "Explicar o que o Vulkan ganha em troca, e quanto isso custa.",
+  vkWhy_goal2: "Reconhecer o padrão de create-info que todo objeto do Vulkan segue.",
+  vkWhy_goal3: "Montar um projeto pronto para o resto da trilha.",
   vkWhy_intro: "Vulkan é uma API de gráficos e computação, como o OpenGL: um conjunto de funções C que o seu programa chama para fazer a GPU desenhar triângulos e rodar shaders. A GPU é a mesma, os shaders são quase os mesmos, os triângulos saem iguais. O que muda é quem é responsável pelo quê. O OpenGL esconde um driver grande e esperto entre você e o hardware; o Vulkan remove a maior parte desse driver e passa as decisões dele para você. Este capítulo explica o que o driver fazia, por que vale a pena removê-lo apesar do código a mais, e como as peças do Vulkan se encaixam, para que os capítulos seguintes, que constroem um renderizador objeto por objeto, sempre tenham um mapa para voltar.",
   vkWhy_prereq: "Esta trilha supõe a trilha de OpenGL (ou experiência equivalente): vertex buffers, shaders, texturas, o depth buffer e o pipeline de transformações não são reexplicados aqui, só como o Vulkan os faz. Supõe também a trilha de C++: ponteiros, structs, RAII e std::vector. Todo o código usa a API C pura do Vulkan a partir de C++20, com SDL3 para a janela.",
 
