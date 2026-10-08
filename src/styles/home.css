@@ -404,6 +404,7 @@ html:not(.dark) .home {
 .home .hm-resume a { color: var(--hm-accent); border-bottom: 1px solid var(--hm-line-strong); padding-bottom: 1px; }
 .home .hm-resume a:hover { border-color: var(--hm-accent); }
 
+.hm-in.hm-wide { max-width: 1400px; }
 .hm-track-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 18px; }
 .hm-track { grid-template-rows: auto auto 1fr auto auto auto; padding: 22px 24px; gap: 10px; }
 .hm-track.soon { background: transparent; border-style: dashed; box-shadow: none; }

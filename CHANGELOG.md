@@ -14,6 +14,7 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ### 2026-10-08
 
+- **/learn mais largo**: a grade de cartões das trilhas agora usa até 1400 px de largura (antes 920 px, a mesma coluna do texto), cabendo até 4 cartões por linha em telas grandes: 3 linhas em vez de 6. O topo, "Como as aulas funcionam" e o rodapé continuam na coluna estreita.
 - **Objetivos em todas as trilhas**: o bloco "Ao final você vai conseguir" agora abre os 242 capítulos das 9 trilhas, com 3 a 4 tarefas concretas em cada. EN e PT em todas, menos Algoritmos (só EN, como o resto dessa trilha, que ainda não tem texto em PT).
 - **Física e Química no /learn**: cartões "em breve" das duas novas trilhas (descrição, nível e quantidade de lições planejadas), em EN e PT. O nome de trilhas sem capítulos agora também sai traduzido (`trackName` busca no catálogo).
 - **Correções de tradução**: dois capítulos usavam as mesmas chaves que outro e, em PT, mostravam o texto errado. Materiais (OpenGL) exibia a introdução, os exemplos e os erros comuns de Matrizes (chaves renomeadas para `oglMtl_`); as ideias-chave de Esperança e Variância (Matemática) mostravam as de Exponenciais (id `mExpv`, agora com tradução PT própria).

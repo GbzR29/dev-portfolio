@@ -89,50 +89,53 @@ export default function LearnPage() {
       <header className="hm-hero-wrap">
         <Stars />
         <div className="hm-in">
-          <HomeNav />
-          <div className="hm-hero">
-            <div className="hm-eyebrow">
-              {fill(ui.learnEyebrow ?? "learn · {lessons} lessons in {tracks} tracks", { lessons: TOTAL_LESSONS, tracks: AVAILABLE.length })}
+            <HomeNav />
+            <div className="hm-hero">
+              <div className="hm-eyebrow">
+                {fill(ui.learnEyebrow ?? "learn · {lessons} lessons in {tracks} tracks", { lessons: TOTAL_LESSONS, tracks: AVAILABLE.length })}
+              </div>
+              <h1>{ui.learnHeroTitle ?? "Learn from scratch"}</h1>
+              <p className="hm-lead">{ui.learnLead}</p>
+              {last && (
+                <div className="hm-resume">
+                  <span>{ui.learnResume ?? "where you left off:"}</span>
+                  <Link href={`/learn/${encodeURIComponent(last.track)}?chapter=${encodeURIComponent(last.chapter)}`}>
+                    {trackName(ui, last.track)}
+                    {last.title && <> · {last.number ? `${last.number}. ` : ""}{last.title}</>} →
+                  </Link>
+                </div>
+              )}
             </div>
-            <h1>{ui.learnHeroTitle ?? "Learn from scratch"}</h1>
-            <p className="hm-lead">{ui.learnLead}</p>
-            {last && (
-              <div className="hm-resume">
-                <span>{ui.learnResume ?? "where you left off:"}</span>
-                <Link href={`/learn/${encodeURIComponent(last.track)}?chapter=${encodeURIComponent(last.chapter)}`}>
-                  {trackName(ui, last.track)}
-                  {last.title && <> · {last.number ? `${last.number}. ` : ""}{last.title}</>} →
-                </Link>
-              </div>
-            )}
           </div>
+          <div className="hm-horizon" aria-hidden="true" />
+        </header>
+
+        <main>
+          {/* wider than the text column so the cards fill more of the screen (up to 4 per row) */}
+          <section className="hm-sec hm-in hm-wide">
+            <h2>{ui.learnTracks ?? "Tracks"}</h2>
+            <div className="hm-track-grid">
+              {TRACK_CATALOG.map((info) => (
+                <TrackCard key={info.id} info={info} t={ui} visited={visited[info.id] ?? 0} />
+              ))}
+            </div>
+          </section>
+
+          <div className="hm-in">
+          <section className="hm-sec">
+            <h2>{ui.learnHowTitle ?? "How the lessons work"}</h2>
+            <div className="hm-how">
+              {[1, 2, 3].map((i) => (
+                <div key={i}>
+                  <h3>{ui[`learnHow${i}Title`]}</h3>
+                  <p>{ui[`learnHow${i}Body`]}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <HomeFooter />
         </div>
-        <div className="hm-horizon" aria-hidden="true" />
-      </header>
-
-      <main className="hm-in">
-        <section className="hm-sec">
-          <h2>{ui.learnTracks ?? "Tracks"}</h2>
-          <div className="hm-track-grid">
-            {TRACK_CATALOG.map((info) => (
-              <TrackCard key={info.id} info={info} t={ui} visited={visited[info.id] ?? 0} />
-            ))}
-          </div>
-        </section>
-
-        <section className="hm-sec">
-          <h2>{ui.learnHowTitle ?? "How the lessons work"}</h2>
-          <div className="hm-how">
-            {[1, 2, 3].map((i) => (
-              <div key={i}>
-                <h3>{ui[`learnHow${i}Title`]}</h3>
-                <p>{ui[`learnHow${i}Body`]}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <HomeFooter />
       </main>
     </div>
   );
