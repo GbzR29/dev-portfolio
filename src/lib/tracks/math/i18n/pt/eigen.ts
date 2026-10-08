@@ -32,7 +32,8 @@ const text: Record<string, string> = {
   mEig_sId: "identidade, ou kI",
   mEig_sIdV: "toda direção",
   mEig_findTitle: "Encontrando-os: det(A − λI) = 0",
-  mEig_findBody: "Leve tudo de Av = λv para um lado. Como λv = λIv, fica (A − λI)v = 0: a matriz A − λI (A com λ subtraído de cada elemento da diagonal) manda o vetor não nulo v para 0. Uma matriz que manda um vetor não nulo para 0 achata o plano, então seu determinante tem de ser 0. Isso dá uma equação só em λ, a equação característica. Para uma matriz 2 × 2, desenvolver o determinante dá uma equação do segundo grau em λ, resolvida com a fórmula de Bhaskara.",
+  mEig_findBody2: "A incógnita v aparece dos dois lados de Av = λv. Alguns passos a transformam numa equação só em λ, a equação característica:",
+  mEig_findBody3: "Para uma matriz 2 × 2, desenvolver esse determinante dá uma equação do segundo grau em λ, resolvida com a fórmula de Bhaskara.",
   mEig_eqChar: "A equação característica de uma matriz 2 × 2",
   mEig_wAL: "A com λ subtraído de a e d",
   mEig_wTr: "o traço: a soma dos elementos da diagonal",
@@ -88,6 +89,20 @@ const text: Record<string, string> = {
   mEig_m5w: "iteração de potência numa matriz com |λ₁| = |λ₂|",
   mEig_m5r: "ela nunca se estabiliza",
   mEig_m5: "nenhuma parte supera a outra (espelho, rotação)",
+
+  // ── In words, derivation, live formula (2026-10-08) ──
+  mEig_defWords: "Aplicar a matriz a v dá o mesmo resultado que simplesmente multiplicar v por um número: v sai na própria reta, só mais longo, mais curto ou invertido.",
+  mEig_eqFind: "De Av = λv a uma equação para λ",
+  mEig_d0: "a definição, com v ≠ 0",
+  mEig_d1: "escreva λv como λIv, para que os dois termos sejam uma matriz vezes v, e passe-o para a esquerda",
+  mEig_d2: "ponha v em evidência: A − λI é A com λ subtraído de cada elemento da diagonal",
+  mEig_d3: "A − λI manda um vetor não nulo para 0, então achata o plano, e uma matriz que achata o plano tem determinante 0",
+  mEig_charWords: "Subtraia λ dos dois elementos da diagonal e iguale o determinante a zero. Isso é uma equação do segundo grau cujo coeficiente do meio é menos o traço e cujo termo constante é o determinante; suas duas raízes são os autovalores.",
+  mEig_liveEig: "Experimente: autovalores de uma matriz 2 × 2",
+  mEig_liveNone: "sem autovetor real: toda direção gira",
+  mEig_liveEigNote: "Começa no exemplo completo abaixo, [[2, 1], [1, 2]]. Tente b = −1, c = 1, a = d = 0: o quarto de volta, λ = ±i. Faça b = c (uma matriz simétrica): o número dentro da raiz nunca fica negativo.",
+  mEig_vietaWords: "Os dois autovalores somam a soma dos elementos da diagonal e multiplicados dão o determinante.",
+  mEig_powerWords: "Divida o vetor nas suas partes ao longo dos autovetores. Cada aplicação de A multiplica cada parte pelo seu próprio autovalor, então depois de n aplicações cada parte foi multiplicada n vezes.",
 };
 
 export default text;

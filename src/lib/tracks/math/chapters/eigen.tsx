@@ -8,12 +8,31 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { EigenFigure } from "@/components/lesson/figures/math/EigenFigure";
 
 const r = String.raw;
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+// ── Live formula: eigenvalues from the trace and the determinant ──────────────
+
+const eigNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const tr = v.a + v.d, dt = v.a * v.d - v.b * v.c, disc = tr * tr - 4 * dt;
+  const head = r`\operatorname{tr} = ${par(v.a)} + ${par(v.d)} = ${num(tr)} \qquad \det = ${par(v.a)}\cdot ${par(v.d)} - ${par(v.b)}\cdot ${par(v.c)} = ${num(dt)} \\ (\operatorname{tr})^2 - 4\det = ${num(tr * tr)} - ${par(4 * dt)} = ${num(disc)}`;
+  if (disc < 0) {
+    const re = tr / 2, im = Math.sqrt(-disc) / 2;
+    return { tex: r`\begin{gathered} ${head} \\ \lambda = ${num(re)} \pm ${num(im)}\,i \qquad \text{${tx(t, "mEig_liveNone", "no real eigenvector: every direction turns")}} \end{gathered}` };
+  }
+  const s = Math.sqrt(disc);
+  return {
+    tex: r`\begin{gathered} ${head} \\ \lambda = \frac{${num(tr)} \pm \sqrt{${num(disc)}}}{2} \;\Rightarrow\; \green{\lambda_1 = ${num((tr + s) / 2)},\ \ \lambda_2 = ${num((tr - s) / 2)}} \end{gathered}`,
+  };
+};
 
 export function EigenContent({ t }: { t: TrackTranslations }) {
   return (
@@ -40,7 +59,8 @@ export function EigenContent({ t }: { t: TrackTranslations }) {
           [r`A`, tx(t, "mEig_wA", "a square matrix (2 × 2, 3 × 3, …): input and output must have the same size to compare directions")],
           [r`\mathbf{v} \neq \mathbf{0}`, tx(t, "mEig_wV", "the eigenvector: a direction the matrix does not turn")],
           [r`\lambda`, tx(t, "mEig_wL", "the eigenvalue: the stretch factor along that direction (negative means flipped)")],
-        ]}>
+        ]}
+        words={tx(t, "mEig_defWords", "Applying the matrix to v gives the same result as just multiplying v by a number: v comes out on its own line, only longer, shorter or reversed.")}>
         {r`A\mathbf{v} = \lambda\mathbf{v}`}
       </Equation>
 
@@ -65,8 +85,19 @@ export function EigenContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mEig_findTitle", "Finding them: det(A − λI) = 0")}</H2>
       <p>
-        {tx(t, "mEig_findBody",
-          "Move everything in Av = λv to one side. Since λv = λIv, it becomes (A − λI)v = 0: the matrix A − λI (A with λ subtracted from each diagonal entry) sends the non-zero vector v to 0. A matrix that sends a non-zero vector to 0 squashes the plane, so its determinant must be 0. That gives an equation with only λ in it, the characteristic equation. For a 2 × 2 matrix, expanding the determinant gives a quadratic in λ, solved with the quadratic formula.")}
+        {tx(t, "mEig_findBody2",
+          "The unknown v appears on both sides of Av = λv. A few steps turn it into an equation with only λ in it, the characteristic equation:")}
+      </p>
+      <Derivation t={t} label={tx(t, "mEig_eqFind", "From Av = λv to an equation for λ")}
+        steps={[
+          { full: true, tex: r`A\mathbf v = \lambda\mathbf v`, why: tx(t, "mEig_d0", "the definition, with v ≠ 0") },
+          { full: true, tex: r`A\mathbf v - \lambda I\mathbf v = \mathbf 0`, why: tx(t, "mEig_d1", "write λv as λIv, so that both terms are a matrix times v, and move it to the left") },
+          { full: true, tex: r`(A - \lambda I)\,\mathbf v = \mathbf 0`, why: tx(t, "mEig_d2", "factor out v: A − λI is A with λ subtracted from each diagonal entry") },
+          { full: true, tex: r`\green{\det(A - \lambda I) = 0}`, why: tx(t, "mEig_d3", "A − λI sends a non-zero vector to 0, so it squashes the plane, and a matrix that squashes the plane has determinant 0") },
+        ]} />
+      <p>
+        {tx(t, "mEig_findBody3",
+          "For a 2 × 2 matrix, expanding that determinant gives a quadratic in λ, solved with the quadratic formula.")}
       </p>
       <Equation label={tx(t, "mEig_eqChar", "The characteristic equation of a 2 × 2 matrix")}
         where={[
@@ -75,9 +106,20 @@ export function EigenContent({ t }: { t: TrackTranslations }) {
           [r`\det A = ad - bc`, tx(t, "mEig_wDet", "the determinant")],
           [r`\lambda_{1,2}`, tx(t, "mEig_wRoots", "the two roots: the eigenvalues")],
         ]}
-        note={tx(t, "mEig_charNote", "(a − λ)(d − λ) − bc expands to λ² − aλ − dλ + ad − bc, which is λ² − (a + d)λ + (ad − bc). The quadratic formula with coefficients 1, −tr and det gives the roots.")}>
+        note={tx(t, "mEig_charNote", "(a − λ)(d − λ) − bc expands to λ² − aλ − dλ + ad − bc, which is λ² − (a + d)λ + (ad − bc). The quadratic formula with coefficients 1, −tr and det gives the roots.")}
+        words={tx(t, "mEig_charWords", "Subtract λ from both diagonal entries and set the determinant to zero. That is a quadratic whose middle coefficient is minus the trace and whose constant is the determinant; its two roots are the eigenvalues.")}>
         {r`\det\begin{bmatrix} a - \lambda & b \\ c & d - \lambda \end{bmatrix} = \lambda^2 - (\operatorname{tr} A)\,\lambda + \det A = 0 \quad\Rightarrow\quad \lambda = \frac{\operatorname{tr} A \pm \sqrt{(\operatorname{tr} A)^2 - 4\det A}}{2}`}
       </Equation>
+      <LiveFormula label={tx(t, "mEig_liveEig", "Try it: eigenvalues of a 2 × 2 matrix")}
+        tex={r`\lambda = \frac{\operatorname{tr} A \pm \sqrt{(\operatorname{tr} A)^2 - 4\det A}}{2}`}
+        vars={[
+          { id: "a", label: "a", min: -4, max: 4, step: 1, value: 2, fmt: num },
+          { id: "b", label: "b", min: -4, max: 4, step: 1, value: 1, fmt: num },
+          { id: "c", label: "c", min: -4, max: 4, step: 1, value: 1, fmt: num },
+          { id: "d", label: "d", min: -4, max: 4, step: 1, value: 2, fmt: num },
+        ]}
+        compute={eigNumbers(t)}
+        note={tx(t, "mEig_liveEigNote", "Starts on the full example below, [[2, 1], [1, 2]]. Try b = −1, c = 1, a = d = 0: the quarter turn, λ = ±i. Make b = c (a symmetric matrix): the number under the root can never go negative.")} />
       <p>
         {tx(t, "mEig_vecBody",
           "Once λ is known, the eigenvector is any non-zero solution of (A − λI)v = 0. Because the determinant is 0, the two rows of A − λI are multiples of each other, so there is really only one equation, (a − λ)x + by = 0. Any vector perpendicular to the row (a − λ, b) solves it, for example v = (b, λ − a), or (λ − d, c) if that first one comes out as (0, 0).")}
@@ -98,7 +140,8 @@ export function EigenContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\lambda_1 + \lambda_2`, tx(t, "mEig_wSum", "equals the trace a + d")],
           [r`\lambda_1\lambda_2`, tx(t, "mEig_wProd", "equals the determinant: the area factor is the product of the stretches")],
-        ]}>
+        ]}
+        words={tx(t, "mEig_vietaWords", "The two eigenvalues add up to the sum of the diagonal entries and multiply to the determinant.")}>
         {r`\lambda_1 + \lambda_2 = \operatorname{tr} A \qquad \lambda_1\lambda_2 = \det A`}
       </Equation>
 
@@ -124,6 +167,7 @@ export function EigenContent({ t }: { t: TrackTranslations }) {
           [r`c_1, c_2`, tx(t, "mEig_wC", "how much of each eigenvector the starting vector contains")],
           [r`\lambda_1^n, \lambda_2^n`, tx(t, "mEig_wLn", "each part is scaled by its eigenvalue once per step")],
         ]}
+        words={tx(t, "mEig_powerWords", "Split the vector into its eigenvector parts. Each application of A multiplies each part by its own eigenvalue, so after n applications each part has been multiplied n times.")}
         note={tx(t, "mEig_fibNote", "Example: the Fibonacci step (F(n+1), F(n)) → (F(n+1) + F(n), F(n+1)) is the matrix [[1, 1], [1, 0]]. Its eigenvalues solve λ² − λ − 1 = 0: λ = (1 ± √5)/2 ≈ 1.618 and −0.618. The second shrinks away, so Fibonacci numbers grow by a factor of 1.618, the golden ratio, per step, as the sequences chapter observed.")}>
         {r`A^n(c_1\mathbf{v}_1 + c_2\mathbf{v}_2) = c_1\lambda_1^n\,\mathbf{v}_1 + c_2\lambda_2^n\,\mathbf{v}_2`}
       </Equation>

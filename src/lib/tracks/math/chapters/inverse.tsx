@@ -8,12 +8,35 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { InverseFigure } from "@/components/lesson/figures/math/InverseFigure";
 
 const r = String.raw;
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+const invNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const d = v.a * v.d - v.b * v.c;
+  if (d === 0) return { tex: r`ad - bc = ${par(v.a)}\cdot ${par(v.d)} - ${par(v.b)}\cdot ${par(v.c)} = 0 \qquad \text{${tx(t, "mInv_liveNone", "no inverse: the columns are parallel")}}` };
+  const k = 1 / d;
+  return {
+    tex: r`A^{-1} = \frac{1}{${num(d)}}\begin{bmatrix} ${num(v.d)} & ${num(-v.b)} \\ ${num(-v.c)} & ${num(v.a)} \end{bmatrix} = \green{\begin{bmatrix} ${num(v.d * k)} & ${num(-v.b * k)} \\ ${num(-v.c * k)} & ${num(v.a * k)} \end{bmatrix}}`,
+  };
+};
+
+/** The chapter's system 3x + y = b₁, 4x + 2y = b₂, solved with A⁻¹ = [[1, −0.5], [−2, 1.5]]. */
+function solveNumbers(v: Record<string, number>) {
+  const x = v.p - 0.5 * v.q, y = -2 * v.p + 1.5 * v.q;
+  return {
+    tex: r`\begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} 1 & -0.5 \\ -2 & 1.5 \end{bmatrix}\begin{bmatrix} ${num(v.p)} \\ ${num(v.q)} \end{bmatrix} = \begin{bmatrix} ${num(v.p)} - 0.5\cdot ${par(v.q)} \\ -2\cdot ${par(v.p)} + 1.5\cdot ${par(v.q)} \end{bmatrix} = \green{\begin{bmatrix} ${num(x)} \\ ${num(y)} \end{bmatrix}}`,
+  };
+}
 
 export function InverseContent({ t }: { t: TrackTranslations }) {
   return (
@@ -58,24 +81,49 @@ export function InverseContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mInv_formulaTitle", "The 2 × 2 formula")}</H2>
       <p>
-        {tx(t, "mInv_formulaBody",
-          "For a general 2 × 2 matrix there is a short recipe: swap the two diagonal entries a and d, change the signs of b and c, and divide everything by the determinant. To see why, multiply [[d, −b], [−c, a]] by [[a, b], [c, d]]: the top-left entry is da − bc, the top-right db − bd = 0, the bottom-left −ca + ac = 0, the bottom-right −cb + ad. That is (ad − bc) times the identity. Dividing by ad − bc leaves exactly I. The division is only possible when det ≠ 0, as expected.")}
+        {tx(t, "mInv_formulaBody2",
+          "For a general 2 × 2 matrix there is a short recipe: swap the two diagonal entries a and d, change the signs of b and c, and divide everything by the determinant. To see why, multiply the swapped-and-negated matrix by A:")}
       </p>
+      <Derivation t={t} label={tx(t, "mInv_eqWhy", "Why the recipe undoes A")}
+        steps={[
+          { tex: r`\begin{bmatrix} d & -b \\ -c & a \end{bmatrix}\begin{bmatrix} a & b \\ c & d \end{bmatrix}` },
+          { tex: r`= \begin{bmatrix} da - bc & db - bd \\ -ca + ac & -cb + ad \end{bmatrix}`, why: tx(t, "mInv_f1", "each entry is a row of the left matrix dotted with a column of the right one") },
+          { tex: r`= \begin{bmatrix} ad - bc & 0 \\ 0 & ad - bc \end{bmatrix} = (ad - bc)\,I`, why: tx(t, "mInv_f2", "db − bd and −ca + ac cancel; both diagonal entries are the determinant") },
+          { full: true, tex: r`\green{\dfrac{1}{ad - bc}\begin{bmatrix} d & -b \\ -c & a \end{bmatrix} A = I}`, why: tx(t, "mInv_f3", "divide by ad − bc, which is only possible when det ≠ 0, as expected") },
+        ]} />
       <Equation label={tx(t, "mInv_eq2", "Inverse of a 2 × 2 matrix")}
         where={[
           [r`ad - bc`, tx(t, "mInv_wDet", "the determinant; the inverse exists only if it is not 0")],
           [r`d,\ a`, tx(t, "mInv_wSwap", "the diagonal entries, swapped")],
           [r`-b,\ -c`, tx(t, "mInv_wNeg", "the other two entries, with their signs flipped")],
         ]}
-        note={tx(t, "mInv_eq2Note", "Example: A = [[3, 1], [4, 2]], det = 6 − 4 = 2, A⁻¹ = ½[[2, −1], [−4, 3]] = [[1, −0.5], [−2, 1.5]]. Check the first column of A⁻¹A: (1·3 − 0.5·4, −2·3 + 1.5·4) = (1, 0). ✓")}>
+        note={tx(t, "mInv_eq2Note", "Example: A = [[3, 1], [4, 2]], det = 6 − 4 = 2, A⁻¹ = ½[[2, −1], [−4, 3]] = [[1, −0.5], [−2, 1.5]]. Check the first column of A⁻¹A: (1·3 − 0.5·4, −2·3 + 1.5·4) = (1, 0). ✓")}
+        words={tx(t, "mInv_eq2Words", "Swap the two numbers on the main diagonal, change the sign of the other two, and divide every entry by the determinant.")}>
         {r`\begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1} = \frac{1}{ad - bc}\begin{bmatrix} d & -b \\ -c & a \end{bmatrix}`}
       </Equation>
+      <LiveFormula label={tx(t, "mInv_liveInv", "Try it: invert a 2 × 2 matrix")}
+        tex={r`\begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1} = \frac{1}{ad - bc}\begin{bmatrix} d & -b \\ -c & a \end{bmatrix}`}
+        vars={[
+          { id: "a", label: "a", min: -4, max: 4, step: 1, value: 3, fmt: num },
+          { id: "b", label: "b", min: -4, max: 4, step: 1, value: 1, fmt: num },
+          { id: "c", label: "c", min: -4, max: 4, step: 1, value: 4, fmt: num },
+          { id: "d", label: "d", min: -4, max: 4, step: 1, value: 2, fmt: num },
+        ]}
+        compute={invNumbers(t)}
+        note={tx(t, "mInv_liveInvNote", "Starts on the example above. Try a = 2, b = 0, c = 0, d = 4: a scale, undone by halving x and quartering y. Try a = 1, b = 2, c = 2, d = 4: the determinant is 0 and there is no inverse.")} />
 
       <H3>{tx(t, "mInv_prodTitle", "Undoing a chain: reverse the order")}</H3>
       <p>
-        {tx(t, "mInv_prodBody",
-          "To undo \"put on socks, then shoes\" you take off the shoes first. Likewise, AB applies B then A, so undoing it removes A first and then B: (AB)⁻¹ = B⁻¹A⁻¹. Check: B⁻¹A⁻¹AB = B⁻¹(A⁻¹A)B = B⁻¹IB = B⁻¹B = I.")}
+        {tx(t, "mInv_prodBody2",
+          "To undo \"put on socks, then shoes\" you take off the shoes first. Likewise, AB applies B then A, so undoing it removes A first and then B: (AB)⁻¹ = B⁻¹A⁻¹.")}
       </p>
+      <Derivation t={t} label={tx(t, "mInv_eqProd", "Checking (AB)⁻¹ = B⁻¹A⁻¹")}
+        steps={[
+          { tex: r`(B^{-1}A^{-1})(AB)` },
+          { tex: r`= B^{-1}(A^{-1}A)B`, why: tx(t, "mInv_p1", "grouping does not matter in a product: regroup the middle pair") },
+          { tex: r`= B^{-1}IB`, why: tx(t, "mInv_p2", "A⁻¹ undoes A") },
+          { tex: r`= B^{-1}B = \green{I}`, why: tx(t, "mInv_p3", "the identity changes nothing, and B⁻¹ undoes B") },
+        ]} />
 
       <H3>{tx(t, "mInv_orthoTitle", "Rotations: the inverse is the transpose")}</H3>
       <p>
@@ -88,6 +136,14 @@ export function InverseContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mInv_sysBody",
           "The system 3x + y = 9, 4x + 2y = 14 from the style of the systems chapter is a single matrix equation: A = [[3, 1], [4, 2]] holds the coefficients, x = (x, y) the unknowns and b = (9, 14) the right-hand sides, and the system says Ax = b. The column view gives it a picture: find how many steps along each column of A reach the point b. If A is invertible, multiply both sides by A⁻¹: x = A⁻¹b. Here A⁻¹ = [[1, −0.5], [−2, 1.5]] from the example above, so x = (9 − 7, −18 + 21) = (2, 3). Check: 3·2 + 3 = 9 and 4·2 + 2·3 = 14. ✓")}
       </p>
+      <LiveFormula label={tx(t, "mInv_liveSolve", "Try it: new right-hand sides, same A⁻¹")}
+        tex={r`3x + y = b_1 \quad 4x + 2y = b_2 \qquad \mathbf{x} = A^{-1}\mathbf{b}`}
+        vars={[
+          { id: "p", label: <>b<sub>1</sub></>, min: -10, max: 20, step: 1, value: 9, fmt: num },
+          { id: "q", label: <>b<sub>2</sub></>, min: -10, max: 20, step: 1, value: 14, fmt: num },
+        ]}
+        compute={solveNumbers}
+        note={tx(t, "mInv_liveSolveNote", "Starts on the system above. A⁻¹ was worked out once; every new pair of right-hand sides now costs one matrix–vector product. Try b = (3, 4): the answer is (1, 0), because b is the first column of A.")} />
 
       <InverseFigure t={t} />
 
@@ -141,6 +197,7 @@ export function InverseContent({ t }: { t: TrackTranslations }) {
           [r`\mathbf{t}`, tx(t, "mInv_wT", "the translation, the object's position")],
           [r`-R^{\mathsf T}\mathbf{t}`, tx(t, "mInv_wNewT", "the new translation: move back by t, expressed in the rotated axes")],
         ]}
+        words={tx(t, "mInv_rigidWords", "To undo \"turn, then move\", move back first and then turn back: transpose the rotation, and turn the offset back too, with its sign flipped.")}
         note={tx(t, "mInv_rigidNote", "Check: applying the forward transform gives Rp + t; the inverse turns that into Rᵀ(Rp + t) − Rᵀt = p. ✓ In words: the local axes become the rows of the inverse, and the corner post enters as −Rᵀt.")}>
         {r`\begin{bmatrix} R & \mathbf{t} \\ \mathbf{0}^{\mathsf T} & 1 \end{bmatrix}^{-1} = \begin{bmatrix} R^{\mathsf T} & -R^{\mathsf T}\mathbf{t} \\ \mathbf{0}^{\mathsf T} & 1 \end{bmatrix}`}
       </Equation>

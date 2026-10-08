@@ -9,7 +9,7 @@ const text: Record<string, string> = {
   mDet_scaleTitle: "Toda área é escalada pelo mesmo fator",
   mDet_scaleBody: "Uma transformação linear mantém as linhas da grade retas, paralelas e igualmente espaçadas. Então todo quadradinho da grade vira o mesmo paralelogramo, só que em outro lugar. Se um quadrado unitário vira um paralelogramo de área 3, todo quadrado vira, e qualquer forma, que pode ser coberta por quadradinhos, também tem sua área multiplicada por 3. Um único número descreve o que a matriz faz com todas as áreas. Para encontrá-lo, olhe o quadrado mais fácil: o quadrado unitário de cantos (0, 0), (1, 0), (1, 1), (0, 1). Seus lados são î e ĵ, então depois da matriz ele é o paralelogramo gerado pelas duas colunas, (a, c) e (b, d).",
   mDet_formulaTitle: "A área desse paralelogramo",
-  mDet_formulaBody: "Desenhe o paralelogramo de cantos 0, (a, c), (a + b, c + d) e (b, d), com os quatro números positivos, e ponha o menor retângulo em volta dele: ele tem (a + b) de largura e (c + d) de altura, área ac + ad + bc + bd. As partes do retângulo fora do paralelogramo são dois triângulos retângulos de catetos a e c (juntos ac), dois de catetos b e d (juntos bd) e dois retangulinhos b × c nos cantos (juntos 2bc). Subtraia todos: ac + ad + bc + bd − ac − bd − 2bc = ad − bc.",
+  mDet_formulaBody2: "Desenhe o paralelogramo de cantos 0, (a, c), (a + b, c + d) e (b, d), com os quatro números positivos, e ponha o menor retângulo em volta dele. O paralelogramo é o que sobra do retângulo depois de cortar fora os pedaços que ficam do lado de fora.",
   mDet_eq2: "O determinante de uma matriz 2 × 2",
   mDet_wDet: "o determinante, também escrito |A|; a área com sinal da imagem do quadrado unitário",
   mDet_wAD: "o produto da diagonal principal (de cima à esquerda para baixo à direita)",
@@ -96,6 +96,25 @@ const text: Record<string, string> = {
   mDet_m6w: "diagonais de Sarrus numa 4 × 4",
   mDet_m6r: "expansão por cofatores",
   mDet_m6: "o truque das diagonais só funciona em matrizes 3 × 3",
+
+  // ── In words, derivation, live formulas (2026-10-08) ──
+  mDet_eqBox: "A área do paralelogramo, recortando um retângulo",
+  mDet_b1: "o retângulo em volta tem a + b de largura e c + d de altura; tire os pedaços fora do paralelogramo",
+  mDet_b2: "o retângulo multiplicado; os cantos são dois triângulos de catetos a, c (juntos ac), dois de catetos b, d (juntos bd) e dois retângulos b × c (juntos 2bc)",
+  mDet_b3: "ac e bd se cancelam, e bc − 2bc deixa −bc",
+  mDet_eq2Words: "Multiplique ao longo da diagonal principal, multiplique ao longo da outra diagonal, e subtraia o segundo produto do primeiro.",
+  mDet_liveDet: "Experimente: um determinante 2 × 2",
+  mDet_liveKept: "áreas × {k}, orientação mantida",
+  mDet_liveFlip: "áreas × {k}, espelhado",
+  mDet_liveFlat: "desabou: sem inversa",
+  mDet_liveDetNote: "Começa no exemplo acima. Troque as colunas (a ↔ b, c ↔ d): mesmo tamanho, sinal oposto. Faça a segunda coluna múltipla da primeira, como a = 1, c = 2, b = 2, d = 4: o determinante é 0.",
+  mDet_eq3Words: "Percorra a primeira linha. Para cada entrada, cubra a sua linha e a sua coluna, tire o determinante 2 × 2 do que sobra e multiplique. Some os três resultados com os sinais mais, menos, mais.",
+  mDet_orientWords: "Ponha a direção da reta e a seta até o ponto lado a lado, como as duas colunas de uma matriz; o sinal do determinante diz de que lado o ponto está.",
+  mDet_baryWords: "O peso de cada vértice é a fração do triângulo inteiro ocupada pelo triangulinho do lado oposto a esse vértice, do outro lado de P.",
+  mDet_liveBary: "Experimente: mova P no triângulo do exemplo",
+  mDet_livePx: "x de P",
+  mDet_livePy: "y de P",
+  mDet_liveBaryNote: "A = (0, 0), B = (4, 0), C = (0, 4), como no exemplo. A barra fica cheia enquanto P está dentro. Tente P = (4, 0): v = 1, P é o vértice B. Tente P = (3, 3): u fica negativo, porque P atravessou a aresta BC.",
 };
 
 export default text;

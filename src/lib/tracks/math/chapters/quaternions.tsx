@@ -9,12 +9,45 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { QuaternionFigure } from "@/components/lesson/figures/math/QuaternionFigure";
 
 const r = String.raw;
+const RAD = Math.PI / 180;
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+const deg = (v: number) => `${v}°`;
+/** A slider label such as vₓ, with a real subscript. */
+const comp = (v: string, i: string) => <>{v}<sub>{i}</sub></>;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** Rotation about the z-axis with the fast form v' = v + 2w(u × v) + 2u × (u × v), u = (0, 0, s). */
+function rotNumbers(v: Record<string, number>) {
+  const w = Math.cos((v.th * RAD) / 2), s = Math.sin((v.th * RAD) / 2);
+  // u × v = (−s·v_y, s·v_x, 0); u × (u × v) = (−s²·v_x, −s²·v_y, 0)
+  const x = v.x + 2 * w * (-s * v.y) - 2 * s * s * v.x;
+  const y = v.y + 2 * w * (s * v.x) - 2 * s * s * v.y;
+  return {
+    tex: r`\begin{aligned} q &= (\cos ${num(v.th / 2)}^\circ,\ \sin ${num(v.th / 2)}^\circ\cdot(0, 0, 1)) = (${num(w)},\ 0,\ 0,\ ${num(s)}) \\ \mathbf v' &= (${num(v.x)}, ${num(v.y)}, ${num(v.z)}) + 2\cdot ${num(w)}\,(${num(-s * v.y)}, ${num(s * v.x)}, 0) + 2\,(${num(-s * s * v.x)}, ${num(-s * s * v.y)}, 0) = \green{(${num(x)},\ ${num(y)},\ ${num(v.z)})} \end{aligned}`,
+  };
+}
+
+/** Slerp from no turn to a turn by θ about y; the result turns by tθ about y. */
+function slerpNumbers(v: Record<string, number>) {
+  const om = v.th / 2, sOm = Math.sin(om * RAD);
+  const ka = Math.sin((1 - v.t) * om * RAD) / sOm, kb = Math.sin(v.t * om * RAD) / sOm;
+  const qb = [Math.cos(om * RAD), Math.sin(om * RAD)];
+  const w = ka + kb * qb[0], y = kb * qb[1];
+  return {
+    tex: r`\begin{aligned} \Omega &= ${num(om)}^\circ \qquad \frac{\sin(${num((1 - v.t) * om)}^\circ)}{\sin ${num(om)}^\circ} = ${num(ka)} \qquad \frac{\sin(${num(v.t * om)}^\circ)}{\sin ${num(om)}^\circ} = ${num(kb)} \\ q &= ${num(ka)}\,(1, 0, 0, 0) + ${num(kb)}\,(${num(qb[0])}, 0, ${num(qb[1])}, 0) = \green{(${num(w)},\ 0,\ ${num(y)},\ 0)} \end{aligned}`,
+    meter: v.t,
+    meterLabel: `${num(v.t * v.th)}° / ${num(v.th)}°`,
+  };
+}
 
 export function QuaternionsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -58,9 +91,17 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
           [r`i^2 = j^2 = k^2 = -1`, tx(t, "mQuat_wSq", "each unit on its own behaves like the complex i")],
           [r`ij = k,\ jk = i,\ ki = j`, tx(t, "mQuat_wCyc", "going round the cycle i → j → k gives the next unit, like x × y = z")],
           [r`ji = -k,\ kj = -i,\ ik = -j`, tx(t, "mQuat_wAnti", "going backwards gives a minus sign: order matters")],
-        ]}>
+        ]}
+        words={tx(t, "mQuat_rulesWords", "Each of the three units squares to −1, and so does the product of all three in the order i, j, k.")}>
         {r`i^2 = j^2 = k^2 = ijk = -1`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mQuat_eqIJ", "Why ij = k")}
+        steps={[
+          { tex: r`ijk = -1` },
+          { tex: r`\Rightarrow\ ijk\,k = -k`, why: tx(t, "mQuat_j1", "multiply both sides by k on the right") },
+          { tex: r`\Rightarrow\ ij\,(-1) = -k`, why: tx(t, "mQuat_j2", "k² = −1") },
+          { tex: r`\Rightarrow\ \green{ij = k}`, why: tx(t, "mQuat_j3", "multiply both sides by −1") },
+        ]} />
 
       <H2>{tx(t, "mQuat_defTitle", "Quaternions and their product")}</H2>
       <p>
@@ -73,7 +114,8 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
           [r`w_1\mathbf{v}_2 + w_2\mathbf{v}_1`, tx(t, "mQuat_wMix", "each scalar scales the other's vector")],
           [r`\mathbf{v}_1\times\mathbf{v}_2`, tx(t, "mQuat_wCross", "the mixed products ij = k, ji = −k, … form the cross product; it is why q₁q₂ ≠ q₂q₁")],
         ]}
-        note={tx(t, "mQuat_mulNote", "Example: i · j is (0, (1, 0, 0)) times (0, (0, 1, 0)): scalar 0 − 0 = 0, vector 0 + 0 + (1, 0, 0) × (0, 1, 0) = (0, 0, 1). So ij = k. ✓ With the order swapped the cross product flips: ji = −k.")}>
+        note={tx(t, "mQuat_mulNote", "Example: i · j is (0, (1, 0, 0)) times (0, (0, 1, 0)): scalar 0 − 0 = 0, vector 0 + 0 + (1, 0, 0) × (0, 1, 0) = (0, 0, 1). So ij = k. ✓ With the order swapped the cross product flips: ji = −k.")}
+        words={tx(t, "mQuat_mulWords", "The new scalar is the product of the scalars minus the dot product of the vectors. The new vector is each scalar times the other vector, plus the cross product of the two vectors.")}>
         {r`(w_1, \mathbf{v}_1)(w_2, \mathbf{v}_2) = \big(w_1w_2 - \mathbf{v}_1\cdot\mathbf{v}_2,\ \ w_1\mathbf{v}_2 + w_2\mathbf{v}_1 + \mathbf{v}_1\times\mathbf{v}_2\big)`}
       </Equation>
       <p>
@@ -93,9 +135,20 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
           [r`\cos\frac{\theta}{2},\ \sin\frac{\theta}{2}`, tx(t, "mQuat_wHalf", "half the angle; cos² + sin² = 1 makes q a unit quaternion")],
           [r`q\,\mathbf{v}\,q^*`, tx(t, "mQuat_wSand", "the \"sandwich\": v as a pure quaternion, multiplied by q on the left and its conjugate on the right")],
         ]}
-        note={tx(t, "mQuat_rotNote", "Example: 90° about the z-axis. q = (cos 45°, sin 45° · (0, 0, 1)) = (0.707, 0, 0, 0.707). Rotating v = (1, 0, 0) gives (0, 1, 0): x turns toward y, as a quarter turn about z should.")}>
+        note={tx(t, "mQuat_rotNote", "Example: 90° about the z-axis. q = (cos 45°, sin 45° · (0, 0, 1)) = (0.707, 0, 0, 0.707). Rotating v = (1, 0, 0) gives (0, 1, 0): x turns toward y, as a quarter turn about z should.")}
+        words={tx(t, "mQuat_rotWords", "Put the cosine of half the angle first and the axis times the sine of half the angle after it. To turn a vector, multiply it by q on the left and by q's conjugate on the right.")}>
         {r`q = \left(\cos\tfrac{\theta}{2},\ \sin\tfrac{\theta}{2}\,\mathbf{n}\right) \qquad \mathbf{v}' = q\,\mathbf{v}\,q^*`}
       </Equation>
+      <LiveFormula label={tx(t, "mQuat_liveRot", "Try it: turn a vector about the z-axis")}
+        tex={r`q = \left(\cos\tfrac{\theta}{2},\ \sin\tfrac{\theta}{2}\,(0, 0, 1)\right) \qquad \mathbf v' = \mathbf v + 2w\,(\mathbf u\times\mathbf v) + 2\,\mathbf u\times(\mathbf u\times\mathbf v)`}
+        vars={[
+          { id: "th", label: "θ", min: 0, max: 360, step: 15, value: 90, fmt: deg },
+          { id: "x", label: comp("v", "x"), min: -3, max: 3, step: 1, value: 1, fmt: num },
+          { id: "y", label: comp("v", "y"), min: -3, max: 3, step: 1, value: 0, fmt: num },
+          { id: "z", label: comp("v", "z"), min: -3, max: 3, step: 1, value: 0, fmt: num },
+        ]}
+        compute={rotNumbers}
+        note={tx(t, "mQuat_liveRotNote", "Starts on the example above, worked with the fast formula of the next section (u is q's vector part, w its scalar). Try θ = 180°: w = 0 and v turns to −v in x and y. The z component never changes: it lies along the axis.")} />
 
       <QuaternionFigure t={t} />
 
@@ -111,9 +164,15 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mQuat_combTitle", "Combining and undoing rotations")}</H2>
       <p>
-        {tx(t, "mQuat_combBody",
-          "Rotate by q₁ and then by q₂: q₂(q₁ v q₁*)q₂* = (q₂q₁) v (q₂q₁)*, using (q₂q₁)* = q₁*q₂*. So the combined rotation is the product q₂q₁, and, as with matrices, the one applied first is written on the right. The product of two unit quaternions is a unit quaternion, and multiplying two costs 16 multiplications against 27 for two 3 × 3 matrices. Undoing a rotation is the conjugate q*: the same axis, negative angle. Rounding still creeps in after many products, but the repair is trivial: divide by the length to make |q| = 1 again.")}
+        {tx(t, "mQuat_combBody2",
+          "Rotate by q₁ and then by q₂; the derivation below shows the result is one rotation, by the product q₂q₁. As with matrices, the one applied first is written on the right. The product of two unit quaternions is a unit quaternion, and multiplying two costs 16 multiplications against 27 for two 3 × 3 matrices. Undoing a rotation is the conjugate q*: the same axis, negative angle. Rounding still creeps in after many products, but the repair is trivial: divide by the length to make |q| = 1 again.")}
       </p>
+      <Derivation t={t} label={tx(t, "mQuat_eqComb", "Two rotations make one")}
+        steps={[
+          { tex: r`q_2\,(q_1\,\mathbf v\,q_1^*)\,q_2^*`, why: tx(t, "mQuat_c0", "turn by q₁, then turn the result by q₂") },
+          { tex: r`= (q_2q_1)\,\mathbf v\,(q_1^*q_2^*)`, why: tx(t, "mQuat_c1", "grouping does not matter in a product of quaternions") },
+          { tex: r`= \green{(q_2q_1)\,\mathbf v\,(q_2q_1)^*}`, why: tx(t, "mQuat_c2", "the conjugate of a product is the product of the conjugates in reverse order: (q₂q₁)* = q₁*q₂*") },
+        ]} />
       <Callout type="info" t={t}>
         {tx(t, "mQuat_coverNote", "q and −q give the same rotation, since the two minus signs in (−q)v(−q)* cancel. In axis–angle terms, −q is a turn by θ + 360°, which ends in the same place. The figure's first mode shows q changing sign as θ passes 360° while the box returns to its start. Every rotation therefore has exactly two quaternions, which matters when blending: see below.")}
       </Callout>
@@ -129,9 +188,18 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
           [r`t`, tx(t, "mQuat_wT", "how far along, from 0 (at q_a) to 1 (at q_b)")],
           [r`\Omega`, tx(t, "mQuat_wOm", "the angle between them in 4D: cos Ω = q_a · q_b, the ordinary dot product of the four components")],
         ]}
-        note={tx(t, "mQuat_slerpNote", "Two practical details. If q_a · q_b < 0, negate q_b first: it is the same orientation (double cover) but on the near side, so the blend takes the short way round instead of spinning almost a full turn. And if Ω is tiny, sin Ω is nearly 0; then blend the components linearly and renormalise.")}>
+        note={tx(t, "mQuat_slerpNote", "Two practical details. If q_a · q_b < 0, negate q_b first: it is the same orientation (double cover) but on the near side, so the blend takes the short way round instead of spinning almost a full turn. And if Ω is tiny, sin Ω is nearly 0; then blend the components linearly and renormalise.")}
+        words={tx(t, "mQuat_slerpWords", "Mix the two quaternions with weights given by sines: the start's weight shrinks and the end's grows as t goes from 0 to 1, so that the result moves along the arc at an even speed.")}>
         {r`\operatorname{slerp}(q_a, q_b, t) = \frac{\sin\big((1 - t)\Omega\big)}{\sin\Omega}\,q_a + \frac{\sin(t\,\Omega)}{\sin\Omega}\,q_b`}
       </Equation>
+      <LiveFormula label={tx(t, "mQuat_liveSlerp", "Try it: slerp from no turn to a turn about y")}
+        tex={r`q_a = (1, 0, 0, 0) \qquad q_b = \left(\cos\tfrac{\theta}{2},\ 0,\ \sin\tfrac{\theta}{2},\ 0\right) \qquad \cos\Omega = q_a\cdot q_b`}
+        vars={[
+          { id: "th", label: "θ", min: 30, max: 180, step: 15, value: 90, fmt: deg },
+          { id: "t", label: "t", min: 0, max: 1, step: 0.05, value: 0.5, fmt: num },
+        ]}
+        compute={slerpNumbers}
+        note={tx(t, "mQuat_liveSlerpNote", "Starts on worked example 3 below: halfway to 90° about y gives (0.924, 0, 0.383, 0), a turn of 45°. The bar is the share of the turn done, and it always equals t: slerp turns at an even speed.")} />
       <p>
         {tx(t, "mQuat_nlerpBody",
           "A cheaper alternative, nlerp, blends the four components as a straight line, (1 − t)q_a + t q_b, and divides by the length. It follows the same arc and ends at the same place, but its speed is slightly uneven (fastest in the middle). For small steps the difference is negligible and nlerp is often used; for long, even turns use slerp. The figure's third mode compares slerp with blending Euler angles.")}
@@ -147,6 +215,7 @@ export function QuaternionsContent({ t }: { t: TrackTranslations }) {
           [r`1 - 2(y^2 + z^2)`, tx(t, "mQuat_wDiag", "diagonal terms: how much each axis stays itself")],
           [r`2(xy \mp wz)`, tx(t, "mQuat_wOff", "off-diagonal terms: how much one axis turns toward another")],
         ]}
+        words={tx(t, "mQuat_matWords", "Each column is one of the three axes turned by the quaternion, written out with the four numbers w, x, y, z.")}
         note={tx(t, "mQuat_matNote", "Check with 90° about z, (w, x, y, z) = (0.707, 0, 0, 0.707): the first column is (1 − 2·0.5, 2·0.5, 0) = (0, 1, 0), so î goes to ĵ. ✓")}>
         {r`R = \begin{bmatrix} 1 - 2(y^2 + z^2) & 2(xy - wz) & 2(xz + wy) \\ 2(xy + wz) & 1 - 2(x^2 + z^2) & 2(yz - wx) \\ 2(xz - wy) & 2(yz + wx) & 1 - 2(x^2 + y^2) \end{bmatrix}`}
       </Equation>

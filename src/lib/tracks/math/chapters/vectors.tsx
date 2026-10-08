@@ -6,6 +6,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -15,6 +17,49 @@ import { CrossFigure } from "@/components/lesson/figures/math/CrossFigure";
 import { Cross2DFigure } from "@/components/lesson/figures/math/Cross2DFigure";
 
 const r = String.raw;
+const RAD = Math.PI / 180;
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+const deg = (v: number) => `${v}°`;
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+/** A slider label such as aₓ, with a real subscript. */
+const comp = (v: string, i: string) => <>{v}<sub>{i}</sub></>;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+function normNumbers(v: Record<string, number>) {
+  const L = Math.hypot(v.x, v.y);
+  if (L === 0) return { tex: r`\lVert\mathbf v\rVert = \sqrt{0^2 + 0^2} = 0 \qquad \hat{\mathbf v}\ \text{undefined}` };
+  return {
+    tex: r`\begin{aligned} \lVert\mathbf v\rVert &= \sqrt{${par(v.x)}^2 + ${par(v.y)}^2} = \sqrt{${num(v.x * v.x + v.y * v.y)}} \approx ${num(L)} \\ \hat{\mathbf v} &= \Big(\frac{${num(v.x)}}{${num(L)}},\ \frac{${num(v.y)}}{${num(L)}}\Big) \approx \green{(${num(v.x / L)},\ ${num(v.y / L)})} \end{aligned}`,
+  };
+}
+
+function projNumbers(v: Record<string, number>) {
+  const ab = v.ax * v.bx + v.ay * v.by, aa = v.ax * v.ax + v.ay * v.ay;
+  if (aa === 0) return { tex: r`\mathbf a = \mathbf 0:\ \text{no line to project onto}` };
+  const k = ab / aa, px = k * v.ax, py = k * v.ay;
+  return {
+    tex: r`\begin{aligned} \frac{\mathbf a\cdot\mathbf b}{\mathbf a\cdot\mathbf a} &= \frac{${par(v.ax)}\cdot ${par(v.bx)} + ${par(v.ay)}\cdot ${par(v.by)}}{${par(v.ax)}^2 + ${par(v.ay)}^2} = \frac{${num(ab)}}{${num(aa)}} \approx ${num(k)} \\ \mathbf b_\parallel &\approx ${num(k)}\,(${num(v.ax)}, ${num(v.ay)}) = \green{(${num(px)},\ ${num(py)})} \\ \mathbf b_\perp &= \mathbf b - \mathbf b_\parallel \approx (${num(v.bx - px)},\ ${num(v.by - py)}) \end{aligned}`,
+  };
+}
+
+function workNumbers(v: Record<string, number>) {
+  const c = Math.cos(v.th * RAD), W = v.F * v.d * c;
+  return {
+    tex: r`W = ${num(v.F)} \cdot ${num(v.d)} \cdot \cos ${v.th}^\circ \approx ${num(v.F * v.d)} \cdot ${num(c)} \approx \green{${num(W)}\ \text{J}}`,
+    meter: Math.max(0, c),
+    meterLabel: `cos θ = ${num(c)}`,
+  };
+}
+
+const cross2Numbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const z = v.ax * v.by - v.ay * v.bx;
+  const side = z > 0 ? tx(t, "mCross_liveLeft", "b is to the left of a")
+    : z < 0 ? tx(t, "mCross_liveRight", "b is to the right of a") : tx(t, "mCross_livePar", "a and b are parallel");
+  return {
+    tex: r`\mathbf a\times\mathbf b = ${par(v.ax)}\cdot ${par(v.by)} - ${par(v.ay)}\cdot ${par(v.bx)} = \green{${num(z)}} \qquad \text{${side}}`,
+  };
+};
 
 // ═════════════════════════════════════════════════════════════════════════════
 // Vectors
@@ -55,7 +100,8 @@ export function VectorsContent({ t }: { t: TrackTranslations }) {
           [r`\mathbf a + \mathbf b`, tx(t, "mVec_wAdd", "tip to tail; commutative (a + b = b + a, the two paths around the parallelogram)")],
           [r`\mathbf b - \mathbf a`, tx(t, "mVec_wSub", "from a to b: \"to minus from\". Swapping the order reverses the arrow")],
           [r`k\,\mathbf a`, tx(t, "mVec_wScale", "stretch by k along the same line; k < 0 flips the direction")],
-        ]}>
+        ]}
+        words={tx(t, "mVec_opsWords", "Work one axis at a time: add the x parts together and the y parts together, subtract them the same way, and to scale multiply every part by the same number.")}>
         {r`\mathbf a + \mathbf b = (a_x + b_x,\ a_y + b_y) \qquad \mathbf b - \mathbf a = (b_x - a_x,\ b_y - a_y) \qquad k\,\mathbf a = (k\,a_x,\ k\,a_y)`}
       </Equation>
 
@@ -71,9 +117,17 @@ export function VectorsContent({ t }: { t: TrackTranslations }) {
           [r`\lVert\mathbf v\rVert`, tx(t, "mVec_wNorm", "the length of v; also written |v|")],
           [r`\lVert\mathbf b - \mathbf a\rVert`, tx(t, "mVec_wDist", "the distance between points a and b")],
           [r`\lVert\mathbf v\rVert^2`, tx(t, "mVec_wSq", "the squared length, with no square root. To compare distances (\"is the boat within 10 km of the port?\"), compare squared values: d² < 100. Squaring preserves order for non-negative numbers, and it saves working out a square root")],
-        ]}>
+        ]}
+        words={tx(t, "mVec_lenWords", "Square each component, add the squares, and take the square root: Pythagoras, with one term per axis.")}>
         {r`\lVert\mathbf v\rVert = \sqrt{v_x^2 + v_y^2 + v_z^2}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mVec_eqLenDer", "Why one square root is enough in 3D")}
+        steps={[
+          { tex: r`\lVert\mathbf v\rVert^2` },
+          { tex: r`= f^2 + v_y^2`, why: tx(t, "mVec_d1", "the vector is the hypotenuse of a right triangle standing on the floor: one leg is its shadow on the floor, of length f, the other is its height v_y") },
+          { tex: r`= (v_x^2 + v_z^2) + v_y^2`, why: tx(t, "mVec_d2", "the shadow is itself the hypotenuse of a right triangle in the floor, with legs v_x and v_z, so f² = v_x² + v_z²") },
+          { tex: r`\lVert\mathbf v\rVert = \green{\sqrt{v_x^2 + v_y^2 + v_z^2}}`, why: tx(t, "mVec_d3", "take the square root of both sides; the inner square root of f never has to be worked out"), full: true },
+        ]} />
 
       <H2>{tx(t, "mVec_normTitle", "Unit vectors and normalising")}</H2>
       <p>
@@ -84,9 +138,18 @@ export function VectorsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\hat{\mathbf v}`, tx(t, "mVec_wHat", "the unit vector in the direction of v")],
           [r`\lVert\mathbf v\rVert \neq 0`, tx(t, "mVec_wNonZero", "the zero vector has no direction; dividing by its zero length is undefined")],
-        ]}>
+        ]}
+        words={tx(t, "mVec_normWords", "Divide every component by the vector's length: the direction stays, the length becomes 1.")}>
         {r`\hat{\mathbf v} = \frac{\mathbf v}{\lVert\mathbf v\rVert}`}
       </Equation>
+      <LiveFormula label={tx(t, "mVec_liveNorm", "Try it: length and unit vector")}
+        tex={r`\lVert\mathbf v\rVert = \sqrt{v_x^2 + v_y^2} \qquad \hat{\mathbf v} = \Big(\frac{v_x}{\lVert\mathbf v\rVert},\ \frac{v_y}{\lVert\mathbf v\rVert}\Big)`}
+        vars={[
+          { id: "x", label: comp("v", "x"), min: -6, max: 6, step: 1, value: 3, fmt: num },
+          { id: "y", label: comp("v", "y"), min: -6, max: 6, step: 1, value: 4, fmt: num },
+        ]}
+        compute={normNumbers}
+        note={tx(t, "mVec_liveNormNote", "Starts on the example below, (3, 4). Try (6, 8): twice as long, the same unit vector. Try (−3, −4): the unit vector flips. Set both to 0: there is no direction to keep.")} />
       <p>
         {tx(t, "mVec_normEx",
           "By hand: v = (3, 4) has length √(9 + 16) = 5, so v̂ = (3/5, 4/5) = (0.6, 0.8). Check: 0.6² + 0.8² = 0.36 + 0.64 = 1 ✓. Unit vectors make \"go a given distance in a given direction\" easy. To walk 4 km from A = (1, 2) towards B = (7, 10): the offset is B − A = (6, 8), its length is 10, its direction is (0.6, 0.8), and 4 km along it lands at A + 4 · (0.6, 0.8) = (1 + 2.4, 2 + 3.2) = (3.4, 5.2).")}
@@ -116,9 +179,17 @@ export function VectorsContent({ t }: { t: TrackTranslations }) {
           "2. The distance between the points (1, 2, 2) and (4, 6, 14): the difference is (3, 4, 12), and √(9 + 16 + 144) = √169 = 13.")}
       </p>
       <p>
-        {tx(t, "mVec_ex3",
-          "3. Write v = (4, 1) in the basis e₁ = (1, 1), e₂ = (1, −1). We need c₁(1, 1) + c₂(1, −1) = (4, 1), that is c₁ + c₂ = 4 and c₁ − c₂ = 1. Adding the two equations gives 2c₁ = 5, so c₁ = 2.5 and c₂ = 1.5. Check: 2.5 · (1, 1) + 1.5 · (1, −1) = (2.5 + 1.5, 2.5 − 1.5) = (4, 1) ✓.")}
+        {tx(t, "mVec_ex3b",
+          "3. Write v = (4, 1) in the basis e₁ = (1, 1), e₂ = (1, −1): find the two numbers c₁ and c₂ of the recipe.")}
       </p>
+      <Derivation t={t} label={tx(t, "mVec_eqEx3", "Finding the recipe in a new basis")}
+        steps={[
+          { full: true, tex: r`c_1(1, 1) + c_2(1, -1) = (4, 1)` },
+          { full: true, tex: r`c_1 + c_2 = 4 \qquad c_1 - c_2 = 1`, why: tx(t, "mVec_e1", "compare the x parts and the y parts separately: two equations") },
+          { full: true, tex: r`2c_1 = 5 \;\Rightarrow\; c_1 = 2.5`, why: tx(t, "mVec_e2", "add the two equations: c₂ cancels") },
+          { full: true, tex: r`c_2 = 4 - 2.5 = 1.5`, why: tx(t, "mVec_e3", "put c₁ back into the first equation") },
+          { full: true, tex: r`2.5\,(1, 1) + 1.5\,(1, -1) = (4, 1)\ \green{\checkmark}`, why: tx(t, "mVec_e4", "check: 2.5 + 1.5 = 4 and 2.5 − 1.5 = 1") },
+        ]} />
 
       <H2>{tx(t, "mVec_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -164,16 +235,24 @@ export function DotContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mDot_defTitle", "Two definitions, one number")}</H2>
       <p>
-        {tx(t, "mDot_defBody",
-          "The algebraic definition is how you compute it: multiply matching components and add the products. The geometric definition is what it means: the product of the two lengths and the cosine of the angle between them. That these two are equal is not obvious. It follows from the law of cosines from the trigonometry chapter: the triangle formed by a, b and b − a has sides |a|, |b| and |b − a|, so |b − a|² = |a|² + |b|² − 2|a||b|cos θ. Expanding |b − a|² in components gives |a|² + |b|² − 2(aₓbₓ + a_yb_y). Comparing the two lines, aₓbₓ + a_yb_y = |a||b|cos θ.")}
+        {tx(t, "mDot_defBody2",
+          "The algebraic definition is how you compute it: multiply matching components and add the products. The geometric definition is what it means: the product of the two lengths and the cosine of the angle between them. That these two are equal is not obvious. It follows from the law of cosines from the trigonometry chapter, applied to the triangle formed by a, b and b − a, whose sides are |a|, |b| and |b − a|.")}
       </p>
+      <Derivation t={t} label={tx(t, "mDot_eqWhy", "Why the two definitions agree")}
+        steps={[
+          { full: true, tex: r`\lVert\mathbf b - \mathbf a\rVert^2 = \lVert\mathbf a\rVert^2 + \lVert\mathbf b\rVert^2 - 2\lVert\mathbf a\rVert\lVert\mathbf b\rVert\cos\theta`, why: tx(t, "mDot_w1", "the law of cosines: θ is the angle between the sides a and b, opposite the side b − a") },
+          { full: true, tex: r`\lVert\mathbf b - \mathbf a\rVert^2 = (b_x - a_x)^2 + (b_y - a_y)^2`, why: tx(t, "mDot_w2", "the same length, this time from the components") },
+          { full: true, tex: r`= \lVert\mathbf a\rVert^2 + \lVert\mathbf b\rVert^2 - 2(a_x b_x + a_y b_y)`, why: tx(t, "mDot_w3", "expand both squares: a_x² + a_y² is |a|², b_x² + b_y² is |b|², and the cross terms are −2a_xb_x and −2a_yb_y") },
+          { full: true, tex: r`\green{a_x b_x + a_y b_y = \lVert\mathbf a\rVert\lVert\mathbf b\rVert\cos\theta}`, why: tx(t, "mDot_w4", "both lines give |b − a|²: cancel |a|² + |b|² on each side and divide by −2") },
+        ]} />
       <Equation label={tx(t, "mDot_eqDef", "The dot product")}
         where={[
           [r`\mathbf a\cdot\mathbf b`, tx(t, "mDot_wDot", "the dot product (also scalar product or inner product): a number, not a vector")],
           [r`\theta`, tx(t, "mDot_wTheta", "the angle between the two vectors, from 0 to π")],
           [r`\cos\theta`, tx(t, "mDot_wCos", "1 when they point the same way, 0 when perpendicular, −1 when opposite")],
         ]}
-        note={tx(t, "mDot_eqDefNote", "In 3D add a z term: aₓbₓ + a_yb_y + a_zb_z. For unit vectors the lengths are 1, and the dot product is simply the cosine of the angle between them.")}>
+        note={tx(t, "mDot_eqDefNote", "In 3D add a z term: aₓbₓ + a_yb_y + a_zb_z. For unit vectors the lengths are 1, and the dot product is simply the cosine of the angle between them.")}
+        words={tx(t, "mDot_defWords", "Multiply matching components and add them up. The same number is the two lengths multiplied together, times the cosine of the angle between the arrows.")}>
         {r`\mathbf a\cdot\mathbf b = a_x b_x + a_y b_y + a_z b_z = \lVert\mathbf a\rVert\,\lVert\mathbf b\rVert\cos\theta`}
       </Equation>
       <LessonTable
@@ -197,9 +276,20 @@ export function DotContent({ t }: { t: TrackTranslations }) {
           [r`(\mathbf b\cdot\hat{\mathbf a})\,\hat{\mathbf a}`, tx(t, "mDot_wVector", "the vector projection b∥: the shadow as an arrow along a")],
           [r`\mathbf b_\perp = \mathbf b - \mathbf b_\parallel`, tx(t, "mDot_wPerp", "the rest of b, perpendicular to a")],
         ]}
-        note={tx(t, "mDot_eqProjNote", "Example: b = (2, 4) projected on a = (3, 4). a · b = 6 + 16 = 22 and a · a = 25, so b∥ = (22/25)(3, 4) = (2.64, 3.52) and b⊥ = (2, 4) − (2.64, 3.52) = (−0.64, 0.48). Check: b⊥ · a = −1.92 + 1.92 = 0 ✓.")}>
+        note={tx(t, "mDot_eqProjNote", "Example: b = (2, 4) projected on a = (3, 4). a · b = 6 + 16 = 22 and a · a = 25, so b∥ = (22/25)(3, 4) = (2.64, 3.52) and b⊥ = (2, 4) − (2.64, 3.52) = (−0.64, 0.48). Check: b⊥ · a = −1.92 + 1.92 = 0 ✓.")}
+        words={tx(t, "mDot_projWords", "The shadow of b on a is a copy of a, scaled by a · b divided by a · a. Whatever is left of b after removing the shadow sticks out at a right angle to a.")}>
         {r`\mathbf b_\parallel = (\mathbf b\cdot\hat{\mathbf a})\,\hat{\mathbf a} = \frac{\mathbf a\cdot\mathbf b}{\mathbf a\cdot\mathbf a}\,\mathbf a \qquad \mathbf b_\perp = \mathbf b - \mathbf b_\parallel`}
       </Equation>
+      <LiveFormula label={tx(t, "mDot_liveProj", "Try it: split b along a and across a")}
+        tex={r`\mathbf b_\parallel = \frac{\mathbf a\cdot\mathbf b}{\mathbf a\cdot\mathbf a}\,\mathbf a \qquad \mathbf b_\perp = \mathbf b - \mathbf b_\parallel`}
+        vars={[
+          { id: "ax", label: comp("a", "x"), min: -5, max: 5, step: 1, value: 3, fmt: num },
+          { id: "ay", label: comp("a", "y"), min: -5, max: 5, step: 1, value: 4, fmt: num },
+          { id: "bx", label: comp("b", "x"), min: -5, max: 5, step: 1, value: 2, fmt: num },
+          { id: "by", label: comp("b", "y"), min: -5, max: 5, step: 1, value: 4, fmt: num },
+        ]}
+        compute={projNumbers}
+        note={tx(t, "mDot_liveProjNote", "Starts on the example above. Make b a multiple of a, such as (3, 4) or (−3, −4): b⊥ becomes (0, 0). Make b perpendicular to a, such as (−4, 3): the fraction is 0 and the whole of b is across.")} />
 
       <DotFigure t={t} />
 
@@ -213,6 +303,15 @@ export function DotContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDot_workBody",
           "In physics, a force F moving an object through a displacement d does work W = F · d (in joules, with F in newtons and d in metres). Only the part of the force along the motion counts: pulling a sled 50 m along flat ground with a rope that pulls with 100 N at 30° above the horizontal does W = 100 · 50 · cos 30° ≈ 4330 J. In components, F = (100 cos 30°, 100 sin 30°) ≈ (86.6, 50) and d = (50, 0), so F · d = 86.6 · 50 + 50 · 0 = 4330 J: the upward part of the pull does no work, because the sled does not move up.")}
       </p>
+      <LiveFormula label={tx(t, "mDot_liveWork", "Try it: pulling the sled")}
+        tex={r`W = \mathbf F\cdot\mathbf d = \lVert\mathbf F\rVert\,\lVert\mathbf d\rVert\cos\theta`}
+        vars={[
+          { id: "F", label: tx(t, "mDot_liveF", "pull |F| (N)"), min: 10, max: 200, step: 10, value: 100, fmt: num },
+          { id: "d", label: tx(t, "mDot_liveD", "distance |d| (m)"), min: 5, max: 100, step: 5, value: 50, fmt: num },
+          { id: "th", label: tx(t, "mDot_liveTh", "rope angle θ"), min: 0, max: 90, step: 5, value: 30, fmt: deg },
+        ]}
+        compute={workNumbers}
+        note={tx(t, "mDot_liveWorkNote", "Starts on the sled above. The bar is cos θ, the share of the pull that goes along the ground. At θ = 0 the whole pull counts; at 90° the rope pulls straight up and does no work, however hard you pull.")} />
 
       <H2>{tx(t, "mDot_lightTitle", "Sunlight and reflection")}</H2>
       <p>
@@ -225,7 +324,8 @@ export function DotContent({ t }: { t: TrackTranslations }) {
           [r`\hat{\mathbf n}`, tx(t, "mDot_wN", "the unit surface normal")],
           [r`(\mathbf d\cdot\hat{\mathbf n})\,\hat{\mathbf n}`, tx(t, "mDot_wDn", "the part of d along the normal; it points into the surface, since d·n̂ < 0")],
         ]}
-        note={tx(t, "mDot_eqReflectNote", "Example: a ray d = (3, −4) hits a floor with n̂ = (0, 1). d · n̂ = −4, so r = (3, −4) − 2 · (−4) · (0, 1) = (3, −4) + (0, 8) = (3, 4): the sideways part is kept, the downward part becomes upward, and the angle of incidence equals the angle of reflection.")}>
+        note={tx(t, "mDot_eqReflectNote", "Example: a ray d = (3, −4) hits a floor with n̂ = (0, 1). d · n̂ = −4, so r = (3, −4) − 2 · (−4) · (0, 1) = (3, −4) + (0, 8) = (3, 4): the sideways part is kept, the downward part becomes upward, and the angle of incidence equals the angle of reflection.")}
+        words={tx(t, "mDot_reflWords", "Find how much of the incoming direction points along the normal, and take that part away twice: once to cancel it, once more to send it back out.")}>
         {r`\mathbf r = \mathbf d - 2\,(\mathbf d\cdot\hat{\mathbf n})\,\hat{\mathbf n}`}
       </Equation>
 
@@ -239,7 +339,8 @@ export function DotContent({ t }: { t: TrackTranslations }) {
           [r`\hat{\mathbf n}`, tx(t, "mDot_wPn", "the plane's unit normal")],
           [r`k`, tx(t, "mDot_wK", "the plane's offset: its signed distance from the origin along n̂ (k = n̂ · q for any point q on the plane)")],
           [r`\mathbf p`, tx(t, "mDot_wP", "any point")],
-        ]}>
+        ]}
+        words={tx(t, "mDot_planeWords", "A plane is every point whose shadow on the unit normal has the same length k. For any other point, its shadow minus k says how far it is from the plane, and on which side.")}>
         {r`\text{plane: } \hat{\mathbf n}\cdot\mathbf x = k \qquad \operatorname{dist}(\mathbf p) = \hat{\mathbf n}\cdot\mathbf p - k`}
       </Equation>
 
@@ -296,7 +397,8 @@ export function CrossContent({ t }: { t: TrackTranslations }) {
           [r`\lVert\mathbf a\times\mathbf b\rVert`, tx(t, "mCross_wLen", "its length: |a||b| sin θ, the area of the parallelogram spanned by a and b")],
           [r`\theta`, tx(t, "mCross_wTheta", "the angle between a and b. sin θ is 0 for parallel vectors, so their cross product is the zero vector")],
         ]}
-        note={tx(t, "mCross_eqDefNote", "Check perpendicularity with the dot product: a · (a × b) = aₓ(a_yb_z − a_zb_y) + a_y(a_zbₓ − aₓb_z) + a_z(aₓb_y − a_ybₓ) = 0, since every term cancels with another.")}>
+        note={tx(t, "mCross_eqDefNote", "Check perpendicularity with the dot product: a · (a × b) = aₓ(a_yb_z − a_zb_y) + a_y(a_zbₓ − aₓb_z) + a_z(aₓb_y − a_ybₓ) = 0, since every term cancels with another.")}
+        words={tx(t, "mCross_defWords", "Each component uses the two other axes: \"this times that minus that times this\", going round the cycle x → y → z → x.")}>
         {r`\mathbf a\times\mathbf b = \big(a_y b_z - a_z b_y,\;\; a_z b_x - a_x b_z,\;\; a_x b_y - a_y b_x\big)`}
       </Equation>
       <p>
@@ -325,9 +427,17 @@ export function CrossContent({ t }: { t: TrackTranslations }) {
           "Two edges of a triangle, B − A and C − A, both lie in its plane, so their cross product is perpendicular to the triangle: its normal. The order of the corners decides which side it points to: if the corners run anticlockwise as seen from one side, (B − A) × (C − A) points towards that side. Its length is the area of the parallelogram on the two edges, which is twice the triangle's area. And once the normal n is known, the plane's equation follows: every point x of the plane satisfies n · x = n · A.")}
       </p>
       <p>
-        {tx(t, "mCross_normalEx",
-          "By hand, for A = (1, 0, 0), B = (0, 2, 0), C = (0, 0, 3). The edges are B − A = (−1, 2, 0) and C − A = (−1, 0, 3). Their cross product, component by component: x = 2 · 3 − 0 · 0 = 6, y = 0 · (−1) − (−1) · 3 = 3, z = (−1) · 0 − 2 · (−1) = 2, so n = (6, 3, 2). Its length is √(36 + 9 + 4) = 7, so the triangle's area is 7/2 = 3.5. The plane: n · A = 6, so 6x + 3y + 2z = 6. Check B: 0 + 6 + 0 = 6 ✓; C: 0 + 0 + 6 = 6 ✓.")}
+        {tx(t, "mCross_normalEx2",
+          "By hand, for A = (1, 0, 0), B = (0, 2, 0), C = (0, 0, 3): the normal, the area and the plane, one step at a time.")}
       </p>
+      <Derivation t={t} label={tx(t, "mCross_eqNormalEx", "The plane through three points")}
+        steps={[
+          { full: true, tex: r`\mathbf B - \mathbf A = (-1, 2, 0) \qquad \mathbf C - \mathbf A = (-1, 0, 3)`, why: tx(t, "mCross_n1", "two edges from the same corner A") },
+          { full: true, tex: r`\mathbf n = \big(2\cdot 3 - 0\cdot 0,\;\; 0\cdot(-1) - (-1)\cdot 3,\;\; (-1)\cdot 0 - 2\cdot(-1)\big) = (6, 3, 2)`, why: tx(t, "mCross_n2", "the cross product, component by component: x uses y and z, y uses z and x, z uses x and y") },
+          { full: true, tex: r`\lVert\mathbf n\rVert = \sqrt{36 + 9 + 4} = 7 \;\Rightarrow\; \text{area} = \tfrac{7}{2} = 3.5`, why: tx(t, "mCross_n3", "the length is the parallelogram on the two edges; the triangle is half of it") },
+          { full: true, tex: r`\mathbf n\cdot\mathbf A = 6 \;\Rightarrow\; \green{6x + 3y + 2z = 6}`, why: tx(t, "mCross_n4", "every point x of the plane has n · x = n · A") },
+          { full: true, tex: r`B: 0 + 6 + 0 = 6\ \checkmark \qquad C: 0 + 0 + 6 = 6\ \checkmark`, why: tx(t, "mCross_n5", "check with the other two corners") },
+        ]} />
       <H3>{tx(t, "mCross_basisTitle", "Completing a set of perpendicular axes")}</H3>
       <p>
         {tx(t, "mCross_basisBody",
@@ -339,7 +449,8 @@ export function CrossContent({ t }: { t: TrackTranslations }) {
           [r`\mathbf u_{\text{world}}`, tx(t, "mCross_wUw", "a rough up direction, usually the vertical (0, 1, 0)")],
           [r`\hat{\mathbf r}`, tx(t, "mCross_wR", "right: perpendicular to f and to the vertical; normalise it, since f and the vertical are not perpendicular in general")],
           [r`\hat{\mathbf u}`, tx(t, "mCross_wU", "the corrected up: already unit length, because r̂ and f̂ are perpendicular unit vectors")],
-        ]}>
+        ]}
+        words={tx(t, "mCross_basisWords", "Cross the given direction with the rough up to get right, and shorten it to length 1; then cross right with the given direction to get the true up.")}>
         {r`\hat{\mathbf r} = \frac{\hat{\mathbf f}\times\mathbf u_{\text{world}}}{\lVert\hat{\mathbf f}\times\mathbf u_{\text{world}}\rVert} \qquad \hat{\mathbf u} = \hat{\mathbf r}\times\hat{\mathbf f}`}
       </Equation>
       <H3>{tx(t, "mCross_physTitle", "Rotation and torque")}</H3>
@@ -357,9 +468,20 @@ export function CrossContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\mathbf a\times\mathbf b`, tx(t, "mCross_w2d", "a scalar in 2D")],
           [r`> 0,\ < 0,\ = 0`, tx(t, "mCross_wSign", "b is to the left of a (counter-clockwise), to the right (clockwise), or parallel")],
-        ]}>
+        ]}
+        words={tx(t, "mCross_2dWords", "Multiply crosswise, a's x by b's y minus a's y by b's x. The size is the parallelogram's area; the sign says whether b turns left or right from a.")}>
         {r`\mathbf a\times\mathbf b = a_x b_y - a_y b_x = \lVert\mathbf a\rVert\,\lVert\mathbf b\rVert\sin\theta`}
       </Equation>
+      <LiveFormula label={tx(t, "mCross_live2d", "Try it: left or right?")}
+        tex={r`\mathbf a\times\mathbf b = a_x b_y - a_y b_x`}
+        vars={[
+          { id: "ax", label: comp("a", "x"), min: -5, max: 5, step: 1, value: 4, fmt: num },
+          { id: "ay", label: comp("a", "y"), min: -5, max: 5, step: 1, value: 1, fmt: num },
+          { id: "bx", label: comp("b", "x"), min: -5, max: 5, step: 1, value: 1, fmt: num },
+          { id: "by", label: comp("b", "y"), min: -5, max: 5, step: 1, value: 3, fmt: num },
+        ]}
+        compute={cross2Numbers(t)}
+        note={tx(t, "mCross_live2dNote", "Starts on the first edge of the example below. Swap a and b: the sign flips. Make b a multiple of a, such as (4, 1) or (−4, −1): the result is 0.")} />
 
       <Cross2DFigure t={t} />
 

@@ -9,12 +9,48 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ComplexFigure } from "@/components/lesson/figures/math/ComplexFigure";
 
 const r = String.raw;
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+/** a + bi in TeX, with a proper minus for negative b. */
+const ctex = (a: number, b: number) => `${num(a)} ${b < 0 ? "-" : "+"} ${num(Math.abs(b))}i`;
+const ang = (a: number, b: number) => Math.round((Math.atan2(b, a) * 180) / Math.PI);
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+function mulNumbers(v: Record<string, number>) {
+  const re = v.a * v.c - v.b * v.d, im = v.a * v.d + v.b * v.c;
+  const r1 = Math.hypot(v.a, v.b), r2 = Math.hypot(v.c, v.d);
+  return {
+    tex: r`\begin{aligned} (${ctex(v.a, v.b)})(${ctex(v.c, v.d)}) &= (${par(v.a)}\cdot ${par(v.c)} - ${par(v.b)}\cdot ${par(v.d)}) + (${par(v.a)}\cdot ${par(v.d)} + ${par(v.b)}\cdot ${par(v.c)})\,i = \green{${ctex(re, im)}} \\ |z|\,|w| &=${num(r1)}\cdot ${num(r2)} = ${num(r1 * r2)} \qquad ${ang(v.a, v.b)}^\circ + ${ang(v.c, v.d)}^\circ \equiv ${ang(re, im)}^\circ \end{aligned}`,
+  };
+}
+
+const QUAD = r` \quad `;
+
+/** z → z² + c from z = 0, until |z| > 2 or six steps. */
+const mandelNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const zs: string[] = [];
+  let x = 0, y = 0, out = false;
+  for (let k = 1; k <= 6 && !out; k++) {
+    [x, y] = [x * x - y * y + v.a, 2 * x * y + v.b];
+    zs.push(r`z_${k} = ${ctex(x, y)}`);
+    out = Math.hypot(x, y) > 2;
+  }
+  const verdict = out ? tx(t, "mCx_liveOut", "|z| > 2: c is outside the set") : tx(t, "mCx_liveIn", "still within 2 after six steps: c looks inside");
+  return {
+    tex: r`\begin{gathered} ${zs.slice(0, 3).join(QUAD)}${zs.length > 3 ? r` \\ ` + zs.slice(3).join(QUAD) : ""} \\ \text{${verdict}} \end{gathered}`,
+    meter: out ? 0 : 1,
+    meterLabel: `|z| = ${num(Math.hypot(x, y))}`,
+  };
+};
 
 export function ComplexContent({ t }: { t: TrackTranslations }) {
   return (
@@ -58,9 +94,20 @@ export function ComplexContent({ t }: { t: TrackTranslations }) {
           [r`adi + bci`, tx(t, "mCx_wADBC", "the two mixed terms, both multiples of i")],
           [r`bd\,i^2 = -bd`, tx(t, "mCx_wBD", "imaginary times imaginary: i² = −1 makes it a real number with a minus sign")],
         ]}
-        note={tx(t, "mCx_mulNote", "Example: (3 + 2i)(1 + 4i) = 3 + 12i + 2i + 8i² = 3 + 14i − 8 = −5 + 14i.")}>
+        note={tx(t, "mCx_mulNote", "Example: (3 + 2i)(1 + 4i) = 3 + 12i + 2i + 8i² = 3 + 14i − 8 = −5 + 14i.")}
+        words={tx(t, "mCx_mulWords", "Multiply every part of the first number by every part of the second. The two real-times-real and i-times-i products make the real part, with a minus because i² = −1; the two mixed products make the imaginary part.")}>
         {r`(a + bi)(c + di) = ac + adi + bci + bd\,i^2 = (ac - bd) + (ad + bc)\,i`}
       </Equation>
+      <LiveFormula label={tx(t, "mCx_liveMul", "Try it: multiply two complex numbers")}
+        tex={r`(a + bi)(c + di) = (ac - bd) + (ad + bc)\,i`}
+        vars={[
+          { id: "a", label: "a", min: -4, max: 4, step: 1, value: 3, fmt: num },
+          { id: "b", label: "b", min: -4, max: 4, step: 1, value: 2, fmt: num },
+          { id: "c", label: "c", min: -4, max: 4, step: 1, value: 1, fmt: num },
+          { id: "d", label: "d", min: -4, max: 4, step: 1, value: 4, fmt: num },
+        ]}
+        compute={mulNumbers}
+        note={tx(t, "mCx_liveMulNote", "Starts on the example above. The second line checks the next section's claim: the lengths multiply and the angles add (≡ means equal up to whole turns). Try c = 0, d = 1: multiplying by i turns a + bi a quarter turn to −b + ai.")} />
 
       <H2>{tx(t, "mCx_geoTitle", "What multiplication does: turn and scale")}</H2>
       <p>
@@ -82,9 +129,16 @@ export function ComplexContent({ t }: { t: TrackTranslations }) {
           [r`r_1r_2`, tx(t, "mCx_wRR", "lengths multiply")],
           [r`\theta_1 + \theta_2`, tx(t, "mCx_wTT", "angles add: the real part is cos θ₁ cos θ₂ − sin θ₁ sin θ₂ = cos(θ₁ + θ₂), the imaginary part sin(θ₁ + θ₂)")],
         ]}
-        note={tx(t, "mCx_polarNote", "Example: 1 + i has length √2 and angle 45°. Squared: length 2, angle 90°, so (1 + i)² = 2i. Check by expanding: 1 + 2i + i² = 2i. ✓")}>
+        note={tx(t, "mCx_polarNote", "Example: 1 + i has length √2 and angle 45°. Squared: length 2, angle 90°, so (1 + i)² = 2i. Check by expanding: 1 + 2i + i² = 2i. ✓")}
+        words={tx(t, "mCx_polarWords", "To multiply two complex numbers, multiply their lengths and add their angles.")}>
         {r`r_1(\cos\theta_1 + i\sin\theta_1)\cdot r_2(\cos\theta_2 + i\sin\theta_2) = r_1r_2\big(\cos(\theta_1 + \theta_2) + i\sin(\theta_1 + \theta_2)\big)`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mCx_eqPolarDer", "Why the angles add")}
+        steps={[
+          { tex: r`(\cos\theta_1 + i\sin\theta_1)(\cos\theta_2 + i\sin\theta_2)`, why: tx(t, "mCx_q0", "the lengths r₁r₂ just come along as a factor; look at the two unit numbers") },
+          { tex: r`= (\cos\theta_1\cos\theta_2 - \sin\theta_1\sin\theta_2) + i(\sin\theta_1\cos\theta_2 + \cos\theta_1\sin\theta_2)`, why: tx(t, "mCx_q1", "the multiplication rule with a = cos θ₁, b = sin θ₁, c = cos θ₂, d = sin θ₂") },
+          { tex: r`= \green{\cos(\theta_1 + \theta_2) + i\sin(\theta_1 + \theta_2)}`, why: tx(t, "mCx_q2", "the two brackets are exactly the angle-sum formulas of the identities chapter") },
+        ]} />
 
       <ComplexFigure t={t} />
 
@@ -99,9 +153,17 @@ export function ComplexContent({ t }: { t: TrackTranslations }) {
           [r`z\bar z = |z|^2`, tx(t, "mCx_wZZ", "a number times its conjugate is its squared length, always real and ≥ 0")],
           [r`\frac{1}{z} = \frac{\bar z}{|z|^2}`, tx(t, "mCx_wInv", "the reciprocal: for a unit-length z it is simply z̄, the rotation the other way")],
         ]}
-        note={tx(t, "mCx_divNote", "Example: (5 + 5i)/(1 + 2i) = (5 + 5i)(1 − 2i)/(1 + 4) = (5 − 10i + 5i − 10i²)/5 = (15 − 5i)/5 = 3 − i. Check: (3 − i)(1 + 2i) = 3 + 6i − i − 2i² = 5 + 5i. ✓")}>
+        words={tx(t, "mCx_divWords", "Flip the sign of the imaginary part to get the conjugate. To divide, multiply top and bottom by the conjugate of the bottom: the bottom becomes a plain positive number.")}>
         {r`\bar z = a - bi \qquad z\bar z = a^2 + b^2 = |z|^2 \qquad \frac{z}{w} = \frac{z\,\bar w}{|w|^2}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mCx_eqDivEx", "Dividing (5 + 5i) by (1 + 2i)")}
+        steps={[
+          { tex: r`\frac{5 + 5i}{1 + 2i}` },
+          { tex: r`= \frac{(5 + 5i)(1 - 2i)}{(1 + 2i)(1 - 2i)}`, why: tx(t, "mCx_v1d", "multiply top and bottom by the conjugate of the bottom, 1 − 2i") },
+          { tex: r`= \frac{5 - 10i + 5i - 10i^2}{1 + 4}`, why: tx(t, "mCx_v2d", "expand the top; the bottom is 1² + 2² = |1 + 2i|²") },
+          { tex: r`= \frac{15 - 5i}{5} = \green{3 - i}`, why: tx(t, "mCx_v3d", "−10i² = +10, and −10i + 5i = −5i; then divide both parts by 5") },
+          { full: true, tex: r`(3 - i)(1 + 2i) = 3 + 6i - i - 2i^2 = 5 + 5i\ \checkmark`, why: tx(t, "mCx_v4d", "check by multiplying back") },
+        ]} />
 
       <H2>{tx(t, "mCx_powerTitle", "Powers and roots")}</H2>
       <p>
@@ -116,7 +178,8 @@ export function ComplexContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`z^n`, tx(t, "mCx_wZn", "length raised to the n-th power, angle multiplied by n")],
           [r`\omega_k`, tx(t, "mCx_wOmega", "the k-th root of unity, k = 0, 1, …, n − 1: angle k/n of a full turn")],
-        ]}>
+        ]}
+        words={tx(t, "mCx_rootsWords", "The n-th power raises the length to the n-th power and multiplies the angle by n. So the solutions of zⁿ = 1 have length 1 and angles that are whole fractions k/n of a full turn.")}>
         {r`z^n = r^n(\cos n\theta + i\sin n\theta) \qquad \omega_k = \cos\frac{2\pi k}{n} + i\sin\frac{2\pi k}{n}, \quad \omega_k^n = 1`}
       </Equation>
 
@@ -137,7 +200,8 @@ export function ComplexContent({ t }: { t: TrackTranslations }) {
           [r`\cos\theta + i\sin\theta`, tx(t, "mCx_wCis", "the point at angle θ on the unit circle")],
           [r`e^{i\pi} = -1`, tx(t, "mCx_wPi", "half a turn from 1 lands on −1")],
         ]}
-        note={tx(t, "mCx_eulerNote", "θ is in radians, as always when e is involved: e^(iπ/2) = i, a quarter turn.")}>
+        note={tx(t, "mCx_eulerNote", "θ is in radians, as always when e is involved: e^(iπ/2) = i, a quarter turn.")}
+        words={tx(t, "mCx_eulerWords", "e raised to i times an angle is the point at that angle on the unit circle. Half a turn lands on −1.")}>
         {r`e^{i\theta} = \cos\theta + i\sin\theta \qquad z = r\,e^{i\theta} \qquad e^{i\pi} + 1 = 0`}
       </Equation>
 
@@ -190,6 +254,14 @@ export function ComplexContent({ t }: { t: TrackTranslations }) {
           ["1 + i", "1 + i, 1 + 3i, …", tx(t, "mCx_v4", "(1 + i)² + 1 + i = 2i + 1 + i = 1 + 3i, and |1 + 3i| = √10 > 2: outside")],
         ]}
       />
+      <LiveFormula label={tx(t, "mCx_liveMandel", "Try it: is c in the Mandelbrot set?")}
+        tex={r`z_0 = 0 \qquad z_{k+1} = z_k^2 + c \qquad c = a + bi`}
+        vars={[
+          { id: "a", label: "a", min: -2, max: 1, step: 0.25, value: -1, fmt: num },
+          { id: "b", label: "b", min: -1.5, max: 1.5, step: 0.25, value: 0, fmt: num },
+        ]}
+        compute={mandelNumbers(t)}
+        note={tx(t, "mCx_liveMandelNote", "Starts on c = −1, the first row of the table. Try the other rows: a = 1, b = 0; a = 0, b = 1; a = 1, b = 1. Then try c = −0.75 + 0.25i, near the edge of the set: after six steps it still looks inside, yet it escapes at step 13. Near the edge, a few steps are not enough to decide. The bar stays full while |z| ≤ 2.")} />
 
       <H2>{tx(t, "mCx_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable

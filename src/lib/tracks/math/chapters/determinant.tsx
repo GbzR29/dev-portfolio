@@ -8,12 +8,38 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DeterminantFigure } from "@/components/lesson/figures/math/DeterminantFigure";
 
 const r = String.raw;
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+const detNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const d = v.a * v.d - v.b * v.c;
+  const what = d > 0 ? tx(t, "mDet_liveKept", "areas × {k}, orientation kept")
+    : d < 0 ? tx(t, "mDet_liveFlip", "areas × {k}, mirrored") : tx(t, "mDet_liveFlat", "collapsed: no inverse");
+  return {
+    tex: r`\det A = ${par(v.a)}\cdot ${par(v.d)} - ${par(v.b)}\cdot ${par(v.c)} = ${num(v.a * v.d)} - ${par(v.b * v.c)} = \green{${num(d)}} \qquad \text{${what.replace("{k}", num(Math.abs(d)))}}`,
+  };
+};
+
+/** Weights of P in the triangle A = (0, 0), B = (4, 0), C = (0, 4), whose area is 8. */
+function baryNumbers(v: Record<string, number>) {
+  const aPBC = (16 - 4 * v.x - 4 * v.y) / 2, aAPC = (4 * v.x) / 2, aABP = (4 * v.y) / 2;
+  const u = aPBC / 8, vv = aAPC / 8, w = aABP / 8;
+  return {
+    tex: r`\begin{gathered} u = \frac{${num(aPBC)}}{8} = \green{${num(u)}} \qquad v = \frac{${num(aAPC)}}{8} = \green{${num(vv)}} \qquad w = \frac{${num(aABP)}}{8} = \green{${num(w)}} \\ u + v + w = ${num(u + vv + w)} \end{gathered}`,
+    meter: Math.min(u, vv, w) >= 0 ? 1 : 0,
+    meterLabel: Math.min(u, vv, w) >= 0 ? "u, v, w ≥ 0" : "min(u, v, w) < 0",
+  };
+}
 
 export function DeterminantContent({ t }: { t: TrackTranslations }) {
   return (
@@ -38,18 +64,36 @@ export function DeterminantContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mDet_formulaTitle", "The area of that parallelogram")}</H2>
       <p>
-        {tx(t, "mDet_formulaBody",
-          "Draw the parallelogram with corners 0, (a, c), (a + b, c + d) and (b, d), with all four numbers positive, and put the smallest rectangle around it: it is (a + b) wide and (c + d) tall, area ac + ad + bc + bd. The parts of the rectangle outside the parallelogram are two right triangles with legs a and c (together ac), two with legs b and d (together bd), and two small b × c rectangles in the corners (together 2bc). Subtract them all: ac + ad + bc + bd − ac − bd − 2bc = ad − bc.")}
+        {tx(t, "mDet_formulaBody2",
+          "Draw the parallelogram with corners 0, (a, c), (a + b, c + d) and (b, d), with all four numbers positive, and put the smallest rectangle around it. The parallelogram is what is left of the rectangle once the pieces outside it are cut away.")}
       </p>
+      <Derivation t={t} label={tx(t, "mDet_eqBox", "The parallelogram's area, by cutting a rectangle")}
+        steps={[
+          { tex: r`\text{area}` },
+          { tex: r`= (a + b)(c + d) - \text{corners}`, why: tx(t, "mDet_b1", "the surrounding rectangle is a + b wide and c + d tall; remove the pieces outside the parallelogram") },
+          { tex: r`= (ac + ad + bc + bd) - (ac + bd + 2bc)`, why: tx(t, "mDet_b2", "the rectangle multiplied out; the corners are two triangles with legs a, c (together ac), two with legs b, d (together bd) and two b × c rectangles (together 2bc)") },
+          { tex: r`= \green{ad - bc}`, why: tx(t, "mDet_b3", "ac and bd cancel, and bc − 2bc leaves −bc") },
+        ]} />
       <Equation label={tx(t, "mDet_eq2", "The determinant of a 2 × 2 matrix")}
         where={[
           [r`\det A`, tx(t, "mDet_wDet", "the determinant, also written |A|; the signed area of the image of the unit square")],
           [r`ad`, tx(t, "mDet_wAD", "the product of the main diagonal (top left to bottom right)")],
           [r`bc`, tx(t, "mDet_wBC", "the product of the other diagonal, subtracted")],
         ]}
-        note={tx(t, "mDet_eq2Note", "Example: [[3, 1], [1, 2]] has det = 3·2 − 1·1 = 5, so it multiplies every area by 5. A circle of area 2 becomes an ellipse of area 10.")}>
+        note={tx(t, "mDet_eq2Note", "Example: [[3, 1], [1, 2]] has det = 3·2 − 1·1 = 5, so it multiplies every area by 5. A circle of area 2 becomes an ellipse of area 10.")}
+        words={tx(t, "mDet_eq2Words", "Multiply down the main diagonal, multiply down the other diagonal, and subtract the second product from the first.")}>
         {r`\det\begin{bmatrix} a & b \\ c & d \end{bmatrix} = ad - bc`}
       </Equation>
+      <LiveFormula label={tx(t, "mDet_liveDet", "Try it: a 2 × 2 determinant")}
+        tex={r`\det\begin{bmatrix} a & b \\ c & d \end{bmatrix} = ad - bc`}
+        vars={[
+          { id: "a", label: "a", min: -4, max: 4, step: 1, value: 3, fmt: num },
+          { id: "b", label: "b", min: -4, max: 4, step: 1, value: 1, fmt: num },
+          { id: "c", label: "c", min: -4, max: 4, step: 1, value: 1, fmt: num },
+          { id: "d", label: "d", min: -4, max: 4, step: 1, value: 2, fmt: num },
+        ]}
+        compute={detNumbers(t)}
+        note={tx(t, "mDet_liveDetNote", "Starts on the example above. Swap the columns (a ↔ b, c ↔ d): same size, opposite sign. Make the second column a multiple of the first, such as a = 1, c = 2, b = 2, d = 4: the determinant is 0.")} />
 
       <H2>{tx(t, "mDet_signTitle", "The sign: kept or flipped")}</H2>
       <p>
@@ -95,7 +139,8 @@ export function DeterminantContent({ t }: { t: TrackTranslations }) {
           [r`\begin{vmatrix} e & f \\ h & i \end{vmatrix}`, tx(t, "mDet_wMinor", "the minor of a: delete row 1 and column 1, take the 2 × 2 determinant ei − fh")],
           [r`+,\ -,\ +`, tx(t, "mDet_wSigns", "the alternating signs of a chessboard pattern starting with + in the top-left corner")],
         ]}
-        note={tx(t, "mDet_eq3Note", "Example: [[2, 0, 1], [1, 3, 0], [0, 1, 4]]. det = 2(3·4 − 0·1) − 0(1·4 − 0·0) + 1(1·1 − 3·0) = 2·12 − 0 + 1 = 25. A zero in the first row saves work: its term vanishes. In general, expand along whichever row or column has the most zeros.")}>
+        note={tx(t, "mDet_eq3Note", "Example: [[2, 0, 1], [1, 3, 0], [0, 1, 4]]. det = 2(3·4 − 0·1) − 0(1·4 − 0·0) + 1(1·1 − 3·0) = 2·12 − 0 + 1 = 25. A zero in the first row saves work: its term vanishes. In general, expand along whichever row or column has the most zeros.")}
+        words={tx(t, "mDet_eq3Words", "Walk along the first row. For each entry, cover its row and column, take the 2 × 2 determinant of what is left, and multiply. Add the three results with signs plus, minus, plus.")}>
         {r`\det\begin{bmatrix} a & b & c \\ d & e & f \\ g & h & i \end{bmatrix} = a\begin{vmatrix} e & f \\ h & i \end{vmatrix} - b\begin{vmatrix} d & f \\ g & i \end{vmatrix} + c\begin{vmatrix} d & e \\ g & h \end{vmatrix}`}
       </Equation>
       <p>
@@ -114,7 +159,8 @@ export function DeterminantContent({ t }: { t: TrackTranslations }) {
           [r`B - A`, tx(t, "mDet_wBA", "the direction of the line")],
           [r`P - A`, tx(t, "mDet_wPA", "the arrow from the line's start to the point")],
           [r`> 0,\ < 0,\ = 0`, tx(t, "mDet_wSide", "left of the line, right of it, or exactly on it (with y pointing up)")],
-        ]}>
+        ]}
+        words={tx(t, "mDet_orientWords", "Put the line's direction and the arrow to the point side by side as the two columns of a matrix; the sign of its determinant says on which side the point lies.")}>
         {r`\operatorname{orient}(A, B, P) = \det\begin{bmatrix} B_x - A_x & P_x - A_x \\ B_y - A_y & P_y - A_y \end{bmatrix} = (B_x - A_x)(P_y - A_y) - (P_x - A_x)(B_y - A_y)`}
       </Equation>
       <p>
@@ -133,9 +179,18 @@ export function DeterminantContent({ t }: { t: TrackTranslations }) {
           [r`u + v + w = 1`, tx(t, "mDet_wSum", "the three pieces make up the whole triangle")],
           [r`u, v, w \ge 0`, tx(t, "mDet_wIn", "true exactly when P is inside the triangle (or on its edge)")],
         ]}
-        note={tx(t, "mDet_baryNote", "Example: A = (0, 0), B = (4, 0), C = (0, 4), P = (1, 1). area(ABC) = 8. area(PBC) = 4, area(APC) = 2, area(ABP) = 2. So u = 0.5, v = 0.25, w = 0.25, and 0.5·(0, 0) + 0.25·(4, 0) + 0.25·(0, 4) = (1, 1). ✓")}>
+        note={tx(t, "mDet_baryNote", "Example: A = (0, 0), B = (4, 0), C = (0, 4), P = (1, 1). area(ABC) = 8. area(PBC) = 4, area(APC) = 2, area(ABP) = 2. So u = 0.5, v = 0.25, w = 0.25, and 0.5·(0, 0) + 0.25·(4, 0) + 0.25·(0, 4) = (1, 1). ✓")}
+        words={tx(t, "mDet_baryWords", "Each corner's weight is the share of the whole triangle taken by the small triangle on the far side of P from that corner.")}>
         {r`u = \frac{\operatorname{area}(PBC)}{\operatorname{area}(ABC)} \qquad v = \frac{\operatorname{area}(APC)}{\operatorname{area}(ABC)} \qquad w = \frac{\operatorname{area}(ABP)}{\operatorname{area}(ABC)} \qquad P = uA + vB + wC`}
       </Equation>
+      <LiveFormula label={tx(t, "mDet_liveBary", "Try it: move P in the example's triangle")}
+        tex={r`u = \frac{\operatorname{area}(PBC)}{8} \qquad v = \frac{\operatorname{area}(APC)}{8} \qquad w = \frac{\operatorname{area}(ABP)}{8}`}
+        vars={[
+          { id: "x", label: tx(t, "mDet_livePx", "P's x"), min: -1, max: 5, step: 0.5, value: 1, fmt: num },
+          { id: "y", label: tx(t, "mDet_livePy", "P's y"), min: -1, max: 5, step: 0.5, value: 1, fmt: num },
+        ]}
+        compute={baryNumbers}
+        note={tx(t, "mDet_liveBaryNote", "A = (0, 0), B = (4, 0), C = (0, 4), as in the example. The bar is full while P is inside. Try P = (4, 0): v = 1, P is corner B. Try P = (3, 3): u is negative, because P has crossed the edge BC.")} />
       <p>
         {tx(t, "mDet_gpuBody",
           "The weights blend anything attached to the corners. Suppose the corners of a triangular field have measured heights of 10 m at A, 14 m at B and 12 m at C. The height at P = (1, 1) of the example is estimated as u · 10 + v · 14 + w · 12 = 0.5 · 10 + 0.25 · 14 + 0.25 · 12 = 5 + 3.5 + 3 = 11.5 m. The figure's second mode shows the same blend with colours at the corners.")}

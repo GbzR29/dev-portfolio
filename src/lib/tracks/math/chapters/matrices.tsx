@@ -8,12 +8,26 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MatrixFigure } from "@/components/lesson/figures/math/MatrixFigure";
 
 const r = String.raw;
+const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+// ── Live formula: matrix × vector, both readings ──────────────────────────────
+
+const mvNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const X = v.a * v.x + v.b * v.y, Y = v.c * v.x + v.d * v.y;
+  const rows = tx(t, "mMat_liveRows", "rows"), cols = tx(t, "mMat_liveCols", "columns");
+  return {
+    tex: r`\begin{aligned} \text{${rows}: } &\begin{bmatrix} ${par(v.a)}\cdot ${par(v.x)} + ${par(v.b)}\cdot ${par(v.y)} \\ ${par(v.c)}\cdot ${par(v.x)} + ${par(v.d)}\cdot ${par(v.y)} \end{bmatrix} = \green{\begin{bmatrix} ${num(X)} \\ ${num(Y)} \end{bmatrix}} \\[4pt] \text{${cols}: } & ${par(v.x)}\begin{bmatrix} ${num(v.a)} \\ ${num(v.c)} \end{bmatrix} + ${par(v.y)}\begin{bmatrix} ${num(v.b)} \\ ${num(v.d)} \end{bmatrix} = \begin{bmatrix} ${num(v.a * v.x)} \\ ${num(v.c * v.x)} \end{bmatrix} + \begin{bmatrix} ${num(v.b * v.y)} \\ ${num(v.d * v.y)} \end{bmatrix} = \green{\begin{bmatrix} ${num(X)} \\ ${num(Y)} \end{bmatrix}} \end{aligned}`,
+  };
+};
 
 export function MatricesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -48,7 +62,8 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
           [r`c, d`, tx(t, "mMat_wCD", "the second row: how much old x and old y go into the new y")],
           [r`\mathbf{v} = (x, y)`, tx(t, "mMat_wV", "the input vector, written as a column")],
           [r`A\mathbf{v}`, tx(t, "mMat_wAv", "the output: the matrix times the vector")],
-        ]}>
+        ]}
+        words={tx(t, "mMat_defWords", "The new x is a times the old x plus b times the old y; the new y is c times the old x plus d times the old y. The first row builds x', the second builds y'.")}>
         {r`A\mathbf{v} = \begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} ax + by \\ cx + dy \end{bmatrix}`}
       </Equation>
 
@@ -66,9 +81,22 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
           [r`(a, c)`, tx(t, "mMat_wCol1", "the first column, scaled by x")],
           [r`(b, d)`, tx(t, "mMat_wCol2", "the second column, scaled by y")],
         ]}
-        note={tx(t, "mMat_colsNote", "Example: A = [[2, 1], [0, 3]] and v = (4, −1). Row view: (2·4 + 1·(−1), 0·4 + 3·(−1)) = (7, −3). Column view: 4·(2, 0) + (−1)·(1, 3) = (8, 0) + (−1, −3) = (7, −3). Same answer, two ways of seeing it.")}>
+        note={tx(t, "mMat_colsNote", "Example: A = [[2, 1], [0, 3]] and v = (4, −1). Row view: (2·4 + 1·(−1), 0·4 + 3·(−1)) = (7, −3). Column view: 4·(2, 0) + (−1)·(1, 3) = (8, 0) + (−1, −3) = (7, −3). Same answer, two ways of seeing it.")}
+        words={tx(t, "mMat_colsWords", "Take x copies of the first column and y copies of the second column, and add them.")}>
         {r`\begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} x \\ y \end{bmatrix} = x\begin{bmatrix} a \\ c \end{bmatrix} + y\begin{bmatrix} b \\ d \end{bmatrix}`}
       </Equation>
+      <LiveFormula label={tx(t, "mMat_liveMv", "Try it: matrix × vector, read both ways")}
+        tex={r`\begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} ax + by \\ cx + dy \end{bmatrix} = x\begin{bmatrix} a \\ c \end{bmatrix} + y\begin{bmatrix} b \\ d \end{bmatrix}`}
+        vars={[
+          { id: "a", label: "a", min: -3, max: 3, step: 1, value: 2, fmt: num },
+          { id: "b", label: "b", min: -3, max: 3, step: 1, value: 1, fmt: num },
+          { id: "c", label: "c", min: -3, max: 3, step: 1, value: 0, fmt: num },
+          { id: "d", label: "d", min: -3, max: 3, step: 1, value: 3, fmt: num },
+          { id: "x", label: "x", min: -5, max: 5, step: 1, value: 4, fmt: num },
+          { id: "y", label: "y", min: -5, max: 5, step: 1, value: -1, fmt: num },
+        ]}
+        compute={mvNumbers(t)}
+        note={tx(t, "mMat_liveMvNote", "Starts on the example above. Set x = 1 and y = 0: the result is the first column. Set a = d = 0, b = −1, c = 1: the quarter turn, (x, y) → (−y, x).")} />
 
       <H2>{tx(t, "mMat_colsTitle", "The columns are where the axes land")}</H2>
       <p>
@@ -100,6 +128,13 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mMat_linearBody",
           "A transformation that a matrix can do is called a linear map. It obeys two rules: transforming a sum gives the sum of the transformed parts, A(u + v) = Au + Av, and transforming a scaled vector gives the scaled result, A(kv) = k(Av). Both follow from the formula (expand a(x₁ + x₂) + b(y₁ + y₂) and regroup). Geometrically they mean: straight lines stay straight, parallel lines stay parallel, evenly spaced points stay evenly spaced, and the origin stays at the origin, since A(0, 0) = (0, 0). The figure's warped grid shows all four.")}
       </p>
+      <Derivation t={t} label={tx(t, "mMat_eqLin", "Why a matrix respects sums")}
+        steps={[
+          { tex: r`A(\mathbf u + \mathbf v)\ \text{(first entry)}` },
+          { tex: r`= a(x_1 + x_2) + b(y_1 + y_2)`, why: tx(t, "mMat_l1", "u + v = (x₁ + x₂, y₁ + y₂); the first row of A builds the new x from it") },
+          { tex: r`= (a x_1 + b y_1) + (a x_2 + b y_2)`, why: tx(t, "mMat_l2", "multiply out the brackets and regroup the terms of u and of v") },
+          { tex: r`= \green{(A\mathbf u)_1 + (A\mathbf v)_1}`, why: tx(t, "mMat_l3", "each bracket is the first entry of A applied to one vector; the second entry works the same way with c and d") },
+        ]} />
       <Callout type="info" t={t}>
         {tx(t, "mMat_transNote", "Translation, moving everything by (3, 2), is not linear: it moves the origin, and no a, b, c, d can do that, because ax + by with x = y = 0 is always 0. The last section of this chapter shows the standard trick that lets matrices translate anyway.")}
       </Callout>
@@ -114,6 +149,7 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
           [r`AB`, tx(t, "mMat_wAB2", "the matrix that applies B first, then A")],
           [r`(AB)_{ij}`, tx(t, "mMat_wIJ", "the entry in row i, column j: row i of A dotted with column j of B")],
         ]}
+        words={tx(t, "mMat_mulWords", "Each entry of the product is a row of the left matrix dotted with a column of the right matrix, taken where that row and that column cross.")}
         note={tx(t, "mMat_mulNote", "Example: A = [[0, −1], [1, 0]] (quarter turn), B = [[2, 0], [0, 1]] (stretch x). AB: row 1 of A (0, −1) with column 1 of B (2, 0) gives 0; with column 2 (0, 1) gives −1; row 2 (1, 0) gives 2 and 0. AB = [[0, −1], [2, 0]]. BA = [[0, −2], [1, 0]]. Different: stretching and then turning is not the same as turning and then stretching.")}>
         {r`\begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} e & f \\ g & h \end{bmatrix} = \begin{bmatrix} ae + bg & af + bh \\ ce + dg & cf + dh \end{bmatrix}`}
       </Equation>
@@ -138,7 +174,8 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
           [r`R_z(\theta)`, tx(t, "mMat_wRz", "turns x toward y; z is untouched (third column and row are those of I)")],
           [r`R_x(\theta)`, tx(t, "mMat_wRx", "turns y toward z; x is untouched")],
           [r`R_y(\theta)`, tx(t, "mMat_wRy", "turns z toward x; y is untouched. The sign of sin looks swapped only because z → x is the anticlockwise order seen from +y")],
-        ]}>
+        ]}
+        words={tx(t, "mMat_rot3Words", "Each one is the 2D rotation placed on the two axes that turn, with a 1 on the axis that stays put and zeros beside it.")}>
         {r`R_z = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix} \quad R_x = \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix} \quad R_y = \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix}`}
       </Equation>
 
@@ -153,6 +190,7 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
           [r`(t_x, t_y)`, tx(t, "mMat_wT", "the translation, in the last column")],
           [r`w`, tx(t, "mMat_wW", "the extra coordinate: 1 for a point, 0 for a direction")],
         ]}
+        words={tx(t, "mMat_homWords", "The corner of the matrix turns, scales or shears as before; the last column adds the offset, multiplied by w, so points (w = 1) are moved and directions (w = 0) are not.")}
         note={tx(t, "mMat_homNote", "With w = 0 the offset is multiplied by 0 and ignored. That is exactly right for directions: carrying a compass to another town does not change which way north is. So points get w = 1 and vectors w = 0, the distinction from the vectors chapter made precise.")}>
         {r`\begin{bmatrix} a & b & t_x \\ c & d & t_y \\ 0 & 0 & 1 \end{bmatrix}\begin{bmatrix} x \\ y \\ w \end{bmatrix} = \begin{bmatrix} ax + by + t_x w \\ cx + dy + t_y w \\ w \end{bmatrix}`}
       </Equation>
@@ -171,9 +209,16 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
           "2. Shear then mirror: S = [[1, 1], [0, 1]], F = [[−1, 0], [0, 1]]. Shear first means F·S = [[−1·1 + 0·0, −1·1 + 0·1], [0·1 + 1·0, 0·1 + 1·1]] = [[−1, −1], [0, 1]]. Applied to (0, 1): (−1, 1). By hand: shear gives (1, 1), mirror gives (−1, 1). ✓")}
       </p>
       <p>
-        {tx(t, "mMat_ex3",
-          "3. Rotate the point (2, 0) by 90° about (1, 1) with one matrix: translate by (−1, −1), rotate, translate by (1, 1). M = T(1, 1) · R(90°) · T(−1, −1) = [[0, −1, 2], [1, 0, 0], [0, 0, 1]]. M(2, 0, 1) = (0 − 0 + 2, 2 + 0 + 0, 1) = (2, 2). By hand: offset (1, −1), turned to (1, 1), plus the pivot is (2, 2). ✓")}
+        {tx(t, "mMat_ex3b",
+          "3. Rotate the point (2, 0) by 90° about (1, 1) with one matrix: translate by (−1, −1), rotate, translate by (1, 1).")}
       </p>
+      <Derivation t={t} label={tx(t, "mMat_eqEx3", "A turn about a pivot as one matrix")}
+        steps={[
+          { tex: r`M = T(1, 1)\, R(90^\circ)\, T(-1, -1)`, why: tx(t, "mMat_x1", "read right to left: move the pivot to the origin, turn, move it back") },
+          { tex: r`= \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 1 \end{bmatrix}\begin{bmatrix} 0 & -1 & 1 \\ 1 & 0 & -1 \\ 0 & 0 & 1 \end{bmatrix}`, why: tx(t, "mMat_x2", "first multiply the turn [0 −1; 1 0] by T(−1, −1): its last column becomes R(−1, −1) = (1, −1)") },
+          { tex: r`= \begin{bmatrix} 0 & -1 & 2 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix}`, why: tx(t, "mMat_x3", "then T(1, 1) adds (1, 1) to that last column: (2, 0)") },
+          { full: true, tex: r`M\begin{bmatrix} 2 \\ 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 0 - 0 + 2 \\ 2 + 0 + 0 \\ 1 \end{bmatrix} = \green{\begin{bmatrix} 2 \\ 2 \\ 1 \end{bmatrix}}`, why: tx(t, "mMat_x4", "apply it to the point (2, 0) with w = 1. By hand: offset (1, −1) from the pivot, turned to (1, 1), plus the pivot gives (2, 2) ✓") },
+        ]} />
 
       <H2>{tx(t, "mMat_handTitle", "Multiplying by hand, any size")}</H2>
       <p>

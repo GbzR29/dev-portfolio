@@ -34,7 +34,6 @@ const text: Record<string, string> = {
   mCx_wConj: "o conjugado: troque o sinal da parte imaginária",
   mCx_wZZ: "um número vezes seu conjugado é seu comprimento ao quadrado, sempre real e ≥ 0",
   mCx_wInv: "o inverso: para um z de comprimento 1 é simplesmente z̄, a rotação para o outro lado",
-  mCx_divNote: "Exemplo: (5 + 5i)/(1 + 2i) = (5 + 5i)(1 − 2i)/(1 + 4) = (5 − 10i + 5i − 10i²)/5 = (15 − 5i)/5 = 3 − i. Confira: (3 − i)(1 + 2i) = 3 + 6i − i − 2i² = 5 + 5i. ✓",
   mCx_powerTitle: "Potências e raízes",
   mCx_deMoivre: "Multiplicar z por ele mesmo n vezes multiplica o comprimento por r a cada vez e soma o ângulo θ a cada vez: zⁿ = rⁿ(cos nθ + i sin nθ). Essa é a fórmula de De Moivre, o terceiro modo da figura. Ela transforma potências em algo que dá para imaginar: para |z| > 1 as potências espiralam para fora, para |z| < 1 para dentro, e para |z| = 1 marcham em volta do círculo unitário.",
   mCx_rootsBody: "Rodá-la ao contrário resolve zⁿ = 1. O comprimento precisa satisfazer rⁿ = 1, então r = 1. O ângulo precisa satisfazer nθ = um número inteiro de voltas completas, então θ = 0, 360°/n, 2·360°/n, e assim por diante: n respostas diferentes antes de se repetirem. Essas são as raízes n-ésimas da unidade, os cantos de um n-ágono regular inscrito no círculo unitário (o quarto modo). A mesma ideia dá n raízes n-ésimas diferentes para qualquer número complexo não nulo.",
@@ -93,6 +92,28 @@ const text: Record<string, string> = {
   mCx_m5: "(a + bi)/(c + di) não é a/c + (b/d)i",
   mCx_m6: "√a · √b = √(ab) só vale para a, b ≥ 0",
   mCx_whyNote: "Por que este capítulo está em Álgebra linear? Porque multiplicar por w = c + di é uma transformação linear do plano, de matriz [[c, −d], [d, c]]: uma matriz de rotação escalada por |w|. Os números complexos são exatamente as matrizes 2 × 2 que giram e escalam sem cisalhar nem espelhar, escritas numa forma compacta que se multiplica como números comuns.",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mCx_mulWords: "Multiplique cada parte do primeiro número por cada parte do segundo. Os produtos real-vezes-real e i-vezes-i formam a parte real, com um menos porque i² = −1; os dois produtos mistos formam a parte imaginária.",
+  mCx_liveMul: "Experimente: multiplique dois números complexos",
+  mCx_liveMulNote: "Começa no exemplo acima. A segunda linha confere o que a próxima seção afirma: os comprimentos se multiplicam e os ângulos se somam (≡ quer dizer igual a menos de voltas inteiras). Tente c = 0, d = 1: multiplicar por i gira a + bi um quarto de volta até −b + ai.",
+  mCx_polarWords: "Para multiplicar dois números complexos, multiplique os comprimentos e some os ângulos.",
+  mCx_eqPolarDer: "Por que os ângulos se somam",
+  mCx_q0: "os comprimentos r₁r₂ só vêm junto como fator; olhe para os dois números unitários",
+  mCx_q1: "a regra da multiplicação com a = cos θ₁, b = sen θ₁, c = cos θ₂, d = sen θ₂",
+  mCx_q2: "os dois parênteses são exatamente as fórmulas da soma de ângulos do capítulo de identidades",
+  mCx_divWords: "Troque o sinal da parte imaginária para obter o conjugado. Para dividir, multiplique em cima e embaixo pelo conjugado de baixo: o de baixo vira um número positivo comum.",
+  mCx_eqDivEx: "Dividindo (5 + 5i) por (1 + 2i)",
+  mCx_v1d: "multiplique em cima e embaixo pelo conjugado de baixo, 1 − 2i",
+  mCx_v2d: "desenvolva o de cima; o de baixo é 1² + 2² = |1 + 2i|²",
+  mCx_v3d: "−10i² = +10, e −10i + 5i = −5i; depois divida as duas partes por 5",
+  mCx_v4d: "confira multiplicando de volta",
+  mCx_rootsWords: "A n-ésima potência eleva o comprimento à n e multiplica o ângulo por n. Então as soluções de zⁿ = 1 têm comprimento 1 e ângulos que são frações inteiras k/n de uma volta.",
+  mCx_eulerWords: "e elevado a i vezes um ângulo é o ponto desse ângulo no círculo unitário. Meia volta cai em −1.",
+  mCx_liveMandel: "Experimente: c está no conjunto de Mandelbrot?",
+  mCx_liveOut: "|z| > 2: c está fora do conjunto",
+  mCx_liveIn: "ainda dentro de 2 depois de seis passos: c parece estar dentro",
+  mCx_liveMandelNote: "Começa em c = −1, a primeira linha da tabela. Tente as outras linhas: a = 1, b = 0; a = 0, b = 1; a = 1, b = 1. Depois tente c = −0,75 + 0,25i, perto da borda do conjunto: depois de seis passos ele ainda parece dentro, mas escapa no passo 13. Perto da borda, poucos passos não bastam para decidir. A barra fica cheia enquanto |z| ≤ 2.",
 };
 
 export default text;

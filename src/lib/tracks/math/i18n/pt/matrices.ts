@@ -71,7 +71,7 @@ const text: Record<string, string> = {
   mMat_exTitle: "Exemplos resolvidos",
   mMat_ex1: "1. Construa a matriz que gira 90° no sentido anti-horário e dobra o tamanho. î precisa ir para (0, 2) e ĵ para (−2, 0), então A = [[0, −2], [2, 0]]. Confira: A(1, 1) = (0 − 2, 2 + 0) = (−2, 2), que é (1, 1) girado um quarto e dobrado.",
   mMat_ex2: "2. Cisalhar e depois espelhar: S = [[1, 1], [0, 1]], F = [[−1, 0], [0, 1]]. Cisalhar primeiro quer dizer F·S = [[−1·1 + 0·0, −1·1 + 0·1], [0·1 + 1·0, 0·1 + 1·1]] = [[−1, −1], [0, 1]]. Aplicado a (0, 1): (−1, 1). À mão: o cisalhamento dá (1, 1), o espelho dá (−1, 1). ✓",
-  mMat_ex3: "3. Gire o ponto (2, 0) em 90° em torno de (1, 1) com uma única matriz: translade por (−1, −1), gire, translade por (1, 1). M = T(1, 1) · R(90°) · T(−1, −1) = [[0, −1, 2], [1, 0, 0], [0, 0, 1]]. M(2, 0, 1) = (0 − 0 + 2, 2 + 0 + 0, 1) = (2, 2). À mão: deslocamento (1, −1), girado para (1, 1), mais o pivô dá (2, 2). ✓",
+  mMat_ex3b: "3. Gire o ponto (2, 0) em 90° em torno de (1, 1) com uma única matriz: translade por (−1, −1), gire, translade por (1, 1).",
   mMat_handTitle: "Multiplicando à mão, qualquer tamanho",
   mMat_handBody: "Matrizes não precisam ser quadradas. Uma matriz m × n tem m linhas e n colunas, e a regra é a mesma do 2 × 2: o elemento na linha i, coluna j de AB é a linha i de A em produto escalar com a coluna j de B. Um jeito organizado de montar é escrever B acima e à direita de A; cada elemento do produto fica então exatamente onde sua linha de A e sua coluna de B se cruzam. Pegue A (2 × 3) e B (3 × 2):",
   mMat_eqRect: "Uma matriz 2 × 3 vezes uma matriz 3 × 2",
@@ -100,6 +100,26 @@ const text: Record<string, string> = {
   mMat_m6w: "multiplicar uma 2 × 3 por uma 2 × 3",
   mMat_m6r: "os tamanhos de dentro precisam coincidir",
   mMat_m6: "(m × n)(n × p): cada linha precisa ter o comprimento de cada coluna",
+
+  // ── In words, derivations, live formula (2026-10-08) ──
+  mMat_defWords: "O novo x é a vezes o x antigo mais b vezes o y antigo; o novo y é c vezes o x antigo mais d vezes o y antigo. A primeira linha constrói x', a segunda constrói y'.",
+  mMat_colsWords: "Pegue x cópias da primeira coluna e y cópias da segunda coluna, e some.",
+  mMat_liveMv: "Experimente: matriz × vetor, lida dos dois jeitos",
+  mMat_liveRows: "linhas",
+  mMat_liveCols: "colunas",
+  mMat_liveMvNote: "Começa no exemplo acima. Ponha x = 1 e y = 0: o resultado é a primeira coluna. Ponha a = d = 0, b = −1, c = 1: o quarto de volta, (x, y) → (−y, x).",
+  mMat_eqLin: "Por que uma matriz respeita somas",
+  mMat_l1: "u + v = (x₁ + x₂, y₁ + y₂); a primeira linha de A constrói o novo x a partir disso",
+  mMat_l2: "multiplique os parênteses e reagrupe os termos de u e de v",
+  mMat_l3: "cada parêntese é a primeira entrada de A aplicada a um dos vetores; a segunda entrada funciona do mesmo jeito com c e d",
+  mMat_mulWords: "Cada entrada do produto é uma linha da matriz da esquerda escalar uma coluna da matriz da direita, tomada onde essa linha e essa coluna se cruzam.",
+  mMat_rot3Words: "Cada uma é a rotação 2D posta nos dois eixos que giram, com um 1 no eixo que fica parado e zeros ao lado dele.",
+  mMat_homWords: "O canto da matriz gira, escala ou cisalha como antes; a última coluna soma o deslocamento, multiplicado por w, então pontos (w = 1) são movidos e direções (w = 0) não.",
+  mMat_eqEx3: "Um giro em torno de um pivô como uma única matriz",
+  mMat_x1: "leia da direita para a esquerda: leve o pivô para a origem, gire, traga-o de volta",
+  mMat_x2: "primeiro multiplique o giro [0 −1; 1 0] por T(−1, −1): sua última coluna vira R(−1, −1) = (1, −1)",
+  mMat_x3: "depois T(1, 1) soma (1, 1) a essa última coluna: (2, 0)",
+  mMat_x4: "aplique ao ponto (2, 0) com w = 1. À mão: deslocamento (1, −1) a partir do pivô, girado para (1, 1), mais o pivô dá (2, 2) ✓",
 };
 
 export default text;

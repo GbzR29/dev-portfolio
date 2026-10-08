@@ -39,7 +39,7 @@ const text: Record<string, string> = {
   mQuat_whyBody: "Separe v numa parte ao longo do eixo e numa parte perpendicular a ele. A parte ao longo de n fica em paz: q é feito só de 1 e n, e n vezes n comuta, então q n q* = n q q* = n. Para a parte perpendicular, a fórmula do produto dá q v = (−sin(θ/2) n·v, cos(θ/2) v + sin(θ/2) n × v) = (0, cos(θ/2) v + sin(θ/2) n × v), já que n · v = 0. Ora, n × v é v girado 90° em torno de n, então isso é v girado θ/2 em torno de n, exatamente como multiplicar por cos + i sin gira um número complexo. A mesma conta mostra que multiplicar por q* à direita gira a parte perpendicular por mais θ/2 no mesmo sentido. Metade mais metade dá θ. Multiplicar por q de um lado só misturaria a parte escalar e não devolveria um vetor puro; o sanduíche mantém o resultado um vetor, e o preço é dividir o ângulo entre os dois lados.",
   mQuat_fastBody: "Desenvolver o sanduíche de uma vez por todas dá uma fórmula mais rápida que não precisa de produto de quatérnios nenhum, só de dois produtos vetoriais. Com q = (w, u): v' = v + 2w (u × v) + 2 u × (u × v). É também o jeito mais rápido de girar um vetor à mão, como mostra a última seção.",
   mQuat_combTitle: "Combinando e desfazendo rotações",
-  mQuat_combBody: "Gire por q₁ e depois por q₂: q₂(q₁ v q₁*)q₂* = (q₂q₁) v (q₂q₁)*, usando (q₂q₁)* = q₁*q₂*. Então a rotação combinada é o produto q₂q₁, e, como nas matrizes, a aplicada primeiro é escrita à direita. O produto de dois quatérnios unitários é um quatérnio unitário, e multiplicar dois custa 16 multiplicações contra 27 para duas matrizes 3 × 3. Desfazer uma rotação é o conjugado q*: o mesmo eixo, ângulo negativo. O arredondamento ainda se acumula depois de muitos produtos, mas o conserto é trivial: divida pelo comprimento para voltar a ter |q| = 1.",
+  mQuat_combBody2: "Gire por q₁ e depois por q₂; a dedução abaixo mostra que o resultado é uma única rotação, pelo produto q₂q₁. Como nas matrizes, a aplicada primeiro é escrita à direita. O produto de dois quatérnios unitários é um quatérnio unitário, e multiplicar dois custa 16 multiplicações contra 27 para duas matrizes 3 × 3. Desfazer uma rotação é o conjugado q*: o mesmo eixo, ângulo negativo. O arredondamento ainda se acumula depois de muitos produtos, mas o conserto é trivial: divida pelo comprimento para voltar a ter |q| = 1.",
   mQuat_coverNote: "q e −q dão a mesma rotação, já que os dois sinais de menos em (−q)v(−q)* se cancelam. Em termos de eixo–ângulo, −q é um giro de θ + 360°, que termina no mesmo lugar. O primeiro modo da figura mostra q trocando de sinal quando θ passa de 360° enquanto a caixa volta ao início. Toda rotação tem, portanto, exatamente dois quatérnios, o que importa ao misturar: veja abaixo.",
   mQuat_blendTitle: "Misturando orientações: nlerp e slerp",
   mQuat_blendBody: "Muitas vezes é preciso a orientação “a t do caminho” de A até B: um telescópio ou um satélite girando suavemente de uma estrela para outra, o punho de um robô passando entre duas poses. Quatérnios unitários vivem na superfície de uma esfera de quatro dimensões, e o melhor caminho entre dois deles é o arco de círculo máximo, a versão 4D da rota mais curta entre duas cidades num globo. Andar por ele a velocidade constante é o slerp (interpolação linear esférica). Sua fórmula pesa as duas pontas por senos, assim como um ponto num arco de circunferência comum é feito das duas pontas pesadas pelos senos dos ângulos até cada uma.",
@@ -100,6 +100,25 @@ const text: Record<string, string> = {
   mQuat_m6w: "misturar as ordens (w, x, y, z) e (x, y, z, w)",
   mQuat_m6r: "confira a convenção de cada fonte",
   mQuat_m6: "livros e tabelas diferem: alguns escrevem a parte escalar w primeiro, outros por último",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mQuat_rulesWords: "Cada uma das três unidades ao quadrado dá −1, e o produto das três na ordem i, j, k também.",
+  mQuat_eqIJ: "Por que ij = k",
+  mQuat_j1: "multiplique os dois lados por k à direita",
+  mQuat_j2: "k² = −1",
+  mQuat_j3: "multiplique os dois lados por −1",
+  mQuat_mulWords: "O novo escalar é o produto dos escalares menos o produto escalar dos vetores. O novo vetor é cada escalar vezes o outro vetor, mais o produto vetorial dos dois vetores.",
+  mQuat_rotWords: "Ponha primeiro o cosseno de metade do ângulo e depois o eixo vezes o seno de metade do ângulo. Para girar um vetor, multiplique-o por q à esquerda e pelo conjugado de q à direita.",
+  mQuat_liveRot: "Experimente: gire um vetor em torno do eixo z",
+  mQuat_liveRotNote: "Começa no exemplo acima, feito com a fórmula rápida da próxima seção (u é a parte vetorial de q, w a escalar). Tente θ = 180°: w = 0 e v vira −v em x e y. A componente z nunca muda: ela está ao longo do eixo.",
+  mQuat_eqComb: "Duas rotações formam uma",
+  mQuat_c0: "gire por q₁, depois gire o resultado por q₂",
+  mQuat_c1: "num produto de quatérnios o agrupamento não importa",
+  mQuat_c2: "o conjugado de um produto é o produto dos conjugados na ordem inversa: (q₂q₁)* = q₁*q₂*",
+  mQuat_slerpWords: "Misture os dois quatérnios com pesos dados por senos: o peso do início encolhe e o do fim cresce enquanto t vai de 0 a 1, de modo que o resultado anda pelo arco com velocidade constante.",
+  mQuat_liveSlerp: "Experimente: slerp de nenhum giro até um giro em torno de y",
+  mQuat_liveSlerpNote: "Começa no exemplo resolvido 3 abaixo: a meio caminho de 90° em torno de y dá (0,924; 0; 0,383; 0), um giro de 45°. A barra é a fração do giro já feita, e ela é sempre igual a t: o slerp gira com velocidade constante.",
+  mQuat_matWords: "Cada coluna é um dos três eixos girado pelo quatérnio, escrito com os quatro números w, x, y, z.",
 };
 
 export default text;
