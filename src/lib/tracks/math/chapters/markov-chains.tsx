@@ -30,13 +30,14 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mMk_intro",
-          "Many random processes unfold one step at a time: a board-game token moves square by square, the weather changes day by day, a reader clicks from web page to web page. Often the next step depends on where the process is now, but not on the long road that brought it there. Such a process is a Markov chain, after the Russian mathematician Andrey Markov, who studied them in 1906. This chapter defines the Markov property, stores a chain's rules in a transition matrix, and explains the one fact that makes everything computable: the probabilities of n steps are the entries of the n-th power of that matrix. A full exercise is solved along the way. Then come the long run (the stationary distribution, for walks and for any chain, and when the chain actually reaches it) and absorbing chains: where a walk that can get stuck ends up, and how long that takes. Every figure has an \"explore\" button that opens it full screen as a guided lab.")}
+          "Many random processes unfold one step at a time: a board-game token moves square by square, the weather changes day by day, a reader clicks from web page to web page. Often the next step depends on where the process is now, but not on the long road that brought it there. Such a process is a Markov chain, after the Russian mathematician Andrey Markov, who studied them in 1906. This chapter defines the Markov property, stores a chain's rules in a transition matrix, and explains the one fact that makes everything computable: the probabilities of n steps are the entries of the n-th power of that matrix. A full exercise is solved along the way. Then come the long run (the stationary distribution, for walks and for any chain, when the chain actually reaches it, and the long-run average of a cost or reward) and absorbing chains: where a walk that can get stuck ends up, and how long that takes. Every figure has an \"explore\" button that opens it full screen as a guided lab.")}
       </Lead>
 
       <Goals t={t} id="mMk" items={[
         "Write a transition matrix for a process with states.",
         "Find where the process is likely to be after any number of steps.",
         "Find the long-run distribution by solving πP = π.",
+        "Find the long-run average of a cost or reward, and spot when π is uniform.",
         "Find where an absorbing chain ends up and how long it takes.",
       ]} />
 
@@ -319,6 +320,77 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
           "For a chain with finitely many states these facts hold. If it is irreducible, πP = π has exactly one solution, every π(j) is positive, and 1/π(j) is the mean return time. If it is also aperiodic, πₙ → π from every start. If it is periodic, π still exists and still gives the share of time, but πₙ can keep circling. If it has exactly one closed class, π is still unique and is 0 on the transient states. If it has two or more closed classes, πP = π has infinitely many solutions, and the long run depends on the start.")}
       </p>
 
+      <H2>{tx(t, "mMk_rewTitle", "Long-run averages: costs and rewards")}</H2>
+      <p>
+        {tx(t, "mMk_rewBody",
+          "Often each state carries a number: a price, a cost, a score. Call c(i) what one step spent in state i is worth. Over a long run of n steps, the chain spends about n·π(i) of them in state i, because that is what π(i) means: the share of time. So the total is about Σᵢ n·π(i)·c(i), and the average per step settles on Σᵢ π(i)·c(i). This is the ergodic theorem for Markov chains. For an irreducible chain it holds whatever the start, and even for a periodic one, since it only uses the share of time.")}
+      </p>
+      <Equation label={tx(t, "mMk_eqRew", "Long-run average reward")}
+        where={[
+          [r`\sym{c}{\amber{c(i)}}`, tx(t, "mMk_wC", "what one step in state i is worth: money earned, a cost paid, any number")],
+          [r`\sym{run}{\tfrac1n \sum_{t=1}^{n} c(X_t)}`, tx(t, "mMk_wRun", "the average per step along one run of the chain: add up what each visited state is worth, divide by the number of steps")],
+          [r`\sym{pi}{\green{\pi(i)}}`, tx(t, "mMk_wPiShare", "the stationary distribution: the long-run share of steps spent in state i")],
+        ]}
+        words={tx(t, "mMk_rewWords", "Over a long time, the average per step is what each state is worth, weighted by the share of the time the chain spends there.")}
+        note={tx(t, "mMk_rewNote", "The right side is the expected value of c(X) when X has the distribution π: the same weighted average as in the chapter on expectation, with π as the weights.")}>
+        {r`\lim_{n \to \infty} \sym{run}{\frac1n \sum_{t=1}^{n} c(X_t)} = \sum_i \sym{pi}{\green{\pi(i)}}\, \sym{c}{\amber{c(i)}}`}
+      </Equation>
+      <p>
+        {tx(t, "mMk_rewEx",
+          "Worked example: an ice-cream cart under the weather chain. It earns 120 on a sunny day, 50 on a cloudy day and 10 on a rainy day. What does it earn per day, on average, over a whole season?")}
+      </p>
+      <Derivation t={t} label={tx(t, "mMk_dRew", "The ice-cream cart's long-run average")}
+        steps={[
+          { full: true, tex: r`\pi = \tfrac{1}{46}\,(\amber{21},\ \purple{13},\ \blue{12})`,
+            why: tx(t, "mMk_dw1", "the stationary distribution of the weather chain, found above") },
+          { full: true, tex: r`\tfrac{21}{46} \cdot 120 + \tfrac{13}{46} \cdot 50 + \tfrac{12}{46} \cdot 10`,
+            why: tx(t, "mMk_dw2", "each day's earnings, weighted by the share of days with that weather") },
+          { full: true, tex: r`= \tfrac{2520 + 650 + 120}{46} = \tfrac{3290}{46} \approx 71.5`,
+            why: tx(t, "mMk_dw3", "the products added over the common denominator 46") },
+          { full: true, tex: r`30 \cdot 71.5 \approx 2146`,
+            why: tx(t, "mMk_dw4", "over a 30-day month, the total is about 30 times the daily average") },
+        ]} />
+      <p>
+        {tx(t, "mMk_rewShort",
+          "The long-run average forgets today's weather. The short run does not: if today is sunny, tomorrow's expected earnings use row 0 of P, 0.7 · 120 + 0.2 · 50 + 0.1 · 10 = 95, well above 71.5. And the plain average of the three prices, (120 + 50 + 10)/3 = 60, is wrong too: sunny days are more common than the others, so they count more.")}
+      </p>
+      <p>
+        {tx(t, "mMk_rewMove",
+          "Sometimes the number belongs to a move instead of a state: a fee c(i, j) paid each time the chain goes from i to j. In the long run, the share of steps that are moves from i to j is π(i)·p_ij (be at i, then take that arrow), so the average per step is Σᵢ Σⱼ π(i)·p_ij·c(i, j). For example, if the cart pays 30 to move whenever the weather changes, it pays 30 times the share of days on which the weather changes.")}
+      </p>
+      <LiveFormula label={tx(t, "mMk_liveRew", "Try it: your own prices for the three kinds of weather")}
+        tex={r`\sum_i \pi(i)\,c(i) = \tfrac{21}{46}\,c(0) + \tfrac{13}{46}\,c(1) + \tfrac{12}{46}\,c(2)`}
+        vars={[
+          { id: "c0", label: tx(t, "mMk_lvC0", "sunny day, c(0)"), min: 0, max: 200, step: 10, value: 120, fmt: v => String(v) },
+          { id: "c1", label: tx(t, "mMk_lvC1", "cloudy day, c(1)"), min: 0, max: 200, step: 10, value: 50, fmt: v => String(v) },
+          { id: "c2", label: tx(t, "mMk_lvC2", "rainy day, c(2)"), min: 0, max: 200, step: 10, value: 10, fmt: v => String(v) },
+        ]}
+        compute={rewardNumbers}
+        note={tx(t, "mMk_liveRewNote", "Set all three prices equal: the average is that price, whatever π is. Then raise only the rainy price: each 10 adds 10 · 12/46 ≈ 2.6, because only 12 days in 46 are rainy.")} />
+
+      <H3>{tx(t, "mMk_dsTitle", "Doubly stochastic matrices: every state equally likely")}</H3>
+      <p>
+        {tx(t, "mMk_dsBody",
+          "Every row of a transition matrix adds up to 1. Sometimes every column does too. Then P is called doubly stochastic, and πP = π needs no solving: the uniform distribution, π(i) = 1/n for each of the n states, is stationary. The reason is one line long:")}
+      </p>
+      <Derivation t={t} label={tx(t, "mMk_dDs", "Why the uniform distribution is stationary")}
+        steps={[
+          { full: true, tex: r`(\pi P)_j = \sum_i \pi(i)\, p_{ij}`,
+            why: tx(t, "mMk_dd1", "entry j of πP: everything that flows into j, read down column j") },
+          { full: true, tex: r`= \sum_i \tfrac1n\, p_{ij} = \tfrac1n \sum_i p_{ij}`,
+            why: tx(t, "mMk_dd2", "try π(i) = 1/n for every i; the common factor 1/n comes out of the sum") },
+          { full: true, tex: r`= \tfrac1n \cdot 1 = \pi(j)\ \checkmark`,
+            why: tx(t, "mMk_dd3", "column j adds up to 1, so each state receives exactly the 1/n it holds") },
+        ]} />
+      <p>
+        {tx(t, "mMk_dsEx",
+          "Example: a token on a circular board of 8 squares. Each turn a fair die is rolled and the token moves forward that many squares. Square j can be entered from the six squares 1 to 6 behind it, each with probability 1/6, so every column of P holds six entries of 1/6 and adds up to 1. The chain is irreducible (every square can be reached), and aperiodic (it can come back in 2 turns, 4 + 4, or in 3, 3 + 3 + 2, and gcd(2, 3) = 1). So in the long run the token is on each square 1/8 of the time, and comes back to a square every 8 turns on average. Add a \"go to square 0\" square, as Monopoly's \"go to jail\", and column 0 receives extra probability: the matrix is no longer doubly stochastic, and the squares are no longer equally visited.")}
+      </p>
+      <p>
+        {tx(t, "mMk_dsShuffle",
+          "Card shuffles are the most famous case. Take each order of the deck as a state, and shuffle by applying a random rearrangement chosen the same way every time. Then the chance of reaching an order adds up to 1 over all the orders it can come from, so the matrix is doubly stochastic. That is why a shuffle that can reach every order, run long enough, leaves every order equally likely. Uniqueness still needs irreducibility: a doubly stochastic chain with two closed classes has the uniform π, but other stationary distributions too.")}
+      </p>
+
       <H2>{tx(t, "mMk_absTitle", "Absorbing chains: where it ends and how long it takes")}</H2>
       <p>
         {tx(t, "mMk_absBody",
@@ -416,6 +488,8 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
       <p>{tx(t, "mMk_pr6", "6. Any two-state chain with p₀₁ = a and p₁₀ = b (a + b > 0) has π = (b, a)/(a + b): with only one way across, the flow 0 → 1 must equal the flow 1 → 0, so π(0)·a = π(1)·b. For a = 0.1, b = 0.3: π = (3/4, 1/4).")}</p>
       <p>{tx(t, "mMk_pr7", "7. Absorbing walk of the worked example, starting at 2: the chance of ruin is 1 − h₂ = 1 − 12/13 = 1/13.")}</p>
       <p>{tx(t, "mMk_pr8", "8. A fair game (p = 1/2) with target 10, starting with 3 coins: reaching 10 has probability 3/10, and the game lasts 3 · 7 = 21 rounds on average.")}</p>
+      <p>{tx(t, "mMk_pr9", "9. Weather chain: a shop sells 30 umbrellas on a rainy day, 5 on a cloudy day and none on a sunny day. In the long run it sells 21/46 · 0 + 13/46 · 5 + 12/46 · 30 = (65 + 360)/46 = 425/46 ≈ 9.2 umbrellas per day.")}</p>
+      <p>{tx(t, "mMk_pr10", "10. The rows of P = (0.5 0.3 0.2; 0.2 0.5 0.3; 0.3 0.2 0.5) add up to 1, and so do its columns: 0.5 + 0.2 + 0.3 = 0.3 + 0.5 + 0.2 = 0.2 + 0.3 + 0.5 = 1. So π = (1/3, 1/3, 1/3), and each state comes back every 3 steps on average.")}</p>
 
       <H2>{tx(t, "mMk_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -430,6 +504,8 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mMk_m7w", "build the equations of πP = π from the rows of P"), tx(t, "mMk_m7r", "from the columns"), tx(t, "mMk_m7", "π(j) collects what flows into j, and the arrows into j are column j")],
           [tx(t, "mMk_m8w", "solve the n flow equations without Σπ = 1"), tx(t, "mMk_m8r", "drop one, add Σπ = 1"), tx(t, "mMk_m8", "the flow equations are dependent; alone they only fix π up to a multiple")],
           [tx(t, "mMk_m9w", "use detailed balance for any chain"), tx(t, "mMk_m9r", "solve πP = π"), tx(t, "mMk_m9", "detailed balance holds for walks between neighbours, not in general: in the weather chain π(0)·p₀₁ ≠ π(1)·p₁₀")],
+          [tx(t, "mMk_m11w", "long-run average = the plain average of the c(i)"), "Σᵢ π(i)·c(i)", tx(t, "mMk_m11", "states visited more often count more: for the ice-cream cart the plain average is 60, the right answer 71.5")],
+          [tx(t, "mMk_m12w", "π is uniform because every row adds up to 1"), tx(t, "mMk_m12r", "only if every column adds up to 1 too"), tx(t, "mMk_m12", "every transition matrix has rows adding up to 1; the weather chain's columns add up to 1.2, 0.9 and 0.9, and its π is not uniform")],
           [tx(t, "mMk_m10w", "tᵢ = q·tᵢ₋₁ + p·tᵢ₊₁"), "tᵢ = 1 + q·tᵢ₋₁ + p·tᵢ₊₁", tx(t, "mMk_m10", "the first step itself takes one unit of time")],
         ]}
       />
@@ -443,13 +519,14 @@ export function MarkovChainsContent({ t }: { t: TrackTranslations }) {
         tx(t, "mMk_k6", "A stationary π solves πP = π. Irreducible, aperiodic chains converge to it from any start; periodic ones, like the reflecting walk, can keep swinging."),
         tx(t, "mMk_k7", "For any chain, write πP = π as one equation per column of P, replace one of them by Σπ = 1 and solve. 1/π(j) is the mean time between visits to j."),
         tx(t, "mMk_k8", "Irreducible: π is unique. Two or more closed classes: many solutions. Transient states get π = 0."),
+        tx(t, "mMk_k10", "A reward c(i) per step in state i averages Σᵢ π(i)·c(i) per step in the long run, whatever the start. If the columns of P also add up to 1 (doubly stochastic), π is uniform: 1/n for each state."),
         tx(t, "mMk_k9", "Absorbing chains: condition on the first step. hᵢ = Σⱼ pᵢⱼ hⱼ for the chance of an outcome, tᵢ = 1 + Σⱼ pᵢⱼ tⱼ for the expected time. For the walk, hᵢ = (1 − rⁱ)/(1 − rᵏ) with r = q/p (gambler's ruin)."),
       ]} />
     </Article>
   );
 }
 
-// ── Numbers for the live gambler's-ruin formula ───────────────────────────────
+// ── Numbers for the live formulas ─────────────────────────────────────────────
 
 /** A number for TeX: up to 3 decimals, or a × 10ⁿ when it is very large. */
 function texNum(x: number) {
@@ -460,6 +537,15 @@ function texNum(x: number) {
   return String(+x.toFixed(3));
 }
 
+/** The weather chain's π = (21, 13, 12)/46, weighted by the chosen prices. */
+function rewardNumbers(v: Record<string, number>) {
+  const a = 21 * v.c0, b = 13 * v.c1, c = 12 * v.c2;
+  return {
+    tex: r`\tfrac{21}{46} \cdot ${v.c0} + \tfrac{13}{46} \cdot ${v.c1} + \tfrac{12}{46} \cdot ${v.c2} = \frac{${a} + ${b} + ${c}}{46} = \mathbf{${texNum((a + b + c) / 46)}}`,
+  };
+}
+
+/** The gambler's ruin, h_i = (1 − rⁱ)/(1 − rᵏ). */
 function ruinNumbers(v: Record<string, number>) {
   const p = v.p, k = v.k, i = Math.min(v.i, k - 1), q = 1 - p;
   if (Math.abs(p - q) < 1e-9) {

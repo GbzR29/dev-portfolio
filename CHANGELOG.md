@@ -14,6 +14,11 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-09
 
+- **Médias de longo prazo e matrizes duplamente estocásticas, em "Cadeias de Markov" (Matemática)**, a parte 5 do plano da lista de exercícios de Markov:
+  - **seção nova "Médias de longo prazo: custos e ganhos"**: o teorema ergódico, (1/n)·Σ c(Xₜ) → Σ π(i)·c(i), com a explicação de cada termo. Traz o exemplo do carrinho de sorvete na cadeia do tempo, deduzido passo a passo (71,5 por dia), e o contraste com o curto prazo (95 amanhã se hoje faz sol) e com a média simples (60, errada). Mostra também o custo por movimento, Σ π(i)·p_ij·c(i, j), e uma fórmula ao vivo com os três preços;
+  - **"Matrizes duplamente estocásticas"**: quando as colunas também somam 1, π é uniforme, com uma dedução em 3 linhas. Exemplos: o tabuleiro circular de 8 casas com dado (1/8 por casa, e por que uma casa "vá para a prisão" quebra isso) e por que embaralhar cartas leva a todas as ordens igualmente prováveis;
+  - 2 exercícios de prática, 2 erros comuns, ideia-chave e objetivo novos, introdução atualizada, tradução PT.
+
 - **Esperar um padrão de moeda, em "Cadeias absorventes e tempos de chegada" (Matemática)**, a parte 4 do plano da lista de exercícios de Markov:
   - **cadeia do progresso:** o estado é o maior começo do padrão que os últimos lançamentos formam. Tem uma tabela de HTH, mostrando por que uma cara depois de H mantém o progresso, e uma dedução passo a passo de que HTH leva 10 lançamentos e HHT só 8;
   - **fórmula das sobreposições:** E[T] = soma de 1/P(primeiras k letras) sobre todo k em que as primeiras k letras são iguais às últimas k. Vem com a dedução do cassino justo (apostadores que entram a cada lançamento) e uma fórmula ao vivo de HTH com moeda viciada;
