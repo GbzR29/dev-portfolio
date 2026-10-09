@@ -14,6 +14,11 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-09
 
+- **Exemplo final do gráfico de controle, em "Cadeias absorventes e tempos de chegada" (Matemática)**, a parte 6 do plano da lista de exercícios de Markov:
+  - **seção nova "Exemplo final: quanto tempo até um alarme?"**: o ARL (número esperado de pontos até o primeiro alarme) da regra clássica de 3σ (370, espera geométrica) e da regra 2 de 2 (dois pontos seguidos além do mesmo limite ±kσ). Traz a tabela da cadeia de 3 estados (onde caiu o último ponto) e a dedução passo a passo de ARL = (1 + p)/(2p²), com a ligação com a espera por HH;
+  - **"Escolhendo k"**: a equação do segundo grau 740p² − p − 1 = 0 e uma tabela de bissecção em 4 passos até k ≈ 1,78 (o mesmo alarme falso da regra de 3σ). Vem com a fórmula geral do ARL com p_U e p_L (conferida nos dois casos especiais) e uma fórmula ao vivo com k e o deslocamento δ comparando as duas regras (26 contra 44 pontos em δ = 1);
+  - 2 exercícios de prática, 1 erro comum, ideia-chave e objetivo novos, introdução atualizada, tempo de leitura 32 → 38 min, tradução PT.
+
 - **Médias de longo prazo e matrizes duplamente estocásticas, em "Cadeias de Markov" (Matemática)**, a parte 5 do plano da lista de exercícios de Markov:
   - **seção nova "Médias de longo prazo: custos e ganhos"**: o teorema ergódico, (1/n)·Σ c(Xₜ) → Σ π(i)·c(i), com a explicação de cada termo. Traz o exemplo do carrinho de sorvete na cadeia do tempo, deduzido passo a passo (71,5 por dia), e o contraste com o curto prazo (95 amanhã se hoje faz sol) e com a média simples (60, errada). Mostra também o custo por movimento, Σ π(i)·p_ij·c(i, j), e uma fórmula ao vivo com os três preços;
   - **"Matrizes duplamente estocásticas"**: quando as colunas também somam 1, π é uniforme, com uma dedução em 3 linhas. Exemplos: o tabuleiro circular de 8 casas com dado (1/8 por casa, e por que uma casa "vá para a prisão" quebra isso) e por que embaralhar cartas leva a todas as ordens igualmente prováveis;

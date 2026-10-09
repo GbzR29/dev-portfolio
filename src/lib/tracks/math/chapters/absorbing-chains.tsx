@@ -8,8 +8,9 @@
 // (N_jj = 1/(1 − f)); and choosing states that remember just enough of the
 // history (waiting for HH, the race HH against TH); longer patterns: the
 // progress chain and the overlap formula E[T] = Σ 1/P(first k letters), shown
-// with a fair-casino argument. The maze figure has a lab; the pattern figure
-// has a Transport only.
+// with a fair-casino argument; a closing applied example, the ARL of the
+// 2-of-2 control chart (normal tails, a 3-state chain, k by bisection). The
+// maze figure has a lab; the pattern figure has a Transport only.
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
@@ -20,6 +21,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MazeFigure } from "@/components/lesson/figures/markov/MazeFigure";
 import { PatternFigure } from "@/components/lesson/figures/markov/PatternFigure";
+import { Phi } from "@/components/lesson/figures/math/distMath";
 
 const r = String.raw;
 
@@ -28,7 +30,7 @@ export function AbsorbingChainsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "mAbs_intro",
-          "The Markov chains chapter ended with the gambler's ruin: a walk that stops at 0 or at k, solved by conditioning on the first step. Many more questions have that shape. How many moves does a mouse in a maze need to find the cheese? How many times does it pass through the room where it started? How many coin flips until two heads in a row? Who wins a game that ends when a pattern appears? This chapter answers all of them with one method, first-step analysis for any chain, and then packs the method into one matrix, the fundamental matrix N = (I − Q)⁻¹. Its entries are expected numbers of visits, and the expected times and the chances of each ending follow from it. The last part is the skill that most exercises really test: choosing the states so that the chain remembers just enough of its history.")}
+          "The Markov chains chapter ended with the gambler's ruin: a walk that stops at 0 or at k, solved by conditioning on the first step. Many more questions have that shape. How many moves does a mouse in a maze need to find the cheese? How many times does it pass through the room where it started? How many coin flips until two heads in a row? Who wins a game that ends when a pattern appears? This chapter answers all of them with one method, first-step analysis for any chain, and then packs the method into one matrix, the fundamental matrix N = (I − Q)⁻¹. Its entries are expected numbers of visits, and the expected times and the chances of each ending follow from it. The last part is the skill that most exercises really test: choosing the states so that the chain remembers just enough of its history. A closing example puts it all to work: how long a quality-control chart takes to raise an alarm.")}
       </Lead>
 
       <Goals t={t} id="mAbs" items={[
@@ -38,6 +40,7 @@ export function AbsorbingChainsContent({ t }: { t: TrackTranslations }) {
         "Get expected times (N·1) and the chance of each ending (N·R) from N.",
         "Choose states that remember just enough of the history, for example to wait for a pattern of coin flips.",
         "Find the expected wait for any pattern by adding up its overlaps with itself.",
+        "Compute the average run length of a control chart with a chain, and choose its limits by bisection.",
       ]} />
 
       <H2>{tx(t, "mAbs_anyTitle", "First-step analysis for any chain")}</H2>
@@ -292,6 +295,85 @@ export function AbsorbingChainsContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mAbs_liveHTHNote", "HTH overlaps itself at k = 1 (H) and at k = 3 (the whole). At p = 1/2: 2 + 8 = 10, the answer of the chain. The wait is shortest near p = 0.7: heads are needed twice and tails once, so a coin that leans towards heads helps, but not too much, or the tail in the middle becomes rare.")} />
       <PatternFigure t={t} />
 
+      <H2>{tx(t, "mAbs_ctrlTitle", "Closing example: how long until an alarm?")}</H2>
+      <p>
+        {tx(t, "mAbs_ctrlBody",
+          "Everything in this chapter meets in one applied question. A machine fills bottles, and every few minutes one bottle is weighed. While the machine is well adjusted, each weight X is normal with the target mean μ₀ and standard deviation σ, independent of the others. The values are plotted one after another, and a rule decides when to raise an alarm and stop the machine. A good rule rarely raises a false alarm while the machine is fine, and raises a true one soon after the mean drifts away. Both are measured by the same number, the ARL (average run length): the expected number of points until the first alarm.")}
+      </p>
+      <p>
+        {tx(t, "mAbs_ctrlBody2",
+          "The classic rule draws two limits, μ₀ ± 3σ, and raises the alarm as soon as one point falls outside. Each point falls outside with chance 2·(1 − Φ(3)) = 0.0027, using Φ, the standard normal CDF of the distributions chapter. The wait for the first such point is geometric, so the ARL is 1/0.0027 ≈ 370 points. A stricter rule uses closer limits, μ₀ ± kσ with k below 3, and raises the alarm only when two points in a row fall beyond the same limit, both above or both below. One point outside is not enough, because closer limits are crossed more often by chance. The wait is no longer geometric: the rule depends on the previous point. That is the signal to build a chain whose state is what must be remembered, here where the last point fell.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "mAbs_tState", "State"), tx(t, "mAbs_cMeans", "Where the last point fell"), tx(t, "mAbs_cAbove", "Next above (p_U) →"), tx(t, "mAbs_cInside", "Next inside (1 − p_U − p_L) →"), tx(t, "mAbs_cBelow", "Next below (p_L) →")]}
+        rows={[
+          ["0", tx(t, "mAbs_c0", "inside the limits (or no point yet)"), "U", "0", "L"],
+          ["U", tx(t, "mAbs_cU", "above μ₀ + kσ"), tx(t, "mAbs_cAlarm", "alarm ✓"), "0", "L"],
+          ["L", tx(t, "mAbs_cL", "below μ₀ − kσ"), "U", "0", tx(t, "mAbs_cAlarm", "alarm ✓")],
+        ]}
+      />
+      <p>
+        {tx(t, "mAbs_ctrlBody3",
+          "Here p_U = P(X > μ₀ + kσ) and p_L = P(X < μ₀ − kσ), the two normal tails. A point above after a point below does not finish anything: the rule wants two in a row beyond the same limit, so the chain moves to U and waits for one more. While the machine is well adjusted the two tails are equal, p_U = p_L = p = 1 − Φ(k), and by symmetry the states U and L have the same expected time. Then first-step analysis takes three lines.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mAbs_dArl", "ARL of the 2-of-2 rule, machine well adjusted")}
+        steps={[
+          { full: true, tex: r`s = 1 + (1 - 2p)\,t_0 + p\,s \;\Rightarrow\; (1 - p)\,s = 1 + (1 - 2p)\,t_0`,
+            why: tx(t, "mAbs_da1", "from U (and the same from L), with s = t_U = t_L: a point beyond the same limit raises the alarm (time still to go 0), a point beyond the other limit moves to L, whose time is also s, and a point inside moves to 0") },
+          { full: true, tex: r`t_0 = 1 + (1 - 2p)\,t_0 + 2p\,s \;\Rightarrow\; 2p\,t_0 = 1 + 2p\,s`,
+            why: tx(t, "mAbs_da2", "from 0: a point inside keeps you at 0; above or below, chance p each, moves to U or L, both with time s. Then (1 − 2p)·t₀ is moved to the left") },
+          { full: true, tex: r`2p(1 - p)\,t_0 = (1 - p) + 2p\bigl(1 + (1 - 2p)\,t_0\bigr) \;\Rightarrow\; 2p^2\,t_0 = 1 + p`,
+            why: tx(t, "mAbs_da3", "the second line multiplied by (1 − p), with (1 − p)·s replaced by the first line. On the right, (1 − p) + 2p = 1 + p; the t₀ terms go to the left: 2p(1 − p) − 2p(1 − 2p) = 2p²") },
+          { full: true, tex: r`t_0 = \frac{1 + p}{2p^2}`,
+            why: tx(t, "mAbs_da4", "divide by 2p². The chart starts in state 0, so t₀ is the ARL") },
+        ]} />
+      <p>
+        {tx(t, "mAbs_ctrlBody4",
+          "Compare the wait for two heads in a row, (1 + p)/p². With only an upper limit, the alarm is exactly HH, where a head is a point above. Two limits give the chain two ways to finish, which roughly halves the wait, and the 2 in the denominator says so.")}
+      </p>
+
+      <H3>{tx(t, "mAbs_kTitle", "Choosing k: a quadratic, then bisection")}</H3>
+      <p>
+        {tx(t, "mAbs_kBody",
+          "To compare the two rules fairly, give them the same false-alarm rate: choose k so that the ARL of the well-adjusted machine is 370, as for the 3σ rule. The condition (1 + p)/(2p²) = 370 becomes 740p² − p − 1 = 0, a quadratic in p. Its positive root is p = (1 + √(1 + 4·740))/1480 = (1 + √2961)/1480 ≈ 0.03744. Now k must satisfy 1 − Φ(k) = 0.03744, and here a formula runs out: Φ is the area under the bell, which has no formula made of ordinary functions, and neither does its inverse. A table gives k between 1.7 and 1.8. Bisection does the rest. The tail 1 − Φ(k) shrinks as k grows, so take an interval whose left end has a tail that is too large and whose right end has one that is too small, test the midpoint, and keep the half where the change of sign still happens. Each test halves the interval.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "mAbs_kStep", "Step"), tx(t, "mAbs_kInt", "Interval for k"), tx(t, "mAbs_kMid", "Midpoint"), tx(t, "mAbs_kTail", "1 − Φ(mid)"), tx(t, "mAbs_kKeep", "Keep")]}
+        rows={[
+          ["1", "[1.5, 2]", "1.75", "0.0401", tx(t, "mAbs_kRight", "too large: k is to the right")],
+          ["2", "[1.75, 2]", "1.875", "0.0304", tx(t, "mAbs_kLeft", "too small: k is to the left")],
+          ["3", "[1.75, 1.875]", "1.8125", "0.0350", tx(t, "mAbs_kLeft", "too small: k is to the left")],
+          ["4", "[1.75, 1.8125]", "1.78125", "0.03744", tx(t, "mAbs_kHit", "equal to 4 digits: stop")],
+        ]}
+      />
+      <p>
+        {tx(t, "mAbs_kBody2",
+          "So k ≈ 1.78. The 2-of-2 rule with limits at μ₀ ± 1.78σ raises false alarms exactly as rarely as the classic rule with 3σ. Now suppose the mean drifts to μ₀ + δσ. The tails stop being equal: p_U = 1 − Φ(k − δ) grows and p_L = Φ(−k − δ) shrinks. Solving the same three equations without the symmetry gives the general formula.")}
+      </p>
+      <Equation label={tx(t, "mAbs_eqArl", "ARL of the 2-of-2 rule")}
+        where={[
+          [r`\sym{arl}{\purple{\text{ARL}}}`, tx(t, "mAbs_wArl", "the expected number of points until the first alarm, starting with no point plotted")],
+          [r`\sym{pu}{\amber{p_U}}`, tx(t, "mAbs_wPu", "the chance that one point falls above the upper limit: 1 − Φ(k − δ) when the mean is μ₀ + δσ")],
+          [r`\sym{pl}{\blue{p_L}}`, tx(t, "mAbs_wPl", "the chance that one point falls below the lower limit: Φ(−k − δ)")],
+        ]}
+        words={tx(t, "mAbs_arlWords", "Both ways to finish, two above or two below, sit in the denominator, each with its square; the mixed term counts the runs that switch from one side to the other.")}
+        note={tx(t, "mAbs_arlNote", "Checks: with p_U = p_L = p it gives (1 + p)²/(2p² + 2p³) = (1 + p)/(2p²), the derivation above. With p_L = 0 it gives (1 + p_U)/p_U², the wait for HH.")}>
+        {r`\sym{arl}{\purple{\text{ARL}}} = \frac{(1 + \sym{pu}{\amber{p_U}})(1 + \sym{pl}{\blue{p_L}})}{\sym{pu}{\amber{p_U}}^2 + \sym{pl}{\blue{p_L}}^2 + \sym{pu}{\amber{p_U}}\,\sym{pl}{\blue{p_L}}\,(\sym{pu}{\amber{p_U}} + \sym{pl}{\blue{p_L}})}`}
+      </Equation>
+      <LiveFormula label={tx(t, "mAbs_liveArl", "Try it: the 2-of-2 rule against the 3σ rule")}
+        tex={r`\begin{aligned} &p_U = 1 - \Phi(k - \delta), \quad p_L = \Phi(-k - \delta) \\[4pt] &\text{ARL}_{3\sigma} = \frac{1}{1 - \Phi(3 - \delta) + \Phi(-3 - \delta)} \end{aligned}`}
+        vars={[
+          { id: "k", label: tx(t, "mAbs_lvK", "limits at ±kσ, k"), min: 1, max: 3, step: 0.01, value: 1.78 },
+          { id: "d", label: tx(t, "mAbs_lvD", "drift of the mean, δ (in σ)"), min: 0, max: 3, step: 0.25, value: 0 },
+        ]}
+        compute={v => {
+          const { k, d } = v, u = 1 - Phi(k - d), l = Phi(-k - d);
+          const arl = ((1 + u) * (1 + l)) / (u * u + l * l + u * l * (u + l));
+          const she = 1 / (1 - Phi(3 - d) + Phi(-3 - d));
+          return { tex: r`\begin{aligned} &p_U = ${u.toFixed(5)} \qquad p_L = ${l.toFixed(5)} \\[4pt] &\text{ARL}_{2\text{-}2} = \mathbf{${arl.toFixed(1)}} \qquad \text{ARL}_{3\sigma} = ${she.toFixed(1)} \end{aligned}` };
+        }}
+        note={tx(t, "mAbs_liveArlNote", "At δ = 0 both are about 370: the same false-alarm rate. At δ = 1 the 2-of-2 rule raises the alarm after about 26 points against 44: a small drift is caught much sooner. At δ = 3 the classic rule wins, 2.0 against 2.4, because the 2-of-2 rule always needs at least two points. Move k to see the price: lower limits catch drifts sooner but raise false alarms more often.")} />
+
       <H2>{tx(t, "mAbs_practiceTitle", "Practice")}</H2>
       <p>{tx(t, "mAbs_pr1", "1. In the 2 × 2 maze, a mouse starting in B needs t_B = 3 moves on average. Row B of N is (1, 3/2, 1/2): it is in A once, in B 1.5 times (the start included), and in C half a time. 1 + 3/2 + 1/2 = 3. ✓")}</p>
       <p>{tx(t, "mAbs_pr2", "2. In the 3 × 3 maze with every door open and the cheese in I, room H has doors to G, E and I. With t(G) = t(E) = 15: t(H) = 1 + (15 + 15 + 0)/3 = 11.")}</p>
@@ -301,6 +383,8 @@ export function AbsorbingChainsContent({ t }: { t: TrackTranslations }) {
       <p>{tx(t, "mAbs_pr6", "6. A state with f = 3/4, the chance of a return before absorption, is visited 1/(1 − 3/4) = 4 times on average, the first visit included.")}</p>
       <p>{tx(t, "mAbs_pr7", "7. HHTHH with a fair coin: the first k letters equal the last k for k = 1 (H), k = 2 (HH) and k = 5, so E[T] = 2 + 4 + 32 = 38. TTTT: every k matches, 2 + 4 + 8 + 16 = 30.")}</p>
       <p>{tx(t, "mAbs_pr8", "8. HHT has no overlap except itself, so E[T] = 1/P(HHT) = 8 with a fair coin. With p = 3/4: 1/((3/4)² · 1/4) = 64/9 ≈ 7.1.")}</p>
+      <p>{tx(t, "mAbs_pr9", "9. The 2-of-2 rule with limits at ±2σ: p = 1 − Φ(2) ≈ 0.0228, so ARL = (1 + 0.0228)/(2 · 0.0228²) ≈ 988 points. With only the upper limit, the wait for HH: (1 + 0.0228)/0.0228² ≈ 1976, twice as long.")}</p>
+      <p>{tx(t, "mAbs_pr10", "10. Limits at ±1.5σ: p = 1 − Φ(1.5) ≈ 0.0668 and ARL = 1.0668/(2 · 0.0668²) ≈ 120. A false alarm about three times as often as the 3σ rule: these limits are too close.")}</p>
 
       <H2>{tx(t, "mAbs_mistakesTitle", "Common mistakes")}</H2>
       <LessonTable
@@ -315,6 +399,7 @@ export function AbsorbingChainsContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mAbs_m7w", "state = the last flip, for any pattern"), tx(t, "mAbs_m7r", "state = the progress towards the pattern"), tx(t, "mAbs_m7", "a longer pattern needs to remember how much of it has already appeared, not only the last flip")],
           [tx(t, "mAbs_m8w", "a wrong flip always sends you back to ∅"), tx(t, "mAbs_m8r", "keep the longest ending that starts the pattern"), tx(t, "mAbs_m8", "for HTH, a head after H gives HH, which still ends in H: the progress stays at H")],
           ["E[T] = 1/P(A)", tx(t, "mAbs_m9r", "add 1/P over every overlap"), tx(t, "mAbs_m9", "1/P(A) alone is right only for patterns that do not overlap themselves, such as HT or HHT")],
+          [tx(t, "mAbs_m10w", "ARL = 1/P(two points in a row outside) = 1/(2p²)"), "ARL = (1 + p)/(2p²)", tx(t, "mAbs_m10", "consecutive pairs share a point, like the flips in HH, so the wait is not geometric; the chain counts the overlap")],
         ]}
       />
 
@@ -326,6 +411,7 @@ export function AbsorbingChainsContent({ t }: { t: TrackTranslations }) {
         "The diagonal: N_jj = 1/(1 − f), where f is the chance of returning to j before absorption.",
         "Choose the state as what you must remember to continue: the progress towards a pattern, whose turn it is, the last outcome.",
         "Waiting for a pattern: E[T] = Σ 1/P(first k letters), over every k where the first k letters equal the last k. Patterns that overlap themselves take longer.",
+        "A control chart is an absorbing chain whose state is where the last points fell. The 2-of-2 rule has ARL = (1 + p)/(2p²) on target; matching the 3σ rule's 370 puts its limits at ±1.78σ, and it catches small drifts much sooner.",
       ]} />
     </Article>
   );
