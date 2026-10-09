@@ -14,6 +14,12 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-09
 
+- **Esperar um padrão de moeda, em "Cadeias absorventes e tempos de chegada" (Matemática)**, a parte 4 do plano da lista de exercícios de Markov:
+  - **cadeia do progresso:** o estado é o maior começo do padrão que os últimos lançamentos formam. Tem uma tabela de HTH, mostrando por que uma cara depois de H mantém o progresso, e uma dedução passo a passo de que HTH leva 10 lançamentos e HHT só 8;
+  - **fórmula das sobreposições:** E[T] = soma de 1/P(primeiras k letras) sobre todo k em que as primeiras k letras são iguais às últimas k. Vem com a dedução do cassino justo (apostadores que entram a cada lançamento) e uma fórmula ao vivo de HTH com moeda viciada;
+  - **widget novo "Esperando um padrão"**: o padrão (de 2 a 6 letras) é editado clicando nas letras e a chance de cara tem um controle deslizante. Mostra a cadeia do progresso com o tempo esperado exato em cada nó, as setas de avanço e os arcos de volta. Embaixo testa cada sobreposição, e as duas contas dão o mesmo número. A barra de reprodução lança a moeda e "+1000 rodadas" compara a média simulada com a exata;
+  - 2 exercícios de prática, 2 erros comuns, ideia-chave e objetivo novos, tradução PT.
+
 - **Nova lição "Cadeias absorventes e tempos de chegada" (Matemática → Probabilidade e Estatística, logo depois de Cadeias de Markov)**, criada para cobrir o que faltava para resolver uma lista de exercícios de cadeias de Markov (labirinto, padrões de moeda, jogos):
   - **análise do primeiro passo para qualquer cadeia**, e não só para o passeio: tᵢ = 1 + Σ pᵢⱼ tⱼ e hᵢ = Σ pᵢⱼ hⱼ, com um labirinto 2 × 2 resolvido à mão (t_A = 4);
   - **forma canônica** P = [Q R; 0 I], e a análise do primeiro passo como (I − Q)·t = 1;

@@ -363,6 +363,22 @@ const text: Record<string, string> = {
   figMkMazeR2: "As visitas esperadas a partir de um começo são uma linha de N = (I − Q)⁻¹; o começo conta como uma visita.",
   figMkMazeR3: "As visitas somam o tempo esperado: t = N·1.",
   figMkMazeR4: "Se o queijo não pode ser alcançado, o tempo é infinito e I − Q não tem inversa.",
+
+  // ── PatternFigure (2026-10-09) ──
+  figMkPat_title: "Esperando um padrão: a cadeia do progresso e as sobreposições",
+  figMkPat_pattern: "padrão (clique numa letra para virá-la)",
+  figMkPat_avg: "média simulada",
+  figMkPat_runs: "rodadas",
+  figMkPat_add: "+1000 rodadas de uma vez",
+  figMkPat_p: "chance de cara, p",
+  figMkPat_note: "Cada nó é o progresso até agora, com o número esperado exato de lançamentos que ainda faltam. A letra certa avança um nó; uma letra errada volta por um arco até o maior final que ainda começa o padrão. As linhas de baixo testam cada sobreposição: os dois caminhos dão a mesma espera esperada. Compare HH com HT, ou HTH com HHT.",
+  figMkPat_hFlips: "LANÇAMENTOS NESTA RODADA",
+  figMkPat_hChain: "CADEIA DO PROGRESSO (t = LANÇAMENTOS ESPERADOS QUE AINDA FALTAM)",
+  figMkPat_hOverlaps: "SOBREPOSIÇÕES: PRIMEIRAS k LETRAS = ÚLTIMAS k LETRAS?",
+  figMkPat_found: "achado depois de {n} lançamentos",
+  figMkPat_chainSays: "a cadeia dá",
+  figMkPat_play: "lançar a moeda",
+  figMkPat_flips: "lançamentos",
 };
 
 export default text;
