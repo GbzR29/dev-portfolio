@@ -23,6 +23,13 @@ const IN_WORDS: Record<string, [string, string]> = {
 // Linked symbols: \sym{id}{…} marks a symbol. Pointing at it (or tapping it)
 // lights it up everywhere in the same equation, together with the "where"
 // line whose symbol carries the same \sym id, and the other way round.
+//   • Colour comes for free: every id explained in the "where" list gets its
+//     own colour, in the formula and in its line alike, unless its TeX already
+//     picks one (\sym{now}{\amber{X_n}}).
+//   • One symbol can belong to several groups: \sym{r2 e21 e22}{c}. The first
+//     id is the one pointing at it lights; the others make it light up when
+//     any of those ids is lit (see texMatrix.ts: an entry of a product lights
+//     its row and its column). Its colour is that of its first coloured id.
 
 const MACROS: Record<string, string> = {
   "\\sym": "\\htmlData{sym=#1}{#2}",
@@ -41,18 +48,49 @@ const MACROS: Record<string, string> = {
   "\\dotp": "{#1}\\cdot{#2}",
 };
 
-export function render(tex: string, display: boolean): string {
-  return katex.renderToString(tex, {
+/** \sym id → colour class, for the symbols of one card (see symColors). */
+export type SymColors = Map<string, string>;
+
+export function render(tex: string, display: boolean, colors?: SymColors): string {
+  const html = katex.renderToString(tex, {
     displayMode: display,
     throwOnError: false,          // a typo shows red source instead of crashing the page
     strict: false,
     macros: { ...MACROS },
     trust: ctx => ctx.command === "\\htmlClass" || ctx.command === "\\htmlData",
   });
+  if (!colors?.size) return html;
+  // KaTeX writes \htmlData as <span class="enclosing" data-sym="…">: colour it by its first id that has a colour
+  return html.replace(/class="enclosing" data-sym="([\w -]+)"/g, (m, ids: string) => {
+    const c = ids.split(" ").map(id => colors.get(id)).find(Boolean);
+    return c ? `class="enclosing ${c}" data-sym="${ids}"` : m;
+  });
 }
 
-/** The \sym id a piece of TeX carries, if any (for "where" lines). */
-const symOf = (tex: string) => tex.match(/\\sym\{([\w-]+)\}/)?.[1];
+const SYM = /\\sym\{([\w-]+)[^}]*\}(\{\\(red|green|blue|amber|purple|cyan|muted)\{)?/;
+
+/** The first \sym id a piece of TeX carries, if any (for "where" lines). */
+export const symOf = (tex: string) => tex.match(SYM)?.[1];
+
+// The order colours are handed out in; red last, it reads as "wrong"
+const PALETTE = ["amber", "green", "blue", "purple", "cyan", "red"];
+
+/**
+ * A colour for every \sym id named in a "where" list, in list order. Ids whose
+ * TeX already sets a colour keep it, and their colour is not handed out again.
+ */
+export function symColors(where?: [string, ReactNode][]): SymColors {
+  const colors: SymColors = new Map();
+  if (!where) return colors;
+  const found = where.map(([tex]) => tex.match(SYM)).filter(m => m !== null);
+  const taken = new Set(found.map(m => m[3]).filter(Boolean));
+  const free = PALETTE.filter(c => !taken.has(c));
+  for (const m of found) {
+    if (m[3] || colors.has(m[1])) continue;
+    colors.set(m[1], `tx-${free[colors.size % free.length]}`);
+  }
+  return colors;
+}
 
 /**
  * Hover / tap linking for \sym-marked symbols inside `root`: the id under the
@@ -65,9 +103,11 @@ export function useSymbolLinks<E extends HTMLElement>() {
     const root = ref.current;
     if (!root) return;
     root.querySelectorAll(".sym-on").forEach(e => e.classList.remove("sym-on"));
-    if (active) root.querySelectorAll(`[data-sym="${active}"]`).forEach(e => e.classList.add("sym-on"));
+    if (active) root.querySelectorAll(`[data-sym~="${active}"]`).forEach(e => e.classList.add("sym-on"));
   }, [active]);
-  const idAt = (t: EventTarget | null) => (t as HTMLElement | null)?.closest?.("[data-sym]")?.getAttribute("data-sym") ?? null;
+  // The first id of the symbol under the pointer
+  const idAt = (t: EventTarget | null) =>
+    (t as HTMLElement | null)?.closest?.("[data-sym]")?.getAttribute("data-sym")?.split(" ")[0] ?? null;
   return {
     ref,
     handlers: {
@@ -77,6 +117,26 @@ export function useSymbolLinks<E extends HTMLElement>() {
       onClick: (e: React.MouseEvent) => { const id = idAt(e.target); setActive(a => (id && a !== id ? id : null)); },
     },
   };
+}
+
+/**
+ * The "where" legend under a formula card (Equation, Derivation, LiveFormula):
+ * one line per symbol, its meaning linked to it by its \sym id.
+ */
+export function WhereList({ where, colors }: { where?: [string, ReactNode][]; colors?: SymColors }) {
+  const { language } = useLanguage();
+  if (!where?.length) return null;
+  return (
+    <div className="px-4 pb-3.5 pt-1 border-t border-[var(--separator)] grid gap-x-4 gap-y-1.5 grid-cols-[auto_1fr] items-baseline text-[13px]">
+      <span className="col-span-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)] pt-2">{WHERE[language] ?? WHERE.en}</span>
+      {where.map(([sym, meaning], i) => (
+        <div key={i} className="contents">
+          <span className="text-[var(--primary)] whitespace-nowrap" dangerouslySetInnerHTML={{ __html: render(sym, false, colors) }} />
+          <span data-sym={symOf(sym)} className="eq-meaning text-[var(--text-muted)] leading-snug">{meaning}</span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 /** Inline formula: <Tex>{String.raw`\cos\theta`}</Tex> */
@@ -101,9 +161,9 @@ export function Equation({ children, label, where, note, notes, glsl, glm, words
   words?: ReactNode;
 }) {
   const { language } = useLanguage();
-  const whereLabel = WHERE[language] ?? WHERE.en;
   const [inWords, setInWords] = useState(false);
   const links = useSymbolLinks<HTMLDivElement>();
+  const colors = symColors(where);
   const [wordsLabel, symbolsLabel] = IN_WORDS[language] ?? IN_WORDS.en;
   return (
     <div ref={links.ref} {...links.handlers} className="eq-card my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-[var(--shadow-sm)] overflow-hidden">
@@ -121,21 +181,8 @@ export function Equation({ children, label, where, note, notes, glsl, glm, words
       {inWords && words
         ? <div className="eq-words px-5 py-5 text-[15px] leading-relaxed text-[var(--text-main)]">{words}</div>
         : <div className="px-4 py-5 overflow-x-auto text-[var(--text-main)] text-[1.1rem]"
-            dangerouslySetInnerHTML={{ __html: render(children, true) }} />}
-      {where && where.length > 0 && (
-        <div className="px-4 pb-3.5 pt-1 border-t border-[var(--separator)] grid gap-x-4 gap-y-1.5 grid-cols-[auto_1fr] items-baseline text-[13px]">
-          <span className="col-span-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)] pt-2">{whereLabel}</span>
-          {where.map(([sym, meaning], i) => {
-            const id = symOf(sym);
-            return (
-              <div key={i} className="contents">
-                <span className="text-[var(--primary)] whitespace-nowrap" dangerouslySetInnerHTML={{ __html: render(sym, false) }} />
-                <span data-sym={id} className="eq-meaning text-[var(--text-muted)] leading-snug">{meaning}</span>
-              </div>
-            );
-          })}
-        </div>
-      )}
+            dangerouslySetInnerHTML={{ __html: render(children, true, colors) }} />}
+      <WhereList where={where} colors={colors} />
       {notes && notes.length > 0 && (
         <ul className="px-4 pb-3.5 pt-2.5 border-t border-[var(--separator)] space-y-1 text-[13px] text-[var(--text-muted)] leading-relaxed">
           {notes.map((n, i) => (

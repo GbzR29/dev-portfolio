@@ -112,7 +112,8 @@ html:not(.dark) .tx-cyan   { color: #0891b2; }
 
 /* Linked symbols (\sym{id}{…}): pointing at one lights it up in the formula and
    in its "where" line */
-.katex [data-sym] { cursor: help; border-radius: 4px; transition: background-color 0.15s, box-shadow 0.15s; }
+/* (raised above KaTeX's .vlist boxes, which otherwise cover the lower rows of a matrix and swallow the pointer) */
+.katex [data-sym] { position: relative; z-index: 1; cursor: help; border-radius: 4px; transition: background-color 0.15s, box-shadow 0.15s; }
 .katex [data-sym].sym-on { background: var(--primary-low); box-shadow: 0 0 0 2px var(--primary-low), 0 2px 0 0 var(--primary); }
 .eq-meaning { border-radius: 4px; transition: background-color 0.15s, color 0.15s; }
 .eq-meaning[data-sym] { cursor: help; }
@@ -125,6 +126,25 @@ html:not(.dark) .tx-cyan   { color: #0891b2; }
 .deriv-num { display: inline-block; min-width: 1.4em; margin-right: 0.35em; font: 10.5px/1 var(--font-plex-mono, ui-monospace), monospace; color: var(--text-muted); vertical-align: 0.35em; }
 .deriv-current .deriv-num { color: var(--primary); }
 @media (prefers-reduced-motion: reduce) { .eq-words, .deriv-current { animation: none; } }
+
+/* MatrixProduct (components/lesson/MatrixProduct.tsx): bracketed grids; the row and
+   column being multiplied are tinted pair by pair in their own colour (tx-*) */
+.mxp-grid { position: relative; display: grid; gap: 4px 6px; padding: 4px 10px; }
+.mxp-grid::before, .mxp-grid::after { content: ""; position: absolute; top: 0; bottom: 0; width: 6px; border: 2px solid var(--text-muted); }
+.mxp-grid::before { left: 0; border-right: none; }
+.mxp-grid::after { right: 0; border-left: none; }
+.mxp-cell { width: 2.6rem; height: 2rem; border-radius: 6px; text-align: center; font: 500 15px/2rem var(--font-plex-mono, ui-monospace), monospace; font-variant-numeric: tabular-nums; transition: background-color 0.2s, color 0.2s, opacity 0.2s, box-shadow 0.2s; }
+.mxp-in { background: transparent; border: 1px dashed transparent; outline: none; }
+.mxp-in:not(.mxp-pair) { color: var(--text-main); }
+.mxp-in:hover { border-color: var(--border); }
+.mxp-in:focus { border-color: var(--primary); border-style: solid; }
+.mxp-pair { background: color-mix(in srgb, currentColor 16%, transparent); font-weight: 700; }
+.mxp-dim { opacity: 0.45; }
+.mxp-out { color: var(--text-main); }
+.mxp-out:hover { background: var(--primary-low); }
+.mxp-todo { color: var(--text-muted); opacity: 0.5; }
+.mxp-now { background: var(--primary-low); box-shadow: inset 0 0 0 2px var(--primary); color: var(--primary); font-weight: 700; animation: eq-words-in 0.3s ease-out; }
+@media (prefers-reduced-motion: reduce) { .mxp-now { animation: none; } }
 
 
 /* =========================================================

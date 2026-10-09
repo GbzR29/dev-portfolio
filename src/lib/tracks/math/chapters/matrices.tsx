@@ -14,10 +14,23 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MatrixFigure } from "@/components/lesson/figures/math/MatrixFigure";
+import { MatrixProduct } from "@/components/lesson/MatrixProduct";
+import { bmatrix, linkedProduct } from "@/components/lesson/texMatrix";
 
 const r = String.raw;
 const num = (v: number) => String(Math.round(v * 1000) / 1000).replace("-", "−");
 const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+// ── Linked matrices: point at an entry to see the row and column it comes from ──
+
+const DEF = linkedProduct([["a", "b"], ["c", "d"]], [["x"], ["y"]], [["ax + by"], ["cx + dy"]]);
+const MUL = linkedProduct([["a", "b"], ["c", "d"]], [["e", "f"], ["g", "h"]], [["ae + bg", "af + bh"], ["ce + dg", "cf + dh"]]);
+const RECT = linkedProduct([[1, 2, 0], [0, 1, 3]], [[2, 1], [0, 1], [1, 0]], [[2, 3], [3, 1]]);
+const BY_COLUMN = bmatrix([["a", "b"], ["c", "d"]], (c, _, j) => r`\sym{c${j}}{${c}}`);
+const HOMOGENEOUS = bmatrix([["a", "b", "t_x"], ["c", "d", "t_y"], [0, 0, 1]],
+  (c, i, j) => (i > 2 ? c : j < 3 ? r`\sym{lin}{${c}}` : r`\sym{t}{${c}}`));
+// The axis each rotation leaves alone: its name and its 1 on the diagonal
+const ROT_AXIS = (id: string, k: number, rows: string[][]) => bmatrix(rows, (c, i, j) => (i === k && j === k ? r`\sym{${id}}{${c}}` : c));
 
 // ── Live formula: matrix × vector, both readings ──────────────────────────────
 
@@ -58,13 +71,13 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
       <Equation label={tx(t, "mMat_eqDef", "A 2 × 2 matrix acting on a vector")}
         where={[
           [r`A`, tx(t, "mMat_wA", "the matrix: a name for the whole grid, written as a capital letter")],
-          [r`a, b`, tx(t, "mMat_wAB", "the first row: how much old x and old y go into the new x")],
-          [r`c, d`, tx(t, "mMat_wCD", "the second row: how much old x and old y go into the new y")],
-          [r`\mathbf{v} = (x, y)`, tx(t, "mMat_wV", "the input vector, written as a column")],
+          [r`\sym{r1}{a, b}`, tx(t, "mMat_wAB", "the first row: how much old x and old y go into the new x")],
+          [r`\sym{r2}{c, d}`, tx(t, "mMat_wCD", "the second row: how much old x and old y go into the new y")],
+          [r`\sym{c1}{\mathbf{v} = (x, y)}`, tx(t, "mMat_wV", "the input vector, written as a column")],
           [r`A\mathbf{v}`, tx(t, "mMat_wAv", "the output: the matrix times the vector")],
         ]}
         words={tx(t, "mMat_defWords", "The new x is a times the old x plus b times the old y; the new y is c times the old x plus d times the old y. The first row builds x', the second builds y'.")}>
-        {r`A\mathbf{v} = \begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} ax + by \\ cx + dy \end{bmatrix}`}
+        {r`A\mathbf{v} = ${DEF.a}${DEF.b} = ${DEF.c}`}
       </Equation>
 
       <H2>{tx(t, "mMat_prodTitle", "Two ways to read matrix × vector")}</H2>
@@ -78,12 +91,12 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mMat_eqCols", "Matrix × vector as a mix of the columns")}
         where={[
-          [r`(a, c)`, tx(t, "mMat_wCol1", "the first column, scaled by x")],
-          [r`(b, d)`, tx(t, "mMat_wCol2", "the second column, scaled by y")],
+          [r`\sym{c1}{(a, c)}`, tx(t, "mMat_wCol1", "the first column, scaled by x")],
+          [r`\sym{c2}{(b, d)}`, tx(t, "mMat_wCol2", "the second column, scaled by y")],
         ]}
         note={tx(t, "mMat_colsNote", "Example: A = [[2, 1], [0, 3]] and v = (4, −1). Row view: (2·4 + 1·(−1), 0·4 + 3·(−1)) = (7, −3). Column view: 4·(2, 0) + (−1)·(1, 3) = (8, 0) + (−1, −3) = (7, −3). Same answer, two ways of seeing it.")}
         words={tx(t, "mMat_colsWords", "Take x copies of the first column and y copies of the second column, and add them.")}>
-        {r`\begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} x \\ y \end{bmatrix} = x\begin{bmatrix} a \\ c \end{bmatrix} + y\begin{bmatrix} b \\ d \end{bmatrix}`}
+        {r`${BY_COLUMN}\begin{bmatrix} \sym{c1}{x} \\ \sym{c2}{y} \end{bmatrix} = \sym{c1}{x\begin{bmatrix} a \\ c \end{bmatrix}} + \sym{c2}{y\begin{bmatrix} b \\ d \end{bmatrix}}`}
       </Equation>
       <LiveFormula label={tx(t, "mMat_liveMv", "Try it: matrix × vector, read both ways")}
         tex={r`\begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} ax + by \\ cx + dy \end{bmatrix} = x\begin{bmatrix} a \\ c \end{bmatrix} + y\begin{bmatrix} b \\ d \end{bmatrix}`}
@@ -148,11 +161,20 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`AB`, tx(t, "mMat_wAB2", "the matrix that applies B first, then A")],
           [r`(AB)_{ij}`, tx(t, "mMat_wIJ", "the entry in row i, column j: row i of A dotted with column j of B")],
+          [r`\sym{e21}{ce + dg}`, tx(t, "mMat_wE21", "one entry, (AB)₂₁: row 2 of A, (c, d), dotted with column 1 of B, (e, g). Point at any other entry to see its row and its column")],
         ]}
         words={tx(t, "mMat_mulWords", "Each entry of the product is a row of the left matrix dotted with a column of the right matrix, taken where that row and that column cross.")}
         note={tx(t, "mMat_mulNote", "Example: A = [[0, −1], [1, 0]] (quarter turn), B = [[2, 0], [0, 1]] (stretch x). AB: row 1 of A (0, −1) with column 1 of B (2, 0) gives 0; with column 2 (0, 1) gives −1; row 2 (1, 0) gives 2 and 0. AB = [[0, −1], [2, 0]]. BA = [[0, −2], [1, 0]]. Different: stretching and then turning is not the same as turning and then stretching.")}>
-        {r`\begin{bmatrix} a & b \\ c & d \end{bmatrix}\begin{bmatrix} e & f \\ g & h \end{bmatrix} = \begin{bmatrix} ae + bg & af + bh \\ ce + dg & cf + dh \end{bmatrix}`}
+        {r`${MUL.a}${MUL.b} = ${MUL.c}`}
       </Equation>
+      <MatrixProduct t={t} label={tx(t, "mMat_liveMul", "Try it: a product, one entry at a time")}
+        presets={[
+          { name: tx(t, "mMat_pTurnStretch", "turn · stretch"), A: [[0, -1], [1, 0]], B: [[2, 0], [0, 1]] },
+          { name: tx(t, "mMat_pMirrorShear", "mirror · shear"), A: [[-1, 0], [0, 1]], B: [[1, 1], [0, 1]], names: ["F", "S"] },
+          { name: "2 × 3 · 3 × 2", A: [[1, 2, 0], [0, 1, 3]], B: [[2, 1], [0, 1], [1, 0]] },
+          { name: tx(t, "mMat_pShop", "shopping"), A: [[2, 1, 0], [1, 2, 3]], B: [[3, 2], [4, 5], [1, 1]], names: ["Q", "P"] },
+        ]}
+        note={tx(t, "mMat_liveMulNote", "Starts on the example above: a quarter turn after a stretch. Play it to the end, then press ⇄ BA: the same two matrices in the other order give a different product. The other presets are the worked examples further down. Type any number in A or B, and click an entry of the product to see how it is made.")} />
       <p>
         {tx(t, "mMat_orderBody",
           "Three rules come with it. Order matters: AB is usually not BA (the figure's second mode shows a turn and a shear disagreeing). The matrix written last is applied first, because (AB)v = A(Bv): read a product right to left. Grouping does not matter: (AB)C = A(BC), so a long chain can be multiplied out once and then applied to every point. And the identity I changes nothing: AI = IA = A. Sizes must fit: an m × n matrix can multiply an n × p one (the rows of the first are as long as the columns of the second), giving an m × p result.")}
@@ -171,12 +193,12 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mMat_eqRot3", "Rotations about the three axes")}
         where={[
-          [r`R_z(\theta)`, tx(t, "mMat_wRz", "turns x toward y; z is untouched (third column and row are those of I)")],
-          [r`R_x(\theta)`, tx(t, "mMat_wRx", "turns y toward z; x is untouched")],
-          [r`R_y(\theta)`, tx(t, "mMat_wRy", "turns z toward x; y is untouched. The sign of sin looks swapped only because z → x is the anticlockwise order seen from +y")],
+          [r`\sym{rz}{R_z(\theta)}`, tx(t, "mMat_wRz", "turns x toward y; z is untouched (third column and row are those of I)")],
+          [r`\sym{rx}{R_x(\theta)}`, tx(t, "mMat_wRx", "turns y toward z; x is untouched")],
+          [r`\sym{ry}{R_y(\theta)}`, tx(t, "mMat_wRy", "turns z toward x; y is untouched. The sign of sin looks swapped only because z → x is the anticlockwise order seen from +y")],
         ]}
         words={tx(t, "mMat_rot3Words", "Each one is the 2D rotation placed on the two axes that turn, with a 1 on the axis that stays put and zeros beside it.")}>
-        {r`R_z = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix} \quad R_x = \begin{bmatrix} 1 & 0 & 0 \\ 0 & \cos\theta & -\sin\theta \\ 0 & \sin\theta & \cos\theta \end{bmatrix} \quad R_y = \begin{bmatrix} \cos\theta & 0 & \sin\theta \\ 0 & 1 & 0 \\ -\sin\theta & 0 & \cos\theta \end{bmatrix}`}
+        {r`\sym{rz}{R_z} = ${ROT_AXIS("rz", 3, [[r`\cos\theta`, r`-\sin\theta`, "0"], [r`\sin\theta`, r`\cos\theta`, "0"], ["0", "0", "1"]])} \quad \sym{rx}{R_x} = ${ROT_AXIS("rx", 1, [["1", "0", "0"], ["0", r`\cos\theta`, r`-\sin\theta`], ["0", r`\sin\theta`, r`\cos\theta`]])} \quad \sym{ry}{R_y} = ${ROT_AXIS("ry", 2, [[r`\cos\theta`, "0", r`\sin\theta`], ["0", "1", "0"], [r`-\sin\theta`, "0", r`\cos\theta`]])}`}
       </Equation>
 
       <H2>{tx(t, "mMat_homTitle", "Translation with one extra coordinate")}</H2>
@@ -186,13 +208,13 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mMat_eqHom", "A 2D rotation or scale plus a translation, as one 3 × 3 matrix")}
         where={[
-          [r`\begin{bmatrix} a & b \\ c & d \end{bmatrix}`, tx(t, "mMat_wCorner", "the linear part: rotate, scale, shear")],
-          [r`(t_x, t_y)`, tx(t, "mMat_wT", "the translation, in the last column")],
-          [r`w`, tx(t, "mMat_wW", "the extra coordinate: 1 for a point, 0 for a direction")],
+          [r`\sym{lin}{\begin{bmatrix} a & b \\ c & d \end{bmatrix}}`, tx(t, "mMat_wCorner", "the linear part: rotate, scale, shear")],
+          [r`\sym{t}{(t_x, t_y)}`, tx(t, "mMat_wT", "the translation, in the last column")],
+          [r`\sym{w}{w}`, tx(t, "mMat_wW", "the extra coordinate: 1 for a point, 0 for a direction")],
         ]}
         words={tx(t, "mMat_homWords", "The corner of the matrix turns, scales or shears as before; the last column adds the offset, multiplied by w, so points (w = 1) are moved and directions (w = 0) are not.")}
         note={tx(t, "mMat_homNote", "With w = 0 the offset is multiplied by 0 and ignored. That is exactly right for directions: carrying a compass to another town does not change which way north is. So points get w = 1 and vectors w = 0, the distinction from the vectors chapter made precise.")}>
-        {r`\begin{bmatrix} a & b & t_x \\ c & d & t_y \\ 0 & 0 & 1 \end{bmatrix}\begin{bmatrix} x \\ y \\ w \end{bmatrix} = \begin{bmatrix} ax + by + t_x w \\ cx + dy + t_y w \\ w \end{bmatrix}`}
+        {r`${HOMOGENEOUS}\begin{bmatrix} x \\ y \\ \sym{w}{w} \end{bmatrix} = \begin{bmatrix} \sym{lin}{ax + by} + \sym{t}{t_x}\,\sym{w}{w} \\ \sym{lin}{cx + dy} + \sym{t}{t_y}\,\sym{w}{w} \\ \sym{w}{w} \end{bmatrix}`}
       </Equation>
       <p>
         {tx(t, "mMat_trsBody",
@@ -227,13 +249,13 @@ export function MatricesContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "mMat_eqRect", "A 2 × 3 matrix times a 3 × 2 matrix")}
         where={[
-          [r`2 = 1 \cdot 2 + 2 \cdot 0 + 0 \cdot 1`, tx(t, "mMat_wR1", "row 1 of A dotted with column 1 of B")],
-          [r`3 = 1 \cdot 1 + 2 \cdot 1 + 0 \cdot 0`, tx(t, "mMat_wR2", "row 1 with column 2")],
-          [r`3 = 0 \cdot 2 + 1 \cdot 0 + 3 \cdot 1`, tx(t, "mMat_wR3", "row 2 with column 1")],
-          [r`1 = 0 \cdot 1 + 1 \cdot 1 + 3 \cdot 0`, tx(t, "mMat_wR4", "row 2 with column 2")],
+          [r`\sym{e11}{2} = 1 \cdot 2 + 2 \cdot 0 + 0 \cdot 1`, tx(t, "mMat_wR1", "row 1 of A dotted with column 1 of B")],
+          [r`\sym{e12}{3} = 1 \cdot 1 + 2 \cdot 1 + 0 \cdot 0`, tx(t, "mMat_wR2", "row 1 with column 2")],
+          [r`\sym{e21}{3} = 0 \cdot 2 + 1 \cdot 0 + 3 \cdot 1`, tx(t, "mMat_wR3", "row 2 with column 1")],
+          [r`\sym{e22}{1} = 0 \cdot 1 + 1 \cdot 1 + 3 \cdot 0`, tx(t, "mMat_wR4", "row 2 with column 2")],
         ]}
         note={tx(t, "mMat_rectNote", "The other order, BA, is a 3 × 3 matrix: [[2, 5, 3], [0, 1, 3], [1, 2, 0]]. So AB and BA need not even have the same size.")}>
-        {r`\begin{bmatrix} 1 & 2 & 0 \\ 0 & 1 & 3 \end{bmatrix}\begin{bmatrix} 2 & 1 \\ 0 & 1 \\ 1 & 0 \end{bmatrix} = \begin{bmatrix} 2 & 3 \\ 3 & 1 \end{bmatrix}`}
+        {r`${RECT.a}${RECT.b} = ${RECT.c}`}
       </Equation>
       <p>
         {tx(t, "mMat_shopBody",

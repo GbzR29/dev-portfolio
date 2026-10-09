@@ -12,11 +12,10 @@
 // legend sits under it, as there.
 
 import { useEffect, useState, type ReactNode } from "react";
-import { useLanguage } from "@/components/providers/LanguageProvider";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Transport } from "@/components/lesson/kit/Transport";
 import { scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
-import { render, useSymbolLinks } from "./Tex";
+import { render, symColors, useSymbolLinks, WhereList } from "./Tex";
 
 export type DerivationStep = {
   tex: string;
@@ -26,8 +25,6 @@ export type DerivationStep = {
   full?: boolean;
 };
 
-const WHERE: Record<string, string> = { en: "where", pt: "onde", es: "donde", zh: "其中" };
-
 export function Derivation({ label, steps, where, note, t }: {
   label?: string;
   steps: DerivationStep[];
@@ -35,12 +32,12 @@ export function Derivation({ label, steps, where, note, t }: {
   note?: ReactNode;
   t?: TrackTranslations;
 }) {
-  const { language } = useLanguage();
   const [shown, setShown] = useState(1);
   const [playing, setPlaying] = useState(false);
   const [picked, setPicked] = useState<number | null>(null);   // a line the reader clicked
   const [speed] = useFigureSpeed();
   const links = useSymbolLinks<HTMLDivElement>();
+  const colors = symColors(where);
   const n = steps.length;
   const focus = picked !== null && picked < shown ? picked : shown - 1;
   // A new line takes the light back from a clicked one
@@ -75,7 +72,7 @@ export function Derivation({ label, steps, where, note, t }: {
                 <button type="button" onClick={() => setPicked(i)} aria-pressed={lit}
                   className={`${col} text-left rounded-md px-1.5 py-1 transition-opacity ${lit ? "deriv-current" : "opacity-55 hover:opacity-90"}`}>
                   <span className="deriv-num">{i + 1}</span>
-                  <span dangerouslySetInnerHTML={{ __html: render(`\\displaystyle ${s.tex}`, false) }} />
+                  <span dangerouslySetInnerHTML={{ __html: render(`\\displaystyle ${s.tex}`, false, colors) }} />
                 </button>
                 {/* The first line stands alone on the left: keep the right column empty beside it */}
                 {i === 0 && !s.full && <div className="col-start-2" />}
@@ -95,17 +92,7 @@ export function Derivation({ label, steps, where, note, t }: {
         onBack={shown > 1 ? () => { setPlaying(false); setShown(s => Math.max(1, s - 1)); } : undefined}
         onReset={() => { setPlaying(false); setShown(1); }}
         readout={`${shown} / ${n}`} />
-      {where && where.length > 0 && (
-        <div className="px-4 pb-3.5 pt-1 border-t border-[var(--separator)] grid gap-x-4 gap-y-1.5 grid-cols-[auto_1fr] items-baseline text-[13px]">
-          <span className="col-span-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)] pt-2">{WHERE[language] ?? WHERE.en}</span>
-          {where.map(([sym, meaning], i) => (
-            <div key={i} className="contents">
-              <span className="text-[var(--primary)] whitespace-nowrap" dangerouslySetInnerHTML={{ __html: render(sym, false) }} />
-              <span data-sym={sym.match(/\\sym\{([\w-]+)\}/)?.[1]} className="eq-meaning text-[var(--text-muted)] leading-snug">{meaning}</span>
-            </div>
-          ))}
-        </div>
-      )}
+      <WhereList where={where} colors={colors} />
       {note && (
         <div className="px-4 pb-3.5 pt-2 border-t border-[var(--separator)] text-[13px] text-[var(--text-muted)] leading-relaxed">{note}</div>
       )}

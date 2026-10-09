@@ -192,6 +192,11 @@ const text: Record<string, string> = {
   figT_reset: "recomeçar",
   figT_space: "espaço",
   figT_speed: "velocidade",
+
+  // MatrixProduct: a product filled one entry at a time (lesson/MatrixProduct.tsx, 2026-10-09)
+  lxMat_rowCol: "linha {i} de {A} · coluna {j} de {B}",
+  lxMat_swapTip: "multiplicar na outra ordem",
+  lxMat_hint: "Digite qualquer número em qualquer uma das matrizes. Clique num elemento do produto para ver como ele é feito.",
 };
 
 export default text;

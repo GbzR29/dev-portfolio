@@ -120,6 +120,14 @@ const text: Record<string, string> = {
   mMat_x2: "primeiro multiplique o giro [0 −1; 1 0] por T(−1, −1): sua última coluna vira R(−1, −1) = (1, −1)",
   mMat_x3: "depois T(1, 1) soma (1, 1) a essa última coluna: (2, 0)",
   mMat_x4: "aplique ao ponto (2, 0) com w = 1. À mão: deslocamento (1, −1) a partir do pivô, girado para (1, 1), mais o pivô dá (2, 2) ✓",
+
+  // ── Linked entries, product step by step (2026-10-09) ──
+  mMat_wE21: "um elemento, (AB)₂₁: a linha 2 de A, (c, d), em produto escalar com a coluna 1 de B, (e, g). Aponte para qualquer outro elemento para ver a linha e a coluna dele",
+  mMat_liveMul: "Experimente: um produto, um elemento por vez",
+  mMat_pTurnStretch: "giro · esticar",
+  mMat_pMirrorShear: "espelho · cisalhamento",
+  mMat_pShop: "compras",
+  mMat_liveMulNote: "Começa no exemplo acima: um quarto de volta depois de um esticamento. Rode até o fim e aperte ⇄ BA: as mesmas duas matrizes na outra ordem dão outro produto. Os outros exemplos prontos são os exemplos resolvidos mais abaixo. Digite qualquer número em A ou B e clique num elemento do produto para ver como ele é feito.",
 };
 
 export default text;

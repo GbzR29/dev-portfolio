@@ -14,6 +14,12 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ### 2026-10-09
 
+- **Fórmulas ainda mais interativas, piloto em Matemática → Matrizes**: primeiro passo para levar as fórmulas dinâmicas a todas as trilhas.
+  - **Cor automática por símbolo**: cada símbolo explicado no "onde" ganha uma cor própria, igual na fórmula e na sua linha, sem pintar à mão. Vale para fórmulas, deduções e fórmulas ao vivo, que agora também aceitam o "onde".
+  - **Linha × coluna**: nos produtos de matrizes, apontar (ou tocar) um elemento do resultado acende a linha de A e a coluna de B de onde ele vem; apontar uma linha ou coluna acende também o que ela produz. Aplicado à definição, às duas leituras de matriz × vetor, ao produto 2 × 2, ao produto 2 × 3 · 3 × 2, à matriz homogênea e às rotações 3D (o eixo que fica parado).
+  - **Novo widget "um produto, um elemento por vez"**: a barra de reprodução preenche AB elemento a elemento, com a linha e a coluna acesas e os pares multiplicados na mesma cor da conta escrita embaixo. Números editáveis, exemplos prontos (giro · esticar, espelho · cisalhamento, 2 × 3 · 3 × 2, compras) e botão ⇄ para multiplicar na outra ordem.
+  - **Correção**: os símbolos ligados da segunda linha em diante de uma matriz não respondiam ao mouse, porque uma caixa interna do KaTeX ficava por cima deles.
+  - O "onde" virou um componente só, compartilhado pelos três tipos de cartão de fórmula. Tradução pt.
 - **Aprender → cartão "em breve" de Música**: último cartão da grade, ao lado de Física e Química (som e altura, ritmo, notas e pauta, intervalos e escalas, acordes e harmonia, tonalidades, melodia e forma). Tradução pt.
 - **Matemática → Cálculo interativo (11 capítulos)**: sexta seção a receber laboratórios, barra de reprodução e fórmulas dinâmicas.
   - **Laboratórios guiados** nos 11 widgets da seção: aproximação de um ponto, secante → tangente, por que as regras valem, o que a derivada diz, área por faixas, área que se acumula, áreas que trocam de lugar, polinômios de Taylor, curvas de nível e gradiente, volume sob uma superfície e campo de inclinações. Vários passos pedem para "quebrar" o widget (uma quina sem derivada, Newton preso num ciclo, uma série fora do intervalo de convergência, Euler explodindo com passo grande) e explicam o que aconteceu.

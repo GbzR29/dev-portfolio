@@ -33,8 +33,9 @@ src/components/lesson/i18n/<lang>/     widget translations, one file per figures
 src/components/lesson/LessonComponents.tsx   CodeBlock, Callout, H2, H3, IC, LessonTable, MathBlock, diagrams
 src/components/lesson/ChapterContent.tsx   renders the open chapter (React.lazy + Suspense), preloads the next one
 src/components/lesson/Prose.tsx        Article, Lead, KeyIdeas — chapter page wrappers
-src/components/lesson/Tex.tsx          Equation (KaTeX); \sym{id}{…} links a symbol to its "where" line; `words` = "in words" toggle
+src/components/lesson/Tex.tsx          Equation (KaTeX); \sym{id}{…} links a symbol to its "where" line and colours it (ids in "where" get auto colours; \sym{a b}{…} = several groups); `words` = "in words" toggle
 src/components/lesson/Derivation.tsx   step-by-step derivation (lines + reasons, Transport bar); LiveFormula.tsx: formula with sliders, numbers plugged in live
+src/components/lesson/texMatrix.ts     bmatrix + linkedProduct (A·B = C with row/column-linked \sym ids); MatrixProduct.tsx: product filled entry by entry
 src/components/lesson/kit/             widget INFRASTRUCTURE (no lesson content):
   figure.tsx      SVG figure blocks (Figure, Slider, plot, useDrag, useRaf, useVisible…)
   FigureShell.tsx the frame of EVERY widget: phone pinning, fullscreen, touch hints (styles in src/styles/figure.css)
