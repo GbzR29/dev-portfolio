@@ -6,7 +6,8 @@
 // independence, versus mutually exclusive, pairwise versus mutual, the
 // gambler's fallacy; the law of total probability; Bayes' theorem with the
 // medical test in natural frequencies, the base rate, odds form and a second
-// test; Monty Hall; two-children puzzles.
+// test; Monty Hall; two-children puzzles; conditioning on the first step
+// (free-throw duel, which of two events comes first).
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
@@ -34,6 +35,15 @@ function factoryNumbers(v: Record<string, number>) {
   };
 }
 
+/** Free-throw duel: Ana shoots first; a double miss starts the game over. */
+function duelNumbers(v: Record<string, number>) {
+  const a = v.a, b = v.b, s = (1 - a) * (1 - b), p = a / (1 - s);
+  return {
+    tex: r`P = \frac{${a.toFixed(2)}}{1 - ${(1 - a).toFixed(2)} \cdot ${(1 - b).toFixed(2)}} = \frac{${a.toFixed(2)}}{${(1 - s).toFixed(4)}} = \amber{${d3(p)}}`,
+    meter: p,
+  };
+}
+
 /** Prior odds times the likelihood ratio once per positive test. */
 function oddsNumbers(v: Record<string, number>) {
   const p = v.p / 100, lr = v.lr, n = v.n;
@@ -57,6 +67,7 @@ export function ConditionalContent({ t }: { t: TrackTranslations }) {
         "Compute chains of events with a tree.",
         "Test whether two events are independent.",
         "Reason backwards from evidence to cause with Bayes' theorem.",
+        "Solve \"repeat until\" problems by conditioning on the first step.",
       ]} />
 
       <H2>{tx(t, "mCond_defTitle", "New information shrinks the sample space")}</H2>
@@ -214,6 +225,75 @@ export function ConditionalContent({ t }: { t: TrackTranslations }) {
           "Two children. In families with two children, each child equally likely a boy or a girl independently, the sample space is {BB, BG, GB, GG} (older first). Given that at least one child is a girl, three outcomes remain, {BG, GB, GG}, and P(both girls) = 1/3. Given that the older child is a girl, only {GB, GG} remain, and the answer is 1/2. The two conditions sound alike, but they cut the sample space differently, and that is all that matters.")}
       </p>
 
+      <H2>{tx(t, "mCond_fsTitle", "Conditioning on the first step: when a case starts over")}</H2>
+      <p>
+        {tx(t, "mCond_fsBody",
+          "Ana and Bia have a free-throw duel. They shoot in turns, Ana first, and the first one to score wins. Ana scores with probability a = 0.4 per shot, Bia with b = 0.5, and every shot is independent of the others. What is the chance that Ana wins? The duel can last any number of rounds, so listing every way it can end is hopeless. Call the answer P and use the law of total probability on the first round only: it ends in one of three ways, and they form a partition.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "mCond_fsRound", "first round"), tx(t, "mCond_fsProb", "probability"), tx(t, "mCond_fsWhat", "what happens"), tx(t, "mCond_fsGiven", "P(Ana wins), given this case")]}
+        rows={[
+          [tx(t, "mCond_fsA", "Ana scores"), "a", tx(t, "mCond_fsAw", "Ana wins at once"), "1"],
+          [tx(t, "mCond_fsB", "Ana misses, Bia scores"), "(1 − a) b", tx(t, "mCond_fsBw", "Bia wins"), "0"],
+          [tx(t, "mCond_fsC", "both miss"), "(1 − a)(1 − b)", tx(t, "mCond_fsCw", "a new round starts, exactly like the first"), "P"],
+        ]}
+      />
+      <p>
+        {tx(t, "mCond_fsKey",
+          "The key is the last row. After two misses nothing has changed: Ana shoots first again, with the same chances, and the misses are not remembered. So, given that case, the probability that Ana wins is P itself, the very number we are looking for. The unknown appears on both sides of the equation, and we solve for it.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mCond_eqFsDer", "The free-throw duel, step by step")}
+        steps={[
+          { tex: r`P`, why: tx(t, "mCond_fs1", "the probability that Ana, who shoots first, wins the duel") },
+          { tex: r`= a \cdot 1 + (1 - a)\,b \cdot 0 + (1 - a)(1 - b) \cdot P`, why: tx(t, "mCond_fs2", "the law of total probability over the first round: each row of the table, its probability times the chance that Ana wins in that case") },
+          { tex: r`= a + (1 - a)(1 - b)\,P`, why: tx(t, "mCond_fs3", "the middle case adds nothing: if Bia scores, Ana has lost") },
+          { tex: r`P\,\bigl[1 - (1 - a)(1 - b)\bigr] = a`, full: true, why: tx(t, "mCond_fs4", "subtract (1 − a)(1 − b) P from both sides and factor out P") },
+          { tex: r`P = \green{\frac{a}{1 - (1 - a)(1 - b)}}`, full: true, why: tx(t, "mCond_fs5", "divide by the bracket. It is the chance that the round ends with somebody scoring, which is not 0 as long as someone can score. With a = 0.4 and b = 0.5: 0.4/(1 − 0.6 · 0.5) = 0.4/0.7 = 4/7 ≈ 0.571") },
+        ]} />
+      <p>
+        {tx(t, "mCond_fsCheck",
+          "Ana is the weaker shooter, yet she wins more often than not: going first is worth that much. Check the answer another way. Ana wins in round k when the first k − 1 rounds were double misses and then she scores, with probability 0.3^(k − 1) · 0.4. Adding these over k = 1, 2, 3, … is a geometric series, 0.4/(1 − 0.3) = 4/7 ✓. Conditioning on the first step reaches the same number without any infinite sum.")}
+      </p>
+      <Equation label={tx(t, "mCond_eqFs", "Conditioning on the first step")}
+        where={[
+          [r`P`, tx(t, "mCond_wFsP", "the probability of winning, counted from the start of the process")],
+          [r`w`, tx(t, "mCond_wFsW", "the probability of winning during the first step")],
+          [r`s`, tx(t, "mCond_wFsS", "the probability that the first step brings the process back to the start, with nothing remembered")],
+        ]}
+        note={tx(t, "mCond_fsNote", "1 − s is the chance that the first step settles the game, one way or the other. So P = w/(1 − s) is a conditional probability: the chance of winning, given that the step was decisive. The rounds that start over are simply thrown away.")}
+        words={tx(t, "mCond_fsWords", "Look at the first step only. Either it decides the game, or it puts you back where you began; in that case the chance of winning is the same unknown again, and the equation can be solved for it.")}>
+        {r`P = w + s\,P \quad\Longrightarrow\quad P = \frac{w}{1 - s}`}
+      </Equation>
+      <LiveFormula label={tx(t, "mCond_liveDuel", "Try it: the free-throw duel")}
+        tex={r`P = \frac{a}{1 - (1 - a)(1 - b)}`}
+        where={[
+          [r`a`, tx(t, "mCond_wDuelA", "Ana's chance of scoring with one shot; she shoots first")],
+          [r`b`, tx(t, "mCond_wDuelB", "Bia's chance of scoring with one shot")],
+        ]}
+        vars={[
+          { id: "a", label: "a", min: 0.05, max: 0.95, step: 0.05, value: 0.4, fmt: v => v.toFixed(2) },
+          { id: "b", label: "b", min: 0.05, max: 0.95, step: 0.05, value: 0.5, fmt: v => v.toFixed(2) },
+        ]}
+        compute={duelNumbers}
+        note={tx(t, "mCond_liveDuelNote", "The defaults are the duel above: 4/7 ≈ 0.571. With equal shooters, a = b = 0.50, the first one wins 2/3 of the time. The duel is fair when P = 1/2, which happens when a = b/(1 + b): try b = 0.25 and a = 0.20. Small a and b make long duels; the advantage of going first then fades, and P comes close to a/(a + b).")} />
+
+      <H3>{tx(t, "mCond_raceTitle", "Which comes first?")}</H3>
+      <p>
+        {tx(t, "mCond_raceBody",
+          "Roll two dice again and again until the sum is 6 or 7. What is the chance that the 6 comes first? On one roll, a sum of 6 has probability 5/36 (the outcomes (1,5), (2,4), (3,3), (4,2), (5,1)), a sum of 7 has probability 6/36, and with the remaining 25/36 nothing is decided and we roll again, back at the start. First-step analysis: p = 5/36 + (25/36) p, so (11/36) p = 5/36 and p = 5/11 ≈ 0.455. The 36s cancel, leaving 5/(5 + 6): only the two deciding outcomes matter, in proportion to their chances.")}
+      </p>
+      <Equation label={tx(t, "mCond_eqRace", "Which of two events comes first")}
+        where={[
+          [r`P(A),\ P(B)`, tx(t, "mCond_wRace", "the chances of A and of B on one trial; they cannot happen together, and the trials are independent repetitions")],
+        ]}
+        note={tx(t, "mCond_raceNote", "This is the step formula with w = P(A) and s = 1 − P(A) − P(B). It equals P(A | A ∪ B): the chance of A on a single trial, given that the trial was decisive.")}
+        words={tx(t, "mCond_raceWords", "Ignore the trials where neither happens; the first decisive trial is A with a chance proportional to how likely A is.")}>
+        {r`P(A \text{ ${tx(t, "mCond_texBefore", "before")} } B) = \frac{P(A)}{P(A) + P(B)}`}
+      </Equation>
+      <Callout type="warn" t={t}>
+        {tx(t, "mCond_fsWarn", "The trick needs the starting-over case to be exactly the start: the same chances and nothing remembered. If something carries over (Bia gets tired after each miss, or you wait for two heads in a row and the last toss was heads), each different situation needs its own unknown, and you get a system of equations, one per situation. The Markov chains and absorbing chains chapters do exactly that, and the expectation chapter uses the same first step for average waiting times.")}
+      </Callout>
+
       <H2>{tx(t, "mCond_exTitle", "Worked examples")}</H2>
       <p>{tx(t, "mCond_ex1", "1. Two dice with sum 8: P(doubles | sum 8) = |{(4,4)}|/|{(2,6), (3,5), (4,4), (5,3), (6,2)}| = 1/5.")}</p>
       <p>{tx(t, "mCond_ex2", "2. At least one ace in two cards drawn without replacement: complement \"no ace\" = 48/52 · 47/51 = 2256/2652, so P = 396/2652 = 33/221 ≈ 0.149.")}</p>
@@ -232,6 +312,7 @@ export function ConditionalContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mCond_m4w", "after five reds, black is due"), tx(t, "mCond_m4r", "still the same probability"), tx(t, "mCond_m4", "independent trials have no memory")],
           [tx(t, "mCond_m5w", "two aces with replacement: 4/52 · 3/51"), "4/52 · 4/52", tx(t, "mCond_m5", "3/51 is for drawing without replacement; decide which one the problem describes")],
           [tx(t, "mCond_m6w", "pairwise independent ⇒ independent"), tx(t, "mCond_m6r", "check the triple product too"), tx(t, "mCond_m6", "two coins and \"they agree\" are pairwise but not mutually independent")],
+          [tx(t, "mCond_m7w", "P(Ana wins) = a + (1 − a)(1 − b) a"), tx(t, "mCond_m7r", "keep P in the double-miss case and solve for it"), tx(t, "mCond_m7", "after a double miss the whole duel starts over, not just one more shot")],
         ]}
       />
 
@@ -243,6 +324,7 @@ export function ConditionalContent({ t }: { t: TrackTranslations }) {
         "Total probability: P(B) = Σ P(Aᵢ)P(B | Aᵢ) over a partition.",
         "Bayes: posterior = likelihood × prior / evidence; base rates matter enormously.",
         "Odds form: posterior odds = prior odds × likelihood ratio; each new piece of evidence multiplies again.",
+        "First step: if a case puts you back at the start, its probability is the unknown itself; P = w + sP gives P = w/(1 − s).",
       ]} />
     </Article>
   );

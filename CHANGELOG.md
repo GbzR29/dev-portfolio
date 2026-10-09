@@ -14,6 +14,11 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-09
 
+- **Condicionando no primeiro passo, em "Probabilidade condicional e Bayes" (Matemática)**, a parte 8 do plano da lista de exercícios de Markov:
+  - **seção nova "Condicionando no primeiro passo: quando um caso recomeça"**: o duelo de lances livres (Ana acerta com a = 0,4 e começa, Bia com b = 0,5), com tabela dos três casos da primeira rodada e dedução passo a passo de P = a/(1 − (1 − a)(1 − b)) = 4/7. Traz a conferência pela série geométrica, a fórmula geral P = w + sP ⇒ P = w/(1 − s) com explicação de cada termo e "em palavras", e uma fórmula ao vivo com a e b (duelo justo quando a = b/(1 + b));
+  - **"Quem vem primeiro?"**: soma 6 antes de 7 com dois dados (5/11) e a fórmula P(A antes de B) = P(A)/(P(A) + P(B)), ligada a P(A | A ∪ B). Um aviso explica quando o truque não basta (algo lembrado → um sistema, como nas cadeias de Markov);
+  - 1 erro comum, ideia-chave e objetivo novos, tempo de leitura 21 → 25 min, tradução PT (incluindo as ideias-chave do capítulo, que estavam sem PT).
+
 - **Esperança condicional e análise do primeiro passo, em "Esperança e variância" (Matemática)**, a parte 7 do plano da lista de exercícios de Markov:
   - **seção nova "Esperança condicional: a média caso a caso"**: E[X | A] como média com os pesos P(X = x | A) (dado par = 4, ímpar = 3, e ½ · 4 + ½ · 3 = 3,5). Traz a lei da esperança total com explicação de cada termo e "em palavras", e a dedução passo a passo a partir da lei da probabilidade total. Mostra também o exemplo das médias de grupos (6,4, não 6,5);
   - **"Condicionando no primeiro passo"**: a trilheira perdida (trilha até o abrigo de 1 h e voltas de 2 h e 4 h), com tabela dos casos, dedução de E = 7 h, conferência pela espera geométrica e a espera por um 6 em uma linha (E = 1 + (5/6)E). Tem uma fórmula ao vivo com a, b, c e p;
