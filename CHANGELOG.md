@@ -14,6 +14,12 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ### 2026-10-09
 
+- **Laboratório e fórmulas interativas em Distribuições (Matemática → Probabilidade e Estatística)**:
+  - **Laboratório guiado** no widget das distribuições comuns, em 9 passos: a chance de passar numa prova no chute, a binomial virando sino, a Poisson como limite da binomial, quanto vale λ em 2 horas, esperar um 6 no dado, lançar de verdade, o ponto de 97,5% da normal, a espera mediana da exponencial e a falta de memória da lâmpada. Avisos quando o sino ainda não se encaixa, quando a Poisson acerta a binomial e quando a amostra confirma a fórmula.
+  - **Barra de reprodução que sorteia valores reais** de X em todas as cinco distribuições: as frequências (em laranja) vão se assentando sobre as barras ou a curva, com a média x̄ ao lado.
+  - **Fórmulas em palavras** na binomial, geométrica, Poisson, exponencial e normal; **deduções passo a passo** da fórmula binomial, da média da geométrica pelo primeiro passo, da Poisson como limite e da constante 1/(σ√(2π)); **fórmulas ao vivo** da binomial, da Poisson, da espera exponencial, da padronização pela Φ e da aproximação normal com correção de continuidade comparada à soma exata.
+  - Tradução PT.
+
 - **Fórmulas ainda mais interativas, piloto em Matemática → Matrizes**: primeiro passo para levar as fórmulas dinâmicas a todas as trilhas.
   - **Cor automática por símbolo**: cada símbolo explicado no "onde" ganha uma cor própria, igual na fórmula e na sua linha, sem pintar à mão. Vale para fórmulas, deduções e fórmulas ao vivo, que agora também aceitam o "onde".
   - **Linha × coluna**: nos produtos de matrizes, apontar (ou tocar) um elemento do resultado acende a linha de A e a coluna de B de onde ele vem; apontar uma linha ou coluna acende também o que ela produz. Aplicado à definição, às duas leituras de matriz × vetor, ao produto 2 × 2, ao produto 2 × 3 · 3 × 2, à matriz homogênea e às rotações 3D (o eixo que fica parado).

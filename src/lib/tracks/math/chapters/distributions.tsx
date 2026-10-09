@@ -11,12 +11,81 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DistributionFigure } from "@/components/lesson/figures/math/DistributionFigure";
+import { binomPmf, binomTail, choose, fact, Phi } from "@/components/lesson/figures/math/distMath";
 
 const r = String.raw;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** A number for TeX: 3 significant digits, very small ones as a × 10⁻ᵇ, large ones whole. */
+function num(x: number) {
+  if (x === 0) return "0";
+  if (x >= 1000) return Math.round(x).toString();
+  if (x >= 1e-4) return String(Number(x.toPrecision(3)));
+  const [a, b] = x.toExponential(2).split("e");
+  return r`${a} \times 10^{${Number(b)}}`;
+}
+
+/** Binomial: exactly k successes, and k or more. */
+function binNumbers(v: Record<string, number>) {
+  const { n, p } = v, k = Math.min(v.k, n), q = 1 - p;
+  const exact = binomPmf(k, n, p), tail = binomTail(n, p, k);
+  return {
+    tex: r`\begin{aligned} &P(K = ${k}) = \binom{${n}}{${k}}\, ${p.toFixed(2)}^{${k}} \cdot ${q.toFixed(2)}^{${n - k}} = ${choose(n, k)} \cdot ${num(p ** k * q ** (n - k))} = \amber{${exact.toFixed(4)}} \\[4pt] &P(K \ge ${k}) = \sum_{j=${k}}^{${n}} P(K = j) = \green{${tail.toFixed(4)}} \end{aligned}`,
+    meter: tail,
+    meterLabel: `P(K ≥ ${k}) = ${(tail * 100).toFixed(1)}%`,
+  };
+}
+
+/** Poisson: exactly k events, and at most k. */
+function poisNumbers(v: Record<string, number>) {
+  const { lam, k } = v;
+  const term = (j: number) => Math.exp(-lam) * lam ** j / fact(j);
+  const exact = term(k);
+  let upTo = 0;
+  for (let j = 0; j <= k; j++) upTo += term(j);
+  return {
+    tex: r`\begin{aligned} &P(K = ${k}) = e^{-${lam.toFixed(1)}}\,\frac{${lam.toFixed(1)}^{${k}}}{${k}!} = ${Math.exp(-lam).toFixed(4)} \cdot \frac{${num(lam ** k)}}{${fact(k)}} = \amber{${exact.toFixed(4)}} \\[4pt] &P(K \le ${k}) = \green{${upTo.toFixed(4)}} \end{aligned}`,
+    meter: upTo,
+    meterLabel: `P(K ≤ ${k}) = ${(upTo * 100).toFixed(1)}%`,
+  };
+}
+
+/** Exponential: still waiting at time t, the median and the mean. */
+const expNumbers = (tr: TrackTranslations) => (v: Record<string, number>) => {
+  const { lam, t } = v, surv = Math.exp(-lam * t);
+  return {
+    tex: r`\begin{aligned} &P(T > ${t.toFixed(2)}) = e^{-${lam.toFixed(1)} \cdot ${t.toFixed(2)}} = e^{-${(lam * t).toFixed(3)}} = \amber{${surv.toFixed(4)}} \\[4pt] &\text{${tx(tr, "mDist_liveMedian", "median")}} =\frac{\ln 2}{${lam.toFixed(1)}} = ${(Math.LN2 / lam).toFixed(3)} \qquad E[T] = \frac{1}{${lam.toFixed(1)}} = ${(1 / lam).toFixed(3)} \end{aligned}`,
+    meter: surv,
+    meterLabel: `P(T > t) = ${(surv * 100).toFixed(1)}%`,
+  };
+};
+
+/** Standardising a normal value and reading Φ. */
+function zNumbers(v: Record<string, number>) {
+  const { mu, s, x } = v, z = (x - mu) / s, F = Phi(z);
+  return {
+    tex: r`\begin{aligned} &z = \frac{${x} - ${mu}}{${s}} = ${z.toFixed(3)} \\[4pt] &P(X \le ${x}) = \Phi(${z.toFixed(2)}) = \amber{${F.toFixed(4)}} \qquad P(X > ${x}) = \green{${(1 - F).toFixed(4)}} \end{aligned}`,
+    meter: F,
+    meterLabel: `P(X ≤ x) = ${(F * 100).toFixed(1)}%`,
+  };
+}
+
+/** Normal approximation with the continuity correction against the exact binomial tail. */
+const approxNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const { n, p } = v, k = Math.min(v.k, n);
+  const mu = n * p, s = Math.sqrt(n * p * (1 - p)), z = (k - 0.5 - mu) / s;
+  const approx = 1 - Phi(z), exact = binomTail(n, p, k);
+  return {
+    tex: r`\begin{aligned} &\mu = ${n} \cdot ${p.toFixed(2)} = ${mu.toFixed(1)} \qquad \sigma = \sqrt{${mu.toFixed(1)} \cdot ${(1 - p).toFixed(2)}} = ${s.toFixed(3)} \\[4pt] &z = \frac{${k} - 0.5 - ${mu.toFixed(1)}}{${s.toFixed(3)}} = ${z.toFixed(3)} \\[4pt] &P(K \ge ${k}) \approx 1 - \Phi(${z.toFixed(2)}) = \amber{${approx.toFixed(4)}} \\[4pt] &\text{${tx(t, "mDist_liveExact", "exact sum")}}: \green{${exact.toFixed(4)}} \end{aligned}`,
+  };
+};
 
 export function DistributionsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -39,10 +108,20 @@ export function DistributionsContent({ t }: { t: TrackTranslations }) {
           "The simplest random variable has two values: 1 (\"success\") with probability p and 0 (\"failure\") with probability 1 − p. This is a Bernoulli(p) variable: one coin toss, one patient who recovers or not, one item that is defective or not. From the expectation chapter, its mean is p and its variance p(1 − p). Now repeat the trial n times, independently, with the same p each time, and count the successes K. K has the binomial distribution, Binomial(n, p).")}
       </p>
       <p>
-        {tx(t, "mDist_binDeriv",
-          "Derivation. Take n = 5 and ask for exactly k = 2 successes. One way is SSFFF, with probability p · p · (1 − p)(1 − p)(1 − p) = p²(1 − p)³ by independence. Any other arrangement, such as FSFSF, contains the same factors in a different order, so it has the same probability. How many arrangements are there? Choosing which 2 of the 5 places hold the successes: C(5, 2) = 10. So P(K = 2) = 10 p²(1 − p)³. The same reasoning for any n and k gives the formula.")}
+        {tx(t, "mDist_binDeriv2",
+          "Derivation. Take n = 5 trials and ask for exactly k = 2 successes. S stands for a success and F for a failure, so SSFFF means the first two trials succeed and the other three fail.")}
       </p>
+      <Derivation t={t} label={tx(t, "mDist_eqBinDer", "Where the binomial formula comes from")}
+        steps={[
+          { tex: r`P(\mathrm{SSFFF}) = p \cdot p \cdot (1-p)(1-p)(1-p)`, full: true, why: tx(t, "mDist_bd1", "the trials are independent, so multiply the probability of each result: p for each S, 1 − p for each F") },
+          { tex: r`P(\mathrm{SSFFF}) = p^2 (1-p)^3`, full: true, why: tx(t, "mDist_bd2", "collect the equal factors") },
+          { tex: r`P(\mathrm{FSFSF}) = p^2 (1-p)^3`, full: true, why: tx(t, "mDist_bd3", "any other order contains the same factors, only rearranged, so it has the same probability") },
+          { tex: r`\binom{5}{2} = 10`, full: true, why: tx(t, "mDist_bd4", "the number of orders: choose which 2 of the 5 places hold the successes") },
+          { tex: r`P(K = 2) = 10\,p^2 (1-p)^3`, full: true, why: tx(t, "mDist_bd5", "the orders cannot happen together, so their probabilities add: 10 equal terms") },
+          { tex: r`P(K = k) = \green{\binom{n}{k} p^k (1-p)^{n-k}}`, full: true, why: tx(t, "mDist_bd6", "the same reasoning with n trials and k successes: C(n, k) orders, each with k factors p and n − k factors 1 − p") },
+        ]} />
       <Equation label={tx(t, "mDist_eqBin", "Binomial distribution")}
+        words={tx(t, "mDist_binWords", "Count the ways to choose which k of the n trials succeed, and multiply by the chance of one such sequence: p for each success and 1 − p for each failure.")}
         where={[
           [r`n`, tx(t, "mDist_wN", "the number of independent trials")],
           [r`p`, tx(t, "mDist_wP", "the probability of success in each trial")],
@@ -77,6 +156,15 @@ export function DistributionsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDist_quizEnd",
           "About 7.8%: guessing passes roughly one quiz in thirteen. Notice how quickly the terms shrink once k passes the mean.")}
       </p>
+      <LiveFormula label={tx(t, "mDist_liveBin", "Try it: binomial probabilities")}
+        tex={r`P(K = k) = \binom{n}{k} p^k (1-p)^{n-k}`}
+        vars={[
+          { id: "n", label: "n", min: 1, max: 30, step: 1, value: 10, fmt: v => String(v) },
+          { id: "p", label: "p", min: 0.01, max: 0.99, step: 0.01, value: 0.25, fmt: v => v.toFixed(2) },
+          { id: "k", label: "k", min: 0, max: 30, step: 1, value: 5, fmt: v => String(v) },
+        ]}
+        compute={binNumbers}
+        note={tx(t, "mDist_liveBinNote", "The start is the quiz: exactly 5 right has probability 0.058, and 5 or more 0.078, the total of the table. Raise p to 0.5 (true/false questions) and passing becomes likely: P(K ≥ 5) ≈ 0.62. If k is set above n it is treated as k = n.")} />
 
       <H2>{tx(t, "mDist_geoTitle", "Geometric: waiting for the first success")}</H2>
       <p>
@@ -89,12 +177,20 @@ export function DistributionsContent({ t }: { t: TrackTranslations }) {
           [r`(1-p)^{k-1}`, tx(t, "mDist_wFail", "the probability that the first k − 1 trials all fail")],
           [r`P(N > k)`, tx(t, "mDist_wTail", "no success in the first k trials")],
         ]}
-        note={tx(t, "mDist_geoNote", "The probabilities form a geometric series with ratio 1 − p (hence the name) and add to p · 1/(1 − (1 − p)) = 1.")}>
+        note={tx(t, "mDist_geoNote", "The probabilities form a geometric series with ratio 1 − p (hence the name) and add to p · 1/(1 − (1 − p)) = 1.")}
+        words={tx(t, "mDist_geoWords", "The first success on trial k needs k − 1 failures in a row and then a success. On average it takes 1/p trials.")}>
         {r`P(N = k) = (1-p)^{k-1}\,p, \qquad P(N > k) = (1-p)^k, \qquad E[N] = \frac1p, \qquad \operatorname{Var}(N) = \frac{1-p}{p^2}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mDist_eqGeoDer", "The mean by the first-step argument")}
+        steps={[
+          { tex: r`E[N] = p \cdot 1 + (1-p)\,\big(1 + E[N]\big)`, full: true, why: tx(t, "mDist_gd1", "look at the first trial, which is always used. With probability p it succeeds and the wait was 1 trial. With probability 1 − p it fails: that trial is spent and, since the trials have no memory, we start afresh, still expecting E[N] more") },
+          { tex: r`E[N] = 1 + (1-p)\,E[N]`, full: true, why: tx(t, "mDist_gd2", "multiply out: p · 1 + (1 − p) · 1 = 1") },
+          { tex: r`p\,E[N] = 1`, full: true, why: tx(t, "mDist_gd3", "subtract (1 − p) E[N] from both sides: E[N] − (1 − p) E[N] = p E[N]") },
+          { tex: r`E[N] = \green{\frac1p}`, full: true, why: tx(t, "mDist_gd4", "divide by p. A die, with p = 1/6 for a 6, needs 6 rolls on average") },
+        ]} />
       <p>
-        {tx(t, "mDist_geoMean",
-          "The mean by the first-step argument: the first trial is always used. With probability p it succeeds and we stop; with probability 1 − p it fails and, since the trials have no memory, we are back where we began, still expecting E[N] more trials. So E[N] = 1 + (1 − p) E[N], which gives p E[N] = 1, E[N] = 1/p. (The series route: differentiate Σ qᵏ = 1/(1 − q) to get Σ k qᵏ⁻¹ = 1/(1 − q)², then multiply by p with q = 1 − p.) For the die: 6 rolls on average, variance (5/6)/(1/36) = 30, σ ≈ 5.5, and P(no 6 in 10 rolls) = (5/6)¹⁰ ≈ 0.16.")}
+        {tx(t, "mDist_geoMean2",
+          "The series route gives the same: differentiate Σ qᵏ = 1/(1 − q) to get Σ k qᵏ⁻¹ = 1/(1 − q)², then multiply by p with q = 1 − p. For the die: 6 rolls on average, variance (5/6)/(1/36) = 30, σ ≈ 5.5, and P(no 6 in 10 rolls) = (5/6)¹⁰ ≈ 0.16.")}
       </p>
       <p>
         {tx(t, "mDist_memBody",
@@ -106,11 +202,15 @@ export function DistributionsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDist_poisMotiv",
           "A help line receives on average λ = 3 calls per hour, at random moments. How likely are 0 calls in an hour, or 5? Split the hour into n tiny slots, so small that two calls never share one. Each slot then holds a call with a small probability p = λ/n, independently, so the count is Binomial(n, λ/n). Now let n grow without limit.")}
       </p>
-      <p>
-        {tx(t, "mDist_poisDeriv",
-          "Write the binomial term as C(n, k) (λ/n)ᵏ (1 − λ/n)ⁿ⁻ᵏ = [n(n − 1)⋯(n − k + 1)/nᵏ] · λᵏ/k! · (1 − λ/n)ⁿ · (1 − λ/n)⁻ᵏ. As n → ∞ with k fixed: the bracket is (n/n)((n − 1)/n)⋯ → 1; (1 − λ/n)⁻ᵏ → 1; and (1 − λ/n)ⁿ → e^(−λ), the same limit that defined e in the exponents chapter, (1 + x/n)ⁿ → eˣ with x = −λ. What is left is the Poisson distribution.")}
-      </p>
+      <Derivation t={t} label={tx(t, "mDist_eqPoisDer", "From the binomial to the Poisson")}
+        steps={[
+          { tex: r`\binom{n}{k} \left(\frac{\lambda}{n}\right)^{k} \left(1 - \frac{\lambda}{n}\right)^{n-k}`, full: true, why: tx(t, "mDist_pd1", "the binomial term with p = λ/n: n tiny slots, each holding a call with probability λ/n") },
+          { tex: r`= \frac{n(n-1)\cdots(n-k+1)}{n^k} \cdot \frac{\lambda^k}{k!} \cdot \left(1 - \frac{\lambda}{n}\right)^{n} \left(1 - \frac{\lambda}{n}\right)^{-k}`, full: true, why: tx(t, "mDist_pd2", "write C(n, k) = n(n − 1)⋯(n − k + 1)/k!, move the nᵏ of (λ/n)ᵏ under the product, and split the power n − k into n and −k") },
+          { tex: r`\to 1 \cdot \frac{\lambda^k}{k!} \cdot e^{-\lambda} \cdot 1`, full: true, why: tx(t, "mDist_pd3", "let n → ∞ with k fixed. The fraction is (n/n)((n − 1)/n)⋯, k factors that each tend to 1. (1 − λ/n)ⁿ → e^(−λ): the limit (1 + x/n)ⁿ → eˣ from the exponents chapter, with x = −λ. And (1 − λ/n)⁻ᵏ → 1⁻ᵏ = 1") },
+          { tex: r`= \green{e^{-\lambda}\,\frac{\lambda^k}{k!}}`, full: true, why: tx(t, "mDist_pd4", "what is left is the Poisson distribution") },
+        ]} />
       <Equation label={tx(t, "mDist_eqPois", "Poisson distribution")}
+        words={tx(t, "mDist_poisWords", "The chance of exactly k events is e to the −λ, times λ to the k, divided by k factorial. The average count and the variance are both λ.")}
         where={[
           [r`\lambda`, tx(t, "mDist_wLam", "the average number of events in the period (the rate times the length of the period)")],
           [r`k`, tx(t, "mDist_wKpois", "the number of events: 0, 1, 2, … with no upper limit")],
@@ -124,6 +224,15 @@ export function DistributionsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDist_poisEx",
           "The help line, λ = 3: P(0) = e⁻³ ≈ 0.050, P(1) = 3e⁻³ ≈ 0.149, P(2) = 4.5e⁻³ ≈ 0.224, so P(at least 2) = 1 − 0.050 − 0.149 ≈ 0.801. Over half an hour the mean is 1.5, so P(no call in 30 min) = e^(−1.5) ≈ 0.223. The Poisson model fits typing errors per page, radioactive decays per second, cars through a quiet junction per minute: many opportunities, each rarely used, independently.")}
       </p>
+      <LiveFormula label={tx(t, "mDist_livePois", "Try it: Poisson probabilities")}
+        tex={r`P(K = k) = e^{-\lambda}\,\frac{\lambda^k}{k!}`}
+        vars={[
+          { id: "lam", label: "λ", min: 0.1, max: 8, step: 0.1, value: 3, fmt: v => v.toFixed(1) },
+          { id: "k", label: "k", min: 0, max: 12, step: 1, value: 2, fmt: v => String(v) },
+        ]}
+        compute={poisNumbers}
+        note={tx(t, "mDist_livePoisNote", "The start is the help line: λ = 3, exactly 2 calls, 0.224. Set k = 1 and the bar shows P(K ≤ 1) ≈ 0.199, so at least 2 calls has 0.801. For half an hour use λ = 1.5 and k = 0: 0.223. The probabilities peak near k = λ.")} />
+
       <LessonTable
         headers={["k", "0", "1", "2", "3", "4"]}
         rows={[
@@ -155,13 +264,23 @@ export function DistributionsContent({ t }: { t: TrackTranslations }) {
           [r`e^{-\lambda t}`, tx(t, "mDist_wSurv", "the probability of still waiting at time t")],
           [r`1/\lambda`, tx(t, "mDist_wMeanExp", "the mean waiting time: 3 calls per hour means 20 minutes on average")],
         ]}
-        note={tx(t, "mDist_expNote", "The mean ∫₀^∞ t λe^(−λt) dt = 1/λ and E[T²] = 2/λ² come from integration by parts, as in the previous chapter with λ = 1; so Var = 2/λ² − 1/λ² = 1/λ². Like the geometric, the exponential is memoryless: P(T > s + t | T > s) = e^(−λt).")}>
+        note={tx(t, "mDist_expNote", "The mean ∫₀^∞ t λe^(−λt) dt = 1/λ and E[T²] = 2/λ² come from integration by parts, as in the previous chapter with λ = 1; so Var = 2/λ² − 1/λ² = 1/λ². Like the geometric, the exponential is memoryless: P(T > s + t | T > s) = e^(−λt).")}
+        words={tx(t, "mDist_expWords", "The chance of still waiting shrinks by the same factor in every equal stretch of time. The average wait is one over the rate.")}>
         {r`f(t) = \lambda e^{-\lambda t}\ (t \ge 0), \qquad P(T > t) = e^{-\lambda t}, \qquad E[T] = \frac1\lambda, \qquad \operatorname{Var}(T) = \frac1{\lambda^2}`}
       </Equation>
       <p>
         {tx(t, "mDist_expEx",
           "With 3 calls per hour (λ = 3 per hour), P(wait more than 30 minutes) = e^(−3 · 0.5) ≈ 0.223, the same number as \"no call in half an hour\" above, as it must be. The median wait solves e^(−3t) = ½: t = ln 2/3 ≈ 0.231 h ≈ 14 minutes, shorter than the 20-minute mean because a few very long waits pull the mean up. The exponential also describes the life of an atom in radioactive decay; the half-life ln 2/λ is its median.")}
       </p>
+      <LiveFormula label={tx(t, "mDist_liveExp", "Try it: how long is the wait?")}
+        tex={r`P(T > t) = e^{-\lambda t}`}
+        vars={[
+          { id: "lam", label: "λ", min: 0.5, max: 6, step: 0.1, value: 3, fmt: v => v.toFixed(1) },
+          { id: "t", label: "t", min: 0, max: 3, step: 0.05, value: 0.5, fmt: v => v.toFixed(2) },
+        ]}
+        compute={expNumbers(t)}
+        note={tx(t, "mDist_liveExpNote", "λ = 3 calls per hour and t = 0.5 h: still waiting with probability 0.223. Move t to the median, about 0.23, and the bar shows 50%. Double λ and every wait shrinks to half: the same probability is reached at half the time.")} />
+
 
       <H2>{tx(t, "mDist_normTitle", "The normal distribution")}</H2>
       <p>
@@ -176,9 +295,17 @@ export function DistributionsContent({ t }: { t: TrackTranslations }) {
           [r`e^{-z^2/2}`, tx(t, "mDist_wBell", "the bell itself: 1 at the centre and falling very fast; at z = 3 it is already 0.011")],
           [r`\frac1{\sigma\sqrt{2\pi}}`, tx(t, "mDist_wConst", "the constant that makes the total area 1")],
         ]}
-        note={tx(t, "mDist_normNote", "The constant comes from the Gaussian integral of the multiple-integrals chapter, ∫ e^(−u²) du = √π. Substituting x = μ + σ√2 u gives ∫ e^(−(x − μ)²/(2σ²)) dx = σ√2 · √π = σ√(2π), so dividing by it leaves area 1. The mean is μ by symmetry; integration by parts shows the variance is σ².")}>
+        note={tx(t, "mDist_normNote2", "The mean is μ by symmetry; integration by parts shows the variance is σ². The constant in front is derived just below.")}
+        words={tx(t, "mDist_normWords", "Measure how far x is from the mean in standard deviations, z. The height of the bell falls like e to the −z²/2, and the number in front makes the total area 1.")}>
         {r`f(x) = \frac{1}{\sigma\sqrt{2\pi}}\; e^{-\frac12\left(\frac{x-\mu}{\sigma}\right)^2}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mDist_eqNormDer", "Why the constant is 1/(σ√(2π))")}
+        steps={[
+          { tex: r`\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\,dx`, why: tx(t, "mDist_nd1", "the area under the bell before dividing by anything") },
+          { tex: r`= \int_{-\infty}^{\infty} e^{-u^2}\,\sigma\sqrt2\,du`, why: tx(t, "mDist_nd2", "substitute x = μ + σ√2 u. Then (x − μ)²/(2σ²) = 2σ²u²/(2σ²) = u², and dx = σ√2 du") },
+          { tex: r`= \sigma\sqrt2 \cdot \sqrt\pi`, why: tx(t, "mDist_nd3", "σ√2 is a constant and comes out; the Gaussian integral ∫ e^(−u²) du = √π comes from the multiple-integrals chapter") },
+          { tex: r`= \green{\sigma\sqrt{2\pi}}`, why: tx(t, "mDist_nd4", "so dividing the bell by σ√(2π) makes its total area exactly 1") },
+        ]} />
       <p>
         {tx(t, "mDist_normShape",
           "Changing μ slides the bell sideways without changing its shape. Changing σ stretches it horizontally and, to keep the area 1, squashes it vertically: the peak height is 1/(σ√(2π)), about 0.4/σ. The normal density has no antiderivative made of ordinary functions, so its areas are read from a table of the standard normal, the case μ = 0, σ = 1, called Z. Its CDF is written Φ(z) = P(Z ≤ z).")}
@@ -205,6 +332,15 @@ export function DistributionsContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mDist_tPct", "90th percentile"), "Φ(z) = 0.9 → z ≈ 1.28", "170 + 1.28 · 8 ≈ 180.3 cm"],
         ]}
       />
+      <LiveFormula label={tx(t, "mDist_liveZ", "Try it: any normal through Φ")}
+        tex={r`z = \frac{x - \mu}{\sigma}, \qquad P(X \le x) = \Phi(z)`}
+        vars={[
+          { id: "mu", label: "μ", min: 100, max: 200, step: 1, value: 170, fmt: v => String(v) },
+          { id: "s", label: "σ", min: 1, max: 20, step: 1, value: 8, fmt: v => String(v) },
+          { id: "x", label: "x", min: 100, max: 220, step: 1, value: 186, fmt: v => String(v) },
+        ]}
+        compute={zNumbers}
+        note={tx(t, "mDist_liveZNote", "The start is the first row of the table: 186 cm is 2 standard deviations above 170, and only 2.3% are taller. Try x = 158 for the third row. Double σ to 16 and the same 186 cm is only z = 1: now 15.9% are taller.")} />
       <p>
         {tx(t, "mDist_sumNorm",
           "Sums of independent normals are normal, with means and variances added. If a loaf's dough is N(500, 10²) grams and the tin is N(200, 5²), the filled tin weighs N(700, 125), σ = √125 ≈ 11.2 g.")}
@@ -214,6 +350,15 @@ export function DistributionsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDist_approxBody",
           "When np(1 − p) is large (a rule of thumb: at least about 10), the binomial histogram is close to the normal curve with the same mean and variance. Toss a coin 100 times: np = 50, σ = √25 = 5. For P(at least 60 heads), the exact sum has 41 terms. The bar for 60 covers 59.5 to 60.5, so the area starts at 59.5: this half-unit shift is the continuity correction. z = (59.5 − 50)/5 = 1.9 and P ≈ 1 − Φ(1.9) ≈ 1 − 0.971 = 0.029; the exact value is 0.028.")}
       </p>
+      <LiveFormula label={tx(t, "mDist_liveApprox", "Try it: normal approximation against the exact sum")}
+        tex={r`P(K \ge k) \approx 1 - \Phi\!\left(\frac{k - 0.5 - np}{\sqrt{np(1-p)}}\right)`}
+        vars={[
+          { id: "n", label: "n", min: 10, max: 400, step: 10, value: 100, fmt: v => String(v) },
+          { id: "p", label: "p", min: 0.02, max: 0.98, step: 0.01, value: 0.5, fmt: v => v.toFixed(2) },
+          { id: "k", label: "k", min: 0, max: 400, step: 1, value: 60, fmt: v => String(v) },
+        ]}
+        compute={approxNumbers(t)}
+        note={tx(t, "mDist_liveApproxNote", "The −0.5 is the continuity correction: the bar for k starts half a unit before k. The start is the 100 coins: 0.029 against the exact 0.028. Now set n = 20, p = 0.05 and k = 2: np(1 − p) is below 1 and the approximation gives 0.30 against the exact 0.26. That is where the Poisson does better: 1 − e⁻¹ · 2 ≈ 0.264.")} />
       <Callout type="warn" t={t}>
         {tx(t, "mDist_normWarn", "Not everything is normal. Waiting times, incomes and city sizes are strongly lopsided, and a normal model would give negative waits or badly underestimate the chance of extreme values. Check the story, or plot the data, before reaching for the bell.")}
       </Callout>
