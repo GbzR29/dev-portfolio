@@ -12,6 +12,14 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ## Outubro de 2026
 
+### 2026-10-09
+
+- **Matemática → Cálculo interativo (11 capítulos)**: sexta seção a receber laboratórios, barra de reprodução e fórmulas dinâmicas.
+  - **Laboratórios guiados** nos 11 widgets da seção: aproximação de um ponto, secante → tangente, por que as regras valem, o que a derivada diz, área por faixas, área que se acumula, áreas que trocam de lugar, polinômios de Taylor, curvas de nível e gradiente, volume sob uma superfície e campo de inclinações. Vários passos pedem para "quebrar" o widget (uma quina sem derivada, Newton preso num ciclo, uma série fora do intervalo de convergência, Euler explodindo com passo grande) e explicam o que aconteceu.
+  - **Barra de reprodução** no lugar dos controles que eram animações: encolher a distância h (limite e derivada), a bissecção passo a passo, encolher o "empurrão" nas regras, pular de ponto crítico em ponto crítico, os passos de Newton, dobrar o número de faixas (com a leitura "dobrar n dividiu o erro por…"), varrer x acumulando a área, empurrar b para o infinito e ε para 0, somar termos de Taylor, subir o morro pelo gradiente (com rastro), dobrar as caixas, varrer as fatias com o volume acumulado e percorrer os passos de Euler.
+  - **Fórmulas**: "em palavras" nas principais; deduções passo a passo (razão de polinômios no infinito, conjugado, confronto do sin x / x, derivada de x², regras da potência, do produto, do quociente, do seno e do ln, derivação implícita, a cerca, soma dos quadrados, as duas partes do teorema fundamental, movimento com aceleração constante, substituição, limites trocados, por partes, a integral que volta, frações parciais, coeficientes de Taylor, derivadas parciais, derivada direcional, pontos críticos, multiplicadores de Lagrange, integral do plano, troca de ordem, volume da bola, tetraedro, separação de variáveis, resfriamento do café, equação característica); fórmulas ao vivo (confronto num ângulo, calculadora de 10 algarismos, quociente de diferenças, diferença progressiva × central, regra da potência medida, base com inclinação 1, teorema do valor médio, caixa de papel, raiz pela tangente, soma pela direita, áreas sob x², arremesso de bola, teste p, série harmônica × 1/k², seno com cota de Lagrange, inclinação em cada direção, erro do tanque, placa com densidade variável, integral de Gauss, carbono-14, tipo de amortecimento).
+  - Tradução pt de todo o texto novo.
+
 ### 2026-10-08
 
 - **Matemática → Álgebra Linear interativa (9 capítulos)**: quinta seção a receber laboratórios, barra de reprodução e fórmulas dinâmicas.

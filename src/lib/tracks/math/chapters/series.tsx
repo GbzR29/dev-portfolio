@@ -9,12 +9,44 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TaylorFigure } from "@/components/lesson/figures/math/TaylorFigure";
 
 const r = String.raw;
+/** 0.0012 → 1.2 × 10⁻³, in TeX. */
+const sci = (v: number) => {
+  if (v === 0) return "0";
+  const [m, e] = v.toExponential(1).split("e");
+  return r`${m} \times 10^{${e.replace("+", "").replace("-", "−")}}`;
+};
+const fact = (k: number) => { let p = 1; for (let i = 2; i <= k; i++) p *= i; return p; };
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** sin x by its Taylor polynomial of odd degree n, with the true error and Lagrange's bound (M = 1). */
+const sinNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const { x, n } = v;
+  let s = 0;
+  for (let k = 1; k <= n; k += 2) s += ((k % 4 === 1 ? 1 : -1) * x ** k) / fact(k);
+  const err = Math.abs(Math.sin(x) - s), bound = x ** (n + 2) / fact(n + 2);
+  return {
+    tex: r`\begin{aligned} T_{${n}}(${x.toFixed(2)}) &= ${s.toFixed(8)} \\ \sin ${x.toFixed(2)} &= ${Math.sin(x).toFixed(8)} \\ \text{${tx(t, "mSer_liveErr", "error")}} &= \green{${sci(err)}} \;\le\; \frac{${x.toFixed(2)}^{${n + 2}}}{${n + 2}!} = \amber{${sci(bound)}} \end{aligned}`,
+  };
+};
+
+/** Partial sums of the harmonic series and of Σ 1/k², up to n = 10ᵏ. */
+function harmonicNumbers(v: Record<string, number>) {
+  const n = 10 ** v.k;
+  let h = 0, q = 0;
+  for (let i = 1; i <= n; i++) { h += 1 / i; q += 1 / (i * i); }
+  return {
+    tex: r`\begin{aligned} \sum_{k=1}^{10^{${v.k}}} \frac1k &= \red{${h.toFixed(4)}} &\quad \ln 10^{${v.k}} &= ${Math.log(n).toFixed(4)} \\ \sum_{k=1}^{10^{${v.k}}} \frac1{k^2} &= \green{${q.toFixed(6)}} &\quad \tfrac{\pi^2}{6} &= 1.644934 \end{aligned}`,
+  };
+}
 
 export function SeriesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -33,9 +65,16 @@ export function SeriesContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mSer_matchTitle", "Copying a function one derivative at a time")}</H2>
       <p>
-        {tx(t, "mSer_matchBody",
-          "Pick a point a, the centre. The best constant approximation of f near a is the constant f(a). The best line is the tangent line f(a) + f′(a)(x − a) from the derivatives chapter: it has the same value and the same slope at a. To also copy the bend, add a term c₂(x − a)². It does not disturb the value or the slope at a (the term and its first derivative are 0 there), and its second derivative is 2c₂. To match f″(a) we need 2c₂ = f″(a), so c₂ = f″(a)/2. The pattern continues: the k-th derivative of (x − a)ᵏ is the constant k · (k − 1) · … · 1, written k! (\"k factorial\"), and every other term either vanishes at a or has already been differentiated away. So the coefficient that copies the k-th derivative is f⁽ᵏ⁾(a)/k!.")}
+        {tx(t, "mSer_matchBody2",
+          "Pick a point a, the centre, and look for a polynomial T(x) = c₀ + c₁(x − a) + c₂(x − a)² + … whose value and derivatives at a are those of f. At x = a every power of (x − a) is 0, so each derivative picks out exactly one coefficient.")}
       </p>
+      <Derivation t={t} label={tx(t, "mSer_eqMatch", "Matching one derivative at a time")}
+        steps={[
+          { tex: r`T(a) = c_0 = f(a)`, full: true, why: tx(t, "mSer_c1", "the value: every other term has a factor (x − a), which is 0 at a") },
+          { tex: r`T'(a) = c_1 = f'(a)`, full: true, why: tx(t, "mSer_c2", "the slope: the tangent line of the derivatives chapter") },
+          { tex: r`T''(a) = 2c_2 = f''(a) \;\Rightarrow\; c_2 = \frac{f''(a)}{2}`, full: true, why: tx(t, "mSer_c3", "the bend: (x − a)² differentiated twice is the constant 2") },
+          { tex: r`T^{(k)}(a) = k!\,c_k = f^{(k)}(a) \;\Rightarrow\; c_k = \green{\frac{f^{(k)}(a)}{k!}}`, full: true, why: tx(t, "mSer_c4", "in general (x − a)ᵏ differentiated k times is k · (k − 1) · … · 1 = k! (\"k factorial\"); lower powers are gone, higher ones are still 0 at a") },
+        ]} />
       <Equation label={tx(t, "mSer_eqPoly", "The Taylor polynomial of degree n")}
         where={[
           [r`a`, tx(t, "mSer_wA", "the centre: the point where the copy is exact")],
@@ -43,7 +82,8 @@ export function SeriesContent({ t }: { t: TrackTranslations }) {
           [r`k!`, tx(t, "mSer_wFact", "k factorial, 1 · 2 · … · k; by convention 0! = 1, so the first term is f(a)")],
           [r`(x-a)^k`, tx(t, "mSer_wPow", "how far x is from the centre, to the k-th power")],
         ]}
-        note={tx(t, "mSer_polyNote", "With a = 0 it is also called a Maclaurin polynomial. Written out: f(a) + f′(a)(x − a) + f″(a)(x − a)²/2 + f‴(a)(x − a)³/6 + …")}>
+        note={tx(t, "mSer_polyNote", "With a = 0 it is also called a Maclaurin polynomial. Written out: f(a) + f′(a)(x − a) + f″(a)(x − a)²/2 + f‴(a)(x − a)³/6 + …")}
+        words={tx(t, "mSer_polyWords", "Add up, for each k from 0 to n, the k-th derivative at the centre, divided by k factorial, times the distance from the centre to the k-th power.")}>
         {r`T_n(x) = \sum_{k=0}^{n} \frac{f^{(k)}(a)}{k!}\,(x-a)^k`}
       </Equation>
 
@@ -80,6 +120,11 @@ export function SeriesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSer_harmBody",
           "1 + 1/2 + 1/3 + 1/4 + … has terms that shrink to 0, yet it grows without bound. Group the terms: 1/3 + 1/4 > 1/4 + 1/4 = 1/2; 1/5 + … + 1/8 > 4 · 1/8 = 1/2; 1/9 + … + 1/16 > 8 · 1/16 = 1/2; and so on. There are infinitely many groups, each worth more than ½. It matches the improper integral ∫₁^∞ dx/x = ∞ from the previous chapter: the sum and the area under 1/x grow together, like ln n. By the same comparison, 1 + 1/2² + 1/3² + … converges, like ∫₁^∞ dx/x²; its sum turns out to be π²/6 ≈ 1.645.")}
       </p>
+      <LiveFormula label={tx(t, "mSer_liveHarm", "Try it: two series with shrinking terms")}
+        tex={r`\sum_{k=1}^{n} \frac1k \qquad\qquad \sum_{k=1}^{n} \frac1{k^2}`}
+        vars={[{ id: "k", label: <>n = 10<sup>k</sup>, k</>, min: 1, max: 6, step: 1, value: 1, fmt: v => String(v) }]}
+        compute={harmonicNumbers}
+        note={tx(t, "mSer_liveHarmNote", "Each step multiplies the number of terms by 10. The harmonic sum gains about 2.3 every time, keeping 0.577 above ln n: it never stops. The sum of 1/k² gains less and less: after a million terms it agrees with π²/6 to six digits.")} />
       <H3>{tx(t, "mSer_ratioTitle", "The ratio test and the radius of convergence")}</H3>
       <p>
         {tx(t, "mSer_ratioBody",
@@ -99,9 +144,18 @@ export function SeriesContent({ t }: { t: TrackTranslations }) {
           [r`\xi`, tx(t, "mSer_wXi", "some point between a and x (its exact position is unknown)")],
           [r`M`, tx(t, "mSer_wM", "any upper bound for |f⁽ⁿ⁺¹⁾| between a and x")],
           [r`|x-a|^{n+1}`, tx(t, "mSer_wDist", "close to the centre this is tiny, and it shrinks fast as n grows")],
-        ]}>
+        ]}
+        words={tx(t, "mSer_remWords", "The error looks like the next term of the series, with the derivative taken somewhere in between; bound that derivative and you bound the error.")}>
         {r`R_n(x) = \frac{f^{(n+1)}(\xi)}{(n+1)!}\,(x-a)^{n+1} \qquad |R_n(x)| \le \frac{M\,|x-a|^{n+1}}{(n+1)!}`}
       </Equation>
+      <LiveFormula label={tx(t, "mSer_liveSin", "Try it: sin x from its series, with the error bound")}
+        tex={r`\sin x \approx x - \frac{x^3}{3!} + \frac{x^5}{5!} - \dots \pm \frac{x^n}{n!} \qquad |R| \le \frac{|x|^{n+2}}{(n+2)!}`}
+        vars={[
+          { id: "x", label: "x", min: 0.1, max: 3, step: 0.05, value: 0.1, fmt: v => v.toFixed(2) },
+          { id: "n", label: tx(t, "mSer_liveN", "degree n (odd)"), min: 1, max: 9, step: 2, value: 3, fmt: v => String(v) },
+        ]}
+        compute={sinNumbers(t)}
+        note={tx(t, "mSer_liveSinNote", "Starts on the hand computation below: x = 0.1 with two terms, error 8.3 × 10⁻⁸ against a bound of 8.3 × 10⁻⁸. The degree-n polynomial equals the degree-(n + 1) one, so the bound uses the power n + 2. Take x = 3: degree 3 is off by 1.6, degree 9 by 0.004. The bound always stays above the true error.")} />
       <H3>{tx(t, "mSer_sinTitle", "sin 0.1 by hand")}</H3>
       <p>
         {tx(t, "mSer_sinBody",
@@ -135,7 +189,8 @@ export function SeriesContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`(i\theta)^2 = -\theta^2`, tx(t, "mSer_wI2", "i² = −1 makes every other real term negative")],
           [r`(i\theta)^3 = -i\theta^3`, tx(t, "mSer_wI3", "i³ = −i does the same to the imaginary terms")],
-        ]}>
+        ]}
+        words={tx(t, "mSer_eulerWords", "Feed iθ into the series of the exponential: the real terms that come out are the cosine series, and the imaginary ones are i times the sine series.")}>
         {r`e^{i\theta} = 1 + i\theta - \frac{\theta^2}{2!} - i\frac{\theta^3}{3!} + \frac{\theta^4}{4!} + \dots = \underbrace{\Big(1 - \frac{\theta^2}{2!} + \dots\Big)}_{\cos\theta} + i\underbrace{\Big(\theta - \frac{\theta^3}{3!} + \dots\Big)}_{\sin\theta}`}
       </Equation>
 

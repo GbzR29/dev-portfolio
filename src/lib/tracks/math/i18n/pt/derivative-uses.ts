@@ -87,6 +87,28 @@ const text: Record<string, string> = {
   mUse_m5w: "confiar no Newton a partir de qualquer início",
   mUse_m5r: "comece perto da raiz, tenha um plano B",
   mUse_m5: "tangentes horizontais e ciclos",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mUse_liveTrue: "verdadeiro",
+  mUse_liveErr: "erro",
+  mUse_testWords: "Um ponto plano onde a curva se curva para baixo é um pico; um ponto plano onde ela se curva para cima é um vale.",
+  mUse_mvtWords: "Em algum lugar entre a e b, a taxa naquele instante é igual à taxa média no intervalo inteiro.",
+  mUse_liveMvt: "Experimente: o teorema do valor médio para f(x) = x²",
+  mUse_liveMvtNote: "Para uma parábola o ponto c é sempre exatamente o ponto médio de [a, b]: a inclinação da secante é (b² − a²)/(b − a) = a + b, e f′(c) = 2c bate com ela em c = (a + b)/2. Começa na bola do capítulo da derivada: velocidade média de 4 m/s entre t = 1 e 3, atingida em t = 2.",
+  mUse_eqFence: "A cerca, passo a passo",
+  mUse_f1: "passos 1–2: largura w, comprimento 20 − 2w (duas larguras e um comprimento usam os 20 m)",
+  mUse_f2: "passo 3: o comprimento 20 − 2w precisa continuar positivo",
+  mUse_f3: "passo 4: a tangente é horizontal onde A′ = 0",
+  mUse_f4: "a curva se curva para baixo em todo lugar, então o ponto plano é um máximo",
+  mUse_f5: "passo 5: as pontas dão A = 0, então 50 m² é o maior",
+  mUse_liveBox: "Experimente: corte os cantos",
+  mUse_liveCut: "corte x (cm)",
+  mUse_liveBoxNote: "Cortes pequenos fazem uma bandeja rasa, cortes grandes uma torre alta e fina: as duas guardam pouco. Enquanto V′ > 0 um corte mais fundo ajuda; em x = 5, V′ = 0 e a barra fica cheia com 2000 cm³; depois disso todo corte mais fundo perde volume.",
+  mUse_linWords: "O valor um pouco adiante é mais ou menos o valor que você conhece, mais a inclinação ali vezes o passo.",
+  mUse_liveSqrt: "Experimente: raízes quadradas perto de 4 pela tangente",
+  mUse_liveSqrtNote: "Δx = 0,1 é o √4,1 da tabela. Dobre o passo para 0,2 e o erro quase quadruplica, de 0,00015 para 0,0006: ele cresce com Δx². Longe de 4, em Δx = 2, a tangente erra por 0,05.",
+  mUse_newtonWords: "A partir do palpite atual, recue o quanto a função está longe de zero, dividido por quão íngreme ela é ali.",
+  mUse_lhWords: "Quando o de cima e o de baixo somem juntos, compare a rapidez com que cada um some: a razão das inclinações.",
 };
 
 export default text;

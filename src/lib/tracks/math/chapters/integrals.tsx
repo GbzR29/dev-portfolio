@@ -9,12 +9,26 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RiemannFigure } from "@/components/lesson/figures/math/RiemannFigure";
 
 const r = String.raw;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** The right sum for x² on [0, 2] with n strips, from the sum-of-squares formula. */
+function squaresNumbers(v: Record<string, number>) {
+  const n = v.n, s = ((8 / 6) * (n + 1) * (2 * n + 1)) / (n * n);
+  return {
+    tex: r`S_{${n}} = \frac{2^3}{6} \cdot \frac{(${n} + 1)(2 \cdot ${n} + 1)}{${n}^2} = \frac{8}{6} \cdot \frac{${(n + 1) * (2 * n + 1)}}{${n * n}} = \amber{${s.toFixed(5)}} \qquad \frac{8}{3} = \green{2.66667}`,
+    meter: 8 / 3 / s,
+    meterLabel: `8/3 ÷ S = ${(8 / 3 / s).toFixed(4)}`,
+  };
+}
 
 export function IntegralsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -59,7 +73,8 @@ export function IntegralsContent({ t }: { t: TrackTranslations }) {
           [r`x_k^*`, tx(t, "mInt_wXk", "the sample point in strip k: its left end a + (k − 1)Δx, its right end a + kΔx, or its middle")],
           [r`f(x_k^*)\,\Delta x`, tx(t, "mInt_wArea", "the area of strip k: height times width")],
           [r`\sum_{k=1}^{n}`, tx(t, "mInt_wSum", "add the n strip areas")],
-        ]}>
+        ]}
+        words={tx(t, "mInt_riemannWords", "Cut the interval into n equal strips; in each, multiply a height read from the curve by the strip's width; add them all up.")}>
         {r`S_n = \sum_{k=1}^{n} f(x_k^*)\,\Delta x`}
       </Equation>
 
@@ -76,15 +91,23 @@ export function IntegralsContent({ t }: { t: TrackTranslations }) {
           [r`f(x)`, tx(t, "mInt_wF", "the integrand: the height of the strip at x")],
           [r`dx`, tx(t, "mInt_wDxInt", "the width of an infinitely thin strip; it also names the variable that runs from a to b")],
         ]}
-        note={tx(t, "mInt_defNote", "The letter used for the variable does not matter: ∫ f(x) dx and ∫ f(t) dt from a to b are the same number. Such a variable is called a dummy variable, like the loop counter k in a sum.")}>
+        note={tx(t, "mInt_defNote", "The letter used for the variable does not matter: ∫ f(x) dx and ∫ f(t) dt from a to b are the same number. Such a variable is called a dummy variable, like the loop counter k in a sum.")}
+        words={tx(t, "mInt_defWords", "The integral from a to b is the number the strip sums settle on as the strips become infinitely many and infinitely thin.")}>
         {r`\int_a^b f(x)\,dx = \lim_{n \to \infty} \sum_{k=1}^{n} f(x_k^*)\,\Delta x`}
       </Equation>
 
       <H2>{tx(t, "mInt_exactTitle", "An exact area: under x²")}</H2>
       <p>
-        {tx(t, "mInt_exactBody",
-          "Take f(x) = x² from 0 to b with n strips and right endpoints. Then Δx = b/n, the k-th right endpoint is kb/n, and the sum is Σ (kb/n)² · (b/n) = (b³/n³) · (1² + 2² + … + n²). We need a formula for the sum of the first n squares, and a telescoping trick finds it. Expand (k + 1)³ − k³ = 3k² + 3k + 1. Add this up for k = 1 to n: on the left almost everything cancels ((2³ − 1³) + (3³ − 2³) + … leaves (n + 1)³ − 1); on the right you get 3 times the sum of squares, plus 3 · n(n + 1)/2 (Gauss's sum), plus n. Solving for the sum of squares gives n(n + 1)(2n + 1)/6. Check: n = 2 gives 1 + 4 = 5 and 2 · 3 · 5/6 = 5 ✓.")}
+        {tx(t, "mInt_exactBody2",
+          "Take f(x) = x² from 0 to b with n strips and right endpoints. Then Δx = b/n, the k-th right endpoint is kb/n, and the sum is Σ (kb/n)² · (b/n) = (b³/n³) · (1² + 2² + … + n²). We need a formula for the sum of the first n squares, and a telescoping trick finds it.")}
       </p>
+      <Derivation t={t} label={tx(t, "mInt_eqSquares", "The sum of the first n squares, by telescoping")}
+        steps={[
+          { tex: r`(k + 1)^3 - k^3 = 3k^2 + 3k + 1`, full: true, why: tx(t, "mInt_s1", "expand (k + 1)³ = k³ + 3k² + 3k + 1 and subtract k³") },
+          { tex: r`\sum_{k=1}^{n} \big[(k + 1)^3 - k^3\big] = (n + 1)^3 - 1`, full: true, why: tx(t, "mInt_s2", "add the left side for k = 1 to n: (2³ − 1³) + (3³ − 2³) + … every middle cube cancels, leaving only the last and the first") },
+          { tex: r`(n + 1)^3 - 1 = 3\sum_{k=1}^{n} k^2 + 3 \cdot \frac{n(n + 1)}{2} + n`, full: true, why: tx(t, "mInt_s3", "add the right side for k = 1 to n too: 3 times the sum of squares, 3 times Gauss's sum, and n ones") },
+          { tex: r`\sum_{k=1}^{n} k^2 = \green{\frac{n(n + 1)(2n + 1)}{6}}`, full: true, why: tx(t, "mInt_s4", "solve for the sum of squares and factor. Check: n = 2 gives 1 + 4 = 5 and 2 · 3 · 5 / 6 = 5 ✓") },
+        ]} />
       <Equation label={tx(t, "mInt_eqSq", "The area under x² from 0 to b")}
         where={[
           [r`\sum_{k=1}^n k^2 = \tfrac{n(n+1)(2n+1)}{6}`, tx(t, "mInt_wSq", "the sum of the first n squares")],
@@ -93,6 +116,11 @@ export function IntegralsContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mInt_sqNote", "So the area under x² from 0 to 2 is 8/3 ≈ 2.667, the value the figure's sums close in on. Notice the ⅓.")}>
         {r`\int_0^b x^2\,dx = \lim_{n\to\infty} \frac{b^3}{n^3}\cdot\frac{n(n+1)(2n+1)}{6} = \lim_{n\to\infty} \frac{b^3}{6}\cdot\frac{(n+1)(2n+1)}{n^2} = \frac{b^3}{3}`}
       </Equation>
+      <LiveFormula label={tx(t, "mInt_liveSq", "Try it: the right sum for x² on [0, 2]")}
+        tex={r`S_n = \frac{b^3}{6} \cdot \frac{(n + 1)(2n + 1)}{n^2} \;\xrightarrow{\;n \to \infty\;}\; \frac{b^3}{3}`}
+        vars={[{ id: "n", label: tx(t, "mInt_liveN", "strips n"), min: 1, max: 100, step: 1, value: 2, fmt: v => String(v) }]}
+        compute={squaresNumbers}
+        note={tx(t, "mInt_liveSqNote", "n = 2 gives 5, the two right-edge strips 1 · 1 + 1 · 4. The right sum is always too big for a rising curve, so the bar (8/3 divided by the sum) creeps up to 1 from below: 0.94 at n = 25, 0.985 at n = 100.")} />
       <Callout type="tip" t={t}>
         {tx(t, "mInt_coneTip", "This ⅓ is the same one as in the cone and pyramid volumes of the geometry section. Slice a cone of height h and base radius R into thin discs: at distance x from the tip the radius is Rx/h, so the disc's area is πR²x²/h². Adding the discs is ∫₀ʰ πR²x²/h² dx = (πR²/h²) · h³/3 = ⅓πR²h. The integral turns Cavalieri's slicing argument into a calculation.")}
       </Callout>
@@ -109,7 +137,8 @@ export function IntegralsContent({ t }: { t: TrackTranslations }) {
           [r`\int_b^a = -\int_a^b`, tx(t, "mInt_wRev", "running backwards makes every Δx negative")],
           [r`\int_a^a = 0`, tx(t, "mInt_wZero", "no width, no area")],
         ]}
-        note={tx(t, "mInt_oddNote", "Symmetry saves work: an odd function (f(−x) = −f(x), like x³ or sin x) has as much area below the axis as above on [−a, a], so its integral there is 0.")}>
+        note={tx(t, "mInt_oddNote", "Symmetry saves work: an odd function (f(−x) = −f(x), like x³ or sin x) has as much area below the axis as above on [−a, a], so its integral there is 0.")}
+        words={tx(t, "mInt_propsWords", "Constants and sums can be taken out of an integral; two neighbouring pieces add up to the whole; running from b back to a flips the sign.")}>
         {r`\int_a^b (c f + g)\,dx = c\!\int_a^b f\,dx + \int_a^b g\,dx \qquad \int_a^b f\,dx + \int_b^c f\,dx = \int_a^c f\,dx \qquad \int_b^a f\,dx = -\!\int_a^b f\,dx`}
       </Equation>
 
@@ -141,7 +170,8 @@ export function IntegralsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`b - a`, tx(t, "mInt_wWidth", "the width of the interval")],
           [r`\bar{f}`, tx(t, "mInt_wBar", "the average height: a rectangle this tall has the same area as the region under f")],
-        ]}>
+        ]}
+        words={tx(t, "mInt_avgWords", "The total area divided by the width: the height of the flat rectangle that holds the same area.")}>
         {r`\bar{f} = \frac{1}{b - a}\int_a^b f(x)\,dx`}
       </Equation>
 

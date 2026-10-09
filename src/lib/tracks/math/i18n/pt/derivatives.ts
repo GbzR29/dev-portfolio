@@ -27,7 +27,7 @@ const text: Record<string, string> = {
   mDer_wSl: "sua inclinação",
   mDer_tanNote: "Para s(t) = t² em t = 1: y = 1 + 2(t − 1) = 2t − 1.",
   mDer_fnTitle: "A derivada como função",
-  mDer_fnBody: "Nada na conta da bola dependia de a ser 1. Fazendo para um x qualquer: (x + h)² − x² = 2xh + h², divida por h para obter 2x + h, e deixe h → 0: a inclinação de x² em qualquer x é 2x. Então a derivada é ela mesma uma função, f′(x) = 2x, que dá a inclinação em todo lugar de uma vez. O segundo modo da figura a desenha registrando a inclinação da tangente enquanto você arrasta: a curva que aparece embaixo é f′. A mesma receita (desenvolva, cancele h, deixe h → 0) resolve mais funções.",
+  mDer_fnGen: "Nada na conta da bola dependia de a ser 1. Fazendo para um x qualquer, obtemos a inclinação de x² em todo lugar de uma vez.",
   mDer_tSteps: "Quociente de diferenças, simplificado",
   mDer_tConst: "(constante)",
   mDer_tSqrt: "multiplique pelo conjugado: ((x + h) − x)/(h(√(x + h) + √x)) = 1/(√(x + h) + √x)",
@@ -80,6 +80,27 @@ const text: Record<string, string> = {
   mDer_m5w: "esquecer as unidades",
   mDer_m5r: "unidades da saída por unidade da entrada",
   mDer_m5: "m por s, não m",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mDer_fnGen2: "Então a derivada é ela mesma uma função, f′(x) = 2x. O segundo modo da figura a desenha registrando a inclinação da tangente enquanto você arrasta: a curva que aparece embaixo é f′. A mesma receita (expandir, cancelar h, deixar h → 0) resolve mais funções.",
+  mDer_eqSq: "A derivada de x², pela definição",
+  mDer_q1: "a definição, com f(x) = x²",
+  mDer_q2: "expanda (x + h)² = x² + 2xh + h²",
+  mDer_q3: "x² e −x² se cancelam",
+  mDer_q4: "divida por h, o que é permitido porque h ≠ 0 enquanto encolhe",
+  mDer_q5: "não há mais 0/0: deixe h ir para 0",
+  mDer_avgWords: "Quanto a saída mudou, dividido por quanto a entrada mudou.",
+  mDer_liveQuot: "Experimente: o quociente de diferenças de x²",
+  mDer_liveQuotNote: "Começa na bola em t = 1 com h = 0,1: 2,1, como na tabela. Seja qual for a, o resultado âmbar é sempre 2a + h, então ele chega ao 2a verde conforme h encolhe. No próprio h = 0 a fração é 0/0: a derivada só é alcançada como limite.",
+  mDer_defWords: "A inclinação em a é o valor em que as inclinações das secantes a partir de a se fixam conforme o segundo ponto desliza até a.",
+  mDer_tanWords: "Comece na altura da curva em a e, para cada passo para longe de a, suba a inclinação dali vezes o passo.",
+  mDer_numWords: "Progressiva: a inclinação de x até um passo à frente. Central: a inclinação de um passo atrás até um passo à frente, que fica equilibrada em volta de x.",
+  mDer_liveDiff: "Experimente: a inclinação de sin x em x = 1",
+  mDer_liveFwd: "progressiva",
+  mDer_liveCen: "central",
+  mDer_liveErr: "erro",
+  mDer_liveExact: "exata",
+  mDer_liveDiffNote: "Divida h ao meio, de 0,2 para 0,1: o erro da progressiva cai à metade, o da central cai a um quarto. Em h = 0,01 a diferença central bate com cos 1 em quatro casas, a progressiva só em uma, como no exemplo resolvido 4.",
 };
 
 export default text;

@@ -9,12 +9,40 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DoubleIntegralFigure } from "@/components/lesson/figures/math/DoubleIntegralFigure";
 
 const r = String.raw;
+const num = (v: number, d = 3) => String(+v.toFixed(d)).replace("-", "−");
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** The unit-square plate with density 1 + kx: its mass and balance point x̄. */
+function plateNumbers(v: Record<string, number>) {
+  const k = v.k, m = 1 + k / 2, mx = 0.5 + k / 3, xb = mx / m;
+  return {
+    tex: r`\begin{aligned} m &= 1 + \tfrac{${num(k, 1)}}{2} = ${num(m)} \\ \iint x\rho\,dA &= \tfrac12 + \tfrac{${num(k, 1)}}{3} = ${num(mx)} \\ \bar x &= \frac{${num(mx)}}{${num(m)}} = \green{${num(xb)}} \end{aligned}`,
+    meter: xb,
+    meterLabel: `x̄ = ${num(xb)}`,
+  };
+}
+
+/** ∫ e^(−x²) from −L to L by a fine midpoint sum, against √π. */
+function gaussNumbers(v: Record<string, number>) {
+  const L = v.L, n = 2000, h = (2 * L) / n;
+  let s = 0;
+  for (let i = 0; i < n; i++) { const x = -L + (i + 0.5) * h; s += Math.exp(-x * x); }
+  s *= h;
+  return {
+    tex: r`\int_{-${num(L, 1)}}^{${num(L, 1)}} e^{-x^2}\,dx \approx \amber{${s.toFixed(6)}} \qquad \sqrt{\pi} = \green{1.772454}`,
+    meter: s / Math.sqrt(Math.PI),
+    meterLabel: `${(100 * s / Math.sqrt(Math.PI)).toFixed(3)} %`,
+  };
+}
 
 export function MultipleIntegralsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -41,7 +69,8 @@ export function MultipleIntegralsContent({ t }: { t: TrackTranslations }) {
           [r`R`, tx(t, "mMul_wR", "the region of the floor being integrated over")],
           [r`(x_i, y_j)`, tx(t, "mMul_wSample", "the sample point of the small rectangle in column i, row j")],
           [r`\Delta A = \Delta x\,\Delta y`, tx(t, "mMul_wDA", "the area of one small rectangle; in the limit it becomes dA")],
-        ]}>
+        ]}
+        words={tx(t, "mMul_doubleWords", "Cut the floor into small rectangles, stand on each a box as tall as the surface, add the boxes' volumes, and let the rectangles shrink.")}>
         {r`\iint_R f(x,y)\,dA = \lim_{\Delta x,\,\Delta y\to 0}\ \sum_i\sum_j f(x_i, y_j)\,\Delta x\,\Delta y`}
       </Equation>
 
@@ -56,14 +85,21 @@ export function MultipleIntegralsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\int_c^d f(x,y)\,dy`, tx(t, "mMul_wInner", "the inner integral: x is a constant; the result A(x) is a function of x only")],
           [r`\int_a^b \ldots\,dx`, tx(t, "mMul_wOuter", "the outer integral adds up the slices")],
-        ]}>
+        ]}
+        words={tx(t, "mMul_fubiniWords", "Integrate in y with x frozen to get the area of one slice; then integrate those slice areas in x. Either order gives the same volume.")}>
         {r`\iint_R f\,dA = \int_a^b\!\left(\int_c^d f(x,y)\,dy\right)dx = \int_c^d\!\left(\int_a^b f(x,y)\,dx\right)dy`}
       </Equation>
       <H3>{tx(t, "mMul_handTitle", "The figure's plane, by hand")}</H3>
       <p>
-        {tx(t, "mMul_handBody",
-          "f = 1 + xy/2 on 0 ≤ x ≤ 2, 0 ≤ y ≤ 2. Inner integral, x constant: ∫₀² (1 + xy/2) dy = [y + xy²/4]₀² = 2 + x. That is the slice area A(x), a line in x. Outer: ∫₀² (2 + x) dx = [2x + x²/2]₀² = 4 + 2 = 6, the value the boxes approach. In the other order the inner integral is ∫₀² (1 + xy/2) dx = 2 + y and the outer one again gives 6.")}
+        {tx(t, "mMul_handBody2", "f = 1 + xy/2 on 0 ≤ x ≤ 2, 0 ≤ y ≤ 2.")}
       </p>
+      <Derivation t={t} label={tx(t, "mMul_eqHand", "The plane's volume, inside out")}
+        steps={[
+          { tex: r`\int_0^2\!\int_0^2 \Big(1 + \frac{xy}{2}\Big)\,dy\,dx` },
+          { tex: r`= \int_0^2 \Big[y + \frac{xy^2}{4}\Big]_0^2\,dx`, why: tx(t, "mMul_h1", "inner integral in y, with x held constant") },
+          { tex: r`= \int_0^2 (2 + x)\,dx`, why: tx(t, "mMul_h2", "the slice area A(x), a straight line in x") },
+          { tex: r`= \Big[2x + \frac{x^2}{2}\Big]_0^2 = 4 + 2 = \green{6}`, why: tx(t, "mMul_h3", "outer integral: the value the boxes approach. The other order gives 2 + y inside and 6 again") },
+        ]} />
       <Callout type="tip" t={t}>
         {tx(t, "mMul_sepTip", "When f is a product of a function of x and a function of y, over a rectangle the double integral splits into a product of two single integrals: ∬ g(x) h(y) dA = (∫ₐᵇ g dx)(∫ h dy from c to d). The inner integral treats g(x) as a constant factor, which comes straight out. Example: ∬ x²y over [0, 3] × [0, 2] = (∫₀³ x² dx)(∫₀² y dy) = 9 · 2 = 18.")}
       </Callout>
@@ -77,6 +113,13 @@ export function MultipleIntegralsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mMul_swapBody",
           "Checking with the other order: for a fixed y between 0 and 1, the horizontal line enters the triangle at x = y (the slanted side) and leaves at x = 1. So the integral is ∫₀¹ ∫ᵧ¹ xy dx dy = ∫₀¹ y(1 − y²)/2 dy = ½(½ − ¼) = 1/8 ✓. Sometimes only one order is possible by hand. ∫₀¹ ∫ᵧ¹ e^(x²) dx dy is stuck, since e^(x²) has no antiderivative. Swapped, the same triangle reads ∫₀¹ ∫₀ˣ e^(x²) dy dx = ∫₀¹ x e^(x²) dx, and the substitution u = x² gives (e − 1)/2 ≈ 0.859.")}
       </p>
+      <Derivation t={t} label={tx(t, "mMul_eqSwap", "Swapping the order to escape a dead end")}
+        steps={[
+          { tex: r`\int_0^1\!\int_y^1 e^{x^2}\,dx\,dy`, full: true, why: tx(t, "mMul_w1", "stuck: e^(x²) has no antiderivative") },
+          { tex: r`= \int_0^1\!\int_0^x e^{x^2}\,dy\,dx`, why: tx(t, "mMul_w2", "the same triangle, read the other way: x from 0 to 1, and for each x, y from 0 to x") },
+          { tex: r`= \int_0^1 x\,e^{x^2}\,dx`, why: tx(t, "mMul_w3", "the inner integral of a constant (in y) is that constant times the length x") },
+          { tex: r`= \Big[\tfrac12 e^{x^2}\Big]_0^1 = \green{\tfrac{e - 1}{2}} \approx 0.859`, why: tx(t, "mMul_w4", "substitution u = x², du = 2x dx") },
+        ]} />
 
       <H2>{tx(t, "mMul_useTitle", "Area, average, mass and balance point")}</H2>
       <LessonTable
@@ -92,6 +135,11 @@ export function MultipleIntegralsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mMul_centBody",
           "The triangle of the last section, as a uniform plate (ρ = 1): its area is ∫₀¹ ∫₀ˣ dy dx = ∫₀¹ x dx = ½. Then ∬ x dA = ∫₀¹ x · x dx = ⅓, so x̄ = (⅓)/(½) = ⅔; and ∬ y dA = ∫₀¹ x²/2 dx = 1/6, so ȳ = (1/6)/(½) = ⅓. The corners are (0, 0), (1, 0) and (1, 1), and their average is ((0 + 1 + 1)/3, (0 + 0 + 1)/3) = (⅔, ⅓): the centre of mass of a triangle is the average of its corners, the point where its medians meet.")}
       </p>
+      <LiveFormula label={tx(t, "mMul_livePlate", "Try it: a plate that gets heavier to the right")}
+        tex={r`\rho = 1 + kx,\;\; 0 \le x, y \le 1 \qquad \bar x = \frac{\iint x\,\rho\,dA}{\iint \rho\,dA}`}
+        vars={[{ id: "k", label: "k", min: 0, max: 10, step: 0.5, value: 1, fmt: v => num(v, 1) }]}
+        compute={plateNumbers}
+        note={tx(t, "mMul_livePlateNote", "k = 0 is a uniform plate: it balances at the middle, x̄ = 0.5. k = 1 is worked example 5: x̄ = 5/9 ≈ 0.556. However large k gets, x̄ never passes ⅔: almost all the mass is then in the part kx, whose balance point is (∫ x · x dx)/(∫ x dx) = (⅓)/(½) = ⅔.")} />
 
       <H2>{tx(t, "mMul_polarTitle", "Polar coordinates: dA = r dr dθ")}</H2>
       <p>
@@ -103,13 +151,21 @@ export function MultipleIntegralsContent({ t }: { t: TrackTranslations }) {
           [r`r\,dr\,d\theta`, tx(t, "mMul_wRdr", "the area of a small polar patch: radial side dr times arc r dθ")],
           [r`f(r\cos\theta,\ r\sin\theta)`, tx(t, "mMul_wFpol", "the same function, with x and y written in polar form")],
         ]}
-        note={tx(t, "mMul_polarNote", "The disc of radius R: ∫₀^(2π) ∫₀ᴿ r dr dθ = 2π · R²/2 = πR². A third proof of the area of a circle, after the pizza slices and the trigonometric substitution.")}>
+        note={tx(t, "mMul_polarNote", "The disc of radius R: ∫₀^(2π) ∫₀ᴿ r dr dθ = 2π · R²/2 = πR². A third proof of the area of a circle, after the pizza slices and the trigonometric substitution.")}
+        words={tx(t, "mMul_polarWords", "Write x and y with a distance and an angle, and remember that a small patch far from the centre is bigger: its area carries an extra factor r.")}>
         {r`\iint_R f\,dA = \int_{\theta_1}^{\theta_2}\!\int_{r_1}^{r_2} f(r\cos\theta,\ r\sin\theta)\;r\,dr\,d\theta`}
       </Equation>
       <p>
-        {tx(t, "mMul_sphereBody",
-          "The volume of a sphere. The top half of a ball of radius R is the solid under z = √(R² − x² − y²) = √(R² − r²) over the disc of radius R. In polar form: ∫₀^(2π) ∫₀ᴿ √(R² − r²) r dr dθ. For the inner integral substitute u = R² − r², du = −2r dr: it becomes ½ ∫₀^(R²) √u du = ½ · ⅔ (R²)^(3/2) = R³/3. The outer integral multiplies by 2π: the hemisphere is 2πR³/3, and the whole ball 4πR³/3, as the volumes chapter found by comparing it with a cylinder and a cone.")}
+        {tx(t, "mMul_sphereBody2",
+          "The volume of a sphere. The top half of a ball of radius R is the solid under z = √(R² − x² − y²) = √(R² − r²) over the disc of radius R.")}
       </p>
+      <Derivation t={t} label={tx(t, "mMul_eqSphere", "The volume of a ball, in polar coordinates")}
+        steps={[
+          { tex: r`\tfrac12 V = \int_0^{2\pi}\!\int_0^R \sqrt{R^2 - r^2}\;r\,dr\,d\theta`, full: true, why: tx(t, "mMul_b1", "the height √(R² − r²) over each polar patch r dr dθ") },
+          { tex: r`\int_0^R \sqrt{R^2 - r^2}\;r\,dr = \tfrac12 \int_0^{R^2} \sqrt{u}\,du = \tfrac12 \cdot \tfrac23 (R^2)^{3/2} = \tfrac{R^3}{3}`, full: true, why: tx(t, "mMul_b2", "substitute u = R² − r², du = −2r dr; the minus sign flips the limits back") },
+          { tex: r`\tfrac12 V = 2\pi \cdot \tfrac{R^3}{3} = \tfrac{2\pi R^3}{3}`, full: true, why: tx(t, "mMul_b3", "nothing depends on θ: the outer integral multiplies by 2π") },
+          { tex: r`V = \green{\tfrac43 \pi R^3}`, full: true, why: tx(t, "mMul_b4", "two halves, as the volumes chapter found with a cylinder and a cone") },
+        ]} />
       <H3>{tx(t, "mMul_gaussTitle", "The bell-curve integral")}</H3>
       <p>
         {tx(t, "mMul_gaussBody",
@@ -119,9 +175,15 @@ export function MultipleIntegralsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\int_0^\infty e^{-r^2}\,r\,dr = \tfrac12`, tx(t, "mMul_wGr", "with u = r², du = 2r dr: ½ ∫₀^∞ e^(−u) du = ½")],
           [r`2\pi`, tx(t, "mMul_wG2pi", "the θ integral: nothing depends on the angle")],
-        ]}>
+        ]}
+        words={tx(t, "mMul_gaussWords", "Square the integral to turn it into a double integral over the whole plane; in polar coordinates the extra r makes it easy, and it comes out to π.")}>
         {r`\left(\int_{-\infty}^{\infty} e^{-x^2}dx\right)^{2} = \int_0^{2\pi}\!\!\int_0^{\infty} e^{-r^2}\,r\,dr\,d\theta = \pi \quad\Longrightarrow\quad \int_{-\infty}^{\infty} e^{-x^2}dx = \sqrt{\pi}`}
       </Equation>
+      <LiveFormula label={tx(t, "mMul_liveGauss", "Try it: how much of √π lies within ±L?")}
+        tex={r`\int_{-L}^{L} e^{-x^2}\,dx \;\xrightarrow{\;L \to \infty\;}\; \sqrt{\pi}`}
+        vars={[{ id: "L", label: "L", min: 0.5, max: 4, step: 0.1, value: 1, fmt: v => num(v, 1) }]}
+        compute={gaussNumbers}
+        note={tx(t, "mMul_liveGaussNote", "Within ±1 lies 84 % of the total, within ±2 already 99.5 %, and beyond ±3 less than 0.003 % is left: the bell curve's tails are thin, which is why the infinite integral is finite.")} />
 
       <H2>{tx(t, "mMul_tripleTitle", "Triple integrals")}</H2>
       <p>
@@ -129,9 +191,15 @@ export function MultipleIntegralsContent({ t }: { t: TrackTranslations }) {
           "The same construction one dimension up: cut a solid region into small boxes of volume dV = dx dy dz and add f · dV. With f = 1 it gives the volume of the region; with f = density it gives the mass of a solid whose density varies; divided by the volume it gives an average, such as the mean temperature in a room. It is computed as three nested ordinary integrals, with limits read from the inside out exactly as in two dimensions. Round solids use cylindrical coordinates (polar in x, y plus the height z), where dV = r dr dθ dz.")}
       </p>
       <p>
-        {tx(t, "mMul_tetraBody",
-          "The corner of a cube cut off by the plane x + y + z = 1 (a tetrahedron with three right angles at the origin). For fixed x and y, z runs from 0 up to the plane, 1 − x − y; for fixed x, y runs from 0 to 1 − x; and x runs from 0 to 1. Inner: ∫₀^(1−x−y) dz = 1 − x − y. Middle: ∫₀^(1−x) (1 − x − y) dy = (1 − x)² − (1 − x)²/2 = (1 − x)²/2. Outer: ∫₀¹ (1 − x)²/2 dx = 1/6. That is ⅓ × base × height = ⅓ × ½ × 1, the pyramid formula.")}
+        {tx(t, "mMul_tetraBody2",
+          "The corner of a cube cut off by the plane x + y + z = 1 (a tetrahedron with three right angles at the origin). For fixed x and y, z runs from 0 up to the plane, 1 − x − y; for fixed x, y runs from 0 to 1 − x; and x runs from 0 to 1.")}
       </p>
+      <Derivation t={t} label={tx(t, "mMul_eqTetra", "The tetrahedron, three integrals deep")}
+        steps={[
+          { tex: r`\int_0^{1-x-y} dz = 1 - x - y`, full: true, why: tx(t, "mMul_t1", "inner: the height of the column under the plane") },
+          { tex: r`\int_0^{1-x} (1 - x - y)\,dy = (1 - x)^2 - \tfrac{(1 - x)^2}{2} = \tfrac{(1 - x)^2}{2}`, full: true, why: tx(t, "mMul_t2", "middle: the area of the slice at x, a right triangle with legs 1 − x") },
+          { tex: r`\int_0^1 \tfrac{(1 - x)^2}{2}\,dx = \green{\tfrac16}`, full: true, why: tx(t, "mMul_t3", "outer: ⅓ × base ½ × height 1, the pyramid formula") },
+        ]} />
 
       <H2>{tx(t, "mMul_exTitle", "Worked examples")}</H2>
       <p>{tx(t, "mMul_ex1", "1. ∬ (x + 2y) over [0, 1] × [0, 3]: inner ∫₀³ (x + 2y) dy = 3x + 9; outer ∫₀¹ (3x + 9) dx = 1.5 + 9 = 10.5.")}</p>

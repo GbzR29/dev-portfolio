@@ -7,7 +7,7 @@ const text: Record<string, string> = {
   mSer_goal3: "Deduzir a fórmula de Euler a partir das séries.",
   mSer_intro: "Os polinômios são as funções mais amigáveis que existem: para calcular um você só soma e multiplica, o que dá para fazer à mão com qualquer precisão. Seno, a exponencial e o logaritmo não são assim; não existe receita finita de somas e multiplicações que dê sin 0,3 exatamente. As séries de Taylor fecham essa lacuna. Elas constroem, para uma dada função, um polinômio que copia o valor da função, a inclinação, a curvatura e toda derivada seguinte num ponto, e deixam o grau crescer para sempre. Para as funções deste curso o resultado, uma soma infinita, é a própria função.",
   mSer_matchTitle: "Copiando uma função uma derivada de cada vez",
-  mSer_matchBody: "Escolha um ponto a, o centro. A melhor aproximação constante de f perto de a é a constante f(a). A melhor reta é a tangente f(a) + f′(a)(x − a) do capítulo de derivadas: ela tem o mesmo valor e a mesma inclinação em a. Para copiar também a curvatura, some um termo c₂(x − a)². Ele não atrapalha o valor nem a inclinação em a (o termo e sua derivada primeira são 0 ali), e sua derivada segunda é 2c₂. Para igualar f″(a) precisamos de 2c₂ = f″(a), então c₂ = f″(a)/2. O padrão continua: a k-ésima derivada de (x − a)ᵏ é a constante k · (k − 1) · … · 1, escrita k! (“k fatorial”), e todo outro termo ou se anula em a ou já foi derivado até sumir. Então o coeficiente que copia a k-ésima derivada é f⁽ᵏ⁾(a)/k!.",
+  mSer_matchBody2: "Escolha um ponto a, o centro, e procure um polinômio T(x) = c₀ + c₁(x − a) + c₂(x − a)² + … cujo valor e cujas derivadas em a sejam os de f. Em x = a toda potência de (x − a) vale 0, então cada derivada isola exatamente um coeficiente.",
   mSer_eqPoly: "O polinômio de Taylor de grau n",
   mSer_wA: "o centro: o ponto onde a cópia é exata",
   mSer_wFk: "a k-ésima derivada de f em a; f⁽⁰⁾ é a própria f",
@@ -78,6 +78,22 @@ const text: Record<string, string> = {
   mSer_m5: "a série é para radianos; longe de 0 ela também precisa de muitos termos",
   mSer_m6w: "esquecer que 0! = 1 e 1! = 1",
   mSer_m6: "os dois primeiros termos são o valor e a reta tangente",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mSer_eqMatch: "Copiando uma derivada de cada vez",
+  mSer_c1: "o valor: todo outro termo tem um fator (x − a), que vale 0 em a",
+  mSer_c2: "a inclinação: a reta tangente do capítulo de derivadas",
+  mSer_c3: "a curvatura: (x − a)² derivado duas vezes é a constante 2",
+  mSer_c4: "em geral (x − a)ᵏ derivado k vezes é k · (k − 1) · … · 1 = k! (“k fatorial”); as potências menores já sumiram, as maiores ainda valem 0 em a",
+  mSer_polyWords: "Some, para cada k de 0 a n, a k-ésima derivada no centro, dividida por k fatorial, vezes a distância ao centro elevada a k.",
+  mSer_liveHarm: "Experimente: duas séries com termos que encolhem",
+  mSer_liveHarmNote: "Cada passo multiplica o número de termos por 10. A soma harmônica ganha cerca de 2,3 a cada vez, ficando 0,577 acima de ln n: ela nunca para. A soma de 1/k² ganha cada vez menos: depois de um milhão de termos ela bate com π²/6 em seis algarismos.",
+  mSer_remWords: "O erro tem a cara do próximo termo da série, com a derivada tomada em algum ponto no meio; limite essa derivada e você limita o erro.",
+  mSer_liveSin: "Experimente: sin x pela série, com a cota do erro",
+  mSer_liveN: "grau n (ímpar)",
+  mSer_liveErr: "erro",
+  mSer_liveSinNote: "Começa na conta à mão abaixo: x = 0,1 com dois termos, erro 8,3 × 10⁻⁸ contra uma cota de 8,3 × 10⁻⁸. O polinômio de grau n é igual ao de grau n + 1, então a cota usa a potência n + 2. Tome x = 3: o grau 3 erra por 1,6, o grau 9 por 0,004. A cota fica sempre acima do erro verdadeiro.",
+  mSer_eulerWords: "Ponha iθ na série da exponencial: os termos reais que saem são a série do cosseno, e os imaginários são i vezes a série do seno.",
 };
 
 export default text;

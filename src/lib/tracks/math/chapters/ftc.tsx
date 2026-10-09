@@ -8,12 +8,35 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { AccumulationFigure } from "@/components/lesson/figures/math/AccumulationFigure";
 
 const r = String.raw;
+const num = (v: number, d = 3) => String(+v.toFixed(d)).replace("-", "−");
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** ∫ₐᵇ x² dx by the antiderivative x³/3. */
+function squareNumbers(v: Record<string, number>) {
+  const { a, b } = v, Fa = a ** 3 / 3, Fb = b ** 3 / 3;
+  return {
+    tex: r`\int_{${num(a)}}^{${num(b)}} x^2\,dx = \frac{${par(b)}^3}{3} - \frac{${par(a)}^3}{3} = ${num(Fb)} - ${par(Fa)} = \green{${num(Fb - Fa)}}`,
+  };
+}
+
+/** A ball thrown up from 1.5 m at v₀: the top of the arc and the landing time. */
+const throwNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const v0 = v.v, tTop = v0 / 9.8, yTop = 1.5 + v0 * tTop - 4.9 * tTop ** 2;
+  const tLand = (v0 + Math.sqrt(v0 * v0 + 4 * 4.9 * 1.5)) / 9.8;
+  return {
+    tex: r`\begin{aligned} \text{${tx(t, "mFtc_liveTop", "top")}:}\quad v = ${num(v0, 1)} - 9.8\,t = 0 &\;\Rightarrow\; t = ${num(tTop, 2)}\,\text{s}, \; y = \green{${num(yTop, 2)}}\,\text{m} \\ \text{${tx(t, "mFtc_liveLand", "landing")}:}\quad 1.5 + ${num(v0, 1)}\,t - 4.9\,t^2 = 0 &\;\Rightarrow\; t = \green{${num(tLand, 2)}}\,\text{s} \end{aligned}`,
+  };
+};
 
 export function FtcContent({ t }: { t: TrackTranslations }) {
   return (
@@ -40,7 +63,8 @@ export function FtcContent({ t }: { t: TrackTranslations }) {
           [r`a`, tx(t, "mFtc_wA", "the fixed starting point; A(a) = 0")],
           [r`x`, tx(t, "mFtc_wX", "the moving right end: the input of A")],
           [r`t`, tx(t, "mFtc_wT", "the dummy variable that runs from a to x")],
-        ]}>
+        ]}
+        words={tx(t, "mFtc_accWords", "A(x) is the signed area under f collected so far, from the fixed start a up to the moving edge x.")}>
         {r`A(x) = \int_a^x f(t)\,dt`}
       </Equation>
 
@@ -48,8 +72,19 @@ export function FtcContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mFtc_p1Title", "Part 1: the area grows at the rate f(x)")}</H2>
       <p>
-        {tx(t, "mFtc_p1Body",
-          "How fast does A change as x moves? Nudge x to x + h. The extra area A(x + h) − A(x) is a thin strip from x to x + h under the curve. The strip is almost a rectangle with height f(x) and width h, so its area is about f(x) · h, and the smaller h is, the better the approximation (f is continuous, so it hardly changes across a thin strip). Divide by h: the difference quotient of A is about f(x), and in the limit exactly f(x). The rate at which the area grows is the height of the curve at the moving edge. In the figure, the amber tangent slope on the bottom always equals the amber height on top.")}
+        {tx(t, "mFtc_p1Body2",
+          "How fast does A change as x moves? Nudge x to x + h and look at the extra area: a thin strip under the curve from x to x + h.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mFtc_eqP1Proof", "Why the area grows at the rate f(x)")}
+        steps={[
+          { tex: r`A(x + h) - A(x) = \int_x^{x+h} f(t)\,dt`, full: true, why: tx(t, "mFtc_d1", "the new area minus the old one is the thin strip from x to x + h") },
+          { tex: r`\int_x^{x+h} f(t)\,dt \approx f(x)\cdot h`, full: true, why: tx(t, "mFtc_d2", "the strip is almost a rectangle of height f(x) and width h; f is continuous, so it hardly changes across a thin strip") },
+          { tex: r`\frac{A(x + h) - A(x)}{h} \approx f(x)`, full: true, why: tx(t, "mFtc_d3", "divide by h: the difference quotient of A") },
+          { tex: r`A'(x) = \green{f(x)}`, full: true, why: tx(t, "mFtc_d4", "as h → 0 the approximation becomes exact") },
+        ]} />
+      <p>
+        {tx(t, "mFtc_p1Body3",
+          "The rate at which the area grows is the height of the curve at the moving edge. In the figure, the amber tangent slope on the bottom always equals the amber height on top.")}
       </p>
       <Equation label={tx(t, "mFtc_eqP1", "The fundamental theorem, part 1")}
         where={[
@@ -70,22 +105,43 @@ export function FtcContent({ t }: { t: TrackTranslations }) {
           [r`F'(x) = f(x)`, tx(t, "mFtc_wAnti", "F is an antiderivative of f")],
           [r`C`, tx(t, "mFtc_wC", "the constant of integration: any number; one extra fact (a starting value) fixes it")],
         ]}
-        note={tx(t, "mFtc_indefNote", "Example: ∫ 2x dx = x² + C. Always check by differentiating: (x² + C)′ = 2x ✓.")}>
+        note={tx(t, "mFtc_indefNote", "Example: ∫ 2x dx = x² + C. Always check by differentiating: (x² + C)′ = 2x ✓.")}
+        words={tx(t, "mFtc_indefWords", "The integral without limits means every function whose derivative is f: one of them, plus any constant.")}>
         {r`\int f(x)\,dx = F(x) + C`}
       </Equation>
 
       <H2>{tx(t, "mFtc_p2Title", "Part 2: evaluating with an antiderivative")}</H2>
       <p>
-        {tx(t, "mFtc_p2Body",
-          "Now the payoff. Let F be any antiderivative of f. The accumulation function A is also one, so A(x) = F(x) + C for some C. At x = a the area is zero: 0 = A(a) = F(a) + C, so C = −F(a) and A(x) = F(x) − F(a). Put x = b: the whole area from a to b is F(b) − F(a). No strips, no limits: find an antiderivative, evaluate it at the two ends and subtract. The square-bracket notation [F(x)]ₐᵇ is shorthand for that subtraction.")}
+        {tx(t, "mFtc_p2Body2",
+          "Now the payoff. Let F be any antiderivative of f. The accumulation function A is also one, so the two differ only by a constant.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mFtc_eqP2Proof", "From one antiderivative to the whole area")}
+        steps={[
+          { tex: r`A(x) = F(x) + C`, full: true, why: tx(t, "mFtc_e1", "A and F are both antiderivatives of f, so they differ by a constant") },
+          { tex: r`0 = A(a) = F(a) + C \;\Rightarrow\; C = -F(a)`, full: true, why: tx(t, "mFtc_e2", "at x = a no area has been collected yet") },
+          { tex: r`A(x) = F(x) - F(a)`, full: true, why: tx(t, "mFtc_e3", "put that C back") },
+          { tex: r`\int_a^b f(x)\,dx = A(b) = \green{F(b) - F(a)}`, full: true, why: tx(t, "mFtc_e4", "take x = b: the whole area from a to b") },
+        ]} />
+      <p>
+        {tx(t, "mFtc_p2Body3",
+          "No strips, no limits: find an antiderivative, evaluate it at the two ends and subtract. The square-bracket notation [F(x)]ₐᵇ is shorthand for that subtraction.")}
       </p>
       <Equation label={tx(t, "mFtc_eqP2", "The fundamental theorem, part 2")}
         where={[
           [r`F`, tx(t, "mFtc_wF", "any antiderivative of f (the constant C cancels in the subtraction, so any one works)")],
           [r`\big[F(x)\big]_a^b`, tx(t, "mFtc_wBr", "\"F evaluated from a to b\": F(b) − F(a), upper minus lower")],
-        ]}>
+        ]}
+        words={tx(t, "mFtc_p2Words", "To add up f from a to b, find any function whose derivative is f, and subtract its value at a from its value at b.")}>
         {r`\int_a^b f(x)\,dx = \big[F(x)\big]_a^b = F(b) - F(a)`}
       </Equation>
+      <LiveFormula label={tx(t, "mFtc_liveSq", "Try it: areas under x² with no strips")}
+        tex={r`\int_a^b x^2\,dx = \left[\frac{x^3}{3}\right]_a^b = \frac{b^3}{3} - \frac{a^3}{3}`}
+        vars={[
+          { id: "a", label: "a", min: -2, max: 2, step: 0.5, value: 0, fmt: v => num(v, 1) },
+          { id: "b", label: "b", min: -2, max: 3, step: 0.5, value: 2, fmt: v => num(v, 1) },
+        ]}
+        compute={squareNumbers}
+        note={tx(t, "mFtc_liveSqNote", "a = 0, b = 2 gives 8/3, the area the strips of the last chapter closed in on. Try a = −2, b = 2: 16/3, twice the right half, because x² is symmetric. Swap the limits (a above b) and the answer changes sign.")} />
       <p>
         {tx(t, "mFtc_checkBody",
           "Check it against the last chapter. For x², an antiderivative is x³/3 (its derivative is 3x²/3 = x²), so ∫₀² x² dx = 8/3 − 0 = 8/3: the same answer the sum of squares took a page to reach. For sin x, an antiderivative is −cos x, so ∫₀^π sin x dx = −cos π − (−cos 0) = 1 + 1 = 2, the exact value the figure and the Simpson example were approaching. And ∫₁⁴ dx/x = ln 4 − ln 1 = ln 4 ≈ 1.386.")}
@@ -123,23 +179,41 @@ export function FtcContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`F'(t)`, tx(t, "mFtc_wRate", "the rate of change of some quantity F")],
           [r`F(b) - F(a)`, tx(t, "mFtc_wChange", "the total change of F between the two times")],
-        ]}>
+        ]}
+        words={tx(t, "mFtc_netWords", "Adding up a rate of change gives the total change; the value at the end is the value at the start plus everything that accumulated.")}>
         {r`\int_a^b F'(t)\,dt = F(b) - F(a) \qquad\Longleftrightarrow\qquad F(b) = F(a) + \int_a^b F'(t)\,dt`}
       </Equation>
 
       <H2>{tx(t, "mFtc_motionTitle", "Motion from acceleration")}</H2>
       <p>
-        {tx(t, "mFtc_motionBody",
-          "Run the derivative chain of motion backwards. With a constant acceleration a (gravity, a rocket's thrust), the velocity is an antiderivative of a: v(t) = at + C₁. At t = 0 the velocity is the starting velocity v₀, so C₁ = v₀. The position is an antiderivative of v: s(t) = ½at² + v₀t + C₂, and at t = 0 it is the starting position s₀, so C₂ = s₀. Each constant of integration is an initial condition. These are the formulas of every thrown ball and every falling stone, derived rather than memorised.")}
+        {tx(t, "mFtc_motionBody2",
+          "Run the derivative chain of motion backwards, with a constant acceleration a (gravity, a rocket's thrust).")}
+      </p>
+      <Derivation t={t} label={tx(t, "mFtc_eqMotionProof", "Integrating a constant acceleration twice")}
+        steps={[
+          { tex: r`v(t) = \int a\,dt = a\,t + C_1`, full: true, why: tx(t, "mFtc_m_1", "the velocity is an antiderivative of the acceleration") },
+          { tex: r`v(0) = v_0 \;\Rightarrow\; C_1 = v_0`, full: true, why: tx(t, "mFtc_m_2", "at t = 0 the velocity is the starting velocity v₀") },
+          { tex: r`s(t) = \int (v_0 + a\,t)\,dt = v_0\,t + \tfrac12 a\,t^2 + C_2`, full: true, why: tx(t, "mFtc_m_3", "the position is an antiderivative of the velocity") },
+          { tex: r`s(0) = s_0 \;\Rightarrow\; s(t) = \green{s_0 + v_0\,t + \tfrac12 a\,t^2}`, full: true, why: tx(t, "mFtc_m_4", "at t = 0 the position is the starting position s₀") },
+        ]} />
+      <p>
+        {tx(t, "mFtc_motionBody3",
+          "Each constant of integration is an initial condition. These are the formulas of every thrown ball and every falling stone, derived rather than memorised.")}
       </p>
       <Equation label={tx(t, "mFtc_eqMotion", "Constant acceleration")}
         where={[
           [r`a`, tx(t, "mFtc_wAcc", "the constant acceleration, e.g. −9.8 m/s² for gravity (up is positive)")],
           [r`v_0,\ s_0`, tx(t, "mFtc_wInit", "the velocity and position at t = 0: the two constants of integration")],
         ]}
-        note={tx(t, "mFtc_motionNote", "In 2D or 3D the same formulas hold for each coordinate separately, with vectors: p(t) = p₀ + v₀t + ½at².")}>
+        note={tx(t, "mFtc_motionNote", "In 2D or 3D the same formulas hold for each coordinate separately, with vectors: p(t) = p₀ + v₀t + ½at².")}
+        words={tx(t, "mFtc_motionWords", "The velocity changes by the acceleration times the time; the position is where it started, plus the starting velocity times the time, plus half the acceleration times the time squared.")}>
         {r`v(t) = v_0 + a\,t \qquad s(t) = s_0 + v_0\,t + \tfrac12 a\,t^2`}
       </Equation>
+      <LiveFormula label={tx(t, "mFtc_liveThrow", "Try it: a ball thrown up from 1.5 m")}
+        tex={r`y(t) = 1.5 + v_0\,t - 4.9\,t^2 \qquad v(t) = v_0 - 9.8\,t`}
+        vars={[{ id: "v", label: <>v<sub>0</sub> (m/s)</>, min: 2, max: 20, step: 0.5, value: 8, fmt: v => num(v, 1) }]}
+        compute={throwNumbers(t)}
+        note={tx(t, "mFtc_liveThrowNote", "v₀ = 8 is the throw worked out below: top at 4.77 m after 0.82 s, landing after 1.80 s. Double v₀ to 16 and the top climbs from 4.77 m to 14.6 m: the height gained, v₀²/19.6, grows with the square of the speed.")} />
       <H3>{tx(t, "mFtc_aimTitle", "When does it land?")}</H3>
       <p>
         {tx(t, "mFtc_aimBody",

@@ -9,12 +9,41 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DerivativeFigure } from "@/components/lesson/figures/math/DerivativeFigure";
 
 const r = String.raw;
+const num = (v: number, d = 4) => String(+v.toFixed(d)).replace("-", "−");
+const par = (v: number) => (v < 0 ? `(${num(v)})` : num(v));
+/** 0.0012 → 1.2 × 10⁻³, in TeX. */
+const sci = (v: number) => {
+  const [m, e] = v.toExponential(1).split("e");
+  return r`${m} \times 10^{${e.replace("-", "−")}}`;
+};
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** The difference quotient of x² at a with step h: always 2a + h. */
+function quotientNumbers(v: Record<string, number>) {
+  const { a, h } = v, fa = a * a, fb = (a + h) ** 2, q = (fb - fa) / h;
+  if (Math.abs(h) < 1e-9) return { tex: r`\frac{${par(a)}^2 - ${par(a)}^2}{0} = \red{\frac{0}{0}} \qquad f'(${num(a)}) = 2 \cdot ${par(a)} = \green{${num(2 * a)}}` };
+  return {
+    tex: r`\frac{${par(a + h)}^2 - ${par(a)}^2}{${num(h)}} = \frac{${num(fb)} - ${num(fa)}}{${num(h)}} = \amber{${num(q)}} \qquad f'(${num(a)}) = 2 \cdot ${par(a)} = \green{${num(2 * a)}}`,
+  };
+}
+
+/** Forward and central differences of sin at x = 1, against the exact cos 1. */
+const differenceNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const h = v.h, exact = Math.cos(1);
+  const fwd = (Math.sin(1 + h) - Math.sin(1)) / h, cen = (Math.sin(1 + h) - Math.sin(1 - h)) / (2 * h);
+  return {
+    tex: r`\begin{aligned} \text{${tx(t, "mDer_liveFwd", "forward")}:}\quad \frac{\sin ${num(1 + h, 3)} - \sin 1}{${num(h, 3)}} &= \amber{${fwd.toFixed(5)}} & \text{${tx(t, "mDer_liveErr", "error")} } ${sci(Math.abs(fwd - exact))} \\ \text{${tx(t, "mDer_liveCen", "central")}:}\quad \frac{\sin ${num(1 + h, 3)} - \sin ${num(1 - h, 3)}}{${num(2 * h, 3)}} &= \green{${cen.toFixed(5)}} & \text{${tx(t, "mDer_liveErr", "error")} } ${sci(Math.abs(cen - exact))} \\ \text{${tx(t, "mDer_liveExact", "exact")}:}\quad \cos 1 &= ${exact.toFixed(5)} \end{aligned}`,
+  };
+};
 
 export function DerivativesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -41,7 +70,8 @@ export function DerivativesContent({ t }: { t: TrackTranslations }) {
           [r`h`, tx(t, "mDer_wH", "the length of the interval, the run (it may be negative: then the second point is to the left)")],
           [r`f(a + h) - f(a)`, tx(t, "mDer_wRise", "the change in output over that interval, the rise")],
         ]}
-        note={tx(t, "mDer_avgNote", "This fraction is called the difference quotient. For the ball, a = 1 and h = 2: (s(3) − s(1))/2 = (9 − 1)/2 = 4 m/s.")}>
+        note={tx(t, "mDer_avgNote", "This fraction is called the difference quotient. For the ball, a = 1 and h = 2: (s(3) − s(1))/2 = (9 − 1)/2 = 4 m/s.")}
+        words={tx(t, "mDer_avgWords", "How much the output changed, divided by how much the input changed.")}>
         {r`\text{average rate} = \frac{f(a + h) - f(a)}{h}`}
       </Equation>
 
@@ -54,6 +84,14 @@ export function DerivativesContent({ t }: { t: TrackTranslations }) {
         headers={["h", "1", "0.1", "0.01", "0.001", "→ 0"]}
         rows={[[tx(t, "mDer_tAvg", "average speed (s(1 + h) − s(1))/h"), "3", "2.1", "2.01", "2.001", "2"]]}
       />
+      <LiveFormula label={tx(t, "mDer_liveQuot", "Try it: the difference quotient of x²")}
+        tex={r`\frac{(a + h)^2 - a^2}{h} = 2a + h \;\xrightarrow{\;h \to 0\;}\; 2a`}
+        vars={[
+          { id: "a", label: "a", min: -2, max: 2, step: 0.5, value: 1, fmt: v => num(v) },
+          { id: "h", label: "h", min: -1, max: 1, step: 0.01, value: 0.1, fmt: v => num(v, 2) },
+        ]}
+        compute={quotientNumbers}
+        note={tx(t, "mDer_liveQuotNote", "Starts on the ball at t = 1 with h = 0.1: 2.1, as in the table. Whatever a is, the amber result is always 2a + h, so it lands on the green 2a as h shrinks. At h = 0 itself the fraction is 0/0: the derivative is only reached as a limit.")} />
 
       <H2>{tx(t, "mDer_defTitle", "The definition")}</H2>
       <p>
@@ -65,7 +103,8 @@ export function DerivativesContent({ t }: { t: TrackTranslations }) {
           [r`f'(a)`, tx(t, "mDer_wFp", "\"f prime of a\": the instantaneous rate of change of f at a, the slope of the tangent there")],
           [r`\lim_{h \to 0}`, tx(t, "mDer_wLim", "the limit as the interval shrinks, from both sides; h itself is never 0")],
           [r`\frac{f(a+h) - f(a)}{h}`, tx(t, "mDer_wQuot", "the slope of the secant through (a, f(a)) and (a + h, f(a + h))")],
-        ]}>
+        ]}
+        words={tx(t, "mDer_defWords", "The slope at a is what the slopes of the secants from a settle on as the second point slides into a.")}>
         {r`f'(a) = \lim_{h \to 0} \frac{f(a + h) - f(a)}{h}`}
       </Equation>
       <p>
@@ -77,7 +116,8 @@ export function DerivativesContent({ t }: { t: TrackTranslations }) {
           [r`(a, f(a))`, tx(t, "mDer_wPt", "the point of contact")],
           [r`f'(a)`, tx(t, "mDer_wSl", "its slope")],
         ]}
-        note={tx(t, "mDer_tanNote", "For s(t) = t² at t = 1: y = 1 + 2(t − 1) = 2t − 1.")}>
+        note={tx(t, "mDer_tanNote", "For s(t) = t² at t = 1: y = 1 + 2(t − 1) = 2t − 1.")}
+        words={tx(t, "mDer_tanWords", "Start at the height of the curve at a, and for every step away from a, climb by the slope there times the step.")}>
         {r`y = f(a) + f'(a)\,(x - a)`}
       </Equation>
 
@@ -85,8 +125,21 @@ export function DerivativesContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mDer_fnTitle", "The derivative as a function")}</H2>
       <p>
-        {tx(t, "mDer_fnBody",
-          "Nothing in the ball calculation depended on a being 1. Doing it for a general x: (x + h)² − x² = 2xh + h², divide by h to get 2x + h, and let h → 0: the slope of x² at any x is 2x. So the derivative is itself a function, f′(x) = 2x, which gives the slope everywhere at once. The second mode of the figure draws it by recording the tangent's slope as you drag: the curve that appears underneath is f′. The same recipe (expand, cancel h, let h → 0) handles more functions.")}
+        {tx(t, "mDer_fnGen",
+          "Nothing in the ball calculation depended on a being 1. Doing it for a general x gives the slope of x² everywhere at once.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mDer_eqSq", "The derivative of x², from the definition")}
+        steps={[
+          { tex: r`\frac{d}{dx}\,x^2` },
+          { tex: r`= \lim_{h \to 0} \frac{(x + h)^2 - x^2}{h}`, why: tx(t, "mDer_q1", "the definition, with f(x) = x²") },
+          { tex: r`= \lim_{h \to 0} \frac{x^2 + 2xh + h^2 - x^2}{h}`, why: tx(t, "mDer_q2", "expand (x + h)² = x² + 2xh + h²") },
+          { tex: r`= \lim_{h \to 0} \frac{2xh + h^2}{h}`, why: tx(t, "mDer_q3", "x² and −x² cancel") },
+          { tex: r`= \lim_{h \to 0} \,(2x + h)`, why: tx(t, "mDer_q4", "divide by h, allowed because h ≠ 0 while it shrinks") },
+          { tex: r`= \green{2x}`, why: tx(t, "mDer_q5", "no 0/0 any more: let h go to 0") },
+        ]} />
+      <p>
+        {tx(t, "mDer_fnGen2",
+          "So the derivative is itself a function, f′(x) = 2x. The second mode of the figure draws it by recording the tangent's slope as you drag: the curve that appears underneath is f′. The same recipe (expand, cancel h, let h → 0) handles more functions.")}
       </p>
       <LessonTable
         headers={["f(x)", tx(t, "mDer_tSteps", "Difference quotient, simplified"), "f′(x)"]}
@@ -147,9 +200,15 @@ export function DerivativesContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`h`, tx(t, "mDer_wHnum", "a small step, but not too small (see below)")],
           [r`O(h),\ O(h^2)`, tx(t, "mDer_wOrder", "how the error scales: proportional to h, or to h²")],
-        ]}>
+        ]}
+        words={tx(t, "mDer_numWords", "Forward: the slope from x to one step ahead. Central: the slope from one step behind to one step ahead, which sits evenly round x.")}>
         {r`f'(x) \approx \frac{f(x + h) - f(x)}{h} \;\;\text{error} \sim O(h) \qquad f'(x) \approx \frac{f(x + h) - f(x - h)}{2h} \;\;\text{error} \sim O(h^2)`}
       </Equation>
+      <LiveFormula label={tx(t, "mDer_liveDiff", "Try it: the slope of sin x at x = 1")}
+        tex={r`\frac{\sin(1 + h) - \sin 1}{h} \qquad \frac{\sin(1 + h) - \sin(1 - h)}{2h} \qquad \cos 1`}
+        vars={[{ id: "h", label: "h", min: 0.01, max: 0.5, step: 0.01, value: 0.1, fmt: v => num(v, 2) }]}
+        compute={differenceNumbers(t)}
+        note={tx(t, "mDer_liveDiffNote", "Halve h, from 0.2 to 0.1: the forward error halves, the central error drops to a quarter. At h = 0.01 the central difference matches cos 1 to four digits, the forward one only to one, as in worked example 4.")} />
       <p>
         {tx(t, "mDer_numBody2",
           "How small should h be? With measured data there is no choice: h is the time or distance between readings. With a formula and a calculator, a smaller h is better only up to a point. The limits chapter showed that subtracting two nearly equal numbers throws away digits, and dividing by a tiny h magnifies what is left; on a 10-digit calculator, h around 0.001 is a good compromise. Measurements also carry small errors, and differences magnify those too, so a derivative estimated from rough data is always rougher than the data.")}

@@ -9,12 +9,39 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { LimitFigure } from "@/components/lesson/figures/math/LimitFigure";
 
 const r = String.raw;
+const dec = (v: number, d: number) => v.toFixed(d).replace("-", "−");
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** The squeeze cos x < sin x / x < 1 at one angle x (radians). */
+const squeezeNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const x = v.x, c = Math.cos(x), s = Math.sin(x) / x;
+  return {
+    tex: r`\cos ${dec(x, 2)} = ${dec(c, 5)} \;<\; \frac{\sin ${dec(x, 2)}}{${dec(x, 2)}} = \green{${dec(s, 5)}} \;<\; 1 \qquad \text{${tx(t, "mLim_liveGap", "gap")}: } ${dec(1 - c, 5)}`,
+    meter: s,
+    meterLabel: `sin x / x = ${dec(s, 5)}`,
+  };
+};
+
+/** (1 − cos x)/x² at x = 10⁻ᵏ: the true value, and what a 10-digit calculator gets. */
+const tableNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const x = 10 ** -v.k;
+  const truth = (2 * Math.sin(x / 2) ** 2) / (x * x);          // 1 − cos x = 2 sin²(x/2), with no cancellation
+  const c10 = Number(Math.cos(x).toPrecision(10));
+  const calc = (1 - c10) / (x * x);
+  const ok = Math.abs(calc - 0.5) < 0.01;
+  return {
+    tex: r`\begin{aligned} \cos 10^{-${v.k}} &\approx ${c10.toPrecision(10)} \\ \text{${tx(t, "mLim_liveTrue", "true value")}:}\quad \frac{1 - \cos x}{x^2} &= \green{${truth.toFixed(8)}} \\ \text{${tx(t, "mLim_liveCalc", "10-digit calculator")}:}\quad \frac{1 - ${c10.toPrecision(10)}}{(10^{-${v.k}})^2} &= ${ok ? r`\green` : r`\red`}{${dec(calc, 8)}} \end{aligned}`,
+  };
+};
 
 export function LimitsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -53,7 +80,8 @@ export function LimitsContent({ t }: { t: TrackTranslations }) {
           [r`f(x)`, tx(t, "mLim_wF", "the function's value at those nearby x")],
           [r`L`, tx(t, "mLim_wL", "the limit: f(x) can be made as close to L as you want by taking x close enough to a")],
         ]}
-        note={tx(t, "mLim_defNote", "The value f(a) plays no part: it may be undefined (a hole), equal to L, or even some other number. The limit only asks where the function is heading.")}>
+        note={tx(t, "mLim_defNote", "The value f(a) plays no part: it may be undefined (a hole), equal to L, or even some other number. The limit only asks where the function is heading.")}
+        words={tx(t, "mLim_defWords", "As x gets closer and closer to a, from either side, the values f(x) get closer and closer to the number L.")}>
         {r`\lim_{x \to 1} \frac{x^2 - 1}{x - 1} = 2 \qquad\text{in general}\qquad \lim_{x \to a} f(x) = L`}
       </Equation>
 
@@ -79,8 +107,19 @@ export function LimitsContent({ t }: { t: TrackTranslations }) {
           "Infinity (∞) is not a number, but it appears in limits in two ways. First, f(x) may grow without bound as x approaches a: 1/x² gets bigger than any number you name as x → 0 (at x = 0.001 it is already a million). We write lim 1/x² = ∞, which is a precise way of saying that the limit does not exist because the values run away; the graph has a vertical asymptote there. Second, x itself may grow without bound, and we ask where f(x) is heading: 1/x → 0 as x → ∞, because dividing 1 by a huge number gives a tiny one. The graph then has a horizontal asymptote, a line it creeps toward.")}
       </p>
       <p>
-        {tx(t, "mLim_infBody2",
-          "For a ratio of polynomials as x → ∞, only the highest powers matter, because they outgrow everything else. Divide top and bottom by the highest power in the denominator: (3x² + 1)/(x² + 5) = (3 + 1/x²)/(1 + 5/x²), and each 1/x² term goes to 0, leaving 3/1 = 3. You have met two limits at infinity already: the geometric series in the sequences chapter (rⁿ → 0 when |r| < 1) and the number e = lim (1 + 1/n)ⁿ in the exponents chapter.")}
+        {tx(t, "mLim_infBody3",
+          "For a ratio of polynomials as x → ∞, only the highest powers matter, because they outgrow everything else. Divide top and bottom by the highest power in the denominator.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mLim_eqRatio", "A ratio of polynomials at infinity")}
+        steps={[
+          { tex: r`\lim_{x \to \infty} \frac{3x^2 + 1}{x^2 + 5}` },
+          { tex: r`= \lim_{x \to \infty} \frac{3 + 1/x^2}{1 + 5/x^2}`, why: tx(t, "mLim_r1", "divide every term, top and bottom, by x², the highest power in the denominator; the fraction's value does not change") },
+          { tex: r`= \frac{3 + 0}{1 + 0}`, why: tx(t, "mLim_r2", "1/x² and 5/x² go to 0, because dividing by a huge number gives a tiny one") },
+          { tex: r`= \green{3}`, why: tx(t, "mLim_r3", "only the leading coefficients 3 and 1 are left") },
+        ]} />
+      <p>
+        {tx(t, "mLim_infBody4",
+          "You have met two limits at infinity already: the geometric series in the sequences chapter (rⁿ → 0 when |r| < 1) and the number e = lim (1 + 1/n)ⁿ in the exponents chapter.")}
       </p>
       <Equation label={tx(t, "mLim_eqInf", "Limits involving infinity")}
         where={[
@@ -101,7 +140,8 @@ export function LimitsContent({ t }: { t: TrackTranslations }) {
           [r`\delta > 0`, tx(t, "mLim_wDelta", "the tolerance on the input: how close to a is close enough")],
           [r`0 < |x - a| < \delta`, tx(t, "mLim_wNear", "x is within δ of a, but not a itself")],
           [r`|f(x) - L| < \varepsilon`, tx(t, "mLim_wClose", "the output is within ε of L")],
-        ]}>
+        ]}
+        words={tx(t, "mLim_epsWords", "However small a tolerance you demand on the output, there is a distance round a such that every x inside it, except a itself, gives an output within that tolerance of L.")}>
         {r`\text{for every } \varepsilon > 0 \text{ there is a } \delta > 0 \text{ such that } 0 < |x - a| < \delta \;\Rightarrow\; |f(x) - L| < \varepsilon`}
       </Equation>
 
@@ -120,27 +160,48 @@ export function LimitsContent({ t }: { t: TrackTranslations }) {
         ]}
       />
       <p>
-        {tx(t, "mLim_conjBody",
-          "A second 0/0 example needs a different trick. (√(x + 1) − 1)/x at x = 0 gives 0/0, and nothing factors. Multiply top and bottom by the conjugate √(x + 1) + 1 (the same two terms with the sign between them flipped). The top becomes (x + 1) − 1 = x by the difference of squares, so the fraction is x / (x(√(x + 1) + 1)) = 1/(√(x + 1) + 1) for x ≠ 0. Now plugging in works: 1/(1 + 1) = ½.")}
+        {tx(t, "mLim_conjBody2",
+          "A second 0/0 example needs a different trick. (√(x + 1) − 1)/x at x = 0 gives 0/0, and nothing factors. Multiply top and bottom by the conjugate √(x + 1) + 1 (the same two terms with the sign between them flipped).")}
       </p>
+      <Derivation t={t} label={tx(t, "mLim_eqConj", "Removing a square root with the conjugate")}
+        steps={[
+          { tex: r`\frac{\sqrt{x + 1} - 1}{x}` },
+          { tex: r`= \frac{(\sqrt{x + 1} - 1)(\sqrt{x + 1} + 1)}{x\,(\sqrt{x + 1} + 1)}`, why: tx(t, "mLim_c1", "multiply top and bottom by the conjugate; multiplying by something over itself changes nothing") },
+          { tex: r`= \frac{(x + 1) - 1}{x\,(\sqrt{x + 1} + 1)}`, why: tx(t, "mLim_c2", "difference of squares on top: (u − 1)(u + 1) = u² − 1, and (√(x + 1))² = x + 1") },
+          { tex: r`= \frac{1}{\sqrt{x + 1} + 1}`, why: tx(t, "mLim_c3", "the top is just x; cancel it with the x below, allowed because x ≠ 0 while approaching") },
+          { tex: r`\to \frac{1}{\sqrt{1} + 1} = \green{\tfrac{1}{2}}`, why: tx(t, "mLim_c4", "no 0/0 any more: plug in x = 0") },
+        ]} />
 
       <H3>{tx(t, "mLim_squeezeTitle", "The squeeze theorem and sin x / x")}</H3>
       <p>
         {tx(t, "mLim_squeezeBody",
           "If a function is trapped between two others that both approach L, it has no choice but to approach L too, like a person walking between two police officers who both head to the station. This squeeze theorem settles the most important limit in the section: sin x / x as x → 0, with x in radians. Draw the unit circle and an angle x between 0 and a quarter turn. The triangle inside the sector (height sin x, base 1) is smaller than the sector (the fraction x/2π of a full turn, so x/2π of the circle's area π, which is x/2), which is smaller than the triangle that reaches up to the tangent line (height tan x). Comparing areas: ½ sin x < ½ x < ½ tan x.")}
       </p>
+      <Derivation t={t} label={tx(t, "mLim_eqSqueeze", "From three areas to the squeeze")}
+        steps={[
+          { tex: r`\tfrac12 \sin x < \tfrac12 x < \tfrac12 \tan x`, full: true, why: tx(t, "mLim_s1", "inner triangle < sector < outer triangle, for 0 < x < π/2") },
+          { tex: r`1 < \frac{x}{\sin x} < \frac{1}{\cos x}`, full: true, why: tx(t, "mLim_s2", "divide all three by ½ sin x, which is positive here; tan x / sin x = 1 / cos x") },
+          { tex: r`\cos x < \frac{\sin x}{x} < 1`, full: true, why: tx(t, "mLim_s3", "flip all three fractions; flipping positive numbers reverses the inequalities") },
+          { tex: r`\lim_{x \to 0} \frac{\sin x}{x} = \green{1}`, full: true, why: tx(t, "mLim_s4", "cos x → 1 as x → 0, so sin x / x is trapped between two things going to 1") },
+        ]} />
       <p>
-        {tx(t, "mLim_squeezeBody2",
-          "Divide everything by ½ sin x (positive here): 1 < x / sin x < 1 / cos x. Flip all three (flipping reverses the inequalities): cos x < sin x / x < 1. As x → 0, cos x → 1, so sin x / x is squeezed between two things going to 1. The same holds for small negative x, because both sin x and x change sign. This limit is the reason sin x ≈ x for small angles, and it is what makes the derivative of sin come out as exactly cos in the rules chapter. It only works in radians: in degrees the arc would be (π/180)·x, and the limit would be π/180.")}
+        {tx(t, "mLim_squeezeBody3",
+          "The same holds for small negative x, because both sin x and x change sign. This limit is the reason sin x ≈ x for small angles, and it is what makes the derivative of sin come out as exactly cos in the rules chapter. It only works in radians: in degrees the arc would be (π/180)·x, and the limit would be π/180.")}
       </p>
       <Equation label={tx(t, "mLim_eqSinc", "Two limits the derivative of sine needs")}
         where={[
           [r`x`, tx(t, "mLim_wRad", "an angle in radians: the arc length on the unit circle")],
           [r`\cos x < \tfrac{\sin x}{x} < 1`, tx(t, "mLim_wSqueeze", "the squeeze, from comparing the areas of two triangles and a sector")],
         ]}
-        note={tx(t, "mLim_cosNote", "The second limit follows from the first: multiply (1 − cos x)/x by (1 + cos x)/(1 + cos x) to get sin² x / (x(1 + cos x)) = (sin x / x) · (sin x / (1 + cos x)), which tends to 1 · 0/2 = 0.")}>
+        note={tx(t, "mLim_cosNote", "The second limit follows from the first: multiply (1 − cos x)/x by (1 + cos x)/(1 + cos x) to get sin² x / (x(1 + cos x)) = (sin x / x) · (sin x / (1 + cos x)), which tends to 1 · 0/2 = 0.")}
+        words={tx(t, "mLim_sincWords", "For small angles in radians, the sine is almost exactly the angle itself, and one minus the cosine is tiny even compared with the angle.")}>
         {r`\lim_{x \to 0} \frac{\sin x}{x} = 1 \qquad \lim_{x \to 0} \frac{1 - \cos x}{x} = 0`}
       </Equation>
+      <LiveFormula label={tx(t, "mLim_liveSqueeze", "Try it: the squeeze at one angle")}
+        tex={r`\cos x < \frac{\sin x}{x} < 1`}
+        vars={[{ id: "x", label: tx(t, "mLim_liveX", "angle x (radians)"), min: 0.01, max: 1.5, step: 0.01, value: 1, fmt: v => dec(v, 2) }]}
+        compute={squeezeNumbers(t)}
+        note={tx(t, "mLim_liveSqueezeNote", "At x = 1 the gap between the two walls is 0.46. Slide x toward 0: cos x climbs to 1, the gap closes, and sin x / x has nowhere to go but 1. At x = 0.1 it is already 0.99833.")} />
 
       <H2>{tx(t, "mLim_contTitle", "Continuity")}</H2>
       <p>
@@ -151,7 +212,8 @@ export function LimitsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`f(a)`, tx(t, "mLim_wFa", "the value actually taken at a: must exist")],
           [r`\lim_{x\to a} f(x)`, tx(t, "mLim_wLimA", "the value approached: must exist and equal f(a)")],
-        ]}>
+        ]}
+        words={tx(t, "mLim_contWords", "Where the function is heading as x approaches a is exactly where it actually is at a.")}>
         {r`\lim_{x \to a} f(x) = f(a)`}
       </Equation>
       <Callout type="tip" t={t}>
@@ -185,8 +247,13 @@ export function LimitsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mLim_floatTitle", "Limits from a table of values")}</H2>
       <p>
         {tx(t, "mLim_floatBody",
-          "A quick way to guess a limit is to try values of x closer and closer to a. For (1 − cos x)/x² as x → 0: x = 0.1 gives 0.49958 and x = 0.01 gives 0.4999958, which suggests ½, and multiplying by (1 + cos x)/(1 + cos x) as above proves it. But a table only suggests; it never proves, and going too far misleads. On a calculator that keeps 10 digits, x = 0.00001 gives cos x = 0.99999999995, which is rounded to 1.000000000, and the calculator answers 0. Subtracting two nearly equal numbers throws away exactly the digits that matter. So take a few moderate values to guess, and then let the algebra decide.")}
+          "A quick way to guess a limit is to try values of x closer and closer to a. For (1 − cos x)/x² as x → 0: x = 0.1 gives 0.49958 and x = 0.01 gives 0.4999958, which suggests ½, and multiplying by (1 + cos x)/(1 + cos x) as above proves it. But a table only suggests; it never proves, and going too far misleads. On a calculator that keeps 10 digits, x = 0.000001 gives cos x = 0.9999999999995, which is rounded to 1.000000000, and the calculator answers 0. Subtracting two nearly equal numbers throws away exactly the digits that matter. So take a few moderate values to guess, and then let the algebra decide.")}
       </p>
+      <LiveFormula label={tx(t, "mLim_liveTable", "Try it: a table of values on a 10-digit calculator")}
+        tex={r`\lim_{x \to 0} \frac{1 - \cos x}{x^2} = \tfrac12`}
+        vars={[{ id: "k", label: <>k, x = 10<sup>−k</sup></>, min: 1, max: 6, step: 1, value: 1, fmt: v => String(v) }]}
+        compute={tableNumbers(t)}
+        note={tx(t, "mLim_liveTableNote", "From k = 1 to 4 the calculator agrees with ½. At k = 5 it answers 1, twice the truth: cos x lost its last digit to rounding, and that digit was all the top had. At k = 6 it rounds cos x to exactly 1 and answers 0. The true value never moves away from ½.")} />
 
       <H2>{tx(t, "mLim_exTitle", "Worked examples")}</H2>
       <p>{tx(t, "mLim_ex1", "1. lim (2x² + 3) as x → 2. A polynomial: plug in. 2·4 + 3 = 11.")}</p>

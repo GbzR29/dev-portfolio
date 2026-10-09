@@ -28,7 +28,7 @@ const text: Record<string, string> = {
   mInt_wDxInt: "a largura de uma faixa infinitamente fina; ela também dá nome à variável que vai de a até b",
   mInt_defNote: "A letra usada para a variável não importa: ∫ f(x) dx e ∫ f(t) dt de a até b são o mesmo número. Uma variável assim se chama variável muda, como o contador k numa soma.",
   mInt_exactTitle: "Uma área exata: sob x²",
-  mInt_exactBody: "Pegue f(x) = x² de 0 até b com n faixas e pontas direitas. Então Δx = b/n, a k-ésima ponta direita é kb/n, e a soma é Σ (kb/n)² · (b/n) = (b³/n³) · (1² + 2² + … + n²). Precisamos de uma fórmula para a soma dos n primeiros quadrados, e um truque telescópico a encontra. Desenvolva (k + 1)³ − k³ = 3k² + 3k + 1. Some isso para k = 1 até n: à esquerda quase tudo se cancela ((2³ − 1³) + (3³ − 2³) + … deixa (n + 1)³ − 1); à direita você obtém 3 vezes a soma dos quadrados, mais 3 · n(n + 1)/2 (a soma de Gauss), mais n. Isolar a soma dos quadrados dá n(n + 1)(2n + 1)/6. Confira: n = 2 dá 1 + 4 = 5 e 2 · 3 · 5/6 = 5 ✓.",
+  mInt_exactBody2: "Tome f(x) = x² de 0 até b com n faixas e pontas direitas. Então Δx = b/n, a k-ésima ponta direita é kb/n, e a soma é Σ (kb/n)² · (b/n) = (b³/n³) · (1² + 2² + … + n²). Precisamos de uma fórmula para a soma dos n primeiros quadrados, e um truque de cancelamento em cadeia a encontra.",
   mInt_eqSq: "A área sob x² de 0 até b",
   mInt_wSq: "a soma dos n primeiros quadrados",
   mInt_wRatio: "é igual a (1 + 1/n)(2 + 1/n), que tende a 2 quando n → ∞",
@@ -91,6 +91,20 @@ const text: Record<string, string> = {
   mInt_m5w: "mais faixas sempre salvam uma regra tosca",
   mInt_m5r: "use uma regra melhor",
   mInt_m5: "dobrar as faixas corta o erro de uma soma à esquerda pela metade, mas o de Simpson em 16 vezes",
+
+  // ── In words, derivations, live formulas (2026-10-08) ──
+  mInt_riemannWords: "Corte o intervalo em n faixas iguais; em cada uma, multiplique uma altura lida na curva pela largura da faixa; some tudo.",
+  mInt_defWords: "A integral de a até b é o número em que as somas de faixas se fixam conforme as faixas ficam infinitas em número e infinitamente finas.",
+  mInt_eqSquares: "A soma dos n primeiros quadrados, por cancelamento em cadeia",
+  mInt_s1: "expanda (k + 1)³ = k³ + 3k² + 3k + 1 e subtraia k³",
+  mInt_s2: "some o lado esquerdo de k = 1 até n: (2³ − 1³) + (3³ − 2³) + … todo cubo do meio se cancela, sobrando só o último e o primeiro",
+  mInt_s3: "some o lado direito de k = 1 até n também: 3 vezes a soma dos quadrados, 3 vezes a soma de Gauss, e n uns",
+  mInt_s4: "isole a soma dos quadrados e fatore. Confira: n = 2 dá 1 + 4 = 5 e 2 · 3 · 5 / 6 = 5 ✓",
+  mInt_liveSq: "Experimente: a soma pela direita para x² em [0, 2]",
+  mInt_liveN: "faixas n",
+  mInt_liveSqNote: "n = 2 dá 5, as duas faixas pela borda direita 1 · 1 + 1 · 4. A soma pela direita é sempre grande demais para uma curva que sobe, então a barra (8/3 dividido pela soma) sobe até 1 por baixo: 0,94 em n = 25, 0,985 em n = 100.",
+  mInt_propsWords: "Constantes e somas podem sair da integral; dois pedaços vizinhos somam o todo; ir de b de volta até a troca o sinal.",
+  mInt_avgWords: "A área total dividida pela largura: a altura do retângulo plano que guarda a mesma área.",
 };
 
 export default text;

@@ -9,12 +9,45 @@
 
 import { H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ExtremaFigure } from "@/components/lesson/figures/math/ExtremaFigure";
 
 const r = String.raw;
+const num = (v: number, d = 3) => String(+v.toFixed(d)).replace("-", "−");
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** The mean value theorem for f(x) = x² on [a, b]: the tangent at c = (a + b)/2 matches the secant. */
+function mvtNumbers(v: Record<string, number>) {
+  const { a, b } = v;
+  if (b <= a) return { tex: r`b \le a: \text{—}` };
+  const sec = (b * b - a * a) / (b - a), c = (a + b) / 2;
+  return {
+    tex: r`\frac{${num(b)}^2 - ${num(a)}^2}{${num(b)} - ${num(a)}} = \amber{${num(sec)}} \qquad c = ${num(c)}: \; f'(c) = 2 \cdot ${num(c)} = \green{${num(2 * c)}}`,
+  };
+}
+
+/** The open box from a 30 × 30 sheet: V(x) = x(30 − 2x)² and its slope. */
+function boxNumbers(v: Record<string, number>) {
+  const x = v.x, V = x * (30 - 2 * x) ** 2, dV = (30 - 2 * x) * (30 - 6 * x);
+  return {
+    tex: r`V = ${num(x, 1)} \cdot (30 - ${num(2 * x, 1)})^2 = \green{${num(V, 0)}}\,\text{cm}^3 \qquad V' = (${num(30 - 2 * x, 1)})(${num(30 - 6 * x, 1)}) = ${Math.abs(dV) < 1e-9 ? r`\green{0}` : num(dV, 0)}`,
+    meter: V / 2000,
+    meterLabel: `${num(V, 0)} / 2000 cm³`,
+  };
+}
+
+/** √(4 + Δx) by the tangent at 4, against the true value. */
+const sqrtNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const dx = v.dx, approx = 2 + dx / 4, truth = Math.sqrt(4 + dx);
+  return {
+    tex: r`\sqrt{${num(4 + dx, 2)}} \approx 2 + \frac{${num(dx, 2)}}{4} = \amber{${approx.toFixed(5)}} \qquad \text{${tx(t, "mUse_liveTrue", "true")}: } ${truth.toFixed(5)} \qquad \text{${tx(t, "mUse_liveErr", "error")} } ${Math.abs(approx - truth).toFixed(5)}`,
+  };
+};
 
 export function DerivativeUsesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -60,7 +93,8 @@ export function DerivativeUsesContent({ t }: { t: TrackTranslations }) {
           [r`c`, tx(t, "mUse_wC", "a critical point, f′(c) = 0")],
           [r`f''(c)`, tx(t, "mUse_wF2", "the bending there")],
         ]}
-        note={tx(t, "mUse_testNote", "In motion, f″ is acceleration. At the top of a throw the velocity is 0 and the acceleration is −9.8 m/s² (negative): the height is at a maximum.")}>
+        note={tx(t, "mUse_testNote", "In motion, f″ is acceleration. At the top of a throw the velocity is 0 and the acceleration is −9.8 m/s² (negative): the height is at a maximum.")}
+        words={tx(t, "mUse_testWords", "A flat spot where the curve bends down is a peak; a flat spot where it bends up is a valley.")}>
         {r`f'(c) = 0 \text{ and } f''(c) < 0 \;\Rightarrow\; \text{max} \qquad f'(c) = 0 \text{ and } f''(c) > 0 \;\Rightarrow\; \text{min}`}
       </Equation>
 
@@ -75,9 +109,18 @@ export function DerivativeUsesContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`c`, tx(t, "mUse_wCm", "some point strictly between a and b (the theorem says it exists, not where)")],
           [r`\frac{f(b) - f(a)}{b - a}`, tx(t, "mUse_wAvg", "the average rate: the slope of the secant")],
-        ]}>
+        ]}
+        words={tx(t, "mUse_mvtWords", "Somewhere between a and b, the rate at that instant equals the average rate over the whole interval.")}>
         {r`f'(c) = \frac{f(b) - f(a)}{b - a}`}
       </Equation>
+      <LiveFormula label={tx(t, "mUse_liveMvt", "Try it: the mean value theorem for f(x) = x²")}
+        tex={r`f'(c) = \frac{f(b) - f(a)}{b - a}`}
+        vars={[
+          { id: "a", label: "a", min: -2, max: 2, step: 0.5, value: 1, fmt: v => num(v) },
+          { id: "b", label: "b", min: -1.5, max: 3, step: 0.5, value: 3, fmt: v => num(v) },
+        ]}
+        compute={mvtNumbers}
+        note={tx(t, "mUse_liveMvtNote", "For a parabola the point c is always exactly the midpoint of [a, b]: the secant's slope is (b² − a²)/(b − a) = a + b, and f′(c) = 2c matches it at c = (a + b)/2. Starts on the ball of the derivative chapter: average speed 4 m/s between t = 1 and 3, reached at t = 2.")} />
       <p>
         {tx(t, "mUse_mvtCons",
           "Two consequences are used constantly. If f′ = 0 everywhere on an interval, then every average rate is 0, so f is constant there. And if two functions have the same derivative everywhere, their difference has derivative 0, so they differ only by a constant. The fundamental theorem chapter relies on exactly this.")}
@@ -88,11 +131,24 @@ export function DerivativeUsesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mUse_optBody",
           "To find the best value of something: (1) name the quantity you can choose and the one you want to maximise or minimise; (2) write the second as a function of the first, using the problem's constraints to remove any other variables; (3) note the allowed range; (4) solve f′ = 0; (5) compare the critical points with the endpoints. The figure's second mode is the classic fence: 20 m of fence for three sides of a pen against a wall. With width w the length is 20 − 2w, so A(w) = w(20 − 2w) = 20w − 2w². A′(w) = 20 − 4w = 0 gives w = 5, and A″ = −4 < 0 confirms a maximum: 5 × 10 m = 50 m². The endpoints w = 0 and w = 10 give no area at all.")}
       </p>
+      <Derivation t={t} label={tx(t, "mUse_eqFence", "The fence, step by step")}
+        steps={[
+          { tex: r`A(w) = w\,(20 - 2w) = 20w - 2w^2`, full: true, why: tx(t, "mUse_f1", "steps 1–2: width w, length 20 − 2w (two widths and one length use the 20 m)") },
+          { tex: r`0 < w < 10`, full: true, why: tx(t, "mUse_f2", "step 3: the length 20 − 2w must stay positive") },
+          { tex: r`A'(w) = 20 - 4w = 0 \;\Rightarrow\; w = 5`, full: true, why: tx(t, "mUse_f3", "step 4: the tangent is flat where A′ = 0") },
+          { tex: r`A''(w) = -4 < 0`, full: true, why: tx(t, "mUse_f4", "the curve bends down everywhere, so the flat spot is a maximum") },
+          { tex: r`A(5) = 5 \cdot 10 = \green{50\ \text{m}^2}`, full: true, why: tx(t, "mUse_f5", "step 5: the endpoints give A = 0, so 50 m² is the largest") },
+        ]} />
       <H3>{tx(t, "mUse_boxTitle", "A box from a sheet")}</H3>
       <p>
         {tx(t, "mUse_boxBody",
           "Cut equal squares of side x from the corners of a 30 × 30 cm sheet and fold up the sides. The box has base (30 − 2x)² and height x, so V(x) = x(30 − 2x)², for x between 0 and 15. The product and chain rules give V′ = (30 − 2x)² + x · 2(30 − 2x)(−2) = (30 − 2x)(30 − 2x − 4x) = (30 − 2x)(30 − 6x). This is 0 at x = 15 (no base left, V = 0) and at x = 5, where V = 5 · 20² = 2000 cm³, the largest possible box.")}
       </p>
+      <LiveFormula label={tx(t, "mUse_liveBox", "Try it: cut the corners")}
+        tex={r`V(x) = x\,(30 - 2x)^2 \qquad V'(x) = (30 - 2x)(30 - 6x)`}
+        vars={[{ id: "x", label: tx(t, "mUse_liveCut", "cut x (cm)"), min: 0.5, max: 14.5, step: 0.5, value: 2, fmt: v => num(v, 1) }]}
+        compute={boxNumbers}
+        note={tx(t, "mUse_liveBoxNote", "Small cuts make a flat tray, big cuts a tall, thin tower: both hold little. While V′ > 0 a deeper cut helps; at x = 5, V′ = 0 and the bar is full at 2000 cm³; past it every deeper cut loses volume.")} />
       <H3>{tx(t, "mUse_closeTitle", "The closest point, and why squared distance")}</H3>
       <p>
         {tx(t, "mUse_closeBody",
@@ -110,9 +166,15 @@ export function DerivativeUsesContent({ t }: { t: TrackTranslations }) {
           [r`\Delta x`, tx(t, "mUse_wDx", "a small step away from a")],
           [r`f'(a)\,\Delta x`, tx(t, "mUse_wChange", "the predicted change: slope times step")],
         ]}
-        note={tx(t, "mUse_linNote", "The error is roughly ½ f″(a) Δx²: it shrinks with the square of the step, and it is larger where the curve bends more. The series chapter turns this into a full recipe with more terms.")}>
+        note={tx(t, "mUse_linNote", "The error is roughly ½ f″(a) Δx²: it shrinks with the square of the step, and it is larger where the curve bends more. The series chapter turns this into a full recipe with more terms.")}
+        words={tx(t, "mUse_linWords", "The value a little way off is about the value you know, plus the slope there times the step.")}>
         {r`f(a + \Delta x) \approx f(a) + f'(a)\,\Delta x`}
       </Equation>
+      <LiveFormula label={tx(t, "mUse_liveSqrt", "Try it: square roots near 4 from the tangent")}
+        tex={r`\sqrt{4 + \Delta x} \approx \sqrt{4} + \frac{1}{2\sqrt{4}}\,\Delta x = 2 + \frac{\Delta x}{4}`}
+        vars={[{ id: "dx", label: "Δx", min: -2, max: 2, step: 0.05, value: 0.1, fmt: v => num(v, 2) }]}
+        compute={sqrtNumbers(t)}
+        note={tx(t, "mUse_liveSqrtNote", "Δx = 0.1 is the table's √4.1. Double the step to 0.2 and the error roughly quadruples, from 0.00015 to 0.0006: it grows with Δx². Far from 4, at Δx = 2, the tangent is off by 0.05.")} />
       <LessonTable
         headers={[tx(t, "mUse_tEst", "Estimate"), tx(t, "mUse_tHow", "Using"), tx(t, "mUse_tApprox", "Approximation"), tx(t, "mUse_tTrue", "True value")]}
         rows={[
@@ -138,7 +200,8 @@ export function DerivativeUsesContent({ t }: { t: TrackTranslations }) {
           [r`f(x_n)`, tx(t, "mUse_wFxn", "how far from zero the function is there")],
           [r`f'(x_n)`, tx(t, "mUse_wDxn", "the slope there; must not be 0")],
           [r`x_{n+1}`, tx(t, "mUse_wXn1", "where the tangent crosses the axis: the next guess")],
-        ]}>
+        ]}
+        words={tx(t, "mUse_newtonWords", "From the current guess, step back by how far the function is from zero, divided by how steep it is there.")}>
         {r`x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}`}
       </Equation>
       <p>
@@ -177,7 +240,8 @@ export function DerivativeUsesContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\tfrac{0}{0}`, tx(t, "mUse_wForm", "required form: both top and bottom tend to 0 (or both to ±∞)")],
           [r`\tfrac{f'}{g'}`, tx(t, "mUse_wRatio", "the ratio of the separate derivatives, not the derivative of the ratio")],
-        ]}>
+        ]}
+        words={tx(t, "mUse_lhWords", "When top and bottom both vanish, compare how fast each one vanishes: the ratio of their slopes.")}>
         {r`\lim_{x\to a}\frac{f(x)}{g(x)} = \lim_{x\to a}\frac{f'(x)}{g'(x)}`}
       </Equation>
 

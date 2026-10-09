@@ -10,12 +10,38 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { GradientFigure } from "@/components/lesson/figures/math/GradientFigure";
 
 const r = String.raw;
+const num = (v: number, d = 2) => String(+v.toFixed(d)).replace("-", "−");
+const par = (v: number, d = 2) => (v < 0 ? `(${num(v, d)})` : num(v, d));
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** The slope of f = x² + xy + y² at (1, 2), where ∇f = (4, 5), along the direction at angle θ. */
+function directionNumbers(v: Record<string, number>) {
+  const th = (v.a * Math.PI) / 180, ux = Math.cos(th), uy = Math.sin(th);
+  const g = Math.hypot(4, 5), d = 4 * ux + 5 * uy, cos = d / g;
+  return {
+    tex: r`\nabla f \cdot \mathbf u = 4 \cdot ${par(ux)} + 5 \cdot ${par(uy)} = \green{${num(d)}} \qquad |\nabla f|\cos\theta = ${num(g)} \cdot ${par(cos)}`,
+    meter: (cos + 1) / 2,
+    meterLabel: `cos θ = ${num(cos)}`,
+  };
+}
+
+/** The tank's worst-case volume error from the errors in r and h. */
+function tankNumbers(v: Record<string, number>) {
+  const r0 = 5, h0 = 10, { dr, dh } = v;
+  const a = 2 * Math.PI * r0 * h0 * dr, b = Math.PI * r0 * r0 * dh, V = Math.PI * r0 * r0 * h0;
+  return {
+    tex: r`\begin{aligned} dV &= 2\pi \cdot 5 \cdot 10 \cdot ${num(dr)} + \pi \cdot 25 \cdot ${num(dh)} = ${num(a, 1)} + ${num(b, 1)} = \green{${num(a + b, 1)}}\,\text{m}^3 \\ \frac{dV}{V} &= \frac{${num(a + b, 1)}}{${num(V, 1)}} = \amber{${num((100 * (a + b)) / V, 1)}\,\%} \end{aligned}`,
+  };
+}
 
 export function PartialDerivativesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -48,14 +74,23 @@ export function PartialDerivativesContent({ t }: { t: TrackTranslations }) {
           [r`\frac{\partial f}{\partial x} = f_x`, tx(t, "mPar_wFx", "the slope when only x moves (y held fixed): the east–west slope on a map")],
           [r`\frac{\partial f}{\partial y} = f_y`, tx(t, "mPar_wFy", "the slope when only y moves (x held fixed): the north–south slope")],
           [r`h`, tx(t, "mPar_wH", "the small step, in one input only")],
-        ]}>
+        ]}
+        words={tx(t, "mPar_partWords", "Nudge one input, keep the other frozen, and take the ordinary slope.")}>
         {r`f_x(a,b) = \lim_{h\to 0}\frac{f(a+h,\,b) - f(a,\,b)}{h} \qquad f_y(a,b) = \lim_{h\to 0}\frac{f(a,\,b+h) - f(a,\,b)}{h}`}
       </Equation>
       <H3>{tx(t, "mPar_howTitle", "Computing them: treat the other letter as a number")}</H3>
       <p>
-        {tx(t, "mPar_howBody",
-          "No new rules are needed. To find fₓ, pretend y is a constant, like 3 or 7, and differentiate in x with the usual rules. Take f = x²y + 3y³ + sin(xy). For fₓ: x²y is (constant y) · x², derivative 2xy; 3y³ is a pure constant, derivative 0; sin(xy) needs the chain rule, cos(xy) times the x-derivative of xy, which is y. So fₓ = 2xy + y cos(xy). For f_y: x²y becomes x² (x² is the constant now), 3y³ becomes 9y², and sin(xy) gives x cos(xy). So f_y = x² + 9y² + x cos(xy).")}
+        {tx(t, "mPar_howBody2",
+          "No new rules are needed. To find fₓ, pretend y is a constant, like 3 or 7, and differentiate in x with the usual rules. Take f = x²y + 3y³ + sin(xy), term by term.")}
       </p>
+      <Derivation t={t} label={tx(t, "mPar_eqHow", "Both partial derivatives of x²y + 3y³ + sin(xy)")}
+        steps={[
+          { tex: r`\frac{\partial}{\partial x}\big(x^2 y\big) = 2xy`, full: true, why: tx(t, "mPar_h1", "y is a constant factor in front of x²") },
+          { tex: r`\frac{\partial}{\partial x}\big(3y^3\big) = 0`, full: true, why: tx(t, "mPar_h2", "no x at all: a pure constant") },
+          { tex: r`\frac{\partial}{\partial x}\sin(xy) = \cos(xy) \cdot y`, full: true, why: tx(t, "mPar_h3", "chain rule: the x-derivative of the inside xy is y") },
+          { tex: r`f_x = \green{2xy + y\cos(xy)}`, full: true, why: tx(t, "mPar_h4", "add the three pieces") },
+          { tex: r`f_y = \green{x^2 + 9y^2 + x\cos(xy)}`, full: true, why: tx(t, "mPar_h5", "the same with the roles swapped: x² is the constant now, 3y³ gives 9y², and the inside xy has y-derivative x") },
+        ]} />
       <p>
         {tx(t, "mPar_cylBody",
           "For the cylinder V = πr²h: ∂V/∂r = 2πrh and ∂V/∂h = πr². Each has a meaning. Growing the height by a thin layer dh adds a disc of area πr², so ∂V/∂h is the area of the lid. Growing the radius by dr adds a thin shell of area 2πrh, the side wall, so ∂V/∂r is the area of the wall.")}
@@ -68,8 +103,19 @@ export function PartialDerivativesContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mPar_gradTitle", "The gradient and the slope in any direction")}</H2>
       <p>
-        {tx(t, "mPar_dirBody",
-          "fₓ and f_y are the slopes due east and due north. What is the slope if you walk in some other direction, given by a unit vector u = (u₁, u₂)? Take a small step of length s along u: x changes by s u₁ and y by s u₂. By local linearity, each change contributes its own slope times its own step, so f changes by about fₓ s u₁ + f_y s u₂. Divide by the distance s: the slope along u is fₓu₁ + f_yu₂. That is the dot product of u with the vector (fₓ, f_y), which is called the gradient of f and written ∇f (read \"grad f\" or \"nabla f\").")}
+        {tx(t, "mPar_dirBody2",
+          "fₓ and f_y are the slopes due east and due north. What is the slope if you walk in some other direction, given by a unit vector u = (u₁, u₂)? Take a small step of length s along u.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mPar_eqDir", "The slope in any direction")}
+        steps={[
+          { tex: r`\Delta x = s\,u_1, \qquad \Delta y = s\,u_2`, full: true, why: tx(t, "mPar_d1", "a step of length s along u moves both inputs") },
+          { tex: r`\Delta f \approx f_x\,s\,u_1 + f_y\,s\,u_2`, full: true, why: tx(t, "mPar_d2", "local linearity: each change contributes its own slope times its own step") },
+          { tex: r`\frac{\Delta f}{s} \approx f_x u_1 + f_y u_2`, full: true, why: tx(t, "mPar_d3", "divide by the distance walked") },
+          { tex: r`D_{\mathbf u} f = \green{(f_x, f_y)\cdot(u_1, u_2)}`, full: true, why: tx(t, "mPar_d4", "it is a dot product, of u with the vector of partial derivatives") },
+        ]} />
+      <p>
+        {tx(t, "mPar_dirBody3",
+          "That vector (fₓ, f_y) is called the gradient of f and written ∇f (read \"grad f\" or \"nabla f\").")}
       </p>
       <Equation label={tx(t, "mPar_eqGrad", "Gradient and directional derivative")}
         where={[
@@ -77,9 +123,15 @@ export function PartialDerivativesContent({ t }: { t: TrackTranslations }) {
           [r`\mathbf{u}`, tx(t, "mPar_wU", "a unit vector (length 1) giving the direction of travel")],
           [r`D_{\mathbf u}f`, tx(t, "mPar_wDu", "the directional derivative: the slope felt walking along u")],
           [r`\theta`, tx(t, "mPar_wTheta", "the angle between u and ∇f, from the dot product's cosine formula")],
-        ]}>
+        ]}
+        words={tx(t, "mPar_gradWords", "The gradient lists the slopes along each axis; the slope in any direction is the gradient's length times the cosine of the angle between them.")}>
         {r`\nabla f = \Big(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y}\Big) \qquad D_{\mathbf u} f = \nabla f\cdot\mathbf u = |\nabla f|\cos\theta`}
       </Equation>
+      <LiveFormula label={tx(t, "mPar_liveDir", "Try it: walking round the point (1, 2) of x² + xy + y²")}
+        tex={r`\nabla f(1, 2) = (4, 5) \qquad \mathbf u = (\cos\alpha, \sin\alpha) \qquad D_{\mathbf u} f = \nabla f \cdot \mathbf u`}
+        vars={[{ id: "a", label: tx(t, "mPar_liveAng", "direction α (degrees)"), min: -180, max: 180, step: 1, value: 53, fmt: v => `${v}°` }]}
+        compute={directionNumbers}
+        note={tx(t, "mPar_liveDirNote", "Starts on worked example 2, u = (0.6, 0.8): slope 6.4. The largest slope, √41 ≈ 6.40, is at α ≈ 51°, along ∇f. At α ≈ −39° or 141° you walk along the contour and the slope is 0; at α ≈ −129° you go straight downhill.")} />
       <p>
         {tx(t, "mPar_steepBody",
           "The last form says everything. cos θ is largest, 1, when u points the same way as ∇f: the gradient is the direction of steepest ascent, and the slope that way is |∇f|. It is −1 straight opposite: −∇f is steepest descent, the way water runs. And cos θ = 0 at right angles to ∇f: walking that way the height does not change at all, which means you are walking along a contour line. So the gradient is always perpendicular to the level curves. On a map, where contour lines are close together the ground is steep and ∇f is long.")}
@@ -97,7 +149,8 @@ export function PartialDerivativesContent({ t }: { t: TrackTranslations }) {
           [r`(a, b)`, tx(t, "mPar_wAB", "the known point where f and its partials are computed")],
           [r`dx,\ dy`, tx(t, "mPar_wDxy", "small changes in the inputs")],
           [r`df`, tx(t, "mPar_wDf", "the resulting change in f: each input's slope times its own change, added")],
-        ]}>
+        ]}
+        words={tx(t, "mPar_planeWords", "The change in f is about the x-slope times the change in x, plus the y-slope times the change in y.")}>
         {r`f(a + dx,\ b + dy) \approx f(a,b) + f_x(a,b)\,dx + f_y(a,b)\,dy \qquad df = f_x\,dx + f_y\,dy`}
       </Equation>
       <H3>{tx(t, "mPar_errTitle", "How measurement errors add up")}</H3>
@@ -105,6 +158,14 @@ export function PartialDerivativesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPar_errBody",
           "A cylindrical tank is measured as r = 5 m and h = 10 m, each possibly off by up to 0.1 m and 0.2 m. The volume is V = π · 25 · 10 = 250π ≈ 785 m³. The worst-case error is dV = |∂V/∂r| dr + |∂V/∂h| dh = 2π · 5 · 10 · 0.1 + π · 25 · 0.2 = 10π + 5π = 15π ≈ 47 m³, about 6 %. Dividing by V shows the pattern: dV/V = 2 dr/r + dh/h = 2 · 2 % + 2 % = 6 %. The radius counts twice because it is squared: in a product of powers, relative errors add, each multiplied by its power.")}
       </p>
+      <LiveFormula label={tx(t, "mPar_liveTank", "Try it: how sure is the tank's volume?")}
+        tex={r`dV = 2\pi r h\,dr + \pi r^2\,dh \qquad (r = 5,\ h = 10)`}
+        vars={[
+          { id: "dr", label: tx(t, "mPar_liveDr", "error in r, dr (m)"), min: 0, max: 0.3, step: 0.01, value: 0.1, fmt: v => num(v) },
+          { id: "dh", label: tx(t, "mPar_liveDh", "error in h, dh (m)"), min: 0, max: 0.6, step: 0.02, value: 0.2, fmt: v => num(v) },
+        ]}
+        compute={tankNumbers}
+        note={tx(t, "mPar_liveTankNote", "Starts on the example: 31.4 + 15.7 = 47.1 m³, 6 %. Each metre of error in r costs 2πrh ≈ 314 m³, each metre in h only πr² ≈ 78.5 m³. Halve dr to 0.05 and the error drops to 4 %; halving dh instead only brings it to 5 %.")} />
 
       <H2>{tx(t, "mPar_chainTitle", "The chain rule along a path")}</H2>
       <p>
@@ -116,6 +177,7 @@ export function PartialDerivativesContent({ t }: { t: TrackTranslations }) {
           [r`\mathbf v = (x', y')`, tx(t, "mPar_wV", "the velocity along the path")],
           [r`-f_x / f_y`, tx(t, "mPar_wImp", "the slope of the level curve f = c, wherever f_y ≠ 0")],
         ]}
+        words={tx(t, "mPar_chainWords", "Moving along a path, f changes at the rate of the gradient dotted with your velocity; along a contour that rate is zero, which gives the contour's slope.")}
         note={tx(t, "mPar_impNote", "The second formula comes from the first: along a level curve f does not change, so 0 = fₓ + f_y · dy/dx. For the circle x² + y² = 25 it gives dy/dx = −2x/2y = −x/y, the result the rules chapter found by implicit differentiation.")}>
         {r`\frac{d}{dt}f\big(x(t),y(t)\big) = f_x\,x' + f_y\,y' = \nabla f\cdot\mathbf v \qquad \frac{dy}{dx}\Big|_{f=c} = -\frac{f_x}{f_y}`}
       </Equation>
@@ -132,13 +194,20 @@ export function PartialDerivativesContent({ t }: { t: TrackTranslations }) {
           [r`D > 0,\ f_{xx} < 0`, tx(t, "mPar_wMax", "bends down in every direction: a local maximum")],
           [r`D < 0`, tx(t, "mPar_wSad", "bends up one way and down another: a saddle")],
         ]}
+        words={tx(t, "mPar_testWords", "Multiply the two pure second derivatives and subtract the square of the mixed one: positive means a bowl or a dome, negative a saddle.")}
         note={tx(t, "mPar_testNote", "D = 0 decides nothing (x⁴ + y⁴ and x⁴ − y⁴ both have D = 0 at the origin, a minimum and a saddle). In eigenvalue terms from the Linear Algebra section: D is the product of the Hessian's two eigenvalues, the curvatures along its two eigenvector directions; same signs means a bowl or a dome, opposite signs a saddle.")}>
         {r`D = f_{xx}\,f_{yy} - f_{xy}^{\,2}`}
       </Equation>
       <p>
-        {tx(t, "mPar_extEx",
-          "Example: f = x³ − 3x + y². Step 1, set the partials to zero: fₓ = 3x² − 3 = 0 gives x = ±1, f_y = 2y = 0 gives y = 0. Two critical points, (1, 0) and (−1, 0). Step 2, second derivatives: fₓₓ = 6x, f_yy = 2, fₓᵧ = 0. Step 3, test: at (1, 0), D = 6 · 2 − 0 = 12 > 0 and fₓₓ = 6 > 0, a local minimum with value −2; at (−1, 0), D = −6 · 2 = −12 < 0, a saddle.")}
+        {tx(t, "mPar_extEx2", "Example: f = x³ − 3x + y².")}
       </p>
+      <Derivation t={t} label={tx(t, "mPar_eqExt", "Classifying the critical points of x³ − 3x + y²")}
+        steps={[
+          { tex: r`f_x = 3x^2 - 3 = 0, \quad f_y = 2y = 0 \;\Rightarrow\; (1, 0),\ (-1, 0)`, full: true, why: tx(t, "mPar_e1", "step 1: set both partial derivatives to zero; x = ±1, y = 0") },
+          { tex: r`f_{xx} = 6x, \quad f_{yy} = 2, \quad f_{xy} = 0`, full: true, why: tx(t, "mPar_e2", "step 2: the second derivatives") },
+          { tex: r`(1, 0): \; D = 6 \cdot 2 - 0 = 12 > 0,\ f_{xx} = 6 > 0 \;\Rightarrow\; \green{\text{${tx(t, "mPar_eMin", "min")}}},\ f = -2`, full: true, why: tx(t, "mPar_e3", "step 3: bends up in every direction") },
+          { tex: r`(-1, 0): \; D = -6 \cdot 2 = -12 < 0 \;\Rightarrow\; \red{\text{${tx(t, "mPar_eSaddle", "saddle")}}}`, full: true, why: tx(t, "mPar_e4", "bends down along x and up along y") },
+        ]} />
 
       <H2>{tx(t, "mPar_lagTitle", "Optimising with a constraint")}</H2>
       <p>
@@ -150,13 +219,21 @@ export function PartialDerivativesContent({ t }: { t: TrackTranslations }) {
           [r`g(x,y) = c`, tx(t, "mPar_wG", "the constraint curve the point must stay on")],
           [r`\lambda`, tx(t, "mPar_wLam", "an unknown number; it also measures how much the best f improves if c is raised by one")],
         ]}
-        note={tx(t, "mPar_lagNote", "Two gradient equations plus the constraint: three equations for the three unknowns x, y, λ.")}>
+        note={tx(t, "mPar_lagNote", "Two gradient equations plus the constraint: three equations for the three unknowns x, y, λ.")}
+        words={tx(t, "mPar_lagWords", "At the best point on the constraint curve, the gradient of f and the gradient of the constraint point the same way (or exactly opposite).")}>
         {r`\nabla f = \lambda\,\nabla g, \qquad g(x,y) = c`}
       </Equation>
       <p>
-        {tx(t, "mPar_lagEx",
-          "The fence from \"Using derivatives\" again: 20 m of fence for three sides of a pen against a wall, width x on the two short sides and length y opposite the wall. Maximise f = xy subject to g = 2x + y = 20. The gradients are ∇f = (y, x) and ∇g = (2, 1). The equations y = 2λ and x = λ give y = 2x, and the constraint gives 2x + 2x = 20: x = 5, y = 10, area 50 m², the same answer, now without solving the constraint for one variable first.")}
+        {tx(t, "mPar_lagEx2",
+          "The fence from \"Using derivatives\" again: 20 m of fence for three sides of a pen against a wall, width x on the two short sides and length y opposite the wall. Maximise f = xy subject to g = 2x + y = 20.")}
       </p>
+      <Derivation t={t} label={tx(t, "mPar_eqLagEx", "The fence by Lagrange multipliers")}
+        steps={[
+          { tex: r`\nabla f = (y,\ x), \qquad \nabla g = (2,\ 1)`, full: true, why: tx(t, "mPar_l1", "the two gradients") },
+          { tex: r`y = 2\lambda, \qquad x = \lambda \;\Rightarrow\; y = 2x`, full: true, why: tx(t, "mPar_l2", "∇f = λ∇g, one equation per component; eliminate λ") },
+          { tex: r`2x + 2x = 20 \;\Rightarrow\; x = 5,\ y = 10`, full: true, why: tx(t, "mPar_l3", "put y = 2x into the constraint") },
+          { tex: r`f = 5 \cdot 10 = \green{50\ \text{m}^2}`, full: true, why: tx(t, "mPar_l4", "the same answer as before, without solving the constraint for one variable first") },
+        ]} />
       <Callout type="tip" t={t}>
         {tx(t, "mPar_moreTip", "Everything here works the same with three or more inputs. f(x, y, z) has three partial derivatives, a gradient with three components that is perpendicular to the level surfaces f = c, and a 3 × 3 Hessian. Only the pictures stop, because a function of three variables would need four dimensions to draw.")}
       </Callout>

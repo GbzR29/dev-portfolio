@@ -10,12 +10,44 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SlopeFieldFigure } from "@/components/lesson/figures/math/SlopeFieldFigure";
 
 const r = String.raw;
+const num = (v: number, d = 3) => String(+v.toFixed(d)).replace("-", "−");
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** Carbon-14 left after t years, with a half-life of 5730 years. */
+function carbonNumbers(v: Record<string, number>) {
+  const t = v.t, f = 0.5 ** (t / 5730);
+  return {
+    tex: r`\Big(\tfrac12\Big)^{${t}/5730} = \Big(\tfrac12\Big)^{${num(t / 5730)}} = \green{${num(f)}}`,
+    meter: f,
+    meterLabel: `${(100 * f).toFixed(1)} %`,
+  };
+}
+
+/** The roots of λ² + 2γλ + ω² = 0 and the kind of motion they give. */
+const dampNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const { g, w } = v, disc = g * g - w * w;
+  const roots = Math.abs(disc) < 1e-9
+    ? r`\lambda = ${num(-g)} \;(\text{${tx(t, "mOde_liveDouble", "double")}})`
+    : disc > 0
+      ? r`\lambda = ${num(-g)} \pm ${num(Math.sqrt(disc))} = ${num(-g + Math.sqrt(disc))},\ ${num(-g - Math.sqrt(disc))}`
+      : r`\lambda = ${num(-g)} \pm ${num(Math.sqrt(-disc))}\,i`;
+  const kind = Math.abs(disc) < 1e-9 ? tx(t, "mOde_liveCrit", "critical: fastest return, no overshoot")
+    : disc > 0 ? tx(t, "mOde_liveOver", "overdamped: creeps back, no swing")
+    : g === 0 ? tx(t, "mOde_liveFree", "no friction: swings forever")
+    : tx(t, "mOde_liveUnder", "underdamped: swings inside a shrinking envelope");
+  return {
+    tex: r`\begin{gathered} \gamma^2 - \omega^2 = ${num(g * g)} - ${num(w * w)} = ${num(disc)} \\ ${roots} \\ \green{\text{${kind}}} \end{gathered}`,
+  };
+};
 
 export function DifferentialEquationsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -61,31 +93,51 @@ export function DifferentialEquationsContent({ t }: { t: TrackTranslations }) {
           [r`y_0`, tx(t, "mOde_wY0", "the amount at t = 0")],
           [r`T_{1/2}`, tx(t, "mOde_wHalf", "the half-life for k < 0: the time to fall to half; for k > 0 the same formula gives the doubling time")],
         ]}
-        note={tx(t, "mOde_halfNote", "From y₀e^(kT) = y₀/2: kT = ln ½ = −ln 2, so T = ln 2/|k|. The half-life does not depend on how much you start with.")}>
+        note={tx(t, "mOde_halfNote", "From y₀e^(kT) = y₀/2: kT = ln ½ = −ln 2, so T = ln 2/|k|. The half-life does not depend on how much you start with.")}
+        words={tx(t, "mOde_expWords", "When the rate is a fixed fraction of the amount, the amount is the start times e to that fraction times the time; it halves (or doubles) every ln 2 over that fraction.")}>
         {r`y' = k\,y \quad\Longrightarrow\quad y(t) = y_0\,e^{kt} \qquad T_{1/2} = \frac{\ln 2}{|k|}`}
       </Equation>
       <p>
         {tx(t, "mOde_carbonBody",
           "Radiocarbon dating. Carbon-14 has a half-life of 5730 years. A bone that has lost track of its carbon for 10 000 years keeps a fraction (½)^(10 000/5730) = (½)^1.745 ≈ 0.298 of what it had in life. Backwards: if a sample keeps 60 %, its age is t = 5730 · ln(1/0.6)/ln 2 = 5730 · 0.511/0.693 ≈ 4220 years.")}
       </p>
+      <LiveFormula label={tx(t, "mOde_liveC14", "Try it: how much carbon-14 is left?")}
+        tex={r`\frac{y(t)}{y_0} = \Big(\tfrac12\Big)^{t / T_{1/2}} \qquad T_{1/2} = 5730 \text{ a}`}
+        vars={[{ id: "t", label: tx(t, "mOde_liveAge", "age t (years)"), min: 0, max: 40000, step: 10, value: 10000, fmt: v => String(v) }]}
+        compute={carbonNumbers}
+        note={tx(t, "mOde_liveC14Note", "10 000 years leaves 29.8 %, as above; 4220 years leaves 60 %. Every 5730 years the bar halves. After 40 000 years less than 1 % is left, which is why radiocarbon dating stops working around 50 000 years.")} />
 
       <H2>{tx(t, "mOde_sepTitle", "Separation of variables")}</H2>
       <p>
         {tx(t, "mOde_sepBody",
-          "When the right side splits into a factor with only t and a factor with only y, y′ = g(t) h(y), the equation can be solved by integration. Divide by h(y): y′/h(y) = g(t). Integrate both sides with respect to t. On the left, y′ dt is dy (substitution, with y as the new variable), so ∫ dy/h(y) = ∫ g(t) dt. Each side is an ordinary integral in one variable; one constant C on either side is enough. Then solve for y if possible. For y′ = ky: ∫ dy/y = ∫ k dt gives ln|y| = kt + C, so y = ±eᶜ · eᵏᵗ = y₀eᵏᵗ, as expected.")}
+          "When the right side splits into a factor with only t and a factor with only y, y′ = g(t) h(y), the equation can be solved by integration. Divide by h(y): y′/h(y) = g(t). Integrate both sides with respect to t. On the left, y′ dt is dy (substitution, with y as the new variable), so ∫ dy/h(y) = ∫ g(t) dt. Each side is an ordinary integral in one variable; one constant C on either side is enough. Then solve for y if possible.")}
       </p>
+      <Derivation t={t} label={tx(t, "mOde_eqSepEx", "Growth and decay, by separation")}
+        steps={[
+          { tex: r`\frac{dy}{dt} = k\,y`, full: true, why: tx(t, "mOde_s1", "g(t) = k, h(y) = y") },
+          { tex: r`\int \frac{dy}{y} = \int k\,dt`, full: true, why: tx(t, "mOde_s2", "divide by y and integrate both sides") },
+          { tex: r`\ln|y| = k\,t + C`, full: true, why: tx(t, "mOde_s3", "one constant is enough") },
+          { tex: r`y = \pm e^{C}\,e^{kt} = \green{y_0\,e^{kt}}`, full: true, why: tx(t, "mOde_s4", "e to a sum is a product; ±e^C is the value at t = 0") },
+        ]} />
       <Equation label={tx(t, "mOde_eqSep", "Separation of variables")}
         where={[
           [r`g(t)`, tx(t, "mOde_wG", "the part of the rate that depends only on the input t")],
           [r`h(y)`, tx(t, "mOde_wHy", "the part that depends only on the unknown y (values where h(y) = 0 are equilibria, check them separately)")],
-        ]}>
+        ]}
+        words={tx(t, "mOde_sepWords", "Put everything with y on one side and everything with t on the other, then integrate each side in its own variable.")}>
         {r`\frac{dy}{dt} = g(t)\,h(y) \quad\Longrightarrow\quad \int \frac{dy}{h(y)} = \int g(t)\,dt`}
       </Equation>
       <H3>{tx(t, "mOde_coolTitle", "Newton's law of cooling")}</H3>
       <p>
-        {tx(t, "mOde_coolBody",
-          "An object cools at a rate proportional to how much hotter it is than the room: T′ = −k(T − Tₐ), where Tₐ is the room temperature. Separate: ∫ dT/(T − Tₐ) = −∫ k dt, so ln|T − Tₐ| = −kt + C, and T = Tₐ + (T₀ − Tₐ)e^(−kt). The difference from room temperature decays exponentially; the temperature itself approaches Tₐ, the equilibrium. Worked example: coffee at 90 °C in a 20 °C room is 70 °C after 5 minutes. Then 50 = 70e^(−5k), so k = ln(70/50)/5 = 0.3365/5 ≈ 0.0673 per minute. It reaches 40 °C when 20 = 70e^(−kt), t = ln(3.5)/0.0673 = 1.2528/0.0673 ≈ 18.6 minutes.")}
+        {tx(t, "mOde_coolBody2",
+          "An object cools at a rate proportional to how much hotter it is than the room: T′ = −k(T − Tₐ), where Tₐ is the room temperature. Separate: ∫ dT/(T − Tₐ) = −∫ k dt, so ln|T − Tₐ| = −kt + C, and T = Tₐ + (T₀ − Tₐ)e^(−kt). The difference from room temperature decays exponentially; the temperature itself approaches Tₐ, the equilibrium. Worked example: coffee at 90 °C in a 20 °C room is 70 °C after 5 minutes.")}
       </p>
+      <Derivation t={t} label={tx(t, "mOde_eqCool", "When is the coffee at 40 °C?")}
+        steps={[
+          { tex: r`T(t) = 20 + 70\,e^{-kt}`, full: true, why: tx(t, "mOde_c1", "Tₐ = 20 and T₀ − Tₐ = 90 − 20 = 70") },
+          { tex: r`50 = 70\,e^{-5k} \;\Rightarrow\; k = \frac{\ln(70/50)}{5} \approx 0.0673`, full: true, why: tx(t, "mOde_c2", "70 °C after 5 minutes: 70 − 20 = 50 above the room; k per minute") },
+          { tex: r`20 = 70\,e^{-kt} \;\Rightarrow\; t = \frac{\ln 3.5}{0.0673} \approx \green{18.6\ \text{min}}`, full: true, why: tx(t, "mOde_c3", "40 °C is 20 above the room; take ln of both sides") },
+        ]} />
       <H3>{tx(t, "mOde_logTitle", "The logistic curve")}</H3>
       <p>
         {tx(t, "mOde_logBody",
@@ -97,7 +149,8 @@ export function DifferentialEquationsContent({ t }: { t: TrackTranslations }) {
           [r`r`, tx(t, "mOde_wR", "the growth rate while the population is still small")],
           [r`A = \frac{K - y_0}{y_0}`, tx(t, "mOde_wAlog", "from the initial value y(0) = y₀")],
         ]}
-        note={tx(t, "mOde_logNote", "Growth is fastest at y = K/2, the inflection point of the S. The figure's logistic mode shows it with r = 0.9, K = 3.")}>
+        note={tx(t, "mOde_logNote", "Growth is fastest at y = K/2, the inflection point of the S. The figure's logistic mode shows it with r = 0.9, K = 3.")}
+        words={tx(t, "mOde_logWords", "The population starts out growing almost exponentially, then slows down and levels off at the carrying capacity K.")}>
         {r`y(t) = \frac{K}{1 + A\,e^{-rt}}`}
       </Equation>
 
@@ -110,7 +163,8 @@ export function DifferentialEquationsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`h`, tx(t, "mOde_wH", "the step size in t")],
           [r`F(t_n, y_n)`, tx(t, "mOde_wSlope", "the slope the equation prescribes at the current point")],
-        ]}>
+        ]}
+        words={tx(t, "mOde_eulerWords", "Read the slope where you stand, walk straight along it for a time h, and repeat from the new point.")}>
         {r`t_{n+1} = t_n + h \qquad y_{n+1} = y_n + h\,F(t_n,\,y_n)`}
       </Equation>
       <p>{tx(t, "mOde_tableBody", "By hand for y′ = y, y(0) = 1, with h = 0.25 up to t = 1 (the exact answer is e ≈ 2.7183). Each step multiplies by 1 + h = 1.25:")}</p>
@@ -150,15 +204,23 @@ export function DifferentialEquationsContent({ t }: { t: TrackTranslations }) {
       </p>
       <H3>{tx(t, "mOde_dampTitle", "Friction and the characteristic equation")}</H3>
       <p>
-        {tx(t, "mOde_dampBody",
-          "Add friction proportional to the velocity and the equation becomes y″ + 2γy′ + ω²y = 0, where γ (gamma) measures the damping. Guess y = e^(λt), since exponentials keep their shape when differentiated: y′ = λe^(λt), y″ = λ²e^(λt). Substituting and dividing by e^(λt), which is never zero, leaves a quadratic, the characteristic equation λ² + 2γλ + ω² = 0, with roots λ = −γ ± √(γ² − ω²). The discriminant sorts the motion into three kinds.")}
+        {tx(t, "mOde_dampBody2",
+          "Add friction proportional to the velocity and the equation becomes y″ + 2γy′ + ω²y = 0, where γ (gamma) measures the damping. Guess y = e^(λt), since exponentials keep their shape when differentiated.")}
       </p>
+      <Derivation t={t} label={tx(t, "mOde_eqCharProof", "From the guess e^(λt) to a quadratic")}
+        steps={[
+          { tex: r`y = e^{\lambda t},\quad y' = \lambda e^{\lambda t},\quad y'' = \lambda^2 e^{\lambda t}`, full: true, why: tx(t, "mOde_d1", "each derivative brings down one more λ") },
+          { tex: r`\lambda^2 e^{\lambda t} + 2\gamma\lambda e^{\lambda t} + \omega^2 e^{\lambda t} = 0`, full: true, why: tx(t, "mOde_d2", "substitute into y″ + 2γy′ + ω²y = 0") },
+          { tex: r`\lambda^2 + 2\gamma\lambda + \omega^2 = 0`, full: true, why: tx(t, "mOde_d3", "divide by e^(λt), which is never zero: the characteristic equation") },
+          { tex: r`\lambda = \green{-\gamma \pm \sqrt{\gamma^2 - \omega^2}}`, full: true, why: tx(t, "mOde_d4", "the quadratic formula; the sign of γ² − ω² sorts the motion into three kinds") },
+        ]} />
       <Equation label={tx(t, "mOde_eqChar", "Damped oscillator")}
         where={[
           [r`\gamma`, tx(t, "mOde_wGamma", "the damping rate (friction per unit mass, halved)")],
           [r`\omega`, tx(t, "mOde_wOmega", "the natural angular frequency without friction, √(c/m)")],
           [r`\lambda`, tx(t, "mOde_wLambda", "a root of the characteristic equation; e^(λt) is then a solution")],
-        ]}>
+        ]}
+        words={tx(t, "mOde_charWords", "Try an exponential: the equation turns into a quadratic in λ, and its roots say whether the motion creeps back, returns as fast as possible, or swings while it dies down.")}>
         {r`y'' + 2\gamma\,y' + \omega^2 y = 0 \quad\Longrightarrow\quad \lambda^2 + 2\gamma\lambda + \omega^2 = 0,\quad \lambda = -\gamma \pm \sqrt{\gamma^2 - \omega^2}`}
       </Equation>
       <LessonTable
@@ -169,6 +231,14 @@ export function DifferentialEquationsContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mOde_cUnder", "γ < ω (underdamped)"), "−γ ± iω_d", "e^(−γt)(A cos ω_d t + B sin ω_d t)", tx(t, "mOde_cUnderL", "swings with a shrinking envelope (a plucked string)")],
         ]}
       />
+      <LiveFormula label={tx(t, "mOde_liveDamp", "Try it: which kind of motion?")}
+        tex={r`\lambda^2 + 2\gamma\lambda + \omega^2 = 0 \qquad \lambda = -\gamma \pm \sqrt{\gamma^2 - \omega^2}`}
+        vars={[
+          { id: "g", label: tx(t, "mOde_liveG", "damping γ"), min: 0, max: 4, step: 0.25, value: 1, fmt: v => num(v, 2) },
+          { id: "w", label: tx(t, "mOde_liveW", "frequency ω"), min: 0.5, max: 4, step: 0.25, value: 2, fmt: v => num(v, 2) },
+        ]}
+        compute={dampNumbers(t)}
+        note={tx(t, "mOde_liveDampNote", "γ = 1, ω = 2 gives λ = −1 ± 1.73i: swings at frequency 1.73 inside an envelope e^(−t). Raise γ to 2, equal to ω, and the roots merge: critical damping. Above that both roots are real and negative, and the slower one, closer to 0, sets how long the creep back takes.")} />
       <p>
         {tx(t, "mOde_complexBody",
           "In the underdamped case the discriminant is negative and the roots are complex: λ = −γ ± iω_d with ω_d = √(ω² − γ²). Euler's formula turns e^((−γ + iω_d)t) = e^(−γt)(cos ω_d t + i sin ω_d t) into the real solutions in the table: the real part of λ is the decay rate of the envelope, the imaginary part the frequency of the swing.")}
