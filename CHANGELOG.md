@@ -14,6 +14,7 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ### 2026-10-09
 
+- **Aprender → cartão "em breve" de Música**: último cartão da grade, ao lado de Física e Química (som e altura, ritmo, notas e pauta, intervalos e escalas, acordes e harmonia, tonalidades, melodia e forma). Tradução pt.
 - **Matemática → Cálculo interativo (11 capítulos)**: sexta seção a receber laboratórios, barra de reprodução e fórmulas dinâmicas.
   - **Laboratórios guiados** nos 11 widgets da seção: aproximação de um ponto, secante → tangente, por que as regras valem, o que a derivada diz, área por faixas, área que se acumula, áreas que trocam de lugar, polinômios de Taylor, curvas de nível e gradiente, volume sob uma superfície e campo de inclinações. Vários passos pedem para "quebrar" o widget (uma quina sem derivada, Newton preso num ciclo, uma série fora do intervalo de convergência, Euler explodindo com passo grande) e explicam o que aconteceu.
   - **Barra de reprodução** no lugar dos controles que eram animações: encolher a distância h (limite e derivada), a bissecção passo a passo, encolher o "empurrão" nas regras, pular de ponto crítico em ponto crítico, os passos de Newton, dobrar o número de faixas (com a leitura "dobrar n dividiu o erro por…"), varrer x acumulando a área, empurrar b para o infinito e ε para 0, somar termos de Taylor, subir o morro pelo gradiente (com rastro), dobrar as caixas, varrer as fatias com o volume acumulado e percorrer os passos de Euler.

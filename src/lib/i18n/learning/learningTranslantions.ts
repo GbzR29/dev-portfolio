@@ -49,6 +49,7 @@ export const learningTranslations = {
     trackName_ai: "AI",
     trackName_physics: "Physics",
     trackName_chemistry: "Chemistry",
+    trackName_music: "Music",
     learnCrumb: "learn",
     lessonChapterOf: "chapter {n} of {total}",
     lessonOnThisPage: "On this page",
@@ -163,10 +164,13 @@ export const learningTranslations = {
     trackName_ai: "IA",
     trackName_physics: "Física",
     trackName_chemistry: "Química",
+    trackName_music: "Música",
     trackPhysicsDesc:
       "Física desde a base: movimento, forças, energia e momento, rotação, gravidade e órbitas, oscilações e ondas, e depois fluidos, calor, luz e eletromagnetismo — cada lei deduzida, cada ideia simulada.",
     trackChemistryDesc:
       "Química desde a base: átomos e tabela periódica, ligações e moléculas, mol e reações, gases e soluções, energia e velocidade das reações, equilíbrio, ácidos e bases — cada fórmula explicada, cada ideia interativa.",
+    trackMusicDesc:
+      "Música desde a base: som e altura, ritmo e compasso, notas e pauta, intervalos e escalas, acordes e harmonia, tonalidades e progressões, melodia e forma — cada ideia ouvida, cada regra explicada.",
     learnCrumb: "aprender",
     lessonChapterOf: "capítulo {n} de {total}",
     lessonOnThisPage: "Nesta página",

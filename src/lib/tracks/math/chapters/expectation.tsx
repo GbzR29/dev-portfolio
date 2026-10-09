@@ -9,12 +9,44 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ExpectationFigure } from "@/components/lesson/figures/math/ExpectationFigure";
 
 const r = String.raw;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** A raffle of 1000 tickets: expected net gain = prize money per ticket − price. */
+const gameNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const back = v.pool / 1000, g = back - v.c;
+  const verdict = Math.abs(g) < 1e-9 ? tx(t, "mExp_liveFair", "fair game")
+    : g < 0 ? tx(t, "mExp_liveLoses", "the player loses on average") : tx(t, "mExp_liveWins", "the player wins on average");
+  return {
+    tex: r`\begin{aligned} &E[G] = \frac{${v.pool}}{1000} - ${v.c.toFixed(1)} = ${back.toFixed(2)} - ${v.c.toFixed(1)} = \amber{${g.toFixed(2)}} \\[2pt] &\text{${verdict}} \end{aligned}`,
+  };
+};
+
+/** The standard error σ/√n of an average of n independent values. */
+function seNumbers(v: Record<string, number>) {
+  const se = v.s / Math.sqrt(v.n);
+  return {
+    tex: r`\sigma_{\bar X} = \frac{${v.s.toFixed(2)}}{\sqrt{${v.n}}} = \frac{${v.s.toFixed(2)}}{${Math.sqrt(v.n).toFixed(3)}} = \amber{${se.toFixed(3)}}`,
+  };
+}
+
+/** Chebyshev: at most 1/k² of any distribution lies k or more σ from the mean. */
+const chebNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const k = v.k, out = 1 / (k * k);
+  return {
+    tex: r`\begin{aligned} &P\big(|X - \mu| \ge ${k.toFixed(1)}\,\sigma\big) \le \frac{1}{${k.toFixed(1)}^2} = \amber{${out.toFixed(3)}} \\[4pt] &P\big(|X - \mu| < ${k.toFixed(1)}\,\sigma\big) \ge \green{${(1 - out).toFixed(3)}} \end{aligned}`,
+    meter: 1 - out,
+    meterLabel: `≥ ${((1 - out) * 100).toFixed(1)}% ${tx(t, "mExp_liveWithin", "within kσ")}`,
+  };
+};
 
 export function ExpectationContent({ t }: { t: TrackTranslations }) {
   return (
@@ -49,7 +81,8 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
           [r`p(x)`, tx(t, "mExp_wP", "its probability P(X = x), the weight given to that value")],
           [r`\sum_x`, tx(t, "mExp_wSum", "the sum over all possible values")],
         ]}
-        note={tx(t, "mExp_defNote", "Since the weights p(x) add to 1, this is a weighted average of the values, like a course grade where each exam counts with its own weight. Values with more probability pull harder.")}>
+        note={tx(t, "mExp_defNote", "Since the weights p(x) add to 1, this is a weighted average of the values, like a course grade where each exam counts with its own weight. Values with more probability pull harder.")}
+        words={tx(t, "mExp_defWords", "Multiply each possible value by its probability and add the results.")}>
         {r`\mu = E[X] = \sum_x x\,p(x)`}
       </Equation>
       <p>
@@ -73,6 +106,14 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mExp_gameBody",
           "Games and prices. A raffle sells 1000 tickets at 5 each; one prize is worth 2000 and three are worth 500. Your net gain G is 1995 with probability 1/1000, 495 with probability 3/1000 and −5 with probability 996/1000. E[G] = (1995 + 3 · 495 − 5 · 996)/1000 = (1995 + 1485 − 4980)/1000 = −1.5. On average each ticket loses 1.5: the organisers collect 5000 and pay out 3500. A game is called fair when the expected net gain is 0; here the fair price would be 3.5, the expected prize.")}
       </p>
+      <LiveFormula label={tx(t, "mExp_liveGame", "Try it: is the raffle fair?")}
+        tex={r`E[G] = \frac{\text{${tx(t, "mExp_livePool", "total prize money")}}}{1000} - c`}
+        vars={[
+          { id: "pool", label: tx(t, "mExp_livePoolShort", "prizes"), min: 0, max: 8000, step: 250, value: 3500, fmt: v => String(v) },
+          { id: "c", label: "c", min: 1, max: 10, step: 0.5, value: 5, fmt: v => v.toFixed(1) },
+        ]}
+        compute={gameNumbers(t)}
+        note={tx(t, "mExp_liveGameNote", "c is the ticket price. Every ticket pays c, and on average gets back its share of the prize money, the pool divided by the 1000 tickets. Only the total matters, not how it is split: one prize of 3500 or seven of 500 give the same mean. Set the prizes to 5000 and the game becomes fair at c = 5.")} />
 
       <H2>{tx(t, "mExp_contTitle", "The mean of a continuous variable")}</H2>
       <p>
@@ -111,7 +152,8 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
           [r`a, b`, tx(t, "mExp_wAb", "fixed numbers: a changes the scale, b shifts every value")],
           [r`X, Y`, tx(t, "mExp_wXY", "any two random variables on the same experiment, independent or not")],
         ]}
-        note={tx(t, "mExp_linNote", "Proof of the first: Σ (ax + b) p(x) = a Σ x p(x) + b Σ p(x) = a E[X] + b · 1. For the second, write E[X + Y] as a sum over the joint table, Σ (x + y) p(x, y), and split it into Σ x p(x, y) + Σ y p(x, y); summing each over the other variable leaves the marginals, E[X] + E[Y]. No independence was used.")}>
+        note={tx(t, "mExp_linNote", "Proof of the first: Σ (ax + b) p(x) = a Σ x p(x) + b Σ p(x) = a E[X] + b · 1. For the second, write E[X + Y] as a sum over the joint table, Σ (x + y) p(x, y), and split it into Σ x p(x, y) + Σ y p(x, y); summing each over the other variable leaves the marginals, E[X] + E[Y]. No independence was used.")}
+        words={tx(t, "mExp_linWords", "Scale and shift the values and the mean is scaled and shifted the same way; the mean of a sum is the sum of the means.")}>
         {r`E[aX + b] = a\,E[X] + b \qquad E[X + Y] = E[X] + E[Y]`}
       </Equation>
       <p>
@@ -140,9 +182,17 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
           [r`\sigma`, tx(t, "mExp_wSd", "the standard deviation, the square root of the variance, measured in the same units as X")],
           [r`E[X^2] - \mu^2`, tx(t, "mExp_wShort", "the shortcut: mean of the square minus square of the mean")],
         ]}
-        note={tx(t, "mExp_varNote", "The shortcut follows from linearity: E[(X − μ)²] = E[X² − 2μX + μ²] = E[X²] − 2μ E[X] + μ² = E[X²] − 2μ² + μ² = E[X²] − μ². It also shows E[X²] ≥ μ², since a variance is never negative.")}>
+        words={tx(t, "mExp_varWords", "Average the squared distances from the mean. σ undoes the squaring, so it is back in the units of X.")}>
         {r`\sigma^2 = \operatorname{Var}(X) = E\big[(X - \mu)^2\big] = E[X^2] - \mu^2 \qquad \sigma = \sqrt{\operatorname{Var}(X)}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mExp_eqShortDer", "Why the shortcut works")}
+        steps={[
+          { tex: r`E\big[(X - \mu)^2\big]`, why: tx(t, "mExp_vs1", "the definition: the mean squared distance from μ") },
+          { tex: r`= E\big[X^2 - 2\mu X + \mu^2\big]`, why: tx(t, "mExp_vs2", "expand the square, (a − b)² = a² − 2ab + b²") },
+          { tex: r`= E[X^2] - 2\mu\,E[X] + \mu^2`, why: tx(t, "mExp_vs3", "linearity: μ is a fixed number, so it comes out of E, and the mean of the constant μ² is μ²") },
+          { tex: r`= E[X^2] - 2\mu^2 + \mu^2`, why: tx(t, "mExp_vs4", "E[X] is μ itself") },
+          { tex: r`= \green{E[X^2] - \mu^2}`, why: tx(t, "mExp_vs5", "collect the μ² terms. A variance is never negative, so this also shows E[X²] ≥ μ²") },
+        ]} />
       <p>
         {tx(t, "mExp_sdUnits",
           "If X is in metres, the variance is in square metres, which is hard to picture; that is why we take the square root. σ is a typical distance from the mean: not the average distance exactly, but of the same size.")}
@@ -199,6 +249,21 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
         ]}>
         {r`E[\bar X] = \mu \qquad \operatorname{Var}(\bar X) = \frac{\sigma^2}{n} \qquad \sigma_{\bar X} = \frac{\sigma}{\sqrt n}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mExp_eqAvgDer", "The variance of an average, step by step")}
+        steps={[
+          { tex: r`\operatorname{Var}(\bar X) = \operatorname{Var}\!\left(\tfrac1n (X_1 + \dots + X_n)\right)`, full: true, why: tx(t, "mExp_a1", "the average is the sum divided by n") },
+          { tex: r`\operatorname{Var}(\bar X) = \tfrac{1}{n^2} \operatorname{Var}(X_1 + \dots + X_n)`, full: true, why: tx(t, "mExp_a2", "Var(aY) = a² Var Y with a = 1/n: the factor comes out squared") },
+          { tex: r`\operatorname{Var}(\bar X) = \tfrac{1}{n^2} \left(\sigma^2 + \dots + \sigma^2\right) = \tfrac{1}{n^2} \cdot n\sigma^2`, full: true, why: tx(t, "mExp_a3", "the copies are independent, so their variances add; each one is σ², and there are n of them") },
+          { tex: r`\operatorname{Var}(\bar X) = \green{\frac{\sigma^2}{n}} \qquad \sigma_{\bar X} = \green{\frac{\sigma}{\sqrt n}}`, full: true, why: tx(t, "mExp_a4", "cancel one n; the standard deviation is the square root, and √n comes out of √(σ²/n)") },
+        ]} />
+      <LiveFormula label={tx(t, "mExp_liveSe", "Try it: how precise is an average?")}
+        tex={r`\sigma_{\bar X} = \frac{\sigma}{\sqrt n}`}
+        vars={[
+          { id: "s", label: "σ", min: 0.5, max: 10, step: 0.01, value: 1.71, fmt: v => v.toFixed(2) },
+          { id: "n", label: "n", min: 1, max: 400, step: 1, value: 4, fmt: v => String(v) },
+        ]}
+        compute={seNumbers}
+        note={tx(t, "mExp_liveSeNote", "σ = 1.71 is one die. One roll (n = 1) is typically 1.71 from 3.5; the average of 4 rolls only 0.855, half as far. Go from 4 to 16, then to 64: each time four times as many rolls halve the error. Halving it once more from 64 takes 256 rolls, which is why extra precision gets expensive.")} />
 
       <H2>{tx(t, "mExp_stdTitle", "Standardising and Chebyshev's inequality")}</H2>
       <p>
@@ -210,9 +275,24 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
           [r`k`, tx(t, "mExp_wK", "any number of standard deviations greater than 1")],
           [r`|X - \mu| \ge k\sigma`, tx(t, "mExp_wFar", "X lands at least k standard deviations away from the mean")],
         ]}
-        note={tx(t, "mExp_chebNote", "Proof: the outcomes with |X − μ| ≥ kσ each contribute at least (kσ)² to the variance, so σ² ≥ (kσ)² · P(|X − μ| ≥ kσ). Divide by k²σ². It holds for every distribution, which is why it is crude: at least 75% of any distribution lies within 2σ and at least 89% within 3σ.")}>
+        note={tx(t, "mExp_chebNote2", "It holds for every distribution, which is why it is crude: at least 75% of any distribution lies within 2σ and at least 89% within 3σ.")}
+        words={tx(t, "mExp_chebWords", "The chance of landing k or more standard deviations from the mean is at most 1 over k squared, whatever the distribution.")}>
         {r`P\big(|X - \mu| \ge k\sigma\big) \le \frac{1}{k^2}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mExp_eqChebDer", "Why Chebyshev's inequality holds")}
+        steps={[
+          { tex: r`\sigma^2`, why: tx(t, "mExp_c0", "start from the variance") },
+          { tex: r`= \sum_x (x - \mu)^2\,p(x)`, why: tx(t, "mExp_c1", "the definition of the variance (for a density, the same steps work with integrals)") },
+          { tex: r`\ge \sum_{|x - \mu| \ge k\sigma} (x - \mu)^2\,p(x)`, why: tx(t, "mExp_c2", "keep only the far values, those at least kσ from μ. The dropped terms are never negative, so the sum can only shrink") },
+          { tex: r`\ge \sum_{|x - \mu| \ge k\sigma} (k\sigma)^2\,p(x)`, why: tx(t, "mExp_c3", "each kept value has (x − μ)² ≥ (kσ)², so replacing it by (kσ)² shrinks the sum again") },
+          { tex: r`= k^2\sigma^2 \, P\big(|X - \mu| \ge k\sigma\big)`, why: tx(t, "mExp_c4", "(kσ)² is a constant; the probabilities of the far values add up to the probability of being far") },
+          { tex: r`P\big(|X - \mu| \ge k\sigma\big) \le \green{\frac{1}{k^2}}`, full: true, why: tx(t, "mExp_c5", "read the chain as σ² ≥ k²σ² · P and divide both sides by k²σ²") },
+        ]} />
+      <LiveFormula label={tx(t, "mExp_liveCheb", "Try it: Chebyshev's guarantee")}
+        tex={r`P\big(|X - \mu| \ge k\sigma\big) \le \frac{1}{k^2}`}
+        vars={[{ id: "k", label: "k", min: 1, max: 6, step: 0.1, value: 2, fmt: v => v.toFixed(1) }]}
+        compute={chebNumbers(t)}
+        note={tx(t, "mExp_liveChebNote", "The bar shows the share of any distribution that must lie within k standard deviations of the mean. At k = 1 the guarantee is empty: 1/1² = 1 rules nothing out. At k = 2 it is 75%, at k = 3 about 89%, at k = 5 96%. Real distributions usually do much better; the next chapter shows that the normal curve has about 95% within 2σ.")} />
       <Callout type="info" t={t}>
         {tx(t, "mExp_stPeteTip", "A mean need not exist. Toss a coin until the first head; if that takes k tosses you win 2ᵏ. Each possible k contributes 2ᵏ · (1/2)ᵏ = 1 to the expectation, and there are infinitely many k, so E = 1 + 1 + 1 + … = ∞. Yet few people would pay even 20 to play. This St Petersburg paradox shows that an infinite (or huge) mean driven by very rare outcomes says little about what actually happens, and it led to the idea of valuing money by its usefulness rather than its amount.")}
       </Callout>
