@@ -14,6 +14,21 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ### 2026-10-09
 
+- **Semelhança e Escala ampliada com muito mais triângulos (Matemática → Geometria)**:
+  - **Widget novo "Triângulos semelhantes"**, com três modos e laboratório guiado em 8 passos:
+    - **cantos correspondentes:** a barra de reprodução constrói a cópia em três movimentos (escalar, girar, espelhar). Cada canto tem uma cor e cada lado tem a cor do canto oposto, para parear lados pelos ângulos e não pela posição;
+    - **ampulheta:** duas retas que se cruzam entre paralelas;
+    - **altura do triângulo retângulo:** os três triângulos semelhantes são separados e empilhados sobre o ângulo comum.
+  - **Seções novas:** parear lados pelos ângulos; todo comprimento escala por k e toda área por k² (com dedução); a ampulheta (dedução e a largura de um rio); o método do espelho; a altura do triângulo retângulo (h² = pq, a² = qc, b² = pc e uma segunda prova de Pitágoras); o teorema da bissetriz (dedução).
+  - **Fórmulas ao vivo** do triângulo retângulo a partir do pé da altura e do corte da bissetriz. Também há 4 exemplos resolvidos novos (diagonais do trapézio, altura 6-8-10, bissetriz, poste de luz) e 2 erros comuns novos.
+  - Tradução PT, incluindo as ideias-chave do capítulo, que estavam sem tradução.
+
+- **Laboratório e fórmulas interativas em Correlação e Regressão (Matemática → Probabilidade e Estatística)**, o que fecha a seção:
+  - **Laboratório guiado em 7 passos:** vencer os mínimos quadrados na mão, girar até a melhor inclinação, o ponto das médias, a curva com r ≈ 0, o ponto discrepante, o significado de R² e a regressão à média.
+  - **Barra de reprodução** que gira a reta em torno de (x̄, ȳ) até a melhor inclinação, com um quadro mostrando a SSE como parábola na inclinação b.
+  - **Deduções passo a passo:** r como cosseno, a reta pelas duas derivadas parciais, R² = r² e a reta em escores z. **Fórmulas em palavras** em r, na reta e em R². **Fórmulas ao vivo** da altura de pai e filho e da exponencial por duas medições.
+  - Tradução PT, incluindo as ideias-chave de regressão e de amostragem.
+
 - **Laboratório e fórmulas interativas em Amostragem e Inferência (Matemática → Probabilidade e Estatística)**:
   - **Laboratório guiado** no widget de amostragem, em 8 passos: uma amostra de um só valor copia a população, médias de 30 viram sino, achar o n que dá erro padrão 0,5, quantas pessoas para reduzir o erro à metade, a população de dois picos, 100 intervalos de 95% pegando μ, o preço de 99% de confiança e o que "95%" realmente quer dizer. Avisos para as três corcovas, para a assimetria que ainda resta com n pequeno, para o σ/√n medido e para a taxa de acerto dos intervalos.
   - **Barra de reprodução** no lugar dos botões "1 amostra / 500 amostras / mais 20 / reiniciar": nas médias, cada passo sorteia cerca de 15% mais amostras e a mais nova aparece como uma marca laranja; nos intervalos, cada passo sorteia um intervalo, até 100.

@@ -1,9 +1,12 @@
 "use client";
 
 // Geometry 5: similarity — scale factor and similar figures, scaling about a
-// centre, the similar-triangle tests (AA, SSS, SAS), solving with proportions,
-// the parallel-line cut and the midsegment, measuring heights with shadows,
-// k, k² and k³, the pinhole camera as similar triangles, and map scales by hand.
+// centre, the similar-triangle tests (AA, SSS, SAS), matching sides through
+// angles, solving with proportions, every length k and area k², the
+// parallel-line cut and the midsegment, the hourglass and the river, heights
+// with shadows and a mirror, the altitude of a right triangle (h² = pq, a
+// second proof of Pythagoras), the angle bisector theorem, k, k² and k³, the
+// pinhole camera as similar triangles, and map scales by hand.
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
@@ -13,6 +16,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SimilarityFigure } from "@/components/lesson/figures/math/SimilarityFigure";
+import { SimilarTrianglesFigure } from "@/components/lesson/figures/math/SimilarTrianglesFigure";
 
 const r = String.raw;
 
@@ -28,7 +32,24 @@ function projNumbers(v: Record<string, number>) {
   return { tex: r`y' = \frac{${num(v.d)} \cdot ${num(v.y)}}{${num(v.z)}} = \frac{${num(v.d * v.y)}}{${num(v.z)}} = \green{${num((v.d * v.y) / v.z)}}` };
 }
 
+/** The right triangle from the two pieces p, q of its hypotenuse. */
+function altNumbers(v: Record<string, number>) {
+  const { p, q } = v, c = p + q, h = Math.sqrt(p * q), a = Math.sqrt(q * c), b = Math.sqrt(p * c);
+  return {
+    tex: r`\begin{aligned} &h = \sqrt{${num(p)} \cdot ${num(q)}} = \sqrt{${num(p * q)}} = \green{${num(h)}} \\[4pt] &a = \sqrt{${num(q)} \cdot ${num(c)}} = ${num(a)} \qquad b = \sqrt{${num(p)} \cdot ${num(c)}} = ${num(b)} \\[4pt] &a^2 + b^2 = ${num(q * c)} + ${num(p * c)} = ${num(c * c)} = c^2 \end{aligned}`,
+  };
+}
+
+/** The angle bisector from A cuts BC into BD and DC in the ratio AB : AC. */
+function bisNumbers(v: Record<string, number>) {
+  const { ab, ac, bc } = v, bd = (bc * ab) / (ab + ac), dc = bc - bd;
+  return {
+    tex: r`\begin{aligned} &BD = ${num(bc)} \cdot \frac{${num(ab)}}{${num(ab)} + ${num(ac)}} = \amber{${num(bd)}} \qquad DC = ${num(bc)} - ${num(bd)} = \amber{${num(dc)}} \\[4pt] &\frac{BD}{DC} = ${num(bd / dc)} = \frac{${num(ab)}}{${num(ac)}} \end{aligned}`,
+  };
+}
+
 export function SimilarityContent({ t }: { t: TrackTranslations }) {
+  const area = tx(t, "mSim_texArea", "area");
   return (
     <Article>
       <Lead>
@@ -39,6 +60,7 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
       <Goals t={t} id="mSim" items={[
         "Find the scale factor between two shapes of the same form.",
         "Show that two triangles are similar, and use it to find missing lengths.",
+        "Spot similar triangles inside a figure: nested, hourglass, and the altitude of a right triangle.",
         "Predict how lengths, areas and volumes change with scale.",
         "Use map and plan scales, and explain why far things look smaller.",
       ]} />
@@ -99,6 +121,14 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSim_orderInfo", "Write similar triangles with matching corners in the same order: △ABC ∼ △DEF means A matches D, B matches E and C matches F. Then AB/DE = BC/EF = CA/FD can be read straight off the names, and most mistakes in this topic come from pairing the wrong sides.")}
       </Callout>
 
+      <H3>{tx(t, "mSim_matchTitle", "Matching sides through the angles")}</H3>
+      <p>
+        {tx(t, "mSim_matchBody",
+          "In exercises the second triangle is rarely drawn in the same position as the first. It may be bigger, turned, or a mirror image, so \"the bottom side\" of one is often not the partner of \"the bottom side\" of the other. The reliable rule: the side opposite an angle matches the side opposite the equal angle. In the figure below each corner has a colour and each side has the colour of the corner across from it. Press ▶ in its matching-corners mode to watch the copy being built in three moves (scale, turn, flip) and follow the colours.")}
+      </p>
+
+      <SimilarTrianglesFigure t={t} />
+
       <H3>{tx(t, "mSim_propTitle", "Solving with a proportion")}</H3>
       <p>
         {tx(t, "mSim_propBody",
@@ -112,10 +142,26 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
           { full: true, tex: r`EF = 6 \cdot \frac{10}{4} = \green{15}`, why: tx(t, "mSim_p3", "multiply both sides by 6: the scale factor here is 10/4 = 2.5") },
         ]} />
 
+      <H3>{tx(t, "mSim_allTitle", "Every length scales by k, every area by k²")}</H3>
+      <p>
+        {tx(t, "mSim_allBody",
+          "The ratio k is not only for the three sides. Any length built the same way in both triangles (the perimeter, an altitude, a median, the radius of the inscribed circle) is in the same ratio, because the copy is the original scaled by k, and scaling multiplies every distance by k. Areas, being a length times a length, pick up k twice.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mSim_eqAreaDer", "Why the areas are in the ratio k²")}
+        steps={[
+          { full: true, tex: r`\text{${area}}(\triangle ABC) = \tfrac12\, a\, h_a`, why: tx(t, "mSim_ad1", "half the base times the height, from the area chapter: a is the side BC and hₐ the altitude onto it") },
+          { full: true, tex: r`a' = k\,a \qquad h_a' = k\,h_a`, why: tx(t, "mSim_ad2", "in the copy the base is k times as long, and so is the altitude, since it is also a length of the figure") },
+          { full: true, tex: r`\text{${area}}(\triangle A'B'C') = \tfrac12\,(k\,a)(k\,h_a) = \green{k^2} \cdot \tfrac12\, a\, h_a`, why: tx(t, "mSim_ad3", "put both into the area formula: the two factors k multiply") },
+        ]} />
+      <p>
+        {tx(t, "mSim_allEx",
+          "Example: two similar triangles have perimeters 12 cm and 18 cm. Then k = 18/12 = 1.5, the altitudes are in the ratio 1.5 as well, and if the smaller one has area 6 cm², the larger one has 6 · 1.5² = 13.5 cm². Going backwards, areas of 9 and 25 mean k² = 25/9, so k = 5/3: take the square root before comparing lengths.")}
+      </p>
+
       <H2>{tx(t, "mSim_parTitle", "A line parallel to a side")}</H2>
       <p>
         {tx(t, "mSim_parBody",
-          "Draw a line across a triangle ABC, parallel to side BC, meeting AB at D and AC at E. The angles chapter showed that a line crossing two parallels makes equal corresponding angles, so ∠ADE = ∠ABC and ∠AED = ∠ACB. By AA, △ADE ∼ △ABC. The consequence is called the intercept theorem (or Thales' theorem): the parallel line cuts both sides in the same ratio. The second mode of the figure lets you slide the cut and reshape the triangle.")}
+          "Draw a line across a triangle ABC, parallel to side BC, meeting AB at D and AC at E. The angles chapter showed that a line crossing two parallels makes equal corresponding angles, so ∠ADE = ∠ABC and ∠AED = ∠ACB. By AA, △ADE ∼ △ABC. The consequence is called the intercept theorem (or Thales' theorem): the parallel line cuts both sides in the same ratio. The parallel-cut mode of the first figure lets you slide the cut and reshape the triangle.")}
       </p>
       <Equation label={tx(t, "mSim_eqPar", "The intercept theorem")}
         where={[
@@ -127,6 +173,23 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
         note={tx(t, "mSim_midNote", "The midsegment: when D and E are the midpoints, the ratio is ½, so DE is parallel to BC and exactly half as long. Joining the three midpoints of a triangle cuts it into four congruent triangles, each similar to the original with k = ½, the pattern of the Sierpinski triangle.")}>
         {r`DE \parallel BC \;\Rightarrow\; \frac{AD}{AB} = \frac{AE}{AC} = \frac{DE}{BC}`}
       </Equation>
+
+      <H3>{tx(t, "mSim_hourTitle", "The hourglass")}</H3>
+      <p>
+        {tx(t, "mSim_hourBody",
+          "The nested triangles above form an \"A\" shape. The other picture to look for is an \"X\", or hourglass: two parallel lines, with segment AB on one and DC on the other, and the lines AC and BD crossing at a point O between them. The two triangles OAB and OCD point at each other from opposite sides of O. The hourglass mode of the similar-triangles figure lets you drag A, B and O.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mSim_eqHourDer", "Why the two triangles of an hourglass are similar")}
+        steps={[
+          { full: true, tex: r`\angle AOB = \angle COD`, why: tx(t, "mSim_hd1", "vertical angles: two crossing lines make equal opposite angles (angles chapter)") },
+          { full: true, tex: r`\angle OAB = \angle OCD`, why: tx(t, "mSim_hd2", "alternate angles: the line AC crosses the parallels AB and DC, making equal angles on opposite sides") },
+          { full: true, tex: r`\triangle OAB \sim \triangle OCD`, why: tx(t, "mSim_hd3", "two equal angles are enough (AA). In this order O matches O, A matches C and B matches D") },
+          { full: true, tex: r`\frac{OC}{OA} = \frac{OD}{OB} = \frac{DC}{AB} = \green{k}`, why: tx(t, "mSim_hd4", "matching sides read straight off the names. Careful: OA pairs with OC, the other half of the same line, not with OD") },
+        ]} />
+      <p>
+        {tx(t, "mSim_riverBody",
+          "This is how a river can be measured without crossing it. Pick a tree A on the far bank and stand at B, straight across from it. Walk 12 m along your bank to a stake C, then 4 m further to D. From D walk straight away from the river, at a right angle to the bank, until the stake C hides the tree: you are at E, and DE = 5 m. AB and DE are both at right angles to the bank, so they are parallel, and the lines AE and BD cross at C: an hourglass with C in the middle. B matches D, so AB/DE = BC/DC = 12/4 = 3, and the river is AB = 3 · 5 = 15 m wide. The same picture hides in every trapezoid: its two diagonals cross at a point that divides each of them in the ratio of the two parallel sides.")}
+      </p>
 
       <H3>{tx(t, "mSim_shadowTitle", "Measuring what you cannot reach")}</H3>
       <p>
@@ -149,6 +212,77 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
         ]}
         compute={shadowNumbers}
         note={tx(t, "mSim_liveShadowNote", "The fraction h₁/s₁ is fixed by the sun's height at that moment. At midday in summer shadows are short and the fraction is big; in the evening shadows stretch and it gets small, but it is the same for every object at the same time.")} />
+      <p>
+        {tx(t, "mSim_mirrorBody",
+          "No sun? Use a mirror. Lay a small mirror flat on the ground and walk back until you see the top of a tree in it. Light reflects at equal angles, so the angle from your eye down to the mirror equals the angle from the mirror up to the treetop. You and the tree both stand at right angles to the ground, so by AA your triangle (eye, feet, mirror) is similar to the tree's (top, foot, mirror). With your eyes 1.6 m high, 2 m from the mirror, and the mirror 9 m from the tree: h / 9 = 1.6 / 2, so h = 7.2 m.")}
+      </p>
+
+      <H2>{tx(t, "mSim_altTitle", "The altitude of a right triangle")}</H2>
+      <p>
+        {tx(t, "mSim_altBody",
+          "Take a right triangle ACB with the right angle at C, legs a = BC and b = AC, and hypotenuse c = AB. Drop the altitude from C to the hypotenuse; its foot D cuts AB into two pieces, p = AD next to b and q = DB next to a, and its length is h = CD. Now there are three right triangles in the picture, and they are all similar. The altitude mode of the similar-triangles figure pulls them apart and stacks them on their common angle.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mSim_eqAltDer", "Three similar right triangles")}
+        steps={[
+          { full: true, tex: r`\triangle ADC \sim \triangle ACB`, why: tx(t, "mSim_ld1", "both have the angle α at A and a right angle (at D and at C): AA. So A matches A, D matches C and C matches B") },
+          { full: true, tex: r`\triangle CDB \sim \triangle ACB`, why: tx(t, "mSim_ld2", "both have the angle β at B and a right angle: AA. So C matches A, D matches C and B matches B") },
+          { full: true, tex: r`\frac{AD}{CD} = \frac{CD}{DB} \;\Rightarrow\; \frac{p}{h} = \frac{h}{q} \;\Rightarrow\; \green{h^2 = p\,q}`, why: tx(t, "mSim_ld3", "the two small triangles are similar to the same triangle, so to each other. In each, divide the leg along AB by the leg CD, then multiply both sides by hq") },
+          { full: true, tex: r`\frac{AD}{AC} = \frac{AC}{AB} \;\Rightarrow\; \frac{p}{b} = \frac{b}{c} \;\Rightarrow\; \green{b^2 = p\,c}`, why: tx(t, "mSim_ld4", "from the first similarity: in each triangle, the side next to α that is not the hypotenuse, divided by the hypotenuse") },
+          { full: true, tex: r`\frac{DB}{CB} = \frac{CB}{AB} \;\Rightarrow\; \frac{q}{a} = \frac{a}{c} \;\Rightarrow\; \green{a^2 = q\,c}`, why: tx(t, "mSim_ld5", "the same with the second similarity, around the angle β") },
+        ]} />
+      <Equation label={tx(t, "mSim_eqAlt", "Altitude and legs from the pieces of the hypotenuse")}
+        where={[
+          [r`p,\ q`, tx(t, "mSim_wPQ", "the two pieces into which the altitude's foot cuts the hypotenuse")],
+          [r`h`, tx(t, "mSim_wHalt", "the altitude from the right angle to the hypotenuse")],
+          [r`a,\ b`, tx(t, "mSim_wLegs", "the legs; a is next to the piece q and b next to the piece p")],
+          [r`c`, tx(t, "mSim_wC", "the hypotenuse, c = p + q")],
+        ]}
+        words={tx(t, "mSim_altWords", "The altitude squared is the product of the two pieces of the hypotenuse. Each leg squared is the whole hypotenuse times the piece next to that leg.")}
+        note={tx(t, "mSim_altNote", "A number whose square is the product of two others is their geometric mean: h = √(pq). With p = 9 and q = 16: h = √144 = 12, a = √(16 · 25) = 20, b = √(9 · 25) = 15.")}>
+        {r`h^2 = p\,q \qquad a^2 = q\,c \qquad b^2 = p\,c`}
+      </Equation>
+      <p>
+        {tx(t, "mSim_pythBody",
+          "Add the last two equations and Pythagoras' theorem falls out, a second proof that uses similarity instead of rearranging areas.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mSim_eqPythDer", "Pythagoras from similar triangles")}
+        steps={[
+          { full: true, tex: r`a^2 + b^2 = q\,c + p\,c`, why: tx(t, "mSim_pd1", "add a² = qc and b² = pc") },
+          { full: true, tex: r`= (p + q)\,c`, why: tx(t, "mSim_pd2", "take out the common factor c") },
+          { full: true, tex: r`= c \cdot c = \green{c^2}`, why: tx(t, "mSim_pd3", "D lies on AB, so the two pieces make up the whole hypotenuse: p + q = c") },
+        ]} />
+      <LiveFormula label={tx(t, "mSim_liveAlt", "Try it: a right triangle from its altitude's foot")}
+        tex={r`h = \sqrt{p\,q} \qquad a = \sqrt{q\,c} \qquad b = \sqrt{p\,c}`}
+        vars={[
+          { id: "p", label: "p", min: 0.5, max: 20, step: 0.5, value: 9, fmt: num },
+          { id: "q", label: "q", min: 0.5, max: 20, step: 0.5, value: 16, fmt: num },
+        ]}
+        compute={altNumbers}
+        note={tx(t, "mSim_liveAltNote", "The start is the 15–20–25 triangle. Make p = q and the triangle is half a square: h = p, and the two legs are equal. Make p tiny and h almost vanishes: C slides down next to A.")} />
+
+      <H3>{tx(t, "mSim_bisTitle", "The angle bisector theorem")}</H3>
+      <p>
+        {tx(t, "mSim_bisBody",
+          "One more result that similar triangles prove. In a triangle ABC, the line from A that cuts the angle at A into two equal halves (the angle bisector) meets BC at a point D. Where exactly? The proof adds a helper line: through C, draw a line parallel to AD, and extend the side BA beyond A until it meets that line, at E.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mSim_eqBisDer", "Where the bisector cuts the opposite side")}
+        steps={[
+          { full: true, tex: r`\angle AEC = \angle BAD`, why: tx(t, "mSim_bd1", "corresponding angles: the line BE crosses the parallels AD and EC") },
+          { full: true, tex: r`\angle ACE = \angle DAC`, why: tx(t, "mSim_bd2", "alternate angles: the line AC crosses the same parallels") },
+          { full: true, tex: r`\angle AEC = \angle ACE`, why: tx(t, "mSim_bd3", "AD bisects the angle at A, so ∠BAD = ∠DAC, and the two lines above are equal too") },
+          { full: true, tex: r`AE = AC`, why: tx(t, "mSim_bd4", "a triangle with two equal angles is isosceles: the sides opposite them are equal (triangles chapter)") },
+          { full: true, tex: r`\frac{BD}{DC} = \frac{BA}{AE}`, why: tx(t, "mSim_bd5", "the intercept theorem in triangle BEC: AD is parallel to the side EC, so it cuts BE and BC in the same ratio") },
+          { full: true, tex: r`\frac{BD}{DC} = \green{\frac{AB}{AC}}`, why: tx(t, "mSim_bd6", "replace AE by AC") },
+        ]} />
+      <LiveFormula label={tx(t, "mSim_liveBis", "Try it: the bisector's cut")}
+        tex={r`\frac{BD}{DC} = \frac{AB}{AC}`}
+        vars={[
+          { id: "ab", label: "AB", min: 1, max: 15, step: 0.5, value: 6, fmt: num },
+          { id: "ac", label: "AC", min: 1, max: 15, step: 0.5, value: 9, fmt: num },
+          { id: "bc", label: "BC", min: 1, max: 20, step: 0.5, value: 10, fmt: num },
+        ]}
+        compute={bisNumbers}
+        note={tx(t, "mSim_liveBisNote", "The start: AB = 6, AC = 9, BC = 10 gives BD = 4 and DC = 6. The longer neighbouring side gets the longer piece. With AB = AC the bisector hits the midpoint. (For a real triangle each side must be shorter than the other two together.)")} />
 
       <H2>{tx(t, "mSim_scaleTitle", "Lengths k, areas k², volumes k³")}</H2>
       <p>
@@ -168,7 +302,7 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mSim_projTitle", "How a camera sees: perspective")}</H2>
       <p>
         {tx(t, "mSim_projBody",
-          "Why do far things look small? A pinhole camera, a dark box with a tiny hole, answers with similar triangles, and your eye works the same way. Picture it from the side, drawn the way painters and architects draw perspective: the eye (the pinhole) at the origin, looking along the depth axis z, and a flat picture plane, like a window you trace the view onto, at distance d in front of it. A point of the world at height y and depth z sends a ray of light to the eye; the ray crosses the screen at some height y'. The eye, the foot of the screen and the ray's crossing point form a small right triangle. The eye, the point's foot on the ground line and the point itself form a big one. They share the angle at the eye, and both have a right angle, so by AA they are similar. The third mode of the figure shows both.")}
+          "Why do far things look small? A pinhole camera, a dark box with a tiny hole, answers with similar triangles, and your eye works the same way. Picture it from the side, drawn the way painters and architects draw perspective: the eye (the pinhole) at the origin, looking along the depth axis z, and a flat picture plane, like a window you trace the view onto, at distance d in front of it. A point of the world at height y and depth z sends a ray of light to the eye; the ray crosses the screen at some height y'. The eye, the foot of the screen and the ray's crossing point form a small right triangle. The eye, the point's foot on the ground line and the point itself form a big one. They share the angle at the eye, and both have a right angle, so by AA they are similar. The projection mode of the first figure shows both.")}
       </p>
       <Equation label={tx(t, "mSim_eqProj", "Perspective projection")}
         where={[
@@ -207,6 +341,22 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSim_ex3",
           "3. Triangles with sides 3, 5, 7 and 7.5, 12.5, 17.5. Sort both and divide: 7.5/3 = 2.5, 12.5/5 = 2.5, 17.5/7 = 2.5. Same ratio, so they are similar by SSS∼ with k = 2.5, and the bigger one has 2.5² = 6.25 times the area.")}
       </p>
+      <p>
+        {tx(t, "mSim_ex4",
+          "4. A trapezoid has parallel sides AB = 6 and DC = 10, and its diagonals AC and BD cross at O. The triangles OAB and OCD form an hourglass with k = 10/6 = 5/3, so O cuts each diagonal in the ratio 3 : 5. If AC = 12, then OA = 12 · 3/8 = 4.5 and OC = 7.5. Check: 7.5/4.5 = 5/3 ✓.")}
+      </p>
+      <p>
+        {tx(t, "mSim_ex5",
+          "5. A right triangle has legs 6 and 8, so its hypotenuse is 10. Where does the altitude from the right angle meet the hypotenuse? From b² = pc: p = 6²/10 = 3.6, and from a² = qc: q = 8²/10 = 6.4 (3.6 + 6.4 = 10 ✓). The altitude is h = √(3.6 · 6.4) = √23.04 = 4.8, which agrees with the area: ½ · 6 · 8 = 24 = ½ · 10 · 4.8.")}
+      </p>
+      <p>
+        {tx(t, "mSim_ex6",
+          "6. In triangle ABC, AB = 6, AC = 9 and BC = 10. The bisector of the angle at A cuts BC in the ratio 6 : 9 = 2 : 3, so BD = 10 · 2/5 = 4 and DC = 6.")}
+      </p>
+      <p>
+        {tx(t, "mSim_ex7",
+          "7. A 1.8 m person stands 4 m from a lamp post and casts a 2 m shadow. The tip of the shadow, the person and the post form an \"A\": the small triangle (person, 2 m of ground) and the big one (post, 2 + 4 = 6 m of ground) share the angle at the tip, so the post is 1.8 · 6/2 = 5.4 m tall. The trap is to use 4 m instead of 6 m: the big triangle's base runs all the way from the tip of the shadow to the post.")}
+      </p>
 
       <H2>{tx(t, "mSim_mapTitle", "Map and plan scales by hand")}</H2>
       <p>
@@ -236,6 +386,8 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mSim_m3w", "area doubles when lengths double"), tx(t, "mSim_m3r", "area ×4, volume ×8"), tx(t, "mSim_m3", "areas scale by k², volumes by k³")],
           [tx(t, "mSim_m4w", "SSA or two sides alone prove similarity"), tx(t, "mSim_m4r", "use AA, SSS∼ or SAS∼"), tx(t, "mSim_m4", "the angle must be between the two sides")],
           [tx(t, "mSim_m5w", "map area = paper area × scale"), tx(t, "mSim_m5r", "multiply by the scale squared"), tx(t, "mSim_m5", "an area is a length times a length, so each is scaled")],
+          [tx(t, "mSim_m6w", "hourglass: OA/OD = OB/OC"), "OA/OC = OB/OD", tx(t, "mSim_m6", "each half pairs with the other half of the same line, through O")],
+          [tx(t, "mSim_m7w", "nested triangles: using only the extra piece as the big side"), tx(t, "mSim_m7r", "the big triangle's side is the whole side"), tx(t, "mSim_m7", "the lamp post's triangle reaches from the shadow's tip to the post: 2 + 4, not 4")],
         ]}
       />
 
@@ -243,7 +395,10 @@ export function SimilarityContent({ t }: { t: TrackTranslations }) {
         "Similar figures have equal angles and all lengths in one ratio k, the scale factor.",
         "A dilation about O: x' = oₓ + k(x − oₓ), and the same for y.",
         "Triangles are similar by AA, SSS∼ or SAS∼; list matching corners in the same order.",
-        "A line parallel to a side cuts the other two sides in the same ratio.",
+        "Match sides through the angles opposite them; a turned or flipped copy is still similar.",
+        "A line parallel to a side cuts the other two sides in the same ratio; two lines crossing between parallels make an hourglass of similar triangles.",
+        "The altitude to the hypotenuse makes three similar right triangles: h² = pq, a² = qc, b² = pc, and so a² + b² = c².",
+        "The bisector of an angle cuts the opposite side in the ratio of the two neighbouring sides.",
         "Scaling by k multiplies lengths by k, areas by k², volumes by k³.",
         "Perspective is similar triangles: y' = d·y / z, so twice as far looks half as big.",
         "Map scale 1 : n multiplies lengths by n and areas by n².",

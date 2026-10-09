@@ -421,7 +421,7 @@
   },
   "math/similarity": {
     "created": "2026-09-26",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "math/circle": {
     "created": "2026-09-26",
@@ -577,7 +577,7 @@
   },
   "math/regression": {
     "created": "2026-09-26",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "math/markov-chains": {
     "created": "2026-09-28",

@@ -130,6 +130,13 @@ const text: Record<string, string> = {
   mSamp_liveTestNote: "O início são os parafusos: z ≈ 2,83 e p ≈ 0,005. Baixe n para 10: a mesma diferença de 0,2 mm dá p ≈ 0,21, que já não é evidência. Com n = 400, até x̄ = 10,05 é significativo: um efeito pequeno, detectado por uma amostra grande.",
   mSamp_liveReject: "abaixo de 0,05: rejeite a hipótese nula ao nível de 5%",
   mSamp_liveKeep: "não está abaixo de 0,05: não rejeite a hipótese nula",
+  mSamp_key0: "Uma estatística é uma variável aleatória; a sua distribuição amostral mede quanto ela varia de uma amostra para outra.",
+  mSamp_key1: "x̄ é não viesado para μ com erro padrão σ/√n; s² com n − 1 é não viesado para σ².",
+  mSamp_key2: "Lei dos grandes números: P(|X̄ − μ| ≥ ε) ≤ σ²/(nε²) → 0.",
+  mSamp_key3: "Teorema central do limite: médias e somas de muitos valores independentes são aproximadamente normais, seja qual for a população.",
+  mSamp_key4: "Um intervalo de confiança x̄ ± z*σ/√n pega μ na fração declarada das amostras; n = (z*σ/E)² dá a margem E.",
+  mSamp_key5: "Um teste supõe H₀, calcula quão surpreendentes os dados são (o p-valor) e rejeita H₀ se p < α.",
+  mSamp_key6: "Significativo ≠ importante, e um p-valor não é a probabilidade de H₀ ser verdadeira.",
 };
 
 export default text;
