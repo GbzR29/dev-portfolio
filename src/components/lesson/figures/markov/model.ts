@@ -209,6 +209,25 @@ export function absorption(P: FMat): { hit: Frac[]; time: Frac[] } {
   return { hit: [ZERO, ...h, ONE], time: [ZERO, ...t, ZERO] };
 }
 
+/**
+ * The expected number of steps counted only over the walks that end at `end`
+ * (k for a win, 0 for ruin): E[T | end]. With e_i the chance of ending there
+ * from i, the walk seen only through those runs is again a Markov chain, with
+ * p'_ij = p_ij·e_j/e_i (a step is more likely when it leads where the run is
+ * known to end). Its first-step equation, multiplied by e_i, is linear in
+ * g_i = e_i·E[T | end]:
+ *   g_i = e_i + Σⱼ p_ij g_j   (g = 0 at both ends)
+ * Undefined (returned as 0) at the other end, where e = 0.
+ */
+export function conditionalTime(P: FMat, hit: Frac[], end: "win" | "ruin"): Frac[] {
+  const k = P.length - 1;
+  const e = end === "win" ? hit : hit.map(h => fSub(ONE, h));
+  const inner = Array.from({ length: k - 1 }, (_, i) => i + 1);
+  const A = inner.map(i => inner.map(j => fSub(i === j ? ONE : ZERO, P[i][j])));
+  const g = fSolve(A, inner.map(i => e[i])) ?? inner.map(() => ZERO);
+  return [ZERO, ...g.map((v, n) => (fIsZero(e[n + 1]) ? ZERO : fDiv(v, e[n + 1]))), ZERO];
+}
+
 // ── Plain numbers ─────────────────────────────────────────────────────────────
 
 /** Row vector times matrix, in floats (also for "broken" matrices whose rows don't add up to 1). */

@@ -11,11 +11,14 @@ import { fNum, fStr, type Frac } from "./model";
 // "chance" mode, and one unit below it in "time" mode (the +1 is the step just
 // taken). Middle: the states; the ends are squares because they are absorbing.
 // Bottom: a crowd of walkers released together, piled under their states.
+// In the "given a win / given ruin" modes the bars are E[T | end] and the chord
+// uses the conditioned weights p′, q′ of each state instead of p, q.
+
+/** hit: chance of reaching k; time: expected steps; win / ruin: expected steps given that ending. */
+export type Mode = "hit" | "time" | "win" | "ruin";
 
 export const STAGE_W = 660;
 const H = 330, BAR_BASE = 158, BAR_MAX = 118, ROW_Y = 186, CROWD_Y = 212, DOT = 5, PER_ROW = 8;
-
-export type Mode = "hit" | "time";
 
 /** Where each walker is drawn: piled in rows under its state. */
 export function crowdLayout(pos: number[], X: (i: number) => number) {
@@ -30,7 +33,9 @@ export function crowdLayout(pos: number[], X: (i: number) => number) {
 export const stateX = (k: number) => (i: number) => 64 + (i * (STAGE_W - 128)) / k;
 
 export function AbsorbStage({ k, p, values, mode, focus, onFocus, dots, labels }: {
-  k: number; p: number;
+  k: number;
+  /** Weight of the right-hand neighbour in the focused state's first step (p, or p′ when conditioned). */
+  p: number;
   values: Frac[];
   mode: Mode;
   focus: number | null;
@@ -44,8 +49,11 @@ export function AbsorbStage({ k, p, values, mode, focus, onFocus, dots, labels }
   const top = mode === "hit" ? 1 : Math.max(1, ...nums);
   const Y = (v: number) => BAR_BASE - (v / top) * BAR_MAX;
   const bw = Math.min(40, ((STAGE_W - 128) / (k + 1)) * 0.6);
-  const col = mode === "hit" ? C.green : C.purple;
+  const col = mode === "hit" ? C.green : mode === "time" ? C.purple : mode === "win" ? C.teal : C.red;
   const f = focus !== null && focus > 0 && focus < k ? focus : null;
+  // Given a win, the walk never sits at 0 (and given ruin, never at k): no bar there
+  const hidden = mode === "win" ? 0 : mode === "ruin" ? k : -1;
+  const prime = mode === "win" || mode === "ruin" ? "′" : "";
 
   let chord: React.ReactNode = null;
   if (f !== null) {
@@ -60,15 +68,16 @@ export function AbsorbStage({ k, p, values, mode, focus, onFocus, dots, labels }
         {/* Where the chord passes over state f: the weighted average of the neighbours */}
         <line x1={X(f)} x2={X(f)} y1={Math.min(m.y, target) - 4} y2={BAR_BASE} stroke={C.fg} strokeWidth={0.8} opacity={0.4} />
         <circle cx={X(f)} cy={m.y} r={4.5} fill={C.amber} stroke="var(--code-bg)" strokeWidth={1.5} />
-        {mode === "time" && Math.abs(target - m.y) > 4 && (
+        {mode !== "hit" && Math.abs(target - m.y) > 4 && (
           <g>
             <line x1={X(f) + 10} x2={X(f) + 10} y1={m.y} y2={target + 4} stroke={C.amber} strokeWidth={1.8} />
             <path d={`M${X(f) + 6},${target + 8} L${X(f) + 10},${target + 1} L${X(f) + 14},${target + 8}`} fill="none" stroke={C.amber} strokeWidth={1.8} />
             <T x={X(f) + 17} y={(m.y + target) / 2 + 4} size={11} bold color={C.amber}>+1</T>
           </g>
         )}
-        <T x={(a.x + m.x) / 2} y={(a.y + m.y) / 2 - 7} anchor="middle" size={10} color={C.pink}>p</T>
-        <T x={(m.x + b.x) / 2} y={(m.y + b.y) / 2 - 7} anchor="middle" size={10} color={C.sky}>q</T>
+        {/* A conditioned weight can be 0 or 1: no label on a segment too short to hold one */}
+        {Math.abs(m.x - a.x) > 24 && <T x={(a.x + m.x) / 2} y={(a.y + m.y) / 2 - 7} anchor="middle" size={10} color={C.pink}>p{prime}</T>}
+        {Math.abs(b.x - m.x) > 24 && <T x={(m.x + b.x) / 2} y={(m.y + b.y) / 2 - 7} anchor="middle" size={10} color={C.sky}>q{prime}</T>}
       </g>
     );
   }
@@ -79,6 +88,7 @@ export function AbsorbStage({ k, p, values, mode, focus, onFocus, dots, labels }
       {nums.map((v, i) => {
         const h = BAR_BASE - Y(v);
         const on = i === f;
+        if (i === hidden) return <T key={i} x={X(i)} y={BAR_BASE - 6} anchor="middle" size={9.5} color={C.muted}>–</T>;
         return (
           <g key={i} onClick={() => onFocus(i)} style={{ cursor: i > 0 && i < k ? "pointer" : "default" }}>
             <rect x={X(i) - bw / 2 - 6} y={BAR_BASE - BAR_MAX - 6} width={bw + 12} height={BAR_MAX + 6} fill="transparent" />

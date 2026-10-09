@@ -7,18 +7,23 @@ import { Btn, C, Choice, Figure, Readout, Row, Slider, Sliders, f2, mulberry32, 
 import { scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
 import { Lab, LabButton, fill, useLab, type Insight, type LabStep } from "@/components/lesson/kit/lab/Lab";
 import { Transport } from "@/components/lesson/kit/Transport";
-import { absorption, fNum, fStr, stepFrom, sub, toNumbers, walkMatrix } from "./model";
+import { absorption, conditionalTime, fDiv, fMul, fNum, fStr, fSub, ONE, stepFrom, sub, toNumbers, walkMatrix, type Frac } from "./model";
 import { AbsorbStage, crowdLayout, stateX, type Mode } from "./AbsorbStage";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A walk on {0, …, k} whose ends are absorbing: a gambler with i coins who
 // wins a coin with probability p and loses one with q = 1 − p, until ruin (0)
 // or the target (k). The bars give, for every start, the exact chance of
-// reaching k and the expected number of steps, from first-step analysis. A
-// crowd of walkers released from the chosen start checks them by simulation.
+// reaching k and the expected number of steps, from first-step analysis, and
+// the expected steps counted only over the runs that win (or only over those
+// ruined). A crowd of walkers released from the chosen start checks them by
+// simulation: each walker remembers the step at which it stopped.
 
 const WALKERS = 150;
 const EX = { k: 3, p: 0.75 };
+/** A fraction as text, or a decimal when its denominator gets long. */
+const short = (v: Frac) => (v.d < BigInt(1000) ? fStr(v) : f2(fNum(v), 2));
+const mean = (xs: number[]) => xs.reduce((s, x) => s + x, 0) / Math.max(1, xs.length);
 
 export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
   const [k, setK] = useState(EX.k);
@@ -31,6 +36,7 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
   const [u, setU] = useState(1);
   const [running, setRunning] = useState(false);
   const [moves, setMoves] = useState(0);                // steps taken by the crowd since it was placed
+  const [stops, setStops] = useState<number[]>(() => Array(WALKERS).fill(0)); // step at which each walker stopped (0 = still walking)
   const [touched, setTouched] = useState(false);
   const [speed] = useFigureSpeed();
   const lab = useLab("markov-absorbing");
@@ -39,17 +45,25 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
   const P =useMemo(() => walkMatrix({ k, p, hold: 0, boundary: "absorbing" }), [k, p]);
   const Pn = useMemo(() => toNumbers(P), [P]);
   const { hit, time } = useMemo(() => absorption(P), [P]);
-  const values = mode === "hit" ? hit : time;
+  const winTime = useMemo(() => conditionalTime(P, hit, "win"), [P, hit]);
+  const ruinTime = useMemo(() => conditionalTime(P, hit, "ruin"), [P, hit]);
+  const values = mode === "hit" ? hit : mode === "time" ? time : mode === "win" ? winTime : ruinTime;
+  // The chance of the ending the mode conditions on (1 when it conditions on nothing)
+  const ends = mode === "win" ? hit : mode === "ruin" ? hit.map(h => fSub(ONE, h)) : null;
 
   const rnd = useRef(mulberry32(11));
   const posRef = useRef(pos); posRef.current = pos;
+  const stopsRef = useRef(stops); stopsRef.current = stops;
+  const movesRef = useRef(moves); movesRef.current = moves;
   const uRef = useRef(1);
   // "go": the ⏭ button asked for one move; "done": that move was made, stop when its glide ends
   const single = useRef<null | "go" | "done">(null);
   const [stepMode, setStepMode] = useState(false);       // running only to show one ⏭ move
   const place = (s: number) => {
     const a = Array(WALKERS).fill(s);
+    const z = Array(WALKERS).fill(0);
     setPos(a); setPrev(a); posRef.current = a; uRef.current = 1; setU(1); setRunning(false); setMoves(0); single.current = null;
+    setStops(z); stopsRef.current = z;
   };
   const absorbed = (ps: number[]) => ps.every(s => s === 0 || s === k);
   const playPause = () => {
@@ -73,7 +87,10 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
     const cur = posRef.current;
     if (single.current === "done" || absorbed(cur)) { single.current = null; setStepMode(false); setRunning(false); uRef.current = 1; setU(1); return; }
     const moved = cur.map(s => (s === 0 || s === k ? s : stepFrom(Pn, s, rnd.current())));
-    setPrev(cur); setPos(moved); posRef.current = moved; setMoves(m => m + 1);
+    const n = movesRef.current + 1;
+    const st = stopsRef.current.map((v, w) => (v || (moved[w] === 0 || moved[w] === k ? n : 0)));
+    setPrev(cur); setPos(moved); posRef.current = moved; setMoves(n); movesRef.current = n;
+    setStops(st); stopsRef.current = st;
     if (single.current === "go") single.current = "done";
     uRef.current = 0; setU(0);
   });
@@ -87,12 +104,20 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
   const done = won + lost === WALKERS && pos.some(s => s !== start);
   const f = focus !== null && focus > 0 && focus < k ? focus : null;
   const q = 1 - p;
-  const formula = f === null ? "" : mode === "hit"
-    ? `h${sub(f)} = q·h${sub(f - 1)} + p·h${sub(f + 1)} = ${fStr(P[f][f - 1])}·${fStr(hit[f - 1])} + ${fStr(P[f][f + 1])}·${fStr(hit[f + 1])} = ${fStr(hit[f])}`
-    : `t${sub(f)} = 1 + q·t${sub(f - 1)} + p·t${sub(f + 1)} = 1 + ${fStr(P[f][f - 1])}·${fStr(time[f - 1])} + ${fStr(P[f][f + 1])}·${fStr(time[f + 1])} = ${fStr(time[f])}`;
+  // Given the ending, a step is weighted by how likely it leads there: p′ = p·e(i+1)/e(i)
+  const pf = f === null ? null : ends ? fDiv(fMul(P[f][f + 1], ends[f + 1]), ends[f]) : P[f][f + 1];
+  const qf = f === null ? null : ends ? fDiv(fMul(P[f][f - 1], ends[f - 1]), ends[f]) : P[f][f - 1];
+  const formula = f === null || pf === null || qf === null ? "" : mode === "hit"
+    ? `h${sub(f)} = q·h${sub(f - 1)} + p·h${sub(f + 1)} = ${fStr(qf)}·${fStr(hit[f - 1])} + ${fStr(pf)}·${fStr(hit[f + 1])} = ${fStr(hit[f])}`
+    : mode === "time"
+      ? `t${sub(f)} = 1 + q·t${sub(f - 1)} + p·t${sub(f + 1)} = 1 + ${fStr(qf)}·${fStr(time[f - 1])} + ${fStr(pf)}·${fStr(time[f + 1])} = ${fStr(time[f])}`
+      : `τ${sub(f)} = 1 + q′·τ${sub(f - 1)} + p′·τ${sub(f + 1)} = 1 + ${short(qf)}·${short(values[f - 1])} + ${short(pf)}·${short(values[f + 1])} = ${short(values[f])}`;
+
+  // Simulation: mean stopping step of the walkers that won, and of those ruined
+  const winSteps = stops.filter((s, w) => s > 0 && pos[w] === k), ruinSteps = stops.filter((s, w) => s > 0 && pos[w] === 0);
 
   const drawing = (
-    <AbsorbStage k={k} p={p} values={values} mode={mode} focus={focus} dots={dots}
+    <AbsorbStage k={k} p={pf === null ? p : fNum(pf)} values={values} mode={mode} focus={focus} dots={dots}
       onFocus={i => { if (i > 0 && i < k) { setFocus(i); setTouched(true); } }}
       labels={{ ruin: tx(t, "figMkAbs_ruin", "ruin"), win: tx(t, "figMkAbs_win", "target"), formula }} />
   );
@@ -117,14 +142,29 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
     <Choice value={mode} onChange={(m: Mode) => setMode(m)} options={[
       ["hit", tx(t, "figMkAbs_hit", "chance to reach k")],
       ["time", tx(t, "figMkAbs_time", "expected steps")],
+      ["win", tx(t, "figMkAbs_ifWin", "steps, if it wins")],
+      ["ruin", tx(t, "figMkAbs_ifRuin", "steps, if ruined")],
     ]} />
   );
+  const cond = mode === "win" || mode === "ruin";
+  const condSteps = mode === "win" ? winSteps : ruinSteps;
   const readouts = (
     <Row>
       <Readout color={C.green}>h{sub(start)} = {fStr(hit[start])} ≈ {f2(fNum(hit[start]) * 100, 1)}%</Readout>
       <Readout color={C.purple}>t{sub(start)} = {fStr(time[start])} ≈ {f2(fNum(time[start]), 2)}</Readout>
-      {pos.some(s => s !== start) && (
+      {cond && (
+        <Readout color={mode === "win" ? C.teal : C.red}>
+          τ{sub(start)} = {short(values[start])}{values[start].d < BigInt(1000) && values[start].d > BigInt(1) ? ` ≈ ${f2(fNum(values[start]), 2)}` : ""}
+        </Readout>
+      )}
+      {pos.some(s => s !== start) && !cond && (
         <Readout color={C.amber}>{tx(t, "figMkAbs_sim", "simulated")}: {won} / {WALKERS} {tx(t, "figMkAbs_atK", "at k")} ({f2((won / WALKERS) * 100, 0)}%)</Readout>
+      )}
+      {pos.some(s => s !== start) && cond && (
+        <Readout color={C.amber}>
+          {fill(tx(t, mode === "win" ? "figMkAbs_simWin" : "figMkAbs_simRuin", mode === "win" ? "simulated: {n} winners, {m} steps on average" : "simulated: {n} ruined, {m} steps on average"),
+            { n: condSteps.length, m: condSteps.length ? f2(mean(condSteps), 2) : "–" })}
+        </Readout>
       )}
     </Row>
   );
@@ -183,6 +223,26 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
       focus: "play",
       setup: () => { setMode("hit"); reconfigure(8, 0.45, 4); },
     },
+    {
+      title: tx(t, "figMkAbsL7_t", "How long, if it wins?"),
+      body: <>
+        <p>{tx(t, "figMkAbsL7_b1", "Back to the worked example, p = 3/4 from 1. Now count the steps only of the walkers that reach 3, and call their average τᵢ. Among those runs the steps are not p and q any more: knowing that the run ends at k makes a step towards k more likely. A step to i + 1 counts with p′ = p·hᵢ₊₁/hᵢ, a step to i − 1 with q′ = q·hᵢ₋₁/hᵢ, and p′ + q′ = 1 by the first-step equation for h.")}</p>
+        <p>{tx(t, "figMkAbsL7_b2", "Then the same first-step idea works: τᵢ = 1 + q′·τᵢ₋₁ + p′·τᵢ₊₁. From 1, q′ = 1/4 · 0 = 0: a winning run can never have gone to 0. Release the walkers and compare their average with τ₁.")}</p>
+      </>,
+      goal: { text: tx(t, "figMkAbsL7_g", "Choose \"steps, if it wins\" and release the walkers until all have stopped."), done: mode === "win" && done },
+      focus: "play",
+      setup: () => { setMode("win"); reconfigure(EX.k, EX.p, 1); },
+    },
+    {
+      title: tx(t, "figMkAbsL8_t", "Ruin comes fast"),
+      body: <p>{tx(t, "figMkAbsL8_b", "Switch to \"steps, if ruined\" and read τ₁ for the runs that end at 0 (with ruin, the weights use 1 − h instead of h). The two kinds of run, weighted by how likely each is, must give back the plain expected time.")}</p>,
+      quiz: {
+        q: tx(t, "figMkAbsL8_q", "From 1 with p = 3/4: h₁ = 9/13, a winning run lasts 32/13 steps on average and a ruined one 19/13. What is the plain expected time t₁?"),
+        options: ["28/13", "51/26", "32/13", "2"],
+        answer: 0,
+        why: tx(t, "figMkAbsL8_w", "The law of total expectation: t₁ = h₁·τ(win) + (1 − h₁)·τ(ruin) = 9/13 · 32/13 + 4/13 · 19/13 = 364/169 = 28/13. The plain average 51/26 forgets that wins are more than twice as common."),
+      },
+    },
   ];
 
   const insights: Insight[] = [
@@ -211,6 +271,20 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
         sd: f2(Math.sqrt((fNum(hit[start]) * (1 - fNum(hit[start]))) / WALKERS) * 100, 1),
       }),
     },
+    {
+      id: "total", tone: "info", when: cond,
+      title: tx(t, "figMkAbsI5_t", "Two kinds of run, one average"),
+      body: fill(tx(t, "figMkAbsI5_b", "From {i}: a winning run lasts {w} steps on average, a ruined one {l}. Weighted by their chances, {h} · {w} + {m} · {l} = {t}, exactly the plain expected time t. That is the law of total expectation, split by how the walk ends."), {
+        i: start, w: short(winTime[start]), l: short(ruinTime[start]), h: short(hit[start]), m: short(fSub(ONE, hit[start])), t: short(time[start]),
+      }),
+    },
+    {
+      id: "swap", tone: "ok", when: cond && Math.abs(p - 0.5) > 1e-9,
+      title: tx(t, "figMkAbsI6_t", "The edge decides who wins, not how long a win takes"),
+      body: fill(tx(t, "figMkAbsI6_b", "Change p to {p2} and watch the bars of this mode: they do not move. Wherever it wanders, every winning run from i has exactly k − i more wins than losses, and every ruined run exactly i more losses than wins. So swapping p and q multiplies the chance of every run of one kind by the same factor. Within each kind the runs keep their relative weights, so their average length stays put. (Here, with i = {i}: τ = {tau}.)"), {
+        p2: f2(1 - p, 2), i: start, tau: short(values[start]),
+      }),
+    },
   ];
 
   return (
@@ -225,7 +299,7 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
           <Row>{startPick}<span className="w-px h-5 bg-[var(--border)] mx-1" />{modeChoice}</Row>
           {readouts}
         </>}
-        note={tx(t, "figMkAbs_note", "The bars are exact: for every start, the chance of reaching k before 0, or the expected number of steps until the walk stops. Click an inner bar to see its first-step equation: its top lies on the chord between its neighbours, p of the way along. Release the crowd to check the chance by simulation.")}
+        note={tx(t, "figMkAbs_note2", "The bars are exact: for every start, the chance of reaching k before 0, the expected number of steps until the walk stops, or that number counted only over the runs that win (or only over those ruined). Click an inner bar to see its first-step equation: its top lies on the chord between its neighbours, p of the way along. Release the crowd to check by simulation.")}
       >
         <div ref={vis.ref}>{stage}</div>
       </Figure>
@@ -236,6 +310,7 @@ export function AbsorbFigure({ t }: { t?: TrackTranslations }) {
           tx(t, "figMkAbsR2", "The expected time adds 1 for the step taken: tᵢ = 1 + q·tᵢ₋₁ + p·tᵢ₊₁."),
           tx(t, "figMkAbsR3", "A fair game gives a straight line, hᵢ = i/k; otherwise hᵢ = (1 − rⁱ)/(1 − rᵏ) with r = q/p."),
           tx(t, "figMkAbsR4", "A small edge against you makes ruin much more likely, and more so the longer the game."),
+          tx(t, "figMkAbsR5", "Counting only the runs that win, steps use p′ = p·hᵢ₊₁/hᵢ, and τᵢ = 1 + q′·τᵢ₋₁ + p′·τᵢ₊₁; the win and ruin averages, weighted by h and 1 − h, give back t."),
         ]}
         title={tx(t, "figMkAbs_title", "Absorbing walls: where it ends and how long it takes")}
         steps={labSteps} insights={insights} stage={stage}

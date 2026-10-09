@@ -14,6 +14,12 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-09
 
+- **Duração condicional na ruína do apostador, no widget "Paredes absorventes" de "Cadeias de Markov" (Matemática)**, a última parte (9) do plano da lista de exercícios de Markov:
+  - **dois modos novos, "passos, se ganhar" e "passos, se arruinar"**: as barras dão o número esperado de passos contado só nas corridas que terminam na meta (ou só nas que terminam na ruína), exato em frações. A equação do primeiro passo de cada barra usa os pesos condicionados p′ = p·hᵢ₊₁/hᵢ e q′ = q·hᵢ₋₁/hᵢ, e a corda do desenho também;
+  - **a simulação agora guarda em que passo cada passeador parou** e mostra a média de passos só dos vencedores (ou só dos arruinados), para comparar com o valor exato (ex.: 2,49 simulado contra 32/13 ≈ 2,46);
+  - **lab com 2 passos novos**: "Quanto demora, se ganhar?" (exemplo resolvido, 32/13 passos contra 19/13 na ruína) e um teste sobre a lei da esperança total (t₁ = 9/13 · 32/13 + 4/13 · 19/13 = 28/13). Também 2 insights novos: a média ponderada que devolve t, e o fato de que trocar p por 1 − p não muda a duração de uma vitória (nem de uma ruína). Mais uma linha no resumo final e a nota do widget atualizada;
+  - tradução PT.
+
 - **Condicionando no primeiro passo, em "Probabilidade condicional e Bayes" (Matemática)**, a parte 8 do plano da lista de exercícios de Markov:
   - **seção nova "Condicionando no primeiro passo: quando um caso recomeça"**: o duelo de lances livres (Ana acerta com a = 0,4 e começa, Bia com b = 0,5), com tabela dos três casos da primeira rodada e dedução passo a passo de P = a/(1 − (1 − a)(1 − b)) = 4/7. Traz a conferência pela série geométrica, a fórmula geral P = w + sP ⇒ P = w/(1 − s) com explicação de cada termo e "em palavras", e uma fórmula ao vivo com a e b (duelo justo quando a = b/(1 + b));
   - **"Quem vem primeiro?"**: soma 6 antes de 7 com dois dados (5/11) e a fórmula P(A antes de B) = P(A)/(P(A) + P(B)), ligada a P(A | A ∪ B). Um aviso explica quando o truque não basta (algo lembrado → um sistema, como nas cadeias de Markov);
