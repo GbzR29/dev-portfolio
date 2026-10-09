@@ -1,16 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Figure, Row, Readout, Choice, C, T } from "@/components/lesson/kit/figure";
+import { Figure, Row, Readout, Choice, C, T, useFrame, useVisible } from "@/components/lesson/kit/figure";
+import { Transport } from "@/components/lesson/kit/Transport";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // Pascal's triangle, rows n = 0 … 10. Entry k of row n is C(n, k), the number
 // of ways to choose k items from n. Clicking an entry highlights the two
 // entries above it, whose sum it is (Pascal's rule), and prints the binomial
 // expansion whose coefficients are that row. The "odd entries" mode colours
-// the odd numbers, which trace a Sierpiński triangle.
+// the odd numbers, which trace a Sierpiński triangle. The Transport builds the
+// triangle one row at a time, selecting the middle of each new row so the two
+// entries it is made from light up.
 
 const ROWS = 11, W = 560, DX = 44, DY = 26, H = 18 + (ROWS - 1) * DY + 18;
 const SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹";
@@ -28,6 +31,17 @@ function expansion(n: number) {
 export function PascalFigure({ t }: { t?: TrackTranslations }) {
   const [[n, k], setSel] = useState<[number, number]>([5, 2]);
   const [mode, setMode] = useState<"sum" | "odd">("sum");
+  const [shown, setShown] = useState(ROWS - 1);          // last row drawn
+  const [playing, setPlaying] = useState(false);
+  const acc = useRef(0);
+  const vis = useVisible<HTMLDivElement>();
+  const showRow = (r: number) => { const v = Math.max(0, Math.min(ROWS - 1, r)); setShown(v); setSel([v, v >> 1]); };
+  useFrame(playing && vis.on, dt => {
+    if (shown >= ROWS - 1) { setPlaying(false); return; }
+    acc.current += dt;
+    if (acc.current > 0.8) { acc.current = 0; showRow(shown + 1); }
+  });
+  const stepTo = (r: number) => { setPlaying(false); showRow(r); };
 
   const cx = (r: number, c: number) => W / 2 + (c - r / 2) * DX;
   const cy = (r: number) => 18 + r * DY;
@@ -52,13 +66,16 @@ export function PascalFigure({ t }: { t?: TrackTranslations }) {
         <span data-touch-only>{tx(t, "figPascal_tap", "Tap an entry to select it.")}</span>
       </>}
     >
+      <div ref={vis.ref}>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
         {TRI.map((row, r) => <T key={`l${r}`} x={8} y={cy(r) + 3.5} color={C.axis}>{`n=${r}`}</T>)}
         {TRI.map((row, r) => row.map((v, c) => {
+          if (r > shown) return <rect key={`${r}-${c}`} x={cx(r, c) - 19} y={cy(r) - 10} width={38} height={20} rx={6}
+            fill="none" stroke="var(--border)" strokeDasharray="3 3" />;
           const sel = r === n && c === k, par = isParent(r, c), odd = mode === "odd" && v % 2 === 1;
           const col = sel ? C.blue : par ? C.amber : odd ? C.purple : null;
           return (
-            <g key={`${r}-${c}`} onClick={() => setSel([r, c])} style={{ cursor: "pointer" }}>
+            <g key={`${r}-${c}`} onClick={() => { setPlaying(false); setSel([r, c]); }} style={{ cursor: "pointer" }}>
               <rect x={cx(r, c) - 19} y={cy(r) - 10} width={38} height={20} rx={6}
                 fill={col ?? "var(--surface)"} fillOpacity={col ? 0.28 : 1} stroke={col ?? "var(--border)"} strokeWidth={sel || par ? 1.8 : 1} />
               <T x={cx(r, c)} y={cy(r) + 3.5} anchor="middle" color={col ?? C.fg} bold={sel}>{v}</T>
@@ -66,6 +83,14 @@ export function PascalFigure({ t }: { t?: TrackTranslations }) {
           );
         }))}
       </svg>
+      <Transport t={t} playing={playing}
+        onPlay={() => { if (shown >= ROWS - 1) showRow(0); acc.current = 0; setPlaying(p => !p); }}
+        playLabel={tx(t, "figPascal_build", "build the triangle row by row")}
+        onStep={() => stepTo(shown + 1)}
+        onBack={() => stepTo(shown - 1)}
+        onReset={() => stepTo(0)}
+        readout={`n = ${shown}`} />
+      </div>
     </Figure>
   );
 }

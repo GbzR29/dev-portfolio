@@ -80,6 +80,29 @@ const text: Record<string, string> = {
   mDesc_m6w: "totais agregados resolvem uma comparação",
   mDesc_m6r: "compare dentro dos grupos primeiro",
   mDesc_m6: "paradoxo de Simpson: misturas diferentes de grupos podem inverter o resultado",
+
+  // ── In words, derivations, live formulas (2026-10-09) ──
+  mDesc_meanWords: "Some todos os valores e divida pela quantidade deles.",
+  mDesc_eqBalance: "Por que os desvios somam zero",
+  mDesc_b1: "a soma dos n desvios em relação à média",
+  mDesc_b2: "separe a soma: o x̄ de dentro é o mesmo nos n termos, então soma n vezes x̄",
+  mDesc_b3: "a definição da média diz que Σxᵢ = n x̄. Os valores acima da média equilibram exatamente os que estão abaixo",
+  mDesc_livePool: "Experimente: a média de duas turmas juntas",
+  mDesc_livePoolNote: "Cada média de turma conta tantas vezes quanto ela tem alunos: n₁ x̄₁ é o total de pontos da primeira turma. A média simples das duas médias, à direita, só acerta quando n₁ = n₂. Deixe uma turma minúscula e veja a média conjunta deslizar até a média da outra turma.",
+  mDesc_varWords: "Meça a distância de cada valor até a média, eleve essas distâncias ao quadrado, some e divida por um a menos que a quantidade. A raiz quadrada traz a resposta de volta para as unidades dos dados.",
+  mDesc_eqShort: "De onde vem o atalho",
+  mDesc_s1: "a soma dos desvios ao quadrado, o numerador de s²",
+  mDesc_s2: "expanda cada quadrado: (a − b)² = a² − 2ab + b²",
+  mDesc_s3: "some as três partes separadamente: x̄ é constante, então sai da soma, e x̄² somado n vezes dá n x̄²",
+  mDesc_s4: "troque Σxᵢ por n x̄, pela definição da média",
+  mDesc_s5: "−2n x̄² + n x̄² = −n x̄². Para as notas da prova: 46 585 − 9 · 71² = 1216",
+  mDesc_liveUnits: "Experimente: média 20 e s = 5 sob y = ax + b",
+  mDesc_liveUnitsNote: "a = 1,8 e b = 32 transformam °C em °F: 68 e 9. Mexa em b: a média se desloca e s não, porque todos os valores andam a mesma quantidade. Deixe a negativo: os dados são espelhados, a média também, mas s continua positivo porque uma distância não pode ser negativa.",
+  mDesc_eqSimpson: "As taxas gerais como médias ponderadas",
+  mDesc_p1: "a taxa geral de A: a taxa de cada grupo pesada pela sua fatia dos pacientes de A. 263 de 350, três quartos, eram casos difíceis",
+  mDesc_p2: "quase todo o peso está na taxa mais baixa, a dos cálculos grandes, então o total é puxado para 78%",
+  mDesc_p3: "a taxa geral de B: aqui três quartos do peso estão no grupo fácil, o dos cálculos pequenos",
+  mDesc_p4: "B ganha no total embora perca nos dois grupos: os totais comparam misturas diferentes, não tratamentos diferentes",
 };
 
 export default text;

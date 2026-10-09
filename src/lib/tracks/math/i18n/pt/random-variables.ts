@@ -84,6 +84,26 @@ const text: Record<string, string> = {
   mRv_m6w: "as marginais determinam a tabela conjunta",
   mRv_m6r: "só se X e Y forem independentes",
   mRv_m6: "tabelas conjuntas diferentes podem ter as mesmas somas de linhas e colunas",
+
+  // ── In words, derivations, live formulas (2026-10-09) ──
+  mRv_pmfWords: "Liste cada valor que X pode assumir com sua probabilidade; nenhuma probabilidade é negativa e juntas elas dão 1.",
+  mRv_cdfWords: "F(x) é a probabilidade acumulada desde a extrema esquerda até x. A probabilidade de uma faixa é quanto F sobe ao longo dela.",
+  mRv_pdfWords: "A chance de X cair entre a e b é a área sob a curva da densidade entre a e b; a área inteira é 1.",
+  mRv_liveRamp: "Experimente: um intervalo sob f(x) = 2x",
+  mRv_liveRampNote: "x² é uma antiderivada de 2x, então a área é x² em b menos x² em a. Deslize uma janela de largura 0,2 da ponta esquerda até a direita: a mesma largura guarda 0,04 perto de 0 mas 0,36 perto de 1, porque a densidade sobe. Com a = 0 e b = 1 a barra fica cheia: a área total é 1.",
+  mRv_liveWait: "Experimente: quanto tempo até a próxima ligação",
+  mRv_liveWaitNote: "a e b são minutos. Os dois 1 se cancelam e sobra e⁻ᵃ − e⁻ᵇ. Compare o primeiro minuto (de 0 a 1, cerca de 0,632) com o terceiro (de 2 a 3, cerca de 0,086): esperas curtas são bem mais prováveis. Ponha a = 0 e b = 5: a barra fica quase cheia, já que só e⁻⁵ ≈ 0,007 das ligações demoram mais.",
+  mRv_eqMedianDer: "A mediana do tempo de espera",
+  mRv_d1: "a mediana deixa metade da probabilidade de cada lado",
+  mRv_d2: "substitua a CDF do tempo de espera, F(x) = 1 − e⁻ˣ",
+  mRv_d3: "passe e⁻ᵐ para um lado e ½ para o outro",
+  mRv_d4: "tire o logaritmo natural dos dois lados; ln(½) = −ln 2",
+  mRv_d5: "multiplique por −1. Metade das ligações chega em até 0,693 minuto, cerca de 42 segundos",
+  mRv_eqStretchDer: "A densidade de Y = 2X, passo a passo",
+  mRv_s1: "a definição da CDF de Y; depois troque Y por 2X",
+  mRv_s2: "divida a desigualdade por 2, que é positivo, então ≤ continua ≤; isso é a CDF de X em y/2",
+  mRv_s3: "uma densidade é a inclinação da sua CDF; a regra da cadeia traz a inclinação de y/2, que é ½",
+  mRv_s4: "F_X′ = f_X. Para X uniforme em [0, 1], f_X = 1, então f_Y = ½ em [0, 2]: metade da altura, o dobro da largura, área ainda 1",
 };
 
 export default text;

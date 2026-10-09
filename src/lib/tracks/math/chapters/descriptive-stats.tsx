@@ -11,12 +11,34 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DescriptiveFigure } from "@/components/lesson/figures/math/DescriptiveFigure";
 
 const r = String.raw;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+const num = (v: number, d = 1) => (Number.isInteger(v) ? String(v) : v.toFixed(d)).replace("-", "−");
+
+/** The mean of two groups pooled together, weighted by their sizes. */
+function pooledNumbers(v: Record<string, number>) {
+  const { n1, m1, n2, m2 } = v, n = n1 + n2, m = (n1 * m1 + n2 * m2) / n;
+  return {
+    tex: r`\bar x = \frac{${n1} \cdot ${m1} + ${n2} \cdot ${m2}}{${n1} + ${n2}} = \frac{${n1 * m1} + ${n2 * m2}}{${n}} = \amber{${num(m, 2)}} \qquad \frac{${m1} + ${m2}}{2} = ${num((m1 + m2) / 2, 2)}`,
+  };
+}
+
+/** Mean 20 and s = 5 after the change of units y = ax + b. */
+function unitsNumbers(v: Record<string, number>) {
+  const { a, b } = v;
+  return {
+    tex: r`\begin{aligned} \bar y &= ${num(a)} \cdot 20 + ${b < 0 ? `(${num(b)})` : num(b)} =\amber{${num(a * 20 + b)}} \\ s_y &= |${num(a)}| \cdot 5 = \amber{${num(Math.abs(a) * 5)}} \end{aligned}`,
+  };
+}
 
 export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
   return (
@@ -68,9 +90,26 @@ export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
           [r`\bar x`, tx(t, "mDesc_wBar", "the mean, read \"x bar\": the total divided by the count")],
           [r`\sum f_j x_j / n`, tx(t, "mDesc_wWeighted", "the same mean from a frequency table: each value times how often it occurs")],
         ]}
-        note={tx(t, "mDesc_meanNote", "Dividing by n is the same as weighting each distinct value by its relative frequency f/n, so the mean is a weighted average of the distinct values. It is also the balance point of the data: the deviations xᵢ − x̄ add to zero. (The expectation chapter builds E[X] the same way, with probabilities as the weights.)")}>
+        note={tx(t, "mDesc_meanNote", "Dividing by n is the same as weighting each distinct value by its relative frequency f/n, so the mean is a weighted average of the distinct values. It is also the balance point of the data: the deviations xᵢ − x̄ add to zero. (The expectation chapter builds E[X] the same way, with probabilities as the weights.)")}
+        words={tx(t, "mDesc_meanWords", "Add up all the values and divide by how many there are.")}>
         {r`\bar x = \frac{x_1 + x_2 + \dots + x_n}{n} = \frac1n \sum_{i=1}^{n} x_i`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mDesc_eqBalance", "Why the deviations add to zero")}
+        steps={[
+          { tex: r`\sum_{i=1}^{n} (x_i - \bar x)`, why: tx(t, "mDesc_b1", "the sum of the n deviations from the mean") },
+          { tex: r`= \sum_{i=1}^{n} x_i - n\bar x`, why: tx(t, "mDesc_b2", "split the sum: the x̄ inside is the same in all n terms, so it adds up to n times x̄") },
+          { tex: r`= n\bar x - n\bar x = \green{0}`, why: tx(t, "mDesc_b3", "the definition of the mean says Σxᵢ = n x̄. The values above the mean exactly balance those below it") },
+        ]} />
+      <LiveFormula label={tx(t, "mDesc_livePool", "Try it: the mean of two classes together")}
+        tex={r`\bar x = \frac{n_1 \bar x_1 + n_2 \bar x_2}{n_1 + n_2}`}
+        vars={[
+          { id: "n1", label: <>n<sub>1</sub></>, min: 1, max: 40, step: 1, value: 25, fmt: v => String(v) },
+          { id: "m1", label: <>x̄<sub>1</sub></>, min: 40, max: 90, step: 1, value: 60, fmt: v => String(v) },
+          { id: "n2", label: <>n<sub>2</sub></>, min: 1, max: 40, step: 1, value: 15, fmt: v => String(v) },
+          { id: "m2", label: <>x̄<sub>2</sub></>, min: 40, max: 90, step: 1, value: 72, fmt: v => String(v) },
+        ]}
+        compute={pooledNumbers}
+        note={tx(t, "mDesc_livePoolNote", "Each class mean counts as often as it has students: n₁ x̄₁ is the first class's total marks. The plain average of the two means, on the right, is only right when n₁ = n₂. Make one class tiny and watch the pooled mean slide to the other class's mean.")} />
       <p>
         {tx(t, "mDesc_familyMean",
           "For the families: x̄ = (0 · 4 + 1 · 7 + 2 · 6 + 3 · 2 + 4 · 1)/20 = 29/20 = 1.45 children.")}
@@ -97,9 +136,18 @@ export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
           [r`s^2,\ s`, tx(t, "mDesc_wS", "the sample variance and the sample standard deviation, in the units of x")],
           [r`\sum x_i^2 - n\bar x^2`, tx(t, "mDesc_wShort", "the shortcut for the sum of squared deviations: add up the squares, then subtract n times the squared mean (checked in the worked example below)")],
         ]}
-        note={tx(t, "mDesc_n1Note", "Why n − 1? The mean x̄ was computed from the same data, and it is the point that makes the sum of squared deviations as small as possible; the deviations from the true population mean would on average be a little larger. Dividing by n − 1 instead of n exactly compensates, so that s² is right on average (the sampling chapter proves it). Another way to say it: the n deviations add to 0, so only n − 1 of them are free; the last one is determined by the others.")}>
+        note={tx(t, "mDesc_n1Note", "Why n − 1? The mean x̄ was computed from the same data, and it is the point that makes the sum of squared deviations as small as possible; the deviations from the true population mean would on average be a little larger. Dividing by n − 1 instead of n exactly compensates, so that s² is right on average (the sampling chapter proves it). Another way to say it: the n deviations add to 0, so only n − 1 of them are free; the last one is determined by the others.")}
+        words={tx(t, "mDesc_varWords", "Measure how far each value is from the mean, square those distances, add them up and divide by one less than the count. The square root brings the answer back to the data's units.")}>
         {r`s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar x)^2 = \frac{\sum x_i^2 - n\bar x^2}{n-1} \qquad s = \sqrt{s^2}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "mDesc_eqShort", "Where the shortcut comes from")}
+        steps={[
+          { tex: r`\sum (x_i - \bar x)^2`, why: tx(t, "mDesc_s1", "the sum of squared deviations, the top of s²") },
+          { tex: r`= \sum \big(x_i^2 - 2\bar x\,x_i + \bar x^2\big)`, why: tx(t, "mDesc_s2", "expand each square: (a − b)² = a² − 2ab + b²") },
+          { tex: r`= \sum x_i^2 - 2\bar x \sum x_i + n\bar x^2`, why: tx(t, "mDesc_s3", "add the three parts separately: x̄ is a constant, so it comes out of the sum, and x̄² added n times is n x̄²") },
+          { tex: r`= \sum x_i^2 - 2\bar x \cdot n\bar x + n\bar x^2`, why: tx(t, "mDesc_s4", "replace Σxᵢ by n x̄, from the definition of the mean") },
+          { tex: r`= \green{\sum x_i^2 - n\bar x^2}`, why: tx(t, "mDesc_s5", "−2n x̄² + n x̄² = −n x̄². For the test scores: 46 585 − 9 · 71² = 1216") },
+        ]} />
       <H3>{tx(t, "mDesc_handTitle", "A full calculation by hand")}</H3>
       <p>
         {tx(t, "mDesc_handIntro",
@@ -137,6 +185,14 @@ export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDesc_unitsBody",
           "Changing units is a linear transformation y = ax + b, and the summaries follow it in a simple way: every measure of centre (mean, median, quartiles) becomes a · (old) + b, and every measure of spread (range, IQR, s) is multiplied by |a| and ignores b. Temperatures with mean 20 °C and s = 5 °C become 68 °F and 9 °F. Adding 5 bonus points to every test score raises the mean and median by 5 and leaves s and the IQR unchanged.")}
       </p>
+      <LiveFormula label={tx(t, "mDesc_liveUnits", "Try it: mean 20 and s = 5 under y = ax + b")}
+        tex={r`\bar y = a\,\bar x + b \qquad s_y = |a|\,s_x`}
+        vars={[
+          { id: "a", label: "a", min: -3, max: 3, step: 0.1, value: 1.8, fmt: v => v.toFixed(1) },
+          { id: "b", label: "b", min: -40, max: 40, step: 1, value: 32, fmt: v => String(v) },
+        ]}
+        compute={unitsNumbers}
+        note={tx(t, "mDesc_liveUnitsNote", "a = 1.8 and b = 32 turn °C into °F: 68 and 9. Move b: the mean shifts, s does not, since every value moves by the same amount. Make a negative: the data are flipped, the mean flips too, but s stays positive because a distance cannot be negative.")} />
 
       <H2>{tx(t, "mDesc_simpsonTitle", "Simpson's paradox: when grouping reverses a comparison")}</H2>
       <p>
@@ -154,6 +210,13 @@ export function DescriptiveStatsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mDesc_simpsonEnd",
           "A succeeds more often for small stones and for large stones, yet less often overall. There is no arithmetic error. The overall rates are weighted averages of the group rates, and the weights differ: A was mostly given to hard, large-stone cases (263 of its 350), B mostly to easy, small-stone cases (270 of 350). Pooling the groups compares A on hard cases with B on easy ones. The lesson: before comparing totals, ask whether the groups being compared are mixed in different proportions.")}
       </p>
+      <Derivation t={t} label={tx(t, "mDesc_eqSimpson", "The overall rates as weighted averages")}
+        steps={[
+          { tex: r`\text{A} = \tfrac{87}{350} \cdot 93\% + \tfrac{263}{350} \cdot 73\%`, full: true, why: tx(t, "mDesc_p1", "A's overall rate: each group's rate weighted by its share of A's patients. 263 of 350, three quarters, were hard cases") },
+          { tex: r`\text{A} \approx 0.25 \cdot 93\% + 0.75 \cdot 73\% \approx \amber{78\%}`, full: true, why: tx(t, "mDesc_p2", "most of the weight sits on the lower large-stone rate, so the total is pulled down to 78%") },
+          { tex: r`\text{B} = \tfrac{270}{350} \cdot 87\% + \tfrac{80}{350} \cdot 69\%`, full: true, why: tx(t, "mDesc_p3", "B's overall rate: here three quarters of the weight is on the easy small-stone group") },
+          { tex: r`\text{B} \approx 0.77 \cdot 87\% + 0.23 \cdot 69\% \approx \amber{83\%}`, full: true, why: tx(t, "mDesc_p4", "B wins overall although it loses in both groups: the totals compare different mixes, not different treatments") },
+        ]} />
 
       <H2>{tx(t, "mDesc_exTitle", "Worked examples")}</H2>
       <p>{tx(t, "mDesc_ex1", "1. Data 3, 7, 7, 8, 10, 13: mean 48/6 = 8; median (7 + 8)/2 = 7.5; mode 7; range 10. Deviations −5, −1, −1, 0, 2, 5, squares add to 56, s² = 56/5 = 11.2, s ≈ 3.35.")}</p>

@@ -10,6 +10,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -17,6 +19,30 @@ import { CardFigure } from "@/components/lesson/figures/math/CardFigure";
 import { BayesFigure } from "@/components/lesson/figures/math/BayesFigure";
 
 const r = String.raw;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+const d3 = (v: number) => v.toFixed(3);
+
+/** Two machines: total defect rate, then which machine a defective part came from. */
+function factoryNumbers(v: Record<string, number>) {
+  const m1 = v.m1, m2 = 1 - m1, a = m1 * v.d1, b = m2 * v.d2, pd = a + b;
+  return {
+    tex: r`\begin{aligned} P(D) &= ${m1.toFixed(2)} \cdot ${v.d1.toFixed(3)} + ${m2.toFixed(2)} \cdot ${v.d2.toFixed(3)} = ${d3(a)} + ${d3(b)} = \amber{${d3(pd)}} \\ P(M_1 \mid D) &= \frac{${d3(a)}}{${d3(pd)}} = \amber{${d3(a / pd)}} \end{aligned}`,
+    meter: a / pd,
+    meterLabel: `P(M₁ | D) = ${d3(a / pd)}`,
+  };
+}
+
+/** Prior odds times the likelihood ratio once per positive test. */
+function oddsNumbers(v: Record<string, number>) {
+  const p = v.p / 100, lr = v.lr, n = v.n;
+  const prior = p / (1 - p), postOdds = prior * lr ** n, post = postOdds / (1 + postOdds);
+  return {
+    tex: r`\frac{${v.p}}{${100 - v.p}} \cdot ${lr}^{${n}} = ${postOdds < 100 ? postOdds.toFixed(3) : postOdds.toFixed(0)} \quad\Longrightarrow\quad P = \frac{${postOdds < 100 ? postOdds.toFixed(3) : postOdds.toFixed(0)}}{1 + ${postOdds < 100 ? postOdds.toFixed(3) : postOdds.toFixed(0)}} = \amber{${post.toFixed(3)}}`,
+    meter: post,
+  };
+}
 
 export function ConditionalContent({ t }: { t: TrackTranslations }) {
   return (
@@ -44,7 +70,8 @@ export function ConditionalContent({ t }: { t: TrackTranslations }) {
           [r`P(A \cap B)`, tx(t, "mCond_wAB", "the probability that both happen: the part of A that survives inside B")],
           [r`P(B)`, tx(t, "mCond_wB", "the probability of the condition, which must not be 0; dividing by it rescales B to total probability 1")],
         ]}
-        note={tx(t, "mCond_defNote", "With equally likely outcomes the 1/|Ω| cancels, leaving a count: P(A | B) = |A ∩ B| / |B|. B has become the new sample space.")}>
+        note={tx(t, "mCond_defNote", "With equally likely outcomes the 1/|Ω| cancels, leaving a count: P(A | B) = |A ∩ B| / |B|. B has become the new sample space.")}
+        words={tx(t, "mCond_defWords", "Keep only the outcomes where B happened, and ask what share of them also have A.")}>
         {r`P(A \mid B) = \frac{P(A \cap B)}{P(B)}`}
       </Equation>
       <p>
@@ -80,7 +107,8 @@ export function ConditionalContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`A, B`, tx(t, "mCond_wInd", "two events of the same experiment; independence is a statement about their probabilities, not about any physical connection")],
         ]}
-        note={tx(t, "mCond_indNote", "For separate physical experiments with no influence on each other (two different dice, successive coin tosses) independence is assumed, and probabilities of combined results multiply: three sixes in a row has probability (1/6)³ = 1/216.")}>
+        note={tx(t, "mCond_indNote", "For separate physical experiments with no influence on each other (two different dice, successive coin tosses) independence is assumed, and probabilities of combined results multiply: three sixes in a row has probability (1/6)³ = 1/216.")}
+        words={tx(t, "mCond_indWords", "Two events are independent when knowing one happened does not change the chance of the other; then the chance of both is the product of their chances.")}>
         {r`P(A \cap B) = P(A)\,P(B) \quad\Longleftrightarrow\quad P(A \mid B) = P(A)`}
       </Equation>
       <Callout type="warn" t={t}>
@@ -105,22 +133,40 @@ export function ConditionalContent({ t }: { t: TrackTranslations }) {
           [r`A_1, \ldots, A_n`, tx(t, "mCond_wPart", "a partition: mutually exclusive events of which exactly one happens")],
           [r`P(B \mid A_i)`, tx(t, "mCond_wBgA", "how likely B is in the case A_i")],
           [r`P(A_i)`, tx(t, "mCond_wAi", "how likely that case is: the weight of its contribution")],
-        ]}>
+        ]}
+        words={tx(t, "mCond_totalWords", "Split into cases that cannot overlap; in each case take the chance of the case times the chance of B in that case; add up the cases.")}>
         {r`P(B) = \sum_{i=1}^{n} P(A_i)\,P(B \mid A_i)`}
       </Equation>
+      <LiveFormula label={tx(t, "mCond_liveFactory", "Try it: two machines, forwards and backwards")}
+        tex={r`P(D) = P(M_1)\,P(D \mid M_1) + P(M_2)\,P(D \mid M_2) \qquad P(M_1 \mid D) = \frac{P(M_1)\,P(D \mid M_1)}{P(D)}`}
+        vars={[
+          { id: "m1", label: <>P(M<sub>1</sub>)</>, min: 0.05, max: 0.95, step: 0.05, value: 0.6, fmt: v => v.toFixed(2) },
+          { id: "d1", label: <>P(D | M<sub>1</sub>)</>, min: 0.005, max: 0.1, step: 0.005, value: 0.02, fmt: v => v.toFixed(3) },
+          { id: "d2", label: <>P(D | M<sub>2</sub>)</>, min: 0.005, max: 0.1, step: 0.005, value: 0.05, fmt: v => v.toFixed(3) },
+        ]}
+        compute={factoryNumbers}
+        note={tx(t, "mCond_liveFactoryNote", "The first line adds the two paths that end in a defective part; the second asks what share of that total came through machine 1, which is Bayes' theorem below. P(M₂) is 1 − P(M₁), since every part comes from one of the two. Give both machines the same defect rate: the bar then equals P(M₁), because a defect says nothing about the machine.")} />
 
       <H2>{tx(t, "mCond_bayesTitle", "Bayes' theorem: reasoning backwards")}</H2>
       <p>
         {tx(t, "mCond_bayesBody",
           "The factory question can be turned around. A part is found to be defective; which machine made it? We know P(D | M₁), the forward direction, and want P(M₁ | D), the backward one. Write P(M₁ ∩ D) with the multiplication rule in both orders: P(D) P(M₁ | D) = P(M₁) P(D | M₁). Divide by P(D): P(M₁ | D) = 0.012/0.032 = 0.375. Although machine 1 makes most of the parts, a defective part more likely came from machine 2 (0.020/0.032 = 0.625), whose defect rate is higher.")}
       </p>
+      <Derivation t={t} label={tx(t, "mCond_eqBayesDer", "Bayes' theorem from the multiplication rule")}
+        steps={[
+          { tex: r`P(A \cap B) = P(B)\,P(A \mid B)`, full: true, why: tx(t, "mCond_b1", "the multiplication rule with B first: B happens, then A in the world where B happened") },
+          { tex: r`P(A \cap B) = P(A)\,P(B \mid A)`, full: true, why: tx(t, "mCond_b2", "the same event \"both\" with A first. Both lines describe one number") },
+          { tex: r`P(B)\,P(A \mid B) = P(A)\,P(B \mid A)`, full: true, why: tx(t, "mCond_b3", "so the two right-hand sides are equal") },
+          { tex: r`P(A \mid B) = \green{\frac{P(B \mid A)\,P(A)}{P(B)}}`, full: true, why: tx(t, "mCond_b4", "divide by P(B), which must not be 0. For the factory: 0.02 · 0.6 / 0.032 = 0.375") },
+        ]} />
       <Equation label={tx(t, "mCond_eqBayes", "Bayes' theorem")}
         where={[
           [r`P(A)`, tx(t, "mCond_wPrior", "the prior: how likely A was before the evidence")],
           [r`P(B \mid A)`, tx(t, "mCond_wLik", "the likelihood: how likely the evidence B is if A is true")],
           [r`P(B)`, tx(t, "mCond_wEvid", "the total probability of the evidence, usually from the law of total probability: P(A)P(B | A) + P(Aᶜ)P(B | Aᶜ)")],
           [r`P(A \mid B)`, tx(t, "mCond_wPost", "the posterior: how likely A is after seeing B")],
-        ]}>
+        ]}
+        words={tx(t, "mCond_bayesWords", "How likely is the cause, given the evidence? Take the path where the cause is true and the evidence appears, and divide by all the paths that show the same evidence.")}>
         {r`P(A \mid B) = \frac{P(B \mid A)\,P(A)}{P(B)} = \frac{P(B \mid A)\,P(A)}{P(B \mid A)\,P(A) + P(B \mid A^c)\,P(A^c)}`}
       </Equation>
       <H3>{tx(t, "mCond_testTitle", "The medical test")}</H3>
@@ -144,9 +190,19 @@ export function ConditionalContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\frac{P(A)}{P(A^c)}`, tx(t, "mCond_wPriorOdds", "the prior odds of A")],
           [r`\frac{P(B \mid A)}{P(B \mid A^c)}`, tx(t, "mCond_wLR", "the likelihood ratio: above 1 the evidence favours A, below 1 it counts against A")],
-        ]}>
+        ]}
+        words={tx(t, "mCond_oddsWords", "The odds after the evidence are the odds before it, multiplied by how many times more likely the evidence is when A is true.")}>
         {r`\frac{P(A \mid B)}{P(A^c \mid B)} = \frac{P(A)}{P(A^c)} \cdot \frac{P(B \mid A)}{P(B \mid A^c)}`}
       </Equation>
+      <LiveFormula label={tx(t, "mCond_liveOdds", "Try it: n positive tests in a row")}
+        tex={r`O = \frac{P(A)}{P(A^c)} \cdot \mathrm{LR}^{\,n} \qquad P = \frac{O}{1 + O}`}
+        vars={[
+          { id: "p", label: tx(t, "mCond_livePrev", "prevalence (%)"), min: 1, max: 50, step: 1, value: 1, fmt: v => `${v} %` },
+          { id: "lr", label: tx(t, "mCond_liveLR", "likelihood ratio LR"), min: 1, max: 50, step: 1, value: 10, fmt: v => String(v) },
+          { id: "n", label: tx(t, "mCond_liveTests", "positive tests n"), min: 0, max: 5, step: 1, value: 1, fmt: v => String(v) },
+        ]}
+        compute={oddsNumbers}
+        note={tx(t, "mCond_liveOddsNote", "O is the posterior odds, with odds of a : b written as the single number a/b; P = O/(1 + O) turns odds back into a probability. 1 % prevalence is odds 1/99; one positive with LR 10 gives 10/99, P ≈ 0.092, and a second gives 100/99, P ≈ 0.50. With n = 0 the bar is just the prevalence. LR = 1 means the test tells you nothing: the bar never moves.")} />
 
       <H2>{tx(t, "mCond_puzzlesTitle", "Two famous puzzles")}</H2>
       <p>

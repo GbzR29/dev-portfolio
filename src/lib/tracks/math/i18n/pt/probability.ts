@@ -69,6 +69,25 @@ const text: Record<string, string> = {
   mPr_m5: "sequências curtas variam muito",
   mPr_m6w: "chances de 1 : 5 querem dizer P = 1/5",
   mPr_m6: "chances comparam favoráveis com desfavoráveis, não com o total",
+
+  // ── In words, derivations, live formulas (2026-10-09) ──
+  mPr_classicWords: "Conte os resultados em que o evento acontece e divida pelo número de todos os resultados possíveis.",
+  mPr_eqAddDer: "A regra da adição a partir dos axiomas",
+  mPr_d1: "A ∪ B é A mais a parte de B fora de A, escrita B \\ A. Os dois pedaços são disjuntos, então o terceiro axioma os soma",
+  mPr_d2: "o próprio B é essa mesma parte de fora mais a parte dentro de A, de novo dois pedaços disjuntos",
+  mPr_d3: "isole a parte de fora na segunda linha",
+  mPr_d4: "substitua na primeira linha. Só os axiomas foram usados: a regra vale para quaisquer probabilidades, não só para contagens",
+  mPr_addWords: "A chance de A ou B é a chance de A mais a chance de B, menos a chance de ambos, que foi contada em cada uma.",
+  mPr_liveAtLeast: "Experimente: pelo menos um sucesso em n tentativas",
+  mPr_liveAtLeastTex: "pelo menos um",
+  mPr_liveNoneTex: "nenhum",
+  mPr_liveK: "uma chance em k",
+  mPr_liveN: "tentativas n",
+  mPr_liveAtLeastNote: "Cada tentativa falha com chance (k − 1)/k, e n tentativas falham todas com essa chance multiplicada n vezes. k = 6, n = 4 é a primeira aposta de de Méré, 0,518. Agora ponha k = 36 (um duplo seis) e n = 24: 0,491, logo abaixo da metade. É preciso n = 25 para passar dela.",
+  mPr_liveBday: "Experimente: um aniversário em comum entre n pessoas",
+  mPr_liveSharedTex: "em comum",
+  mPr_livePeople: "pessoas n",
+  mPr_liveBdayNote: "A pessoa 1 pode fazer aniversário em qualquer dia (365/365), a pessoa 2 tem de evitar um dia (364/365), a pessoa 3 dois dias, e assim por diante: o produto é a chance de todos os aniversários serem diferentes. A barra passa da metade entre 22 e 23 pessoas e está quase cheia aos 60.",
 };
 
 export default text;

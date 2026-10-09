@@ -96,6 +96,25 @@ const text: Record<string, string> = {
   mCnt_m6w: "somar as opções de etapas feitas uma depois da outra",
   mCnt_m6r: "multiplique para “e depois”, some para “ou”",
   mCnt_m6: "cada opção da etapa 1 se combina com toda opção da etapa 2",
+
+  // ── In words, derivations, live formulas (2026-10-09) ──
+  mCnt_multWords: "Quando as escolhas são feitas uma depois da outra, multiplique o número de opções de cada etapa.",
+  mCnt_eqZero: "Descendo os fatoriais até 0!",
+  mCnt_z1: "cada fatorial é n vezes o anterior, então descer um degrau é dividir por n",
+  mCnt_z2: "confira a regra na tabela: cada degrau para baixo divide pelo n que estamos deixando",
+  mCnt_z3: "mais um degrau para baixo, a partir de n = 1. Bate com a contagem: existe exatamente uma maneira de arrumar nenhum item",
+  mCnt_permWords: "Multiplique k fatores contando para baixo a partir de n: n opções para o primeiro lugar, uma a menos para cada lugar seguinte.",
+  mCnt_combWords: "Conte as escolhas ordenadas e depois divida pelo número de ordens em que cada grupo foi contado.",
+  mCnt_liveChoose: "Experimente: n escolhe k, e a chance de um bilhete",
+  mCnt_liveChooseNote: "Em cima e embaixo há k fatores. A barra é 1 dividido pela contagem: a chance de um único bilhete ter o conjunto sorteado. Com n = 60, k = 6 é 1 em cerca de cinquenta milhões, fina demais para ver. Tente n = 10, k = 3 (120), depois k = 7: os mesmos 120, por simetria.",
+  mCnt_binomWords: "Cada termo pega b em k dos n parênteses e a nos outros; o número na frente conta de quantas maneiras dá para escolher esses k parênteses.",
+  mCnt_eqBanana: "Contando as palavras de BANANA",
+  mCnt_n1: "finja que as letras repetidas são diferentes, numerando-as: 6 letras diferentes têm 6! ordens",
+  mCnt_n2: "apagando os números, cada palavra de verdade aparece uma vez para cada ordem dos seus A, cada ordem dos seus N e cada ordem do seu único B",
+  mCnt_n3: "então cada palavra diferente foi contada 6 · 2 · 1 = 12 vezes: divida isso fora",
+  mCnt_ieWords: "Some os tamanhos dos conjuntos, subtraia o que está em dois deles, devolva o que está nos três: tudo acaba contado exatamente uma vez.",
+  mCnt_liveIE: "Experimente: divisíveis por a ou por b, de 1 a N",
+  mCnt_liveIENote: "⌊N/a⌋ quer dizer N/a arredondado para baixo: a quantidade de múltiplos de a até N. Um número divisível por a e por b é múltiplo do mínimo múltiplo comum deles, mmc(a, b), e por isso esse termo tira a contagem dupla. Tente a = 4, b = 6: a sobreposição são os múltiplos de 12, não de 24. A barra é a fração de 1 … N que foi contada.",
 };
 
 export default text;

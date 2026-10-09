@@ -10,12 +10,34 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RandomVariableFigure } from "@/components/lesson/figures/math/RandomVariableFigure";
 
 const r = String.raw;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** f(x) = 2x on [0, 1]: P(a ≤ X ≤ b) = b² − a². */
+function rampNumbers(v: Record<string, number>) {
+  const a = Math.min(v.a, v.b), b = Math.max(v.a, v.b), p = b * b - a * a;
+  return {
+    tex: r`P(${a.toFixed(2)} \le X \le ${b.toFixed(2)}) = ${b.toFixed(2)}^2 - ${a.toFixed(2)}^2 = ${(b * b).toFixed(4)} - ${(a * a).toFixed(4)} = \amber{${p.toFixed(4)}}`,
+    meter: p,
+  };
+}
+
+/** f(x) = e^(−x), x ≥ 0: P(a ≤ X ≤ b) = e^(−a) − e^(−b). */
+function waitNumbers(v: Record<string, number>) {
+  const a = Math.min(v.a, v.b), b = Math.max(v.a, v.b), ea = Math.exp(-a), eb = Math.exp(-b);
+  return {
+    tex: r`P(${a.toFixed(1)} \le X \le ${b.toFixed(1)}) = e^{-${a.toFixed(1)}} - e^{-${b.toFixed(1)}} = ${ea.toFixed(4)} - ${eb.toFixed(4)} = \amber{${(ea - eb).toFixed(4)}}`,
+    meter: ea - eb,
+  };
+}
 
 export function RandomVariablesContent({ t }: { t: TrackTranslations }) {
   return (
@@ -59,7 +81,8 @@ export function RandomVariablesContent({ t }: { t: TrackTranslations }) {
           [r`p(x)`, tx(t, "mRv_wPx", "the probability that X takes the value x; 0 for values X cannot take")],
           [r`\sum_x`, tx(t, "mRv_wSumX", "the sum over all possible values of X")],
         ]}
-        note={tx(t, "mRv_pmfNote", "The two conditions are the axioms in disguise: the events {X = x} for different x are mutually exclusive and together make up the whole sample space. Any list of non-negative numbers adding to 1 is a valid pmf.")}>
+        note={tx(t, "mRv_pmfNote", "The two conditions are the axioms in disguise: the events {X = x} for different x are mutually exclusive and together make up the whole sample space. Any list of non-negative numbers adding to 1 is a valid pmf.")}
+        words={tx(t, "mRv_pmfWords", "List every value X can take with its probability; no probability is negative and together they make 1.")}>
         {r`p(x) = P(X = x) \qquad p(x) \ge 0 \qquad \sum_x p(x) = 1`}
       </Equation>
       <p>
@@ -77,7 +100,8 @@ export function RandomVariablesContent({ t }: { t: TrackTranslations }) {
           [r`F(x)`, tx(t, "mRv_wF", "the probability that X is at most x")],
           [r`F(b) - F(a)`, tx(t, "mRv_wFba", "the probability that X is above a and at most b: the rise of F across the interval")],
         ]}
-        note={tx(t, "mRv_cdfNote", "For whole-number values, \"5 ≤ S ≤ 8\" is \"4 < S ≤ 8\": P = F(8) − F(4) = 26/36 − 6/36 = 20/36 = 5/9. Check with the pmf: (4 + 5 + 6 + 5)/36 = 20/36 ✓. Watch whether the ends are included.")}>
+        note={tx(t, "mRv_cdfNote", "For whole-number values, \"5 ≤ S ≤ 8\" is \"4 < S ≤ 8\": P = F(8) − F(4) = 26/36 − 6/36 = 20/36 = 5/9. Check with the pmf: (4 + 5 + 6 + 5)/36 = 20/36 ✓. Watch whether the ends are included.")}
+        words={tx(t, "mRv_cdfWords", "F(x) is the probability piled up from the far left to x. The probability of a range is how much F climbs across it.")}>
         {r`F(x) = P(X \le x) \qquad P(a < X \le b) = F(b) - F(a)`}
       </Equation>
 
@@ -122,7 +146,8 @@ export function RandomVariablesContent({ t }: { t: TrackTranslations }) {
           [r`\int_a^b f(x)\,dx`, tx(t, "mRv_wInt", "the area under f from a to b, which is the probability that X lands in [a, b]")],
           [r`\int_{-\infty}^{\infty} f(x)\,dx = 1`, tx(t, "mRv_wTotal", "the total area is 1: X lands somewhere (an improper integral when the values are unbounded)")],
         ]}
-        note={tx(t, "mRv_pdfNote", "Because single points have probability 0, it makes no difference whether the ends are included: P(a ≤ X ≤ b) = P(a < X < b).")}>
+        note={tx(t, "mRv_pdfNote", "Because single points have probability 0, it makes no difference whether the ends are included: P(a ≤ X ≤ b) = P(a < X < b).")}
+        words={tx(t, "mRv_pdfWords", "The chance that X lands between a and b is the area under the density curve between a and b; the whole area is 1.")}>
         {r`P(a \le X \le b) = \int_a^b f(x)\,dx \qquad f(x) \ge 0 \qquad \int_{-\infty}^{\infty} f(x)\,dx = 1`}
       </Equation>
       <p>
@@ -134,6 +159,14 @@ export function RandomVariablesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mRv_rampBody",
           "Let f(x) = 2x for 0 ≤ x ≤ 1 and 0 elsewhere. It is never negative, and its total area is ∫₀¹ 2x dx = [x²]₀¹ = 1, so it is a valid density. Values near 1 are more likely than values near 0. P(X ≤ ½) = ∫₀^½ 2x dx = (½)² = 1/4: although [0, ½] is half the interval, it holds only a quarter of the probability. P(0.2 ≤ X ≤ 0.6) = 0.6² − 0.2² = 0.36 − 0.04 = 0.32.")}
       </p>
+      <LiveFormula label={tx(t, "mRv_liveRamp", "Try it: an interval under f(x) = 2x")}
+        tex={r`P(a \le X \le b) = \int_a^b 2x\,dx = b^2 - a^2`}
+        vars={[
+          { id: "a", label: "a", min: 0, max: 1, step: 0.05, value: 0.2, fmt: v => v.toFixed(2) },
+          { id: "b", label: "b", min: 0, max: 1, step: 0.05, value: 0.6, fmt: v => v.toFixed(2) },
+        ]}
+        compute={rampNumbers}
+        note={tx(t, "mRv_liveRampNote", "x² is an antiderivative of 2x, so the area is x² at b minus x² at a. Slide a window of width 0.2 from the left end to the right end: the same width holds 0.04 near 0 but 0.36 near 1, because the density climbs. With a = 0 and b = 1 the bar is full: the total area is 1.")} />
 
       <H2>{tx(t, "mRv_ftcTitle", "The CDF of a continuous variable")}</H2>
       <p>
@@ -151,14 +184,37 @@ export function RandomVariablesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mRv_waitBody",
           "Waiting time. Suppose the minutes until the next call to a help line have density f(x) = e⁻ˣ for x ≥ 0. Its area is ∫₀^∞ e⁻ˣ dx = [−e⁻ˣ]₀^∞ = 0 − (−1) = 1 ✓, an improper integral. F(x) = 1 − e⁻ˣ, so P(wait more than 2 minutes) = 1 − F(2) = e⁻² ≈ 0.135, and P(1 ≤ X ≤ 2) = e⁻¹ − e⁻² ≈ 0.368 − 0.135 = 0.233.")}
       </p>
+      <LiveFormula label={tx(t, "mRv_liveWait", "Try it: how long until the next call")}
+        tex={r`P(a \le X \le b) = (1 - e^{-b}) - (1 - e^{-a}) = e^{-a} - e^{-b}`}
+        vars={[
+          { id: "a", label: "a", min: 0, max: 5, step: 0.1, value: 1, fmt: v => v.toFixed(1) },
+          { id: "b", label: "b", min: 0, max: 5, step: 0.1, value: 2, fmt: v => v.toFixed(1) },
+        ]}
+        compute={waitNumbers}
+        note={tx(t, "mRv_liveWaitNote", "a and b are minutes. The two 1s cancel, leaving e⁻ᵃ − e⁻ᵇ. Compare the first minute (0 to 1, about 0.632) with the third (2 to 3, about 0.086): short waits are much more likely. Set a = 0 and b = 5: the bar is almost full, since only e⁻⁵ ≈ 0.007 of the calls take longer.")} />
       <H3>{tx(t, "mRv_constTitle", "Finding the constant, the median and other quantiles")}</H3>
       <p>
         {tx(t, "mRv_constBody",
           "A density is often known only up to a constant factor. If f(x) = c x² on [0, 3], the constant is fixed by the total area: ∫₀³ c x² dx = c · 27/3 = 9c = 1, so c = 1/9. Then P(X ≤ 1) = ∫₀¹ x²/9 dx = 1/27. The median m is the value with half the probability on each side, F(m) = ½. For f = 2x: m² = ½, m = √½ ≈ 0.707. For the waiting time: 1 − e⁻ᵐ = ½, m = ln 2 ≈ 0.693 minutes. In the same way the 90th percentile solves F(x) = 0.9; for the waiting time x = ln 10 ≈ 2.30 minutes.")}
       </p>
+      <Derivation t={t} label={tx(t, "mRv_eqMedianDer", "The median waiting time")}
+        steps={[
+          { tex: r`F(m) = \tfrac12`, full: true, why: tx(t, "mRv_d1", "the median leaves half the probability on each side") },
+          { tex: r`1 - e^{-m} = \tfrac12`, full: true, why: tx(t, "mRv_d2", "put in the CDF of the waiting time, F(x) = 1 − e⁻ˣ") },
+          { tex: r`e^{-m} = \tfrac12`, full: true, why: tx(t, "mRv_d3", "move e⁻ᵐ to one side and ½ to the other") },
+          { tex: r`-m = \ln \tfrac12 = -\ln 2`, full: true, why: tx(t, "mRv_d4", "take the natural log of both sides; ln(½) = −ln 2") },
+          { tex: r`m = \green{\ln 2 \approx 0.693}`, full: true, why: tx(t, "mRv_d5", "multiply by −1. Half the calls arrive within 0.693 minutes, about 42 seconds") },
+        ]} />
       <Callout type="tip" t={t}>
         {tx(t, "mRv_cdfMethodTip", "To find the density of a new variable such as Y = 2X, go through the CDF. F_Y(y) = P(2X ≤ y) = P(X ≤ y/2) = F_X(y/2). Differentiate with the chain rule: f_Y(y) = f_X(y/2) · ½. Stretching the values by 2 spreads the same probability over twice the length, so the density halves. If X is uniform on [0, 1], Y = 2X is uniform on [0, 2] with height ½.")}
       </Callout>
+      <Derivation t={t} label={tx(t, "mRv_eqStretchDer", "The density of Y = 2X, step by step")}
+        steps={[
+          { tex: r`F_Y(y) = P(Y \le y) = P(2X \le y)`, full: true, why: tx(t, "mRv_s1", "the definition of the CDF of Y, then replace Y by 2X") },
+          { tex: r`P(2X \le y) = P(X \le y/2) = F_X(y/2)`, full: true, why: tx(t, "mRv_s2", "divide the inequality by 2, which is positive, so ≤ stays ≤; that is the CDF of X at y/2") },
+          { tex: r`f_Y(y) = F_Y'(y) = F_X'(y/2) \cdot \tfrac12`, full: true, why: tx(t, "mRv_s3", "a density is the slope of its CDF; the chain rule brings out the slope of y/2, which is ½") },
+          { tex: r`f_Y(y) = \green{\tfrac12\, f_X(y/2)}`, full: true, why: tx(t, "mRv_s4", "F_X′ = f_X. For X uniform on [0, 1], f_X = 1, so f_Y = ½ on [0, 2]: half the height, twice the width, area still 1") },
+        ]} />
       <p>
         {tx(t, "mRv_roundBody",
           "Measured data are always rounded, so in practice \"X = 170 cm\" means an interval such as 169.5 ≤ X < 170.5, which has positive probability, approximately f(170) · 1. The continuous model with probability-0 points is not a paradox but a very accurate idealisation, and integrals are much easier to handle than enormous sums.")}

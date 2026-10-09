@@ -9,6 +9,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -16,6 +18,30 @@ import { DiceFigure } from "@/components/lesson/figures/math/DiceFigure";
 import { CardFigure } from "@/components/lesson/figures/math/CardFigure";
 
 const r = String.raw;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** At least one success in n independent tries, each with chance 1/k. */
+function atLeastNumbers(v: Record<string, number>) {
+  const { k, n } = v, none = ((k - 1) / k) ** n;
+  return {
+    tex: r`1 - \left(\frac{${k - 1}}{${k}}\right)^{${n}} = 1 - ${none.toFixed(4)} = \amber{${(1 - none).toFixed(4)}}`,
+    meter: 1 - none,
+  };
+}
+
+/** Some shared birthday among n people, 365 equally likely days. */
+function birthdayNumbers(v: Record<string, number>) {
+  const n = v.n;
+  let all = 1;
+  for (let i = 0; i < n; i++) all *= (365 - i) / 365;
+  const last = 365 - n + 1;
+  const prod = n === 1 ? r`\frac{365}{365}` : n === 2 ? r`\frac{365}{365} \cdot \frac{364}{365}` : r`\frac{365}{365} \cdot \frac{364}{365} \cdots \frac{${last}}{365}`;
+  return {
+    tex: r`1 - ${prod} = 1 - ${all.toFixed(4)} = \amber{${(1 - all).toFixed(4)}}`,
+    meter: 1 - all,
+  };
+}
 
 export function ProbabilityContent({ t }: { t: TrackTranslations }) {
   return (
@@ -53,7 +79,8 @@ export function ProbabilityContent({ t }: { t: TrackTranslations }) {
           [r`|A|`, tx(t, "mPr_wA", "the number of outcomes in A (the favourable outcomes)")],
           [r`|\Omega|`, tx(t, "mPr_wOmega", "the number of outcomes in the whole sample space")],
         ]}
-        note={tx(t, "mPr_classicNote", "This works only when the outcomes really are equally likely. \"Rain or no rain\" has two outcomes, but that does not make rain 50 % likely.")}>
+        note={tx(t, "mPr_classicNote", "This works only when the outcomes really are equally likely. \"Rain or no rain\" has two outcomes, but that does not make rain 50 % likely.")}
+        words={tx(t, "mPr_classicWords", "Count the outcomes where the event happens and divide by the number of all possible outcomes.")}>
         {r`P(A) = \frac{|A|}{|\Omega|}`}
       </Equation>
       <H3>{tx(t, "mPr_diceTitle", "Two dice: why the order counts")}</H3>
@@ -91,12 +118,20 @@ export function ProbabilityContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPr_addBody",
           "Third consequence: the addition rule for events that may overlap. Split A ∪ B into A and the part of B outside A; these are disjoint. And B itself splits into that same outside part and A ∩ B. Subtracting gives the probability version of inclusion–exclusion.")}
       </p>
+      <Derivation t={t} label={tx(t, "mPr_eqAddDer", "The addition rule from the axioms")}
+        steps={[
+          { tex: r`P(A \cup B) = P(A) + P(B \setminus A)`, full: true, why: tx(t, "mPr_d1", "A ∪ B is A plus the part of B outside A, written B \\ A. The two pieces are disjoint, so the third axiom adds them") },
+          { tex: r`P(B) = P(B \setminus A) + P(A \cap B)`, full: true, why: tx(t, "mPr_d2", "B itself is the same outside part plus the part inside A, again two disjoint pieces") },
+          { tex: r`P(B \setminus A) = P(B) - P(A \cap B)`, full: true, why: tx(t, "mPr_d3", "solve the second line for the outside part") },
+          { tex: r`P(A \cup B) = \green{P(A) + P(B) - P(A \cap B)}`, full: true, why: tx(t, "mPr_d4", "put it into the first line. Only the axioms were used: the rule holds for any probabilities, not just for counting") },
+        ]} />
       <Equation label={tx(t, "mPr_eqAdd", "The addition rule")}
         where={[
           [r`P(A \cup B)`, tx(t, "mPr_wUnion", "the probability that A or B (or both) happens")],
           [r`P(A \cap B)`, tx(t, "mPr_wInter", "the probability that both happen; it was included in both P(A) and P(B), so it is taken away once")],
         ]}
-        note={tx(t, "mPr_addNote", "A card is a heart or a face card (J, Q, K): 13/52 + 12/52 − 3/52 = 22/52 = 11/26 ≈ 0.42. The 3 face cards of hearts would otherwise count twice.")}>
+        note={tx(t, "mPr_addNote", "A card is a heart or a face card (J, Q, K): 13/52 + 12/52 − 3/52 = 22/52 = 11/26 ≈ 0.42. The 3 face cards of hearts would otherwise count twice.")}
+        words={tx(t, "mPr_addWords", "The chance of A or B is the chance of A plus the chance of B, minus the chance of both, which was counted in each.")}>
         {r`P(A \cup B) = P(A) + P(B) - P(A \cap B)`}
       </Equation>
 
@@ -107,6 +142,14 @@ export function ProbabilityContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mPr_mereBody",
           "\"At least one\" events are usually painful to count directly and easy through the complement, \"none\". In the 17th century the gambler Chevalier de Méré bet on getting at least one six in 4 rolls of a die. The complement is no six in all 4 rolls: each roll has 5 non-six faces out of 6, so 5⁴ = 625 of the 6⁴ = 1296 equally likely sequences have no six. P(at least one six) = 1 − 625/1296 = 671/1296 ≈ 0.518, a small edge that made him money. He then bet on at least one double six in 24 rolls of two dice, reasoning that 24 is to 36 what 4 is to 6. But 1 − (35/36)²⁴ ≈ 1 − 0.509 = 0.491: he lost in the long run, and his puzzle, sent to Pascal and Fermat, started the mathematics of probability.")}
       </p>
+      <LiveFormula label={tx(t, "mPr_liveAtLeast", "Try it: at least one success in n tries")}
+        tex={r`P(\text{${tx(t, "mPr_liveAtLeastTex", "at least one")}}) = 1 - P(\text{${tx(t, "mPr_liveNoneTex", "none")}}) = 1 - \left(\frac{k-1}{k}\right)^{n}`}
+        vars={[
+          { id: "k", label: tx(t, "mPr_liveK", "one chance in k"), min: 2, max: 40, step: 1, value: 6, fmt: v => String(v) },
+          { id: "n", label: tx(t, "mPr_liveN", "tries n"), min: 1, max: 60, step: 1, value: 4, fmt: v => String(v) },
+        ]}
+        compute={atLeastNumbers}
+        note={tx(t, "mPr_liveAtLeastNote", "Each try fails with chance (k − 1)/k, and n tries all fail with that chance multiplied n times. k = 6, n = 4 is de Méré's first bet, 0.518. Now set k = 36 (a double six) and n = 24: 0.491, just below a half. It takes n = 25 to pass it.")} />
       <H3>{tx(t, "mPr_bdayTitle", "The birthday problem")}</H3>
       <p>
         {tx(t, "mPr_bdayBody",
@@ -116,6 +159,11 @@ export function ProbabilityContent({ t }: { t: TrackTranslations }) {
         headers={[tx(t, "mPr_tPeople", "people"), "5", "10", "20", "23", "30", "40", "50", "70"]}
         rows={[[tx(t, "mPr_tShared", "P(shared birthday)"), "0.027", "0.117", "0.411", "0.507", "0.706", "0.891", "0.970", "0.999"]]}
       />
+      <LiveFormula label={tx(t, "mPr_liveBday", "Try it: a shared birthday among n people")}
+        tex={r`P(\text{${tx(t, "mPr_liveSharedTex", "shared")}}) = 1 - \frac{365}{365} \cdot \frac{364}{365} \cdots \frac{365 - n + 1}{365}`}
+        vars={[{ id: "n", label: tx(t, "mPr_livePeople", "people n"), min: 1, max: 80, step: 1, value: 23, fmt: v => String(v) }]}
+        compute={birthdayNumbers}
+        note={tx(t, "mPr_liveBdayNote", "Person 1 can have any day (365/365), person 2 must avoid one day (364/365), person 3 two days, and so on: the product is the chance that all birthdays differ. The bar passes the middle between 22 and 23 people and is nearly full by 60.")} />
 
       <H2>{tx(t, "mPr_countTitle", "Probabilities from counting")}</H2>
       <p>

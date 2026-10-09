@@ -79,6 +79,25 @@ const text: Record<string, string> = {
   mCond_m6w: "independentes dois a dois ⇒ independentes",
   mCond_m6r: "confira também o produto triplo",
   mCond_m6: "duas moedas e “elas concordam” são independentes dois a dois, mas não mutuamente",
+
+  // ── In words, derivations, live formulas (2026-10-09) ──
+  mCond_defWords: "Fique só com os resultados em que B aconteceu e pergunte que fração deles também tem A.",
+  mCond_indWords: "Dois eventos são independentes quando saber que um aconteceu não muda a chance do outro; aí a chance de ambos é o produto das chances.",
+  mCond_totalWords: "Divida em casos que não se sobrepõem; em cada caso, tome a chance do caso vezes a chance de B nesse caso; some os casos.",
+  mCond_liveFactory: "Experimente: duas máquinas, para a frente e para trás",
+  mCond_liveFactoryNote: "A primeira linha soma os dois caminhos que terminam numa peça defeituosa; a segunda pergunta que fração desse total veio pela máquina 1, que é o teorema de Bayes logo abaixo. P(M₂) é 1 − P(M₁), já que toda peça vem de uma das duas. Dê às duas máquinas a mesma taxa de defeito: a barra fica igual a P(M₁), porque um defeito não diz nada sobre a máquina.",
+  mCond_eqBayesDer: "O teorema de Bayes a partir da regra da multiplicação",
+  mCond_b1: "a regra da multiplicação com B primeiro: B acontece, depois A no mundo em que B aconteceu",
+  mCond_b2: "o mesmo evento \"ambos\" com A primeiro. As duas linhas descrevem um único número",
+  mCond_b3: "então os dois lados direitos são iguais",
+  mCond_b4: "divida por P(B), que não pode ser 0. Na fábrica: 0,02 · 0,6 / 0,032 = 0,375",
+  mCond_bayesWords: "Qual a chance da causa, dada a evidência? Pegue o caminho em que a causa é verdadeira e a evidência aparece, e divida por todos os caminhos que mostram a mesma evidência.",
+  mCond_oddsWords: "As chances depois da evidência são as chances de antes, multiplicadas por quantas vezes a evidência é mais provável quando A é verdade.",
+  mCond_liveOdds: "Experimente: n testes positivos seguidos",
+  mCond_livePrev: "prevalência (%)",
+  mCond_liveLR: "razão de verossimilhança LR",
+  mCond_liveTests: "testes positivos n",
+  mCond_liveOddsNote: "O são as chances a posteriori, com chances a : b escritas como o número único a/b; P = O/(1 + O) transforma chances de volta em probabilidade. 1 % de prevalência são chances de 1/99; um positivo com LR 10 dá 10/99, P ≈ 0,092, e um segundo dá 100/99, P ≈ 0,50. Com n = 0 a barra é só a prevalência. LR = 1 quer dizer que o teste não informa nada: a barra nunca se mexe.",
 };
 
 export default text;

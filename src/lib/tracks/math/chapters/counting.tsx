@@ -9,6 +9,8 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -16,6 +18,38 @@ import { CountingFigure } from "@/components/lesson/figures/math/CountingFigure"
 import { PascalFigure } from "@/components/lesson/figures/math/PascalFigure";
 
 const r = String.raw;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** 50063860 → 50\,063\,860 (thin spaces between groups of three). */
+const big = (v: number) => String(v).replace(/\B(?=(\d{3})+(?!\d))/g, r`\,`);
+
+/** C(n, k) as k falling factors over k!, and the chance that one ticket wins. */
+function chooseNumbers(v: Record<string, number>) {
+  const n = v.n, k = Math.min(v.k, n);
+  let top = 1, bottom = 1;
+  for (let i = 0; i < k; i++) { top *= n - i; bottom *= i + 1; }
+  const c = Math.round(top / bottom);
+  const fall = Array.from({ length: k }, (_, i) => n - i).join(r` \cdot `);
+  const down = Array.from({ length: k }, (_, i) => k - i).join(r` \cdot `);
+  return {
+    tex: r`\binom{${n}}{${k}} = \frac{${fall}}{${down}} = \frac{${big(top)}}{${big(bottom)}} = \amber{${big(c)}}`,
+    meter: 1 / c,
+    meterLabel: `1 / ${c.toLocaleString("en").replace(/,/g, " ")}`,
+  };
+}
+
+const gcd = (a: number, b: number): number => (b ? gcd(b, a % b) : a);
+
+/** Numbers from 1 to N divisible by a or by b, by inclusion–exclusion. */
+function ieNumbers(v: Record<string, number>) {
+  const { N, a, b } = v, l = (a * b) / gcd(a, b);
+  const A = Math.floor(N / a), B = Math.floor(N / b), AB = Math.floor(N / l);
+  return {
+    tex: r`\begin{aligned} |A \cup B| &= \lfloor ${N}/${a} \rfloor + \lfloor ${N}/${b} \rfloor - \lfloor ${N}/${l} \rfloor \\ &= ${A} + ${B} - ${AB} = \amber{${A + B - AB}} \end{aligned}`,
+    meter: (A + B - AB) / N,
+  };
+}
 
 export function CountingContent({ t }: { t: TrackTranslations }) {
   return (
@@ -43,7 +77,8 @@ export function CountingContent({ t }: { t: TrackTranslations }) {
           [r`n_i`, tx(t, "mCnt_wNi", "the number of options at stage i, which must be the same whatever was chosen at the earlier stages")],
           [r`N`, tx(t, "mCnt_wN", "the number of complete results: different sequences of choices")],
         ]}
-        note={tx(t, "mCnt_multNote", "The options at a stage may change with earlier choices, but their number must not. That is all the principle needs.")}>
+        note={tx(t, "mCnt_multNote", "The options at a stage may change with earlier choices, but their number must not. That is all the principle needs.")}
+        words={tx(t, "mCnt_multWords", "When choices are made one after another, multiply the number of options at each stage.")}>
         {r`N = n_1 \cdot n_2 \cdot \ldots \cdot n_k`}
       </Equation>
       <p>
@@ -74,6 +109,12 @@ export function CountingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mCnt_zeroBody",
           "Why is 0! = 1? Two reasons that agree. Going down the table, each factorial is the next one divided by its n: 3! = 4!/4, 2! = 3!/3, 1! = 2!/2, so 0! = 1!/1 = 1. And there is exactly one way to arrange nothing: do nothing. Factorials grow faster than any power: a deck of 52 cards can be shuffled into 52! ≈ 8.07 × 10⁶⁷ orders, so a well-shuffled deck is almost certainly in an order no deck has ever been in before.")}
       </p>
+      <Derivation t={t} label={tx(t, "mCnt_eqZero", "Walking the factorials down to 0!")}
+        steps={[
+          { tex: r`n! = n \cdot (n-1)! \quad\Longrightarrow\quad (n-1)! = \frac{n!}{n}`, full: true, why: tx(t, "mCnt_z1", "every factorial is n times the one before it, so going down one step means dividing by n") },
+          { tex: r`3! = \frac{4!}{4} = \frac{24}{4} = 6 \qquad 2! = \frac{6}{3} = 2 \qquad 1! = \frac{2}{2} = 1`, full: true, why: tx(t, "mCnt_z2", "check the rule on the table: each step down divides by the n we are leaving") },
+          { tex: r`0! = \frac{1!}{1} = \green{1}`, full: true, why: tx(t, "mCnt_z3", "one more step down, from n = 1. It agrees with the count: there is exactly one way to arrange no items") },
+        ]} />
       <p>
         {tx(t, "mCnt_pnkBody",
           "Often only some of the items are arranged. Eight runners race; how many ways can gold, silver and bronze be awarded? 8 options for gold, 7 for silver, 6 for bronze: 8 · 7 · 6 = 336. The product stops after k factors. Multiplying and dividing by the missing tail 5 · 4 · 3 · 2 · 1 = 5! writes it with factorials: 8!/5!.")}
@@ -84,7 +125,8 @@ export function CountingContent({ t }: { t: TrackTranslations }) {
           [r`k`, tx(t, "mCnt_wKperm", "how many are placed in order, each at most once (k ≤ n)")],
           [r`n!`, tx(t, "mCnt_wFact", "n factorial: n · (n − 1) · … · 2 · 1, with 0! = 1")],
         ]}
-        note={tx(t, "mCnt_permNote", "With k = n this is n!/0! = n!, all the orders of all the items.")}>
+        note={tx(t, "mCnt_permNote", "With k = n this is n!/0! = n!, all the orders of all the items.")}
+        words={tx(t, "mCnt_permWords", "Multiply k factors counting down from n: n options for the first place, one fewer for each place after it.")}>
         {r`P(n, k) = n\,(n-1)\cdots(n-k+1) = \frac{n!}{(n-k)!}`}
       </Equation>
       <p>
@@ -103,13 +145,22 @@ export function CountingContent({ t }: { t: TrackTranslations }) {
           [r`\frac{n!}{(n-k)!}`, tx(t, "mCnt_wOrdered", "the ordered picks, P(n, k)")],
           [r`k!`, tx(t, "mCnt_wKfact", "the number of orders of one group, which were all counted separately")],
         ]}
-        note={tx(t, "mCnt_combNote", "By hand, cancel before multiplying: C(8, 3) = (8 · 7 · 6)/(3 · 2 · 1) = 336/6 = 56. The top has k factors counting down from n, the bottom k factors counting down from k.")}>
+        note={tx(t, "mCnt_combNote", "By hand, cancel before multiplying: C(8, 3) = (8 · 7 · 6)/(3 · 2 · 1) = 336/6 = 56. The top has k factors counting down from n, the bottom k factors counting down from k.")}
+        words={tx(t, "mCnt_combWords", "Count the ordered picks, then divide by the number of orders each group was counted in.")}>
         {r`\binom{n}{k} = \frac{P(n,k)}{k!} = \frac{n!}{k!\,(n-k)!}`}
       </Equation>
       <p>
         {tx(t, "mCnt_lottoBody",
           "A lottery draws 6 numbers out of 60 and the order of the draw does not matter. C(60, 6) = (60 · 59 · 58 · 57 · 56 · 55)/(6 · 5 · 4 · 3 · 2 · 1) = 36 045 979 200/720 = 50 063 860. One ticket is one of about fifty million equally likely sets.")}
       </p>
+      <LiveFormula label={tx(t, "mCnt_liveChoose", "Try it: n choose k, and the chance of one ticket")}
+        tex={r`\binom{n}{k} = \frac{n\,(n-1)\cdots(n-k+1)}{k\,(k-1)\cdots 1}`}
+        vars={[
+          { id: "n", label: "n", min: 1, max: 60, step: 1, value: 60, fmt: v => String(v) },
+          { id: "k", label: "k", min: 1, max: 8, step: 1, value: 6, fmt: v => String(v) },
+        ]}
+        compute={chooseNumbers}
+        note={tx(t, "mCnt_liveChooseNote", "Top and bottom both have k factors. The bar is 1 divided by the count: the chance that a single ticket holds the drawn set. At n = 60, k = 6 it is 1 in about fifty million, far too thin to see. Try n = 10, k = 3 (120), then k = 7: the same 120, by symmetry.")} />
       <p>
         {tx(t, "mCnt_symBody",
           "Symmetry: C(n, k) = C(n, n − k). Choosing 3 people to go on a trip is the same as choosing the 5 who stay behind, so C(8, 3) = C(8, 5) = 56. The formula agrees: swapping k and n − k only swaps the two factorials in the denominator. This saves work: C(100, 98) = C(100, 2) = 100 · 99/2 = 4950. The end cases: C(n, 0) = C(n, n) = 1 (one way to choose nothing, one way to choose everything), and C(n, 1) = n.")}
@@ -139,7 +190,8 @@ export function CountingContent({ t }: { t: TrackTranslations }) {
           [r`\binom{n}{k}`, tx(t, "mCnt_wCoef", "the binomial coefficient: entry k of row n of Pascal's triangle")],
           [r`a^{n-k}\,b^{k}`, tx(t, "mCnt_wTerm", "b chosen from k brackets, a from the other n − k; the powers always add up to n")],
         ]}
-        note={tx(t, "mCnt_binomNote", "Row 4 is 1 4 6 4 1, so (a + b)⁴ = a⁴ + 4a³b + 6a²b² + 4ab³ + b⁴. With a = 2x, b = 1 and n = 3: (2x + 1)³ = 8x³ + 3 · 4x² + 3 · 2x + 1 = 8x³ + 12x² + 6x + 1.")}>
+        note={tx(t, "mCnt_binomNote", "Row 4 is 1 4 6 4 1, so (a + b)⁴ = a⁴ + 4a³b + 6a²b² + 4ab³ + b⁴. With a = 2x, b = 1 and n = 3: (2x + 1)³ = 8x³ + 3 · 4x² + 3 · 2x + 1 = 8x³ + 12x² + 6x + 1.")}
+        words={tx(t, "mCnt_binomWords", "Each term picks b from k of the n brackets and a from the rest; the number in front counts how many ways there are to pick those k brackets.")}>
         {r`(a+b)^n = \sum_{k=0}^{n} \binom{n}{k}\,a^{\,n-k}\,b^{\,k}`}
       </Equation>
       <p>
@@ -166,6 +218,12 @@ export function CountingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mCnt_wordBody",
           "Words with repeated letters. BANANA has 6 letters, so 6! = 720 orders if all letters were different. But swapping the three A's among themselves gives the same word, and so does swapping the two N's; each distinct word was counted 3! · 2! · 1! = 12 times. So there are 720/12 = 60 distinct words. MISSISSIPPI: 11 letters with I four times, S four times, P twice and M once: 11!/(4! · 4! · 2! · 1!) = 39 916 800/1152 = 34 650.")}
       </p>
+      <Derivation t={t} label={tx(t, "mCnt_eqBanana", "Counting the words of BANANA")}
+        steps={[
+          { tex: r`\text{B A}_1\text{ N}_1\text{ A}_2\text{ N}_2\text{ A}_3: \quad 6! = 720`, full: true, why: tx(t, "mCnt_n1", "pretend the repeated letters are different by numbering them: 6 different letters have 6! orders") },
+          { tex: r`\text{A}_1\text{A}_2\text{A}_3 \to 3! = 6 \qquad \text{N}_1\text{N}_2 \to 2! = 2 \qquad \text{B} \to 1! = 1`, full: true, why: tx(t, "mCnt_n2", "rubbing out the numbers, every real word appears once for each order of its A's, each order of its N's and each order of its single B") },
+          { tex: r`\frac{6!}{3! \cdot 2! \cdot 1!} = \frac{720}{12} = \green{60}`, full: true, why: tx(t, "mCnt_n3", "so each distinct word was counted 6 · 2 · 1 = 12 times: divide them out") },
+        ]} />
       <p>{tx(t, "mCnt_tableBody", "Every problem in this chapter answers two questions: does the order matter, and may an item repeat? The four answers give four formulas:")}</p>
       <LessonTable
         headers={["", tx(t, "mCnt_tRep", "repetition allowed"), tx(t, "mCnt_tNoRep", "no repetition")]}
@@ -186,9 +244,19 @@ export function CountingContent({ t }: { t: TrackTranslations }) {
           [r`A \cup B`, tx(t, "mCnt_wUnion", "the union: elements in A or in B (or both)")],
           [r`A \cap B`, tx(t, "mCnt_wInter", "the intersection: elements in both A and B")],
         ]}
-        note={tx(t, "mCnt_ieNote", "Divisible by 2, 3 or 5 among 1 to 100: 50 + 33 + 20 − 16 − 10 − 6 + 3 = 74. The 16, 10 and 6 are the multiples of 6, 10 and 15, and the 3 are the multiples of 30.")}>
-        {r`\begin{aligned} |A \cup B| &= |A| + |B| - |A \cap B| \ |A \cup B \cup C| &= |A| + |B| + |C| - |A\cap B| - |A \cap C| - |B \cap C| + |A \cap B \cap C| \end{aligned}`}
+        note={tx(t, "mCnt_ieNote", "Divisible by 2, 3 or 5 among 1 to 100: 50 + 33 + 20 − 16 − 10 − 6 + 3 = 74. The 16, 10 and 6 are the multiples of 6, 10 and 15, and the 3 are the multiples of 30.")}
+        words={tx(t, "mCnt_ieWords", "Add the sizes of the sets, subtract what lies in two of them, add back what lies in all three: everything ends up counted exactly once.")}>
+        {r`\begin{aligned} |A \cup B| &= |A| + |B| - |A \cap B| \\ |A \cup B \cup C| &= |A| + |B| + |C| - |A\cap B| - |A \cap C| - |B \cap C| + |A \cap B \cap C| \end{aligned}`}
       </Equation>
+      <LiveFormula label={tx(t, "mCnt_liveIE", "Try it: divisible by a or by b, from 1 to N")}
+        tex={r`|A \cup B| = \left\lfloor \tfrac{N}{a} \right\rfloor + \left\lfloor \tfrac{N}{b} \right\rfloor - \left\lfloor \tfrac{N}{\operatorname{lcm}(a,\,b)} \right\rfloor`}
+        vars={[
+          { id: "N", label: "N", min: 10, max: 200, step: 1, value: 100, fmt: v => String(v) },
+          { id: "a", label: "a", min: 2, max: 12, step: 1, value: 2, fmt: v => String(v) },
+          { id: "b", label: "b", min: 2, max: 12, step: 1, value: 3, fmt: v => String(v) },
+        ]}
+        compute={ieNumbers}
+        note={tx(t, "mCnt_liveIENote", "⌊N/a⌋ means N/a rounded down: the number of multiples of a up to N. A number divisible by both a and b is a multiple of their least common multiple, lcm(a, b), so that term removes the double count. Try a = 4, b = 6: the overlap is the multiples of 12, not of 24. The bar is the share of 1 … N that is counted.")} />
       <Callout type="tip" t={t}>
         {tx(t, "mCnt_complTip", "\"At least one\" is usually easier through the complement: count everything, then subtract the cases with none. Committees of 5 from 6 women and 4 men with at least one man: C(10, 5) = 252 committees in all, of which C(6, 5) = 6 have no man, so 252 − 6 = 246.")}
       </Callout>
