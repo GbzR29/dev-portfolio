@@ -2,8 +2,9 @@
 
 import katex from "katex";
 import "katex/dist/katex.min.css";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { memo, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { autoLink } from "./texLink";
 
 // The "where" heading of an equation's symbol list, and the words/symbols toggle, per UI language
 const WHERE: Record<string, string> = { en: "where", pt: "onde", es: "donde", zh: "其中" };
@@ -93,6 +94,18 @@ export function symColors(where?: [string, ReactNode][]): SymColors {
 }
 
 /**
+ * A card's formulas and "where" list, linked automatically (texLink.ts) and
+ * coloured. Memoised, so pointing at symbols does not re-run KaTeX.
+ */
+export function useLinkedCard(texs: string[], where?: [string, ReactNode][]) {
+  const key = texs.join("\u0000");
+  return useMemo(() => {
+    const linked = autoLink(key.split("\u0000"), where);
+    return { ...linked, colors: symColors(linked.where) };
+  }, [key, where]);
+}
+
+/**
  * Hover / tap linking for \sym-marked symbols inside `root`: the id under the
  * pointer gets the class "sym-on" on every element that carries it.
  */
@@ -123,7 +136,7 @@ export function useSymbolLinks<E extends HTMLElement>() {
  * The "where" legend under a formula card (Equation, Derivation, LiveFormula):
  * one line per symbol, its meaning linked to it by its \sym id.
  */
-export function WhereList({ where, colors }: { where?: [string, ReactNode][]; colors?: SymColors }) {
+export const WhereList = memo(function WhereList({ where, colors }: { where?: [string, ReactNode][]; colors?: SymColors }) {
   const { language } = useLanguage();
   if (!where?.length) return null;
   return (
@@ -137,7 +150,7 @@ export function WhereList({ where, colors }: { where?: [string, ReactNode][]; co
       ))}
     </div>
   );
-}
+});
 
 /** Inline formula: <Tex>{String.raw`\cos\theta`}</Tex> */
 export function Tex({ children }: { children: string }) {
@@ -163,7 +176,8 @@ export function Equation({ children, label, where, note, notes, glsl, glm, words
   const { language } = useLanguage();
   const [inWords, setInWords] = useState(false);
   const links = useSymbolLinks<HTMLDivElement>();
-  const colors = symColors(where);
+  const card = useLinkedCard([children], where);
+  const html = useMemo(() => render(card.texs[0], true, card.colors), [card]);
   const [wordsLabel, symbolsLabel] = IN_WORDS[language] ?? IN_WORDS.en;
   return (
     <div ref={links.ref} {...links.handlers} className="eq-card my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-[var(--shadow-sm)] overflow-hidden">
@@ -181,8 +195,8 @@ export function Equation({ children, label, where, note, notes, glsl, glm, words
       {inWords && words
         ? <div className="eq-words px-5 py-5 text-[15px] leading-relaxed text-[var(--text-main)]">{words}</div>
         : <div className="px-4 py-5 overflow-x-auto text-[var(--text-main)] text-[1.1rem]"
-            dangerouslySetInnerHTML={{ __html: render(children, true, colors) }} />}
-      <WhereList where={where} colors={colors} />
+            dangerouslySetInnerHTML={{ __html: html }} />}
+      <WhereList where={card.where} colors={card.colors} />
       {notes && notes.length > 0 && (
         <ul className="px-4 pb-3.5 pt-2.5 border-t border-[var(--separator)] space-y-1 text-[13px] text-[var(--text-muted)] leading-relaxed">
           {notes.map((n, i) => (

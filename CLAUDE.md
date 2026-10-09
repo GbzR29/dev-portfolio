@@ -35,6 +35,7 @@ src/components/lesson/ChapterContent.tsx   renders the open chapter (React.lazy 
 src/components/lesson/Prose.tsx        Article, Lead, KeyIdeas — chapter page wrappers
 src/components/lesson/Tex.tsx          Equation (KaTeX); \sym{id}{…} links a symbol to its "where" line and colours it (ids in "where" get auto colours; \sym{a b}{…} = several groups); `words` = "in words" toggle
 src/components/lesson/Derivation.tsx   step-by-step derivation (lines + reasons, Transport bar); LiveFormula.tsx: formula with sliders, numbers plugged in live
+src/components/lesson/texLink.ts       autoLink: finds each "where" symbol inside the formula and adds the \sym links itself (cards with a hand-written \sym are left alone)
 src/components/lesson/texMatrix.ts     bmatrix + linkedProduct (A·B = C with row/column-linked \sym ids); MatrixProduct.tsx: product filled entry by entry
 src/components/lesson/kit/             widget INFRASTRUCTURE (no lesson content):
   figure.tsx      SVG figure blocks (Figure, Slider, plot, useDrag, useRaf, useVisible…)

@@ -11,11 +11,11 @@
 // separate statements. \sym-linked symbols work as in <Equation>; the "where"
 // legend sits under it, as there.
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Transport } from "@/components/lesson/kit/Transport";
 import { scaledMs, useFigureSpeed } from "@/components/lesson/kit/Stepper";
-import { render, symColors, useSymbolLinks, WhereList } from "./Tex";
+import { render, useLinkedCard, useSymbolLinks, WhereList } from "./Tex";
 
 export type DerivationStep = {
   tex: string;
@@ -37,7 +37,8 @@ export function Derivation({ label, steps, where, note, t }: {
   const [picked, setPicked] = useState<number | null>(null);   // a line the reader clicked
   const [speed] = useFigureSpeed();
   const links = useSymbolLinks<HTMLDivElement>();
-  const colors = symColors(where);
+  const card = useLinkedCard(steps.map(s => s.tex), where);
+  const lines = useMemo(() => card.texs.map(tex => render(`\\displaystyle ${tex}`, false, card.colors)), [card]);
   const n = steps.length;
   const focus = picked !== null && picked < shown ? picked : shown - 1;
   // A new line takes the light back from a clicked one
@@ -72,7 +73,7 @@ export function Derivation({ label, steps, where, note, t }: {
                 <button type="button" onClick={() => setPicked(i)} aria-pressed={lit}
                   className={`${col} text-left rounded-md px-1.5 py-1 transition-opacity ${lit ? "deriv-current" : "opacity-55 hover:opacity-90"}`}>
                   <span className="deriv-num">{i + 1}</span>
-                  <span dangerouslySetInnerHTML={{ __html: render(`\\displaystyle ${s.tex}`, false, colors) }} />
+                  <span dangerouslySetInnerHTML={{ __html: lines[i] }} />
                 </button>
                 {/* The first line stands alone on the left: keep the right column empty beside it */}
                 {i === 0 && !s.full && <div className="col-start-2" />}
@@ -92,7 +93,7 @@ export function Derivation({ label, steps, where, note, t }: {
         onBack={shown > 1 ? () => { setPlaying(false); setShown(s => Math.max(1, s - 1)); } : undefined}
         onReset={() => { setPlaying(false); setShown(1); }}
         readout={`${shown} / ${n}`} />
-      <WhereList where={where} colors={colors} />
+      <WhereList where={card.where} colors={card.colors} />
       {note && (
         <div className="px-4 pb-3.5 pt-2 border-t border-[var(--separator)] text-[13px] text-[var(--text-muted)] leading-relaxed">{note}</div>
       )}
