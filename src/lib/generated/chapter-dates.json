@@ -477,7 +477,7 @@
   },
   "math/matrices": {
     "created": "2026-09-26",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "math/determinant": {
     "created": "2026-09-26",
@@ -565,15 +565,15 @@
   },
   "math/expectation": {
     "created": "2026-09-26",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "math/distributions": {
     "created": "2026-09-26",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "math/sampling": {
     "created": "2026-09-26",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "math/regression": {
     "created": "2026-09-26",

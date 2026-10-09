@@ -14,6 +14,12 @@ Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · G
 
 ### 2026-10-09
 
+- **Laboratório e fórmulas interativas em Amostragem e Inferência (Matemática → Probabilidade e Estatística)**:
+  - **Laboratório guiado** no widget de amostragem, em 8 passos: uma amostra de um só valor copia a população, médias de 30 viram sino, achar o n que dá erro padrão 0,5, quantas pessoas para reduzir o erro à metade, a população de dois picos, 100 intervalos de 95% pegando μ, o preço de 99% de confiança e o que "95%" realmente quer dizer. Avisos para as três corcovas, para a assimetria que ainda resta com n pequeno, para o σ/√n medido e para a taxa de acerto dos intervalos.
+  - **Barra de reprodução** no lugar dos botões "1 amostra / 500 amostras / mais 20 / reiniciar": nas médias, cada passo sorteia cerca de 15% mais amostras e a mais nova aparece como uma marca laranja; nos intervalos, cada passo sorteia um intervalo, até 100.
+  - **Fórmulas em palavras** no erro padrão, na lei dos grandes números, no teorema central do limite, no intervalo de confiança e no teste z; **deduções passo a passo** de por que s² divide por n − 1, da lei dos grandes números a partir de Chebyshev e do intervalo de confiança isolando μ; **fórmulas ao vivo** do intervalo para a média, do intervalo para uma proporção, do tamanho da amostra e do teste z com p-valor.
+  - Tradução PT.
+
 - **Laboratório e fórmulas interativas em Distribuições (Matemática → Probabilidade e Estatística)**:
   - **Laboratório guiado** no widget das distribuições comuns, em 9 passos: a chance de passar numa prova no chute, a binomial virando sino, a Poisson como limite da binomial, quanto vale λ em 2 horas, esperar um 6 no dado, lançar de verdade, o ponto de 97,5% da normal, a espera mediana da exponencial e a falta de memória da lâmpada. Avisos quando o sino ainda não se encaixa, quando a Poisson acerta a binomial e quando a amostra confirma a fórmula.
   - **Barra de reprodução que sorteia valores reais** de X em todas as cinco distribuições: as frequências (em laranja) vão se assentando sobre as barras ou a curva, com a média x̄ ao lado.

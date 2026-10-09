@@ -11,12 +11,60 @@
 
 import { Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SamplingFigure } from "@/components/lesson/figures/math/SamplingFigure";
+import { Phi, PhiInv } from "@/components/lesson/figures/math/distMath";
 
 const r = String.raw;
+
+// ── Live formulas: the numbers plugged in ─────────────────────────────────────
+
+/** z* for a two-sided confidence level given in percent: Φ(z*) = 1 − (1 − level)/2. */
+const zStar = (level: number) => PhiInv(1 - (1 - level / 100) / 2);
+
+/** Confidence interval for a mean with known σ. */
+function ciNumbers(v: Record<string, number>) {
+  const { xbar, s, n, lv } = v, z = zStar(lv), se = s / Math.sqrt(n), E = z * se;
+  return {
+    tex: r`\begin{aligned} &z^* = ${z.toFixed(3)} \qquad \operatorname{SE} = \frac{${s.toFixed(2)}}{\sqrt{${n}}} = ${se.toFixed(4)} \\[4pt] &E = ${z.toFixed(3)} \cdot ${se.toFixed(4)} = \amber{${E.toFixed(3)}} \\[4pt] &${xbar.toFixed(2)} \pm ${E.toFixed(3)} = \green{[\,${(xbar - E).toFixed(3)},\ ${(xbar + E).toFixed(3)}\,]} \end{aligned}`,
+  };
+}
+
+/** Confidence interval for a proportion: k successes out of n. */
+function propNumbers(v: Record<string, number>) {
+  const { n, lv } = v, k = Math.min(v.k, n), ph = k / n, z = zStar(lv);
+  const se = Math.sqrt((ph * (1 - ph)) / n), E = z * se;
+  return {
+    tex: r`\begin{aligned} &\hat p = \frac{${k}}{${n}} = ${ph.toFixed(3)} \qquad \operatorname{SE} = \sqrt{\frac{${ph.toFixed(3)} \cdot ${(1 - ph).toFixed(3)}}{${n}}} = ${se.toFixed(4)} \\[4pt] &E = ${z.toFixed(3)} \cdot ${se.toFixed(4)} = \amber{${E.toFixed(3)}} \\[4pt] &${ph.toFixed(3)} \pm ${E.toFixed(3)} = \green{[\,${(ph - E).toFixed(3)},\ ${(ph + E).toFixed(3)}\,]} \end{aligned}`,
+  };
+}
+
+/** Sample size for a margin of error E. */
+function sizeNumbers(v: Record<string, number>) {
+  const { s, E, lv } = v, z = zStar(lv), raw = ((z * s) / E) ** 2;
+  return {
+    tex: r`n = \left(\frac{${z.toFixed(3)} \cdot ${s.toFixed(2)}}{${E.toFixed(3)}}\right)^2 = ${((z * s) / E).toFixed(2)}^2 = ${raw.toFixed(1)} \;\Rightarrow\; n = \green{${Math.ceil(raw - 1e-9)}}`,
+  };
+}
+
+/** Two-sided z test for a mean with known σ. */
+const testNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
+  const { xbar, mu0, s, n } = v, se = s / Math.sqrt(n), z = (xbar - mu0) / se, p = 2 * (1 - Phi(Math.abs(z)));
+  const verdict = p < 0.05 ? tx(t, "mSamp_liveReject", "below 0.05: reject the null hypothesis at the 5% level") : tx(t, "mSamp_liveKeep", "not below 0.05: do not reject the null hypothesis");
+  return {
+    tex: r`\begin{aligned} &z = \frac{${xbar.toFixed(2)} - ${mu0.toFixed(2)}}{${s.toFixed(2)}/\sqrt{${n}}} = \frac{${(xbar - mu0).toFixed(2)}}{${se.toFixed(4)}} = ${z.toFixed(2)} \\[4pt] &\text{p-value} = 2\big(1 - \Phi(${Math.abs(z).toFixed(2)})\big) = \amber{${p < 1e-4 ? p.toExponential(1).replace("e", r`\times 10^{`) + "}" : p.toFixed(4)}} \\[4pt] &\text{${verdict.replace(/%/g, r`\%`)}} \end{aligned}`,
+    meter: p,
+    meterLabel: `p = ${p < 1e-4 ? p.toExponential(1) : p.toFixed(4)}`,
+  };
+};
+
+/** The confidence-level slider shared by three live formulas. */
+const levelVar = (t: TrackTranslations) =>
+  ({ id: "lv", label: tx(t, "mSamp_liveLevel", "level"), min: 80, max: 99.5, step: 0.5, value: 95, fmt: (v: number) => `${v}%` });
 
 export function SamplingContent({ t }: { t: TrackTranslations }) {
   return (
@@ -54,22 +102,43 @@ export function SamplingContent({ t }: { t: TrackTranslations }) {
           [r`n`, tx(t, "mSamp_wN", "the sample size")],
           [r`\operatorname{SE}`, tx(t, "mSamp_wSe", "the standard error: the standard deviation of x̄ over all possible samples")],
         ]}
+        words={tx(t, "mSamp_seWords", "On average over all samples, x̄ hits μ exactly. A single x̄ typically misses by the population's spread σ divided by the square root of the sample size.")}
         note={tx(t, "mSamp_seNote", "The population size does not appear: for a large population, a sample of 1000 is as precise for a city as for a whole country. What matters is n, and precision grows only like √n.")}>
         {r`E[\bar X] = \mu \qquad \operatorname{SE}(\bar X) = \frac{\sigma}{\sqrt n}`}
       </Equation>
       <H3>{tx(t, "mSamp_s2Title", "Why s² divides by n − 1")}</H3>
       <p>
-        {tx(t, "mSamp_s2Body",
-          "Expand around μ: xᵢ − x̄ = (xᵢ − μ) − (x̄ − μ). Squaring and adding over i, the cross terms give −2(x̄ − μ) Σ(xᵢ − μ) = −2n(x̄ − μ)², so Σ(xᵢ − x̄)² = Σ(xᵢ − μ)² − n(x̄ − μ)². Take expectations: each (Xᵢ − μ)² has mean σ², giving nσ², and (X̄ − μ)² has mean Var(X̄) = σ²/n, giving n · σ²/n = σ². So E[Σ(Xᵢ − X̄)²] = (n − 1)σ², and dividing by n − 1 makes E[s²] = σ² exactly. Dividing by n would come out low by the factor (n − 1)/n.")}
+        {tx(t, "mSamp_s2Intro",
+          "The descriptive chapter divided the sum of squared deviations by n − 1 and promised a reason. The deviations are measured from x̄, which sits in the middle of the sample, so they come out a little smaller than the deviations from the true μ. The derivation measures exactly how much smaller.")}
       </p>
+      <Derivation t={t} label={tx(t, "mSamp_eqS2Der", "Why n − 1 makes s² unbiased")}
+        steps={[
+          { tex: r`x_i - \bar x = (x_i - \mu) - (\bar x - \mu)`, full: true, why: tx(t, "mSamp_sd1", "subtract and add μ: each deviation from x̄ is a deviation from μ minus the error of x̄") },
+          { tex: r`\sum (x_i - \bar x)^2 = \sum (x_i - \mu)^2 - 2(\bar x - \mu)\sum (x_i - \mu) + n(\bar x - \mu)^2`, full: true, why: tx(t, "mSamp_sd2", "square with (a − b)² = a² − 2ab + b² and add over i = 1 … n. x̄ − μ is the same for every i, so it comes out of the sums, and the last term is added n times") },
+          { tex: r`\sum (x_i - \bar x)^2 = \sum (x_i - \mu)^2 - n(\bar x - \mu)^2`, full: true, why: tx(t, "mSamp_sd3", "Σ(xᵢ − μ) = nx̄ − nμ = n(x̄ − μ), so the middle term is −2n(x̄ − μ)². Together with +n(x̄ − μ)² it leaves −n(x̄ − μ)²") },
+          { tex: r`E\Big[\sum (X_i - \bar X)^2\Big] = n\sigma^2 - n \cdot \frac{\sigma^2}{n}`, full: true, why: tx(t, "mSamp_sd4", "take expectations. Each (Xᵢ − μ)² has mean σ², the definition of the variance, and there are n of them. (X̄ − μ)² has mean Var(X̄) = σ²/n") },
+          { tex: r`= \green{(n-1)\,\sigma^2}`, full: true, why: tx(t, "mSamp_sd5", "so dividing the sum by n − 1 gives E[s²] = σ² exactly. Dividing by n would come out low by the factor (n − 1)/n") },
+        ]} />
 
       <H2>{tx(t, "mSamp_llnTitle", "The law of large numbers")}</H2>
       <p>
-        {tx(t, "mSamp_llnBody",
-          "The probability chapter took it on trust that relative frequencies settle down to probabilities. Now it can be proved. Apply Chebyshev's inequality to X̄, whose variance is σ²/n: for any margin ε > 0, P(|X̄ − μ| ≥ ε) ≤ σ²/(nε²). The right side goes to 0 as n grows. However small the margin, the chance that the average misses μ by more than it can be made as small as we like by taking enough observations. For a frequency, let Xᵢ be 1 when an event happens on trial i: X̄ is then the relative frequency and μ = p.")}
+        {tx(t, "mSamp_llnBody2",
+          "The probability chapter took it on trust that relative frequencies settle down to probabilities. Now it can be proved with two facts from the expectation chapter: the variance of X̄ and Chebyshev's inequality. Fix any margin ε > 0 and ask how likely the average is to miss μ by ε or more.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mSamp_eqLlnDer", "The law of large numbers from Chebyshev")}
+        steps={[
+          { tex: r`\operatorname{Var}(\bar X) = \frac{\sigma^2}{n}`, full: true, why: tx(t, "mSamp_ld1", "the average of n independent values with variance σ² (expectation chapter)") },
+          { tex: r`P\big(|\bar X - \mu| \ge \varepsilon\big) \le \frac{\operatorname{Var}(\bar X)}{\varepsilon^2}`, full: true, why: tx(t, "mSamp_ld2", "Chebyshev's inequality P(|Y − E[Y]| ≥ ε) ≤ Var(Y)/ε², applied to Y = X̄, whose mean is μ") },
+          { tex: r`P\big(|\bar X - \mu| \ge \varepsilon\big) \le \frac{\sigma^2}{n\,\varepsilon^2}`, full: true, why: tx(t, "mSamp_ld3", "put in Var(X̄) = σ²/n") },
+          { tex: r`\frac{\sigma^2}{n\,\varepsilon^2} \green{\xrightarrow[n\to\infty]{} 0}`, full: true, why: tx(t, "mSamp_ld4", "σ and ε stay fixed while n grows, so the bound shrinks to 0. However small the margin, enough observations make a miss that large as unlikely as we like") },
+        ]} />
+      <p>
+        {tx(t, "mSamp_llnFreq",
+          "For a frequency, let Xᵢ be 1 when an event happens on trial i and 0 otherwise: X̄ is then the relative frequency and μ = p, so the relative frequency settles on the probability.")}
       </p>
       <Equation label={tx(t, "mSamp_eqLln", "Weak law of large numbers")}
         where={[[r`\varepsilon`, tx(t, "mSamp_wEps", "any fixed margin of error, however small")]]}
+        words={tx(t, "mSamp_llnWords", "The chance that the average misses the true mean by ε or more is at most σ² over nε², and that shrinks to zero as the sample grows.")}
         note={tx(t, "mSamp_llnNote", "It says the proportion settles, not that the counts balance out. After 10 000 tosses with 5100 heads, the excess of 100 heads is not \"corrected\"; it is simply diluted: 100 extra heads in 10 000 is 1%, in a million it is 0.01%.")}>
         {r`P\big(|\bar X - \mu| \ge \varepsilon\big) \le \frac{\sigma^2}{n\,\varepsilon^2} \xrightarrow[n\to\infty]{} 0`}
       </Equation>
@@ -84,6 +153,7 @@ export function SamplingContent({ t }: { t: TrackTranslations }) {
           [r`\frac{\bar X - \mu}{\sigma/\sqrt n}`, tx(t, "mSamp_wZ", "the average, standardised: minus its mean, divided by its standard error")],
           [r`\Phi(z)`, tx(t, "mSamp_wPhi", "the standard normal CDF from the distributions chapter")],
         ]}
+        words={tx(t, "mSamp_cltWords", "Standardise the average: subtract μ and divide by its standard error. For large n, its probabilities are those of the standard normal, whatever the population looks like.")}
         note={tx(t, "mSamp_cltNote", "How large must n be? For roughly symmetric populations 10 or so is plenty; for strongly skewed ones, 30 or more. The proof uses tools beyond this course, but the figure shows it happening.")}>
         {r`P\!\left(\frac{\bar X - \mu}{\sigma/\sqrt n} \le z\right) \xrightarrow[n\to\infty]{} \Phi(z)`}
       </Equation>
@@ -102,10 +172,22 @@ export function SamplingContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mSamp_ciTitle", "Confidence intervals")}</H2>
       <p>
-        {tx(t, "mSamp_ciBody",
-          "Turn the central limit theorem around. From the Φ table, P(−1.96 ≤ Z ≤ 1.96) = 0.95. With Z = (X̄ − μ)/(σ/√n), the inequality −1.96 ≤ Z ≤ 1.96 rearranges to X̄ − 1.96 σ/√n ≤ μ ≤ X̄ + 1.96 σ/√n. So the random interval X̄ ± 1.96 σ/√n contains μ with probability 0.95. Once the sample is drawn and x̄ is a number, the interval is fixed and either contains μ or not; we call it a 95% confidence interval, meaning it was produced by a method that succeeds 95% of the time.")}
+        {tx(t, "mSamp_ciIntro",
+          "Turn the central limit theorem around: it says how far X̄ strays from μ, so it also says how far μ can be from X̄. Start from the standardised mean and solve for μ.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mSamp_eqCiDer", "From the bell to an interval for the mean")}
+        steps={[
+          { tex: r`P(-1.96 \le Z \le 1.96) = 0.95`, full: true, why: tx(t, "mSamp_cd1", "from the Φ table: Φ(1.96) − Φ(−1.96) = 0.975 − 0.025 = 0.95") },
+          { tex: r`-1.96 \le \frac{\bar X - \mu}{\sigma/\sqrt n} \le 1.96`, full: true, why: tx(t, "mSamp_cd2", "by the central limit theorem the standardised mean behaves like Z, so this event also has probability 0.95") },
+          { tex: r`-1.96\,\frac{\sigma}{\sqrt n} \le \bar X - \mu \le 1.96\,\frac{\sigma}{\sqrt n}`, full: true, why: tx(t, "mSamp_cd3", "multiply all three parts by σ/√n, which is positive, so the inequalities keep their direction") },
+          { tex: r`\green{\bar X - 1.96\,\frac{\sigma}{\sqrt n} \le \mu \le \bar X + 1.96\,\frac{\sigma}{\sqrt n}}`, full: true, why: tx(t, "mSamp_cd4", "subtract X̄ from all three parts and multiply by −1, which flips both inequalities and swaps the two ends. It is the same event, so its probability is still 0.95") },
+        ]} />
+      <p>
+        {tx(t, "mSamp_ciAfter",
+          "So the random interval X̄ ± 1.96 σ/√n contains μ with probability 0.95. Once the sample is drawn and x̄ is a number, the interval is fixed and either contains μ or not; we call it a 95% confidence interval, meaning it was produced by a method that succeeds 95% of the time.")}
       </p>
       <Equation label={tx(t, "mSamp_eqCi", "Confidence interval for a mean")}
+        words={tx(t, "mSamp_ciWords", "Start at the sample mean and go z* standard errors to each side. z* is set by how sure you want to be.")}
         where={[
           [r`\bar x`, tx(t, "mSamp_wXbar", "the sample mean: the centre of the interval")],
           [r`z^*`, tx(t, "mSamp_wZstar", "the critical value for the chosen level: 1.645 for 90%, 1.96 for 95%, 2.576 for 99%")],
@@ -123,10 +205,38 @@ export function SamplingContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mSamp_tBolts99", "the bolts at 99%"), "2.576 · 0.0707 ≈ 0.18", "10.02 to 10.38 mm"],
         ]}
       />
+      <LiveFormula label={tx(t, "mSamp_liveCi", "Try it: a confidence interval for a mean")}
+        tex={r`\bar x \pm z^* \frac{\sigma}{\sqrt n}`}
+        vars={[
+          { id: "xbar", label: "x̄", min: 9, max: 11, step: 0.01, value: 10.2, fmt: v => v.toFixed(2) },
+          { id: "s", label: "σ", min: 0.1, max: 2, step: 0.05, value: 0.5, fmt: v => v.toFixed(2) },
+          { id: "n", label: "n", min: 2, max: 400, step: 1, value: 50, fmt: v => String(v) },
+          levelVar(t),
+        ]}
+        compute={ciNumbers}
+        note={tx(t, "mSamp_liveCiNote", "The start is the bolts: 10.06 to 10.34 mm. Raise the level to 99% for the third row of the table. Then try n = 200: four times the bolts, half the margin.")} />
+      <LiveFormula label={tx(t, "mSamp_liveProp", "Try it: a confidence interval for a proportion")}
+        tex={r`\hat p \pm z^* \sqrt{\frac{\hat p\,(1-\hat p)}{n}}`}
+        vars={[
+          { id: "n", label: "n", min: 10, max: 3000, step: 10, value: 1000, fmt: v => String(v) },
+          { id: "k", label: tx(t, "mSamp_liveYes", "in favour"), min: 0, max: 3000, step: 1, value: 520, fmt: v => String(v) },
+          levelVar(t),
+        ]}
+        compute={propNumbers}
+        note={tx(t, "mSamp_livePropNote", "The start is the poll: 520 of 1000 in favour gives 0.489 to 0.551, so the poll cannot tell whether a majority is in favour. Set n = 400 and 48 in favour for worked example 3. If the count is set above n it is treated as n.")} />
       <p>
         {tx(t, "mSamp_nBody",
           "Choosing the sample size. To get a margin E, solve E = z*σ/√n for n: n = (z*σ/E)². To pin the bolts' mean down to ±0.05 mm at 95%: n = (1.96 · 0.5/0.05)² = 19.6² ≈ 384.2, so 385 bolts. For a poll with a ±2-point margin, use the worst case p = 0.5: n = (1.96 · 0.5/0.02)² = 49² = 2401. Halving the margin always costs four times as many observations.")}
       </p>
+      <LiveFormula label={tx(t, "mSamp_liveSize", "Try it: how many observations?")}
+        tex={r`n = \left(\frac{z^*\,\sigma}{E}\right)^2`}
+        vars={[
+          { id: "s", label: "σ", min: 0.1, max: 2, step: 0.05, value: 0.5, fmt: v => v.toFixed(2) },
+          { id: "E", label: "E", min: 0.01, max: 0.5, step: 0.005, value: 0.05, fmt: v => v.toFixed(3) },
+          levelVar(t),
+        ]}
+        compute={sizeNumbers}
+        note={tx(t, "mSamp_liveSizeNote", "The start is the bolts: 385. Halve E to 0.025 and n grows about four times, to 1537. For the poll, σ = 0.5 (the worst case p = 0.5) and E = 0.02 give 2401. n is rounded up, since a smaller sample would miss the margin.")} />
       <Callout type="info" t={t}>
         {tx(t, "mSamp_tTip", "With a small sample and an unknown σ, replacing σ by s adds extra uncertainty, since s itself varies from sample to sample. For data from a normal population the exact fix replaces z* by a slightly larger number from Student's t distribution with n − 1 degrees of freedom: for n = 10 and 95% it is 2.262 instead of 1.96. For n above about 30 the difference hardly matters.")}
       </Callout>
@@ -142,6 +252,7 @@ export function SamplingContent({ t }: { t: TrackTranslations }) {
           [r`z`, tx(t, "mSamp_wZtest", "how many standard errors the sample result lies from that claim")],
           [r`\text{p-value}`, tx(t, "mSamp_wP", "the probability, if H₀ were true, of a result at least as extreme as the one observed")],
         ]}
+        words={tx(t, "mSamp_testWords", "Count how many standard errors the result lies from the claimed value. The p-value is the chance of landing at least that far out, on either side, if the claim is true.")}
         note={tx(t, "mSamp_testNote", "Decide beforehand on a significance level α, often 0.05. If the p-value is below α, reject H₀: the data are too surprising for it. Otherwise we fail to reject it, which is not the same as proving it true.")}>
         {r`z = \frac{\bar x - \mu_0}{\sigma/\sqrt n} \qquad \text{p-value} = P\big(|Z| \ge |z|\big) = 2\big(1 - \Phi(|z|)\big)`}
       </Equation>
@@ -149,6 +260,16 @@ export function SamplingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mSamp_testEx",
           "The coin: p ≈ 0.036 < 0.05, so at the 5% level we reject fairness; at the 1% level we would not. The bolts: the specification says μ = 10.0 mm, and 50 bolts gave x̄ = 10.2 with σ = 0.5. z = 0.2/0.0707 ≈ 2.83, p = 2(1 − Φ(2.83)) ≈ 0.005: strong evidence that the machine is off. Notice that the 95% interval 10.06 to 10.34 does not contain 10.0. In general a two-sided test at level α rejects μ₀ exactly when μ₀ lies outside the 1 − α confidence interval.")}
       </p>
+      <LiveFormula label={tx(t, "mSamp_liveTest", "Try it: a z test")}
+        tex={r`z = \frac{\bar x - \mu_0}{\sigma/\sqrt n}, \qquad \text{p-value} = 2\big(1 - \Phi(|z|)\big)`}
+        vars={[
+          { id: "xbar", label: "x̄", min: 9.5, max: 10.5, step: 0.01, value: 10.2, fmt: v => v.toFixed(2) },
+          { id: "mu0", label: <>μ<sub>0</sub></>, min: 9.5, max: 10.5, step: 0.01, value: 10, fmt: v => v.toFixed(2) },
+          { id: "s", label: "σ", min: 0.1, max: 2, step: 0.05, value: 0.5, fmt: v => v.toFixed(2) },
+          { id: "n", label: "n", min: 2, max: 400, step: 1, value: 50, fmt: v => String(v) },
+        ]}
+        compute={testNumbers(t)}
+        note={tx(t, "mSamp_liveTestNote", "The start is the bolts: z ≈ 2.83 and p ≈ 0.005. Lower n to 10: the same 0.2 mm difference gives p ≈ 0.21, no longer evidence. With n = 400, even x̄ = 10.05 is significant: a small effect, detected by a large sample.")} />
       <LessonTable
         headers={["", tx(t, "mSamp_tH0true", "H₀ true"), tx(t, "mSamp_tH0false", "H₀ false")]}
         rows={[
