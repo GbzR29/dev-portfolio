@@ -3,7 +3,8 @@
 // Probability & Statistics 6: expectation and variance — the mean as a
 // long-run average and a balance point; E[X] for discrete and continuous
 // variables; E[g(X)] and why E[g(X)] ≠ g(E[X]); linearity and the indicator
-// trick (hat-check problem); fair games; variance and standard deviation,
+// trick (hat-check problem); conditional expectation, the law of total
+// expectation and first-step analysis (lost hiker); fair games; variance and standard deviation,
 // the shortcut E[X²] − μ²; Var(aX + b); covariance and the variance of a sum;
 // the average of n independent copies (σ/√n); standardising; Chebyshev.
 
@@ -29,6 +30,14 @@ const gameNumbers = (t: TrackTranslations) => (v: Record<string, number>) => {
     tex: r`\begin{aligned} &E[G] = \frac{${v.pool}}{1000} - ${v.c.toFixed(1)} = ${back.toFixed(2)} - ${v.c.toFixed(1)} = \amber{${g.toFixed(2)}} \\[2pt] &\text{${verdict}} \end{aligned}`,
   };
 };
+
+/** The lost hiker: exit trail a with chance p, two loops b and c sharing the rest. */
+function hikerNumbers(v: Record<string, number>) {
+  const fails = (1 - v.p) / v.p, avg = (v.b + v.c) / 2, e = v.a + fails * avg;
+  return {
+    tex: r`E = ${v.a} + \frac{${(1 - v.p).toFixed(2)}}{${v.p.toFixed(2)}} \cdot \frac{${v.b} + ${v.c}}{2} = ${v.a} + ${fails.toFixed(2)} \cdot ${avg} = \amber{${e.toFixed(2)}}`,
+  };
+}
 
 /** The standard error σ/√n of an average of n independent values. */
 function seNumbers(v: Record<string, number>) {
@@ -59,6 +68,7 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
       <Goals t={t} id="mExpv" items={[
         "Compute the expected value of a discrete or continuous variable.",
         "Use the fact that expected values always add.",
+        "Find a mean case by case with the law of total expectation, and by conditioning on the first step.",
         "Compute the variance and the standard deviation, and apply their rules.",
         "Bound how far a value can stray from the mean with Chebyshev's inequality.",
       ]} />
@@ -169,6 +179,80 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mExp_hatBody",
           "Hat check: n people leave their hats and get them back in random order. How many, on average, get their own hat? Let Iₖ = 1 if person k gets theirs. The hat that person k receives is equally likely to be any of the n, so E[Iₖ] = 1/n, and the expected number of matches is n · 1/n = 1, for 5 people or 5 million. Working out the full distribution of matches is hard; its mean is one line. In the same way: n coin tosses give n/2 heads on average; among 30 people there are C(30, 2) = 435 pairs, each sharing a birthday with probability 1/365, so on average 435/365 ≈ 1.19 shared-birthday pairs.")}
       </p>
+
+      <H2>{tx(t, "mExp_ceTitle", "Conditional expectation: the mean case by case")}</H2>
+      <p>
+        {tx(t, "mExp_ceBody",
+          "Sometimes a mean is easiest to find one case at a time. The conditional expectation E[X | A] is the mean of X when we know that A happened: the same weighted average as before, but with the conditional probabilities P(X = x | A) from the conditional-probability chapter as the weights. For a die, E[X | even] = (2 + 4 + 6)/3 = 4 and E[X | odd] = (1 + 3 + 5)/3 = 3. Each case happens half the time, and ½ · 4 + ½ · 3 = 3.5, the mean of the die. That is no accident: weighting the mean of each case by the chance of the case always gives back the overall mean.")}
+      </p>
+      <Equation label={tx(t, "mExp_eqCe", "Conditional expectation and the law of total expectation")}
+        where={[
+          [r`E[X \mid A]`, tx(t, "mExp_wCe", "the mean of X counting only the outcomes in which A happens")],
+          [r`P(X = x \mid A)`, tx(t, "mExp_wCeP", "the chance of the value x once we know A happened; these weights add to 1")],
+          [r`A_1, \ldots, A_n`, tx(t, "mExp_wCePart", "a partition: cases that cannot overlap, of which exactly one happens")],
+          [r`P(A_i)`, tx(t, "mExp_wCeAi", "the chance of case i: the weight of its mean")],
+        ]}
+        words={tx(t, "mExp_ceWords", "Find the mean inside each case, multiply it by the chance of that case, and add over the cases.")}>
+        {r`E[X \mid A] = \sum_x x\,P(X = x \mid A) \qquad E[X] = \sum_{i=1}^{n} P(A_i)\,E[X \mid A_i]`}
+      </Equation>
+      <Derivation t={t} label={tx(t, "mExp_eqCeDer", "Why the law of total expectation holds")}
+        steps={[
+          { tex: r`E[X]`, why: tx(t, "mExp_ce1", "the overall mean we want") },
+          { tex: r`= \sum_x x\,P(X = x)`, why: tx(t, "mExp_ce2", "the definition: each value times its probability") },
+          { tex: r`= \sum_x x \sum_i P(A_i)\,P(X = x \mid A_i)`, why: tx(t, "mExp_ce3", "the law of total probability, applied to the event X = x: split it over the cases A₁, …, Aₙ") },
+          { tex: r`= \sum_i P(A_i) \sum_x x\,P(X = x \mid A_i)`, why: tx(t, "mExp_ce4", "a finite double sum can be added in either order; P(Aᵢ) does not depend on x, so it comes out of the inner sum") },
+          { tex: r`= \green{\sum_i P(A_i)\,E[X \mid A_i]}`, why: tx(t, "mExp_ce5", "the inner sum is exactly the definition of E[X | Aᵢ]") },
+        ]} />
+      <p>
+        {tx(t, "mExp_ceGroups",
+          "Group means must be weighted. A class has 20 students whose test average is 7 and 30 whose average is 6. The class average is not (7 + 6)/2 = 6.5. A student picked at random is in the first group with probability 20/50 = 0.4, so E = 0.4 · 7 + 0.6 · 6 = 2.8 + 3.6 = 6.4. Counting all the points confirms it: 20 · 7 + 30 · 6 = 320 points over 50 students is 6.4.")}
+      </p>
+
+      <H3>{tx(t, "mExp_hkTitle", "Conditioning on the first step")}</H3>
+      <p>
+        {tx(t, "mExp_hkBody",
+          "The law is at its best when a process can start over. A hiker lost at a junction picks one of three trails at random, each with probability 1/3, and does not remember which ones were tried before. Trail A reaches the hut in 1 hour. Trails B and C are loops that bring the hiker back to the same junction, after 2 hours and after 4 hours. How long does it take, on average, to reach the hut? Listing every possible route is hopeless, since the hiker can loop any number of times. Instead, call the answer E and split into cases by the first trail taken.")}
+      </p>
+      <LessonTable
+        headers={[tx(t, "mExp_hkTrail", "first trail"), tx(t, "mExp_hkProb", "probability"), tx(t, "mExp_hkWhat", "what happens"), tx(t, "mExp_hkGiven", "expected total time, given this trail")]}
+        rows={[
+          ["A", "1/3", tx(t, "mExp_hkA", "reaches the hut after 1 h"), "1"],
+          ["B", "1/3", tx(t, "mExp_hkB", "back at the junction after 2 h"), "2 + E"],
+          ["C", "1/3", tx(t, "mExp_hkC", "back at the junction after 4 h"), "4 + E"],
+        ]}
+      />
+      <p>
+        {tx(t, "mExp_hkKey",
+          "The key is in the last two rows. Back at the junction, the hiker is in exactly the situation of the start: the same trails, the same chances, no memory. So the expected time still to go is E again, and the expected total, given trail B first, is the 2 hours already walked plus E.")}
+      </p>
+      <Derivation t={t} label={tx(t, "mExp_eqHkDer", "The lost hiker, step by step")}
+        steps={[
+          { tex: r`E`, why: tx(t, "mExp_hk1", "the expected number of hours from the junction to the hut") },
+          { tex: r`= \tfrac13 \cdot 1 + \tfrac13\,(2 + E) + \tfrac13\,(4 + E)`, why: tx(t, "mExp_hk2", "the law of total expectation over the first trail: each row of the table times its probability 1/3") },
+          { tex: r`= \tfrac73 + \tfrac23\,E`, why: tx(t, "mExp_hk3", "collect the hours, (1 + 2 + 4)/3 = 7/3, and the two thirds of E") },
+          { tex: r`\tfrac13\,E = \tfrac73`, full: true, why: tx(t, "mExp_hk4", "subtract (2/3) E from both sides: E appears on both sides, so the equation can be solved for it") },
+          { tex: r`E = \green{7 \text{ h}}`, full: true, why: tx(t, "mExp_hk5", "multiply both sides by 3") },
+        ]} />
+      <p>
+        {tx(t, "mExp_hkCheck",
+          "Check that 7 makes sense. Picking A is a success with probability 1/3, so the hiker needs 3 picks on average: 2 loops and then A. The loops average (2 + 4)/2 = 3 hours, so 2 · 3 + 1 = 7. The same trick gives the mean of a geometric wait in one line. Roll a die until a 6 appears: the first roll is a 6 with probability 1/6 (then the wait was 1 roll); otherwise one roll is spent and the wait starts over. So E = 1 + (5/6) E, which gives E = 6. This method is called first-step analysis; the Markov chains and absorbing chains chapters use it on every process that moves between states until it stops.")}
+      </p>
+      <LiveFormula label={tx(t, "mExp_liveHiker", "Try it: the lost hiker")}
+        tex={r`E = a + \frac{1 - p}{p} \cdot \frac{b + c}{2}`}
+        where={[
+          [r`a`, tx(t, "mExp_wHkA", "hours on the trail that reaches the hut")],
+          [r`b, c`, tx(t, "mExp_wHkBc", "hours on each loop back to the junction")],
+          [r`p`, tx(t, "mExp_wHkP", "the chance of picking the hut trail; the two loops share the rest, (1 − p)/2 each")],
+          [r`\frac{1 - p}{p}`, tx(t, "mExp_wHkFails", "the expected number of loops walked before the hut trail is picked")],
+        ]}
+        vars={[
+          { id: "a", label: "a", min: 0.5, max: 5, step: 0.5, value: 1, fmt: v => v.toFixed(1) },
+          { id: "b", label: "b", min: 0.5, max: 6, step: 0.5, value: 2, fmt: v => v.toFixed(1) },
+          { id: "c", label: "c", min: 0.5, max: 6, step: 0.5, value: 4, fmt: v => v.toFixed(1) },
+          { id: "p", label: "p", min: 1 / 12, max: 11 / 12, step: 1 / 12, value: 1 / 3, fmt: v => v.toFixed(2) },
+        ]}
+        compute={hikerNumbers}
+        note={tx(t, "mExp_liveHikerNote", "The formula is the same first-step equation, E = p · a + (1 − p) · ((b + c)/2 + E), solved for E. The defaults are the hiker above: 7 hours. Raise p to 0.50 and the wait drops to 1 + 1 · 3 = 4 hours. Make the loops longer and only the second term grows; the walk to the hut itself is always counted once.")} />
 
       <H2>{tx(t, "mExp_varTitle", "Variance: how far from the mean")}</H2>
       <p>
@@ -315,6 +399,7 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
           ["Var(X − Y) = Var X − Var Y", tx(t, "mExp_m4r", "Var X + Var Y (independent)"), tx(t, "mExp_m4", "subtracting a random quantity adds uncertainty")],
           ["σ_{X+Y} = σ_X + σ_Y", "√(σ_X² + σ_Y²)", tx(t, "mExp_m5", "variances add for independent variables, not standard deviations")],
           [tx(t, "mExp_m6w", "linearity needs independence"), tx(t, "mExp_m6r", "E[X + Y] = E[X] + E[Y] always"), tx(t, "mExp_m6", "only the variance rule needs independence")],
+          [tx(t, "mExp_m7w", "overall mean = plain average of the group means"), "Σ P(Aᵢ) E[X | Aᵢ]", tx(t, "mExp_m7", "bigger groups pull harder: 20 students averaging 7 and 30 averaging 6 give 6.4, not 6.5")],
         ]}
       />
 
@@ -323,6 +408,7 @@ export function ExpectationContent({ t }: { t: TrackTranslations }) {
         "E[g(X)] weights g(x) by p(x); in general E[g(X)] ≠ g(E[X]).",
         "Expectation is linear, E[aX + b] = aE[X] + b and E[X + Y] = E[X] + E[Y], with no independence needed.",
         "Indicators turn expected counts into sums of probabilities.",
+        "E[X] = Σ P(Aᵢ) E[X | Aᵢ]: weight the mean of each case by the chance of the case. When a process starts over, conditioning on the first step gives an equation for the mean.",
         "Var X = E[(X − μ)²] = E[X²] − μ²; σ = √Var has the units of X; Var(aX + b) = a² Var X.",
         "Var(X + Y) = Var X + Var Y + 2 Cov; for independent variables the covariance is 0.",
         "The average of n independent copies has mean μ and standard deviation σ/√n.",

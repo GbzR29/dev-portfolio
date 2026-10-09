@@ -14,6 +14,11 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-09
 
+- **Esperança condicional e análise do primeiro passo, em "Esperança e variância" (Matemática)**, a parte 7 do plano da lista de exercícios de Markov:
+  - **seção nova "Esperança condicional: a média caso a caso"**: E[X | A] como média com os pesos P(X = x | A) (dado par = 4, ímpar = 3, e ½ · 4 + ½ · 3 = 3,5). Traz a lei da esperança total com explicação de cada termo e "em palavras", e a dedução passo a passo a partir da lei da probabilidade total. Mostra também o exemplo das médias de grupos (6,4, não 6,5);
+  - **"Condicionando no primeiro passo"**: a trilheira perdida (trilha até o abrigo de 1 h e voltas de 2 h e 4 h), com tabela dos casos, dedução de E = 7 h, conferência pela espera geométrica e a espera por um 6 em uma linha (E = 1 + (5/6)E). Tem uma fórmula ao vivo com a, b, c e p;
+  - 1 erro comum, ideia-chave e objetivo novos, pré-requisito "probabilidade condicional", tempo de leitura 22 → 27 min, tradução PT.
+
 - **Exemplo final do gráfico de controle, em "Cadeias absorventes e tempos de chegada" (Matemática)**, a parte 6 do plano da lista de exercícios de Markov:
   - **seção nova "Exemplo final: quanto tempo até um alarme?"**: o ARL (número esperado de pontos até o primeiro alarme) da regra clássica de 3σ (370, espera geométrica) e da regra 2 de 2 (dois pontos seguidos além do mesmo limite ±kσ). Traz a tabela da cadeia de 3 estados (onde caiu o último ponto) e a dedução passo a passo de ARL = (1 + p)/(2p²), com a ligação com a espera por HH;
   - **"Escolhendo k"**: a equação do segundo grau 740p² − p − 1 = 0 e uma tabela de bissecção em 4 passos até k ≈ 1,78 (o mesmo alarme falso da regra de 3σ). Vem com a fórmula geral do ARL com p_U e p_L (conferida nos dois casos especiais) e uma fórmula ao vivo com k e o deslocamento δ comparando as duas regras (26 contra 44 pontos em δ = 1);
