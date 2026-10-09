@@ -12,6 +12,9 @@
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { dotNumbers, lengthNumbers, normalNumbers } from "../live/vectors";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { VectorFigure } from "@/components/lesson/figures/math/VectorFigure";
 import { VectorOpsFigure } from "@/components/lesson/figures/VectorOpsFigure";
@@ -119,7 +122,8 @@ int main() {
         {tx(t, "oglVec_add1",
           "In words: to add two vectors, add their matching parts. x with x, y with y, z with z. The result is a new vector.")}
       </p>
-      <Equation label={tx(t, "oglVec_addLabel", "Vector addition")}
+      <Equation words={tx(t, "oglVec_addWords", "Add the matching parts: x with x, y with y, z with z. As arrows: walk along a, then along b, and the sum goes straight from the start to the end.")}
+        label={tx(t, "oglVec_addLabel", "Vector addition")}
         glm="glm::vec3 r = a + b;">
         {String.raw`\blue{\mathbf{a}} + \amber{\mathbf{b}} \;=\; (\blue{a_x} + \amber{b_x},\; \blue{a_y} + \amber{b_y},\; \blue{a_z} + \amber{b_z})`}
       </Equation>
@@ -141,7 +145,8 @@ int main() {
         {tx(t, "oglVec_sub1",
           "Subtraction works the same way: subtract the matching parts. Its meaning is the most useful thing in this section. b − a is the arrow that goes from point a to point b. A way to remember the order: \"to minus from\".")}
       </p>
-      <Equation label={tx(t, "oglVec_subLabel", "Vector subtraction")}
+      <Equation words={tx(t, "oglVec_subWords", "Subtract the matching parts. The result is the arrow that starts at the tip of a and ends at the tip of b.")}
+        label={tx(t, "oglVec_subLabel", "Vector subtraction")}
         glm="glm::vec3 toB = b - a;   // from a to b">
         {String.raw`\amber{\mathbf{b}} - \blue{\mathbf{a}} \;=\; (\amber{b_x} - \blue{a_x},\; \amber{b_y} - \blue{a_y},\; \amber{b_z} - \blue{a_z})`}
       </Equation>
@@ -168,7 +173,8 @@ print("enemy - player", toEnemy);            // (3, 0, 4)`}</CodeBlock>
         {tx(t, "oglVec_scale1",
           "In words: to multiply a vector by a plain number k, multiply each of its parts by k. A plain number is called a scalar, because this is what it does to a vector: it scales it.")}
       </p>
-      <Equation label={tx(t, "oglVec_scaleLabel", "Scaling")}
+      <Equation words={tx(t, "oglVec_scaleWords", "Multiply every part by the same number k. The arrow stays on its line and becomes k times as long; a negative k also flips it.")}
+        label={tx(t, "oglVec_scaleLabel", "Scaling")}
         glm="glm::vec3 r = k * a;">
         {String.raw`\green{k}\,\blue{\mathbf{a}} \;=\; (\green{k}\,\blue{a_x},\; \green{k}\,\blue{a_y},\; \green{k}\,\blue{a_z})`}
       </Equation>
@@ -193,11 +199,14 @@ print("0.5 * a", 0.5f * a);                  // (1.5, 0.5, 0)`}</CodeBlock>
         {tx(t, "oglVec_len2",
           "Start in 2D. The arrow (3, 4) goes 3 to the right and 4 up. Those two moves and the arrow form a right triangle, and the arrow is its longest side. Pythagoras' theorem gives that side: √(3² + 4²) = √(9 + 16) = √25 = 5.")}
       </p>
-      <p>
-        {tx(t, "oglVec_len3",
-          "3D adds one more square under the root. The reason: first find the diagonal across the floor, √(x² + z²). That diagonal and the height y form a second right triangle, so the full length is √(diagonal² + y²) = √(x² + y² + z²).")}
-      </p>
-      <Equation label={tx(t, "oglVec_lenLabel", "Length of a vector")}
+      <Derivation t={t} label={tx(t, "oglVec_lenDer", "3D adds one more square: Pythagoras twice")}
+        steps={[
+          { full: true, tex: String.raw`d = \sqrt{x^2 + z^2}`, why: tx(t, "oglVec_ld1", "first the diagonal d across the floor: x and z are the two legs of a right triangle lying flat, and d is its longest side") },
+          { full: true, tex: String.raw`\lvert\mathbf{a}\rvert = \sqrt{d^2 + y^2}`, why: tx(t, "oglVec_ld2", "d and the height y are the legs of a second right triangle, standing up; the arrow itself is its longest side") },
+          { full: true, tex: String.raw`\lvert\mathbf{a}\rvert = \sqrt{x^2 + z^2 + y^2} = \green{\sqrt{x^2 + y^2 + z^2}}`, why: tx(t, "oglVec_ld3", "squaring d undoes its square root, which leaves x² + z²; the order of the three squares does not matter") },
+        ]} />
+      <Equation words={tx(t, "oglVec_lenWords", "Square each part, add the three squares and take the square root. It is Pythagoras' theorem, used twice.")}
+        label={tx(t, "oglVec_lenLabel", "Length of a vector")}
         glm="float l = glm::length(a);   float d = glm::distance(p, q);   // = length(q - p)"
         where={[
           [String.raw`\lvert\blue{\mathbf{a}}\rvert`, tx(t, "oglVec_wLen", "the length of a: one number, never negative")],
@@ -220,7 +229,8 @@ print("distance", glm::distance(player, enemy));                      // 5, the 
         {tx(t, "oglVec_norm1",
           "A unit vector is a vector of length exactly 1. It keeps only a direction, with no \"how far\". To normalize a vector means to make it length 1 without changing where it points: divide each part by the length. A unit vector is often written with a hat: â.")}
       </p>
-      <Equation label={tx(t, "oglVec_normLabel", "Normalizing")}
+      <Equation words={tx(t, "oglVec_normWords", "Divide every part by the length. The arrow keeps its direction and becomes exactly 1 long.")}
+        label={tx(t, "oglVec_normLabel", "Normalizing")}
         glm="glm::vec3 u = glm::normalize(a);">
         {String.raw`\hat{\mathbf{a}} \;=\; \frac{\blue{\mathbf{a}}}{\lvert\blue{\mathbf{a}}\rvert} \;=\; \left(\frac{\blue{a_x}}{\lvert\blue{\mathbf{a}}\rvert},\; \frac{\blue{a_y}}{\lvert\blue{\mathbf{a}}\rvert},\; \frac{\blue{a_z}}{\lvert\blue{\mathbf{a}}\rvert}\right)`}
       </Equation>
@@ -240,6 +250,15 @@ print("distance", glm::distance(player, enemy));                      // 5, the 
 print("dir", dir);                           // (0.6, 0, 0.8)
 print("length(dir)", glm::length(dir));      // 1
 print("velocity", dir * 2.0f);               // (1.2, 0, 1.6): speed 2 toward the enemy`}</CodeBlock>
+      <LiveFormula label={tx(t, "oglVec_liveLen", "Try it: length and direction")}
+        tex={String.raw`\lvert\mathbf a\rvert = \sqrt{a_x^2 + a_y^2 + a_z^2} \qquad \hat{\mathbf a} = \frac{\mathbf a}{\lvert\mathbf a\rvert}`}
+        vars={[
+          { id: "x", label: <>a<sub>x</sub></>, min: -6, max: 6, step: 0.5, value: 3, fmt: v => String(v) },
+          { id: "y", label: <>a<sub>y</sub></>, min: -6, max: 6, step: 0.5, value: 0, fmt: v => String(v) },
+          { id: "z", label: <>a<sub>z</sub></>, min: -6, max: 6, step: 0.5, value: 4, fmt: v => String(v) },
+        ]}
+        compute={lengthNumbers}
+        note={tx(t, "oglVec_liveLenNote", "The start is the player–enemy arrow (3, 0, 4): length 5, direction (0.6, 0, 0.8). Double every part and the length doubles while the direction stays the same. Set all three to 0 and the division by zero gives NaN, the bug from the warning above.")} />
       <p>
         {tx(t, "oglVec_figIntro",
           "The figure has one tab per operation so far. Drag the tips of a and b and watch the numbers change. The last tab, \"move to target\", is the player-and-enemy example, with W the walker and G the goal.")}
@@ -256,7 +275,8 @@ print("velocity", dir * 2.0f);               // (1.2, 0, 1.6): speed 2 toward th
         {tx(t, "oglVec_dot2",
           "How to compute it: multiply the matching parts, then add the three results.")}
       </p>
-      <Equation label={tx(t, "oglVec_dotCalcLabel", "Dot product: how to compute it")}
+      <Equation words={tx(t, "oglVec_dotCalcWords", "Multiply x by x, y by y and z by z, then add the three products. The answer is one number, not a vector.")}
+        label={tx(t, "oglVec_dotCalcLabel", "Dot product: how to compute it")}
         glm="float d = glm::dot(a, b);">
         {String.raw`\blue{\mathbf{a}} \cdot \amber{\mathbf{b}} \;=\; \blue{a_x}\amber{b_x} + \blue{a_y}\amber{b_y} + \blue{a_z}\amber{b_z}`}
       </Equation>
@@ -268,7 +288,8 @@ print("velocity", dir * 2.0f);               // (1.2, 0, 1.6): speed 2 toward th
         {tx(t, "oglVec_dot4",
           "12 on its own says little. The meaning comes from a second formula, which always gives the same number as the first:")}
       </p>
-      <Equation label={tx(t, "oglVec_dotMeanLabel", "Dot product: what it means")}
+      <Equation words={tx(t, "oglVec_dotMeanWords", "The length of a, times the length of b, times the cosine of the angle between them. For two unit vectors only the cosine is left: 1 for the same direction, 0 for perpendicular, −1 for opposite.")}
+        label={tx(t, "oglVec_dotMeanLabel", "Dot product: what it means")}
         where={[
           [String.raw`\lvert\blue{\mathbf{a}}\rvert`, tx(t, "oglVec_wA", "the length of a")],
           [String.raw`\lvert\amber{\mathbf{b}}\rvert`, tx(t, "oglVec_wB", "the length of b")],
@@ -303,10 +324,23 @@ print("velocity", dir * 2.0f);               // (1.2, 0, 1.6): speed 2 toward th
         {tx(t, "oglVec_dot8",
           "With numbers: right = (1, 0, 0) and u = (0.6, 0.8, 0) are both unit vectors. right · u = 1×0.6 + 0×0.8 + 0×0 = 0.6. So cos θ = 0.6, and the angle is the angle whose cosine is 0.6: acos(0.6) ≈ 53°. And right · (0, 1, 0) = 0, because the x axis and the y axis are perpendicular.")}
       </p>
-      <Callout type="info" t={t}>
-        {tx(t, "oglVec_dotWhy",
-          "Why do the two formulas agree? Take the 2D case a = (1, 0) and b = a unit arrow at angle θ, which is (cos θ, sin θ) by the definition of cosine and sine. The first formula gives 1 × cos θ + 0 × sin θ = cos θ, and the second gives 1 × 1 × cos θ: the same. Turning both arrows together changes neither their lengths nor the angle between them, so it changes neither formula. Any pair of arrows can be turned until a lies on the x axis, so the two formulas agree for every pair.")}
-      </Callout>
+      <Derivation t={t} label={tx(t, "oglVec_dotDer", "Why the two formulas give the same number")}
+        steps={[
+          { full: true, tex: String.raw`\mathbf a = (1,\ 0,\ 0) \qquad \mathbf b = (\cos\theta,\ \sin\theta,\ 0)`, why: tx(t, "oglVec_dd1", "start with two unit arrows θ apart, a on the x axis. By the definition of cosine and sine, the tip of b is at (cos θ, sin θ)") },
+          { full: true, tex: String.raw`a_x b_x + a_y b_y + a_z b_z = 1 \cdot \cos\theta + 0 \cdot \sin\theta + 0 \cdot 0 = \cos\theta`, why: tx(t, "oglVec_dd2", "the first formula, part by part: only the x parts survive") },
+          { full: true, tex: String.raw`\lvert\mathbf a\rvert\,\lvert\mathbf b\rvert\cos\theta = 1 \cdot 1 \cdot \cos\theta = \cos\theta`, why: tx(t, "oglVec_dd3", "the second formula: both lengths are 1. The same number") },
+          { full: true, tex: String.raw`(k\mathbf a) \cdot (m\mathbf b) = k\,m\,(\mathbf a \cdot \mathbf b)`, why: tx(t, "oglVec_dd4", "make a k long and b m long: every product aₓbₓ grows by k·m, and so does |a| |b|. Both formulas grow by the same factor, so they still agree") },
+          { full: true, tex: String.raw`\green{\mathbf a \cdot \mathbf b = \lvert\mathbf a\rvert\,\lvert\mathbf b\rvert\cos\theta}\ \text{${tx(t, "oglVec_dd5t", "for every pair")}}`, why: tx(t, "oglVec_dd5", "turning both arrows together changes neither their lengths nor the angle between them, so it changes neither formula. Any pair can be turned until a lies on the x axis, which is the case above") },
+        ]} />
+      <LiveFormula label={tx(t, "oglVec_liveDot", "Try it: both formulas, same number")}
+        tex={String.raw`\mathbf a \cdot \mathbf b = a_x b_x + a_y b_y + a_z b_z = \lvert\mathbf a\rvert\,\lvert\mathbf b\rvert\cos\theta`}
+        vars={[
+          { id: "la", label: "|a|", min: 0.5, max: 4, step: 0.5, value: 1, fmt: v => String(v) },
+          { id: "lb", label: "|b|", min: 0.5, max: 4, step: 0.5, value: 1, fmt: v => String(v) },
+          { id: "th", label: "θ", min: 0, max: 180, step: 5, value: 60, fmt: v => `${v}°` },
+        ]}
+        compute={dotNumbers(t)}
+        note={tx(t, "oglVec_liveDotNote", "a lies on the x axis and b is turned θ away from it. The bar shows cos θ from −1 (left) to 1 (right). Sweep θ through 90° and watch the sign flip; change the lengths and the number grows, but the sign never changes.")} />
       <p>
         {tx(t, "oglVec_dot9",
           "Where 3D code uses it:")}
@@ -338,7 +372,8 @@ print("angle in degrees", glm::degrees(std::acos(c)));    // 53.1301`}</CodeBloc
         {tx(t, "oglVec_cross1",
           "The cross product takes two vectors and gives back a new vector that is perpendicular to both of them. It is written a × b, with a cross. (It is also called the vector product, because the result is a vector.) It exists only in 3D: in 3D there is exactly one line perpendicular to two non-parallel arrows.")}
       </p>
-      <Equation label={tx(t, "oglVec_crossLabel", "Cross product")}
+      <Equation words={tx(t, "oglVec_crossWords", "Each part of the result is built from the other two axes: the first of the pair from a times the second from b, minus the reverse. The result is perpendicular to both arrows, and its length is the area of the parallelogram they span.")}
+        label={tx(t, "oglVec_crossLabel", "Cross product")}
         glm="glm::vec3 n = glm::cross(a, b);">
         {String.raw`\blue{\mathbf{a}} \times \amber{\mathbf{b}} \;=\; \big(\,\blue{a_y}\amber{b_z} - \blue{a_z}\amber{b_y},\;\; \blue{a_z}\amber{b_x} - \blue{a_x}\amber{b_z},\;\; \blue{a_x}\amber{b_y} - \blue{a_y}\amber{b_x}\,\big)`}
       </Equation>
@@ -366,6 +401,22 @@ print("angle in degrees", glm::degrees(std::acos(c)));    // 53.1301`}</CodeBloc
         {tx(t, "oglVec_cross7",
           "Where 3D code uses it: computing a surface normal from two edges of a triangle (exactly the example above), and building a camera's \"right\" direction from where it looks and which way is up (the Camera chapter does this). Since swapping the order flips the result, the order of the corners decides which side of the triangle the normal comes out of.")}
       </p>
+      <Derivation t={t} label={tx(t, "oglVec_crossDer", "Why a × b is perpendicular to a")}
+        steps={[
+          { tex: String.raw`\mathbf a \cdot (\mathbf a \times \mathbf b)`, why: tx(t, "oglVec_cd1", "perpendicular means a dot product of 0, so dot a with the result") },
+          { tex: String.raw`= a_x(a_y b_z - a_z b_y) + a_y(a_z b_x - a_x b_z) + a_z(a_x b_y - a_y b_x)`, why: tx(t, "oglVec_cd2", "multiply the matching parts: aₓ with the x part of the cross product, and so on") },
+          { tex: String.raw`= \begin{aligned} &\blue{a_x a_y b_z} - \amber{a_x a_z b_y} + \purple{a_y a_z b_x} \\ &- \blue{a_x a_y b_z} + \amber{a_x a_z b_y} - \purple{a_y a_z b_x} \end{aligned}`, why: tx(t, "oglVec_cd3", "open the brackets: six products. Each colour appears twice, once with + and once with −") },
+          { tex: String.raw`= \green{0}`, why: tx(t, "oglVec_cd4", "the pairs cancel. The same cancelling happens for b · (a × b), so the result is perpendicular to both arrows") },
+        ]} />
+      <LiveFormula label={tx(t, "oglVec_liveNormal", "Try it: the normal of a triangle")}
+        tex={String.raw`\mathbf n = (B - A) \times (C - A) \qquad \text{${tx(t, "oglVec_liveArea", "area")}} = \tfrac12\,\lvert\mathbf n\rvert \qquad \hat{\mathbf n} = \frac{\mathbf n}{\lvert\mathbf n\rvert}`}
+        vars={[
+          { id: "cx", label: <>C<sub>x</sub></>, min: -3, max: 3, step: 0.5, value: 1, fmt: v => String(v) },
+          { id: "cy", label: <>C<sub>y</sub></>, min: -3, max: 3, step: 0.5, value: 3, fmt: v => String(v) },
+          { id: "cz", label: <>C<sub>z</sub></>, min: -3, max: 3, step: 0.5, value: 0, fmt: v => String(v) },
+        ]}
+        compute={normalNumbers(t)}
+        note={tx(t, "oglVec_liveNormalNote", "A = (0, 0, 0) and B = (2, 0, 0) stay put; move C. The start is the example above: normal (0, 0, 1), area 3. Make Cᵧ negative and the normal flips to (0, 0, −1): the corners now go round the other way. Put C on the x axis and everything becomes 0: a flat triangle has no area and no normal.")} />
       <CodeBlock lang="cpp" filename="src/mathlab.cpp (inside main)" t={t}>{`print("cross(right, up)", glm::cross(right, up));   // (0, 0, 1)
 print("cross(up, right)", glm::cross(up, right));   // (0, 0, -1): order matters
 

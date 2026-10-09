@@ -12,6 +12,9 @@
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { directionNumbers, lookAtNumbers } from "../live/camera";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CameraLookAtFigure } from "@/components/lesson/figures/CameraLookAtFigure";
 import { YawPitchFigure } from "@/components/lesson/figures/YawPitchFigure";
@@ -92,7 +95,8 @@ glm::vec3 up      = glm::cross(right, forward);                   // its own up`
 
       <CameraLookAtFigure t={t} />
 
-      <Equation label={tx(t, "oglCam_lookatEqLabel", "The LookAt matrix")}
+      <Equation words={tx(t, "oglCam_lookatWords", "First move the whole world by minus the camera's position, so that the camera stands at the origin. Then measure every point along the camera's right, up and backward directions: those three measurements are its new x, y and z.")}
+        label={tx(t, "oglCam_lookatEqLabel", "The LookAt matrix")}
         where={[
           [String.raw`\red{\mathbf{r}}`, tx(t, "oglCam_wR", "right = normalize(cross(forward, worldUp))")],
           [String.raw`\green{\mathbf{u}}`, tx(t, "oglCam_wU", "up = cross(right, forward)")],
@@ -126,6 +130,15 @@ glm::vec3 up      = glm::cross(right, forward);                   // its own up`
         {tx(t, "oglCam_worked2",
           "Now send two world points through the view matrix. The origin, the target, lands at (0, 0, −4.243): straight ahead, 4.243 units away, exactly the distance from the eye. The point (3, 0, 0) lands at (2.121, 0, −2.121): to the right of the centre of the view, and 2.121 units in front. From where the camera stands, that point is indeed ahead and to the right.")}
       </p>
+      <LiveFormula label={tx(t, "oglCam_liveLookAt", "Try it: lookAt from any position")}
+        tex={String.raw`\begin{gathered} \mathbf f = \text{normalize}(\text{center} - \text{eye}) \\ \mathbf r = \text{normalize}(\mathbf f \times \text{up}) \qquad \mathbf u = \mathbf r \times \mathbf f \end{gathered}`}
+        vars={[
+          { id: "px", label: <>eye<sub>x</sub></>, min: -5, max: 5, step: 0.5, value: 3, fmt: v => String(v) },
+          { id: "py", label: <>eye<sub>y</sub></>, min: -5, max: 5, step: 0.5, value: 0, fmt: v => String(v) },
+          { id: "pz", label: <>eye<sub>z</sub></>, min: -5, max: 5, step: 0.5, value: 3, fmt: v => String(v) },
+        ]}
+        compute={lookAtNumbers}
+        note={tx(t, "oglCam_liveLookAtNote", "center = (0, 0, 0) and up = (0, 1, 0). The start is the worked example, eye = (3, 0, 3). Wherever you put the eye, the last line is (0, 0, −distance): the target always ends straight ahead on −z. Raise the eye and the camera's up tilts away from (0, 1, 0). Put it straight above the target (x = z = 0) and forward becomes parallel to up: their cross product is 0 and right is NaN.")} />
       <Callout type="info" t={t}>
         {tx(t, "oglCam_handedNote",
           "In view space, \"in front of the camera\" means negative z. That minus sign is behind many first bugs: a target in front of the camera has a smaller z than the camera. The projection matrix takes care of it afterwards (it puts −z in w, the distance), so most of the time you do not have to think about it.")}
@@ -284,10 +297,26 @@ processInput(window, dt);`}</CodeBlock>
 
       <YawPitchFigure t={t} />
 
-      <Equation label={tx(t, "oglCam_eulerEqLabel", "Direction from yaw and pitch")}
+      <Equation words={tx(t, "oglCam_eulerWords", "Pitch alone decides the height: y is the sine of pitch. What is left, the cosine of pitch, is the length on the ground, and yaw splits it between x and z like a point on a circle.")}
+        label={tx(t, "oglCam_eulerEqLabel", "Direction from yaw and pitch")}
         note={tx(t, "oglCam_eulerEqNote", "Read it row by row: each row is one coordinate. y depends only on pitch; x and z are the yaw circle, shrunk by cos(pitch). It is always a unit vector, since cos²·(cos² + sin²) + sin² = 1.")}>
         {String.raw`\mathbf{d} = \begin{pmatrix} \red{x} \\ \green{y} \\ \blue{z} \end{pmatrix} = \begin{pmatrix} \cos(\text{yaw})\,\amber{\cos(\text{pitch})} \\ \sin(\text{pitch}) \\ \sin(\text{yaw})\,\amber{\cos(\text{pitch})} \end{pmatrix}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglCam_unitDer", "Why d always has length 1")}
+        steps={[
+          { full: true, tex: String.raw`\lvert\mathbf d\rvert^2 = \cos^2(\text{yaw})\cos^2(\text{pitch}) + \sin^2(\text{pitch}) + \sin^2(\text{yaw})\cos^2(\text{pitch})`, why: tx(t, "oglCam_ud1", "square the three parts and add them, as in the length formula") },
+          { full: true, tex: String.raw`= \cos^2(\text{pitch})\,\big(\cos^2(\text{yaw}) + \sin^2(\text{yaw})\big) + \sin^2(\text{pitch})`, why: tx(t, "oglCam_ud2", "the x and z parts share the factor cos²(pitch): take it out") },
+          { full: true, tex: String.raw`= \cos^2(\text{pitch}) + \sin^2(\text{pitch})`, why: tx(t, "oglCam_ud3", "cos² + sin² of the same angle is 1, because (cos, sin) is a point on a circle of radius 1") },
+          { full: true, tex: String.raw`= \green{1}`, why: tx(t, "oglCam_ud4", "the same rule again, for pitch. So d needs no normalize, though the code keeps one to wash out rounding errors") },
+        ]} />
+      <LiveFormula label={tx(t, "oglCam_liveDir", "Try it: yaw and pitch to a direction")}
+        tex={String.raw`\mathbf d = \big(\cos(\text{yaw})\cos(\text{pitch}),\ \sin(\text{pitch}),\ \sin(\text{yaw})\cos(\text{pitch})\big)`}
+        vars={[
+          { id: "yaw", label: "yaw", min: -180, max: 180, step: 5, value: -90, fmt: v => `${v}°` },
+          { id: "pitch", label: "pitch", min: -89, max: 89, step: 1, value: 0, fmt: v => `${v}°` },
+        ]}
+        compute={directionNumbers}
+        note={tx(t, "oglCam_liveDirNote", "The start is yaw = −90°, pitch = 0: d = (0, 0, −1), the camera's starting front. Raise pitch and the x and z parts shrink by cos(pitch) while y grows; the length stays 1. The code clamps pitch to ±89° so that d never becomes parallel to the world's up.")} />
       <p>
         {tx(t, "oglCam_yawStart",
           "Yaw = 0 gives d = (1, 0, 0): facing +x. The camera starts facing −z, which is yaw = −90°: cos(−90°) = 0 and sin(−90°) = −1, so d = (0, 0, −1), the same as the cameraFront you started with.")}

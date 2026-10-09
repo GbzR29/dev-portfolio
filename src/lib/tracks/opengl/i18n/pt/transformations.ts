@@ -119,7 +119,6 @@ const text: Record<string, string> = {
   ch08_wBT: "y dos seus lados de baixo e de cima",
   ch08_wNF2: "distâncias até os planos near e far à frente da câmera (z em view space = −n e −f)",
   ch08_orthoEqNote: "Cada termo da diagonal espreme um lado da caixa nas 2 unidades das NDC, e a última coluna leva o centro da caixa para 0. A última linha é (0, 0, 0, 1), então w continua 1 e a divisão não muda nada: é por isso que não há perspectiva. Diferente do caso perspectivo, a profundidade fica guardada de forma linear e n = 0 é permitido.",
-  ch08_orthoCheck: "Confira um canto: x = r dá (2r − r − l) / (r − l) = 1, a borda direita das NDC, e x = l dá −1. A linha de z faz o mesmo para a profundidade: z = −n em view space cai em −1 e z = −f em +1, com o sinal de menos transformando 'à frente da câmera' (z negativo) em profundidade crescente.",
 
   // ── Step 2 ──
   oglTr_s2Title: "Passo 2: três matrizes no main.cpp",
@@ -185,6 +184,30 @@ const text: Record<string, string> = {
   oglTr_key4:"O OpenGL não tem câmera: a matriz view move o mundo inteiro no sentido oposto. glm::lookAt a monta a partir de uma posição e de um alvo.",
   oglTr_key5:"glm::perspective recebe o FOV em radianos, o aspect largura / altura, e os planos near e far; nunca um near de 0.",
   oglTr_key6:"Um cubo texturizado precisa de 24 vértices (cada face com seu uv) e 36 índices, e do teste de profundidade para as faces da frente esconderem as de trás.",
+
+  // ── Fórmulas em palavras, deduções e ao vivo (2026-10-09) ──
+  oglTr_perspWords: "As linhas 1 e 2 escalam x e y conforme a abertura da visão (x também pelo formato da janela). A linha 3 transforma a distância num valor de profundidade. A linha 4 copia a distância à frente da câmera para w, para que a divisão por w feita pela GPU deixe as coisas distantes pequenas.",
+  oglTr_orthoWords: "Cada linha escala um eixo para que a caixa fique com 2 unidades de largura, depois a desloca para que seu centro caia em 0. A linha de baixo mantém w = 1, então nada é dividido e nada encolhe com a distância.",
+  oglTr_mvpLabel: "Dos números que você digitou até a tela",
+  oglTr_mvpWords: "Pegue o vértice como foi digitado, posicione-o na cena com a matriz de modelo, mova a cena para a frente da câmera com a matriz de visão e depois acrescente a perspectiva com a matriz de projeção. A GPU divide por w em seguida.",
+  oglTr_wVLocal: "o vértice no espaço local: os números em vertices[]",
+  oglTr_wM: "a matriz de modelo: espaço local → espaço do mundo",
+  oglTr_wV: "a matriz de visão: espaço do mundo → espaço da câmera",
+  oglTr_wP: "a matriz de projeção: espaço da câmera → espaço de recorte",
+  oglTr_wVClip: "o que gl_Position guarda; dividir pelo seu w dá as NDC",
+  oglTr_zDer: "De onde vem a linha 3",
+  oglTr_zd1: "a linha 3 é (0, 0, A, B): só z e o w = 1 do ponto podem ser usados, porque a profundidade não pode depender de x nem de y. A linha 4 põe −z em w, e a GPU divide por ele",
+  oglTr_zd2: "as duas condições: o plano próximo tem de cair em −1 e o plano distante em +1, as duas faces do cubo das NDC",
+  oglTr_zd3: "subtraia a segunda equação da primeira: −A se cancela. 1/n − 1/f = (f − n)/(fn), então B é −2 dividido por isso",
+  oglTr_zd4: "ponha B de volta na segunda equação. Esses são exatamente os dois números da linha 3 da matriz",
+  oglTr_livePersp: "Experimente: um ponto passando pela projeção",
+  oglTr_liveDist: "distância −z",
+  oglTr_livePerspNote: "Próximo = 0,1 e distante = 100, como no código acima. O início é o exemplo resolvido: y = 0,5 na distância 2 dá 0,604. Dobre a distância e y_ndc cai pela metade. Agora observe z_ndc na barra: na distância 2 ele já é 0,90, e em 10 é 0,98. A maior parte da faixa de profundidade é gasta logo à frente da câmera.",
+  oglTr_orthoDer: "De onde vem a linha do x",
+  oglTr_od1: "uma escala e um deslocamento, nada mais: a linha 1 é (s, 0, 0, c), e w continua 1, então não há divisão",
+  oglTr_od2: "o lado esquerdo da caixa tem de cair na borda esquerda das NDC, −1, e o lado direito em +1",
+  oglTr_od3: "subtraia a primeira equação da segunda: c se cancela",
+  oglTr_od4: "ponha s de volta na segunda equação. A linha do y é igual, com b e t. A linha do z usa z = −n → −1 e z = −f → +1 no espaço da câmera; os sinais de menos transformam 'à frente da câmera' (z negativo) em profundidade crescente",
 };
 
 export default text;

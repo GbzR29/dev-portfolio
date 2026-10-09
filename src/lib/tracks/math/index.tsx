@@ -82,6 +82,7 @@ const chapters: Chapter[] = [
   { id: "sampling",          section: PROBABILITY, title: "Sampling & Inference",            minRead: 23, load: () => import("./chapters/sampling").then((m) => m.SamplingContent) },
   { id: "regression",        section: PROBABILITY, title: "Correlation & Linear Regression", minRead: 21, load: () => import("./chapters/regression").then((m) => m.RegressionContent) },
   { id: "markov-chains",     section: PROBABILITY, title: "Markov Chains",                   minRead: 34, load: () => import("./chapters/markov-chains").then((m) => m.MarkovChainsContent) },
+  { id: "absorbing-chains",  section: PROBABILITY, title: "Absorbing Chains & Hitting Times", minRead: 26, load: () => import("./chapters/absorbing-chains").then((m) => m.AbsorbingChainsContent) },
 ];
 
 // ── Prerequisites ────────────────────────────────────────────────────────────
@@ -155,6 +156,7 @@ const requires: Record<string, string[]> = {
   "sampling":          ["distributions", "descriptive-stats"],
   "regression":        ["descriptive-stats", "partial-derivatives", "dot"],
   "markov-chains":     ["conditional", "random-variables", "matrices", "sequences"],
+  "absorbing-chains":  ["markov-chains", "expectation", "inverse"],
 };
 
 export const mathChapters: Chapter[] = chapters.map((c) => ({ ...c, requires: requires[c.id] }));

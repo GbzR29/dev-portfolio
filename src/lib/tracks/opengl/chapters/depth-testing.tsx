@@ -13,6 +13,9 @@
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { depthNumbers, resolutionNumbers } from "../live/depth-testing";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DepthTestFigure } from "@/components/lesson/figures/vulkan/DepthTestFigure";
 import { tx } from "@/lib/tracks/tx";
@@ -235,7 +238,8 @@ glUniform1i(viewModeLoc, viewMode);`}</CodeBlock>
         {tx(t, "oglDepth_whyWhite1",
           "Because depth is not proportional to distance. The perspective projection turns a distance d into NDC depth like this:")}
       </p>
-      <Equation label={tx(t, "oglDepth_eqLabel", "Where a distance ends up in the depth buffer")}
+      <Equation words={tx(t, "oglDepth_eqWords", "A constant minus something divided by the distance. Then the result, which runs from −1 to 1, is moved into 0 to 1 by adding 1 and halving. Because d is in the denominator, the stored depth races up near the camera and barely moves far away.")}
+        label={tx(t, "oglDepth_eqLabel", "Where a distance ends up in the depth buffer")}
         where={[
           [String.raw`d`, tx(t, "oglDepth_wD", "the distance in front of the camera (view-space −z), in world units")],
           [String.raw`n,\ f`, tx(t, "oglDepth_wNF", "the near and far planes: zNear and zFar")],
@@ -263,6 +267,15 @@ z_{\text{buffer}} = \frac{z_{\text{ndc}} + 1}{2}`}
           ["100 (far plane)", "1.0000"],
         ]}
       />
+      <LiveFormula label={tx(t, "oglDepth_liveDepth", "Try it: a distance into the depth buffer")}
+        tex={String.raw`z_{\text{ndc}} = \frac{f+n}{f-n} - \frac{2fn}{(f-n)\,d} \qquad z_{\text{buffer}} = \frac{z_{\text{ndc}} + 1}{2}`}
+        vars={[
+          { id: "d", label: "d", min: 0.1, max: 100, step: 0.1, value: 3, fmt: v => v.toFixed(1) },
+          { id: "n", label: "n", min: 0.01, max: 2, step: 0.01, value: 0.1, fmt: v => v.toFixed(2) },
+          { id: "f", label: "f", min: 10, max: 1000, step: 10, value: 100, fmt: v => String(v) },
+        ]}
+        compute={depthNumbers}
+        note={tx(t, "oglDepth_liveDepthNote", "The start is cube 0, 3 units away: 0.9676, as in the table. Drag d and watch the bar: it is nearly full after the first few units. Now raise n to 1: the same cube drops to about 0.67, and the depth values spread out over the scene. Moving f changes far less.")} />
       <p>
         {tx(t, "oglDepth_whyWhite3",
           "Half of all depth values are used up between 0.1 and 0.2: the first 10 centimetres in front of the camera, if a unit is a metre. Everything from 1 unit to 100 shares the top tenth. That is the price of perspective: it spends precision where things look big, near the camera. Step 4 shows where that hurts.")}
@@ -273,7 +286,15 @@ z_{\text{buffer}} = \frac{z_{\text{ndc}} + 1}{2}`}
         {tx(t, "oglDepth_lin1",
           "linearDepth solves the formula above for d. First (depth × 2 − 1) undoes the map to 0..1, then:")}
       </p>
-      <Equation label={tx(t, "oglDepth_linLabel", "Undoing it: linearized depth")}
+      <Derivation t={t} label={tx(t, "oglDepth_linDer", "Solving the depth formula for d")}
+        steps={[
+          { full: true, tex: String.raw`z_{\text{ndc}} = \frac{f+n}{f-n} - \frac{2fn}{(f-n)\,d}`, why: tx(t, "oglDepth_ld1", "the formula from step 2; now z_ndc is known and d is wanted") },
+          { full: true, tex: String.raw`z_{\text{ndc}}\,(f-n) = f + n - \frac{2fn}{d}`, why: tx(t, "oglDepth_ld2", "multiply both sides by (f − n) to clear the denominators") },
+          { full: true, tex: String.raw`\frac{2fn}{d} = f + n - z_{\text{ndc}}\,(f-n)`, why: tx(t, "oglDepth_ld3", "move the fraction to one side and z_ndc (f − n) to the other") },
+          { full: true, tex: String.raw`\green{d = \frac{2fn}{f + n - z_{\text{ndc}}\,(f-n)}}`, why: tx(t, "oglDepth_ld4", "flip both sides and multiply by 2fn. This is the line in the shader") },
+        ]} />
+      <Equation words={tx(t, "oglDepth_linWords", "Twice near times far, divided by what is left of near plus far after taking away the stored depth's share. It turns the crowded 1 / d values back into plain distances.")}
+        label={tx(t, "oglDepth_linLabel", "Undoing it: linearized depth")}
         glsl="float d = (2.0 * n * f) / (f + n - ndc * (f - n));">
         {String.raw`d \;=\; \frac{2nf}{f + n - z_{\text{ndc}}\,(f - n)}`}
       </Equation>
@@ -323,7 +344,8 @@ glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);`}</CodeBlock>
 glPolygonOffset(-1.0f, -1.0f);    // pull the twin's depth slightly toward the camera
 glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);
 glDisable(GL_POLYGON_OFFSET_FILL);`}</CodeBlock>
-      <Equation label={tx(t, "oglDepth_offsetLabel", "What glPolygonOffset(factor, units) adds to each depth")}
+      <Equation words={tx(t, "oglDepth_offWords", "factor times how steep the face is, plus units times the smallest step the buffer can store. Negative values pull the polygon toward the camera.")}
+        label={tx(t, "oglDepth_offsetLabel", "What glPolygonOffset(factor, units) adds to each depth")}
         where={[
           [String.raw`m`, tx(t, "oglDepth_offM", "how steeply the polygon's depth changes from one pixel to the next. A face seen edge-on is steep; a face looking straight at the camera is flat (m = 0).")],
           [String.raw`r`, tx(t, "oglDepth_offR", "the smallest step the depth buffer can store: 1 / 2²⁴ with 24 bits.")],
@@ -365,7 +387,15 @@ glDisable(GL_POLYGON_OFFSET_FILL);`}</CodeBlock>
           ["30", tx(t, "oglDepth_st4", "0 or 1: flickers"), tx(t, "oglDepth_st4b", "0: flickers")],
         ]}
       />
-      <Equation label={tx(t, "oglDepth_resLabel", "The smallest gap the depth buffer can see at distance d")}
+      <Derivation t={t} label={tx(t, "oglDepth_resDer", "Where d² / n comes from")}
+        steps={[
+          { full: true, tex: String.raw`z_{\text{buffer}} = \frac{z_{\text{ndc}} + 1}{2} = \frac{f}{f-n} - \frac{fn}{(f-n)\,d}`, why: tx(t, "oglDepth_rd1", "put the z_ndc formula into the map to 0..1: half of (f + n)/(f − n) plus one half is f/(f − n), and the fraction is halved") },
+          { full: true, tex: String.raw`\frac{1}{d} - \frac{1}{d + \Delta d} = \frac{\Delta d}{d\,(d + \Delta d)} \approx \frac{\Delta d}{d^2}`, why: tx(t, "oglDepth_rd2", "move a surface back by a tiny Δd. Only the 1/d part changes, and it changes by this much; d + Δd is almost d when Δd is tiny") },
+          { full: true, tex: String.raw`\Delta z_{\text{buffer}} \approx \frac{fn}{f-n} \cdot \frac{\Delta d}{d^2} \approx n\,\frac{\Delta d}{d^2}`, why: tx(t, "oglDepth_rd3", "multiply by the factor in front of 1/d. When f is much larger than n, f/(f − n) is almost 1") },
+          { full: true, tex: String.raw`n\,\frac{\Delta d}{d^2} = \frac{1}{2^{24}} \;\Rightarrow\; \green{\Delta d \approx \frac{d^2}{n \cdot 2^{24}}}`, why: tx(t, "oglDepth_rd4", "the smallest change the buffer can store is one step, 1/2²⁴. Solve for Δd: the smallest gap it can see") },
+        ]} />
+      <Equation words={tx(t, "oglDepth_resWords", "The distance squared, divided by the near plane times 16.8 million. Twice as far makes the smallest visible gap four times larger; a near plane ten times larger makes it ten times smaller.")}
+        label={tx(t, "oglDepth_resLabel", "The smallest gap the depth buffer can see at distance d")}
         where={[
           [String.raw`d^2`, tx(t, "oglDepth_resD", "the square of the distance: twice as far, four times coarser")],
           [String.raw`n`, tx(t, "oglDepth_resN", "the near plane. It divides: a larger near plane gives a finer depth buffer everywhere")],
@@ -378,6 +408,14 @@ glDisable(GL_POLYGON_OFFSET_FILL);`}</CodeBlock>
         {tx(t, "oglDepth_s4d",
           "Worked: at d = 30 with n = 0.1, Δd = 900 / (0.1 × 16 777 216) ≈ 0.00054. That is just above the 0.0005 gap: the buffer can no longer separate the faces. At d = 3 it is 9 / 1 677 722 ≈ 0.0000054, a hundred times finer than the gap.")}
       </p>
+      <LiveFormula label={tx(t, "oglDepth_liveRes", "Try it: will the twin flicker?")}
+        tex={String.raw`\Delta d \approx \frac{d^2}{n \cdot 2^{24}} \qquad \text{${tx(t, "oglDepth_liveStepsTex", "steps")}} = \frac{0.0005}{\Delta d}`}
+        vars={[
+          { id: "d", label: "d", min: 1, max: 100, step: 1, value: 30, fmt: v => String(v) },
+          { id: "e", label: "n", min: -3, max: 0, step: 1, value: -1, fmt: v => String(10 ** v) },
+        ]}
+        compute={resolutionNumbers(t)}
+        note={tx(t, "oglDepth_liveResNote", "0.0005 is the gap between cube 0's face and its twin. The start is the case that flickers: d = 30 with n = 0.1. Below about 1 step the buffer cannot separate the faces; the table above rounds the same numbers. Try n = 1 to see how much a larger near plane buys, or n = 0.001 for the step 4d experiment.")} />
       <p>{tx(t, "oglDepth_s4e", "Now shrink the near plane in step 4d:")}</p>
       <CodeBlock lang="cpp" filename="src/main.cpp (step 4d)" t={t}>{`const float zNear = 0.001f;   // experiment: 100 times smaller`}</CodeBlock>
       <Callout type="info" t={t}>

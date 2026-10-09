@@ -176,6 +176,19 @@ const text: Record<string, string> = {
   oglCam_key4: "Dois ângulos comandam o olhar com o mouse: yaw (para os lados) e pitch (para cima e para baixo). front = (cos yaw · cos pitch, sin pitch, sin yaw · cos pitch), com yaw = −90° olhando para −z.",
   oglCam_key5: "Ignore o delta do primeiro evento do mouse, e limite o pitch a ±89° para o right nunca virar zero.",
   oglCam_key6: "O zoom muda a projeção, não a view: um FOV menor deixa tudo maior.",
+
+  // ── Fórmulas em palavras, deduções e ao vivo (2026-10-09) ──
+  oglCam_lookatWords: "Primeiro mova o mundo inteiro por menos a posição da câmera, para que a câmera fique na origem. Depois meça cada ponto ao longo das direções direita, cima e para trás da câmera: essas três medidas são o novo x, y e z.",
+  oglCam_liveLookAt: "Experimente: lookAt de qualquer posição",
+  oglCam_liveLookAtNote: "center = (0, 0, 0) e up = (0, 1, 0). O início é o exemplo resolvido, eye = (3, 0, 3). Onde quer que você ponha o olho, a última linha é (0, 0, −distância): o alvo sempre acaba bem à frente, em −z. Levante o olho e o up da câmera se inclina para longe de (0, 1, 0). Ponha-o bem acima do alvo (x = z = 0) e forward fica paralelo a up: o produto vetorial deles é 0 e right vira NaN.",
+  oglCam_eulerWords: "Só o pitch decide a altura: y é o seno do pitch. O que sobra, o cosseno do pitch, é o comprimento no chão, e o yaw o divide entre x e z como um ponto num círculo.",
+  oglCam_unitDer: "Por que d sempre tem comprimento 1",
+  oglCam_ud1: "eleve as três partes ao quadrado e some, como na fórmula do comprimento",
+  oglCam_ud2: "as partes x e z têm o fator comum cos²(pitch): coloque-o em evidência",
+  oglCam_ud3: "cos² + sen² do mesmo ângulo é 1, porque (cos, sen) é um ponto num círculo de raio 1",
+  oglCam_ud4: "a mesma regra de novo, para o pitch. Então d não precisa de normalize, embora o código mantenha um para limpar erros de arredondamento",
+  oglCam_liveDir: "Experimente: de yaw e pitch para uma direção",
+  oglCam_liveDirNote: "O início é yaw = −90°, pitch = 0: d = (0, 0, −1), a frente inicial da câmera. Aumente o pitch e as partes x e z encolhem por cos(pitch) enquanto y cresce; o comprimento continua 1. O código limita o pitch a ±89° para que d nunca fique paralelo ao up do mundo.",
 };
 
 export default text;

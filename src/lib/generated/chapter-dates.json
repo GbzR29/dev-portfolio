@@ -583,6 +583,10 @@
     "created": "2026-09-28",
     "updated": "2026-10-08"
   },
+  "math/absorbing-chains": {
+    "created": "2026-10-09",
+    "updated": "2026-10-09"
+  },
   "opengl/legacy": {
     "created": "2026-05-30",
     "updated": "2026-10-08"
@@ -621,23 +625,23 @@
   },
   "opengl/vectors": {
     "created": "2026-10-01",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/linear-algebra": {
     "created": "2026-05-30",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/transformations": {
     "created": "2026-05-30",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/camera": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/depth-testing": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/light-color": {
     "created": "2026-09-24",

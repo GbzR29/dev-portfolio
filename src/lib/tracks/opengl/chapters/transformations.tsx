@@ -13,6 +13,9 @@
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { perspectiveNumbers } from "../live/transformations";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { TransformOrderFigure } from "@/components/lesson/figures/TransformOrderFigure";
 import { FrustumFigure } from "@/components/lesson/figures/FrustumFigure";
@@ -179,6 +182,18 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);`}</CodeBlock>
         {tx(t, "oglTr_spaces2",
           "So the vertex shader computes gl_Position = projection × view × model × position. Read it from right to left, as always: the model matrix acts first. The three are called MVP, for Model, View, Projection.")}
       </p>
+      <Equation label={tx(t, "oglTr_mvpLabel", "From the numbers you typed to the screen")}
+        words={tx(t, "oglTr_mvpWords", "Take the vertex as it was typed, place it in the scene with the model matrix, move the scene in front of the camera with the view matrix, then add perspective with the projection matrix. The GPU divides by w afterwards.")}
+        glsl="gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);"
+        where={[
+          [String.raw`\mathbf{v}_{\text{local}}`, tx(t, "oglTr_wVLocal", "the vertex in local space: the numbers in vertices[]")],
+          [String.raw`M`, tx(t, "oglTr_wM", "the model matrix: local space → world space")],
+          [String.raw`V`, tx(t, "oglTr_wV", "the view matrix: world space → view space")],
+          [String.raw`P`, tx(t, "oglTr_wP", "the projection matrix: view space → clip space")],
+          [String.raw`\mathbf{v}_{\text{clip}}`, tx(t, "oglTr_wVClip", "what gl_Position holds; dividing by its w gives NDC")],
+        ]}>
+        {String.raw`\mathbf{v}_{\text{clip}} \;=\; P \, V \, M \, \mathbf{v}_{\text{local}}`}
+      </Equation>
       <LessonTable
         headers={[
           tx(t, "mvpHeader0", "Matrix"),
@@ -267,7 +282,8 @@ glm::mat4 projection = glm::perspective(
 
       <FrustumFigure t={t} />
 
-      <Equation label={tx(t, "ch08_perspEqLabel", "glm::perspective(fov, aspect, n, f)")}
+      <Equation words={tx(t, "oglTr_perspWords", "Row 1 and row 2 scale x and y by how wide the view opens (x also by the window's shape). Row 3 turns the distance into a depth value. Row 4 copies the distance in front of the camera into w, so that the GPU's divide by w makes far things small.")}
+        label={tx(t, "ch08_perspEqLabel", "glm::perspective(fov, aspect, n, f)")}
         where={[
           [String.raw`\amber{t}`, tx(t, "ch08_wT", "tan(fov / 2) — how wide the frustum opens")],
           [String.raw`a`, tx(t, "ch08_wA", "aspect = width / height")],
@@ -285,6 +301,22 @@ glm::mat4 projection = glm::perspective(
         {tx(t, "oglTr_projRows",
           "Row by row. Row 2 multiplies y by 1 / tan(fov / 2). With a 45° FOV, tan 22.5° ≈ 0.414, so y is multiplied by 2.414: the number in the worked example above. Row 1 does the same to x and also divides by the aspect, which squeezes x on a wide window. Row 3 prepares the depth value for the depth test. Row 4 is (0, 0, −1, 0), so w = −z: the distance in front of the camera, since z is negative there.")}
       </p>
+      <Derivation t={t} label={tx(t, "oglTr_zDer", "Where row 3 comes from")}
+        steps={[
+          { full: true, tex: String.raw`z_{\text{clip}} = A\,z + B \qquad w = -z \qquad z_{\text{ndc}} = \frac{A\,z + B}{-z} = -A - \frac{B}{z}`, why: tx(t, "oglTr_zd1", "row 3 is (0, 0, A, B): only z and the w = 1 of the point can be used, because the depth must not depend on x or y. Row 4 puts −z in w, and the GPU divides by it") },
+          { full: true, tex: String.raw`z = -n \;\Rightarrow\; -A + \frac{B}{n} = -1 \qquad z = -f \;\Rightarrow\; -A + \frac{B}{f} = 1`, why: tx(t, "oglTr_zd2", "the two conditions: the near plane must land on −1 and the far plane on +1, the two faces of the NDC cube") },
+          { full: true, tex: String.raw`B\left(\frac1n - \frac1f\right) = -2 \;\Rightarrow\; B = -\frac{2fn}{f-n}`, why: tx(t, "oglTr_zd3", "subtract the second equation from the first: −A cancels. 1/n − 1/f = (f − n)/(fn), so B is −2 divided by that") },
+          { full: true, tex: String.raw`-A = 1 - \frac{B}{f} = 1 + \frac{2n}{f-n} = \frac{f+n}{f-n} \;\Rightarrow\; \green{A = -\frac{f+n}{f-n}}`, why: tx(t, "oglTr_zd4", "put B back into the second equation. These are exactly the two numbers in row 3 of the matrix") },
+        ]} />
+      <LiveFormula label={tx(t, "oglTr_livePersp", "Try it: one point through the projection")}
+        tex={String.raw`y_{\text{clip}} = \frac{y}{t} \qquad w = -z \qquad y_{\text{ndc}} = \frac{y_{\text{clip}}}{w} \qquad z_{\text{ndc}} = \frac{z_{\text{clip}}}{w}`}
+        vars={[
+          { id: "fov", label: "fov", min: 20, max: 120, step: 5, value: 45, fmt: v => `${v}°` },
+          { id: "y", label: "y", min: -2, max: 2, step: 0.1, value: 0.5, fmt: v => v.toFixed(1) },
+          { id: "d", label: tx(t, "oglTr_liveDist", "distance −z"), min: 0.1, max: 100, step: 0.1, value: 2, fmt: v => v.toFixed(1) },
+        ]}
+        compute={perspectiveNumbers}
+        note={tx(t, "oglTr_livePerspNote", "Near = 0.1 and far = 100, as in the code above. The start is the worked example: y = 0.5 at distance 2 gives 0.604. Double the distance and y_ndc halves. Now watch z_ndc in the bar: at distance 2 it is already 0.90, and at 10 it is 0.98. Most of the depth range is spent right in front of the camera.")} />
 
       <Callout type="warn" t={t}>
         {tx(t, "ch08_nearWarn",
@@ -308,7 +340,8 @@ glm::mat4 uiTopDown = glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f,
 // 3D scene seen without perspective: a 20 × 20 unit box, 0.1 to 100 deep
 glm::mat4 box = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);`}</CodeBlock>
 
-      <Equation label={tx(t, "ch08_orthoEqLabel", "glm::ortho(l, r, b, t, n, f)")}
+      <Equation words={tx(t, "oglTr_orthoWords", "Each row scales one axis so that the box becomes 2 units wide, then shifts it so that its centre lands on 0. The bottom row keeps w = 1, so nothing is divided and nothing shrinks with distance.")}
+        label={tx(t, "ch08_orthoEqLabel", "glm::ortho(l, r, b, t, n, f)")}
         where={[
           [String.raw`l,\ r`, tx(t, "ch08_wLR", "x of the box's left and right sides, in view space")],
           [String.raw`b,\ t`, tx(t, "ch08_wBT", "y of its bottom and top sides")],
@@ -323,11 +356,13 @@ glm::mat4 box = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);`}</CodeB
 \end{bmatrix}`}
       </Equation>
 
-      <p>
-        {tx(t, "ch08_orthoCheck",
-          "Check one corner: x = r gives (2r − r − l) / (r − l) = 1, the right edge of NDC, and x = l gives −1. The z row does the same for depth: view-space z = −n lands on −1 and z = −f on +1, with the minus sign turning 'in front of the camera' (negative z) into increasing depth."
-        )}
-      </p>
+      <Derivation t={t} label={tx(t, "oglTr_orthoDer", "Where the x row comes from")}
+        steps={[
+          { full: true, tex: String.raw`x_{\text{ndc}} = s\,x + c`, why: tx(t, "oglTr_od1", "a scale and a shift, nothing else: row 1 is (s, 0, 0, c), and w stays 1 so there is no divide") },
+          { full: true, tex: String.raw`s\,l + c = -1 \qquad s\,r + c = 1`, why: tx(t, "oglTr_od2", "the left side of the box must land on the left edge of NDC, −1, and the right side on +1") },
+          { full: true, tex: String.raw`s\,(r - l) = 2 \;\Rightarrow\; \green{s = \frac{2}{r-l}}`, why: tx(t, "oglTr_od3", "subtract the first equation from the second: c cancels") },
+          { full: true, tex: String.raw`c = 1 - \frac{2r}{r-l} = \green{-\frac{r+l}{r-l}}`, why: tx(t, "oglTr_od4", "put s back into the second equation. The y row is the same with b and t. The z row uses view-space z = −n → −1 and z = −f → +1; the minus signs turn 'in front of the camera' (negative z) into increasing depth") },
+        ]} />
 
       {/* ── STEP 2 ──────────────────────────────────────────────────────── */}
       <H2>{tx(t, "oglTr_s2Title", "Step 2: three matrices in main.cpp")}</H2>

@@ -68,6 +68,7 @@ import distributions from "./distributions";
 import sampling from "./sampling";
 import regression from "./regression";
 import markovChains from "./markov-chains";
+import absorbingChains from "./absorbing-chains";
 
 const bundle: LessonText = {
   strings: {
@@ -77,7 +78,7 @@ const bundle: LessonText = {
     ...trig, ...unitCircle, ...triangleLaws, ...identities, ...polar, ...waves,
     ...vectors, ...matrices, ...determinant, ...inverse, ...eigen, ...complex, ...quaternions,
     ...limits, ...derivatives, ...derivativeRules, ...derivativeUses, ...integrals, ...ftc, ...integrationTechniques, ...series, ...partialDerivatives, ...multipleIntegrals, ...differentialEquations,
-    ...descriptiveStats, ...counting, ...probability, ...conditional, ...randomVariables, ...expectation, ...distributions, ...sampling, ...regression, ...markovChains,
+    ...descriptiveStats, ...counting, ...probability, ...conditional, ...randomVariables, ...expectation, ...distributions, ...sampling, ...regression, ...markovChains, ...absorbingChains,
   },
   titles: track.titles,
   sections: track.sections,

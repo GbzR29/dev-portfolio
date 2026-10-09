@@ -41,7 +41,6 @@ const text: Record<string, string> = {
 
   oglMat_rotTitle: "Rotação",
   oglMat_rot1: "Comece com uma rotação em torno do eixo z. É um giro no plano da tela, como os ponteiros de um relógio, mas no sentido anti-horário. Use a receita de novo: para onde vão as setas dos eixos quando giram por um ângulo θ?",
-  oglMat_rot2: "Imagine um círculo de raio 1 em volta da origem. Um ponto nele, no ângulo θ a partir do eixo x, tem as coordenadas (cos θ, sen θ). Essa é a definição de cosseno e seno. Então a seta do x, (1, 0), girada por θ, cai em (cos θ, sen θ). A seta do y começa 90° mais adiante, e cai 90° mais adiante também: em (−sen θ, cos θ). A seta do z é o eixo do giro, então não se mexe.",
   oglMat_rzLabel: "Rotação por θ em torno de z",
   oglMat_wTheta: "o ângulo do giro; positivo gira no sentido anti-horário quando o eixo aponta para você",
   oglMat_wCosSin: "o x e o y do ponto no ângulo θ num círculo de raio 1 (sin é o seno)",
@@ -120,6 +119,34 @@ const text: Record<string, string> = {
   oglMat_key4: "A rotação por θ manda o x para (cos θ, sen θ) e o y para (−sen θ, cos θ); os ângulos são em radianos, então use glm::radians.",
   oglMat_key5: "Uma matriz 3×3 não consegue mover a origem. Acrescentar w (1 para pontos, 0 para direções) e uma quarta coluna faz da translação uma matriz também.",
   oglMat_key6: "Matrizes se encadeiam numa só: M = T R S age da direita para a esquerda (S primeiro). A ordem importa: A B costuma ser diferente de B A.",
+
+  // ── Fórmulas em palavras, deduções e ao vivo (2026-10-09) ──
+  oglMat_mulWords: "Cada parte do resultado é uma linha da matriz em produto escalar com o vetor: a linha 1 monta o novo x, a linha 2 o novo y, a linha 3 o novo z.",
+  oglMat_colWords: "O resultado é x cópias da primeira coluna, mais y cópias da segunda, mais z cópias da terceira. Cada coluna é onde uma seta de eixo vai parar.",
+  oglMat_scaleWords: "As quantidades de esticar ficam na diagonal e todo o resto é 0, então cada parte do vetor é multiplicada pela sua própria quantidade e nada se mistura.",
+  oglMat_rzWords: "A primeira coluna é onde a seta x vai parar depois de girar θ, a segunda é onde a seta y vai parar, e a terceira coluna mantém z onde estava.",
+  oglMat_rxyWords: "O mesmo padrão de cos e sen, deslocado para que o eixo do giro fique com o seu 1 e a sua linha e coluna de 0s.",
+  oglMat_transWords: "O deslocamento fica na quarta coluna. Ele é multiplicado por w, a quarta parte do vetor, então com w = 1 ele é simplesmente somado a x, y e z.",
+  oglMat_wWords: "A mesma matriz move um ponto (w = 1) mas deixa uma direção (w = 0) como está, porque o deslocamento é multiplicado por w antes de ser somado.",
+  oglMat_combWords: "Aplicar S, depois R, depois T, um após o outro, dá o mesmo resultado que multiplicar as três matrizes uma vez e aplicar essa única matriz.",
+  oglMat_orderWords: "Girar e depois esticar dá uma matriz diferente de esticar e depois girar. Aponte para um elemento de um produto para ver a linha e a coluna de onde ele vem.",
+  oglMat_wRow1: "linha 1: quanto de x, y e z entra no novo x",
+  oglMat_wRow2: "linha 2: o mesmo para o novo y",
+  oglMat_wRow3: "linha 3: o mesmo para o novo z",
+  oglMat_wVec: "o vetor que entra, escrito como coluna",
+  oglMat_rotDer: "Montando R_z a partir de onde os eixos vão parar",
+  oglMat_rd1: "imagine um círculo de raio 1 em volta da origem. O ponto dele no ângulo θ a partir do eixo x é (cos θ, sen θ): essa é a definição de cosseno e seno. Então a seta x, girada θ, vai parar ali",
+  oglMat_rd2: "a seta y começa 90° mais adiante, então vai parar 90° mais adiante também. Um quarto de volta leva qualquer (a, b) para (−b, a), o que transforma (cos θ, sen θ) em (−sen θ, cos θ)",
+  oglMat_rd3: "a seta z é o eixo do giro, então não se mexe",
+  oglMat_rd4: "escreva os três pontos de chegada como as três colunas, a receita da seção sobre colunas",
+  oglMat_liveRot: "Experimente: girando um ponto em torno de z",
+  oglMat_liveRotNote: "O início é o quarto de volta acima: (2, 1) vai para (−1, 2). A parte z fica de fora porque R_z a mantém como está. Escolha o que quiser: o comprimento na última linha é o mesmo antes e depois, porque uma rotação nunca estica.",
+  oglMat_liveW: "Experimente: a mesma T num ponto e numa direção",
+  oglMat_livePoint: "ponto",
+  oglMat_liveDir: "direção",
+  oglMat_liveWNote: "O vetor é (1, 2, 3) e tᵧ = 0. Com w = 1 é o exemplo resolvido: (6, 2, 1, 1). Mude w para 0 e o deslocamento é multiplicado por 0, então o mesmo vetor sai sem mudança, como uma direção deve sair.",
+  oglMat_liveMul: "Experimente: um produto, um elemento por vez",
+  oglMat_liveMulNote: "Começa em R S, de cima. Toque até o fim, depois aperte ⇄ para ter S R: as mesmas duas matrizes na outra ordem. A segunda opção é um caso 4 × 4 de verdade: escalar por 2 e depois mover por (5, 0, −2). Em T S o deslocamento continua (5, 0, −2); troque para S T e ele dobra para (10, 0, −4), porque agora o movimento acontece antes da escala.",
 };
 
 export default text;

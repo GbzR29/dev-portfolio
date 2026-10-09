@@ -63,6 +63,7 @@ const track = {
     sampling: "Amostragem e inferência",
     regression: "Correlação e regressão linear",
     "markov-chains": "Cadeias de Markov",
+    "absorbing-chains": "Cadeias absorventes e tempos de chegada",
   } as Record<string, string>,
   sections: {
     Arithmetic: "Aritmética",

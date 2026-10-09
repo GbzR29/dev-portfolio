@@ -27,7 +27,6 @@ const text: Record<string, string> = {
   ch08_wBT: "y de sus lados inferior y superior",
   ch08_wNF2: "distancias a los planos near y far delante de la cámara (z en view space = −n y −f)",
   ch08_orthoEqNote: "Cada término de la diagonal comprime un lado de la caja en las 2 unidades de las NDC, y la última columna lleva el centro de la caja a 0. La última fila es (0, 0, 0, 1), así que w sigue siendo 1 y la división no cambia nada: por eso no hay perspectiva. A diferencia del caso en perspectiva, la profundidad se guarda de forma lineal y n = 0 está permitido.",
-  ch08_orthoCheck: "Comprueba una esquina: x = r da (2r − r − l) / (r − l) = 1, el borde derecho de las NDC, y x = l da −1. La fila de z hace lo mismo con la profundidad: z = −n en view space cae en −1 y z = −f en +1; el signo menos convierte 'delante de la cámara' (z negativa) en profundidad creciente.",
 };
 
 export default text;

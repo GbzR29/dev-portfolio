@@ -235,6 +235,30 @@ const text: Record<string, string> = {
   oglDepth_key4: "Superfícies no mesmo lugar fazem z-fighting. Quando elas precisam se tocar, glPolygonOffset desloca a profundidade de uma sem movê-la.",
   oglDepth_key5: "O menor espaço que o buffer distingue é cerca de d² / (n · 2²⁴): cresce com o quadrado da distância e diminui conforme o plano near cresce.",
   oglDepth_key6: "Conserte o tremeluzir com o maior plano near que a cena permitir; o plano far importa bem menos.",
+
+  // ── Fórmulas em palavras, deduções e ao vivo (2026-10-09) ──
+  oglDepth_eqWords: "Uma constante menos algo dividido pela distância. Depois o resultado, que vai de −1 a 1, é levado para 0 a 1 somando 1 e dividindo por 2. Como d está no denominador, a profundidade guardada dispara perto da câmera e quase não se mexe longe dela.",
+  oglDepth_liveDepth: "Experimente: uma distância indo para o buffer de profundidade",
+  oglDepth_liveDepthNote: "O início é o cubo 0, a 3 unidades: 0,9676, como na tabela. Arraste d e observe a barra: ela fica quase cheia depois das primeiras unidades. Agora aumente n para 1: o mesmo cubo cai para cerca de 0,67, e os valores de profundidade se espalham pela cena. Mover f muda bem menos.",
+  oglDepth_linDer: "Isolando d na fórmula da profundidade",
+  oglDepth_ld1: "a fórmula do passo 2; agora z_ndc é conhecido e d é o que se quer",
+  oglDepth_ld2: "multiplique os dois lados por (f − n) para tirar os denominadores",
+  oglDepth_ld3: "passe a fração para um lado e z_ndc (f − n) para o outro",
+  oglDepth_ld4: "inverta os dois lados e multiplique por 2fn. Esta é a linha do shader",
+  oglDepth_linWords: "Duas vezes próximo vezes distante, dividido pelo que sobra de próximo mais distante depois de tirar a parte da profundidade guardada. Transforma os valores 1 / d amontoados de volta em distâncias comuns.",
+  oglDepth_offWords: "factor vezes a inclinação da face, mais units vezes o menor passo que o buffer consegue guardar. Valores negativos puxam o polígono em direção à câmera.",
+  oglDepth_resDer: "De onde vem d² / n",
+  oglDepth_rd1: "ponha a fórmula de z_ndc no mapeamento para 0..1: metade de (f + n)/(f − n) mais meio dá f/(f − n), e a fração cai pela metade",
+  oglDepth_rd2: "afaste uma superfície por um Δd minúsculo. Só a parte 1/d muda, e muda isto; d + Δd é quase d quando Δd é minúsculo",
+  oglDepth_rd3: "multiplique pelo fator na frente de 1/d. Quando f é muito maior que n, f/(f − n) é quase 1",
+  oglDepth_rd4: "a menor mudança que o buffer consegue guardar é um passo, 1/2²⁴. Isole Δd: a menor distância que ele consegue ver",
+  oglDepth_resWords: "A distância ao quadrado, dividida pelo plano próximo vezes 16,8 milhões. O dobro da distância deixa a menor distância visível quatro vezes maior; um plano próximo dez vezes maior a deixa dez vezes menor.",
+  oglDepth_liveRes: "Experimente: o gêmeo vai piscar?",
+  oglDepth_liveStepsTex: "passos",
+  oglDepth_liveSteps: "passos entre as duas faces",
+  oglDepth_liveClean: "limpo",
+  oglDepth_liveFlicker: "pisca",
+  oglDepth_liveResNote: "0,0005 é a distância entre a face do cubo 0 e seu gêmeo. O início é o caso que pisca: d = 30 com n = 0,1. Abaixo de cerca de 1 passo o buffer não consegue separar as faces; a tabela acima arredonda os mesmos números. Experimente n = 1 para ver quanto um plano próximo maior ganha, ou n = 0,001 para o experimento do passo 4d.",
 };
 
 export default text;

@@ -6,13 +6,30 @@ Registro datado de tudo o que foi feito e criado no site.
 - A data de criação e de última atualização de cada lição também aparece no topo da própria lição. Ela é gerada do histórico do git por `scripts/gen-chapter-dates.mjs` (`npm run dates`, que também roda antes de `dev` e `build`) e fica em `src/lib/generated/chapter-dates.json`.
 - Para registrar algo novo, acrescente uma entrada no topo, com a data.
 
-Totais em 2026-10-01: 9 trilhas e 241 lições (OpenGL 70 · Matemática 61 · GLSL 24 · Algoritmos 24 · Vulkan 16 · C++ 15 · Game Dev 12 · SDL3 10 · IA 9).
+Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · GLSL 24 · Algoritmos 24 · Vulkan 16 · C++ 15 · Game Dev 12 · SDL3 10 · IA 10).
 
 ---
 
 ## Outubro de 2026
 
 ### 2026-10-09
+
+- **Nova lição "Cadeias absorventes e tempos de chegada" (Matemática → Probabilidade e Estatística, logo depois de Cadeias de Markov)**, criada para cobrir o que faltava para resolver uma lista de exercícios de cadeias de Markov (labirinto, padrões de moeda, jogos):
+  - **análise do primeiro passo para qualquer cadeia**, e não só para o passeio: tᵢ = 1 + Σ pᵢⱼ tⱼ e hᵢ = Σ pᵢⱼ hⱼ, com um labirinto 2 × 2 resolvido à mão (t_A = 4);
+  - **forma canônica** P = [Q R; 0 I], e a análise do primeiro passo como (I − Q)·t = 1;
+  - **matriz fundamental** N = (I − Q)⁻¹, deduzida como número esperado de visitas (N = I + Q + Q² + …), com t = N·1 e B = N·R, e a diagonal N_jj = 1/(1 − f) com fórmula ao vivo;
+  - **como escolher os estados** lembrando só o necessário: esperar HH (6 lançamentos) contra HT (4), fórmula ao vivo de HH com moeda viciada, e a corrida HH contra TH (HH vence com chance 1/4) resolvida com N e B;
+  - **widget novo "Um rato num labirinto"** (3 × 3): portas que abrem e fecham com um clique, queijo e começo móveis, movimentos esperados ou visitas esperadas exatos em cada sala (frações), equação do primeiro passo da sala escolhida, ratos animados com a barra de reprodução e "+100 ratos" para comparar com a média exata, e ∞ quando o queijo fica isolado. Laboratório guiado em 8 passos;
+  - prática, erros comuns, ideias-chave e tradução PT.
+
+- **Fórmulas interativas no OpenGL, seção 3D e Transformações (primeiro lote do OpenGL)**:
+  - **Vetores:** fórmulas em palavras nas 8 operações; deduções do comprimento em 3D (Pitágoras duas vezes), de por que as duas fórmulas do produto escalar dão o mesmo número e de por que a × b é perpendicular a a; fórmulas ao vivo do comprimento e da normalização, do produto escalar pelos dois caminhos e da normal de um triângulo.
+  - **Matrizes:** matriz × vetor com linhas ligadas ao resultado (apontar um elemento acende a linha e o vetor), R S e S R ligados elemento a elemento, dedução de R_z a partir de onde os eixos vão parar, fórmulas ao vivo de girar um ponto e da mesma translação num ponto (w = 1) e numa direção (w = 0), e o produto preenchido elemento por elemento, incluindo um caso 4 × 4 (T S contra S T).
+  - **Transformações:** novo cartão da cadeia MVP (P V M v), deduções da linha 3 da perspectiva e da linha do x da ortográfica, e fórmula ao vivo de um ponto passando pela projeção (y e profundidade nas NDC).
+  - **Câmera:** lookAt ao vivo de qualquer posição (com o caso NaN olhando bem para cima), dedução de por que a direção de yaw e pitch tem comprimento 1, e yaw e pitch ao vivo.
+  - **Teste de profundidade:** profundidade guardada ao vivo, dedução da profundidade linearizada e de Δd ≈ d² / (n · 2²⁴), e fórmula ao vivo "o gêmeo vai piscar?".
+  - As contas das fórmulas ao vivo do OpenGL ficam em `src/lib/tracks/opengl/live/`, um arquivo por capítulo.
+  - Tradução PT.
 
 - **Semelhança e Escala ampliada com muito mais triângulos (Matemática → Geometria)**:
   - **Widget novo "Triângulos semelhantes"**, com três modos e laboratório guiado em 8 passos:

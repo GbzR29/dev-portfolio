@@ -13,11 +13,25 @@
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { MatrixProduct } from "@/components/lesson/MatrixProduct";
+import { linkedProduct } from "@/components/lesson/texMatrix";
+import { rotateNumbers, translateNumbers } from "../live/linear-algebra";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { InteractiveBasis2D } from "@/components/lesson/figures/basis/InteractiveBasis2D";
 import { HomogeneousFigure } from "@/components/lesson/figures/HomogeneousFigure";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
+
+// ── Linked products (pointing at an entry lights its row and column) ─────────
+
+const MV = linkedProduct(
+  [["m_{11}", "m_{12}", "m_{13}"], ["m_{21}", "m_{22}", "m_{23}"], ["m_{31}", "m_{32}", "m_{33}"]],
+  [["x"], ["y"], ["z"]],
+  [["m_{11}x + m_{12}y + m_{13}z"], ["m_{21}x + m_{22}y + m_{23}z"], ["m_{31}x + m_{32}y + m_{33}z"]]);
+const RS = linkedProduct([[0, -1], [1, 0]], [[2, 0], [0, 1]], [[0, -1], [2, 0]], "a");
+const SR = linkedProduct([[2, 0], [0, 1]], [[0, -1], [1, 0]], [[0, -2], [1, 0]], "b");
 
 export function LinearAlgebraContent({ t }: { t: TrackTranslations }) {
   return (
@@ -57,12 +71,16 @@ export function LinearAlgebraContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglMat_mul1",
           "The matrix is written on the left and the vector on the right: M v. The vector is written standing up, as a column. The rule: each row of the matrix produces one part of the result. That part is the dot product of the row with the vector: multiply matching numbers and add.")}
       </p>
-      <Equation label={tx(t, "oglMat_mulLabel", "Matrix times vector, row by row")}
-        glm="glm::vec3 r = M * v;">
-        {String.raw`\begin{bmatrix} \blue{m_{11}} & \blue{m_{12}} & \blue{m_{13}} \\ \green{m_{21}} & \green{m_{22}} & \green{m_{23}} \\ \amber{m_{31}} & \amber{m_{32}} & \amber{m_{33}} \end{bmatrix}
-\begin{pmatrix} x \\ y \\ z \end{pmatrix}
-\;=\;
-\begin{pmatrix} \blue{m_{11}}x + \blue{m_{12}}y + \blue{m_{13}}z \\ \green{m_{21}}x + \green{m_{22}}y + \green{m_{23}}z \\ \amber{m_{31}}x + \amber{m_{32}}y + \amber{m_{33}}z \end{pmatrix}`}
+      <Equation words={tx(t, "oglMat_mulWords", "Each part of the result is one row of the matrix dotted with the vector: row 1 builds the new x, row 2 the new y, row 3 the new z.")}
+        label={tx(t, "oglMat_mulLabel", "Matrix times vector, row by row")}
+        glm="glm::vec3 r = M * v;"
+        where={[
+          [String.raw`\sym{r1}{m_{11}, m_{12}, m_{13}}`, tx(t, "oglMat_wRow1", "row 1: how much of x, y and z go into the new x")],
+          [String.raw`\sym{r2}{m_{21}, m_{22}, m_{23}}`, tx(t, "oglMat_wRow2", "row 2: the same for the new y")],
+          [String.raw`\sym{r3}{m_{31}, m_{32}, m_{33}}`, tx(t, "oglMat_wRow3", "row 3: the same for the new z")],
+          [String.raw`\sym{c1}{(x, y, z)}`, tx(t, "oglMat_wVec", "the vector going in, written as a column")],
+        ]}>
+        {String.raw`${MV.a}${MV.b} \;=\; ${MV.c}`}
       </Equation>
       <p>
         {tx(t, "oglMat_mul2",
@@ -99,7 +117,8 @@ export function LinearAlgebraContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglMat_col3",
           "So each column says where one axis arrow ends up. And every vector is built from those three arrows: (3, 1, 4) means 3 steps of î, plus 1 step of ĵ, plus 4 steps of k̂. The matrix moves the arrows, so the result is 3 steps of the new î, 1 of the new ĵ and 4 of the new k̂:")}
       </p>
-      <Equation label={tx(t, "oglMat_colLabel", "Matrix times vector, column by column")}>
+      <Equation words={tx(t, "oglMat_colWords", "The result is x copies of the first column, plus y copies of the second, plus z copies of the third. Each column is where one axis arrow lands.")}
+        label={tx(t, "oglMat_colLabel", "Matrix times vector, column by column")}>
         {String.raw`M\begin{pmatrix} 3 \\ 1 \\ 4 \end{pmatrix} \;=\; 3\begin{pmatrix} \red{1} \\ \red{0} \\ \red{0} \end{pmatrix} + 1\begin{pmatrix} \green{2} \\ \green{1} \\ \green{0} \end{pmatrix} + 4\begin{pmatrix} \blue{0} \\ \blue{0} \\ \blue{1} \end{pmatrix} \;=\; \begin{pmatrix} 5 \\ 1 \\ 4 \end{pmatrix}`}
       </Equation>
       <p>
@@ -123,7 +142,8 @@ export function LinearAlgebraContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglMat_scale1",
           "Use the recipe. To make a model twice as wide and half as tall, the x arrow should become twice as long, (2, 0, 0); the y arrow half as long, (0, 0.5, 0); and the z arrow should stay (0, 0, 1). Write those as columns:")}
       </p>
-      <Equation label={tx(t, "oglMat_scaleLabel", "Scale matrix")}
+      <Equation words={tx(t, "oglMat_scaleWords", "The stretch amounts sit on the diagonal and everything else is 0, so each part of the vector is multiplied by its own amount and nothing mixes.")}
+        label={tx(t, "oglMat_scaleLabel", "Scale matrix")}
         glm="glm::mat4 S = glm::scale(glm::mat4(1.0f), glm::vec3(sx, sy, sz));"
         where={[
           [String.raw`\green{s_x},\ \green{s_y},\ \green{s_z}`, tx(t, "oglMat_wS", "how much to stretch along each axis: 1 keeps the size, 2 doubles it, 0.5 halves it, a negative value also mirrors")],
@@ -145,11 +165,15 @@ export function LinearAlgebraContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglMat_rot1",
           "Start with a rotation around the z axis. That is a turn in the plane of the screen, like the hands of a clock but counter-clockwise. Use the recipe again: where do the axis arrows go when they turn by an angle θ?")}
       </p>
-      <p>
-        {tx(t, "oglMat_rot2",
-          "Picture a circle of radius 1 around the origin. A point on it at angle θ from the x axis has the coordinates (cos θ, sin θ). That is the definition of cosine and sine. So the x arrow (1, 0) turned by θ lands on (cos θ, sin θ). The y arrow starts 90° further round, and lands 90° further too: on (−sin θ, cos θ). The z arrow is the axis of the turn, so it does not move.")}
-      </p>
-      <Equation label={tx(t, "oglMat_rzLabel", "Rotation by θ around z")}
+      <Derivation t={t} label={tx(t, "oglMat_rotDer", "Building R_z from where the axes land")}
+        steps={[
+          { full: true, tex: String.raw`\red{(1,\ 0,\ 0)} \;\longrightarrow\; (\cos\theta,\ \sin\theta,\ 0)`, why: tx(t, "oglMat_rd1", "picture a circle of radius 1 around the origin. The point on it at angle θ from the x axis is (cos θ, sin θ): that is the definition of cosine and sine. So the x arrow, turned by θ, lands there") },
+          { full: true, tex: String.raw`\green{(0,\ 1,\ 0)} \;\longrightarrow\; \begin{aligned} &(\cos(\theta + 90^\circ),\ \sin(\theta + 90^\circ),\ 0) \\ &= (-\sin\theta,\ \cos\theta,\ 0) \end{aligned}`, why: tx(t, "oglMat_rd2", "the y arrow starts 90° further round, so it lands 90° further too. A quarter turn sends any (a, b) to (−b, a), which turns (cos θ, sin θ) into (−sin θ, cos θ)") },
+          { full: true, tex: String.raw`\blue{(0,\ 0,\ 1)} \;\longrightarrow\; (0,\ 0,\ 1)`, why: tx(t, "oglMat_rd3", "the z arrow is the axis of the turn, so it does not move") },
+          { full: true, tex: String.raw`R_z(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{bmatrix}`, why: tx(t, "oglMat_rd4", "write the three landing spots as the three columns, the recipe from the section on columns") },
+        ]} />
+      <Equation words={tx(t, "oglMat_rzWords", "The first column is where the x arrow lands after turning by θ, the second is where the y arrow lands, and the third column keeps z where it was.")}
+        label={tx(t, "oglMat_rzLabel", "Rotation by θ around z")}
         glm="glm::mat4 R = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(0, 0, 1));"
         where={[
           [String.raw`\purple{\theta}`, tx(t, "oglMat_wTheta", "the angle to turn; positive turns counter-clockwise when the axis points at you")],
@@ -161,11 +185,21 @@ export function LinearAlgebraContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglMat_rot3",
           "With numbers, a quarter turn: θ = 90°, so cos θ = 0 and sin θ = 1. Rotate the point (2, 1, 0). Row 1: 0×2 + (−1)×1 + 0×0 = −1. Row 2: 1×2 + 0×1 + 0×0 = 2. Row 3: 0. The result is (−1, 2, 0). Check that it makes sense: the point was right and a little up; after a quarter turn counter-clockwise it is up and a little left. Its distance from the origin is √5 both before and after, because a rotation never changes lengths.")}
       </p>
+      <LiveFormula label={tx(t, "oglMat_liveRot", "Try it: turning a point around z")}
+        tex={String.raw`\begin{pmatrix} x' \\ y' \end{pmatrix} = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix} \begin{pmatrix} x \\ y \end{pmatrix}`}
+        vars={[
+          { id: "th", label: "θ", min: -180, max: 180, step: 15, value: 90, fmt: v => `${v}°` },
+          { id: "x", label: "x", min: -3, max: 3, step: 0.5, value: 2, fmt: v => String(v) },
+          { id: "y", label: "y", min: -3, max: 3, step: 0.5, value: 1, fmt: v => String(v) },
+        ]}
+        compute={rotateNumbers}
+        note={tx(t, "oglMat_liveRotNote", "The start is the quarter turn above: (2, 1) goes to (−1, 2). The z part is left out because R_z keeps it as it is. Whatever you choose, the length on the last line is the same before and after: a rotation never stretches.")} />
       <p>
         {tx(t, "oglMat_rot4",
           "Rotations around x and around y are built the same way. Each keeps its own axis fixed and turns the other two, with the same cos and sin pattern:")}
       </p>
-      <Equation label={tx(t, "oglMat_rxyLabel", "Rotations around x and y")}
+      <Equation words={tx(t, "oglMat_rxyWords", "The same cos and sin pattern, moved so that the axis of the turn keeps its 1 and its row and column of 0s.")}
+        label={tx(t, "oglMat_rxyLabel", "Rotations around x and y")}
         glm="glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(1, 0, 0));   // or (0, 1, 0) for y">
         {String.raw`R_x(\purple{\theta}) = \begin{bmatrix} 1 & \muted{0} & \muted{0} \\ \muted{0} & \purple{\cos\theta} & \purple{-\sin\theta} \\ \muted{0} & \purple{\sin\theta} & \purple{\cos\theta} \end{bmatrix}
 \qquad
@@ -202,7 +236,8 @@ R_y(\purple{\theta}) = \begin{bmatrix} \purple{\cos\theta} & \muted{0} & \purple
         {tx(t, "oglMat_trans3",
           "The fix is to give every point a fourth part, called w, and set it to 1: the point (x, y, z) is stored as (x, y, z, 1). The matrices become 4×4, and the offset goes in the new fourth column. In the multiplication, that column is multiplied by w = 1 and added to the result:")}
       </p>
-      <Equation label={tx(t, "oglMat_transLabel", "Translation matrix, worked out")}
+      <Equation words={tx(t, "oglMat_transWords", "The offset sits in the fourth column. It is multiplied by w, the fourth part of the vector, so with w = 1 it is simply added to x, y and z.")}
+        label={tx(t, "oglMat_transLabel", "Translation matrix, worked out")}
         glm="glm::mat4 T = glm::translate(glm::mat4(1.0f), glm::vec3(tx, ty, tz));"
         where={[
           [String.raw`\amber{t_x},\ \amber{t_y},\ \amber{t_z}`, tx(t, "oglMat_wT", "the offset: how far to move along each axis")],
@@ -222,7 +257,8 @@ R_y(\purple{\theta}) = \begin{bmatrix} \purple{\cos\theta} & \muted{0} & \purple
         {tx(t, "oglMat_w1",
           "A direction, such as \"up\" or a surface normal, is an arrow without a place. Moving the model should not change which way is up. So directions get w = 0. Then the offset column is multiplied by 0 and adds nothing: (0, 1, 0, 0) moved by (5, 0, −2) is still (0, 1, 0, 0). Rotation and scale still act on it, because they live in the other three columns.")}
       </p>
-      <Equation label={tx(t, "oglMat_wLabel", "The same translation T on a point and on a direction")}
+      <Equation words={tx(t, "oglMat_wWords", "The same matrix moves a point (w = 1) but leaves a direction (w = 0) alone, because the offset is multiplied by w before it is added.")}
+        label={tx(t, "oglMat_wLabel", "The same translation T on a point and on a direction")}
         where={[
           [String.raw`\purple{w = 1}`, tx(t, "oglMat_wPos", "a point: the translation applies")],
           [String.raw`\red{w = 0}`, tx(t, "oglMat_wDir", "a direction or normal: the translation does not apply")],
@@ -231,6 +267,15 @@ R_y(\purple{\theta}) = \begin{bmatrix} \purple{\cos\theta} & \muted{0} & \purple
 \qquad
 T\begin{pmatrix} d_x\\d_y\\d_z\\ \red{0} \end{pmatrix} = \begin{pmatrix} d_x\\d_y\\d_z\\ \red{0} \end{pmatrix}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglMat_liveW", "Try it: the same T on a point and on a direction")}
+        tex={String.raw`T\begin{pmatrix} x \\ y \\ z \\ w \end{pmatrix} = \begin{pmatrix} x + t_x\,w \\ y + t_y\,w \\ z + t_z\,w \\ w \end{pmatrix}`}
+        vars={[
+          { id: "tx", label: <>t<sub>x</sub></>, min: -5, max: 5, step: 1, value: 5, fmt: v => String(v) },
+          { id: "tz", label: <>t<sub>z</sub></>, min: -5, max: 5, step: 1, value: -2, fmt: v => String(v) },
+          { id: "w", label: "w", min: 0, max: 1, step: 1, value: 1, fmt: v => (v ? `1 · ${tx(t, "oglMat_livePoint", "point")}` : `0 · ${tx(t, "oglMat_liveDir", "direction")}`) },
+        ]}
+        compute={translateNumbers}
+        note={tx(t, "oglMat_liveWNote", "The vector is (1, 2, 3) and tᵧ = 0. With w = 1 it is the worked example: (6, 2, 1, 1). Switch w to 0 and the offset is multiplied by 0, so the same vector comes out unchanged, as a direction should.")} />
       <p>
         {tx(t, "oglMat_w2",
           "Vectors with this extra w are called homogeneous coordinates. Scale and rotation fit in too: put their 3×3 matrix in the top-left corner of a 4×4, with 0s in the fourth column and row and a 1 in the bottom-right corner. Now all three changes are 4×4 matrices, and they can be chained, as the next section shows.")}
@@ -263,7 +308,8 @@ void main() {
         {tx(t, "oglMat_comb1",
           "A model usually needs all three: scale it, then rotate it, then move it into place. You could multiply each vertex by S, then by R, then by T. But matrices can be multiplied together first, into one matrix that does all three. Then each vertex needs one multiplication, and the program sends one matrix to the shader.")}
       </p>
-      <Equation label={tx(t, "oglMat_combLabel", "One matrix for three changes")}
+      <Equation words={tx(t, "oglMat_combWords", "Applying S, then R, then T one after another gives the same result as multiplying the three matrices once and applying that single matrix.")}
+        label={tx(t, "oglMat_combLabel", "One matrix for three changes")}
         notes={[tx(t, "oglMat_combNote", "Read from right to left: the matrix next to the vector acts first. Here S acts first, then R, then T.")]}>
         {String.raw`T\,\big(R\,(S\,\mathbf{v})\big) \;=\; (T\,R\,S)\,\mathbf{v} \;=\; M\,\mathbf{v} \qquad\text{with}\qquad M = T\,R\,S`}
       </Equation>
@@ -276,10 +322,11 @@ void main() {
         {tx(t, "oglMat_order1",
           "With numbers, in 2D to keep it small. R turns a quarter turn counter-clockwise; S doubles the width. Their columns: R sends x to (0, 1) and y to (−1, 0); S sends x to (2, 0) and keeps y at (0, 1).")}
       </p>
-      <Equation label={tx(t, "oglMat_orderLabel", "R S is not S R")}>
+      <Equation words={tx(t, "oglMat_orderWords", "Turning then stretching gives a different matrix from stretching then turning. Point at an entry of a product to see the row and the column it comes from.")}
+        label={tx(t, "oglMat_orderLabel", "R S is not S R")}>
         {String.raw`\begin{gathered}
-R = \begin{bmatrix} 0 & -1 \\ 1 & 0 \end{bmatrix} \qquad S = \begin{bmatrix} 2 & 0 \\ 0 & 1 \end{bmatrix} \\[10pt]
-R\,S = \begin{bmatrix} 0 & -1 \\ 2 & 0 \end{bmatrix} \qquad S\,R = \begin{bmatrix} 0 & -2 \\ 1 & 0 \end{bmatrix}
+R\,S = ${RS.a}${RS.b} = ${RS.c} \\[10pt]
+S\,R = ${SR.a}${SR.b} = ${SR.c}
 \end{gathered}`}
       </Equation>
       <p>
@@ -290,6 +337,12 @@ R\,S = \begin{bmatrix} 0 & -1 \\ 2 & 0 \end{bmatrix} \qquad S\,R = \begin{bmatri
         {tx(t, "oglMat_order3",
           "Follow the point (1, 0) to see why. R S means S first: (1, 0) is stretched to (2, 0), then turned to (0, 2). S R means R first: (1, 0) is turned to (0, 1), and then stretching the width does nothing to it, because its x is 0. So A B and B A are usually different. Swapping the order of matrices changes the result, and the compiler cannot warn you.")}
       </p>
+      <MatrixProduct t={t} label={tx(t, "oglMat_liveMul", "Try it: a product, one entry at a time")}
+        presets={[
+          { name: "R · S", A: [[0, -1], [1, 0]], B: [[2, 0], [0, 1]], names: ["R", "S"] },
+          { name: "T · S (4 × 4)", A: [[1, 0, 0, 5], [0, 1, 0, 0], [0, 0, 1, -2], [0, 0, 0, 1]], B: [[2, 0, 0, 0], [0, 2, 0, 0], [0, 0, 2, 0], [0, 0, 0, 1]], names: ["T", "S"] },
+        ]}
+        note={tx(t, "oglMat_liveMulNote", "Starts on R S from above. Play it to the end, then press ⇄ to get S R: the same two matrices in the other order. The second preset is a real 4 × 4 case: scale by 2, then move by (5, 0, −2). In T S the offset stays (5, 0, −2); swap to S T and the offset doubles to (10, 0, −4), because the move now happens before the scale.")} />
       <p>
         {tx(t, "oglMat_order4",
           "The usual order for placing a model is M = T R S: scale first, then rotate, then move. Scale and rotation always happen around the origin (0, 0, 0). So they must happen while the model is still centred there, before it is moved. If you move it first and rotate after, it swings around the origin in a wide circle, like a stone on a string. The Transformations chapter has a figure that plays both orders side by side.")}
