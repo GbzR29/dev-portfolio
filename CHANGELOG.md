@@ -14,6 +14,15 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-10
 
+- **Som nos widgets: início da trilha de Música.** Kit de áudio novo em `src/components/lesson/kit/audio/` (Web Audio API, sem biblioteca):
+  - `context.ts`: um único `AudioContext` para a página, volume geral lembrado entre visitas, `startAudio()` para acordar o áudio no primeiro clique;
+  - `notes.ts`: notas como números MIDI, f = 440 · 2^((m − 69)/12), nomes (C4, F♯3) e teclas pretas;
+  - `piano.ts`: piano gravado de verdade (Salamander Grand Piano, Yamaha C5, CC-BY 3.0), 17 gravações de C2 a C6 em `public/sounds/piano/` (1,3 MB, baixadas só quando o leitor vai tocar); as outras teclas tocam a gravação mais próxima com velocidade 2^(d/12);
+  - `synth.ts`: oscilador (seno, triângulo, quadrada, dente-de-serra) com envelope ADSR;
+  - `PianoKeyboard.tsx`: teclado em SVG, com vários dedos ao mesmo tempo (acordes no celular), glissando arrastando e teclado do computador;
+  - `useVoices.ts`: corta as notas quando o widget sai da tela ou desmonta;
+  - widget de teste `figures/music/PianoFigure.tsx` (piano/sintetizador, leitura da frequência e da gravação usada) na página temporária `/learn/sound-test`, a apagar quando o primeiro capítulo de Música usar o piano;
+
 - **Fórmulas dinâmicas na seção Técnicas Avançadas do OpenGL** (lote 7 da expansão das fórmulas interativas; módulos novos em `live/`: skeletal, text, picking, oit, reflections, volumetrics, decals, terrain). "Em palavras" nas fórmulas principais dos 8 capítulos; fórmulas largas demais no desktop foram quebradas em linhas:
   - **Skeletal Animation**: fórmulas ao vivo do braço de dois ossos (G = G_pai · L), do slerp com a troca de sinal de q₀·q₁ < 0, de quanto o LBS estrangula uma junta torcida (papel de bala contra DQS) e do IK de dois ossos; dedução de um vértice passando por K = G·B⁻¹ com números;
   - **Text Rendering**: dedução de "AV" a 48 px (advance em 26.6, bearings, kerning) e da mediana do MSDF num texel; fórmula ao vivo de um texel SDF do atlas à tela (spread, ampliação, fwidth);

@@ -49,6 +49,9 @@ src/components/lesson/kit/             widget INFRASTRUCTURE (no lesson content)
                   (styles in src/styles/lab.css); lab/useLab.ts: ?lab=<id> URL + back button + saved progress; model: figures/markov/
   gl/GLView.tsx   WebGL2 host: context, resize, look/orbit, context loss; useAnimationTime
   gl/gl.ts, gl/glx.ts, gl/context.ts   mat4, shaders, meshes, render targets, context release
+  audio/          Web Audio: context.ts (one AudioContext + master volume; call startAudio() in the click handler),
+                  notes.ts (MIDI ↔ Hz, names), piano.ts (Salamander samples in public/sounds/piano, lazy),
+                  synth.ts (oscillator + ADSR), PianoKeyboard.tsx, useVoices (silences a widget off screen)
 src/components/lesson/figures/         the widgets themselves, grouped by topic folder
 src/components/lesson/glsl/            ShaderPlayground + GLSL figures
 src/components/lesson/DocsLayout.tsx, LearnTopBar.tsx, src/components/sidebar/LessonSidebar.tsx   shared lesson layout (slim top bar with breadcrumbs, height --nav-h)
