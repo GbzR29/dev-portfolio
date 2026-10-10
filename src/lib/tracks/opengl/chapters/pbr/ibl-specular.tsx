@@ -3,6 +3,9 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { ggxSampleNumbers, mipNumbers } from "../../live/ibl-specular";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -42,7 +45,8 @@ export function IblSpecularContent({ t }: { t: TrackTranslations }) {
         notes={[
           tx(t, "oglIblS_n1", "Left: the prefiltered environment map, one blur level per roughness, stored in the mip chain."),
           tx(t, "oglIblS_n2", "Right: the BRDF integration map, a 2D table indexed by (n·v, roughness)."),
-        ]}>
+        ]}
+        words={tx(t, "oglIblS_splitWords", "Instead of weighting the sky by the material direction by direction, blur the sky by the right amount once, and separately measure how much the material reflects in total. Then multiply the two. It is not exact, but it is close, and both halves can be stored in textures.")}>
         {r`L_{o,\,s} \approx \underbrace{\int_{\Omega} L_i(p, ${wi})\,d${wi}}_{\text{prefiltered env (roughness)}} \;\cdot\; \underbrace{\int_{\Omega} f_r(p, ${wi}, ${wo})\,(\dotp{\vN}{${wi}})\,d${wi}}_{\text{BRDF LUT } (\dotp{\vN}{${wo}},\ \text{roughness})}`}
       </Equation>
 
@@ -54,7 +58,9 @@ export function IblSpecularContent({ t }: { t: TrackTranslations }) {
       <Equation label={tx(t, "oglIblS_mcLabel", "Monte Carlo estimator")}
         where={[
           [r`\text{pdf}(\omega_k)`, tx(t, "oglIblS_wPdf", "the probability density of having generated sample k")],
-        ]}>
+          [r`N`, tx(t, "oglIblS_wNmc", "the number of samples")],
+        ]}
+        words={tx(t, "oglIblS_mcWords", "Pick N directions at random, evaluate the function in each, and average. Directions you pick often are divided by their high probability, rare ones by their low probability, so that on average every part of the hemisphere counts as much as it should.")}>
         {r`\int_{\Omega} f(\omega)\,d\omega \;\approx\; \frac{1}{N}\sum_{k=1}^{N} \frac{f(\omega_k)}{\text{pdf}(\omega_k)}`}
       </Equation>
       <p>
@@ -62,9 +68,24 @@ export function IblSpecularContent({ t }: { t: TrackTranslations }) {
           "Instead of random numbers, a low-discrepancy sequence spreads the samples evenly and converges much faster. The Hammersley sequence pairs i/N with the Van der Corput radical inverse (the bits of i mirrored around the binary point). Each 2D point is then mapped to a GGX-distributed halfway vector:")}
       </p>
       <Equation label={tx(t, "oglIblS_ggxSample", "GGX importance sample from ξ = (ξ₁, ξ₂) ∈ [0,1)²")}
-        glsl="float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));">
+        glsl="float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a*a - 1.0) * Xi.y));"
+        where={[
+          [r`\xi_1,\ \xi_2`, tx(t, "oglIblS_wXi", "two numbers between 0 and 1 from the Hammersley sequence")],
+          [r`\varphi`, tx(t, "oglIblS_wPhi", "the direction around the normal: spread evenly, since GGX looks the same from every side")],
+          [r`\theta_h`, tx(t, "oglIblS_wThetaH", "how far the halfway vector tilts away from the normal")],
+          [r`\alpha`, tx(t, "oglIblS_wAlpha", "roughness², as in the D term")],
+        ]}
+        words={tx(t, "oglIblS_ggxWords", "The first number picks a direction around the normal. The second picks how far to tilt, through a formula that bunches the tilts near 0 on smooth surfaces and spreads them out on rough ones, exactly as GGX does.")}>
         {r`\varphi = 2\pi\,\xi_1 \qquad \cos\theta_h = \sqrt{\frac{1 - \xi_2}{1 + (\alpha^2 - 1)\,\xi_2}}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglIblS_liveGgx", "Try it: where does a sample land?")}
+        tex={r`\cos\theta_h = \sqrt{\frac{1 - \xi_2}{1 + (\alpha^2 - 1)\,\xi_2}}, \qquad \alpha = \text{roughness}^2`}
+        vars={[
+          { id: "xi", label: <>ξ<sub>2</sub></>, min: 0, max: 0.99, step: 0.01, value: 0.9, fmt: v => v.toFixed(2) },
+          { id: "rough", label: "roughness", min: 0.05, max: 1, step: 0.01, value: 0.3, fmt: v => v.toFixed(2) },
+        ]}
+        compute={ggxSampleNumbers(t)}
+        note={tx(t, "oglIblS_liveGgxNote", "ξ₂ = 0.9 marks the edge of the lobe: 90% of all samples tilt less than this. At roughness 0.3 that is about 15°, at 0.6 about 47°. ξ₂ = 0 always gives h = n, whatever the roughness.")} />
       <CodeBlock lang="glsl" filename="importance_sample.glsl" t={t}>{`float RadicalInverse_VdC(uint bits) {
     bits = (bits << 16u) | (bits >> 16u);
     bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
@@ -129,9 +150,20 @@ for (unsigned mip = 0; mip < maxMip; ++mip) {
           [r`\Omega_s = \frac{1}{N\cdot\text{pdf}}`, tx(t, "oglIblS_wOs", "solid angle represented by one sample")],
           [r`\Omega_p = \frac{4\pi}{6\,w^2}`, tx(t, "oglIblS_wOp", "solid angle of one texel of a w×w cube face")],
           [r`\text{pdf} = \frac{D\,(\dotp{\vN}{\vH})}{4\,(\dotp{\vH}{\vV})}`, tx(t, "oglIblS_wPdfH", "GGX pdf converted from h to l")],
-        ]}>
+        ]}
+        words={tx(t, "oglIblS_lodWords", "Compare the patch of sky one sample stands for with the patch one texel covers. Each mip level down makes a texel cover four times the area, so the level to read is how many times you can divide the ratio by 4: half its base-2 logarithm.")}>
         {r`\text{mip} = \tfrac{1}{2}\log_2\!\frac{\Omega_s}{\Omega_p}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglIblS_liveMip", "Try it: which mip should this sample read?")}
+        tex={r`\Omega_s = \frac{1}{N\cdot\text{pdf}} \qquad \Omega_p = \frac{4\pi}{6\,w^2} \qquad \text{mip} = \max\!\Big(0,\ \tfrac{1}{2}\log_2\!\frac{\Omega_s}{\Omega_p}\Big)`}
+        vars={[
+          { id: "N", label: "N", min: 64, max: 2048, step: 64, value: 1024, fmt: v => String(v) },
+          { id: "w", label: "w", min: 64, max: 1024, step: 64, value: 512, fmt: v => `${v}²` },
+          { id: "pdf", label: "pdf", min: 0.1, max: 50, step: 0.1, value: 1, fmt: v => v.toFixed(1) },
+        ]}
+        where={[[r`\max(0, \dots)`, tx(t, "oglIblS_wMax0", "a sample that stands for less than one texel just reads the sharpest level, 0")]]}
+        compute={mipNumbers(t)}
+        note={tx(t, "oglIblS_liveMipNote", "A sample in the bright centre of a glossy lobe (pdf 50) reads close to level 0. A rare sample out in the tail (pdf 0.1) stands for a large patch and reads level 5: one blurred texel instead of a single sharp one that might be the sun.")} />
 
       <H2>{tx(t, "oglIblS_lutTitle", "The BRDF integration map")}</H2>
       <p>
@@ -143,9 +175,21 @@ for (unsigned mip = 0; mip < maxMip; ++mip) {
           [r`\red{A}`, tx(t, "oglIblS_wA", "scale — stored in the LUT's red channel")],
           [r`\green{B}`, tx(t, "oglIblS_wB", "bias — stored in the green channel")],
         ]}
-        glsl="vec2 envBRDF = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;  specular = prefiltered * (F * envBRDF.x + envBRDF.y);">
+        glsl="vec2 envBRDF = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;  specular = prefiltered * (F * envBRDF.x + envBRDF.y);"
+        words={tx(t, "oglIblS_lutWords", "The total reflection of the material is F0 times one number plus another number. Both numbers depend only on the viewing angle and the roughness, so a small 2D table holds them for every material at once.")}>
         {r`\int_{\Omega} f_r\,(\dotp{\vN}{${wi}})\,d${wi} = F_0\underbrace{\int_{\Omega} \frac{f_r}{F}\big(1 - (1 - \dotp{${wo}}{\vH})^5\big)(\dotp{\vN}{${wi}})\,d${wi}}_{\red{A}} + \underbrace{\int_{\Omega} \frac{f_r}{F}(1 - \dotp{${wo}}{\vH})^5(\dotp{\vN}{${wi}})\,d${wi}}_{\green{B}}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglIblS_lutDer", "How F0 comes out of the integral")}
+        steps={[
+          { full: true, tex: r`f_r = \frac{f_r}{F}\,F`,
+            why: tx(t, "oglIblS_ld1", "multiply and divide by F: f_r / F is the specular BRDF without its Fresnel factor, D·G / (4 (n·v)(n·l))") },
+          { full: true, tex: r`F = F_0 + (1 - F_0)\,F_c, \qquad F_c = (1 - \dotp{${wo}}{\vH})^5`,
+            why: tx(t, "oglIblS_ld2", "Fresnel-Schlick, with the fifth-power part given a short name") },
+          { full: true, tex: r`F = F_0 - F_0\,F_c + F_c = F_0\,(1 - F_c) + F_c`,
+            why: tx(t, "oglIblS_ld3", "expand (1 − F0)·Fc and group the terms that contain F0") },
+          { full: true, tex: r`\int \frac{f_r}{F}\big(F_0(1 - F_c) + F_c\big)\cos = F_0\!\int \frac{f_r}{F}(1 - F_c)\cos + \int \frac{f_r}{F}\,F_c\cos`,
+            why: tx(t, "oglIblS_ld4", "the integral of a sum is the sum of the integrals, and F0 is a constant, so it comes out in front. The first integral is A, the second is B (cos is short for n·ωᵢ)") },
+        ]} />
       <CodeBlock lang="glsl" filename="brdf_lut.frag" t={t}>{`vec2 IntegrateBRDF(float NdotV, float roughness) {
     vec3 V = vec3(sqrt(1.0 - NdotV * NdotV), 0.0, NdotV);
     vec3 N = vec3(0.0, 0.0, 1.0);

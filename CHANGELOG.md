@@ -14,6 +14,15 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-09
 
+- **Fórmulas dinâmicas na seção PBR do OpenGL e em Iluminação Global** (lote 4 da expansão das fórmulas interativas para todas as trilhas):
+  - **Teoria de PBR**: "em palavras" na conservação de energia, no ângulo sólido, na irradiância, na equação de refletância, na integral do cosseno e nas propriedades da BRDF. Deduções de por que o hemisfério tem 2π sr (e a esfera 4π) e de onde vem o π (substituição u = sen θ, e por que Lambert divide por π). Duas fórmulas ao vivo: o laço do shader para ∫ cos θ dω com n₁ e n₂ passos (erro em relação a π) e um mapa de roughness carregado como sRGB (0,5 vira 0,21, α e a altura do brilho);
+  - **Iluminação Cook-Torrance**: "em palavras" na BRDF, em D, G, F, no F0 por metallic e na soma das luzes. Dedução do pico do brilho D(1) = 1/(πα²) e do caso roughness 1 (D = 1/π em todo lugar). Fórmula ao vivo: um pixel e uma luz passando por todos os termos (D, k e G, F0 e F, especular, kd, Lo) com roughness, metallic e ângulos da luz e do olho;
+  - **IBL difusa**: "em palavras" na separação, na irradiância e na soma de Riemann. Dedução da integral até a linha irradiance = PI * irradiance / samples. Duas fórmulas ao vivo: o custo da convolução por δ e tamanho do mapa, e o Fresnel com roughness ao lado do Schlick simples;
+  - **IBL especular**: "em palavras" no split sum, no Monte Carlo, na amostra GGX (agora com lista "onde"), no nível de mip e no LUT. Dedução de como F0 sai da integral (A e B). Duas fórmulas ao vivo: onde cai uma amostra GGX (ξ₂ e roughness → inclinação de h) e qual mip a amostra deve ler (N, tamanho da face, pdf);
+  - **Iluminação Global**: "em palavras" na projeção em harmônicos esféricos e na irradiância. Fórmula ao vivo da irradiância com as bandas 0 e 1 (céu claro em cima, normal para cima ou para baixo), mostrando quando aparece o ringing negativo;
+  - `sci()` (notação a × 10^b) passou de `live/depth-testing.ts` para o `live/fmt.ts` compartilhado;
+  - tradução PT.
+
 - **Fórmulas dinâmicas na seção Iluminação Avançada do OpenGL** (lote 3 da expansão das fórmulas interativas para todas as trilhas):
   - **Blinn-Phong**: "em palavras" no especular e na relação do meio ângulo. O "×4 do expoente" virou dedução passo a passo (cos θ ≈ e^(−θ²/2) → m = 4n). Fórmula ao vivo: um fragmento nos dois modelos, com luz, olho e brilho (o olho do lado da luz mostra o corte duro de Phong);
   - **Gamma**: "em palavras" na curva da tela e no sRGB exato. Dedução de por que a atenuação sem correção vira 1/d⁴·⁴. Três fórmulas ao vivo: códigos gastos nos escuros (linear contra a curva), sRGB exato contra 2,2 e um texel nos pipelines certo e errado (a razão é (N·L)^1,2, sem depender do byte). Corrigida a afirmação de que 2,2 difere do sRGB em no máximo um código: são até cerca de 8 códigos perto de 0,002;

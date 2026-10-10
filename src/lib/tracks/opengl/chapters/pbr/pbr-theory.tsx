@@ -3,6 +3,9 @@
 
 import { Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation, Tex } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { hemisphereNumbers, srgbRoughNumbers } from "../../live/pbr-theory";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -65,7 +68,8 @@ export function PbrTheoryContent({ t }: { t: TrackTranslations }) {
           [r`k_s`, tx(t, "oglPbrT_wKs", "fraction reflected at the surface — this will be the Fresnel term F")],
           [r`k_d`, tx(t, "oglPbrT_wKd", "fraction that enters the material and may come back out as diffuse")],
         ]}
-        glsl="vec3 kS = F;  vec3 kD = (vec3(1.0) - kS) * (1.0 - metallic);">
+        glsl="vec3 kS = F;  vec3 kD = (vec3(1.0) - kS) * (1.0 - metallic);"
+        words={tx(t, "oglPbrT_energyWords", "Every bit of light that arrives either bounces off the surface or goes into it. Nothing is created, so if 30% bounces off, at most 70% is left to come back out as diffuse.")}>
         {r`k_d + k_s = 1 \quad\Longrightarrow\quad k_d = 1 - k_s`}
       </Equation>
       <p>
@@ -93,9 +97,21 @@ export function PbrTheoryContent({ t }: { t: TrackTranslations }) {
           [r`A`, tx(t, "oglPbrT_wA", "the area a shape covers when projected onto a sphere of radius r")],
           [r`\theta,\ \varphi`, tx(t, "oglPbrT_wTP", "polar angle from the normal and azimuth around it")],
         ]}
-        note={tx(t, "oglPbrT_solidNote", "The sin θ matters: rings near the pole are smaller than rings near the equator. Integrating over the hemisphere gives 2π, the full sphere 4π.")}>
+        note={tx(t, "oglPbrT_solidNote", "The sin θ matters: rings near the pole are smaller than rings near the equator. Integrating over the hemisphere gives 2π, the full sphere 4π.")}
+        words={tx(t, "oglPbrT_solidWords", "A solid angle is the patch a shape covers on a sphere around you, divided by the radius squared so it does not depend on how big the sphere is. A tiny patch is a step in θ times a step in φ, shrunk by sin θ because the circles get small near the pole.")}>
         {r`\omega = \frac{A}{r^2} \qquad d\omega = \sin\theta \, d\theta \, d\varphi \qquad \int_{\Omega} d\omega = \int_0^{2\pi}\!\!\int_0^{\pi/2} \sin\theta\,d\theta\,d\varphi = 2\pi`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglPbrT_solidDer", "Why the hemisphere is 2π steradians")}
+        steps={[
+          { full: true, tex: r`\int_0^{2\pi}\!\!\int_0^{\pi/2} \sin\theta\,d\theta\,d\varphi`,
+            why: tx(t, "oglPbrT_sd1", "add up every tiny patch dω = sin θ dθ dφ: θ from the normal (0) down to the horizon (π/2), φ once around (2π)") },
+          { full: true, tex: r`\int_0^{\pi/2} \sin\theta\,d\theta = \big[-\cos\theta\big]_0^{\pi/2} = -\cos\tfrac{\pi}{2} + \cos 0 = 0 + 1 = 1`,
+            why: tx(t, "oglPbrT_sd2", "the inner integral first: an antiderivative of sin θ is −cos θ; evaluate it at the horizon and subtract its value at the normal") },
+          { full: true, tex: r`\int_0^{2\pi} 1\,d\varphi = 2\pi`,
+            why: tx(t, "oglPbrT_sd3", "nothing depends on φ any more, so the outer integral is just the length of the φ range") },
+          { full: true, tex: r`\text{${tx(t, "oglPbrT_sd4tex", "sphere")}}: \int_0^{\pi} \sin\theta\,d\theta = 2 \;\Rightarrow\; 2 \cdot 2\pi = 4\pi`,
+            why: tx(t, "oglPbrT_sd4", "for the whole sphere θ goes all the way to π, the inner integral doubles, and so does the answer") },
+        ]} />
       <p>
         {tx(t, "oglPbrT_radExplain",
           "Radiance packs everything into one number. It is the light flowing through a tiny area, arriving within a tiny cone of directions. The cos θ in its denominator measures the area as seen from the light's direction, which makes radiance independent of how the surface is tilted. When the area and the cone shrink to a point and a single direction, you get Lᵢ(p, ωᵢ): the light arriving at p from exactly ωᵢ. That is what a shader works with.")}
@@ -106,7 +122,8 @@ export function PbrTheoryContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`\Omega`, tx(t, "oglPbrT_wOmega", "the hemisphere above p, centred on the normal")],
           [r`\cos\theta_i = \dotp{\vN}{${wi}}`, tx(t, "oglPbrT_wCos", "Lambert's projection factor — the purple footprint in the figure")],
-        ]}>
+        ]}
+        words={tx(t, "oglPbrT_irrWords", "Look in every direction of the sky above the point, take the light coming from there, weaken it by how slanted it arrives, and add it all up. That total is how much light lands on each square metre.")}>
         {r`E(p) = \int_{\Omega} L_i(p, ${wi})\,(\dotp{\vN}{${wi}})\,d${wi}`}
       </Equation>
 
@@ -125,7 +142,8 @@ export function PbrTheoryContent({ t }: { t: TrackTranslations }) {
         notes={[
           tx(t, "oglPbrT_reN1", "With a handful of point lights the integral collapses into a sum: only those few directions carry light."),
           tx(t, "oglPbrT_reN2", "With an environment map, light comes from everywhere, and the integral has to be precomputed. That is IBL, two chapters from now."),
-        ]}>
+        ]}
+        words={tx(t, "oglPbrT_reWords", "The light leaving the point toward your eye is a sum over every direction above it: the light arriving from that direction, times how much the material sends from there toward you, times the slant factor.")}>
         {r`L_o(p, ${wo}) = \int_{\Omega} \purple{f_r}(p, ${wi}, ${wo})\; L_i(p, ${wi})\; \green{(\dotp{\vN}{${wi}})}\; d${wi}`}
       </Equation>
 
@@ -136,9 +154,33 @@ export function PbrTheoryContent({ t }: { t: TrackTranslations }) {
       </p>
       <HemisphereFigure t={t} mode="samples" />
       <Equation label={tx(t, "oglPbrT_piLabel", "The integral of the cosine over the hemisphere")}
-        note={tx(t, "oglPbrT_piNote", "This π shows up everywhere in PBR. Lambert's diffuse BRDF is c/π precisely so that a white surface (c = 1) lit uniformly reflects exactly as much as it receives.")}>
+        note={tx(t, "oglPbrT_piNote", "This π shows up everywhere in PBR. Lambert's diffuse BRDF is c/π precisely so that a white surface (c = 1) lit uniformly reflects exactly as much as it receives.")}
+        words={tx(t, "oglPbrT_piWords", "Light of strength 1 arriving equally from the whole sky lands with a total of π, not 2π: the slanted directions near the horizon count for less, so on average each direction counts for one half.")}>
         {r`\int_{\Omega} \cos\theta\,d\omega = \int_0^{2\pi}\!\!\int_0^{\pi/2} \cos\theta\,\sin\theta\,d\theta\,d\varphi = 2\pi\cdot\tfrac{1}{2} = \pi`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglPbrT_piDer", "Where the π comes from, and why Lambert divides by it")}
+        steps={[
+          { full: true, tex: r`\int_0^{\pi/2} \cos\theta\,\sin\theta\,d\theta, \qquad u = \sin\theta,\ \ du = \cos\theta\,d\theta`,
+            why: tx(t, "oglPbrT_pd1", "the inner integral, with the substitution u = sin θ: its derivative cos θ dθ is already sitting in the integral") },
+          { full: true, tex: r`= \int_0^{1} u\,du = \Big[\tfrac{u^2}{2}\Big]_0^1 = \tfrac{1}{2}`,
+            why: tx(t, "oglPbrT_pd2", "θ = 0 gives u = 0 and θ = π/2 gives u = 1; an antiderivative of u is u²/2") },
+          { full: true, tex: r`\int_0^{2\pi} \tfrac{1}{2}\,d\varphi = 2\pi \cdot \tfrac{1}{2} = \pi`,
+            why: tx(t, "oglPbrT_pd3", "nothing depends on φ, so the outer integral multiplies by the length 2π") },
+          { full: true, tex: r`L_o = \int_{\Omega} \frac{c}{\pi}\,L\,\cos\theta\,d\omega = \frac{c}{\pi}\,L\,\pi = c\,L`,
+            why: tx(t, "oglPbrT_pd4", "a matte BRDF c/π under a uniform sky L: the constants come out, the integral is π, and the π cancels. A white surface (c = 1) sends back exactly the L it receives") },
+        ]} />
+      <LiveFormula label={tx(t, "oglPbrT_liveHemi", "Try it: the shader's loop for ∫ cos θ dω")}
+        tex={r`\int_{\Omega} \cos\theta\,d\omega \approx \sum_{j=0}^{n_1 - 1} \sum_{k=0}^{n_2 - 1} \cos\theta_k\,\sin\theta_k\,\Delta\theta\,\Delta\varphi`}
+        vars={[
+          { id: "n1", label: <>n<sub>1</sub></>, min: 1, max: 64, step: 1, value: 8, fmt: v => String(v) },
+          { id: "n2", label: <>n<sub>2</sub></>, min: 1, max: 64, step: 1, value: 4, fmt: v => String(v) },
+        ]}
+        where={[
+          [r`n_1,\ n_2`, tx(t, "oglPbrT_wN12", "the number of steps around (φ) and from the normal down to the horizon (θ)")],
+          [r`\theta_k = k\,\Delta\theta`, tx(t, "oglPbrT_wThetaK", "the angle at the start of step k, the way the shader's loop counts")],
+        ]}
+        compute={hemisphereNumbers(t)}
+        note={tx(t, "oglPbrT_liveHemiNote", "n₁ makes no difference here, because nothing changes as you go around. Only n₂ matters: 4 steps miss π by about 5%, 16 by about 0.3%. With a real sky that varies around, n₁ matters too.")} />
 
       <H2>{tx(t, "oglPbrT_brdfTitle", "The BRDF")}</H2>
       <p>
@@ -150,7 +192,8 @@ export function PbrTheoryContent({ t }: { t: TrackTranslations }) {
           tx(t, "oglPbrT_bp1", "Positivity: it never makes light negative."),
           tx(t, "oglPbrT_bp2", "Helmholtz reciprocity: swapping light and eye gives the same value."),
           tx(t, "oglPbrT_bp3", "Energy conservation: over all outgoing directions, it never reflects more than 100%."),
-        ]}>
+        ]}
+        words={tx(t, "oglPbrT_brdfWords", "A real material never sends negative light, gives the same answer if light and eye trade places, and, added over every direction it could send light to, never returns more than it got.")}>
         {r`f_r \ge 0 \qquad f_r(${wi}, ${wo}) = f_r(${wo}, ${wi}) \qquad \int_{\Omega} f_r(${wi}, ${wo})\,(\dotp{\vN}{${wo}})\,d${wo} \le 1`}
       </Equation>
       <p>
@@ -178,6 +221,15 @@ export function PbrTheoryContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglPbrT_pitfall",
           "Only albedo is colour data. Loading metallic, roughness, normal or AO as sRGB (GL_SRGB8_ALPHA8) silently runs them through the gamma curve. A roughness of 0.5 then reads as 0.21, and every material looks too shiny.")}
       </Callout>
+      <LiveFormula label={tx(t, "oglPbrT_liveSrgb", "Try it: a roughness map loaded as sRGB")}
+        tex={r`\text{${tx(t, "oglPbrT_liveRead", "read")}} = \Big(\frac{v + 0.055}{1.055}\Big)^{2.4} \qquad \alpha = \text{roughness}^2 \qquad D(1) = \frac{1}{\pi\alpha^2}`}
+        vars={[{ id: "v", label: "v", min: 0.05, max: 1, step: 0.01, value: 0.5, fmt: v => v.toFixed(2) }]}
+        where={[
+          [r`v`, tx(t, "oglPbrT_wV", "the roughness the artist painted, stored in the texture")],
+          [r`D(1)`, tx(t, "oglPbrT_wD1", "the height of the GGX highlight at its centre (next chapter): smaller α, taller and narrower peak")],
+        ]}
+        compute={srgbRoughNumbers(t)}
+        note={tx(t, "oglPbrT_liveSrgbNote", "At v = 0.5 the shader sees 0.21, α shrinks from 0.25 to 0.046 and the highlight gets about 30 times taller. Only 0 and 1 survive unchanged, which is why the bug hides on pure mirrors and fully matte test materials.")} />
 
       <KeyIdeas t={t} id="oglPbrT" items={[
         "Microfacets: roughness is the statistical spread of tiny mirrors; only those aligned with h reflect toward the eye.",

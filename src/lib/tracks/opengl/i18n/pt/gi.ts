@@ -50,6 +50,16 @@ const text: Record<string, string> = {
   oglGi_key2: "Light probes guardam a irradiância em pontos no espaço; os harmônicos esféricos a encaixam em 9 coeficientes por canal.",
   oglGi_key3: "Irradiância a partir de SH: escale as bandas 0, 1, 2 por π, 2π/3, π/4 e some as funções de base; cerca de 1% de erro.",
   oglGi_key4: "GI dinâmica: SSGI, voxel cone tracing, probes DDGI, Lumen, path tracing — cada uma pagando em custo ou em vazamento.",
+
+  // ── In words, live formula (2026-10-09) ──
+  oglGi_shWords: "Para saber quanto de um padrão o céu contém, multiplique o céu por esse padrão em todo lugar e some tudo. Na prática: para cada pixel do panorama, a sua cor vezes o padrão na sua direção vezes o pedaço de céu que ele cobre.",
+  oglGi_irrWords: "A irradiância é o céu borrado pelo lóbulo do cosseno, e nesta base borrar é só multiplicar: fique com o padrão constante vezes π, os três padrões de um lado só vezes 2π/3, os cinco de quatro lóbulos vezes π/4, e some-os na direção da normal.",
+  oglGi_liveSh: "Experimente: irradiância a partir de dois coeficientes",
+  oglGi_wL00: "quão claro o céu é em média (banda 0)",
+  oglGi_wL10: "quanto o céu é mais claro em cima do que embaixo (banda 1, ao longo de z, que aqui aponta para cima); negativo quer dizer mais claro embaixo",
+  oglGi_wNz: "a componente para cima da normal da superfície: 1 virada para o céu, −1 virada para o chão",
+  oglGi_liveShNote: "Um céu claro em cima e escuro embaixo ilumina pisos (n_z = 1) mais que tetos (n_z = −1). Passe L₁₀ de cerca de 0,87 × L₀₀ e o teto fica negativo. Céus reais fazem isso: um sol sozinho bem em cima dá L₁₀ = 1,73 × L₀₀. Poucos coeficientes não conseguem descrever um céu tão nítido, o erro aparece como ringing, e os shaders limitam E em 0.",
+  oglGi_liveNeg: "negativo: ringing, limite a 0",
 };
 
 export default text;

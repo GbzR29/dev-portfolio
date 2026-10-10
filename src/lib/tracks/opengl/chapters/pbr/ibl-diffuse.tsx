@@ -3,6 +3,9 @@
 
 import { CodeBlock, Callout, H2 } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { convCostNumbers, fresnelRoughNumbers } from "../../live/ibl-diffuse";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -35,7 +38,8 @@ export function IblDiffuseContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglIblD_splitBody",
           "Expand Cook-Torrance inside the reflectance equation. The diffuse and specular parts are separate integrals, and we can attack each one on its own:")}
       </p>
-      <Equation label={tx(t, "oglIblD_splitLabel", "Diffuse + specular")}>
+      <Equation label={tx(t, "oglIblD_splitLabel", "Diffuse + specular")}
+        words={tx(t, "oglIblD_splitWords", "The BRDF is a matte part plus a shiny part, and the integral of a sum is the sum of the integrals. So the light leaving the point is a matte integral plus a shiny integral, and each can be precomputed in its own way.")}>
         {r`L_o(p, ${wo}) = \underbrace{\int_{\Omega} k_d\,\frac{c}{\pi}\, L_i(p, ${wi})\,(\dotp{\vN}{${wi}})\,d${wi}}_{\text{diffuse}}
 \;+\; \underbrace{\int_{\Omega} \frac{DFG}{4(\dotp{${wo}}{\vN})(\dotp{${wi}}{\vN})}\, L_i(p, ${wi})\,(\dotp{\vN}{${wi}})\,d${wi}}_{\text{specular (next chapter)}}`}
       </Equation>
@@ -45,7 +49,8 @@ export function IblDiffuseContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "oglIblD_irrLabel", "Diffuse IBL = albedo × a lookup")}
         note={tx(t, "oglIblD_irrNote", "So precompute E(n) once for every direction n, store it in a small cube map (the irradiance map), and at runtime the whole diffuse integral is one texture fetch with the normal.")}
-        glsl="vec3 irradiance = texture(irradianceMap, N).rgb;  vec3 diffuse = irradiance * albedo;">
+        glsl="vec3 irradiance = texture(irradianceMap, N).rgb;  vec3 diffuse = irradiance * albedo;"
+        words={tx(t, "oglIblD_irrWords", "Everything in front of the integral is the material; the integral itself is the sky as seen by a surface facing n. Compute that sky part once for every n and the material just multiplies it.")}>
         {r`L_{o,\,d}(p) = k_d\,\frac{c}{\pi} \int_{\Omega} L_i(p, ${wi})\,(\dotp{\vN}{${wi}})\,d${wi} = k_d\, c\, \underbrace{\frac{1}{\pi}\,E(\vN)}_{\text{irradiance map}}`}
       </Equation>
 
@@ -86,9 +91,21 @@ void main() { FragColor = vec4(texture(equirectangularMap, sampleSphericalMap(no
         where={[
           [r`n_1,\ n_2`, tx(t, "oglIblD_wN", "number of steps in φ and in θ")],
           [r`\frac{\pi}{n_1 n_2}`, tx(t, "oglIblD_wPi", "the two step sizes Δφ = 2π/n₁ and Δθ = (π/2)/n₂, times the 1/π: (2π/n₁) · (π/2n₂) / π = π/(n₁n₂)")],
-        ]}>
+        ]}
+        words={tx(t, "oglIblD_riemannWords", "Walk around the hemisphere in a grid of n₁ × n₂ directions, read the sky in each one, weight it by cos θ · sin θ, add everything up and scale by π over the number of samples.")}>
         {r`\frac{1}{\pi}E(\vN) \approx \frac{\pi}{n_1\,n_2} \sum_{\varphi = 0}^{n_1} \sum_{\theta = 0}^{n_2} L_i(p, \varphi_j, \theta_k)\;\cos\theta_k\,\sin\theta_k`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglIblD_rDer", "From the integral to the shader's last line")}
+        steps={[
+          { full: true, tex: r`\frac{1}{\pi}\int_0^{2\pi}\!\!\int_0^{\pi/2} L_i\,\cos\theta\,\sin\theta\,d\theta\,d\varphi`,
+            why: tx(t, "oglIblD_rd1", "the irradiance divided by π, with dω written out as sin θ dθ dφ (theory chapter)") },
+          { full: true, tex: r`\approx \frac{1}{\pi}\sum_{j}\sum_{k} L_i\,\cos\theta_k\,\sin\theta_k\,\Delta\theta\,\Delta\varphi`,
+            why: tx(t, "oglIblD_rd2", "replace each integral by a sum of n steps: the integrand at the step, times the step size") },
+          { full: true, tex: r`\frac{1}{\pi} \cdot \frac{2\pi}{n_1} \cdot \frac{\pi}{2\,n_2} = \frac{\pi}{n_1\,n_2}`,
+            why: tx(t, "oglIblD_rd3", "the step sizes do not change inside the loop, so take them out with the 1/π and multiply") },
+          { full: true, tex: r`n_1\,n_2 = \text{samples} \;\Rightarrow\; \text{irradiance} = \pi \cdot \frac{\text{sum}}{\text{samples}}`,
+            why: tx(t, "oglIblD_rd4", "the loop counts its samples instead of computing n₁ and n₂, which is exactly the line irradiance = PI * irradiance / samples") },
+        ]} />
       <HemisphereFigure t={t} mode="samples" />
       <CodeBlock lang="glsl" filename="irradiance_convolution.frag" t={t}>{`vec3 N = normalize(localPos);                    // this texel's direction = the normal
 vec3 up    = abs(N.y) < 0.999 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
@@ -112,6 +129,19 @@ FragColor = vec4(irradiance, 1.0);`}</CodeBlock>
         {tx(t, "oglIblD_lowRes",
           "Irradiance varies slowly with the normal, because it is a cosine-weighted average of half the sky. A 32×32 cube map is enough, and linear filtering takes care of the rest.")}
       </p>
+      <LiveFormula label={tx(t, "oglIblD_liveCost", "Try it: how much work is the convolution?")}
+        tex={r`\text{${tx(t, "oglIblD_liveTotal", "fetches")}} = \Big\lceil \frac{2\pi}{\delta} \Big\rceil \cdot \Big\lceil \frac{\pi/2}{\delta} \Big\rceil \cdot 6\,w^2`}
+        vars={[
+          { id: "delta", label: "δ", min: 0.01, max: 0.2, step: 0.005, value: 0.025, fmt: v => v.toFixed(3) },
+          { id: "size", label: "w", min: 8, max: 128, step: 8, value: 32, fmt: v => `${v}²` },
+        ]}
+        where={[
+          [r`\delta`, tx(t, "oglIblD_wDelta", "the shader's step in radians, used for both φ and θ")],
+          [r`w`, tx(t, "oglIblD_wW", "the width of one face of the irradiance map, in texels; a cube has 6 faces")],
+          [r`\lceil x \rceil`, tx(t, "oglIblD_wCeil", "x rounded up: a loop that runs while phi < 2π makes that many steps")],
+        ]}
+        compute={convCostNumbers(t)}
+        note={tx(t, "oglIblD_liveCostNote", "The shader's δ = 0.025 at 32² is about 97.5 million fetches, a few milliseconds once at load time. At 128² it would be 16 times more for no visible gain, since irradiance has no fine detail to keep.")} />
 
       <H2>{tx(t, "oglIblD_fresnelTitle", "Fresnel without a halfway vector")}</H2>
       <p>
@@ -119,9 +149,20 @@ FragColor = vec4(irradiance, 1.0);`}</CodeBlock>
           "kd = 1 − F needs F, but with light arriving from everywhere there is no single h. Use n·v instead. Rough surfaces should not get the full bright Fresnel rim, since their facets face many directions, so Sébastien Lagarde's variant caps the grazing reflectance by roughness:")}
       </p>
       <Equation label={tx(t, "oglIblD_frLabel", "Fresnel-Schlick with roughness")}
-        glsl="vec3 F = F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - NdotV, 0.0, 1.0), 5.0);">
+        glsl="vec3 F = F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - NdotV, 0.0, 1.0), 5.0);"
+        words={tx(t, "oglIblD_frWords", "Plain Schlick lets reflection climb all the way to 1 at the edge. Here the ceiling is 1 − roughness instead, never below F0: a rough surface gets a weaker rim.")}>
         {r`\amber{F} = F_0 + \big(\max(1 - \text{roughness},\, F_0) - F_0\big)\,\big(1 - \dotp{\vN}{\vV}\big)^5`}
       </Equation>
+      <LiveFormula label={tx(t, "oglIblD_liveFr", "Try it: the rim with and without roughness")}
+        tex={r`\amber{F} = F_0 + \big(\max(1 - \text{roughness},\, F_0) - F_0\big)\,\big(1 - \dotp{\vN}{\vV}\big)^5 \qquad k_d = 1 - \amber{F}`}
+        vars={[
+          { id: "nv", label: "n·v", min: 0, max: 1, step: 0.01, value: 0.2, fmt: v => v.toFixed(2) },
+          { id: "rough", label: "roughness", min: 0, max: 1, step: 0.01, value: 0.7, fmt: v => v.toFixed(2) },
+          { id: "f0", label: <>F<sub>0</sub></>, min: 0.02, max: 1, step: 0.01, value: 0.04, fmt: v => v.toFixed(2) },
+        ]}
+        where={[[r`\dotp{\vN}{\vV}`, tx(t, "oglIblD_wNV", "1 when looking straight at the surface, 0 at its silhouette")]]}
+        compute={fresnelRoughNumbers(t)}
+        note={tx(t, "oglIblD_liveFrNote", "Near the silhouette (n·v = 0.2) plastic with roughness 0.7 reflects 0.13 instead of 0.35. kd here is for a non-metal; a metal multiplies it by (1 − metallic) = 0 anyway.")} />
       <CodeBlock lang="glsl" filename="pbr.frag (ambient)" t={t}>{`vec3 F  = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
 vec3 kD = (1.0 - F) * (1.0 - metallic);
 vec3 irradiance = texture(irradianceMap, N).rgb;

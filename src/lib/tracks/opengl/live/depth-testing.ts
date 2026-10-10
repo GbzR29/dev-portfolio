@@ -2,18 +2,11 @@
 
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { num, r } from "./fmt";
+import { num, r, sci } from "./fmt";
 
 type V = Record<string, number>;
 
 const STEPS = 2 ** 24, GAP = 0.0005;
-
-/** "a × 10^b" for TeX when v is tiny, plain digits otherwise. */
-function sci(v: number, digits = 3) {
-  if (v === 0 || Math.abs(v) >= 0.01) return num(v, digits + 1);
-  const e = Math.floor(Math.log10(Math.abs(v))), m = v / 10 ** e;
-  return `${num(m, 2)} \\times 10^{${e}}`;
-}
 
 /** Distance d with near n and far f: z_ndc and the stored depth. */
 export function depthNumbers({ d, n, f }: V) {

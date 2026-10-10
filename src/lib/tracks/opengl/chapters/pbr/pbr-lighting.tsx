@@ -3,6 +3,9 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { pixelNumbers } from "../../live/pbr-lighting";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -36,7 +39,8 @@ export function PbrLightingContent({ t }: { t: TrackTranslations }) {
           [r`\amber{F}`, tx(t, "oglPbrL_wF", "Fresnel: how much each aligned facet reflects, given the angle")],
           [r`\green{G}`, tx(t, "oglPbrL_wG", "Geometry: how many survive shadowing and masking by their neighbours")],
           [r`4(\dotp{\vN}{\vV})(\dotp{\vN}{\vL})`, tx(t, "oglPbrL_wDen", "converts from microfacet space to the macro surface (a Jacobian of the h → l mapping)")],
-        ]}>
+        ]}
+        words={tx(t, "oglPbrL_ctWords", "The material is a matte part plus a shiny part. The matte part spreads the albedo evenly. The shiny part asks three questions — how many tiny mirrors face the right way, how much each one reflects, how many are not hidden — multiplies the answers, and corrects for the angle.")}>
         {r`f_r = k_d\,\frac{c}{\pi} \;+\; k_s\,\frac{\purple{D}\,\amber{F}\,\green{G}}{4\,(\dotp{\vN}{\vV})\,(\dotp{\vN}{\vL})}`}
       </Equation>
       <p>
@@ -54,9 +58,21 @@ export function PbrLightingContent({ t }: { t: TrackTranslations }) {
           [r`\alpha = \text{roughness}^2`, tx(t, "oglPbrL_wAlpha", "Disney/Epic's remapping — makes the roughness slider feel perceptually linear")],
         ]}
         note={tx(t, "oglPbrL_dNote", "At n·h = 1 the bracket equals α², so D(1) = 1/(πα²): a smooth surface gives a huge, narrow spike, a rough one a low, wide lobe. Whatever the roughness, the projected area ∫ D (n·h) dω stays exactly 1.")}
-        glsl="float a2 = a*a;  float d = NdotH*NdotH*(a2 - 1.0) + 1.0;  float D = a2 / (PI * d * d);">
+        glsl="float a2 = a*a;  float d = NdotH*NdotH*(a2 - 1.0) + 1.0;  float D = a2 / (PI * d * d);"
+        words={tx(t, "oglPbrL_dWords", "The closer h is to the surface normal, the more tiny mirrors face it. On a smooth surface almost all of them are packed right around the normal; on a rough one they are spread thin over many angles.")}>
         {r`\purple{D}_{GGX}(\vN, \vH, \alpha) = \frac{\alpha^2}{\pi\,\big((\dotp{\vN}{\vH})^2(\alpha^2 - 1) + 1\big)^2}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglPbrL_dDer", "The peak of the highlight, and the fully rough case")}
+        steps={[
+          { full: true, tex: r`\dotp{\vN}{\vH} = 1 \;\Rightarrow\; (\dotp{\vN}{\vH})^2(\alpha^2 - 1) + 1 = \alpha^2 - 1 + 1 = \alpha^2`,
+            why: tx(t, "oglPbrL_dd1", "at the centre of the highlight h equals n, so their dot product is 1 and the bracket collapses to α²") },
+          { full: true, tex: r`\purple{D}(1) = \frac{\alpha^2}{\pi\,(\alpha^2)^2} = \frac{1}{\pi\,\alpha^2}`,
+            why: tx(t, "oglPbrL_dd2", "square the bracket and cancel one α²: the smaller α, the taller the peak") },
+          { full: true, tex: r`\text{roughness} = 0.5:\ \ \alpha = 0.25,\ \ \purple{D}(1) = \frac{1}{\pi \cdot 0.0625} = 5.09`,
+            why: tx(t, "oglPbrL_dd3", "a mid-rough surface: about five times the density of a uniform spread") },
+          { full: true, tex: r`\alpha = 1 \;\Rightarrow\; (\dotp{\vN}{\vH})^2 \cdot 0 + 1 = 1 \;\Rightarrow\; \purple{D} = \frac{1}{\pi}\ \text{${tx(t, "oglPbrL_dd4tex", "for every h")}}`,
+            why: tx(t, "oglPbrL_dd4", "at roughness 1 the bracket no longer depends on the angle: the facets point every way equally and there is no highlight left") },
+        ]} />
 
       <BrdfTermsFigure t={t} initial="D" />
 
@@ -70,7 +86,8 @@ export function PbrLightingContent({ t }: { t: TrackTranslations }) {
           [r`k_{direct} = \frac{(\text{roughness} + 1)^2}{8}`, tx(t, "oglPbrL_wKd", "remapping for analytic lights (Epic's, reduces hotness at low roughness)")],
           [r`k_{IBL} = \frac{\text{roughness}^2}{2}`, tx(t, "oglPbrL_wKi", "remapping for image-based lighting")],
         ]}
-        glsl="float G1(float NdotX, float k) { return NdotX / (NdotX * (1.0 - k) + k); }  G = G1(NdotV, k) * G1(NdotL, k);">
+        glsl="float G1(float NdotX, float k) { return NdotX / (NdotX * (1.0 - k) + k); }  G = G1(NdotV, k) * G1(NdotL, k);"
+        words={tx(t, "oglPbrL_gWords", "Looking straight down, almost nothing is hidden and G₁ is close to 1. Toward the horizon it falls to 0, faster on rougher surfaces. The light's direction and the eye's direction each get their own factor, and both must get through.")}>
         {r`\green{G_1}(\vN, \mathbf{x}, k) = \frac{\dotp{\vN}{\mathbf{x}}}{(\dotp{\vN}{\mathbf{x}})(1 - k) + k}
 \qquad
 \green{G}(\vN, \vV, \vL, k) = \green{G_1}(\vN, \vV, k)\;\green{G_1}(\vN, \vL, k)`}
@@ -87,7 +104,8 @@ export function PbrLightingContent({ t }: { t: TrackTranslations }) {
           [r`F_0`, tx(t, "oglPbrL_wF0", "base reflectivity looking straight at the surface — an RGB value")],
           [r`\dotp{\vH}{\vV}`, tx(t, "oglPbrL_wHV", "cosine of the angle between the facet normal (h) and the view")],
         ]}
-        glsl="vec3 F = F0 + (1.0 - F0) * pow(clamp(1.0 - dot(H, V), 0.0, 1.0), 5.0);">
+        glsl="vec3 F = F0 + (1.0 - F0) * pow(clamp(1.0 - dot(H, V), 0.0, 1.0), 5.0);"
+        words={tx(t, "oglPbrL_fWords", "Start from what the surface reflects head-on, F0, and close the gap to full reflection as the view becomes grazing. The fifth power keeps the gap almost shut until quite close to the edge, then closes it quickly.")}>
         {r`\amber{F}_{Schlick}(\vH, \vV, F_0) = F_0 + (1 - F_0)\,\big(1 - (\dotp{\vH}{\vV})\big)^5`}
       </Equation>
       <p>{tx(t, "oglPbrL_f0Table", "F0 values measured for real materials (linear):")}</p>
@@ -104,7 +122,8 @@ export function PbrLightingContent({ t }: { t: TrackTranslations }) {
       />
       <Equation label={tx(t, "oglPbrL_mixLabel", "One formula for both kinds of material")}
         note={tx(t, "oglPbrL_mixNote", "That is how the albedo map can serve both: for dielectrics it is the diffuse colour, and F0 is a fixed 4% grey. For metals it becomes F0 itself, and the diffuse is removed by the (1 − metallic) in kd.")}
-        glsl="vec3 F0 = mix(vec3(0.04), albedo, metallic);">
+        glsl="vec3 F0 = mix(vec3(0.04), albedo, metallic);"
+        words={tx(t, "oglPbrL_mixWords", "A non-metal reflects 4% head-on whatever its colour; a metal reflects its own colour. In between, blend the two by the metallic value.")}>
         {r`F_0 = \operatorname{mix}(0.04,\; \text{albedo},\; \text{metallic})`}
       </Equation>
       <BrdfTermsFigure t={t} initial="F" />
@@ -117,9 +136,24 @@ export function PbrLightingContent({ t }: { t: TrackTranslations }) {
       <Equation label={tx(t, "oglPbrL_sumLabel", "Reflectance equation for N point lights")}
         where={[
           [r`L_i = \frac{\Phi_i}{d_i^2}`, tx(t, "oglPbrL_wLi", "light colour × intensity over squared distance")],
-        ]}>
+        ]}
+        words={tx(t, "oglPbrL_sumWords", "For each lamp: run the BRDF for that lamp's direction, multiply by the light that reaches the point from it and by the slant factor, and add the lamps together.")}>
         {r`L_o(p, \vV) = \sum_{i=1}^{N} \Big( k_d\,\frac{c}{\pi} + \frac{\purple{D}\,\amber{F}\,\green{G}}{4\,(\dotp{\vN}{\vV})(\dotp{\vN}{\vL_i})} \Big)\, L_i\; \green{(\dotp{\vN}{\vL_i})}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglPbrL_livePixel", "Try it: one pixel, one light, every term")}
+        tex={r`L_o = \Big( k_d\,\frac{c}{\pi} + \frac{\purple{D}\,\amber{F}\,\green{G}}{4\,(\dotp{\vN}{\vV})(\dotp{\vN}{\vL})} \Big) \cdot 1 \cdot (\dotp{\vN}{\vL})`}
+        vars={[
+          { id: "rough", label: "roughness", min: 0.05, max: 1, step: 0.01, value: 0.4, fmt: v => v.toFixed(2) },
+          { id: "metal", label: "metallic", min: 0, max: 1, step: 0.01, value: 0, fmt: v => v.toFixed(2) },
+          { id: "thL", label: <>θ<sub>L</sub></>, min: 0, max: 85, step: 1, value: 30, fmt: v => `${v}°` },
+          { id: "thV", label: <>θ<sub>V</sub></>, min: 0, max: 85, step: 1, value: 30, fmt: v => `${v}°` },
+        ]}
+        where={[
+          [r`\theta_L,\ \theta_V`, tx(t, "oglPbrL_wThLV", "how far the light and the eye are tilted from the normal, on opposite sides of it. Equal angles put the eye on the mirror direction, so h = n")],
+          [r`c`, tx(t, "oglPbrL_wC", "the albedo, a light grey of 0.8 in every channel; the light's radiance Lᵢ is 1")],
+        ]}
+        compute={pixelNumbers(t)}
+        note={tx(t, "oglPbrL_livePixelNote", "With equal angles, lower the roughness: D, and with it the specular term, shoot up. Now move θV away by 10°: at roughness 0.1 the highlight is gone, at 0.6 it barely changes. Push metallic to 1 and the diffuse share drops to 0.")} />
       <CodeBlock lang="glsl" filename="pbr.frag" t={t}>{`uniform vec3  albedo;     // linear
 uniform float metallic, roughness, ao;
 uniform vec3  lightPositions[4], lightColors[4];

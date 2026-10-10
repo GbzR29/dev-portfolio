@@ -6,6 +6,8 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { shNumbers } from "../live/gi";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -59,7 +61,8 @@ void main() {
           [r`L_{lm}`, tx(t, "oglGi_wLlm", "the coefficients: how much of each pattern the sky contains. Projection is just the integral of the radiance times the basis function, which is the same Monte Carlo sum as before, over the pixels of a cube map or panorama, each weighted by its solid angle")],
           [r`L(\boldsymbol\omega) \approx \sum_{l \le 2}\sum_{m} L_{lm} Y_{lm}(\boldsymbol\omega)`, tx(t, "oglGi_wRecon", "reconstruction: adding the patterns back, weighted by their coefficients. Bands 0–2 give 9 coefficients per colour channel, 27 numbers per probe")],
         ]}
-        note={tx(t, "oglGi_shNote", "In the figure, the basis functions are shown on spheres: band 0 is a constant, band 1 is brighter on one side and darker on the other along one axis, and band 2 has four lobes. Their formulas are small polynomials in the direction's x, y, z (e.g. Y₁₀ = 0.4886·z), so evaluating them in a shader is a handful of multiply-adds.")}>
+        note={tx(t, "oglGi_shNote", "In the figure, the basis functions are shown on spheres: band 0 is a constant, band 1 is brighter on one side and darker on the other along one axis, and band 2 has four lobes. Their formulas are small polynomials in the direction's x, y, z (e.g. Y₁₀ = 0.4886·z), so evaluating them in a shader is a handful of multiply-adds.")}
+        words={tx(t, "oglGi_shWords", "To find how much of one pattern the sky contains, multiply the sky by that pattern everywhere and add it all up. In practice: for every pixel of the panorama, its colour times the pattern in its direction times the patch of sky it covers.")}>
         {r`L_{lm} = \int_{S^2} L(\boldsymbol\omega)\,Y_{lm}(\boldsymbol\omega)\,d\omega \;\approx\; \sum_{\text{pixels } k} L(\boldsymbol\omega_k)\,Y_{lm}(\boldsymbol\omega_k)\,\Delta\omega_k`}
       </Equation>
       <Equation label={tx(t, "oglGi_irrLabel", "Irradiance straight from the coefficients (Ramamoorthi & Hanrahan, 2001)")}
@@ -74,9 +77,24 @@ void main() {
          + 0.785398 * (L[4] * 1.092548 * n.x * n.y + L[5] * 1.092548 * n.y * n.z
                      + L[6] * 0.315392 * (3.0 * n.z * n.z - 1.0)
                      + L[7] * 1.092548 * n.x * n.z + L[8] * 0.546274 * (n.x * n.x - n.y * n.y));
-}`}>
+}`}
+        words={tx(t, "oglGi_irrWords", "Irradiance is the sky blurred by the cosine lobe, and in this basis blurring is just a multiplication: keep the constant pattern times π, the three one-sided patterns times 2π/3, the five four-lobed ones times π/4, and add them up in the normal's direction.")}>
         {r`E(\mathbf n) = \sum_{l=0}^{2} \hat A_l \sum_{m=-l}^{l} L_{lm}\,Y_{lm}(\mathbf n), \qquad \hat A_0 = \pi,\quad \hat A_1 = \tfrac{2\pi}{3},\quad \hat A_2 = \tfrac{\pi}{4}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglGi_liveSh", "Try it: irradiance from two coefficients")}
+        tex={r`E(\mathbf n) = \pi \cdot 0.282095 \cdot L_{00} \;+\; \tfrac{2\pi}{3} \cdot 0.488603 \cdot L_{10} \cdot n_z`}
+        vars={[
+          { id: "L0", label: <>L<sub>00</sub></>, min: 0, max: 3, step: 0.05, value: 1.5, fmt: v => v.toFixed(2) },
+          { id: "L1", label: <>L<sub>10</sub></>, min: -3, max: 3, step: 0.05, value: 1, fmt: v => v.toFixed(2) },
+          { id: "nz", label: <>n<sub>z</sub></>, min: -1, max: 1, step: 0.05, value: 1, fmt: v => v.toFixed(2) },
+        ]}
+        where={[
+          [r`L_{00}`, tx(t, "oglGi_wL00", "how bright the sky is on average (band 0)")],
+          [r`L_{10}`, tx(t, "oglGi_wL10", "how much brighter the sky is above than below (band 1, along z, which points up here); negative means brighter below")],
+          [r`n_z`, tx(t, "oglGi_wNz", "the up component of the surface normal: 1 facing the sky, −1 facing the ground")],
+        ]}
+        compute={shNumbers(t)}
+        note={tx(t, "oglGi_liveShNote", "A sky that is bright above and dim below lights floors (n_z = 1) more than ceilings (n_z = −1). Push L₁₀ past about 0.87 × L₀₀ and the ceiling goes negative. Real skies do that: a lone sun straight overhead gives L₁₀ = 1.73 × L₀₀. A few coefficients cannot describe a sky that sharp, the error shows as ringing, and shaders clamp E at 0.")} />
 
       <ShProbeFigure t={t} />
 

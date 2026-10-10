@@ -13,5 +13,12 @@ export const fac = (v: number, d = 2) => (Number(v.toFixed(d)) < 0 ? `(${num(v, 
 /** "+ v" or "- v", for writing a sum term by term. */
 export const signed = (v: number, d = 2) => (Number(v.toFixed(d)) < 0 ? `- ${num(-v, d)}` : `+ ${num(v, d)}`);
 
+/** "a × 10^b" for TeX when v is tiny, plain digits otherwise. */
+export function sci(v: number, digits = 3) {
+  if (v === 0 || Math.abs(v) >= 0.01) return num(v, digits + 1);
+  const e = Math.floor(Math.log10(Math.abs(v))), m = v / 10 ** e;
+  return `${num(m, 2)} \\times 10^{${e}}`;
+}
+
 /** (x, y, z) as TeX. */
 export const vec = (v: number[], d = 2) => `(${v.map(x => num(x, d)).join(",\\ ")})`;
