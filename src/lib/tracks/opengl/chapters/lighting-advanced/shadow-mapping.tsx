@@ -3,6 +3,9 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { acneNumbers } from "../../live/shadow-mapping";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -72,11 +75,23 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);`}</CodeBlock>
         where={[
           [r`P_{\text{light}}\,V_{\text{light}}`, tx(t, "oglShadow_wLS", "the light's projection and view — the lightSpaceMatrix")],
           [r`\mathbf{s}`, tx(t, "oglShadow_wS", "texture coordinates (xy) and depth (z) of the fragment as the light sees it")],
-        ]}>
+          [r`\mathbf{p}_{\text{world}}`, tx(t, "oglShadow_wPw", "the fragment's position in world space, with w = 1")],
+          [r`\mathbf{p}_{\text{light}}`, tx(t, "oglShadow_wPl", "the same point in the light's clip space, as the depth pass put it on screen")],
+        ]}
+        words={tx(t, "oglShadow_eqLSWords", "Move the point exactly as the depth pass moved it, with the light's view and projection. Then divide by w and squeeze the result from −1…1 into 0…1: x and y say where to read the shadow map, z is how far the point is from the light.")}>
         {r`\mathbf{p}_{\text{light}} = P_{\text{light}}\,V_{\text{light}}\,\mathbf{p}_{\text{world}}
 \qquad
 \mathbf{s} = \tfrac12\,\frac{\mathbf{p}_{\text{light}}.xyz}{\mathbf{p}_{\text{light}}.w} + \tfrac12`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglShadow_sDer", "From clip space to a texture lookup")}
+        steps={[
+          { full: true, tex: r`\mathbf{n} = \frac{\mathbf{p}_{\text{light}}.xyz}{\mathbf{p}_{\text{light}}.w}, \qquad -1 \le n_x, n_y, n_z \le 1`,
+            why: tx(t, "oglShadow_sd1", "the perspective divide that the GPU does by itself for gl_Position; here we read the matrix result in our own shader, so we divide by hand. With an orthographic light w = 1 and nothing changes, but the line keeps spotlights working") },
+          { full: true, tex: r`-\tfrac12 \le \tfrac12\,\mathbf{n} \le \tfrac12`,
+            why: tx(t, "oglShadow_sd2", "halving shrinks the range from width 2 to width 1") },
+          { full: true, tex: r`0 \le \mathbf{s} = \tfrac12\,\mathbf{n} + \tfrac12 \le 1`,
+            why: tx(t, "oglShadow_sd3", "adding ½ slides it to start at 0: texture coordinates and stored depths both live in 0…1. The centre of the light's view, n = 0, lands on s = 0.5, the middle of the map") },
+        ]} />
       <CodeBlock lang="cpp" filename="light_space.cpp" t={t}>{`// Directional light: orthographic. Fit the box tightly around the scene —
 // a loose box wastes shadow-map resolution and makes everything blocky.
 glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 25.0f);
@@ -102,7 +117,14 @@ glBindTexture(GL_TEXTURE_2D, depthMap);
 renderScene(mainShader);`}</CodeBlock>
 
       <H2>{tx(t, "oglShadow_sampleTitle", "The shadow test")}</H2>
-      <Equation label={tx(t, "oglShadow_testLabel", "In shadow when")}>
+      <Equation label={tx(t, "oglShadow_testLabel", "In shadow when")}
+        where={[
+          [r`s_x, s_y`, tx(t, "oglShadow_wSxy", "where the fragment lands in the shadow map, 0–1")],
+          [r`s_z`, tx(t, "oglShadow_wSz", "the fragment's own depth as seen from the light")],
+          [r`\texttt{shadowMap}(s_x, s_y)`, tx(t, "oglShadow_wMap", "the depth of the closest surface the light saw in that direction")],
+          [r`b`, tx(t, "oglShadow_wB", "the bias: a small amount subtracted so a surface does not shadow itself (below)")],
+        ]}
+        words={tx(t, "oglShadow_testWords", "Look up what the light saw in this fragment's direction. If something stored there is closer to the light than the fragment (by more than the bias), that something blocks the light: the fragment is in shadow.")}>
         {r`\text{shadow} = \begin{cases} 1 & s_z - b > \texttt{shadowMap}(s_x, s_y) \\ 0 & \text{otherwise} \end{cases}`}
       </Equation>
       <CodeBlock lang="glsl" filename="shadow.frag" t={t}>{`float shadowFactor(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir) {
@@ -134,9 +156,29 @@ renderScene(mainShader);`}</CodeBlock>
       </p>
       <ShadowAcneFigure t={t} />
       <Equation label={tx(t, "oglShadow_biasLabel", "Slope-scaled bias")}
-        note={tx(t, "oglShadow_biasNote", "1 − n·l is 0 for surfaces facing the light and grows as they tilt away — exactly where depth changes fastest inside a texel.")}>
+        note={tx(t, "oglShadow_biasNote", "1 − n·l is 0 for surfaces facing the light and grows as they tilt away — exactly where depth changes fastest inside a texel.")}
+        where={[
+          [r`b_{\max}`, tx(t, "oglShadow_wBmax", "the bias for a surface edge-on to the light; 0.05 in the shader above")],
+          [r`b_{\min}`, tx(t, "oglShadow_wBmin", "the floor the bias never goes under, for surfaces facing the light; 0.005 above")],
+          [r`\dotp{\vN}{\vL}`, tx(t, "oglShadow_wNl", "the cosine of the angle between the normal and the direction to the light")],
+        ]}
+        words={tx(t, "oglShadow_biasWords", "Facing the light, use the small minimum bias. The more the surface tilts away, the faster its depth changes across one texel, so the bias grows, up to the maximum for a surface seen edge-on.")}>
         {r`b = \max\!\big(b_{\max}\,(1 - \dotp{\vN}{\vL}),\; b_{\min}\big)`}
       </Equation>
+      <LiveFormula label={tx(t, "oglShadow_liveLabel", "Try it: is the bias enough, and what does it cost?")}
+        tex={r`\Delta = \frac{\text{texel}}{2}\tan\theta \qquad b \ge \frac{\Delta}{24}\ ?`}
+        vars={[
+          { id: "theta", label: "θ", min: 0, max: 89, step: 1, value: 60, fmt: v => `${v}°` },
+          { id: "k", label: tx(t, "oglShadow_vSize", "map size"), min: 8, max: 12, step: 1, value: 11, fmt: v => String(2 ** v) },
+        ]}
+        where={[
+          [r`\theta`, tx(t, "oglShadow_wTheta", "how far the surface is tilted away from the light (the angle between N and L)")],
+          [r`\text{texel}`, tx(t, "oglShadow_wTexel", "the width one shadow-map texel covers: the light box is 20 units wide (ortho −10…10) split into the map's columns")],
+          [r`\Delta`, tx(t, "oglShadow_wDelta", "how much deeper the surface is half a texel away from the texel's centre, where the depth was stored")],
+          [r`24`, tx(t, "oglShadow_w24", "the light box's depth range, far − near = 25 − 1: dividing by it turns world units into the 0–1 depth the map stores")],
+        ]}
+        compute={acneNumbers(t)}
+        note={tx(t, "oglShadow_liveNote", "With the chapter's 2048 map the constants are generous: even at 89° the bias beats the error. Drop to 256 and steep surfaces get acne again. The last line is the price: a caster closer than that gap to the surface below it no longer counts, which shows as peter-panning. Fit the light box tighter, and both numbers shrink.")} />
 
       <H2>{tx(t, "oglShadow_artifactsTitle", "The three artefacts")}</H2>
       <LessonTable

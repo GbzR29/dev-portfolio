@@ -669,43 +669,43 @@
   },
   "opengl/advanced-lighting": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/gamma": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/shadow-mapping": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/point-shadows": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/cascaded-shadows": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/normal-mapping": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/hdr": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/bloom": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/color-spaces": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/deferred": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/global-illumination": {
     "created": "2026-09-25",

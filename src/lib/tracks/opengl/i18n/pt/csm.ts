@@ -49,6 +49,19 @@ const text: Record<string, string> = {
   oglCsm_key2: "Ajuste cada frustum de luz à sua fatia; estenda-o em direção ao sol para pegar projetores fora da visão.",
   oglCsm_key3: "CSM estável: esfera envolvente (tamanho constante) + encaixe em texels inteiros acabam com a cintilação.",
   oglCsm_key4: "Amostre pela profundidade de visão, escale o bias por cascata, misture nas emendas e guarde os mapas num array de texturas de profundidade.",
+
+  // ── Em palavras, fórmula ao vivo (2026-10-09) ──
+  oglCsm_ratioWords: "Um pixel da tela cobre mais do mundo quanto mais longe ele olha; um texel de sombra cobre o mesmo tanto em todo lugar. Divida o primeiro pelo segundo: perto da câmera os pixels são minúsculos, a razão fica muito abaixo de 1 e cada texel se espalha por muitos pixels.",
+  oglCsm_liveLabel: "Experimente: texels por pixel",
+  oglCsm_wZ: "quão à frente da câmera está o ponto sombreado",
+  oglCsm_wEN: "a largura que o shadow map cobre e a sua resolução; a tela fica fixa em 1080 pixels e 60°",
+  oglCsm_liveNote: "Mesmo um mapa de 8192² deixa ρ perto de 1/9 a 2 m quando cobre 150 m. Reduza E para 10 m, o tamanho de uma primeira cascata, e o mesmo mapa de 2048² fica nítido a partir de cerca de 4,6 m.",
+  oglCsm_liveSharp: "nítido: um texel é menor que um pixel",
+  oglCsm_liveSpans: "um texel cobre",
+  oglCsm_livePixels: "pixels",
+  oglCsm_liveMeter: "ρ (1 = um texel por pixel)",
+  oglCsm_pssmWords: "Calcule cada corte duas vezes: uma espaçado por um fator constante (logarítmico, como a perspectiva), outra espaçado por igual (uniforme). Depois misture os dois, com λ dizendo quanto do logarítmico usar.",
+  oglCsm_snapWords: "Meça o centro da cascata em texels, jogue fora a fração e converta de volta em distância. Assim o shadow map só se move de texels inteiros, e cada texel continua cobrindo o mesmo pedaço de chão de um frame para o outro.",
 };
 
 export default text;

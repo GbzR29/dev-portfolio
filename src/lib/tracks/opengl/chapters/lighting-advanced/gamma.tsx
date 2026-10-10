@@ -9,6 +9,9 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { codesNumbers, srgbNumbers, texelNumbers } from "../../live/gamma";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -47,7 +50,8 @@ export function GammaContent({ t }: { t: TrackTranslations }) {
           [r`L_{\text{emitted}}`, tx(t, "oglGamma_wL", "the light the screen gives off, as a fraction of its white")],
           [r`\gamma`, tx(t, "oglGamma_wG", "≈ 2.2 for sRGB displays")],
           [r`L_{\text{wanted}}`, tx(t, "oglGamma_wWanted", "the light your lighting maths computed; encoding it with 1/γ makes the display emit exactly that")],
-        ]}>
+        ]}
+        words={tx(t, "oglGamma_eqWords", "The screen raises every value to the power 2.2 before turning it into light, so a half value gives only about a fifth of the light. To get the light you computed, raise it to the power 1/2.2 first: the two powers cancel.")}>
         {r`L_{\text{emitted}} = V^{\gamma}
 \qquad\Longrightarrow\qquad
 V = L_{\text{wanted}}^{\,1/\gamma}
@@ -60,6 +64,15 @@ V = L_{\text{wanted}}^{\,1/\gamma}
         {tx(t, "oglGamma_whyBody",
           "Our eyes judge brightness by ratios: going from 1% to 2% of white looks like a big step, going from 91% to 92% looks like nothing. Stored linearly, 8 bits give only two codes for everything below 1% light (1/255 is already 0.39%), so dark gradients show visible bands, while dozens of codes are wasted on bright tones nobody can tell apart. Stored through the 1/2.2 curve, the values below 1% light get 31 codes, because 0.01^(1/2.2) = 0.123 and 0.123 · 255 ≈ 31. The curve is a compression scheme: it spends the 256 codes where the eye needs them.")}
       </p>
+      <LiveFormula label={tx(t, "oglGamma_liveCodesLabel", "Try it: codes spent on the darks")}
+        tex={r`\text{${tx(t, "oglGamma_liveLinear", "linear")}}: \lfloor p \cdot 255 \rfloor \qquad \text{${tx(t, "oglGamma_liveCurve", "through the curve")}}: \lfloor p^{1/2.2} \cdot 255 \rfloor`}
+        vars={[{ id: "p", label: tx(t, "oglGamma_vP", "darkest share of the light, p"), min: 0.5, max: 20, step: 0.5, value: 1, fmt: v => `${v}%` }]}
+        where={[
+          [r`p`, tx(t, "oglGamma_wP", "a fraction of white's light; every code above black whose light is at most p is counted")],
+          [r`\lfloor x \rfloor`, tx(t, "oglGamma_wFloor", "x rounded down to a whole number: the last code that still fits")],
+        ]}
+        compute={codesNumbers(t)}
+        note={tx(t, "oglGamma_liveCodesNote", "At 1% the curve gives 31 codes instead of 2. Even at 20% it still gives more than twice as many (122 against 51).")} />
       <p>
         {tx(t, "oglGamma_srgbBody",
           "The standard curve, sRGB, is a power of 2.4 with a short linear segment near black (so the curve has a finite slope at zero). 2.2 is the usual approximation:")}
@@ -70,9 +83,16 @@ V = L_{\text{wanted}}^{\,1/\gamma}
           [r`C_{\text{sRGB}}`, tx(t, "oglGamma_wCsrgb", "the encoded value that goes into the file or the framebuffer")],
           [r`12.92,\ 0.0031308`, tx(t, "oglGamma_wLinSeg", "the straight segment near black; a pure power curve would be vertical at 0 and amplify noise")],
           [r`1.055,\ 0.055`, tx(t, "oglGamma_wOffset", "scale and offset that make the power part meet the straight segment smoothly and reach 1 at 1")],
-        ]}>
+        ]}
+        words={tx(t, "oglGamma_srgbWords", "Very dark values are just multiplied by 12.92. Everything else is raised to the power 1/2.4, then scaled and shifted a little so the two pieces join without a jump and 1 still maps to 1.")}>
         {r`C_{\text{sRGB}} = \begin{cases} 12.92\,C_{\text{lin}} & C_{\text{lin}} \le 0.0031308 \\[4pt] 1.055\,C_{\text{lin}}^{1/2.4} - 0.055 & \text{otherwise} \end{cases}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglGamma_liveSrgbLabel", "Try it: exact sRGB against 2.2")}
+        tex={r`C_{\text{sRGB}}(C_{\text{lin}}) \quad\text{vs}\quad C_{\text{lin}}^{1/2.2}`}
+        vars={[{ id: "lin", label: <>C<sub>lin</sub></>, min: 0, max: 1, step: 0.001, value: 0.18, fmt: v => v.toFixed(3) }]}
+        where={[[r`C_{\text{lin}}`, tx(t, "oglGamma_wClin", "a linear value (light), 0–1")]]}
+        compute={srgbNumbers(t)}
+        note={tx(t, "oglGamma_liveSrgbNote", "0.18 is the classic mid-grey of photography: byte 118 exact, 117 with 2.2. Below 0.003 the straight segment takes over, and that is where the two differ most: about 8 codes at 0.002.")} />
 
       <H2>{tx(t, "oglGamma_workflowTitle", "The linear workflow")}</H2>
       <p>
@@ -103,7 +123,7 @@ glEnable(GL_FRAMEBUFFER_SRGB);                   // encoded on write
           [tx(t, "oglGamma_c1", "GL_SRGB8_ALPHA8 instead of pow() on sample"), tx(t, "oglGamma_c1b", "the hardware decodes before filtering, so the average of four texels is taken on light, not on codes; a pow() after texture() would average the codes first and darken edges and mip levels.")],
           [tx(t, "oglGamma_c2", "only RGB is decoded"), tx(t, "oglGamma_c2b", "in an sRGB texture the alpha channel stays linear: coverage and opacity are not light.")],
           [tx(t, "oglGamma_c3", "GL_FRAMEBUFFER_SRGB"), tx(t, "oglGamma_c3b", "encodes with the exact sRGB curve at write time, and blending happens on linear values before it. It only acts on framebuffers whose format is sRGB (the default one usually is when you ask for it).")],
-          [tx(t, "oglGamma_c4", "pow(color, 1/2.2) in the shader"), tx(t, "oglGamma_c4b", "simple and explicit, and the only option when you tone map in a final fullscreen pass (HDR chapter). 2.2 differs from exact sRGB by at most about one code in the darks.")],
+          [tx(t, "oglGamma_c4", "pow(color, 1/2.2) in the shader"), tx(t, "oglGamma_c4b", "simple and explicit, and the only option when you tone map in a final fullscreen pass (HDR chapter). 2.2 differs from exact sRGB by 1–2 codes above 10% light and by up to about 8 codes in the deepest darks, where the eye barely sees it.")],
         ]}
       />
 
@@ -118,6 +138,18 @@ glEnable(GL_FRAMEBUFFER_SRGB);                   // encoded on write
         <li>{tx(t, "oglGamma_w3", "Step 3: encode. 0.110^(1/2.2) = 0.366, byte 93. The display emits 0.366^2.2 = 0.110: exactly what was computed.")}</li>
         <li>{tx(t, "oglGamma_w4", "Wrong pipeline: 0.502 · 0.5 = 0.251, byte 64, written as is. The display emits 0.251^2.2 = 0.048: less than half of the correct 0.110. Every half-lit surface comes out too dark, so the terminator between light and shadow looks harsh.")}</li>
       </ol>
+      <LiveFormula label={tx(t, "oglGamma_liveTexelLabel", "Try it: one texel, both pipelines")}
+        tex={r`\text{${tx(t, "oglGamma_liveRight", "right")}}: V^{2.2}\,(\dotp{\vN}{\vL}) \qquad \text{${tx(t, "oglGamma_liveWrong", "wrong")}}: \big(V\,(\dotp{\vN}{\vL})\big)^{2.2}`}
+        vars={[
+          { id: "byte", label: tx(t, "oglGamma_vByte", "texel byte"), min: 1, max: 255, step: 1, value: 128, fmt: v => String(v) },
+          { id: "ndl", label: "N·L", min: 0.05, max: 1, step: 0.05, value: 0.5, fmt: v => v.toFixed(2) },
+        ]}
+        where={[
+          [r`V`, tx(t, "oglGamma_wVbyte", "the texel as stored: the byte divided by 255")],
+          [r`\dotp{\vN}{\vL}`, tx(t, "oglGamma_wNdl", "how directly the light hits the surface, 0–1")],
+        ]}
+        compute={texelNumbers(t)}
+        note={tx(t, "oglGamma_liveTexelNote", "Set N·L to 1: both pipelines agree, because nothing was multiplied. The lower N·L, the darker the wrong pipeline gets compared with the right one; the texel byte does not change the ratio.")} />
 
       <H3>{tx(t, "oglGamma_blendTitle", "Averaging and blending")}</H3>
       <p>
@@ -130,7 +162,15 @@ glEnable(GL_FRAMEBUFFER_SRGB);                   // encoded on write
         {tx(t, "oglGamma_attBody",
           "Remember the attenuation constants from Light Casters — the linear term was needed because pure 1/d² looked too dark. That was gamma in disguise: displayed without correction, 1/d² becomes (1/d²)^2.2 ≈ 1/d^4.4. In a linear workflow the physically correct inverse square looks right on its own.")}
       </p>
-      <Equation>{r`\left(\frac{1}{d^{2}}\right)^{2.2} = \frac{1}{d^{4.4}} \qquad\text{(what an uncorrected pipeline shows)}`}</Equation>
+      <Derivation t={t} label={tx(t, "oglGamma_attDer", "What an uncorrected pipeline shows")}
+        steps={[
+          { full: true, tex: r`V = \frac{1}{d^{2}}`,
+            why: tx(t, "oglGamma_ad1", "the shader writes the physically correct falloff straight into the framebuffer, without encoding it") },
+          { full: true, tex: r`L_{\text{emitted}} = V^{2.2} = \left(\frac{1}{d^{2}}\right)^{2.2}`,
+            why: tx(t, "oglGamma_ad2", "the display raises whatever it receives to the power 2.2") },
+          { full: true, tex: r`= \frac{1}{d^{2 \cdot 2.2}} = \amber{\frac{1}{d^{4.4}}}`,
+            why: tx(t, "oglGamma_ad3", "a power of a power multiplies the exponents: the light now falls off much faster than it should, so at twice the distance it is 1/21 instead of 1/4") },
+        ]} />
 
       <Callout type="warn" t={t}>
         {tx(t, "oglAdvLight_doubleWarn",

@@ -9,6 +9,9 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { blinnNumbers } from "../../live/advanced-lighting";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -59,7 +62,8 @@ export function BlinnPhongContent({ t }: { t: TrackTranslations }) {
           [r`k_s, L_s`, tx(t, "oglBlinn_wKs", "the material's and the light's specular colours, as in the Materials chapter")],
           [r`\alpha'`, tx(t, "oglBlinn_wAlpha", "the Blinn-Phong shininess; about 4× Phong's for the same highlight size (derived below)")],
         ]}
-        glsl="vec3 H = normalize(lightDir + viewDir);  float spec = pow(max(dot(N, H), 0.0), shininess);">
+        glsl="vec3 H = normalize(lightDir + viewDir);  float spec = pow(max(dot(N, H), 0.0), shininess);"
+        words={tx(t, "oglBlinn_eqWords", "Add the direction to the light and the direction to the eye, and shrink the result back to length 1: that is the direction exactly between them. The shine is strongest when this in-between direction matches the normal, and fades, raised to the shininess, as it tilts away.")}>
         {r`\vH = \frac{\vL + \vV}{\lVert \vL + \vV \rVert} \qquad I_s = k_s\,L_s\,\max(0,\,\dotp{\vN}{\vH})^{\alpha'}`}
       </Equation>
       <p>
@@ -72,7 +76,8 @@ export function BlinnPhongContent({ t }: { t: TrackTranslations }) {
       </p>
       <BlinnMathFigure t={t} />
       <Equation label={tx(t, "oglBlinn_halfAngle", "In the plane of the three vectors")}
-        note={tx(t, "oglBlinn_halfAngleNote", "With β = α/2, matching cos^n α near the peak needs cos^m(α/2) with m ≈ 4n — the usual rule of thumb for converting shininess.")}>
+        note={tx(t, "oglBlinn_halfAngleNote", "With β = α/2, matching cos^n α near the peak needs cos^m(α/2) with m ≈ 4n — the usual rule of thumb for converting shininess.")}
+        words={tx(t, "oglBlinn_halfWords", "The angle between the normal and the halfway vector is always half the angle between the reflected ray and the eye. A smaller angle means a broader highlight, so Blinn-Phong needs about four times the exponent to look the same.")}>
         {r`\angle(\vN, \vH) = \beta = \tfrac{1}{2}\,\angle(\vR, \vV) = \tfrac{\alpha}{2}
 \qquad
 \cos^{n}\alpha \;\approx\; \cos^{4n}\!\tfrac{\alpha}{2}`}
@@ -83,17 +88,21 @@ export function BlinnPhongContent({ t }: { t: TrackTranslations }) {
         {tx(t, "oglBlinn_fourBody",
           "Near the peak the angles are small, and for a small angle θ (in radians) cos θ ≈ 1 − θ²/2 ≈ e^(−θ²/2). Raising that to a power n multiplies the exponent: cosⁿ θ ≈ e^(−nθ²/2), a bell curve whose width shrinks as n grows. Phong uses the angle α, Blinn the angle α/2, so the two bells are:")}
       </p>
-      <Equation label={tx(t, "oglBlinn_fourLabel", "Matching the two bells")}
+      <Derivation t={t} label={tx(t, "oglBlinn_fourLabel", "Matching the two bells")}
         where={[
           [r`n`, tx(t, "oglBlinn_wN", "Phong's shininess")],
           [r`m`, tx(t, "oglBlinn_wM", "the Blinn-Phong shininess that gives the same highlight")],
-        ]}>
-        {r`\cos^{n}\alpha \approx e^{-n\alpha^{2}/2}
-\qquad
-\cos^{m}\tfrac{\alpha}{2} \approx e^{-m\alpha^{2}/8}
-\qquad
-\frac{n}{2} = \frac{m}{8} \;\Longrightarrow\; m = 4n`}
-      </Equation>
+        ]}
+        steps={[
+          { full: true, tex: r`\cos\theta \approx 1 - \tfrac{\theta^{2}}{2} \approx e^{-\theta^{2}/2}`,
+            why: tx(t, "oglBlinn_d1", "for a small angle in radians: the first terms of the cosine series, and e^x ≈ 1 + x for a small x read backwards") },
+          { full: true, tex: r`\cos^{n}\alpha \approx \big(e^{-\alpha^{2}/2}\big)^{n} = e^{-n\alpha^{2}/2}`,
+            why: tx(t, "oglBlinn_d2", "Phong: a power of a power multiplies the exponents, so the bell gets narrower as n grows") },
+          { full: true, tex: r`\cos^{m}\tfrac{\alpha}{2} \approx e^{-m(\alpha/2)^{2}/2} = e^{-m\alpha^{2}/8}`,
+            why: tx(t, "oglBlinn_d3", "Blinn: the same rule with the half angle; (α/2)² = α²/4 brings an extra 4 into the bottom") },
+          { full: true, tex: r`\frac{n}{2} = \frac{m}{8} \;\Longrightarrow\; \green{m = 4n}`,
+            why: tx(t, "oglBlinn_d4", "the two bells are the same curve when their exponents match for every α; multiply both sides by 8") },
+        ]} />
       <p>
         {tx(t, "oglBlinn_fourCaveat",
           "The relation β = α/2 is exact only when V lies in the plane of N and L. Off that plane the two highlights also differ in shape: Phong's is round around the reflection direction, Blinn-Phong's is stretched along the surface at grazing angles, which is what real wet roads and polished floors do. So ×4 is a starting point to tune by eye, not an exact conversion.")}
@@ -110,6 +119,19 @@ export function BlinnPhongContent({ t }: { t: TrackTranslations }) {
         <li>{tx(t, "oglBlinn_w3", "Blinn: L + V = (−0.223, 1.266), whose length is 1.286, so H = (−0.174, 0.985). N·H = 0.985, the cosine of 10°: half of Phong's 20°, as promised.")}</li>
         <li>{tx(t, "oglBlinn_w4", "With the same shininess 32: Phong gives 0.940³² = 0.137, Blinn-Phong 0.985³² = 0.613. The Blinn highlight is much broader. With 4 × 32 = 128: 0.985¹²⁸ = 0.141, within 3% of Phong's 0.137.")}</li>
       </ol>
+      <LiveFormula label={tx(t, "oglBlinn_liveLabel", "Try it: one fragment, both models")}
+        tex={r`\max(0,\ \cos\alpha)^{n} \quad\text{vs}\quad \cos^{n}\tfrac{\alpha}{2} \quad\text{vs}\quad \cos^{4n}\tfrac{\alpha}{2}`}
+        vars={[
+          { id: "light", label: tx(t, "oglBlinn_vLight", "light, left of N"), min: 0, max: 89, step: 1, value: 60, fmt: v => `${v}°` },
+          { id: "eye", label: tx(t, "oglBlinn_vEye", "eye, right of N (− = left)"), min: -89, max: 89, step: 1, value: 40, fmt: v => `${v}°` },
+          { id: "n", label: "n", min: 1, max: 128, step: 1, value: 32, fmt: v => String(v) },
+        ]}
+        where={[
+          [r`\alpha`, tx(t, "oglBlinn_wLiveA", "Phong's angle between R and V: R is the light mirrored to the right, so α is the difference of the two angles")],
+          [r`n`, tx(t, "oglBlinn_wN", "Phong's shininess")],
+        ]}
+        compute={blinnNumbers(t)}
+        note={tx(t, "oglBlinn_liveNote", "Set n = 1 and bring the eye to the left, on the light's side (eye −60°, light 60°): Phong falls to 0 once α passes 90°, while Blinn-Phong still fades smoothly. With a high n the last two lines stay close for any angle.")} />
 
       <H2>{tx(t, "oglBlinn_codeTitle", "In the shader")}</H2>
       <CodeBlock lang="glsl" filename="blinn.glsl" t={t}>{`// Phong — the reflection vector

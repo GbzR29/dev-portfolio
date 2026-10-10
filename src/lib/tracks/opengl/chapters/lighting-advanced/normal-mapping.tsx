@@ -10,6 +10,7 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -53,7 +54,8 @@ export function NormalMappingContent({ t }: { t: TrackTranslations }) {
           [r`\mathbf{n}`, tx(t, "oglNMap_wN", "the tangent-space normal, each component in [−1, 1]")],
           [r`\text{rgb}`, tx(t, "oglNMap_wRgb", "the texel as the shader samples it, each channel the byte divided by 255")],
           [r`\tfrac12\,\mathbf{n} + \tfrac12`, tx(t, "oglNMap_wMap", "halve the range [−1, 1] to [−0.5, 0.5], then shift it up to [0, 1]; decoding undoes both")],
-        ]}>
+        ]}
+        words={tx(t, "oglNMap_encWords", "To store a direction as a colour, halve each component and add one half, so −1…1 becomes 0…1. To read it back, double the colour and take away 1.")}>
         {r`\text{rgb} = \tfrac12\,\mathbf{n} + \tfrac12 \qquad\Longleftrightarrow\qquad \mathbf{n} = 2\,\text{rgb} - 1`}
       </Equation>
       <p>
@@ -89,7 +91,8 @@ export function NormalMappingContent({ t }: { t: TrackTranslations }) {
           [r`\Delta u_i, \Delta v_i`, tx(t, "oglNMap_wUV", "the change in texture coordinates along each edge")],
           [r`\red{T}, \green{B}`, tx(t, "oglNMap_wTB", "how far you move in world space per unit of u, and per unit of v")],
           [r`\Delta u_1 \Delta v_2 - \Delta u_2 \Delta v_1`, tx(t, "oglNMap_wDet", "the determinant of the UV matrix: twice the signed area of the triangle in texture space")],
-        ]}>
+        ]}
+        words={tx(t, "oglNMap_deriveWords", "Walking along an edge of the triangle is some steps along u and some along v. Write that down for both edges, and you have two equations whose unknowns are the world directions of u and v; solve them like any 2 × 2 system.")}>
         {r`\begin{aligned}
 E_1 &= \Delta u_1\,\red{T} + \Delta v_1\,\green{B} \\
 E_2 &= \Delta u_2\,\red{T} + \Delta v_2\,\green{B}
@@ -104,6 +107,17 @@ E_2 &= \Delta u_2\,\red{T} + \Delta v_2\,\green{B}
         {tx(t, "oglNMap_solveWhy",
           "It is two equations with two unknown vectors, the same as solving a 2 × 2 linear system with numbers, done once for x, once for y and once for z. The 2 × 2 inverse swaps the diagonal, negates the other two entries and divides by the determinant.")}
       </p>
+      <Derivation t={t} label={tx(t, "oglNMap_solveDer", "Solving the two edge equations by elimination")}
+        steps={[
+          { full: true, tex: r`\Delta v_2\,E_1 - \Delta v_1\,E_2 = (\Delta u_1 \Delta v_2 - \Delta u_2 \Delta v_1)\,\red{T} + (\Delta v_1 \Delta v_2 - \Delta v_2 \Delta v_1)\,\green{B}`,
+            why: tx(t, "oglNMap_sd1", "multiply the first equation by Δv₂ and the second by Δv₁, then subtract them, to make the B terms equal") },
+          { full: true, tex: r`\Delta v_2\,E_1 - \Delta v_1\,E_2 = \det \cdot \red{T}`,
+            why: tx(t, "oglNMap_sd2", "the B terms cancel (Δv₁Δv₂ − Δv₂Δv₁ = 0); what multiplies T is the determinant") },
+          { full: true, tex: r`\red{T} = \frac{\Delta v_2\,E_1 - \Delta v_1\,E_2}{\det}`,
+            why: tx(t, "oglNMap_sd3", "divide by the determinant, which must not be 0: this is the first line of the code") },
+          { full: true, tex: r`\green{B} = \frac{-\Delta u_2\,E_1 + \Delta u_1\,E_2}{\det}`,
+            why: tx(t, "oglNMap_sd4", "the same trick with Δu₂ and Δu₁ cancels T instead: Δu₁E₂ − Δu₂E₁ = det · B. This is the second line of the code") },
+        ]} />
       <CodeBlock lang="cpp" filename="tangents.cpp" t={t}>{`glm::vec3 e1 = p1 - p0, e2 = p2 - p0;
 glm::vec2 d1 = uv1 - uv0, d2 = uv2 - uv0;
 float f = 1.0f / (d1.x * d2.y - d2.x * d1.y);
@@ -131,13 +145,25 @@ glm::vec3 bitangent = f * (-d2.x * e1 + d1.x * e2);
           [r`\red{T}, \green{B}, \blue{N}`, tx(t, "oglNMap_wCols", "the world-space tangent, bitangent and normal, as the three columns")],
           [r`TBN\,\mathbf{n}`, tx(t, "oglNMap_wMul", "x·T + y·B + z·N: each tangent-space component scales its world axis")],
           [r`(\red{T}\cdot\blue{N})\,\blue{N}`, tx(t, "oglNMap_wProj", "the part of T that points along N; subtracting it leaves only the part perpendicular to N")],
-        ]}>
+        ]}
+        words={tx(t, "oglNMap_tbnWords", "The decoded normal says how much to go along the tangent, along the bitangent and along the normal; the matrix adds those three world directions up. Before that, remove from T whatever leans along N, so the three axes are square to each other again.")}>
         {r`TBN = \begin{bmatrix} \red{T} & \green{B} & \blue{N} \end{bmatrix}
 \qquad
 \mathbf{n}_{\text{world}} = TBN\,(2\,\text{rgb} - 1)
 \qquad
 \red{T'} = \operatorname{normalize}\big(\red{T} - (\red{T}\cdot\blue{N})\,\blue{N}\big)`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglNMap_gsDer", "Why the Gram-Schmidt step leaves T perpendicular to N")}
+        steps={[
+          { full: true, tex: r`\big(\red{T} - (\red{T}\cdot\blue{N})\,\blue{N}\big)\cdot\blue{N}`,
+            why: tx(t, "oglNMap_gs1", "test the new vector against N: perpendicular means this dot product is 0") },
+          { full: true, tex: r`= \red{T}\cdot\blue{N} - (\red{T}\cdot\blue{N})\,(\blue{N}\cdot\blue{N})`,
+            why: tx(t, "oglNMap_gs2", "the dot product spreads over the subtraction, and the number T·N comes out of the second term") },
+          { full: true, tex: r`= \red{T}\cdot\blue{N} - (\red{T}\cdot\blue{N}) \cdot 1 = 0`,
+            why: tx(t, "oglNMap_gs3", "N is a unit vector, so N·N = 1, and the two terms cancel. normalize() then only fixes the length, not the direction") },
+          { full: true, tex: r`\green{B} = \blue{N} \times \red{T'}`,
+            why: tx(t, "oglNMap_gs4", "the cross product of two perpendicular unit vectors is a unit vector perpendicular to both, so B comes out square to N and T' without any more work (times w = ±1 on mirrored UVs)") },
+        ]} />
       <CodeBlock lang="glsl" filename="normal_mapping.vert" t={t}>{`layout (location = 3) in vec3 aTangent;
 out mat3 TBN;
 

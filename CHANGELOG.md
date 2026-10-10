@@ -14,6 +14,19 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-09
 
+- **Fórmulas dinâmicas na seção Iluminação Avançada do OpenGL** (lote 3 da expansão das fórmulas interativas para todas as trilhas):
+  - **Blinn-Phong**: "em palavras" no especular e na relação do meio ângulo. O "×4 do expoente" virou dedução passo a passo (cos θ ≈ e^(−θ²/2) → m = 4n). Fórmula ao vivo: um fragmento nos dois modelos, com luz, olho e brilho (o olho do lado da luz mostra o corte duro de Phong);
+  - **Gamma**: "em palavras" na curva da tela e no sRGB exato. Dedução de por que a atenuação sem correção vira 1/d⁴·⁴. Três fórmulas ao vivo: códigos gastos nos escuros (linear contra a curva), sRGB exato contra 2,2 e um texel nos pipelines certo e errado (a razão é (N·L)^1,2, sem depender do byte). Corrigida a afirmação de que 2,2 difere do sRGB em no máximo um código: são até cerca de 8 códigos perto de 0,002;
+  - **Shadow Mapping**: "onde" e "em palavras" no teste de sombra e no bias (antes sem lista de símbolos). Dedução do clip space até s em 0…1. Fórmula ao vivo: o erro de profundidade dentro de um texel numa superfície inclinada contra o bias, e a folga que o bias abre (peter-panning), com o tamanho do mapa;
+  - **Point Shadows**: "em palavras" na projeção e no teste. Duas fórmulas ao vivo: o exemplo resolvido com fragmento e altura da caixa móveis (face do cube map, current, closest, sombra ou luz) e a conta de memória e passadas por luz;
+  - **Cascaded Shadow Maps**: "em palavras" nas três fórmulas. Fórmula ao vivo de texels por pixel ρ(z) com distância, área coberta e resolução;
+  - **Normal Mapping**: "em palavras" nas três fórmulas. Deduções da tangente e da bitangente por eliminação (as duas linhas do código) e de por que o passo de Gram-Schmidt deixa T perpendicular a N;
+  - **HDR**: "em palavras" nos três operadores. Duas fórmulas ao vivo: o pixel laranja do exemplo em −4…+4 stops (bytes e R/B por operador) e a exposição automática com uma lâmpada na sala (média simples contra geométrica);
+  - **Bloom**: "em palavras" em todas as fórmulas. Deduções da separação da gaussiana 2D e do deslocamento que junta duas amostras numa leitura. Duas fórmulas ao vivo: se um pixel faz bloom (luminância e smoothstep) e a largura do bloom com σ, repetições e resolução;
+  - **Espaços de Cor & ACES**: "onde" e "em palavras" na matriz sRGB → XYZ, "em palavras" no EV, nas curvas e no PQ. Duas fórmulas ao vivo: RGB linear → XYZ e cromaticidade (o branco cai no D65) e nits → sinal PQ e código de 10 bits;
+  - **Deferred Shading**: "em palavras" no custo e no raio do volume de luz (os dois já têm versão ao vivo: a figura de custo e a fórmula de Múltiplas Luzes);
+  - as contas ficam em `src/lib/tracks/opengl/live/` (advanced-lighting, gamma, shadow-mapping, point-shadows, csm, hdr, bloom, color); tradução PT.
+
 - **Fórmulas dinâmicas na seção Iluminação do OpenGL** (lote 2 da expansão das fórmulas interativas para todas as trilhas):
   - **Basic Lighting (Phong)**: "em palavras" no modelo de Phong, no termo difuso e no especular. O termo ambiente ganhou rótulo e "onde". Viraram deduções passo a passo a irradiância numa superfície inclinada (E = E₀ cos θ), a matriz normal (G = (M⁻¹)ᵀ) e o vetor de reflexão (r = 2(n·l)n − l, pela projeção). Duas fórmulas ao vivo: a largura do brilho em função de α (α = 32 → cerca de 12°) e Phong num ponto com θ, φ e α, usando os números do phong.frag e mostrando quando a soma passa de 1;
   - **Light Casters**: "em palavras" e "onde" na lei do inverso do quadrado; "em palavras" na atenuação e no spot de borda suave. Dedução da rampa suave a partir de duas condições. Duas fórmulas ao vivo: atenuação com uma linha da tabela de alcance e a distância, e o spot com θ, φ e γ;

@@ -9,6 +9,8 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { exposureNumbers, orangeNumbers } from "../../live/hdr";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -80,7 +82,8 @@ glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colo
           [r`x`, tx(t, "oglHdr_wX", "HDR colour, per channel, after multiplying by the exposure")],
           [r`e`, tx(t, "oglHdr_wE", "exposure — like a camera's, it picks which brightness becomes mid-grey")],
           [r`2.51,\ 0.03,\ 2.43,\ 0.59,\ 0.14`, tx(t, "oglHdr_wAces", "constants Krzysztof Narkowicz fitted so that this cheap rational curve follows the ACES film curve")],
-        ]}>
+        ]}
+        words={tx(t, "oglHdr_opsWords", "Reinhard divides a value by itself plus one: small values barely change, huge ones creep toward 1. The exposure curve takes away from 1 what is left after an exponential decay, rising fast and then flattening. ACES is a ratio of two parabolas shaped like film: dark at the bottom, steep in the middle, a soft shoulder at the top.")}>
         {r`\underbrace{\;\frac{x}{1 + x}\;}_{\text{Reinhard}}
 \qquad
 \underbrace{\;1 - e^{-e\,x}\;}_{\text{exposure}}
@@ -126,6 +129,15 @@ FragColor = vec4(mapped, 1.0);`}</CodeBlock>
         {tx(t, "oglHdr_workedRead",
           "Every operator applied per channel squeezes the largest channel most, so a very bright colour moves toward white. That desaturation is not a bug: film does the same and it reads as \"extremely bright\". But it also shifts hue (orange drifts toward yellow). If you want to keep the hue, tone map the luminance Y instead and scale the colour by Y_mapped / Y. Notice also that ACES lifted the dim blue channel from 0.5 to 0.616: the Narkowicz fit brightens mid-tones, and its author suggests multiplying the input by 0.6 first to match the reference exposure.")}
       </p>
+      <LiveFormula label={tx(t, "oglHdr_liveOrange", "Try it: the orange pixel at other exposures")}
+        tex={r`x = 2^{EV}\,(4,\ 2,\ 0.5) \;\to\; \text{Reinhard},\ \text{${tx(t, "oglHdr_o2n", "exposure")}},\ \text{ACES}`}
+        vars={[{ id: "ev", label: "EV", min: -4, max: 4, step: 1, value: 0, fmt: v => (v > 0 ? `+${v}` : String(v)) }]}
+        where={[
+          [r`EV`, tx(t, "oglHdr_wEv", "the exposure in stops: each +1 doubles the pixel before the curve")],
+          [r`\tfrac{R}{B}`, tx(t, "oglHdr_wRB", "red over blue, a measure of how saturated the orange still is; it is 8 in the HDR buffer")],
+        ]}
+        compute={orangeNumbers(t)}
+        note={tx(t, "oglHdr_liveOrangeNote", "Go down to −4: Reinhard and exposure keep R/B close to 8, so dim colours survive, and ACES even raises it, because its toe darkens the dim blue channel more than red. Go up to +4 and R/B falls toward 1 as all three channels pile up near white. The bytes include the 1/2.2 encode.")} />
 
       <Callout type="info" t={t}>
         {tx(t, "oglHdr_autoNote",
@@ -135,6 +147,20 @@ FragColor = vec4(mapped, 1.0);`}</CodeBlock>
         {tx(t, "oglHdr_autoMath",
           "The average used is the geometric mean, exp(average of ln(Y + ε)), because it is not dragged up by a few very bright pixels: one bulb on screen should not darken the whole room. The exposure is then chosen so that this average lands on middle grey, about 0.18: e = 0.18 / Y_avg. The small ε (for example 0.0001) keeps ln from seeing a zero.")}
       </p>
+      <LiveFormula label={tx(t, "oglHdr_liveExpLabel", "Try it: one bulb in a room")}
+        tex={r`e = \frac{0.18}{Y_{avg}} \qquad Y_{avg} = \text{${tx(t, "oglHdr_liveArith", "plain average")}}\ \text{${tx(t, "oglHdr_liveOr", "or")}}\ \exp\!\big(\overline{\ln Y}\big)`}
+        vars={[
+          { id: "wall", label: tx(t, "oglHdr_vWall", "wall Y"), min: 0.05, max: 2, step: 0.05, value: 0.4, fmt: v => v.toFixed(2) },
+          { id: "bulb", label: tx(t, "oglHdr_vBulb", "bulb Y"), min: 10, max: 1000, step: 10, value: 150, fmt: v => String(v) },
+          { id: "share", label: tx(t, "oglHdr_vShare", "bulb's share of the screen"), min: 0, max: 10, step: 0.5, value: 2, fmt: v => `${v}%` },
+        ]}
+        where={[
+          [r`Y`, tx(t, "oglHdr_wY", "luminance, the brightness of a pixel in the HDR buffer")],
+          [r`e`, tx(t, "oglHdr_wE2", "the exposure chosen so the average lands on middle grey, 0.18")],
+          [r`\overline{\ln Y}`, tx(t, "oglHdr_wLnAvg", "the average of the logarithms, here (1 − share)·ln Y_wall + share·ln Y_bulb")],
+        ]}
+        compute={exposureNumbers(t)}
+        note={tx(t, "oglHdr_liveExpNote", "With 2% of the screen at 150, the plain average jumps to 3.4 and the wall is crushed to about 0.02. The geometric mean barely moves, so the wall stays near middle grey. Set the share to 0: both agree.")} />
 
       <LessonTable
         headers={[tx(t, "oglHdr_tChoice", "Choice"), tx(t, "oglHdr_tReason", "Reason")]}

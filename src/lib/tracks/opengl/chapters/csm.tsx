@@ -4,6 +4,8 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { texelRatioNumbers } from "../live/csm";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -38,9 +40,23 @@ export function CascadedShadowsContent({ t }: { t: TrackTranslations }) {
           [r`s_{tex}`, tx(t, "oglCsm_wTex", "world size of one shadow texel: the map's footprint E divided by its resolution N")],
           [r`H,\ \text{fov}`, tx(t, "oglCsm_wH", "screen height in pixels, vertical field of view")],
         ]}
-        note={tx(t, "oglCsm_ratioNote", "At 1080p with a 60° fov, a pixel 2 m away is about 2.1 mm wide. A 2048² map covering 150 m has 7.3 cm texels, so ρ ≈ 1/34: one texel spans 34 pixels across. Cascades attack E, the only term you control per region.")}>
+        note={tx(t, "oglCsm_ratioNote", "At 1080p with a 60° fov, a pixel 2 m away is about 2.1 mm wide. A 2048² map covering 150 m has 7.3 cm texels, so ρ ≈ 1/34: one texel spans 34 pixels across. Cascades attack E, the only term you control per region.")}
+        words={tx(t, "oglCsm_ratioWords", "A screen pixel covers more of the world the farther away it looks; a shadow texel covers the same amount everywhere. Divide the first by the second: near the camera the pixels are tiny, the ratio falls far below 1 and each texel is smeared over many pixels.")}>
         {r`s_{pix}(z) = \frac{2\,z\tan(\text{fov}/2)}{H} \qquad s_{tex} = \frac{E}{N} \qquad \rho(z) = \frac{s_{pix}(z)}{s_{tex}}\quad\begin{cases}\rho \ge 1 & \text{sharp}\\ \rho \ll 1 & \text{blocky}\end{cases}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglCsm_liveLabel", "Try it: texels per pixel")}
+        tex={r`\rho(z) = \frac{2\,z\tan 30^\circ / 1080}{E / N}`}
+        vars={[
+          { id: "z", label: "z (m)", min: 0.5, max: 150, step: 0.5, value: 2, fmt: v => `${v} m` },
+          { id: "E", label: "E (m)", min: 5, max: 300, step: 5, value: 150, fmt: v => `${v} m` },
+          { id: "k", label: "N", min: 9, max: 13, step: 1, value: 11, fmt: v => String(2 ** v) },
+        ]}
+        where={[
+          [r`z`, tx(t, "oglCsm_wZ", "how far in front of the camera the shaded point is")],
+          [r`E,\ N`, tx(t, "oglCsm_wEN", "the width the shadow map covers, and its resolution; the screen is fixed at 1080 pixels and 60°")],
+        ]}
+        compute={texelRatioNumbers(t)}
+        note={tx(t, "oglCsm_liveNote", "Even an 8192² map leaves ρ near 1/9 at 2 m when it covers 150 m. Shrink E to 10 m, the size of a first cascade, and the same 2048² map is sharp from about 4.6 m on.")} />
 
       <H2>{tx(t, "oglCsm_splitTitle", "Splitting the view frustum")}</H2>
       <p>
@@ -53,7 +69,8 @@ export function CascadedShadowsContent({ t }: { t: TrackTranslations }) {
           [r`i = 0 \ldots N`, tx(t, "oglCsm_wI", "split index; z₀ = n and z_N = f")],
           [r`\lambda`, tx(t, "oglCsm_wLambda", "0 = uniform, 1 = logarithmic; 0.5–0.9 in practice")],
         ]}
-        glm="float z = lambda * n * pow(f / n, i / float(N)) + (1 - lambda) * (n + (f - n) * i / float(N));">
+        glm="float z = lambda * n * pow(f / n, i / float(N)) + (1 - lambda) * (n + (f - n) * i / float(N));"
+        words={tx(t, "oglCsm_pssmWords", "Compute each cut twice: once spaced by a constant factor (logarithmic, like perspective), once spaced evenly (uniform). Then mix the two, with λ saying how much of the logarithmic one to take.")}>
         {r`z_i = \lambda\, n\left(\frac{f}{n}\right)^{i/N} + (1 - \lambda)\left(n + (f - n)\,\frac{i}{N}\right)`}
       </Equation>
       <CsmSplitFigure t={t} />
@@ -97,7 +114,8 @@ export function CascadedShadowsContent({ t }: { t: TrackTranslations }) {
           [r`c_L`, tx(t, "oglCsm_wCl", "the cascade centre in light space")],
           [r`\Delta = 2R/N`, tx(t, "oglCsm_wDelta", "world size of one texel for a cascade of radius R")],
         ]}
-        note={tx(t, "oglCsm_snapNote", "If the projection moves by a fraction of a texel, every texel samples the scene at slightly different points than last frame, and shadow edges crawl and flicker as you walk. Keeping the size constant (sphere, not box) and moving only in whole texels makes consecutive frames rasterize the same texels, so edges stay put. The price is resolution: a sphere is larger than the tight box, often by 30–50%.")}>
+        note={tx(t, "oglCsm_snapNote", "If the projection moves by a fraction of a texel, every texel samples the scene at slightly different points than last frame, and shadow edges crawl and flicker as you walk. Keeping the size constant (sphere, not box) and moving only in whole texels makes consecutive frames rasterize the same texels, so edges stay put. The price is resolution: a sphere is larger than the tight box, often by 30–50%.")}
+        words={tx(t, "oglCsm_snapWords", "Measure the cascade's centre in texels, drop the fraction, and turn it back into a distance. The shadow map then only ever moves by whole texels, so each texel keeps covering the same patch of ground from one frame to the next.")}>
         {r`c_L' = \Delta\left\lfloor \frac{c_L}{\Delta} \right\rfloor \qquad \text{(x and y only)}`}
       </Equation>
 

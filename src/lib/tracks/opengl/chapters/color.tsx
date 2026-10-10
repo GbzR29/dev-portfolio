@@ -4,6 +4,8 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { pqNumbers, xyzNumbers } from "../live/color";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -42,9 +44,25 @@ export function ColorSpacesContent({ t }: { t: TrackTranslations }) {
       </p>
       <ChromaticityFigure t={t} />
       <Equation label={tx(t, "oglColor_matLabel", "Linear sRGB ↔ XYZ (D65)")}
-        note={tx(t, "oglColor_matNote", "Each column of M is one primary's XYZ, scaled so R = G = B = 1 lands on the white point. The middle row is exactly the luminance weights 0.2126, 0.7152, 0.0722 you have been using. Converting between two RGB spaces means going through XYZ, M₂⁻¹ · M₁, one 3×3 matrix precomputed once, applied to linear values only.")}>
+        note={tx(t, "oglColor_matNote", "Each column of M is one primary's XYZ, scaled so R = G = B = 1 lands on the white point. The middle row is exactly the luminance weights 0.2126, 0.7152, 0.0722 you have been using. Converting between two RGB spaces means going through XYZ, M₂⁻¹ · M₁, one 3×3 matrix precomputed once, applied to linear values only.")}
+        where={[
+          [r`R, G, B`, tx(t, "oglColor_wRGB", "a linear sRGB colour (decoded, not the bytes in a file)")],
+          [r`X, Y, Z`, tx(t, "oglColor_wXYZ", "the same colour in CIE XYZ; Y is its luminance")],
+          [r`M_{sRGB}`, tx(t, "oglColor_wM", "the 3×3 matrix whose columns are the XYZ of pure red, pure green and pure blue")],
+        ]}
+        words={tx(t, "oglColor_matWords", "Each of X, Y and Z is a weighted sum of red, green and blue. The weights are fixed by where the sRGB primaries and the white point sit among all visible colours.")}>
         {r`\begin{pmatrix} X \\ Y \\ Z \end{pmatrix} = \underbrace{\begin{pmatrix} 0.4124 & 0.3576 & 0.1805 \\ 0.2126 & 0.7152 & 0.0722 \\ 0.0193 & 0.1192 & 0.9505 \end{pmatrix}}_{M_{sRGB}} \begin{pmatrix} R \\ G \\ B \end{pmatrix}_{lin}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglColor_liveXyz", "Try it: from linear RGB to XYZ and the diagram")}
+        tex={r`\begin{pmatrix} X \\ Y \\ Z \end{pmatrix} = M_{sRGB} \begin{pmatrix} R \\ G \\ B \end{pmatrix} \qquad x = \frac{X}{X + Y + Z},\ \ y = \frac{Y}{X + Y + Z}`}
+        vars={[
+          { id: "R", label: "R", min: 0, max: 1, step: 0.01, value: 1, fmt: v => v.toFixed(2) },
+          { id: "G", label: "G", min: 0, max: 1, step: 0.01, value: 1, fmt: v => v.toFixed(2) },
+          { id: "B", label: "B", min: 0, max: 1, step: 0.01, value: 1, fmt: v => v.toFixed(2) },
+        ]}
+        where={[[r`x, y`, tx(t, "oglColor_wXy", "the chromaticity: where the colour sits on the horseshoe diagram, whatever its brightness")]]}
+        compute={xyzNumbers(t)}
+        note={tx(t, "oglColor_liveXyzNote", "White (1, 1, 1) lands on Y = 1 and on (0.3127, 0.3290), the D65 white point. Set G = 1 and the others to 0: Y = 0.7152, the green weight. Halve all three: x and y do not move, only the brightness does.")} />
 
       <H2>{tx(t, "oglColor_referredTitle", "Scene-referred and display-referred")}</H2>
       <p>
@@ -53,7 +71,8 @@ export function ColorSpacesContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "oglColor_evLabel", "Exposure in stops (EV)")}
         where={[[r`L`, tx(t, "oglColor_wL", "scene luminance")], [r`k`, tx(t, "oglColor_wK", "exposure: set by the artist, or automatically from the scene's average log luminance (eye adaptation)")]]}
-        note={tx(t, "oglColor_evNote", "One stop is a factor of 2 in light. Middle grey, 18% reflectance, is the anchor: exposure is chosen so middle grey lands where the tone curve puts mid-tones. Auto exposure measures the average of log2(L) over the frame (a mip chain or a histogram in compute) and eases k toward it over a second or so, like pupils adapting.")}>
+        note={tx(t, "oglColor_evNote", "One stop is a factor of 2 in light. Middle grey, 18% reflectance, is the anchor: exposure is chosen so middle grey lands where the tone curve puts mid-tones. Auto exposure measures the average of log2(L) over the frame (a mip chain or a histogram in compute) and eases k toward it over a second or so, like pupils adapting.")}
+        words={tx(t, "oglColor_evWords", "Each step of EV doubles or halves the light. The automatic choice is the number of doublings that moves the scene's typical brightness, measured on a log scale, to middle grey.")}>
         {r`L_{exposed} = L\cdot 2^{\,\text{EV}} \qquad \text{EV}_{auto} = \log_2\frac{0.18}{\exp\!\big(\overline{\ln L}\big)}`}
       </Equation>
 
@@ -72,7 +91,8 @@ export function ColorSpacesContent({ t }: { t: TrackTranslations }) {
           tx(t, "oglColor_n1", "Reinhard has no toe and a very long shoulder. It is simple, but looks flat and grey."),
           tx(t, "oglColor_n2", "Hable (Uncharted 2) adds a toe and a proper shoulder: the first widely used \"filmic\" curve in games."),
           tx(t, "oglColor_n3", "Narkowicz's rational fit approximates the ACES RRT+ODT luminance curve in one line. Hill's fit adds the ACES input and output matrices, which changes how colours desaturate."),
-        ]}>
+        ]}
+        words={tx(t, "oglColor_curvesWords", "Three ways to bend unlimited light into 0…1. Reinhard divides by one plus the value. Hable is a ratio of two parabolas with a toe and a shoulder, scaled so the white point W lands exactly on 1. The ACES fit is another ratio of parabolas, shaped after film.")}>
         {r`\text{Reinhard: } \frac{x}{1 + x} \qquad h(x) = \frac{x(Ax + CB) + DE}{x(Ax + B) + DF} - \frac{E}{F},\ \ \text{Hable: } \frac{h(2x)}{h(W)} \qquad \text{ACES}_{fit}: \frac{x(2.51x + 0.03)}{x(2.43x + 0.59) + 0.14}`}
       </Equation>
       <ToneMapFigure t={t} />
@@ -106,9 +126,16 @@ FragColor = vec4(linearToSRGB(color), 1.0);`}</CodeBlock>
           "An HDR TV or monitor can show 1000 nits or more and the wide Rec.2020 gamut, but only if the signal says so. The swap chain switches to a 10-bit or float format, colours are converted to Rec.2020, and brightness is encoded with the PQ curve (SMPTE ST 2084), which is absolute: a given code value means a given number of nits. The tone mapper's output range becomes \"up to the display's peak\" instead of \"up to 1\", while the UI is drawn at a fixed \"paper white\" of about 200 nits so it does not glare.")}
       </p>
       <Equation label={tx(t, "oglColor_pqLabel", "PQ inverse EOTF (luminance in nits → signal)")}
-        where={[[r`Y`, tx(t, "oglColor_wY", "luminance / 10000 nits")], [r`m_1, m_2, c_1, c_2, c_3`, tx(t, "oglColor_wPQ", "0.1593, 78.84, 0.8359, 18.85, 18.69: fitted to human contrast sensitivity, so each code value is one just-noticeable step")]]}>
+        where={[[r`Y`, tx(t, "oglColor_wY", "luminance / 10000 nits")], [r`m_1, m_2, c_1, c_2, c_3`, tx(t, "oglColor_wPQ", "0.1593, 78.84, 0.8359, 18.85, 18.69: fitted to human contrast sensitivity, so each code value is one just-noticeable step")], [r`E`, tx(t, "oglColor_wE", "the signal sent to the display, 0–1; times 1023 for a 10-bit code")]]}
+        words={tx(t, "oglColor_pqWords", "Take the luminance as a fraction of 10 000 nits, raise it to a small power, pass it through a ratio that bends like the eye's sensitivity, and raise the result to a large power. Dark values get many codes, bright ones few.")}>
         {r`E = \left(\frac{c_1 + c_2\,Y^{m_1}}{1 + c_3\,Y^{m_1}}\right)^{m_2}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglColor_livePq", "Try it: nits to a PQ signal")}
+        tex={r`E = \left(\frac{c_1 + c_2\,Y^{m_1}}{1 + c_3\,Y^{m_1}}\right)^{m_2}, \qquad Y = \frac{\text{nits}}{10000}`}
+        vars={[{ id: "nits", label: "nits", min: 0, max: 10000, step: 10, value: 200, fmt: v => String(v) }]}
+        where={[[r`\text{nits}`, tx(t, "oglColor_wNits", "candela per square metre, the brightness the display should emit")]]}
+        compute={pqNumbers(t)}
+        note={tx(t, "oglColor_livePqNote", "200 nits of paper white already uses 57% of the signal, and 1000 nits 74%: half of all codes go to the range below 100 nits, where the eye tells the most steps apart.")} />
       <Callout type="warn" t={t}>
         {tx(t, "oglColor_pitfalls",
           "Colour textures are sRGB-encoded and must be linearised; data textures (normals, roughness) must not be. Do lighting and blending in linear space, tone map once, encode once. Applying sRGB encoding twice washes everything out, and forgetting it makes everything too dark and contrasty. Do colour grading after tone mapping with a 3D LUT, or before it in a log space, and be consistent. Render targets for HDR light need float formats (RGBA16F or R11G11B10F), or bright values clip before the tone mapper ever sees them.")}

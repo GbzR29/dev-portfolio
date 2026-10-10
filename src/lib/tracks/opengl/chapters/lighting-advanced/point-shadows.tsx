@@ -10,6 +10,8 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { pointCostNumbers, pointShadowNumbers } from "../../live/point-shadows";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -52,7 +54,8 @@ export function PointShadowsContent({ t }: { t: TrackTranslations }) {
           [r`n, f`, tx(t, "oglPShadow_wNF", "near and far planes: n small but not tiny (0.1–1) for depth precision, f the farthest distance the light should cast shadows")],
           [r`V_i`, tx(t, "oglPShadow_wVi", "lookAt(lightPos, lightPos + axis_i, up_i) for the six cube-map faces")],
           [r`M_i`, tx(t, "oglPShadow_wMi", "the light-space matrix for face i, used exactly like the single matrix of a directional shadow map")],
-        ]}>
+        ]}
+        words={tx(t, "oglPShadow_projWords", "All six cameras share one square, 90° lens. Only the direction they look in changes, so each face gets its own view matrix, and its light-space matrix is that lens times that view.")}>
         {r`P = \text{perspective}(90^\circ,\; 1,\; n,\; f) \qquad M_i = P\,V_i,\quad i = 0\ldots5`}
       </Equation>
 
@@ -105,7 +108,8 @@ for (int i = 0; i < 6; ++i) {
           [r`f`, tx(t, "oglPShadow_wF", "the far plane; dividing by it maps distances into [0, 1], the range a depth texture stores")],
           [r`b`, tx(t, "oglPShadow_wB", "the bias: a small distance that stops a surface from shadowing itself because of rounding")],
           [r`\texttt{texture}(\ldots).r`, tx(t, "oglPShadow_wTex", "the stored (distance / f) of the closest surface in that direction")],
-        ]}>
+        ]}
+        words={tx(t, "oglPShadow_testWords", "In the depth pass, every surface stores how far it is from the light, as a fraction of the far plane. In the lighting pass, measure how far this fragment is, look up the closest distance in the same direction, and if the fragment is farther (by more than the bias), something is in the way.")}>
         {r`\text{stored} = \frac{\lVert \mathbf{p} - \mathbf{p}_{\text{light}} \rVert}{f}
 \qquad
 \text{shadow} \iff \lVert \mathbf{p} - \mathbf{p}_{\text{light}} \rVert - b \;>\; f\cdot\texttt{texture}(\text{depthCube},\; \mathbf{p} - \mathbf{p}_{\text{light}}).r`}
@@ -134,6 +138,20 @@ float shadow  = current - bias > closest ? 1.0 : 0.0;`}</CodeBlock>
         <li>{tx(t, "oglPShadow_w3", "Lighting pass for the floor fragment: closest = 0.1077 · 25 = 2.693, current = 5.385. Is 5.385 − 0.15 = 5.235 greater than 2.693? Yes: in shadow.")}</li>
         <li>{tx(t, "oglPShadow_w4", "Lighting pass for the box-top point itself: current = 2.693 and closest = 2.693, perhaps 2.694 or 2.692 after rounding. Without the bias the comparison flips randomly from texel to texel (shadow acne); with it, 2.543 > 2.693 is false, so the box top is lit.")}</li>
       </ol>
+      <LiveFormula label={tx(t, "oglPShadow_liveLabel", "Try it: move the fragment and the box")}
+        tex={r`\text{current} - b > \text{closest}\ ?`}
+        vars={[
+          { id: "x", label: "x", min: -8, max: 8, step: 0.5, value: 3, fmt: v => String(v) },
+          { id: "z", label: "z", min: -8, max: 8, step: 0.5, value: 2, fmt: v => String(v) },
+          { id: "h", label: tx(t, "oglPShadow_vH", "box top height"), min: 0, max: 3.9, step: 0.1, value: 2, fmt: v => v.toFixed(1) },
+        ]}
+        where={[
+          [r`(x, 0, z)`, tx(t, "oglPShadow_wFrag", "the floor fragment; the light stays at (0, 4, 0), far plane 25, bias b = 0.15")],
+          [r`\text{current}`, tx(t, "oglPShadow_wCur", "the fragment's distance to the light, the length of fragToLight")],
+          [r`\text{closest}`, tx(t, "oglPShadow_wClosest", "the distance to where the ray crosses the box top: (4 − h)/4 of the way down, because the ray drops 4 units in total")],
+        ]}
+        compute={pointShadowNumbers(t)}
+        note={tx(t, "oglPShadow_liveNote", "Set the height to 0: the box top is the floor itself, closest equals current, and only the bias keeps the fragment lit. Push x past 4 or below −4 and the lookup moves to a side face.")} />
 
       <H2>{tx(t, "oglPShadow_pcfTitle", "Soft edges: PCF in a cube map")}</H2>
       <p>
@@ -177,6 +195,19 @@ float pointShadow(vec3 fragPos) {
         {tx(t, "oglPShadow_costBody",
           "A 1024 × 1024 face with 32-bit depth is 4 MiB, so one point light's cube map is 24 MiB, and the scene is drawn six extra times per light per frame. Eight shadowed point lights mean 48 extra scene passes. That is why games give shadows to only the few nearest or brightest lights, lower the resolution of distant ones (256² is often enough), re-render a light's cube map only when something near it moves, and cull each face's draw calls against that face's frustum, so an object only appears in the faces that can see it.")}
       </p>
+      <LiveFormula label={tx(t, "oglPShadow_liveCostLabel", "Try it: the bill for shadowed point lights")}
+        tex={r`s^2 \cdot 4\ \text{B} \cdot 6 \cdot L \qquad 6L\ \text{${tx(t, "oglPShadow_livePassesShort", "passes")}}`}
+        vars={[
+          { id: "k", label: tx(t, "oglPShadow_vFace", "face size"), min: 8, max: 12, step: 1, value: 10, fmt: v => `${2 ** v}²` },
+          { id: "lights", label: "L", min: 1, max: 16, step: 1, value: 8, fmt: v => String(v) },
+        ]}
+        where={[
+          [r`s`, tx(t, "oglPShadow_wS", "the side of one cube face in texels")],
+          [r`4\ \text{B}`, tx(t, "oglPShadow_w4B", "one 32-bit depth value per texel")],
+          [r`L`, tx(t, "oglPShadow_wL", "the number of point lights that cast shadows")],
+        ]}
+        compute={pointCostNumbers(t)}
+        note={tx(t, "oglPShadow_liveCostNote", "Halving the face size divides the memory by four but keeps the passes: the passes are the part that only fewer shadowed lights can fix.")} />
 
       <Callout type="tip" t={t}>
         {tx(t, "oglPShadow_gsTip",

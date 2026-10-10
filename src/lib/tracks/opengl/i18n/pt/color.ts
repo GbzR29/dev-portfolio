@@ -49,6 +49,25 @@ const text: Record<string, string> = {
   oglColor_key3: "Curvas de tons têm pé, trecho linear e ombro; curvas por canal dão um caminho até o branco, com desvio de matiz.",
   oglColor_key4: "ACES: espaço de trabalho amplo (ACEScg) + RRT + ODT por display; o AgX mantém as matizes fortes mais limpas.",
   oglColor_key5: "Saída HDR: primárias Rec.2020, codificação PQ em nits absolutos, interface num branco de papel fixo.",
+
+  // ── Em palavras, fórmulas ao vivo (2026-10-09) ──
+  oglColor_wRGB: "uma cor sRGB linear (decodificada, não os bytes de um arquivo)",
+  oglColor_wXYZ: "a mesma cor em CIE XYZ; Y é a sua luminância",
+  oglColor_wM: "a matriz 3×3 cujas colunas são o XYZ do vermelho puro, do verde puro e do azul puro",
+  oglColor_matWords: "Cada um de X, Y e Z é uma soma ponderada de vermelho, verde e azul. Os pesos são fixados por onde as primárias do sRGB e o ponto branco ficam entre todas as cores visíveis.",
+  oglColor_liveXyz: "Experimente: de RGB linear para XYZ e o diagrama",
+  oglColor_wXy: "a cromaticidade: onde a cor fica no diagrama em ferradura, qualquer que seja o seu brilho",
+  oglColor_liveXyzNote: "O branco (1, 1, 1) cai em Y = 1 e em (0,3127, 0,3290), o ponto branco D65. Ponha G = 1 e os outros em 0: Y = 0,7152, o peso do verde. Divida os três pela metade: x e y não se mexem, só o brilho muda.",
+  oglColor_liveBlack: "o preto não tem cromaticidade",
+  oglColor_evWords: "Cada passo de EV dobra ou divide a luz pela metade. A escolha automática é o número de dobras que leva o brilho típico da cena, medido em escala logarítmica, até o cinza médio.",
+  oglColor_curvesWords: "Três jeitos de dobrar luz sem limite para dentro de 0…1. Reinhard divide por um mais o valor. Hable é uma razão de duas parábolas com pé e ombro, escalada para o ponto branco W cair exatamente em 1. O ajuste do ACES é outra razão de parábolas, com forma inspirada no filme.",
+  oglColor_wE: "o sinal enviado à tela, 0–1; vezes 1023 para um código de 10 bits",
+  oglColor_pqWords: "Tome a luminância como fração de 10 000 nits, eleve a uma potência pequena, passe por uma razão que se curva como a sensibilidade do olho e eleve o resultado a uma potência grande. Valores escuros ganham muitos códigos, os claros, poucos.",
+  oglColor_livePq: "Experimente: de nits para um sinal PQ",
+  oglColor_wNits: "candela por metro quadrado, o brilho que a tela deve emitir",
+  oglColor_livePqNote: "200 nits de branco de papel já usam 57% do sinal, e 1000 nits, 74%: metade de todos os códigos vai para a faixa abaixo de 100 nits, onde o olho distingue mais degraus.",
+  oglColor_liveCode: "código de 10 bits",
+  oglColor_liveSignal: "sinal",
 };
 
 export default text;

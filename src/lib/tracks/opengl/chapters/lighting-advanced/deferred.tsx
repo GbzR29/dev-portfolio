@@ -40,7 +40,8 @@ export function DeferredContent({ t }: { t: TrackTranslations }) {
           [r`F`, tx(t, "oglDeferred_wF", "fragments shaded, including overdraw")],
           [r`P`, tx(t, "oglDeferred_wP", "pixels on screen")],
           [r`L`, tx(t, "oglDeferred_wL", "lights")],
-        ]}>
+        ]}
+        words={tx(t, "oglDeferred_costWords", "Forward rendering lights every fragment it draws with every light, even fragments that a nearer one will hide. Deferred rendering first draws all fragments cheaply, keeping only the nearest per pixel, and then lights each pixel once per light.")}>
         {r`\text{forward} \approx F \times L
 \qquad\qquad
 \text{deferred} \approx F \;+\; P \times L`}
@@ -130,7 +131,8 @@ void main() {
           [r`5/256`, tx(t, "oglDeferred_wCut", "the cut-off: a contribution below about 5 steps of an 8-bit display is treated as invisible (a larger value gives smaller spheres and a visible edge)")],
           [r`r`, tx(t, "oglDeferred_wR", "the positive root of the quadratic: the distance where I_max · F_att falls to 5/256")],
         ]}
-        note={tx(t, "oglDeferred_radiusNote", "Setting F_att · I_max = 5/256 and solving the quadratic K_q d² + K_l d + K_c − 256·I_max/5 = 0.")}>
+        note={tx(t, "oglDeferred_radiusNote", "Setting F_att · I_max = 5/256 and solving the quadratic K_q d² + K_l d + K_c − 256·I_max/5 = 0.")}
+        words={tx(t, "oglDeferred_radiusWords", "Ask at what distance the light's brightest channel, weakened by attenuation, drops to 5 steps out of 256. That question is a quadratic equation in the distance; its positive solution is the radius of the sphere to draw. Multiple Lights works it out step by step.")}>
         {r`r = \frac{-K_l + \sqrt{K_l^{2} - 4K_q\left(K_c - \frac{256}{5} I_{\max}\right)}}{2K_q}`}
       </Equation>
       <p>

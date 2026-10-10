@@ -10,6 +10,9 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { brightNumbers, repeatNumbers } from "../../live/bloom";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -55,11 +58,22 @@ export function BloomContent({ t }: { t: TrackTranslations }) {
           [r`\tau`, tx(t, "oglBloom_wTau", "the threshold: pixels with Y below it do not bloom at all (typically 1.0)")],
           [r`k`, tx(t, "oglBloom_wK", "the knee width: between τ and τ + k the pixel fades in smoothly instead of switching on (typically 0.5)")],
           [r`\operatorname{smoothstep}(a, b, Y)`, tx(t, "oglBloom_wSmooth", "0 below a, 1 above b, and an S-shaped ramp 3s² − 2s³ in between, with s = (Y − a)/(b − a)")],
-        ]}>
+        ]}
+        words={tx(t, "oglBloom_lumWords", "Mix the three channels into one brightness, counting green most and blue least, as the eye does. Pixels darker than the threshold give nothing; a bit above it they fade in; well above it the whole colour goes to the glow.")}>
         {r`Y = 0.2126\,R + 0.7152\,G + 0.0722\,B
 \qquad
 \text{bright} = \mathbf{c}\cdot\operatorname{smoothstep}(\tau,\; \tau + k,\; Y)`}
       </Equation>
+      <LiveFormula label={tx(t, "oglBloom_liveBright", "Try it: does this pixel bloom?")}
+        tex={r`Y = 0.2126\,R + 0.7152\,G + 0.0722\,B \qquad \text{bright} = \mathbf{c}\cdot\operatorname{smoothstep}(1,\ 1.5,\ Y)`}
+        vars={[
+          { id: "R", label: "R", min: 0, max: 4, step: 0.05, value: 2, fmt: v => v.toFixed(2) },
+          { id: "G", label: "G", min: 0, max: 4, step: 0.05, value: 1.2, fmt: v => v.toFixed(2) },
+          { id: "B", label: "B", min: 0, max: 4, step: 0.05, value: 0.4, fmt: v => v.toFixed(2) },
+        ]}
+        where={[[r`\tau = 1,\ k = 0.5`, tx(t, "oglBloom_wLiveTK", "the typical threshold and knee from the list above")]]}
+        compute={brightNumbers(t)}
+        note={tx(t, "oglBloom_liveBrightNote", "Pure blue at 4 has Y = 0.29 and does not bloom, while green at 1.5 alone gives Y = 1.07 and starts to: the weights decide what counts as bright.")} />
       <p>
         {tx(t, "oglBloom_brightWorked",
           "Two pixels with τ = 1 and k = 0.5. A lamp shade at (3, 2.5, 1): Y = 0.638 + 1.788 + 0.072 = 2.498, above 1.5, so it is copied in full. A lit wall at (0.8, 0.6, 0.4): Y = 0.170 + 0.429 + 0.029 = 0.628, below 1, so it contributes nothing. With a hard cut, a pixel hovering around Y = 1 would switch its whole glow on and off from one frame to the next; the knee turns that into a gentle fade.")}
@@ -86,7 +100,8 @@ void main() {
           [r`\frac{1}{2\pi\sigma^2}`, tx(t, "oglBloom_wNormC", "the factor that makes all weights add up to 1, so a flat area keeps its brightness")],
           [r`N`, tx(t, "oglBloom_wN", "the number of taps across the kernel (9 in the shader below)")],
         ]}
-        note={tx(t, "oglBloom_sepNote", "With a 9-tap kernel that is 18 samples per pixel instead of 81 — and repeating the pair of passes widens the blur further at the same cost each time.")}>
+        note={tx(t, "oglBloom_sepNote", "With a 9-tap kernel that is 18 samples per pixel instead of 81 — and repeating the pair of passes widens the blur further at the same cost each time.")}
+        words={tx(t, "oglBloom_sepWords", "The 2D bell is a row bell times a column bell. So blur every row first, then every column of the result: the same blur, with 2N reads per pixel instead of N².")}>
         {r`G(x, y) = \frac{1}{2\pi\sigma^2}\,e^{-\frac{x^2 + y^2}{2\sigma^2}}
 = \underbrace{\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{x^2}{2\sigma^2}}}_{\text{horizontal}}
 \cdot
@@ -98,6 +113,17 @@ N^2 \;\to\; 2N \text{ samples}`}
         {tx(t, "oglBloom_sepWhy",
           "The split works because e^(a + b) = e^a · e^b: the exponent x² + y² separates into an x part and a y part. Blurring every row with the horizontal weights and then every column of that result with the vertical weights multiplies them together, giving each 2D neighbour exactly the weight w[x] · w[y].")}
       </p>
+      <Derivation t={t} label={tx(t, "oglBloom_sepDer", "Splitting the 2D Gaussian, step by step")}
+        steps={[
+          { full: true, tex: r`e^{-\frac{x^2 + y^2}{2\sigma^2}} = e^{-\frac{x^2}{2\sigma^2} \,-\, \frac{y^2}{2\sigma^2}}`,
+            why: tx(t, "oglBloom_sd1", "split the fraction in the exponent into its x part and its y part") },
+          { full: true, tex: r`= e^{-\frac{x^2}{2\sigma^2}} \cdot e^{-\frac{y^2}{2\sigma^2}}`,
+            why: tx(t, "oglBloom_sd2", "a sum in the exponent is a product of powers: e^(a + b) = e^a · e^b") },
+          { full: true, tex: r`\frac{1}{2\pi\sigma^2} = \frac{1}{\sqrt{2\pi}\,\sigma} \cdot \frac{1}{\sqrt{2\pi}\,\sigma}`,
+            why: tx(t, "oglBloom_sd3", "the constant splits too: √(2π)·σ times itself is 2πσ²") },
+          { full: true, tex: r`G(x, y) = g(x)\,g(y), \qquad g(u) = \frac{1}{\sqrt{2\pi}\,\sigma}\,e^{-\frac{u^2}{2\sigma^2}}`,
+            why: tx(t, "oglBloom_sd4", "pair each half of the constant with one exponential: the 2D weight is the 1D weight of the column times the 1D weight of the row") },
+        ]} />
       <GaussKernelFigure t={t} />
 
       <H3>{tx(t, "oglBloom_weightsTitle", "Where the five weights come from")}</H3>
@@ -138,9 +164,23 @@ for (int i = 0; i < 10; ++i) {                  // 5 horizontal + 5 vertical pas
           "A pass cannot read the texture it is writing to (that is a feedback loop, with undefined results), so two framebuffers take turns: each pass reads the texture the previous pass wrote and writes into the other one. Blurring twice with σ is the same as blurring once with σ√2, and n times gives σ√n. So five pairs of passes with σ = 1.73 act like one Gaussian of 1.73 · √5 = 3.9 pixels, and at half resolution that is about 7.7 pixels of the full image.")}
       </p>
       <Equation label={tx(t, "oglBloom_repeatLabel", "Repeated blurs add up in quadrature")}
-        where={[[r`n`, tx(t, "oglBloom_wReps", "the number of times the same blur is applied")]]}>
+        where={[[r`n`, tx(t, "oglBloom_wReps", "the number of times the same blur is applied")]]}
+        words={tx(t, "oglBloom_repeatWords", "Blurs do not add their widths, they add their widths squared, like the sides of a right triangle. So n equal blurs are only √n times as wide as one: four passes double the width.")}>
         {r`\sigma_{\text{total}} = \sqrt{\sigma_1^2 + \sigma_2^2 + \dots} = \sigma\sqrt{n}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglBloom_liveRepeat", "Try it: how wide is the bloom?")}
+        tex={r`\sigma_{\text{total}} = \sigma\sqrt{n} \qquad \text{${tx(t, "oglBloom_liveFullRes", "in full-resolution pixels")}}: \sigma_{\text{total}} \cdot d`}
+        vars={[
+          { id: "sigma", label: "σ", min: 0.5, max: 4, step: 0.01, value: 1.73, fmt: v => v.toFixed(2) },
+          { id: "n", label: "n", min: 1, max: 20, step: 1, value: 5, fmt: v => String(v) },
+          { id: "d", label: "d", min: 1, max: 4, step: 1, value: 2, fmt: v => `1/${v}` },
+        ]}
+        where={[
+          [r`n`, tx(t, "oglBloom_wReps", "the number of times the same blur is applied")],
+          [r`d`, tx(t, "oglBloom_wD", "how much smaller the blur buffer is than the screen: 2 means half resolution, so each of its pixels covers 2 screen pixels")],
+        ]}
+        compute={repeatNumbers(t)}
+        note={tx(t, "oglBloom_liveRepeatNote", "The chapter's setup, σ = 1.73, five pairs at half resolution, gives about 7.7 pixels. Doubling the width by repetition costs four times the passes; halving the resolution again doubles it for free.")} />
 
       <H3>{tx(t, "oglBloom_linearTitle", "Two taps per fetch")}</H3>
       <p>
@@ -154,12 +194,24 @@ for (int i = 0; i < 10; ++i) {                  // 5 horizontal + 5 vertical pas
         ]}>
         {r`w = w_1 + w_2 \qquad o = \frac{o_1 w_1 + o_2 w_2}{w_1 + w_2}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglBloom_pairDer", "Why that offset gives the right weights")}
+        steps={[
+          { full: true, tex: r`\text{fetch}(o) = (1 - f)\,p_1 + f\,p_2, \qquad f = o - o_1`,
+            why: tx(t, "oglBloom_pd1", "linear filtering at a point between two pixels (o₂ = o₁ + 1) blends them, giving the far one the fraction f of the way you went") },
+          { full: true, tex: r`w \cdot \text{fetch}(o) = w_1\,p_1 + w_2\,p_2`,
+            why: tx(t, "oglBloom_pd2", "what we want: one weighted fetch that equals the two taps added up") },
+          { full: true, tex: r`w\,(1 - f) = w_1, \quad w\,f = w_2 \;\Rightarrow\; w = w_1 + w_2, \quad f = \frac{w_2}{w_1 + w_2}`,
+            why: tx(t, "oglBloom_pd3", "match what multiplies p₁ and p₂ on both sides; adding the two equations gives w") },
+          { full: true, tex: r`o = o_1 + \frac{w_2}{w_1 + w_2} = \frac{o_1 w_1 + (o_1 + 1)\,w_2}{w_1 + w_2} = \frac{o_1 w_1 + o_2 w_2}{w_1 + w_2}`,
+            why: tx(t, "oglBloom_pd4", "put o₁ over the common denominator and use o₁ + 1 = o₂. For taps 1 and 2: 1 + 0.1216 / 0.3162 = 1.385") },
+        ]} />
 
       <H2>{tx(t, "oglBloom_combineTitle", "3. Add it back")}</H2>
       <Equation where={[
         [r`s`, tx(t, "oglBloom_wS", "bloom strength: around 0.5–1 after a thresholded bright pass; engines that skip the threshold and blur the whole image mix in only a small fraction, about 0.04")],
         [r`\operatorname{tonemap}`, tx(t, "oglBloom_wTone", "the operator from the HDR chapter, applied after the addition")],
-      ]}>{r`\mathbf{c}_{\text{out}} = \operatorname{tonemap}\big(\mathbf{c}_{\text{scene}} + s\cdot\mathbf{c}_{\text{bloom}}\big)`}</Equation>
+      ]}
+        words={tx(t, "oglBloom_combineWords", "Add a share of the blurred glow to the scene while both are still raw light, and only then squeeze the sum into the screen's range.")}>{r`\mathbf{c}_{\text{out}} = \operatorname{tonemap}\big(\mathbf{c}_{\text{scene}} + s\cdot\mathbf{c}_{\text{bloom}}\big)`}</Equation>
       <p>
         {tx(t, "oglBloom_combineBody",
           "The glow is added while the values are still HDR light, then the sum goes through the tone mapper and the gamma encode. Added after tone mapping, the glow would be clamped at 1 and would push already white pixels into flat white patches.")}
