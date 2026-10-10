@@ -18,6 +18,34 @@ const text: Record<string, string> = {
   figMus_noteMouse: "Clique ou arraste pelas teclas. Depois de um clique, o teclado do computador também toca: A S D F G H J K são as teclas brancas a partir de C3, e W E T Y U as pretas.",
   figMus_noteTouch: "Toque ou deslize pelas teclas; vários dedos tocam um acorde. No iPhone, desligue o modo silencioso para ouvir.",
   figMus_keyboardAria: "teclado de piano, de C3 a C6",
+  figMus_pianoCredit: "Piano: Salamander Grand Piano, de Alexander Holm (CC-BY 3.0).",
+
+  // ── AirFigure ──
+  figMus_airTitle: "Um empurrão passado adiante pelo ar",
+  figMus_vacuum: "tirar o ar",
+  figMus_airF: "f (em câmera lenta)",
+  figMus_airA: "força do empurrão A",
+  figMus_airNote: "Siga a partícula vermelha: ela só balança para a frente e para trás em volta do seu lugar, mas os trechos apertados viajam até o ouvido. Aumente f e os trechos ficam mais próximos (λ = v/f). Depois tire o ar: o alto-falante continua se mexendo, mas nada chega ao ouvido. O som de verdade é algumas centenas de vezes mais rápido que isto.",
+  figMus_speaker: "alto-falante",
+  figMus_vacuumLabel: "vácuo: nada para empurrar",
+  figMus_eardrum: "tímpano",
+  figMus_crowded: "+ apertado",
+  figMus_normal: "normal",
+  figMus_sparse: "− espaçado",
+  figMus_pressure: "pressão",
+
+  // ── WaveFigure ──
+  figMus_waveTitle: "Um tom puro: a pressão no seu ouvido ao longo do tempo",
+  figMus_win10: "janela de 10 ms",
+  figMus_win4: "4 períodos",
+  figMus_freq: "frequência f",
+  figMus_amp: "amplitude A",
+  figMus_try: "teste:",
+  figMus_cycles: "ciclos em 10 ms",
+  figMus_waveNote: "Aperte ouvir e varra a frequência. Comece com o volume baixo: tons agudos soam mais fortes do que parecem. Abaixo de uns 60 Hz, alto-falantes de notebook e de celular quase não movem o ar, então você pode ver uma onda que não consegue ouvir. O topo da audição cai com a idade: a maioria dos adultos deixa de ouvir em algum ponto entre 14 e 17 kHz.",
+  figMus_pAxis: "pressão (acima / abaixo do normal)",
+  figMus_stop: "parar",
+  figMus_listen: "ouvir",
 };
 
 export default text;

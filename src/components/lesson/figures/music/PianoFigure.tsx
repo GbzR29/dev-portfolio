@@ -3,8 +3,9 @@
 import { useCallback, useRef, useState } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { Choice, Figure, Readout, Row, Slider, useVisible } from "@/components/lesson/kit/figure";
-import { getVolume, setVolume, startAudio } from "@/components/lesson/kit/audio/context";
+import { Choice, Figure, Readout, Row, useVisible } from "@/components/lesson/kit/figure";
+import { startAudio } from "@/components/lesson/kit/audio/context";
+import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
 import { midiToFreq, noteName } from "@/components/lesson/kit/audio/notes";
 import { loadPiano, pianoReady, pianoSource, playPiano } from "@/components/lesson/kit/audio/piano";
 import { playTone, type Wave } from "@/components/lesson/kit/audio/synth";
@@ -28,7 +29,6 @@ export function MusicPianoFigure({ t }: { t?: TrackTranslations }) {
   const [load, setLoad] = useState<Load>(() => (pianoReady() ? "ready" : "idle"));
   const [pressed, setPressed] = useState<ReadonlySet<number>>(new Set());
   const [last, setLast] = useState<number | null>(null);
-  const [vol, setVol] = useState(getVolume);
   const vis = useVisible<HTMLDivElement>();
   const voices = useVoices(vis.on);
 
@@ -102,12 +102,12 @@ export function MusicPianoFigure({ t }: { t?: TrackTranslations }) {
           )}
           {status && <Readout>{status}</Readout>}
         </Row>
-        <Slider label={tx(t, "figMus_volume", "volume")} value={vol} min={0} max={1} step={0.01}
-          onChange={v => { setVol(v); setVolume(v); }} fmt={v => `${Math.round(v * 100)} %`} />
+        <VolumeSlider t={t} />
       </>}
       note={<>
         <span data-mouse-only>{tx(t, "figMus_noteMouse", "Click or drag across the keys. After a click, the computer keys play too: A S D F G H J K are the white keys from C3, W E T Y U the black ones.")}</span>
         <span data-touch-only>{tx(t, "figMus_noteTouch", "Tap or slide across the keys; several fingers play a chord. On an iPhone, turn silent mode off to hear it.")}</span>
+        {" "}{tx(t, "figMus_pianoCredit", "Piano: Salamander Grand Piano by Alexander Holm (CC-BY 3.0).")}
       </>}>
       <div ref={vis.ref} className="p-3 md:p-4" onPointerEnter={preload} onFocus={preload}>
         <PianoKeyboard lo={LO} hi={HI} pressed={pressed} onDown={down} onUp={up}

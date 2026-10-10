@@ -21,7 +21,12 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
   - `synth.ts`: oscilador (seno, triângulo, quadrada, dente-de-serra) com envelope ADSR;
   - `PianoKeyboard.tsx`: teclado em SVG, com vários dedos ao mesmo tempo (acordes no celular), glissando arrastando e teclado do computador;
   - `useVoices.ts`: corta as notas quando o widget sai da tela ou desmonta;
-  - widget de teste `figures/music/PianoFigure.tsx` (piano/sintetizador, leitura da frequência e da gravação usada) na página temporária `/learn/sound-test`, a apagar quando o primeiro capítulo de Música usar o piano;
+  - `VolumeSlider.tsx`: o volume geral como slider de figura; `playTone` agora devolve um tom que muda de frequência e volume enquanto toca;
+- **Trilha de Música aberta, capítulo 1: O que é som?** (seção Som; `tracks/music/`, card deixou de ser "em breve"). Som como empurrão passado adiante pelo ar, pressão (tabela do som mais baixo ao doloroso), tom puro p(t) = A·sen(2πft), T = 1/f, faixa da audição, dedução de λ = v/f e fórmula ao vivo de λ com a temperatura do ar, velocidade do som em materiais, do som à música. Widgets novos em `figures/music/`:
+  - **AirFigure**: alto-falante, partículas de ar e tímpano em câmera lenta, faixa de pressão com λ marcado, botão "tirar o ar" (vácuo: nada chega ao ouvido);
+  - **WaveFigure**: osciloscópio que toca o que mostra, frequência logarítmica de 20 Hz a 20 kHz, amplitude, botões para testar a audição (até 16 kHz), janela de 10 ms ou 4 períodos;
+  - **PianoFigure**: o piano tocável no fim do capítulo (com crédito do Salamander); a página provisória `/learn/sound-test` foi apagada;
+  - tradução PT completa (capítulo e widgets);
 
 - **Fórmulas dinâmicas na seção Técnicas Avançadas do OpenGL** (lote 7 da expansão das fórmulas interativas; módulos novos em `live/`: skeletal, text, picking, oit, reflections, volumetrics, decals, terrain). "Em palavras" nas fórmulas principais dos 8 capítulos; fórmulas largas demais no desktop foram quebradas em linhas:
   - **Skeletal Animation**: fórmulas ao vivo do braço de dois ossos (G = G_pai · L), do slerp com a troca de sinal de q₀·q₁ < 0, de quanto o LBS estrangula uma junta torcida (papel de bala contra DQS) e do IK de dois ossos; dedução de um vértice passando por K = G·B⁻¹ com números;

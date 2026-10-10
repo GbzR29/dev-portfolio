@@ -76,7 +76,7 @@ export const TRACK_CATALOG: TrackInfo[] = [
     descKey: "trackChemistryDesc", descFallback: "Chemistry from the ground up: atoms and the periodic table, bonds and molecules, moles and reactions, gases and solutions, energy and reaction rates, equilibrium, acids and bases — every formula explained, every idea interactive.",
   },
   {
-    id: "music", path: "Music", title: "Music", accentColor: "#f43f5e", status: "coming-soon", plannedLessons: 20,
+    id: "music", path: "Music", title: "Music", accentColor: "#f43f5e", status: "available", plannedLessons: 20,
     levelKey: "begAdv", levelFallback: "Beginner → Advanced",
     descKey: "trackMusicDesc", descFallback: "Music from the ground up: sound and pitch, rhythm and meter, notes and the staff, intervals and scales, chords and harmony, keys and progressions, melody and form — every idea heard, every rule explained.",
   },
