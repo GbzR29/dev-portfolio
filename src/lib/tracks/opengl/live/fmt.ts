@@ -20,5 +20,8 @@ export function sci(v: number, digits = 3) {
   return `${num(m, 2)} \\times 10^{${e}}`;
 }
 
+/** An integer with thin spaces between groups of three digits: 97 542 144. */
+export const big = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "\\,");
+
 /** (x, y, z) as TeX. */
 export const vec = (v: number[], d = 2) => `(${v.map(x => num(x, d)).join(",\\ ")})`;

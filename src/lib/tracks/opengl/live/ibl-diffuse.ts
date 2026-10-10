@@ -2,12 +2,9 @@
 
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { num, r } from "./fmt";
+import { big, num, r } from "./fmt";
 
 type V = Record<string, number>;
-
-/** An integer with thin spaces between groups of three digits: 97 542 144. */
-export const big = (n: number) => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "\\,");
 
 /** Cost of the convolution shader: loop steps per texel × texels of the six faces. */
 export const convCostNumbers = (t: TrackTranslations) => ({ delta, size }: V) => {

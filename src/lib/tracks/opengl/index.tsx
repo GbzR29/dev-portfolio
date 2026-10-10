@@ -66,11 +66,11 @@ export const openGLChapters: Chapter[] = [
   { id: "ibl-specular",    section: PBR,             title: "IBL: Specular",             minRead: 16, load: () => import("./chapters/pbr/ibl-specular").then((m) => m.IblSpecularContent) },
 
   // ── Post-Processing & Effects ────────────────────────────────────────────
-  { id: "post-processing", section: POST,            title: "Post-Processing",           minRead: 14, load: () => import("./chapters/post").then((m) => m.PostProcessingContent) },
-  { id: "ssao",            section: POST,            title: "SSAO",                      minRead: 14, load: () => import("./chapters/post").then((m) => m.SsaoContent) },
-  { id: "parallax-mapping", section: POST,           title: "Parallax Mapping",          minRead: 12, load: () => import("./chapters/post").then((m) => m.ParallaxContent) },
-  { id: "anti-aliasing",   section: POST,            title: "Anti-Aliasing",             minRead: 14, load: () => import("./chapters/post").then((m) => m.AntiAliasingContent) },
-  { id: "taa",             section: POST,            title: "Temporal AA & Upscaling",   minRead: 16, load: () => import("./chapters/temporal").then((m) => m.TaaContent) },
+  { id: "post-processing", section: POST,            title: "Post-Processing",           minRead: 14, load: () => import("./chapters/post/post-processing").then((m) => m.PostProcessingContent) },
+  { id: "ssao",            section: POST,            title: "SSAO",                      minRead: 14, load: () => import("./chapters/post/ssao").then((m) => m.SsaoContent) },
+  { id: "parallax-mapping", section: POST,           title: "Parallax Mapping",          minRead: 12, load: () => import("./chapters/post/parallax").then((m) => m.ParallaxContent) },
+  { id: "anti-aliasing",   section: POST,            title: "Anti-Aliasing",             minRead: 14, load: () => import("./chapters/post/anti-aliasing").then((m) => m.AntiAliasingContent) },
+  { id: "taa",             section: POST,            title: "Temporal AA & Upscaling",   minRead: 16, load: () => import("./chapters/post/taa").then((m) => m.TaaContent) },
 
   // ── Model Loading ────────────────────────────────────────────────────────
   { id: "model-loading",   section: MODELS,          title: "Model Loading (Assimp)",    minRead: 13, load: () => import("./chapters/models").then((m) => m.ModelLoadingContent) },

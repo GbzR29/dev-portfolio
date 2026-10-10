@@ -729,23 +729,23 @@
   },
   "opengl/post-processing": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/ssao": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/parallax-mapping": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/anti-aliasing": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/taa": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-09"
   },
   "opengl/model-loading": {
     "created": "2026-09-03",
