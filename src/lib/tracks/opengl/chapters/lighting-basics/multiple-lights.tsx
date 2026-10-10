@@ -10,6 +10,10 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { ATT_ROWS } from "../../live/light-casters";
+import { costNumbers, radiusNumbers } from "../../live/multiple-lights";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { LightingSceneFigure } from "@/components/lesson/figures/lighting/LightingSceneFigure";
@@ -48,7 +52,8 @@ export function MultipleLightsContent({ t }: { t: TrackTranslations }) {
           [r`N`, tx(t, "oglMulti_wN", "the number of point lights")],
           [r`\mathbf{c}_{\text{spot}}`, tx(t, "oglMulti_wSpot", "the spotlight (a flashlight held by the camera, for example)")],
           [r`\mathbf{E}`, tx(t, "oglMulti_wE", "emission from the material, added once")],
-        ]}>
+        ]}
+        words={tx(t, "oglMulti_eqWords", "Light simply adds up: work out each light on its own, as if it were the only one, and add the colours. The material's own glow is added once at the end.")}>
         {r`\mathbf{c}_{\text{final}} \;=\; \mathbf{c}_{\text{dir}} \;+\; \sum_{i=0}^{N-1} \mathbf{c}_{\text{point},\,i} \;+\; \mathbf{c}_{\text{spot}} \;+\; \mathbf{E}`}
       </Equation>
 
@@ -132,6 +137,17 @@ void main() {
         {tx(t, "oglMulti_radiusBody",
           "The attenuation 1 / (c + l·d + q·d²) never reaches zero, so in principle every light touches every fragment. In practice, once a light's contribution falls below what an 8-bit channel can show, it can be skipped. A common threshold is 5/256 of the light's brightest channel I. Setting I · att(d) = 5/256 and solving the quadratic for d:")}
       </p>
+      <Derivation t={t} label={tx(t, "oglMulti_radDer", "Solving for the radius")}
+        steps={[
+          { full: true, tex: r`\frac{I_{\max}}{c + l\,d + q\,d^2} = \frac{5}{256}`,
+            why: tx(t, "oglMulti_rd1", "the light's brightest channel, after attenuation, has dropped to the threshold") },
+          { full: true, tex: r`c + l\,d + q\,d^2 = \tfrac{256}{5}\, I_{\max}`,
+            why: tx(t, "oglMulti_rd2", "multiply both sides by the bottom and by 256/5: the distance is now out of the fraction") },
+          { full: true, tex: r`q\,d^2 + l\,d + \left(c - \tfrac{256}{5} I_{\max}\right) = 0`,
+            why: tx(t, "oglMulti_rd3", "move everything to one side: a quadratic in d, with a = q, b = l and a negative constant term") },
+          { full: true, tex: r`d_{\max} = \frac{-l + \sqrt{l^2 - 4q\left(c - \tfrac{256}{5} I_{\max}\right)}}{2q}`,
+            why: tx(t, "oglMulti_rd4", "the quadratic formula. The constant term is negative, so the square root is larger than l and only the + sign gives a positive distance") },
+        ]} />
       <Equation label={tx(t, "oglMulti_eqRadius", "Radius beyond which a light can be ignored")}
         where={[
           [r`c, l, q`, tx(t, "oglMulti_wClq", "the constant, linear and quadratic attenuation terms")],
@@ -140,6 +156,14 @@ void main() {
         ]}>
         {r`q\,d^2 + l\,d + \left(c - \tfrac{256}{5} I_{\max}\right) = 0 \quad\Longrightarrow\quad d_{\max} = \frac{-l + \sqrt{l^2 - 4q\left(c - \tfrac{256}{5} I_{\max}\right)}}{2q}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglMulti_liveRadius", "Try it: the radius of a light")}
+        tex={r`d_{\max} = \frac{-l + \sqrt{l^2 - 4q\left(c - \tfrac{256}{5} I_{\max}\right)}}{2q}`}
+        vars={[
+          { id: "row", label: tx(t, "oglMulti_lvRow", "row (reach)"), min: 0, max: ATT_ROWS.length - 1, step: 1, value: 1, fmt: v => String(ATT_ROWS[v][0]) },
+          { id: "imax", label: <>I<sub>max</sub></>, min: 0.25, max: 5, step: 0.25, value: 1, fmt: v => String(v) },
+        ]}
+        compute={radiusNumbers}
+        note={tx(t, "oglMulti_liveRadiusNote", "The start is the paragraph's example: the 13-unit row with I = 1 gives 10.3. Each row's radius comes out a little short of its name, because the table aims at about 1% and this threshold, 5/256, is about 2%. Doubling I does not double the radius: far away the d² term rules, so the radius grows only like √I.")} />
       <p>
         {tx(t, "oglMulti_radiusEx",
           "For the 13 m preset (c, l, q) = (1, 0.35, 0.44) and I = 1: c − 51.2 = −50.2, the root is √(0.1225 + 4 · 0.44 · 50.2) = √88.47 = 9.41, so d = (−0.35 + 9.41) / 0.88 = 10.3 m. For the 7 m preset (1, 0.7, 1.8) with I = 1.5 it is 6.3 m. The radius is what light culling uses: tiled, clustered and deferred renderers only evaluate the lights whose sphere of that radius touches the fragment.")}
@@ -168,6 +192,14 @@ void main() {
         {tx(t, "oglMulti_costEx",
           "At 1920 × 1080 (2.07 million pixels) with an overdraw of 2, that is 4.1 million fragments. With 32 lights: 133 million light evaluations per frame, 8 billion per second at 60 fps, most of them for lights too far away to matter or for fragments later hidden behind others. Culling by radius removes the first waste; deferred shading removes the second.")}
       </p>
+      <LiveFormula label={tx(t, "oglMulti_liveCost", "Try it: light evaluations at 1080p and 60 fps")}
+        tex={r`\text{cost} \approx N_{\text{lights}} \times 1920 \cdot 1080 \cdot \text{overdraw}`}
+        vars={[
+          { id: "n", label: tx(t, "oglMulti_lvN", "lights"), min: 1, max: 256, step: 1, value: 32, fmt: v => String(v) },
+          { id: "over", label: "overdraw", min: 1, max: 4, step: 0.5, value: 2, fmt: v => `${v}×` },
+        ]}
+        compute={costNumbers}
+        note={tx(t, "oglMulti_liveCostNote", "The start is the paragraph's example: 32 lights, overdraw 2. Each evaluation is a few dozen instructions (two normalizes, two dots, a pow, the attenuation), so billions per second is what a full GPU can do and nothing more. Cut the overdraw to 1 (deferred shading) or the lights per fragment to a handful (culling) and the number drops by the same factor.")} />
 
       <Callout type="warn" t={t}>
         {tx(t, "oglMulti_warn",

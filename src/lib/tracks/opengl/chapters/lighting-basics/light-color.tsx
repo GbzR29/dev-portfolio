@@ -75,7 +75,8 @@ export function LightColorContent({ t }: { t: TrackTranslations }) {
           [r`\mathbf{L}`, tx(t, "oglLC_wL", "light colour (what the source emits)")],
           [r`\mathbf{S}`, tx(t, "oglLC_wS", "surface colour (fraction of each channel it reflects)")],
           [r`\odot`, tx(t, "oglLC_wOdot", "component-wise product — what vec3 * vec3 does in GLSL")],
-        ]}>
+        ]}
+        words={tx(t, "oglLC_eqWords", "Each colour channel is worked out on its own: the red that arrives times the share of red the surface reflects, and the same for green and for blue. A surface can only send back light that the source actually contains.")}>
         {r`\mathbf{c} \;=\; \mathbf{L} \odot \mathbf{S} \;=\; \begin{pmatrix} \red{L_r S_r} \\ \green{L_g S_g} \\ \blue{L_b S_b} \end{pmatrix}`}
       </Equation>
 
@@ -503,7 +504,8 @@ int main() {
           [r`\rho(\lambda)`, tx(t, "oglLC_wRho", "the surface's reflectance at λ: the fraction it sends back, between 0 and 1")],
           [r`s_k(\lambda)`, tx(t, "oglLC_wSk", "the sensitivity of channel k (R, G or B) to wavelength λ")],
           [r`\int \ldots\, d\lambda`, tx(t, "oglLC_wInt", "the sum over all visible wavelengths, 400 to 700 nm")],
-        ]}>
+        ]}
+        words={tx(t, "oglLC_specWords", "For every wavelength, multiply how much light there is, how much of it the surface reflects and how strongly the channel responds to it; then add up over all wavelengths. Doing it once per channel gives R, G and B.")}>
         {r`c_k \;=\; \int_{400}^{700} E(\lambda)\,\rho(\lambda)\,s_k(\lambda)\,d\lambda, \qquad k \in \{R, G, B\}`}
       </Equation>
       <p>

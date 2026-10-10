@@ -14,6 +14,13 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-09
 
+- **Fórmulas dinâmicas na seção Iluminação do OpenGL** (lote 2 da expansão das fórmulas interativas para todas as trilhas):
+  - **Basic Lighting (Phong)**: "em palavras" no modelo de Phong, no termo difuso e no especular. O termo ambiente ganhou rótulo e "onde". Viraram deduções passo a passo a irradiância numa superfície inclinada (E = E₀ cos θ), a matriz normal (G = (M⁻¹)ᵀ) e o vetor de reflexão (r = 2(n·l)n − l, pela projeção). Duas fórmulas ao vivo: a largura do brilho em função de α (α = 32 → cerca de 12°) e Phong num ponto com θ, φ e α, usando os números do phong.frag e mostrando quando a soma passa de 1;
+  - **Light Casters**: "em palavras" e "onde" na lei do inverso do quadrado; "em palavras" na atenuação e no spot de borda suave. Dedução da rampa suave a partir de duas condições. Duas fórmulas ao vivo: atenuação com uma linha da tabela de alcance e a distância, e o spot com θ, φ e γ;
+  - **Multiple Lights**: "em palavras" na soma das luzes. Dedução do raio de corte (limite 5/256 → equação do segundo grau). Duas fórmulas ao vivo: o raio de uma luz por linha da tabela e I_max, e o custo em avaliações de luz por quadro e por segundo em 1080p;
+  - **Light & Color, Materials e Lighting Maps**: "em palavras" nas fórmulas principais;
+  - as contas das fórmulas ao vivo ficam em `src/lib/tracks/opengl/live/` (lighting, light-casters, multiple-lights); tradução PT.
+
 - **Duração condicional na ruína do apostador, no widget "Paredes absorventes" de "Cadeias de Markov" (Matemática)**, a última parte (9) do plano da lista de exercícios de Markov:
   - **dois modos novos, "passos, se ganhar" e "passos, se arruinar"**: as barras dão o número esperado de passos contado só nas corridas que terminam na meta (ou só nas que terminam na ruína), exato em frações. A equação do primeiro passo de cada barra usa os pesos condicionados p′ = p·hᵢ₊₁/hᵢ e q′ = q·hᵢ₋₁/hᵢ, e a corda do desenho também;
   - **a simulação agora guarda em que passo cada passeador parou** e mostra a média de passos só dos vencedores (ou só dos arruinados), para comparar com o valor exato (ex.: 2,49 simulado contra 32/13 ≈ 2,46);

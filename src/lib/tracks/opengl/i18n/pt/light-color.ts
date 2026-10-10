@@ -178,6 +178,10 @@ const text: Record<string, string> = {
   oglLC_key4: "Cores de superfície são frações em [0, 1]; cores de luz podem passar de 1 quando calculadas em ponto flutuante.",
   oglLC_key5: "O produto RGB aproxima um produto por comprimento de onda; é exato para refletâncias planas e erra com luzes de pico, como lâmpadas de sódio.",
   oglLC_key6: "Cada programa de shader tem os seus próprios uniforms. glUniform* escreve no programa em uso, e uma location −1 é ignorada em silêncio.",
+
+  // ── Fórmulas em palavras (2026-10-09) ──
+  oglLC_eqWords: "Cada canal de cor é calculado sozinho: o vermelho que chega vezes a parte do vermelho que a superfície reflete, e o mesmo para o verde e para o azul. Uma superfície só pode devolver luz que a fonte realmente contém.",
+  oglLC_specWords: "Para cada comprimento de onda, multiplique quanta luz há, quanto dela a superfície reflete e quão forte o canal responde a ele; depois some sobre todos os comprimentos de onda. Fazer isso uma vez por canal dá R, G e B.",
 };
 
 export default text;

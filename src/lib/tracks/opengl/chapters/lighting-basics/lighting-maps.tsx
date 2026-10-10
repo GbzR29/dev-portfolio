@@ -46,7 +46,8 @@ export function LightingMapsContent({ t }: { t: TrackTranslations }) {
         where={[
           [r`(u, v)`, tx(t, "oglMaps_wUv", "the fragment's texture coordinates, interpolated from the vertices; 0 to 1 across the image")],
           [r`\texttt{texture}(\ldots)`, tx(t, "oglMaps_wTex", "GLSL's sampling function: fetches (and filters) the texel colour at uv")],
-        ]}>
+        ]}
+        words={tx(t, "oglMaps_lookupWords", "Instead of one diffuse colour for the whole object, each fragment reads its own colour from an image, at the point of the image its texture coordinates point to.")}>
         {r`\mathbf{k}_d \;\longrightarrow\; \mathbf{k}_d(u, v) = \texttt{texture}(\text{diffuseMap},\, uv)`}
       </Equation>
 
@@ -107,7 +108,8 @@ export function LightingMapsContent({ t }: { t: TrackTranslations }) {
           [r`\mathbf{D}(uv)`, tx(t, "oglMaps_wD", "the diffuse map's colour at the fragment, used for both ambient and diffuse")],
           [r`\mathbf{S}(uv)`, tx(t, "oglMaps_wS", "the specular map's value (or colour) at the fragment")],
           [r`\mathbf{E}(uv)`, tx(t, "oglMaps_wE", "the emission map's colour: added as is, never multiplied by any light")],
-        ]}>
+        ]}
+        words={tx(t, "oglMaps_eqWords", "Phong as before, with the material read from images: the diffuse map colours the ambient and diffuse light, the specular map says where the surface shines, and the emission map adds its own glow on top, with no light needed.")}>
         {r`\mathbf{c} = \mathbf{L}_a \odot \mathbf{D}(uv) + \mathbf{L}_d \odot \mathbf{D}(uv) \max(0,\dotp{\vN}{\vL}) + \mathbf{L}_s \odot \mathbf{S}(uv) \max(0,\dotp{\vR}{\vV})^{\alpha} + \mathbf{E}(uv)`}
       </Equation>
       <p>

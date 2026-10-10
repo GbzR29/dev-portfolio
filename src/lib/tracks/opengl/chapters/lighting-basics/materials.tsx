@@ -49,7 +49,8 @@ export function MaterialsContent({ t }: { t: TrackTranslations }) {
           [r`\vN, \vL, \vV, \vR`, tx(t, "oglMtl_wVecs", "unit vectors at the fragment: the normal, toward the light, toward the eye, and L mirrored about N")],
           [r`\max(0, \cdot)`, tx(t, "oglMtl_wMax", "a surface facing away from the light gets no direct light, instead of a negative amount")],
           [r`\alpha`, tx(t, "oglMtl_wA", "material shininess")],
-        ]}>
+        ]}
+        words={tx(t, "oglMtl_eqWords", "The same three Phong terms, but now each has its own colour on both sides: the light says how much red, green and blue it gives to that term, and the material says how much of each it sends back. The two are multiplied channel by channel.")}>
         {r`\mathbf{c} \;=\; \mathbf{k}_a \odot \mathbf{L}_a \;+\; \mathbf{k}_d \odot \mathbf{L}_d \max(0, \dotp{\vN}{\vL}) \;+\; \mathbf{k}_s \odot \mathbf{L}_s \max(0, \dotp{\vR}{\vV})^{\alpha}`}
       </Equation>
 

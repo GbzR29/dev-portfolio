@@ -3,6 +3,9 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { ATT_ROWS, attenuationNumbers, spotNumbers } from "../../live/light-casters";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { AttenuationFigure } from "@/components/lesson/figures/lighting/AttenuationFigure";
@@ -54,7 +57,12 @@ vec3 lightDir = normalize(-light.direction);`}</CodeBlock>
         {tx(t, "oglCast_attenPhys",
           "A bulb sends its light out in every direction. At distance d that light is spread over the surface of a sphere of radius d, so the intensity per unit area falls with that area — the inverse-square law:")}
       </p>
-      <Equation label={tx(t, "oglCast_isqLabel", "Inverse-square law")}>
+      <Equation label={tx(t, "oglCast_isqLabel", "Inverse-square law")}
+        where={[
+          [r`\Phi`, tx(t, "oglCast_wPhiPow", "the bulb's total power: all the light it sends out each second")],
+          [r`4\pi d^{2}`, tx(t, "oglCast_wSphere", "the area of a sphere of radius d, the surface that light is spread over at distance d")],
+        ]}
+        words={tx(t, "oglCast_isqWords", "The same light is shared by a bigger and bigger sphere. Twice as far, the sphere has four times the area, so each bit of it gets a quarter of the light; three times as far, a ninth.")}>
         {r`I(d) \;=\; \frac{\Phi}{4\pi d^{2}} \;\;\propto\;\; \frac{1}{d^{2}}`}
       </Equation>
       <p>
@@ -66,7 +74,8 @@ vec3 lightDir = normalize(-light.direction);`}</CodeBlock>
           [r`K_c`, tx(t, "oglCast_wKc", "constant, usually 1 — keeps F ≤ 1 near the light")],
           [r`K_l`, tx(t, "oglCast_wKl", "linear — dominates at medium distance")],
           [r`K_q`, tx(t, "oglCast_wKq", "quadratic — takes over far away")],
-        ]}>
+        ]}
+        words={tx(t, "oglCast_attWords", "Divide the light by a number that starts at 1 right next to the bulb and grows with distance: first mostly in proportion to d, and far away like d², as the inverse-square law says.")}>
         {r`F_{att}(d) \;=\; \frac{1}{K_c + K_l\, d + K_q\, d^{2}}`}
       </Equation>
 
@@ -100,6 +109,15 @@ specular *= attenuation;`}</CodeBlock>
           ["3250", "1.0", "0.0014", "0.000007"],
         ]}
       />
+      <LiveFormula label={tx(t, "oglCast_liveAtt", "Try it: attenuation with a row of the table")}
+        tex={r`F_{att}(d) = \frac{1}{1 + K_l\, d + K_q\, d^{2}}`}
+        vars={[
+          { id: "row", label: tx(t, "oglCast_lvRow", "row (reach)"), min: 0, max: ATT_ROWS.length - 1, step: 1, value: 1, fmt: v => String(ATT_ROWS[v][0]) },
+          { id: "d", label: "d", min: 0, max: 100, step: 1, value: 2, fmt: v => String(v) },
+        ]}
+        compute={attenuationNumbers(t)}
+        note={tx(t, "oglCast_liveAttNote", "The start is the 13-unit row used in Multiple Lights, at d = 2: a bit under a third of the light is left. Slide d up to the row's reach, 13, and F_att falls to about 1%. Then pick a longer row and watch the same distance keep much more light. At d = 0 every row gives exactly 1, thanks to K_c = 1.")} />
+
       <Callout type="info" t={t}>
         {tx(t, "oglCast_tableNote",
           "Read down the columns: as the reach grows, K_l shrinks roughly like 1/d and K_q like 1/d², which keeps both terms the same size at the chosen distance. K_c stays 1 so the light is never brighter than its colour at d = 0. These values were tuned for images without gamma correction. With the linear workflow of the Gamma Correction chapter a plain inverse square looks right, and the PBR chapters use exactly that.")}
@@ -115,9 +133,32 @@ specular *= attenuation;`}</CodeBlock>
           [r`\theta`, tx(t, "oglCast_wTheta", "angle between the spot direction and the direction to the fragment")],
           [r`\phi`, tx(t, "oglCast_wPhi", "inner cut-off: full intensity inside")],
           [r`\gamma`, tx(t, "oglCast_wGamma", "outer cut-off: zero outside")],
-        ]}>
+        ]}
+        words={tx(t, "oglCast_softWords", "Full light inside the inner cone, none outside the outer cone, and in the ring between them a straight fade from 1 to 0, measured in cosines.")}>
         {r`I \;=\; \operatorname{clamp}\!\left(\frac{\cos\theta - \cos\gamma}{\cos\phi - \cos\gamma},\; 0,\; 1\right)`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglCast_softDer", "Where the soft-edge formula comes from")}
+        steps={[
+          { full: true, tex: r`I = a\cos\theta + b`,
+            why: tx(t, "oglCast_sd1", "we want a straight ramp in cos θ, because cos θ is what the shader gets from the dot product; a and b are still unknown") },
+          { full: true, tex: r`a\cos\gamma + b = 0, \qquad a\cos\phi + b = 1`,
+            why: tx(t, "oglCast_sd2", "the two conditions: no light at the outer edge (θ = γ), full light at the inner edge (θ = φ)") },
+          { full: true, tex: r`a\,(\cos\phi - \cos\gamma) = 1 \;\Rightarrow\; a = \frac{1}{\cos\phi - \cos\gamma}, \quad b = -a\cos\gamma`,
+            why: tx(t, "oglCast_sd3", "subtract the first condition from the second: b cancels and a is left; then b comes from the first condition") },
+          { full: true, tex: r`I = a\,(\cos\theta - \cos\gamma) = \frac{\cos\theta - \cos\gamma}{\cos\phi - \cos\gamma}`,
+            why: tx(t, "oglCast_sd4", "put b back in and take a out as a common factor") },
+          { full: true, tex: r`I = \operatorname{clamp}\!\left(\frac{\cos\theta - \cos\gamma}{\cos\phi - \cos\gamma},\ 0,\ 1\right)`,
+            why: tx(t, "oglCast_sd5", "inside the inner cone the line keeps rising past 1, and outside the outer cone it goes negative; clamp cuts both ends") },
+        ]} />
+      <LiveFormula label={tx(t, "oglCast_liveSpot", "Try it: the soft edge of a spotlight")}
+        tex={r`I = \operatorname{clamp}\!\left(\frac{\cos\theta - \cos\gamma}{\cos\phi - \cos\gamma},\ 0,\ 1\right)`}
+        vars={[
+          { id: "theta", label: "θ", min: 0, max: 30, step: 0.5, value: 15, fmt: v => `${v}°` },
+          { id: "inner", label: "φ", min: 1, max: 25, step: 0.5, value: 12.5, fmt: v => `${v}°` },
+          { id: "outer", label: "γ", min: 2, max: 30, step: 0.5, value: 17.5, fmt: v => `${v}°` },
+        ]}
+        compute={spotNumbers(t)}
+        note={tx(t, "oglCast_liveSpotNote", "φ = 12.5° and γ = 17.5° are the usual torch values. θ = 15° sits in the middle of the ring, but I is not exactly 0.5: the fade is straight in cos θ, not in the angle. Move γ closer to φ and the edge turns sharp.")} />
 
       <SpotlightFigure t={t} />
       <LightingSceneFigure t={t} mode="spot" />
