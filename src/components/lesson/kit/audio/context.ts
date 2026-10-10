@@ -32,6 +32,23 @@ export function audio() {
   return { ctx, out: master! };
 }
 
+let tap: AnalyserNode | null = null;
+
+/**
+ * An analyser that hears everything the page plays (after the master volume),
+ * for spectrum and scope widgets. Created on first use; it only listens.
+ */
+export function analyser() {
+  const { ctx, out } = audio();
+  if (!tap) {
+    tap = ctx.createAnalyser();
+    tap.fftSize = 8192;                                       // ≈ 5.9 Hz per bin at 48 kHz
+    tap.smoothingTimeConstant = 0.5;
+    out.connect(tap);
+  }
+  return tap;
+}
+
 /** Call from a click/tap/key handler: wakes the context if the browser put it to sleep. */
 export function startAudio() {
   const a = audio();

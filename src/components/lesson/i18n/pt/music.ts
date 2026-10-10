@@ -81,6 +81,44 @@ const text: Record<string, string> = {
   figMus_semiHeard2: "ouvido",
   figMus_oneSemi: "1 semitom",
   figMus_playRun: "tocar as 13 notas",
+
+  // ── HarmonicSeriesFigure ──
+  figMus_hsTitle: "A série harmônica numa corda",
+  figMus_hsHarm: "harmônico",
+  figMus_hsPick: "clique numa linha, suba a série ou toque as oito juntas",
+  figMus_hsNote: "Cada linha é um jeito de a corda vibrar, milhares de vezes mais devagar. Os pontos são os nós, pontos que nunca se mexem. O modo n encaixa n meias-ondas, então vibra n vezes mais rápido: 110, 220, 330… Hz. Suba a série e você ouve um toque de corneta; toque as oito juntas e elas se fundem numa nota só, A2. A coluna ¢ é a distância até a tecla do piano mais próxima, em cents (capítulo 2).",
+  figMus_hsClimb: "subir a série",
+  figMus_hsAll: "as oito juntas",
+
+  // ── HarmonicBuilderFigure ──
+  figMus_hbTitle: "Monte um timbre com harmônicos",
+  figMus_hbRecipes: "receitas:",
+  figMus_hb_sine: "senoide",
+  figMus_hb_square: "quadrada",
+  figMus_hb_saw: "dente-de-serra",
+  figMus_hb_tri: "triangular",
+  figMus_hb_nofund: "sem fundamental",
+  figMus_hbClear: "zerar",
+  figMus_hbShuffle: "embaralhar fases",
+  figMus_hbAlign: "alinhar as fases de novo",
+  figMus_hbOn: "harmônicos ligados",
+  figMus_hbRepeats: "repete",
+  figMus_hbTimes: "vezes por segundo",
+  figMus_hbNoteMouse: "Arraste as barras para cima e para baixo.",
+  figMus_hbNoteTouch: "Deslize o dedo para cima e para baixo nas barras.",
+  figMus_hbNote: "Aperte ouvir e troque de receita: mesma altura, cor diferente. Teste \"embaralhar fases\": a onda muda completamente de formato, mas soa quase igual. Teste \"sem fundamental\": a barra de 220 Hz sumiu, mas a onda ainda se repete 220 vezes por segundo e você ainda ouve A3.",
+  figMus_hbBars: "amplitude de cada harmônico (arraste)",
+  figMus_hbWave: "a soma: pressão ao longo de dois períodos (2 × 4,55 ms)",
+
+  // ── SpectrumFigure ──
+  figMus_spTitle: "Espectro ao vivo: os harmônicos dentro de uma nota",
+  figMus_spPress: "segure uma tecla e veja os picos",
+  figMus_spLines: "linhas tracejadas em",
+  figMus_spNoteMouse: "Segure uma tecla (clique, ou as teclas A S D F… depois de um clique).",
+  figMus_spNoteTouch: "Segure uma tecla.",
+  figMus_spNote: "Todo pico cai numa linha tracejada: o som é feito de múltiplos inteiros de f. Compare o piano com a onda quadrada (só as linhas ímpares) e com a senoide (um pico só). Toque uma tecla mais aguda e as linhas se afastam, porque ficam a f de distância umas das outras.",
+  figMus_spAxis: "dB abaixo da frequência mais forte",
+  figMus_spAria: "teclado de piano, de C3 a C5",
 };
 
 export default text;
