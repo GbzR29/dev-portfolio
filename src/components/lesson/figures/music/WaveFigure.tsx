@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Square, Volume2 } from "lucide-react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Btn, C, Choice, Figure, Readout, Row, Slider, Sliders, T, useVisible } from "@/components/lesson/kit/figure";
 import { startAudio } from "@/components/lesson/kit/audio/context";
 import { playTone, type ToneVoice } from "@/components/lesson/kit/audio/synth";
 import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
+import { SoundButton } from "@/components/lesson/kit/audio/SoundButton";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // The pressure at one point (your ear) over time for a pure tone:
@@ -122,13 +122,9 @@ export function MusicWaveFigure({ t }: { t?: TrackTranslations }) {
           </g>}
         </svg>
         <div className="px-3 pb-3 flex items-center gap-3">
-          <button type="button" onClick={toggle} aria-pressed={sounding}
-            className={`h-11 px-4 rounded-full flex items-center gap-2 border text-[12px] font-semibold transition-all ${sounding
-              ? "border-[var(--primary)] bg-[var(--primary)] text-[var(--card)]"
-              : "border-[var(--border)] bg-[var(--card)] text-[var(--text-main)] hover:border-[var(--primary)]/50 hover:text-[var(--primary)]"}`}>
-            {sounding ? <Square size={14} /> : <Volume2 size={16} />}
+          <SoundButton on={sounding} onClick={toggle}>
             {sounding ? tx(t, "figMus_stop", "stop") : tx(t, "figMus_listen", "listen")}
-          </button>
+          </SoundButton>
           <span className="text-[11px] font-mono text-[var(--text-muted)]">
             p(t) = {A.toFixed(2)} · sin(2π · {f.toFixed(f < 100 ? 1 : 0)} · t)
           </span>

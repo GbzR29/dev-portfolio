@@ -7,7 +7,8 @@ import { Choice, Figure, Readout, Row, useVisible } from "@/components/lesson/ki
 import { startAudio } from "@/components/lesson/kit/audio/context";
 import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
 import { midiToFreq, noteName } from "@/components/lesson/kit/audio/notes";
-import { loadPiano, pianoReady, pianoSource, playPiano } from "@/components/lesson/kit/audio/piano";
+import { pianoReady, pianoSource, playPiano } from "@/components/lesson/kit/audio/piano";
+import { usePiano } from "@/components/lesson/kit/audio/usePiano";
 import { playTone, type Wave } from "@/components/lesson/kit/audio/synth";
 import { PianoKeyboard } from "@/components/lesson/kit/audio/PianoKeyboard";
 import { useVoices } from "@/components/lesson/kit/audio/useVoices";
@@ -19,26 +20,19 @@ import { useVoices } from "@/components/lesson/kit/audio/useVoices";
 // the synth, the same key is a bare waveform.
 
 type Instrument = "piano" | "synth";
-type Load = "idle" | "loading" | "ready" | "error";
 
 const LO = 48, HI = 84;                                    // C3 … C6
 
 export function MusicPianoFigure({ t }: { t?: TrackTranslations }) {
   const [inst, setInst] = useState<Instrument>("piano");
   const [wave, setWave] = useState<Wave>("sine");
-  const [load, setLoad] = useState<Load>(() => (pianoReady() ? "ready" : "idle"));
+  const { load, ensure: ensurePiano } = usePiano();
   const [pressed, setPressed] = useState<ReadonlySet<number>>(new Set());
   const [last, setLast] = useState<number | null>(null);
   const vis = useVisible<HTMLDivElement>();
   const voices = useVoices(vis.on);
 
   const held = useRef(new Set<number>());
-
-  const ensurePiano = useCallback(() => {
-    if (pianoReady()) return Promise.resolve();
-    setLoad("loading");
-    return loadPiano().then(() => setLoad("ready"), () => { setLoad("error"); throw new Error("piano"); });
-  }, []);
 
   const down = useCallback((m: number) => {
     startAudio();

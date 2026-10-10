@@ -14,6 +14,12 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-10
 
+- **Música, capítulo 2: Altura e frequência** (`music/chapters/pitch.tsx`, prefixo `musPit_`). Altura contra frequência; o ouvido ouve razões, não diferenças (n = log₂(f₂/f₁), dedução das 7,25 oitavas e 88 teclas do piano); a oitava e por que soa como a mesma nota; dedução da razão do semitom 2^(1/12) ≈ 1,0595 (a promessa do capítulo 1); f = 440 · 2^((m − 69)/12) com a dedução do Dó central; o afinador (m = 69 + 12·log₂(f/440)); cents; a história do Lá 440 (435 em 1859, 440 em 1939 e na ISO 16, 415 do barroco). Três fórmulas ao vivo (`music/live/pitch.ts`: tecla → frequência, afinador, distância em cents) e três widgets novos em `figures/music/`:
+  - `LadderFigure`: escada de +110 Hz contra escada de ×2, numa régua em hertz e numa régua de altura, tocadas degrau a degrau;
+  - `OctaveFigure`: a mesma nota em quatro oitavas, ondas alinhadas, tocadas subindo ou juntas (seno ou piano);
+  - `SemitoneFigure`: A3 → A4 em 12 passos de razão igual contra 12 passos de hertz igual, com o tamanho ouvido de cada passo.
+  - Kit de áudio: `SoundButton` (o botão ouvir/parar), `useSequence` (notas em sequência ou acorde, com o passo aceso) e `usePiano` (estado do download do piano); `WaveFigure` e `PianoFigure` passaram a usá-los. Tradução PT completa.
+
 - **Som nos widgets: início da trilha de Música.** Kit de áudio novo em `src/components/lesson/kit/audio/` (Web Audio API, sem biblioteca):
   - `context.ts`: um único `AudioContext` para a página, volume geral lembrado entre visitas, `startAudio()` para acordar o áudio no primeiro clique;
   - `notes.ts`: notas como números MIDI, f = 440 · 2^((m − 69)/12), nomes (C4, F♯3) e teclas pretas;

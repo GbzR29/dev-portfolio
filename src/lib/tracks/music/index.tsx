@@ -11,4 +11,5 @@ const SOUND = "Sound";
 
 export const musicChapters: Chapter[] = [
   { id: "what-is-sound", section: SOUND, title: "What Is Sound?", minRead: 14, load: () => import("./chapters/what-is-sound").then((m) => m.WhatIsSoundContent) },
+  { id: "pitch", section: SOUND, title: "Pitch and Frequency", minRead: 16, load: () => import("./chapters/pitch").then((m) => m.PitchContent) },
 ];

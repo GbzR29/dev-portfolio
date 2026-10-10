@@ -3,6 +3,7 @@
 const track = {
   titles: {
     "what-is-sound": "O que é som?",
+    pitch: "Altura e frequência",
   } as Record<string, string>,
   sections: {
     Sound: "Som",

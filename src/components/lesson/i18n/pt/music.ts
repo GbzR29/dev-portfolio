@@ -46,6 +46,41 @@ const text: Record<string, string> = {
   figMus_pAxis: "pressão (acima / abaixo do normal)",
   figMus_stop: "parar",
   figMus_listen: "ouvir",
+
+  // ── LadderFigure ──
+  figMus_ladderTitle: "Somar hertz contra multiplicar hertz",
+  figMus_ladderAdd: "+110 Hz por degrau",
+  figMus_ladderMul: "×2 por degrau",
+  figMus_ladderPick: "toque a escada ou clique num ponto",
+  figMus_rung: "degrau",
+  figMus_fromPrev: "desde o degrau anterior",
+  figMus_ladderNote: "Toque as duas escadas. A de +110 Hz tem espaços iguais em hertz, mas os seus passos soam cada vez menores: ×2, depois ×1,5, ×1,33, ×1,25, ×1,2. A de ×2 sai da régua de hertz, mas todo passo soa do mesmo tamanho: uma oitava. O seu ouvido mede razões.",
+  figMus_rulerHz: "frequência em hertz: o que um medidor mede",
+  figMus_rulerPitch: "altura: o que o seu ouvido ouve (toda oitava com a mesma largura)",
+  figMus_playLadder: "tocar a escada",
+
+  // ── OctaveFigure ──
+  figMus_octTitle: "A mesma nota em quatro oitavas",
+  figMus_octNote: "nota:",
+  figMus_octEach: "cada uma ×2",
+  figMus_octFigNote: "Toque subindo e depois juntas. Subindo, você ouve a mesma nota escalando. Juntas, as quatro se fundem num único som encorpado em vez de quatro separados. Olhe as linhas tracejadas: em cada uma delas, todas as ondas começam um novo ciclo no mesmo instante. Clique numa linha para ouvir uma nota sozinha.",
+  figMus_octT1: "1 período da mais grave",
+  figMus_octT2: "2 períodos",
+  figMus_playUp: "tocar subindo",
+  figMus_playTogether: "tocar juntas",
+
+  // ── SemitoneFigure ──
+  figMus_semiTitle: "Doze passos de A3 a A4",
+  figMus_semiRatio: "razões iguais ×1,0595",
+  figMus_semiDiff: "intervalos iguais +18,33 Hz",
+  figMus_semiPick: "toque a sequência ou clique num passo",
+  figMus_semiStep: "passo",
+  figMus_semitones: "semitons",
+  figMus_semiNote: "Toque as duas sequências. Com razões iguais, todo passo soa do mesmo tamanho, embora os intervalos em hertz cresçam de 13,1 para 24,7 Hz. Com intervalos iguais em hertz, os primeiros passos soam grandes demais e os últimos pequenos demais: as barras de baixo encolhem de 1,39 para 0,74 semitom.",
+  figMus_semiHeard: "passo",
+  figMus_semiHeard2: "ouvido",
+  figMus_oneSemi: "1 semitom",
+  figMus_playRun: "tocar as 13 notas",
 };
 
 export default text;
