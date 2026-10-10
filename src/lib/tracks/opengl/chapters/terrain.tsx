@@ -5,6 +5,9 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { normalNumbers, splatNumbers, triNumbers } from "@/lib/tracks/opengl/live/terrain";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -37,12 +40,32 @@ export function TerrainContent({ t }: { t: TrackTranslations }) {
           [r`s`, tx(t, "oglTerr_wS", "the grid spacing in world units. The slope along x is the rise (h_{i+1} − h_{i−1}) over the run 2s")],
           [r`\mathbf n`, tx(t, "oglTerr_wN", "the normal of the surface y = h(x, z) is (−∂h/∂x, 1, −∂h/∂z), normalised. It is the cross product of the two tangents (1, ∂h/∂x, 0) and (0, ∂h/∂z, 1)")],
         ]}
+        words={tx(t, "oglTerr_nWords", "Estimate how steeply the ground rises along x and along z from the neighbours on either side. Then tip the up vector against those two slopes and make it length 1.")}
         note={tx(t, "oglTerr_nNote", "Compute normals from the full-resolution heightmap, not from the mesh being drawn. Then every level of detail uses the same lighting, and a coarse far-away mesh still shows the ridges its missing triangles would have had. The shader can also read the heightmap (or a precomputed normal map) directly.")}
         glsl={`float hL = texture(uHeight, uv - vec2(texel.x, 0)).r, hR = texture(uHeight, uv + vec2(texel.x, 0)).r;
 float hD = texture(uHeight, uv - vec2(0, texel.y)).r, hU = texture(uHeight, uv + vec2(0, texel.y)).r;
 vec3 n = normalize(vec3(hL - hR, 2.0 * spacing, hD - hU));`}>
-        {r`\frac{\partial h}{\partial x} \approx \frac{h_{i+1,j} - h_{i-1,j}}{2s}, \quad \frac{\partial h}{\partial z} \approx \frac{h_{i,j+1} - h_{i,j-1}}{2s}, \qquad \mathbf n = \operatorname{normalize}\!\Big(-\frac{\partial h}{\partial x},\ 1,\ -\frac{\partial h}{\partial z}\Big)`}
+        {r`\begin{gathered} \frac{\partial h}{\partial x} \approx \frac{h_{i+1,j} - h_{i-1,j}}{2s}, \quad \frac{\partial h}{\partial z} \approx \frac{h_{i,j+1} - h_{i,j-1}}{2s} \\[4pt] \mathbf n = \operatorname{normalize}\!\Big(-\frac{\partial h}{\partial x},\ 1,\ -\frac{\partial h}{\partial z}\Big) \end{gathered}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglTerr_crossDer", "Why the normal is (−∂h/∂x, 1, −∂h/∂z)")}
+        steps={[
+          { full: true, tex: r`\mathbf t_x = \Big(1,\ \frac{\partial h}{\partial x},\ 0\Big) \qquad \mathbf t_z = \Big(0,\ \frac{\partial h}{\partial z},\ 1\Big)`,
+            why: tx(t, "oglTerr_cd1", "walking one unit along x on the surface, you also climb ∂h/∂x; the same along z. Both vectors lie in the surface") },
+          { full: true, tex: r`\mathbf t_z \times \mathbf t_x = \Big(\frac{\partial h}{\partial z}\cdot 0 - 1 \cdot \frac{\partial h}{\partial x},\ \ 1 \cdot 1 - 0 \cdot 0,\ \ 0 \cdot \frac{\partial h}{\partial x} - \frac{\partial h}{\partial z} \cdot 1\Big)`,
+            why: tx(t, "oglTerr_cd2", "the cross product of two vectors in the surface is perpendicular to both, so it is a normal. The order t_z × t_x makes it point up") },
+          { full: true, tex: r`\mathbf t_z \times \mathbf t_x = \Big(-\frac{\partial h}{\partial x},\ 1,\ -\frac{\partial h}{\partial z}\Big)`,
+            why: tx(t, "oglTerr_cd3", "the zeros drop out: y is always 1, and each slope tips the normal away from the uphill side. On flat ground both slopes are 0 and n = (0, 1, 0)") },
+        ]} />
+      <LiveFormula label={tx(t, "oglTerr_nLive", "Try it: four neighbours, 4 m apart")}
+        tex={r`\frac{\partial h}{\partial x} \approx \frac{h_{i+1,j} - h_{i-1,j}}{2s} \qquad \frac{\partial h}{\partial z} \approx \frac{h_{i,j+1} - h_{i,j-1}}{2s} \qquad s = 4`}
+        vars={[
+          { id: "hL", label: <>h<sub>i−1,j</sub></>, min: 0, max: 20, step: 0.5, value: 10, fmt: v => `${v} m` },
+          { id: "hR", label: <>h<sub>i+1,j</sub></>, min: 0, max: 20, step: 0.5, value: 14, fmt: v => `${v} m` },
+          { id: "hD", label: <>h<sub>i,j−1</sub></>, min: 0, max: 20, step: 0.5, value: 10, fmt: v => `${v} m` },
+          { id: "hU", label: <>h<sub>i,j+1</sub></>, min: 0, max: 20, step: 0.5, value: 10, fmt: v => `${v} m` },
+        ]}
+        compute={normalNumbers(t)}
+        note={tx(t, "oglTerr_nLiveNote", "A rise of 4 m over the 8 m between left and right neighbours is a slope of 0.5: the normal leans 26.6° away from uphill, and slope = 1 − n_y ≈ 0.11, still grass. Make it 16 m over 8 m and the lean passes 63°: rock. Raising the middle sample itself changes nothing, since central differences never read it.")} />
 
       <TerrainFigure t={t} />
 
@@ -57,17 +80,42 @@ vec3 n = normalize(vec3(hL - hR, 2.0 * spacing, hD - hU));`}>
           [r`\text{wobble}`, tx(t, "oglTerr_wWobble", "low-frequency noise added to height and slope before the thresholds, so transitions follow the terrain in irregular lines instead of perfect contours")],
           [r`\mathbf w / \textstyle\sum w`, tx(t, "oglTerr_wNorm", "normalising keeps the brightness constant where materials overlap")],
         ]}
+        words={tx(t, "oglTerr_splatWords", "Each material gets a weight from a simple rule on height and slope, eased in with smoothstep. Grass takes whatever is left. The final colour is the weighted average of the materials.")}
         note={tx(t, "oglTerr_splatNote", "Blending by weight alone gives soft, muddy transitions. Height blending sharpens them: each material also has a height texture (pebbles stand above sand), and a material wins where weight + height is largest. Stones then poke through sand instead of fading into it.")}>
-        {r`w_{\text{rock}} = \operatorname{smoothstep}(0.28, 0.45, \text{slope}),\ \ w_{\text{snow}} = \operatorname{smoothstep}(26, 30, y)\,(1 - \ldots) \qquad C = \frac{\sum_k w_k\,C_k}{\sum_k w_k}`}
+        {r`\begin{gathered} w_{\text{rock}} = \operatorname{smoothstep}(0.28, 0.45, \text{slope}) \\[4pt] w_{\text{snow}} = \operatorname{smoothstep}(26, 30, y)\,(1 - \ldots) \\[4pt] C = \frac{\sum_k w_k\,C_k}{\sum_k w_k} \end{gathered}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglTerr_splatLive", "Try it: the figure's four rules at one point")}
+        tex={r`\begin{gathered} w_{\text{sand}} = \operatorname{smoothstep}(1.5, 0, y)\,(1 - \operatorname{smoothstep}(0.2, 0.4, \text{slope})) \\[4pt] w_{\text{grass}} = \max(1 - w_{\text{sand}} - w_{\text{rock}} - w_{\text{snow}},\ 0) \end{gathered}`}
+        vars={[
+          { id: "y", label: "y (m)", min: -2, max: 35, step: 0.5, value: 28, fmt: v => `${v} m` },
+          { id: "slope", label: "slope", min: 0, max: 1, step: 0.01, value: 0.4, fmt: v => v.toFixed(2) },
+        ]}
+        where={[
+          [r`w_{\text{rock}}`, tx(t, "oglTerr_wRock", "smoothstep(0.28, 0.45, slope): steep ground, at any height")],
+          [r`w_{\text{snow}}`, tx(t, "oglTerr_wSnow", "smoothstep(26, 30, y)·(1 − smoothstep(0.35, 0.55, slope)): high ground that is not too steep for snow to stay")],
+        ]}
+        compute={splatNumbers(t)}
+        note={tx(t, "oglTerr_splatLiveNote", "The wobble noise is left out here. At y = 28 and slope 0.4 rock and snow overlap and their raw weights add up to more than 1, so the division shares the pixel between them. Lower the slope to 0.2 and rock vanishes: at y = 28 snow and grass split the pixel half and half, and above 30 snow takes it all. Drop y below 1.5 on flat ground and sand appears.")} />
       <Equation label={tx(t, "oglTerr_triLabel", "Triplanar mapping for cliffs")}
         where={[
           [r`C_{yz},\ C_{xz},\ C_{xy}`, tx(t, "oglTerr_wProj", "the material sampled three times, projected along each world axis: texture(uTex, p.yz), texture(uTex, p.xz) and texture(uTex, p.xy)")],
           [r`|n|^k`, tx(t, "oglTerr_wK", "each projection's weight is how much the surface faces that axis, sharpened by the power k (4–8) so the blend zones stay narrow")],
         ]}
+        words={tx(t, "oglTerr_triWords", "Project the texture onto the surface from the side, from above and from the front, and mix the three by how squarely the surface faces each direction. Raising the weights to a power keeps one projection in charge almost everywhere.")}
         note={tx(t, "oglTerr_triNote", "Heightmap UVs are just (x, z), which stretches textures down steep slopes into long streaks. Triplanar mapping ignores UVs and projects from whichever side the surface faces. It costs three samples per material, so it is usually applied only to the rock layer.")}>
         {r`C = \frac{|n_x|^k C_{yz} + |n_y|^k C_{xz} + |n_z|^k C_{xy}}{|n_x|^k + |n_y|^k + |n_z|^k}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglTerr_triLive", "Try it: a slope turning into a cliff")}
+        tex={r`C = \frac{|n_x|^k C_{yz} + |n_y|^k C_{xz} + |n_z|^k C_{xy}}{|n_x|^k + |n_y|^k + |n_z|^k}`}
+        vars={[
+          { id: "th", label: "θ (°)", min: 0, max: 90, step: 1, value: 35, fmt: v => `${v}°` },
+          { id: "k", label: "k", min: 1, max: 8, step: 1, value: 4, fmt: v => String(v) },
+        ]}
+        where={[
+          [r`\theta`, tx(t, "oglTerr_wTh", "how far the normal is tilted from straight up toward +x: 0° flat ground, 90° a vertical cliff facing x")],
+        ]}
+        compute={triNumbers(t)}
+        note={tx(t, "oglTerr_triLiveNote", "At 45° the two projections share equally whatever k is. At 35° with k = 1 the top view still only gets 59%, a wide muddy blend of two stretched images; with k = 4 it gets 81%, and with k = 8 95%. The higher k, the narrower the band where both are visible.")} />
 
       <H2>{tx(t, "oglTerr_lodTitle", "Level of detail: chunks, cracks and skirts")}</H2>
       <p>

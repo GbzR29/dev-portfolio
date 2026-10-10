@@ -43,6 +43,31 @@ const text: Record<string, string> = {
   oglTerr_key2: "O splatting mistura materiais repetíveis por pesos de um splat map ou de regras de altura/inclinação, normalizados para somar 1.",
   oglTerr_key3: "O triplanar mapping projeta as texturas ao longo de x, y e z para que penhascos não estiquem.",
   oglTerr_key4: "Chunks escolhem um nível pela distância; rachaduras nas trocas de nível são escondidas com saias, costura ou vertex snapping.",
+
+  // ── In words, derivations, live formulas (2026-10-10) ──
+  oglTerr_nWords: "Estime quão íngreme o chão sobe ao longo de x e ao longo de z a partir dos vizinhos de cada lado. Depois incline o vetor para cima contra essas duas inclinações e deixe-o com comprimento 1.",
+  oglTerr_crossDer: "Por que a normal é (−∂h/∂x, 1, −∂h/∂z)",
+  oglTerr_cd1: "andando uma unidade em x sobre a superfície, você também sobe ∂h/∂x; o mesmo em z. Os dois vetores estão na superfície",
+  oglTerr_cd2: "o produto vetorial de dois vetores da superfície é perpendicular aos dois, então é uma normal. A ordem t_z × t_x faz ela apontar para cima",
+  oglTerr_cd3: "os zeros somem: y é sempre 1, e cada inclinação tomba a normal para longe do lado que sobe. Em chão plano as duas inclinações são 0 e n = (0, 1, 0)",
+  oglTerr_nLive: "Experimente: quatro vizinhos, a 4 m um do outro",
+  oglTerr_nLiveNote: "Subir 4 m nos 8 m entre os vizinhos da esquerda e da direita é uma inclinação de 0,5: a normal tomba 26,6° para longe da subida, e slope = 1 − n_y ≈ 0,11, ainda grama. Faça 16 m em 8 m e o tombo passa de 63°: rocha. Subir a própria amostra do meio não muda nada, porque as diferenças centrais nunca a leem.",
+  oglTerr_splatWords: "Cada material recebe um peso de uma regra simples sobre altura e inclinação, suavizada com smoothstep. A grama fica com o que sobra. A cor final é a média ponderada dos materiais.",
+  oglTerr_splatLive: "Experimente: as quatro regras da figura num ponto",
+  oglTerr_wRock: "smoothstep(0,28, 0,45, slope): chão íngreme, em qualquer altura",
+  oglTerr_wSnow: "smoothstep(26, 30, y)·(1 − smoothstep(0,35, 0,55, slope)): chão alto e não íngreme demais para a neve ficar",
+  oglTerr_splatLiveNote: "O ruído de wobble fica de fora aqui. Com y = 28 e inclinação 0,4, rocha e neve se sobrepõem e seus pesos brutos somam mais que 1, então a divisão reparte o pixel entre elas. Baixe a inclinação para 0,2 e a rocha some: em y = 28 neve e grama dividem o pixel meio a meio, e acima de 30 a neve fica com tudo. Desça y abaixo de 1,5 em chão plano e aparece areia.",
+  oglTerr_triWords: "Projete a textura na superfície de lado, de cima e de frente, e misture as três conforme a superfície encara cada direção. Elevar os pesos a uma potência deixa uma projeção no comando quase em todo lugar.",
+  oglTerr_triLive: "Experimente: uma encosta virando penhasco",
+  oglTerr_wTh: "quanto a normal está inclinada da vertical em direção a +x: 0° chão plano, 90° um penhasco vertical voltado para x",
+  oglTerr_triLiveNote: "Em 45° as duas projeções dividem igualmente, qualquer que seja k. Em 35° com k = 1 a vista de cima ainda fica com só 59%, uma mistura larga e borrada de duas imagens esticadas; com k = 4 fica com 81%, e com k = 8 com 95%. Quanto maior k, mais estreita a faixa em que as duas aparecem.",
+  oglTerr_liveSlopeMeter: "slope = 1 − n_y (a rocha começa acima de 0,28)",
+  oglTerr_liveSand: "areia",
+  oglTerr_liveGrass: "grama",
+  oglTerr_liveRock: "rocha",
+  oglTerr_liveSnow: "neve",
+  oglTerr_liveWeights: "pesos",
+  oglTerr_liveTriMeter: "fração da projeção lateral C_yz",
 };
 
 export default text;

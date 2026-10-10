@@ -4,6 +4,8 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { boxNumbers, fadeNumbers } from "@/lib/tracks/opengl/live/decals";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -42,25 +44,52 @@ export function DecalsContent({ t }: { t: TrackTranslations }) {
           [r`d`, tx(t, "oglDecal_wD", "the stored depth in [0, 1] (the default glDepthRange)")],
           [r`(PV)^{-1}`, tx(t, "oglDecal_wInv", "inverse of projection · view")],
         ]}
+        words={tx(t, "oglDecal_reconWords", "The pixel's screen position and its stored depth together pin down one point in normalised device coordinates. Running that point back through the inverse camera matrices, and dividing by w, gives the world position of the surface the pixel shows.")}
         note={tx(t, "oglDecal_reconNote", "This is the same unprojection as the picking ray, now with the depth of the actual surface instead of the near and far planes. A cheaper variant stores the linear view depth and scales a per-pixel view ray, which saves the matrix multiply and the divide.")}>
-        {r`\mathbf n_{ndc} = \big(2\,uv - 1,\ \ 2d - 1,\ \ 1\big) \qquad \mathbf w = (PV)^{-1}\,\mathbf n_{ndc} \qquad \mathbf p_{world} = \mathbf w_{xyz} / \mathbf w_w`}
+        {r`\begin{gathered} \mathbf n_{ndc} = \big(2\,uv - 1,\ \ 2d - 1,\ \ 1\big) \\[4pt] \mathbf w = (PV)^{-1}\,\mathbf n_{ndc} \qquad \mathbf p_{world} = \mathbf w_{xyz} / \mathbf w_w \end{gathered}`}
       </Equation>
       <Equation label={tx(t, "oglDecal_localLabel", "2 — Into the decal box, clip, and read the texture")}
         where={[
           [r`D`, tx(t, "oglDecal_wDm", "the decal's model matrix: position, orientation, and size (its box is the unit cube [−0.5, 0.5]³ in local space)")],
           [r`\mathbf q`, tx(t, "oglDecal_wQ", "the surface point in the decal's local space")],
         ]}
+        words={tx(t, "oglDecal_localWords", "Describe the surface point in the decal box's own coordinates, where the box is a unit cube around the origin. Outside the cube the pixel is skipped; inside, the point's x and z, shifted from −0.5…0.5 to 0…1, are the texture coordinate.")}
         note={tx(t, "oglDecal_localNote", "The projection axis is the box's local Y. The texture is laid out on the XZ face and pushed through the box along Y, like a slide projector. Everything the box contains gets the image, whatever its orientation, which is exactly the stretching problem below.")}>
-        {r`\mathbf q = D^{-1}\,\mathbf p_{world} \qquad \text{discard if } \max(|q_x|, |q_y|, |q_z|) > \tfrac12 \qquad uv_{decal} = (q_x, q_z) + \tfrac12`}
+        {r`\begin{gathered} \mathbf q = D^{-1}\,\mathbf p_{world} \qquad \text{discard if } \max(|q_x|, |q_y|, |q_z|) > \tfrac12 \\[4pt] uv_{decal} = (q_x, q_z) + \tfrac12 \end{gathered}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglDecal_boxLive", "Try it: is this surface point inside the decal?")}
+        tex={r`\mathbf q = D^{-1}\,\mathbf p_{world} \qquad uv_{decal} = (q_x, q_z) + \tfrac12`}
+        vars={[
+          { id: "px", label: <>p<sub>x</sub></>, min: 0, max: 4, step: 0.05, value: 2.5, fmt: v => v.toFixed(2) },
+          { id: "py", label: <>p<sub>y</sub></>, min: -1, max: 1, step: 0.05, value: 0.2, fmt: v => v.toFixed(2) },
+          { id: "pz", label: <>p<sub>z</sub></>, min: 1, max: 5, step: 0.05, value: 3.6, fmt: v => v.toFixed(2) },
+        ]}
+        where={[
+          [r`D`, tx(t, "oglDecal_wD2", "a decal box centred at (2, 0, 3), 2 wide in x and z and 1 deep along its projection axis y, not rotated")],
+          [r`D^{-1}`, tx(t, "oglDecal_wDinv", "for a box like that, subtract the centre and divide by the size, per axis")],
+        ]}
+        compute={boxNumbers(t)}
+        note={tx(t, "oglDecal_boxLiveNote", "The default point is halfway from the centre to the +x side: q = (0.25, 0.2, 0.3) and uv = (0.75, 0.8). Raise p_y past 0.5 and the point is above the box: discarded even though its x and z are fine. That is how the box's depth along y limits which surfaces receive the decal.")} />
       <Equation label={tx(t, "oglDecal_fadeLabel", "3 — Angle fade: avoid stretching")}
         where={[
           [r`\vN`, tx(t, "oglDecal_wN", "the surface normal: from the G-buffer, or cross(dFdx(p), dFdy(p)) of the reconstructed positions")],
           [r`\hat{\mathbf y}_D`, tx(t, "oglDecal_wY", "the decal's projection axis in world space (normalised second column of D)")],
         ]}
+        words={tx(t, "oglDecal_fadeWords", "Keep the decal fully on surfaces that face the projector, fade it out on surfaces that turn sideways to it, and drop it entirely where it would be stretched into streaks.")}
         note={tx(t, "oglDecal_fadeNote", "A surface parallel to the projection axis receives one line of texels stretched across its whole extent. Fading by |N·ŷ| removes those surfaces smoothly. Using abs() lets both sides of thin objects receive the decal; without it, only surfaces facing the projector do.")}>
         {r`\alpha' = \alpha \cdot \operatorname{smoothstep}\big(c_0,\ c_1,\ |\vN\cdot\hat{\mathbf y}_D|\big)`}
       </Equation>
+      <LiveFormula label={tx(t, "oglDecal_fadeLive", "Try it: tilt the surface away from the projector")}
+        tex={r`\alpha' = \alpha \cdot \operatorname{smoothstep}\big(0.3,\ 0.6,\ |\vN\cdot\hat{\mathbf y}_D|\big)`}
+        vars={[
+          { id: "th", label: "θ (°)", min: 0, max: 90, step: 1, value: 60, fmt: v => `${v}°` },
+        ]}
+        where={[
+          [r`\theta`, tx(t, "oglDecal_wTh", "the angle between the surface normal and the projection axis: 0° faces the projector, 90° is parallel to the projection")],
+          [r`x`, tx(t, "oglDecal_wX", "how far |N·ŷ| has gone from c₀ = 0.3 to c₁ = 0.6, clamped to 0…1")],
+        ]}
+        compute={fadeNumbers(t)}
+        note={tx(t, "oglDecal_fadeLiveNote", "Up to θ ≈ 53° (cos = 0.6) the decal is fully kept. Past θ ≈ 72.5° (cos = 0.3) it is gone. In between, smoothstep eases the fade in and out, so no hard line marks where the cut happens. At 60°, |cos| = 0.5 sits two thirds of the way and about 74% survives.")} />
       <DecalFigure t={t} />
       <CodeBlock lang="glsl" filename="decal.frag" t={t}>{`// Drawn by rasterising the decal's box (back faces, depth test off),
 // so only pixels inside its screen footprint run this.

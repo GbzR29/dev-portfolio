@@ -4,6 +4,9 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { sdfNumbers } from "@/lib/tracks/opengl/live/text";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -50,9 +53,21 @@ export function TextContent({ t }: { t: TrackTranslations }) {
           [r`s`, tx(t, "oglText_wS", "scale, if drawing at a size other than the rasterised one")],
           [r`k(g, g')`, tx(t, "oglText_wK", "kerning between this glyph and the next")],
         ]}
+        words={tx(t, "oglText_quadWords", "Start the glyph's ink box at the pen, shifted by its bearings, and give it the bitmap's size. Then move the pen right by the glyph's advance, corrected by the kerning with the next glyph.")}
         note={tx(t, "oglText_quadNote", "Round the pen position to whole pixels for small bitmap text, or it lands between texels and blurs. For large or SDF text, fractional positions look smoother. The only difference between laying out Latin and Arabic text is that the glyph sequence and positions come from a shaping engine (HarfBuzz) instead of one glyph per character.")}>
-        {r`x_0 = x_{pen} + s\,b_x \quad y_1 = y_{base} + s\,b_y \quad x_1 = x_0 + s\,w \quad y_0 = y_1 - s\,h \qquad x_{pen} \mathrel{+}= s\,\big(\text{advance} + k(g, g')\big)`}
+        {r`\begin{gathered} x_0 = x_{pen} + s\,b_x \quad y_1 = y_{base} + s\,b_y \\[4pt] x_1 = x_0 + s\,w \quad y_0 = y_1 - s\,h \\[4pt] x_{pen} \mathrel{+}= s\,\big(\text{advance} + k(g, g')\big) \end{gathered}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglText_avDer", "Placing \"AV\" at 48 px, numbers in")}
+        steps={[
+          { full: true, tex: r`\text{advance} = 2112 \gg 6 = \frac{2112}{64} = 33\ \text{px}`,
+            why: tx(t, "oglText_ad1", "FreeType reports the advance of 'A' in 26.6 fixed point: 26 bits of whole pixels and 6 bits of fraction, so the unit is 1/64 px. Shifting right by 6 divides by 64") },
+          { full: true, tex: r`x_0 = 10 + 1 = 11 \qquad x_1 = 11 + 32 = 43`,
+            why: tx(t, "oglText_ad2", "the pen starts at x = 10 with s = 1. The ink of 'A' starts 1 px right of the pen (bearing x = 1) and is 32 px wide") },
+          { full: true, tex: r`y_1 = 100 + 34 = 134 \qquad y_0 = 134 - 34 = 100`,
+            why: tx(t, "oglText_ad3", "the baseline is at y = 100. Bearing y = 34 puts the top of the ink at 134, and the bitmap is 34 rows tall, so the bottom lands exactly on the baseline, as a capital A should") },
+          { full: true, tex: r`x_{pen} = 10 + \big(33 + (-3)\big) = 40`,
+            why: tx(t, "oglText_ad4", "the pair A–V has a kerning of −3 px, so V starts at 40 instead of 43: its slanted left side tucks under the A's right side") },
+        ]} />
       <GlyphMetricsFigure t={t} />
 
       <H2>{tx(t, "oglText_atlasTitle", "Glyph atlases and batching")}</H2>
@@ -87,9 +102,24 @@ glTextureParameteriv(atlas, GL_TEXTURE_SWIZZLE_RGBA, swz);`}</CodeBlock>
           [r`s`, tx(t, "oglText_wSv", "the value sampled from the atlas (bilinear)")],
           [r`w`, tx(t, "oglText_wW", "fwidth(s): how much s changes over one screen pixel, so the edge is always one pixel wide")],
         ]}
+        words={tx(t, "oglText_sdfWords", "Store how far each texel is from the outline, mapped so the outline is exactly 0.5. When drawing, everything above 0.5 is ink, and the switch from empty to ink is spread over one screen pixel so the edge is smooth.")}
         note={tx(t, "oglText_sdfNote", "Everything else is a threshold on the same number. Bolder text uses a threshold below 0.5; an outline is a second, lower threshold; a glow is a wide smoothstep toward 0; a drop shadow reads the atlas again at an offset. There is no extra texture and no extra draw call.")}>
-        {r`s_{stored} = \operatorname{clamp}\!\left(\frac12 + \frac{d}{2\cdot\text{spread}},\ 0,\ 1\right) \qquad \alpha = \operatorname{smoothstep}(0.5 - w,\ 0.5 + w,\ s)`}
+        {r`\begin{gathered} s_{stored} = \operatorname{clamp}\!\left(\frac12 + \frac{d}{2\cdot\text{spread}},\ 0,\ 1\right) \\[4pt] \alpha = \operatorname{smoothstep}(0.5 - w,\ 0.5 + w,\ s) \end{gathered}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglText_sdfLive", "Try it: one texel, from the atlas to the screen")}
+        tex={r`\begin{gathered} s = \operatorname{clamp}\!\left(\frac12 + \frac{d}{2\cdot\text{spread}}\right) \qquad w = \frac{1}{2\cdot\text{spread}\cdot z} \\[4pt] \alpha = \operatorname{smoothstep}(0.5 - w,\ 0.5 + w,\ s) \end{gathered}`}
+        vars={[
+          { id: "d", label: "d", min: -10, max: 10, step: 0.05, value: 0.1, fmt: v => v.toFixed(2) },
+          { id: "spread", label: "spread", min: 2, max: 16, step: 1, value: 8, fmt: v => String(v) },
+          { id: "zoom", label: "z", min: 0.5, max: 16, step: 0.5, value: 4, fmt: v => `${v}×` },
+        ]}
+        where={[
+          [r`d`, tx(t, "oglText_wD2", "the signed distance to the outline, in atlas pixels: positive inside")],
+          [r`z`, tx(t, "oglText_wZ", "the magnification: how many screen pixels one atlas pixel covers")],
+          [r`w`, tx(t, "oglText_wW2", "what fwidth(s) returns: s changes by 1 / (2·spread) per atlas pixel, and one screen pixel is 1/z of an atlas pixel")],
+        ]}
+        compute={sdfNumbers(t)}
+        note={tx(t, "oglText_sdfLiveNote", "At z = 4 the switch from 0 to 1 happens between d = −0.25 and d = +0.25: a quarter of an atlas pixel each side, which is one screen pixel. Raise z and the band shrinks with it, so the edge stays one pixel wide at any size. Past d = ±spread the value clamps to 0 or 1, which is why outlines and glows cannot be wider than the spread.")} />
       <SdfTextFigure t={t} />
       <CodeBlock lang="glsl" filename="sdf_text.frag" t={t}>{`uniform sampler2D uAtlas;       // single-channel SDF
 uniform vec4  uColor, uOutlineColor;
@@ -112,10 +142,22 @@ void main() {
           "A single distance field cannot represent a sharp corner. Near it, the nearest point of the outline jumps from one edge to the other, and bilinear interpolation rounds the corner off. Viktor Chlumský's MSDF (2015) stores three distance fields in R, G and B, each computed to a different subset of the edges. Near a corner, two channels agree on one edge and the other disagrees. Taking the median of the three recovers the sharp corner, still from one texture fetch:")}
       </p>
       <Equation label={tx(t, "oglText_msdfLabel", "MSDF reconstruction")}
+        words={tx(t, "oglText_msdfWords", "Of the three stored distances, keep the middle one. Away from corners all three agree; at a corner the one channel that disagrees is outvoted by the other two.")}
         note={tx(t, "oglText_msdfNote", "msdfgen and msdf-atlas-gen build the atlas offline; the shader change is one line. Most modern engines (and many UI toolkits) use MSDF for anything that scales.")}
         glsl="float median(vec3 v) { return max(min(v.r, v.g), min(max(v.r, v.g), v.b)); }   float s = median(texture(uAtlas, vUV).rgb);">
         {r`s = \operatorname{median}(r, g, b) = \max\big(\min(r, g),\ \min(\max(r, g),\ b)\big)`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglText_medDer", "The median formula on one texel")}
+        steps={[
+          { full: true, tex: r`(r,\ g,\ b) = (0.8,\ 0.3,\ 0.6)`,
+            why: tx(t, "oglText_md1", "a texel near a corner: red and blue say \"inside\" (above 0.5), green, measured to another edge, says \"outside\"") },
+          { full: true, tex: r`\min(r, g) = 0.3 \qquad \max(r, g) = 0.8`,
+            why: tx(t, "oglText_md2", "sort the first two channels: the smaller and the larger of r and g") },
+          { full: true, tex: r`\min(\max(r, g),\ b) = \min(0.8,\ 0.6) = 0.6`,
+            why: tx(t, "oglText_md3", "b is capped by the larger of the two: if b were the biggest of all, the larger of r and g would be the middle value instead") },
+          { full: true, tex: r`s = \max(0.3,\ 0.6) = 0.6`,
+            why: tx(t, "oglText_md4", "the larger of the two candidates is the middle value: sorted, the channels are 0.3, 0.6, 0.8. Two of three channels said inside, so the texel is inside, with no branch and no sort in the shader") },
+        ]} />
 
       <LessonTable
         headers={[tx(t, "oglText_thApproach", "Approach"), tx(t, "oglText_thGood", "Good at"), tx(t, "oglText_thBad", "Weak at")]}

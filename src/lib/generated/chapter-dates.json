@@ -793,35 +793,35 @@
   },
   "opengl/skeletal-animation": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-10"
   },
   "opengl/text-rendering": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-10"
   },
   "opengl/picking": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-10"
   },
   "opengl/oit": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-10"
   },
   "opengl/reflections": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-10"
   },
   "opengl/volumetrics": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-10"
   },
   "opengl/decals": {
     "created": "2026-09-24",
-    "updated": "2026-10-08"
+    "updated": "2026-10-10"
   },
   "opengl/terrain": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-10"
   },
   "opengl/profiling": {
     "created": "2026-09-24",

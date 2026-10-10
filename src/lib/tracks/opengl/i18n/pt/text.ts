@@ -64,6 +64,27 @@ const text: Record<string, string> = {
   oglText_key2: "Empacote os glifos num atlas; uma tela inteira de texto é um vertex buffer e um draw call.",
   oglText_key3: "Atlases SDF guardam distância: limiar em 0,5 com fwidth para texto nítido em qualquer tamanho, mais contorno/brilho/sombra de graça.",
   oglText_key4: "O MSDF guarda três campos e tira a mediana para manter cantos afiados.",
+
+  // ── In words, derivations, live formulas (2026-10-10) ──
+  oglText_quadWords: "Comece a caixa de tinta do glifo na caneta, deslocada pelos bearings, e dê a ela o tamanho do bitmap. Depois mova a caneta para a direita pelo advance do glifo, corrigido pelo kerning com o próximo glifo.",
+  oglText_avDer: "Posicionando \"AV\" a 48 px, com números",
+  oglText_ad1: "o FreeType informa o advance do 'A' em ponto fixo 26.6: 26 bits de pixels inteiros e 6 bits de fração, então a unidade é 1/64 px. Deslocar 6 bits para a direita divide por 64",
+  oglText_ad2: "a caneta começa em x = 10 com s = 1. A tinta do 'A' começa 1 px à direita da caneta (bearing x = 1) e tem 32 px de largura",
+  oglText_ad3: "a linha de base está em y = 100. O bearing y = 34 põe o topo da tinta em 134, e o bitmap tem 34 linhas, então a base cai exatamente na linha de base, como um A maiúsculo deve",
+  oglText_ad4: "o par A–V tem kerning de −3 px, então o V começa em 40 em vez de 43: seu lado esquerdo inclinado se encaixa sob o lado direito do A",
+  oglText_sdfWords: "Guarde a distância de cada texel até o contorno, mapeada para que o contorno fique exatamente em 0,5. Ao desenhar, tudo acima de 0,5 é tinta, e a troca de vazio para tinta se espalha por um pixel de tela para a borda ficar suave.",
+  oglText_sdfLive: "Experimente: um texel, do atlas até a tela",
+  oglText_wD2: "a distância com sinal até o contorno, em pixels do atlas: positiva por dentro",
+  oglText_wZ: "a ampliação: quantos pixels de tela um pixel do atlas cobre",
+  oglText_wW2: "o que fwidth(s) devolve: s muda 1 / (2·spread) por pixel do atlas, e um pixel de tela é 1/z de um pixel do atlas",
+  oglText_sdfLiveNote: "Com z = 4 a troca de 0 para 1 acontece entre d = −0,25 e d = +0,25: um quarto de pixel do atlas de cada lado, que é um pixel de tela. Aumente z e a faixa encolhe junto, então a borda continua com um pixel de largura em qualquer tamanho. Além de d = ±spread o valor trava em 0 ou 1, por isso contornos e brilhos não podem ser mais largos que o spread.",
+  oglText_msdfWords: "Das três distâncias guardadas, fique com a do meio. Longe dos cantos as três concordam; num canto, o canal que discorda perde na votação para os outros dois.",
+  oglText_medDer: "A fórmula da mediana num texel",
+  oglText_md1: "um texel perto de um canto: vermelho e azul dizem \"dentro\" (acima de 0,5); o verde, medido até outra aresta, diz \"fora\"",
+  oglText_md2: "ordene os dois primeiros canais: o menor e o maior entre r e g",
+  oglText_md3: "b é limitado pelo maior dos dois: se b fosse o maior de todos, o maior entre r e g é que seria o valor do meio",
+  oglText_md4: "o maior dos dois candidatos é o valor do meio: ordenados, os canais são 0,3, 0,6, 0,8. Dois de três canais disseram dentro, então o texel está dentro, sem desvio e sem ordenação no shader",
+  oglText_liveMeter: "opacidade do pixel de tela a essa distância",
 };
 
 export default text;

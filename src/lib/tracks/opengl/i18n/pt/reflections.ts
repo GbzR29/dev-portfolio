@@ -46,6 +46,29 @@ const text: Record<string, string> = {
   oglRefl_key2: "Probes: cube maps dos arredores; a box projection corrige o parallax para salas.",
   oglRefl_key3: "O SSR marcha o raio refletido contra o depth buffer e reaproveita a imagem iluminada; só o que está na tela pode ser refletido.",
   oglRefl_key4: "As engines empilham: RT ou SSR onde há confiança, probes atrás, o céu por último.",
+
+  // ── In words, derivations, live formulas (2026-10-10) ──
+  oglRefl_reflectWords: "Mantenha a parte do raio de visão que corre ao longo da superfície e inverta a parte que entra nela. O raio quica no mesmo ângulo em que chegou.",
+  oglRefl_reflLive: "Experimente: um raio de visão atingindo um piso",
+  oglRefl_wTh: "o ângulo entre o raio de visão e a normal do piso: 0° olhando reto para baixo, perto de 90° em ângulos rasantes",
+  oglRefl_wV2: "o raio de visão, (sen θ, −cos θ): descendo em direção ao piso",
+  oglRefl_reflLiveNote: "v·n é negativo, porque v entra na superfície, então −2(v·n)n soma um empurrão para cima do dobro da parte que desce: a componente y troca de sinal e x não muda. O raio sempre sai a θ da normal, do outro lado. Com θ = 0 ele volta reto para cima.",
+  oglRefl_mirrorWords: "Meça a distância de um ponto até o plano do espelho e leve-o de volta através do plano pelo dobro dessa distância. Escrito para x, y e z, esse movimento é esta matriz.",
+  oglRefl_mirDer: "De onde vêm as linhas de R",
+  oglRefl_rd1: "com n de comprimento 1, s é a distância com sinal do ponto p = (x, y, z) ao plano: positiva do lado para onde n aponta",
+  oglRefl_rd2: "voltar s ao longo de n chega ao plano; voltar 2s cai à mesma distância do outro lado",
+  oglRefl_rd3: "a componente x disso, multiplicada: seus quatro coeficientes são a primeira linha de R. As componentes y e z dão a segunda e a terceira linhas do mesmo jeito",
+  oglRefl_rd4: "um piso na altura 2 e um ponto 3 acima dele: o ponto espelhado fica 3 abaixo. Só y mudou, como as linhas da matriz preveem com a = c = 0, b = 1",
+  oglRefl_boxWords: "Siga o raio refletido a partir do ponto sombreado até ele sair da caixa da sala. Depois leia o cube map na direção que vai de onde ele foi capturado até esse ponto de saída, e não ao longo do próprio raio.",
+  oglRefl_boxLive: "Experimente: uma sala de 10 × 4 vista de lado",
+  oglRefl_wBox2: "a sala: x de −5 a 5, y de 0 (piso) a 4 (teto)",
+  oglRefl_wC2: "a probe, capturada no meio da sala em (0, 2)",
+  oglRefl_wPR: "um ponto do piso (p_x, 0) e seu raio refletido, a φ da vertical: (sen φ, cos φ)",
+  oglRefl_boxLiveNote: "De p_x = 3 a 30°, o raio bate na parede direita em t = 4, na altura 3,46. Visto da probe esse ponto está a 73,7° da vertical, então uma leitura ao longo de r (30°) mostraria o teto onde deveria estar a parede. Leve p ao meio e aponte o raio reto para cima, e r e r′ concordam, porque esse raio passa pela probe. Sem a correção, todo raio que não passa pela probe é lido numa direção errada.",
+  oglRefl_liveOut: "sai a",
+  oglRefl_liveHit: "acerto",
+  oglRefl_liveInstead: "em vez de",
+  oglRefl_liveMeter: "quanto a direção ingênua está errada (90° = barra cheia)",
 };
 
 export default text;

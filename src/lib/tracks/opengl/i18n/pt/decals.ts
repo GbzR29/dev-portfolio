@@ -45,6 +45,21 @@ const text: Record<string, string> = {
   oglDecal_key2: "Esmaeça por |N · eixo| para evitar o esticamento em superfícies paralelas à projeção.",
   oglDecal_key3: "Escrever decals no G-buffer os faz ser iluminados, sombreados e refletidos como a superfície abaixo.",
   oglDecal_key4: "Mascare os objetos dinâmicos com o stencil; cuidado com a escolha de mip nas bordas da caixa.",
+
+  // ── In words, live formulas (2026-10-10) ──
+  oglDecal_reconWords: "A posição do pixel na tela e a profundidade guardada definem juntas um ponto em coordenadas normalizadas do dispositivo. Passar esse ponto de volta pelas matrizes inversas da câmera, e dividir por w, dá a posição no mundo da superfície que o pixel mostra.",
+  oglDecal_localWords: "Descreva o ponto da superfície nas coordenadas da própria caixa do decal, onde a caixa é um cubo unitário em volta da origem. Fora do cubo o pixel é descartado; dentro, o x e o z do ponto, levados de −0,5…0,5 para 0…1, são a coordenada de textura.",
+  oglDecal_boxLive: "Experimente: este ponto da superfície está dentro do decal?",
+  oglDecal_wD2: "uma caixa de decal centrada em (2, 0, 3), com 2 de largura em x e z e 1 de profundidade ao longo do eixo de projeção y, sem rotação",
+  oglDecal_wDinv: "para uma caixa assim, subtraia o centro e divida pelo tamanho, eixo por eixo",
+  oglDecal_boxLiveNote: "O ponto padrão está na metade do caminho do centro até o lado +x: q = (0,25, 0,2, 0,3) e uv = (0,75, 0,8). Suba p_y além de 0,5 e o ponto fica acima da caixa: descartado mesmo com x e z bons. É assim que a profundidade da caixa em y limita quais superfícies recebem o decal.",
+  oglDecal_fadeWords: "Mantenha o decal inteiro nas superfícies voltadas para o projetor, apague-o aos poucos nas que viram de lado para ele e remova-o de vez onde ele seria esticado em listras.",
+  oglDecal_fadeLive: "Experimente: incline a superfície para longe do projetor",
+  oglDecal_wTh: "o ângulo entre a normal da superfície e o eixo de projeção: 0° de frente para o projetor, 90° paralela à projeção",
+  oglDecal_wX: "quanto |N·ŷ| já andou de c₀ = 0,3 até c₁ = 0,6, limitado a 0…1",
+  oglDecal_fadeLiveNote: "Até θ ≈ 53° (cos = 0,6) o decal fica inteiro. Depois de θ ≈ 72,5° (cos = 0,3) ele some. No meio, o smoothstep suaviza a entrada e a saída do fade, então nenhuma linha dura marca onde o corte acontece. Em 60°, |cos| = 0,5 está a dois terços do caminho e cerca de 74% sobrevive.",
+  oglDecal_liveDiscard: "descartar",
+  oglDecal_liveMeter: "fração da opacidade do decal mantida nesta superfície",
 };
 
 export default text;

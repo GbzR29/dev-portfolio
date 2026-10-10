@@ -12,6 +12,19 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ## Outubro de 2026
 
+### 2026-10-10
+
+- **Fórmulas dinâmicas na seção Técnicas Avançadas do OpenGL** (lote 7 da expansão das fórmulas interativas; módulos novos em `live/`: skeletal, text, picking, oit, reflections, volumetrics, decals, terrain). "Em palavras" nas fórmulas principais dos 8 capítulos; fórmulas largas demais no desktop foram quebradas em linhas:
+  - **Skeletal Animation**: fórmulas ao vivo do braço de dois ossos (G = G_pai · L), do slerp com a troca de sinal de q₀·q₁ < 0, de quanto o LBS estrangula uma junta torcida (papel de bala contra DQS) e do IK de dois ossos; dedução de um vértice passando por K = G·B⁻¹ com números;
+  - **Text Rendering**: dedução de "AV" a 48 px (advance em 26.6, bearings, kerning) e da mediana do MSDF num texel; fórmula ao vivo de um texel SDF do atlas à tela (spread, ampliação, fwidth);
+  - **Picking**: fórmulas ao vivo do mouse para NDC, do raio contra esfera e de Möller–Trumbore num triângulo conhecido; dedução da equação do segundo grau do raio contra esfera;
+  - **OIT**: dedução do "over" com duas camadas nas duas ordens (o peso do fundo não muda); fórmula ao vivo do peso do WBOIT por profundidade;
+  - **Reflections**: fórmulas ao vivo do raio refletido num piso e da box projection numa sala vista de lado; dedução das linhas da matriz de espelho;
+  - **Atmosphere & Volumetrics**: fórmulas ao vivo de Beer–Lambert (visibilidade na neblina) e da cor do sol pela massa de ar; dedução da neblina uniforme em forma fechada (a fórmula clássica e a linha do shader de froxels);
+  - **Decals**: fórmulas ao vivo do ponto dentro da caixa do decal e do fade por ângulo;
+  - **Terrain**: dedução da normal pelo produto vetorial das tangentes; fórmulas ao vivo da normal por diferenças centrais, dos pesos do splat da figura e dos pesos do triplanar;
+  - tradução pt de todo o texto novo.
+
 ### 2026-10-09
 
 - **Fórmulas dinâmicas em Modelos e OpenGL Avançado** (lote 6 da expansão das fórmulas interativas para todas as trilhas; módulos novos em `live/`: stencil, blending, framebuffers, instancing, ubo, buffers, cubemaps, particles, geometry-shader, tessellation):

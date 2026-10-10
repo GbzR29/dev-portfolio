@@ -47,6 +47,32 @@ const text: Record<string, string> = {
   oglPick_key2: "Transforme o raio para o espaço de objeto com a inversa da matriz model para lidar com qualquer rotação e escala.",
   oglPick_key3: "Um ID buffer (GL_R32UI) seleciona com precisão de pixel; leia de volta de forma assíncrona com um PBO e uma fence.",
   oglPick_key4: "Combine: volumes envolventes para rejeitar, testes exatos ou o ID buffer para decidir.",
+
+  // ── In words, derivations, live formulas (2026-10-10) ──
+  oglPick_ndcWords: "Reescale a posição do mouse para o quadrado −1…1, invertendo y. Passe esse ponto de volta pelas matrizes inversas da câmera uma vez no plano near e outra no plano far, e o raio vai do primeiro ao segundo.",
+  oglPick_ndcLive: "Experimente: um clique numa janela de 1920 × 1080",
+  oglPick_ndcLiveNote: "O centro (960, 540) dá (0, 0); o canto superior esquerdo (0, 0) dá (−1, +1), porque o y da janela cresce para baixo e o y do NDC para cima. (1440, 270) está na metade do caminho até a borda direita e na metade até o topo: (0,5, 0,5).",
+  oglPick_sphereWords: "Pergunte para quais distâncias t ao longo do raio o ponto fica exatamente a ρ do centro. Isso é uma equação do segundo grau: sem solução real é erro, e a menor solução é onde o raio entra.",
+  oglPick_sphDer: "De onde vem a equação do segundo grau",
+  oglPick_sd1: "um ponto do raio, o + t·d, está na esfera quando sua distância ao centro é ρ. Elevar os dois lados ao quadrado elimina a raiz do comprimento",
+  oglPick_sd2: "escreva o − c como oc; um comprimento ao quadrado é o produto escalar do vetor com ele mesmo",
+  oglPick_sd3: "expanda o produto escalar como (x + y)² e passe ρ² para a esquerda",
+  oglPick_sd4: "d tem comprimento 1, então d·d = 1; chame b = oc·d",
+  oglPick_sd5: "a fórmula de Bhaskara com a = 1 e coeficiente do meio 2b: os 2 e o 4 se cancelam e sobra esta forma curta. h é o que fica sob a raiz",
+  oglPick_sphLive: "Experimente: um raio ao longo de x contra uma esfera a 5 unidades",
+  oglPick_wOD2: "o raio sai da origem e aponta ao longo de +x: d = (1, 0, 0)",
+  oglPick_wC2: "o centro da esfera, (5, c_y, 0): 5 à frente e c_y fora da linha do raio",
+  oglPick_sphLiveNote: "Aqui h dá ρ² − c_y²: o raio acerta quando o centro está a menos de um raio da sua linha. Com c_y = 1 e ρ = 2 o acerto é em t = 5 − √3 ≈ 3,27. Passe c_y de ρ e h fica negativo: erro. Com c_y = ±ρ exatamente, h = 0 e o raio só raspa a esfera.",
+  oglPick_slabWords: "Para cada eixo, ache quando o raio cruza as duas paredes da caixa naquele eixo. O raio só está dentro da caixa enquanto está entre as paredes de todos os eixos ao mesmo tempo: depois da última entrada e antes da primeira saída.",
+  oglPick_mtWords: "Escreva o ponto de acerto de dois jeitos, como ponto do raio e como ponto do plano do triângulo, e resolva as três incógnitas t, u e v de uma vez. O acerto só conta se u e v caírem dentro do triângulo.",
+  oglPick_mtLive: "Experimente: um raio caindo sobre o triângulo (0,0,0), (1,0,0), (0,1,0)",
+  oglPick_wO3: "a origem do raio, (o_x, o_y, 1): uma unidade acima do plano z = 0 do triângulo",
+  oglPick_wD3: "a direção do raio, (d_x, 0, −1): reto para baixo, inclinado em x por d_x",
+  oglPick_wE: "as arestas a partir de v₀: (1, 0, 0) e (0, 1, 0)",
+  oglPick_mtLiveNote: "Com este triângulo u e v são simplesmente o x e o y do acerto, então dá para conferir cada número de olho: o raio padrão cai em (0,2, 0,3) depois de t = 1. Incline-o com d_x e u anda d_x, porque o raio desliza de lado enquanto cai. Passe o_x + o_y de 1 e o acerto sai do triângulo pela aresta longa.",
+  oglPick_liveMiss: "erro",
+  oglPick_liveIn: "dentro: acerto",
+  oglPick_liveOut: "fora: erro",
 };
 
 export default text;

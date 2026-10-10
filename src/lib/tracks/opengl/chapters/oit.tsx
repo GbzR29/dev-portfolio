@@ -4,6 +4,9 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { weightNumbers } from "@/lib/tracks/opengl/live/oit";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -32,12 +35,26 @@ export function OitContent({ t }: { t: TrackTranslations }) {
           [r`C_{dst}`, tx(t, "oglOit_wDst", "the colour already in the framebuffer")],
           [r`C_i,\ \alpha_i`, tx(t, "oglOit_wCi", "the incoming layer's colour and opacity")],
         ]}
+        words={tx(t, "oglOit_overWords", "Each layer covers a share α of what is behind it with its own colour and lets 1 − α through. Unrolled, every layer's colour is dimmed by every layer in front of it, and the background by all of them.")}
         note={tx(t, "oglOit_overNote", "Unrolled for n layers sorted far to near, each colour is attenuated by the transparency of every layer in front of it, so which layers are in front matters. Swap two layers and the products change. The operation is associative but not commutative, and the GPU applies it in draw order.")}>
-        {r`C_{dst}' = \alpha_i\,C_i + (1 - \alpha_i)\,C_{dst} \qquad C = \sum_{i=1}^{n} \alpha_i\,C_i \prod_{j < i} (1 - \alpha_j) \;+\; C_{bg} \prod_{j=1}^{n} (1 - \alpha_j)`}
+        {r`\begin{gathered} C_{dst}' = \alpha_i\,C_i + (1 - \alpha_i)\,C_{dst} \\[4pt] C =\sum_{i=1}^{n} \alpha_i\,C_i \prod_{j < i} (1 - \alpha_j) \;+\; C_{bg} \prod_{j=1}^{n} (1 - \alpha_j) \end{gathered}`}
       </Equation>
       <p>
         {tx(t, "oglOit_overBody", "In the second form the layers are indexed from the nearest (j < i are the layers in front of layer i). The last term is the key to cheap OIT. The background's share, the product of all transparencies, does not depend on order at all. Only how the layers' own colours are weighted does.")}
       </p>
+      <Derivation t={t} label={tx(t, "oglOit_twoDer", "Two layers, in both orders")}
+        steps={[
+          { full: true, tex: r`C_a = \alpha_2 C_2 + (1 - \alpha_2)\,C_{bg}`,
+            why: tx(t, "oglOit_td1", "the far layer 2 is drawn first, over the background") },
+          { full: true, tex: r`C = \alpha_1 C_1 + (1 - \alpha_1)\,C_a`,
+            why: tx(t, "oglOit_td2", "then the near layer 1 is drawn over that result") },
+          { full: true, tex: r`C = \alpha_1 C_1 + (1 - \alpha_1)\,\alpha_2 C_2 + (1 - \alpha_1)(1 - \alpha_2)\,C_{bg}`,
+            why: tx(t, "oglOit_td3", "substitute C_a and multiply out: the correct answer. Layer 2 is dimmed by layer 1 in front of it") },
+          { full: true, tex: r`C_{\text{swap}} = \alpha_2 C_2 + (1 - \alpha_2)\,\alpha_1 C_1 + (1 - \alpha_2)(1 - \alpha_1)\,C_{bg}`,
+            why: tx(t, "oglOit_td4", "draw them the other way round and the same steps give this. Now layer 1 is dimmed by layer 2, which is wrong") },
+          { full: true, tex: r`(1 - \alpha_1)(1 - \alpha_2) = (1 - \alpha_2)(1 - \alpha_1)`,
+            why: tx(t, "oglOit_td5", "but the background's weight is the same in both: a product does not care about order. Only the layers' own weights changed, and that is the part WBOIT approximates") },
+        ]} />
       <OitLayersFigure t={t} />
 
       <H2>{tx(t, "oglOit_exactTitle", "Exact methods")}</H2>
@@ -71,9 +88,22 @@ void main() {
           [r`\text{accum}`, tx(t, "oglOit_wAcc", "RGBA16F target, blended ONE, ONE: rgb = Σ w α C, a = Σ w α")],
           [r`\text{reveal}`, tx(t, "oglOit_wRev", "R8 target cleared to 1, blended ZERO, ONE_MINUS_SRC_COLOR: Π (1 − α)")],
         ]}
+        words={tx(t, "oglOit_wbWords", "How much of the background shows is computed exactly, as a product. The rest of the pixel is filled with an average of the layers' colours, where nearer and more opaque layers count more.")}
         note={tx(t, "oglOit_wbNote", "The result is exact when all layers have the same colour, and when there is only one layer. Its error grows with strongly differing colours at very different depths. The weight's range must fit in half floats, which is what the clamp is for, and it needs tuning to the scene's depth range.")}>
         {r`C \approx \frac{\sum_i w_i\,\alpha_i\,C_i}{\sum_i w_i\,\alpha_i}\,\Big(1 - \prod_i (1 - \alpha_i)\Big) + C_{bg}\prod_i (1 - \alpha_i)`}
       </Equation>
+      <LiveFormula label={tx(t, "oglOit_wLive", "Try it: the weight of one fragment")}
+        tex={r`w(z, \alpha) = \alpha \cdot \operatorname{clamp}\!\left(\frac{10}{10^{-5} + (z/5)^2 + (z/200)^6},\ 10^{-2},\ 3\cdot 10^{3}\right)`}
+        vars={[
+          { id: "z", label: "z", min: 0.1, max: 400, step: 0.1, value: 10, fmt: v => v.toFixed(1) },
+          { id: "a", label: "α", min: 0.05, max: 1, step: 0.05, value: 0.5, fmt: v => v.toFixed(2) },
+        ]}
+        where={[
+          [r`z`, tx(t, "oglOit_wZ", "the fragment's view depth, in scene units (metres here)")],
+          [r`\alpha`, tx(t, "oglOit_wA", "its opacity: a nearly clear fragment should barely count, whatever its depth")],
+        ]}
+        compute={weightNumbers(t)}
+        note={tx(t, "oglOit_wLiveNote", "Halve z and the weight grows about 4 times: the (z/5)² term rules. Near z ≈ 155 the weight reaches the 0.01 floor, and below z ≈ 0.3 the 3000 ceiling; between them it spans more than five powers of ten. The sixth-power term only bites past z ≈ 200, which with these constants is already on the floor: they must be tuned to the scene's depth range. Both limits keep α·w·C inside half-float range (65 504) after many layers are summed.")} />
       <CodeBlock lang="cpp" filename="wboit.cpp" t={t}>{`// Two colour attachments, one pass: per-attachment blending (GL 4.0 glBlendFunci)
 glNamedFramebufferDrawBuffers(oitFbo, 2, (GLenum[]){ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 });
 glClearNamedFramebufferfv(oitFbo, GL_COLOR, 0, (float[]){ 0, 0, 0, 0 });  // accum

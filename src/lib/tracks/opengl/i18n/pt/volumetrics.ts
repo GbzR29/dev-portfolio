@@ -63,6 +63,28 @@ const text: Record<string, string> = {
   oglVol_key2: "Rayleigh (∝ 1/λ⁴, simétrico) faz o céu azul e o pôr do sol vermelho; Mie/HG (para a frente) faz a névoa e os feixes brilhantes.",
   oglVol_key3: "As engines pré-calculam LUTs de céu e guardam a neblina volumétrica numa grade de froxels integrada por compute.",
   oglVol_key4: "God rays em espaço de tela são um blur radial barato de uma máscara de oclusão em direção ao sol.",
+
+  // ── In words, derivations, live formulas (2026-10-10) ──
+  oglVol_coeffWords: "Cada metro do meio remove uma fração fixa da luz que ainda está viajando, parte como calor e parte desviando-a para outro lado. Perder uma fração fixa por metro é decaimento exponencial: a fração que sobrevive a um caminho é e elevado a menos a extinção total ao longo dele.",
+  oglVol_beerLive: "Experimente: até onde se enxerga na neblina",
+  oglVol_wSt2: "a extinção da neblina, constante em todo lugar, então a integral é só σₜ·d",
+  oglVol_wD: "a distância pela neblina até a superfície",
+  oglVol_beerLiveNote: "Cada 1/σₜ metros a mais multiplica T por e⁻¹ ≈ 0,37: com σₜ = 0,02, a cada 50 m. Os meteorologistas chamam de visibilidade a distância em que só resta 5% do contraste, ln 20 / σₜ ≈ 3/σₜ: 150 m aqui, neblina densa. Ar limpo fica em torno de σₜ = 0,0001, visibilidade de 30 km.",
+  oglVol_rteWords: "O que chega ao olho é a luz da superfície, atenuada pelo meio no caminho, mais a luz somada ao longo do raio: em cada ponto, a luz do sol que chegou ali é espalhada em direção ao olho e depois atenuada no seu próprio caminho de volta.",
+  oglVol_fogDer: "Neblina uniforme: a integral em forma fechada",
+  oglVol_fd1: "suponha que o meio é igual em todo lugar e que o sol chega a todo ponto (V = 1, T_sun ≈ 1). Então T(0, s) = e^(−σₜ·s)",
+  oglVol_fd2: "σ_s, a função de fase e a luz do sol não dependem mais de s, então saem da integral",
+  oglVol_fd3: "a primitiva de e^(−k·s) é −e^(−k·s)/k; calcule em d e em 0 e subtraia",
+  oglVol_fd4: "junte tudo: o pixel passa da superfície para uma cor de neblina conforme T. É a fórmula clássica de neblina, e a linha S = rgb·(1 − T)/σ do shader de froxels abaixo, aplicada por fatia",
+  oglVol_phaseWords: "Rayleigh espalha tanto para frente quanto para trás e um pouco menos para os lados. Henyey–Greenstein inclina o lóbulo para frente quando g é positivo e para trás quando é negativo; com g = 0 espalha igual em todas as direções.",
+  oglVol_atmoWords: "O ar fica mais rarefeito com a altura, então os dois tipos de espalhamento caem exponencialmente: as moléculas ao longo de 8 km, a névoa bem mais rápido. Moléculas espalham comprimentos de onda curtos muito mais que os longos.",
+  oglVol_sunLive: "Experimente: a cor do sol depois do ar",
+  oglVol_wTau: "profundidade óptica para R, G e B: a extinção somada ao longo do caminho. Integrar β_R·e^(−y/H_R) de h até o topo do céu dá β_R·H_R·e^(−h/H_R)",
+  oglVol_wM2: "massa de ar: quantas vezes o caminho é mais longo que reto para cima. 1 ao meio-dia com o sol a pino, cerca de 40 no horizonte",
+  oglVol_sunLiveNote: "Só Rayleigh entra na conta aqui. Com o sol a pino passam 77% do azul e 96% do vermelho, então o sol parece quase branco. Com m = 40 o azul fica com só cerca de 1/40 000 e o vermelho com 16%: a amostra, escalada para que o canal mais forte fique cheio, fica vermelho-escura. Suba a h = 5 km e só cerca de metade do ar fica acima de você (e^(−5/8) ≈ 0,54), então o pôr do sol é menos vermelho.",
+  oglVol_godWords: "De cada pixel, dê N passos em direção ao sol na tela e some quanto céu aberto a máscara mostra em cada passo, contando menos os passos mais distantes. Pixels cujo caminho até o sol cruza céu aberto acendem em faixas.",
+  oglVol_liveBeerMeter: "fração da luz da superfície que chega ao olho",
+  oglVol_liveSunMeter: "azul que sobrevive, em relação ao vermelho",
 };
 
 export default text;

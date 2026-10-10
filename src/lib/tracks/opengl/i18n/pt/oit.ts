@@ -54,6 +54,22 @@ const text: Record<string, string> = {
   oglOit_key2: "O depth peeling e as listas ligadas por pixel são exatos, ao custo de passadas ou de memória.",
   oglOit_key3: "A WBOIT mantém a cobertura Π(1 − α) exata e aproxima a cor com uma média ponderada pela profundidade, numa passada.",
   oglOit_key4: "Passadas transparentes: teste de profundidade ligado, escrita de profundidade desligada, composição depois da passada opaca.",
+
+  // ── In words, derivations, live formulas (2026-10-10) ──
+  oglOit_overWords: "Cada camada cobre uma fração α do que está atrás com a própria cor e deixa passar 1 − α. Desenrolando, a cor de cada camada é escurecida por todas as camadas à sua frente, e o fundo por todas elas.",
+  oglOit_twoDer: "Duas camadas, nas duas ordens",
+  oglOit_td1: "a camada distante 2 é desenhada primeiro, sobre o fundo",
+  oglOit_td2: "depois a camada próxima 1 é desenhada sobre esse resultado",
+  oglOit_td3: "substitua C_a e multiplique: a resposta correta. A camada 2 é escurecida pela camada 1 à sua frente",
+  oglOit_td4: "desenhe na ordem inversa e os mesmos passos dão isto. Agora a camada 1 é escurecida pela camada 2, o que está errado",
+  oglOit_td5: "mas o peso do fundo é o mesmo nos dois: um produto não liga para a ordem. Só os pesos das próprias camadas mudaram, e é essa parte que o WBOIT aproxima",
+  oglOit_wbWords: "Quanto do fundo aparece é calculado exatamente, como um produto. O resto do pixel é preenchido com uma média das cores das camadas, em que camadas mais próximas e mais opacas contam mais.",
+  oglOit_wLive: "Experimente: o peso de um fragmento",
+  oglOit_wZ: "a profundidade de visão do fragmento, em unidades da cena (metros aqui)",
+  oglOit_wA: "sua opacidade: um fragmento quase transparente deve contar pouco, qualquer que seja a profundidade",
+  oglOit_wLiveNote: "Divida z por 2 e o peso cresce cerca de 4 vezes: o termo (z/5)² manda. Perto de z ≈ 155 o peso chega ao piso de 0,01, e abaixo de z ≈ 0,3 ao teto de 3000; entre eles cobre mais de cinco potências de dez. O termo de sexta potência só pesa depois de z ≈ 200, que com essas constantes já está no piso: elas precisam ser ajustadas à faixa de profundidade da cena. Os dois limites mantêm α·w·C dentro da faixa do half float (65 504) depois que muitas camadas são somadas.",
+  oglOit_liveClamp: "limitado",
+  oglOit_liveMeter: "fator de profundidade em escala log, de 0,01 (longe) a 3000 (perto)",
 };
 
 export default text;
