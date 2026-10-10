@@ -4,6 +4,9 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation, Tex } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { STENCIL_FUNCS, STENCIL_MASKS, stencilTestNumbers } from "@/lib/tracks/opengl/live/stencil";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -55,9 +58,20 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);`}</C
           [r`\text{mask}`, tx(t, "oglSten_wMask", "read mask — 0xFF compares all 8 bits; 0x01 only the lowest")],
           [r`\text{OP}`, tx(t, "oglSten_wOp", "NEVER, LESS, LEQUAL, GREATER, GEQUAL, EQUAL, NOTEQUAL or ALWAYS")],
         ]}
-        note={tx(t, "oglSten_funcNote", "Note the order: the reference is on the left. GL_LESS passes when ref < stored, not the other way round, which trips everyone up at least once.")}>
+        note={tx(t, "oglSten_funcNote", "Note the order: the reference is on the left. GL_LESS passes when ref < stored, not the other way round, which trips everyone up at least once.")}
+        words={tx(t, "oglSten_funcWords", "Keep only the bits of the mask from the reference value, and the same bits from the value stored at this pixel. Compare the two with the chosen operator, reference on the left. If the comparison is true, the fragment passes.")}>
         {r`\text{pass} \iff (\text{ref} \;\&\; \text{mask}) \;\;\text{OP}\;\; (s \;\&\; \text{mask})`}
       </Equation>
+      <LiveFormula label={tx(t, "oglSten_liveFunc", "Try it: does this fragment pass the stencil test?")}
+        tex={r`(\text{ref} \;\&\; \text{mask}) \;\;\text{OP}\;\; (s \;\&\; \text{mask})`}
+        vars={[
+          { id: "ref", label: "ref", min: 0, max: 255, step: 1, value: 1, fmt: v => String(v) },
+          { id: "s", label: "s", min: 0, max: 255, step: 1, value: 3, fmt: v => String(v) },
+          { id: "m", label: "mask", min: 0, max: 2, step: 1, value: 2, fmt: v => "0x" + STENCIL_MASKS[v].toString(16).toUpperCase().padStart(2, "0") },
+          { id: "op", label: "OP", min: 0, max: 7, step: 1, value: 5, fmt: v => STENCIL_FUNCS[v] },
+        ]}
+        compute={stencilTestNumbers(t)}
+        note={tx(t, "oglSten_liveFuncNote", "With mask 0x01 only the lowest bit is compared: a stored 3 equals ref 1, because both are odd. Switch the mask to 0xFF and the same pair fails EQUAL. With LESS, ref 1 and s 3 pass (1 < 3); swap the two values and they fail.")} />
       <p>
         {tx(t, "oglSten_opsBody",
           "glStencilOp says what to write back in each of the three possible outcomes. A fragment can fail the stencil test, pass stencil but fail depth, or pass both:")}
@@ -67,14 +81,26 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);`}</C
           tx(t, "oglSten_opN1", "sfail: the stencil test failed. The fragment is discarded, but the stencil can still be updated."),
           tx(t, "oglSten_opN2", "dpfail: stencil passed, depth failed. Shadow volumes (z-fail) count exactly these."),
           tx(t, "oglSten_opN3", "dppass: both passed. The fragment is written; most recipes use this slot."),
-        ]}>
-        {r`s' = \begin{cases} \text{sfail}(s) & \text{stencil test fails} \\ \text{dpfail}(s) & \text{stencil passes, depth fails} \\ \text{dppass}(s) & \text{both pass} \end{cases} \qquad s_{\text{stored}} = (s' \;\&\; w) \;|\; (s \;\&\; \lnot w)`}
+        ]}
+        words={tx(t, "oglSten_opWords", "Choose the new value by what happened to the fragment: failed the stencil test, passed it but failed depth, or passed both. Then the write mask w decides bit by bit: bits set in w take the new value, the other bits keep the old one.")}>
+        {r`\begin{gathered} s' = \begin{cases} \text{sfail}(s) & \text{${tx(t, "oglSten_cSfail", "stencil test fails")}} \\ \text{dpfail}(s) & \text{${tx(t, "oglSten_cDpfail", "stencil passes, depth fails")}} \\ \text{dppass}(s) & \text{${tx(t, "oglSten_cDppass", "both pass")}} \end{cases} \\[6pt] s_{\text{stored}} = (s' \;\&\; w) \;|\; (s \;\&\; \lnot w) \end{gathered}`}
       </Equation>
       <p>
         {tx(t, "oglSten_writeMask", "The last part is the write mask ")}
         <Tex>{r`w`}</Tex>
         {tx(t, "oglSten_writeMask2", " from glStencilMask: only the bits set in it are changed. glStencilMask(0x00) freezes the buffer, so you can test against it without modifying it.")}
       </p>
+      <Derivation t={t} label={tx(t, "oglSten_maskDer", "One write through the mask, bit by bit")}
+        steps={[
+          { full: true, tex: r`s = 6 = \mathtt{0000\,0110} \qquad s' = \text{ref} = 1 \qquad w = \mathtt{0000\,0001}`,
+            why: tx(t, "oglSten_md1", "GL_REPLACE wants to write ref = 1 over a stored 6, but glStencilMask(0x01) lets only the lowest bit change") },
+          { full: true, tex: r`s' \;\&\; w = \mathtt{0000\,0001}`,
+            why: tx(t, "oglSten_md2", "from the new value, keep only the bits the mask allows: bit 0, which is 1") },
+          { full: true, tex: r`s \;\&\; \lnot w = \mathtt{0000\,0110} \;\&\; \mathtt{1111\,1110} = \mathtt{0000\,0110}`,
+            why: tx(t, "oglSten_md3", "from the old value, keep every other bit. ¬w flips the mask, so bits 1 to 7 of the 6 survive") },
+          { full: true, tex: r`s_{\text{stored}} = \mathtt{0000\,0001} \;|\; \mathtt{0000\,0110} = \mathtt{0000\,0111} = 7`,
+            why: tx(t, "oglSten_md4", "OR joins the two parts. The result is 7, not 1: bit 0 came from ref, the rest is untouched. With w = 0x00 the 6 stays, with w = 0xFF it becomes 1") },
+        ]} />
       <LessonTable
         headers={[tx(t, "oglSten_thOp", "Op"), tx(t, "oglSten_thWrites", "Writes"), tx(t, "oglSten_thUse", "Typical use")]}
         rows={[
@@ -128,13 +154,25 @@ glEnable(GL_DEPTH_TEST);`}</CodeBlock>
           [r`\hat n_{clip}`, tx(t, "oglSten_wNc", "the normal projected to clip space, xy only, normalised")],
           [r`p_{px},\ (W, H)`, tx(t, "oglSten_wPx", "width in pixels, viewport size")],
         ]}
-        note={tx(t, "oglSten_enlargeNote", "Multiplying by w in the clip-space version cancels the upcoming perspective divide, so the offset is exactly p pixels at any distance.")}>
+        note={tx(t, "oglSten_enlargeNote", "Multiplying by w in the clip-space version cancels the upcoming perspective divide, so the offset is exactly p pixels at any distance.")}
+        words={tx(t, "oglSten_enlargeWords", "Scale: push every point away from the object's centre by a factor. World normal: push each vertex out along its normal by a fixed distance. Screen normal: push it along the normal's direction on screen, by a number of pixels that stays the same near and far.")}>
         {r`\begin{aligned}
 &\text{scale:} && p' = c + k\,(p - c) \\
 &\text{normal, world:} && p' = p + d\,\vN \\
 &\text{normal, screen:} && \text{clip}'_{xy} = \text{clip}_{xy} + \hat n_{clip}\,\frac{2\,p_{px}}{(W, H)}\,\text{clip}_w
 \end{aligned}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglSten_pxDer", "Why the screen version is exactly p pixels wide")}
+        steps={[
+          { full: true, tex: r`\text{ndc}'_{xy} = \frac{\text{clip}'_{xy}}{\text{clip}_w} = \frac{\text{clip}_{xy}}{\text{clip}_w} + \hat n_{clip}\,\frac{2\,p_{px}}{(W, H)}`,
+            why: tx(t, "oglSten_pd1", "after the vertex shader the GPU divides by w. The w we multiplied into the offset cancels against it") },
+          { full: true, tex: r`\Delta\text{ndc} = \hat n_{clip}\,\frac{2\,p_{px}}{(W, H)}`,
+            why: tx(t, "oglSten_pd2", "so the shift in normalised device coordinates no longer depends on how far away the vertex is") },
+          { full: true, tex: r`\Delta\text{px} = \Delta\text{ndc}\cdot\frac{(W, H)}{2} = \hat n_{clip}\;p_{px}`,
+            why: tx(t, "oglSten_pd3", "the viewport stretches NDC's range of 2 over W pixels, so one NDC unit is W/2 pixels. The 2 and the (W, H) cancel: the vertex moves p pixels along the unit direction n̂") },
+          { full: true, tex: r`\text{${tx(t, "oglSten_pd4t", "without")}}\ \text{clip}_w: \quad \Delta\text{px} = \frac{\hat n_{clip}\;p_{px}}{\text{clip}_w}`,
+            why: tx(t, "oglSten_pd4", "leave the w out and the offset is divided by it, and w grows with distance: an object twice as far gets an outline half as wide") },
+        ]} />
       <CodeBlock lang="glsl" filename="outline.vert" t={t}>{`uniform float outlinePx;        // e.g. 3.0
 uniform vec2  viewport;         // framebuffer size in pixels
 
@@ -168,7 +206,8 @@ void main() {
           [r`n_{back},\ n_{front}`, tx(t, "oglSten_wNb", "back and front faces of shadow volumes whose depth test fails at this pixel")],
         ]}
         note={tx(t, "oglSten_volNote", "glStencilOpSeparate sets different ops for front and back faces, so both are counted in one pass with culling off. The z-fail form stays correct when the camera is inside a volume, which the simpler z-pass form does not.")}
-        glsl="glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);  glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);">
+        glsl="glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);  glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);"
+        words={tx(t, "oglSten_volWords", "At each pixel, count the shadow-volume faces that lie behind the visible surface: each back face adds one, each front face takes one away. A volume wrapped around the surface leaves its back face behind it and no front face, so the count is not zero: the surface is in shadow.")}>
         {r`s = n_{back} - n_{front} \qquad \text{in shadow} \iff s \neq 0`}
       </Equation>
       <Callout type="info" t={t}>

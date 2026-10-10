@@ -84,8 +84,8 @@ export const openGLChapters: Chapter[] = [
   { id: "instancing",      section: ADVANCED,        title: "Instancing",                minRead: 9,  load: () => import("./chapters/advanced/instancing").then((m) => m.InstancingContent) },
   { id: "particles",       section: ADVANCED,        title: "Particles",                 minRead: 21, load: () => import("./chapters/particles").then((m) => m.ParticlesContent) },
   { id: "ubo",             section: ADVANCED,        title: "Uniform Buffer Objects",    minRead: 10, load: () => import("./chapters/advanced/ubo").then((m) => m.UBOContent) },
-  { id: "geometry-shader", section: ADVANCED,        title: "Geometry Shader",           minRead: 13, load: () => import("./chapters/shader-stages").then((m) => m.GeometryShaderContent) },
-  { id: "tessellation",    section: ADVANCED,        title: "Tessellation",              minRead: 15, load: () => import("./chapters/shader-stages").then((m) => m.TessellationContent) },
+  { id: "geometry-shader", section: ADVANCED,        title: "Geometry Shader",           minRead: 13, load: () => import("./chapters/shader-stages/geometry-shader").then((m) => m.GeometryShaderContent) },
+  { id: "tessellation",    section: ADVANCED,        title: "Tessellation",              minRead: 15, load: () => import("./chapters/shader-stages/tessellation").then((m) => m.TessellationContent) },
 
   // ── Advanced Techniques ──────────────────────────────────────────────────
   { id: "skeletal-animation", section: TECH,      title: "Skeletal Animation",        minRead: 18, load: () => import("./chapters/skeletal").then((m) => m.SkeletalContent) },

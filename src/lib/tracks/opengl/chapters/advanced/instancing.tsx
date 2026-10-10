@@ -9,6 +9,8 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { asteroidNumbers } from "@/lib/tracks/opengl/live/instancing";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -73,7 +75,8 @@ void main() {
           [r`d`, tx(t, "oglInst_wD", "the divisor: how many consecutive instances share one element")],
           [r`b`, tx(t, "oglInst_wB", "baseInstance, 0 unless you draw with a *BaseInstance call; it shifts where per-instance reading starts")],
           [r`\lfloor\cdot\rfloor`, tx(t, "oglInst_wFloor", "integer division: instances 0 and 1 with d = 2 both give 0")],
-        ]}>
+        ]}
+        words={tx(t, "oglInst_fetchWords", "An attribute with divisor 0 reads one element per vertex, as before. With divisor d it ignores the vertex and reads one element per d instances, counting from baseInstance.")}>
         {r`\text{element} = \begin{cases} \text{gl\_VertexID} & d = 0 \\[4pt] \left\lfloor \dfrac{\text{gl\_InstanceID}}{d} \right\rfloor + b & d \ge 1 \end{cases}`}
       </Equation>
 
@@ -137,9 +140,24 @@ for (unsigned i = 0; i < 4; ++i) {
       <ol className="list-decimal pl-6 space-y-1.5">
         <li>{tx(t, "oglInst_w1", "One draw per asteroid: a glUniformMatrix4fv and a glDrawElements each, 20 000 calls per frame. At about 5 µs of driver time per draw that is 50 ms, so the frame rate cannot exceed 1000 / 50 = 20 fps, however fast the GPU is.")}</li>
         <li>{tx(t, "oglInst_w2", "Instanced: one glDrawElementsInstanced with instancecount 10 000. The matrices live in a buffer: 10 000 × 64 bytes = 640 000 bytes, 625 KiB, uploaded once if the ring does not move.")}</li>
-        <li>{tx(t, "oglInst_w3", "If every asteroid moves each frame, the whole buffer is re-uploaded: 625 KiB × 60 frames = about 37.5 MB per second, a tiny fraction of what the PCIe bus carries (several GB per second).")}</li>
+        <li>{tx(t, "oglInst_w3", "If every asteroid moves each frame, the whole buffer is re-uploaded: 640 000 bytes × 60 frames = 38.4 MB per second, a tiny fraction of what the PCIe bus carries (several GB per second).")}</li>
         <li>{tx(t, "oglInst_w4", "The GPU work does not change: the vertex shader still runs 600 × 10 000 = 6 million times in both versions. Instancing removed 19 999 draw calls of CPU overhead, not a single vertex.")}</li>
       </ol>
+      <LiveFormula label={tx(t, "oglInst_live", "Try it: one draw per asteroid, or one draw for all")}
+        tex={r`t_{\text{CPU}} = N \cdot t_{\text{draw}} \qquad f_{\max} = \frac{1000}{t_{\text{CPU}}} \qquad B = N \cdot 64`}
+        vars={[
+          { id: "N", label: "N", min: 1000, max: 20000, step: 1000, value: 10000, fmt: v => String(v) },
+          { id: "us", label: <>t<sub>draw</sub> (µs)</>, min: 1, max: 20, step: 0.5, value: 5, fmt: v => String(v) },
+        ]}
+        where={[
+          [r`N`, tx(t, "oglInst_wN", "the number of asteroids")],
+          [r`t_{\text{draw}}`, tx(t, "oglInst_wT", "driver time per asteroid in the one-draw-each version (uniform upload + draw), in microseconds")],
+          [r`f_{\max}`, tx(t, "oglInst_wF", "the highest frame rate the CPU allows when it does nothing else: 1000 ms divided by the time per frame")],
+          [r`B`, tx(t, "oglInst_wB2", "the bytes of the instance buffer: one 64-byte mat4 per asteroid")],
+        ]}
+        compute={asteroidNumbers(t)}
+        note={tx(t, "oglInst_liveNote", "10 000 asteroids at 5 µs give the 50 ms and 20 fps of the list, while the instanced buffer is only 625 KiB. Drop N to 3000 and the separate draws fit a 60 fps frame (15 ms). A fast driver at 1 µs still spends 10 ms per frame at N = 10 000; the instanced version spends about 5 µs once.")} />
+
       <p>
         {tx(t, "oglInst_workedRead",
           "That last point is the whole story. If the frame was CPU-bound on draw submission, instancing makes it fast. If it was GPU-bound on vertices or pixels, instancing changes nothing, and the fix is fewer vertices (level of detail) or fewer instances (culling).")}

@@ -68,6 +68,30 @@ const text: Record<string, string> = {
   oglSten_key2: "glStencilOp(sfail, dpfail, dppass) escolhe o que escrever em cada resultado; glStencilMask escolhe quais bits podem mudar.",
   oglSten_key3: "Contorno = marque o objeto (ALWAYS/REPLACE), depois desenhe uma cópia aumentada com NOTEQUAL; aumente em clip space para uma largura constante em pixels.",
   oglSten_key4: "O mesmo mecanismo: espelhos, portais, máscaras de decal, shadow volumes, volumes de luz, mapas de calor de overdraw.",
+
+  // ── In words, derivations, live formulas (2026-10-09) ──
+  oglSten_funcWords: "Do valor de referência, guarde só os bits da máscara; do valor guardado neste pixel, os mesmos bits. Compare os dois com o operador escolhido, a referência à esquerda. Se a comparação for verdadeira, o fragmento passa.",
+  oglSten_liveFunc: "Experimente: este fragmento passa no teste de stencil?",
+  oglSten_liveFuncNote: "Com a máscara 0x01 só o bit mais baixo é comparado: um 3 guardado é igual à ref 1, porque os dois são ímpares. Mude a máscara para 0xFF e o mesmo par falha no EQUAL. Com LESS, ref 1 e s 3 passam (1 < 3); troque os dois valores e falham.",
+  oglSten_livePass: "passa: o fragmento segue para o teste de profundidade",
+  oglSten_liveFail: "falha: o fragmento é descartado",
+  oglSten_opWords: "Escolha o valor novo pelo que aconteceu com o fragmento: falhou no stencil, passou nele mas falhou na profundidade, ou passou nos dois. Depois a máscara de escrita w decide bit a bit: os bits ligados em w recebem o valor novo, os outros mantêm o antigo.",
+  oglSten_cSfail: "falha no stencil",
+  oglSten_cDpfail: "passa no stencil, falha na profundidade",
+  oglSten_cDppass: "passa nos dois",
+  oglSten_maskDer: "Uma escrita pela máscara, bit a bit",
+  oglSten_md1: "GL_REPLACE quer escrever ref = 1 sobre um 6 guardado, mas glStencilMask(0x01) só deixa o bit mais baixo mudar",
+  oglSten_md2: "do valor novo, guarde só os bits que a máscara permite: o bit 0, que é 1",
+  oglSten_md3: "do valor antigo, guarde todos os outros bits. ¬w inverte a máscara, então os bits 1 a 7 do 6 sobrevivem",
+  oglSten_md4: "o OU junta as duas partes. O resultado é 7, não 1: o bit 0 veio da ref, o resto ficou intacto. Com w = 0x00 o 6 fica, com w = 0xFF vira 1",
+  oglSten_enlargeWords: "Escala: empurre cada ponto para longe do centro do objeto por um fator. Normal no mundo: empurre cada vértice para fora ao longo da normal por uma distância fixa. Normal na tela: empurre-o na direção da normal na tela, por um número de pixels que é o mesmo perto e longe.",
+  oglSten_pxDer: "Por que a versão na tela tem exatamente p pixels de largura",
+  oglSten_pd1: "depois do vertex shader a GPU divide por w. O w que multiplicamos no deslocamento se cancela com ele",
+  oglSten_pd2: "então o deslocamento em coordenadas normalizadas de dispositivo não depende mais da distância do vértice",
+  oglSten_pd3: "o viewport estica o intervalo de 2 do NDC sobre W pixels, então uma unidade de NDC vale W/2 pixels. O 2 e o (W, H) se cancelam: o vértice anda p pixels na direção unitária n̂",
+  oglSten_pd4t: "sem",
+  oglSten_pd4: "deixe o w de fora e o deslocamento fica dividido por ele, e w cresce com a distância: um objeto duas vezes mais longe ganha um contorno com metade da largura",
+  oglSten_volWords: "Em cada pixel, conte as faces dos volumes de sombra que estão atrás da superfície visível: cada face de trás soma um, cada face da frente tira um. Um volume que envolve a superfície deixa a face de trás atrás dela e nenhuma face da frente, então a contagem não é zero: a superfície está na sombra.",
 };
 
 export default text;

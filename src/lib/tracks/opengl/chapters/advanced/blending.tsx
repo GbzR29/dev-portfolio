@@ -2,9 +2,15 @@
 "use client";
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
+import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { BLEND_MODES, blendNumbers, orderNumbers } from "@/lib/tracks/opengl/live/blending";
 import { tx } from "@/lib/tracks/tx";
 import { Goals } from "@/components/lesson/Prose";
 import type { TrackTranslations } from "@/lib/tracks/types";
+
+const r = String.raw;
 
 // ── Blending & Transparency ──────────────────────────────────────────────────
 
@@ -37,6 +43,29 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 // result = src.rgb * src.a  +  dst.rgb * (1 - src.a)
 // An alpha of 0.3 means 30% of the new fragment and 70% of what was there.`}</CodeBlock>
+
+      <Equation label={tx(t, "oglBlend_eqLabel", "The blend equation, per channel")}
+        where={[
+          [r`C`, tx(t, "oglBlend_wC", "the colour written back to the framebuffer")],
+          [r`S`, tx(t, "oglBlend_wS", "source: the colour the fragment shader outputs")],
+          [r`D`, tx(t, "oglBlend_wD", "destination: the colour already stored at this pixel")],
+          [r`F_{src}`, tx(t, "oglBlend_wFs", "the first factor of glBlendFunc, e.g. GL_SRC_ALPHA = α_s")],
+          [r`F_{dst}`, tx(t, "oglBlend_wFd", "the second factor, e.g. GL_ONE_MINUS_SRC_ALPHA = 1 − α_s")],
+          [r`\alpha_s`, tx(t, "oglBlend_wAs", "the fragment's alpha, its opacity from 0 (invisible) to 1 (solid)")],
+        ]}
+        words={tx(t, "oglBlend_eqWords", "Take the new colour times one factor, take the colour already on screen times another factor, and add them. With the usual factors that is a weighted average: α parts of the new colour and 1 − α parts of the old.")}>
+        {r`C = S\,F_{src} + D\,F_{dst} \qquad \text{alpha blend:}\quad C = S\,\alpha_s + D\,(1 - \alpha_s)`}
+      </Equation>
+      <LiveFormula label={tx(t, "oglBlend_liveMode", "Try it: one channel through each mode of the table")}
+        tex={r`C = S\,F_{src} + D\,F_{dst}`}
+        vars={[
+          { id: "mode", label: tx(t, "oglBlend_liveModeVar", "mode"), min: 0, max: 3, step: 1, value: 0, fmt: v => BLEND_MODES[v] },
+          { id: "S", label: "S", min: 0, max: 1, step: 0.05, value: 0.9 },
+          { id: "a", label: "α", min: 0, max: 1, step: 0.05, value: 0.3 },
+          { id: "D", label: "D", min: 0, max: 1, step: 0.05, value: 0.2 },
+        ]}
+        compute={blendNumbers(t)}
+        note={tx(t, "oglBlend_liveModeNote", "Alpha: 0.9 · 0.3 + 0.2 · 0.7 = 0.41, a 30/70 mix. Additive keeps all of D and adds S·α on top, so it can only brighten: raise D and the result clips at 1. Multiply can only darken, and α plays no part. Premultiplied gives the same number as alpha, because S·α is already stored in the texture.")} />
 
       <LessonTable
         headers={[tx(t, "oglBlend_h0", "Mode"), tx(t, "oglBlend_h1", "glBlendFunc"), tx(t, "oglBlend_h2", "Use for")]}
@@ -75,6 +104,17 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
           "glBlendFuncSeparate sets one pair of factors for RGB and another for alpha. That matters as soon as the framebuffer's alpha channel is read later, for example when a UI layer or a particle buffer is rendered into a texture and composited on top of the scene. With plain SRC_ALPHA, ONE_MINUS_SRC_ALPHA the stored alpha becomes α_s² + α_d(1 − α_s): a 50% sprite on an empty target leaves an alpha of 0.25, and the layer later composites as far too transparent. Using ONE for the source alpha gives α_s + α_d(1 − α_s), the true coverage of both layers together."
         )}
       </p>
+      <Derivation t={t} label={tx(t, "oglBlend_alphaDer", "Why the stored alpha comes out too low")}
+        steps={[
+          { full: true, tex: r`\alpha_{out} = \alpha_s \cdot \alpha_s + \alpha_d\,(1 - \alpha_s)`,
+            why: tx(t, "oglBlend_ad1", "glBlendFunc(SRC_ALPHA, ONE_MINUS_SRC_ALPHA) blends the alpha channel with the same factors as the colour, so the source alpha is multiplied by itself") },
+          { full: true, tex: r`\alpha_s = 0.5,\ \alpha_d = 0: \quad \alpha_{out} = 0.25 + 0 = 0.25`,
+            why: tx(t, "oglBlend_ad2", "a half-transparent sprite on an empty, fully transparent target: the stored coverage is a quarter, not a half") },
+          { full: true, tex: r`F = \text{ONE}: \quad \alpha_{out} = \alpha_s + \alpha_d\,(1 - \alpha_s) = 0.5`,
+            why: tx(t, "oglBlend_ad3", "with ONE as the source factor for alpha, the same sprite stores 0.5") },
+          { full: true, tex: r`1 - \alpha_{out} = 1 - \alpha_s - \alpha_d + \alpha_s\alpha_d = (1 - \alpha_s)(1 - \alpha_d)`,
+            why: tx(t, "oglBlend_ad4", "and that is the right value: 1 − α is the light that gets through a layer, and the light that gets through both layers is the product of what each lets through") },
+        ]} />
       <CodeBlock lang="cpp" filename="blend_separate.cpp" t={t}>{`// Colour: normal alpha blending. Alpha: accumulate coverage correctly.
 glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,    // RGB
                     GL_ONE,       GL_ONE_MINUS_SRC_ALPHA);   // alpha
@@ -108,6 +148,20 @@ FragColor = texel;`}</CodeBlock>
           "Blending reads the destination, so the result depends on draw order. If a near transparent window is drawn before a far one and writes depth, the far one is rejected and simply vanishes. The classic workaround is three rules applied together."
         )}
       </p>
+      <LiveFormula label={tx(t, "oglBlend_liveOrder", "Try it: a red pane behind a blue pane, over white")}
+        tex={r`C_1 = \alpha_1\,S_1 + (1 - \alpha_1)\,D \qquad C_2 = \alpha_2\,S_2 + (1 - \alpha_2)\,C_1`}
+        vars={[
+          { id: "a1", label: <>α<sub>1</sub></>, min: 0, max: 1, step: 0.05, value: 0.5 },
+          { id: "a2", label: <>α<sub>2</sub></>, min: 0, max: 1, step: 0.05, value: 0.5 },
+        ]}
+        where={[
+          [r`S_1`, tx(t, "oglBlend_wS1", "the far pane, pure red (1, 0, 0), drawn first in the correct order")],
+          [r`S_2`, tx(t, "oglBlend_wS2", "the near pane, pure blue (0, 0, 1)")],
+          [r`D`, tx(t, "oglBlend_wDw", "the white background (1, 1, 1) already on screen")],
+          [r`C_1`, tx(t, "oglBlend_wC1", "the framebuffer after the first pane, which becomes the destination of the second")],
+        ]}
+        compute={orderNumbers(t)}
+        note={tx(t, "oglBlend_liveOrderNote", "Even with depth writes off, the order changes the colour: (0.5, 0.25, 0.75) against (0.75, 0.25, 0.5) at α = 0.5, bluish against reddish. The pane drawn last always dominates; with both at 1 it hides the other completely. Only when one α is 0 do the two orders agree, so any real transparency needs the sort.")} />
 
       <CodeBlock lang="cpp" filename="sorted_transparency.cpp" t={t}>{`// 1. Draw all opaque geometry first, with depth writes on
 glDisable(GL_BLEND);

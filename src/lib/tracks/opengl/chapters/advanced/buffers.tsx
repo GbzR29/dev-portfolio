@@ -2,9 +2,13 @@
 "use client";
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { addressNumbers } from "@/lib/tracks/opengl/live/buffers";
 import { tx } from "@/lib/tracks/tx";
 import { Goals } from "@/components/lesson/Prose";
 import type { TrackTranslations } from "@/lib/tracks/types";
+
+const r = String.raw;
 
 // ── Buffer Data: update, map, copy ───────────────────────────────────────────
 
@@ -101,6 +105,22 @@ glBufferSubData(GL_ARRAY_BUFFER, posBytes + nrmBytes, uvBytes,  uvs.data());
 glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)posBytes);
 glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)(posBytes + nrmBytes));`}</CodeBlock>
+      <LiveFormula label={tx(t, "oglBuf_live", "Try it: at which byte does the GPU read this attribute?")}
+        tex={r`\text{addr} = \text{offset} + i \cdot \text{stride}`}
+        vars={[
+          { id: "i", label: "i", min: 0, max: 999, step: 1, value: 100, fmt: v => String(v) },
+          { id: "a", label: tx(t, "oglBuf_liveAttr", "attribute"), min: 0, max: 2, step: 1, value: 1,
+            fmt: v => [tx(t, "oglBuf_livePos", "position"), tx(t, "oglBuf_liveNrm", "normal"), "uv"][v] },
+          { id: "n", label: "n", min: 1000, max: 10000, step: 1000, value: 1000, fmt: v => String(v) },
+        ]}
+        where={[
+          [r`i`, tx(t, "oglBuf_wI", "the vertex being read, from 0 to n − 1")],
+          [r`\text{offset}`, tx(t, "oglBuf_wOff", "the last argument of glVertexAttribPointer: where the attribute's first element starts. Interleaved: 0, 12 or 24 inside the vertex. Batched: where its block starts, 0, 12n or 24n")],
+          [r`\text{stride}`, tx(t, "oglBuf_wStride", "the bytes from one element to the next: 32, the whole vertex, when interleaved; 12 or 8, the attribute alone, when batched")],
+          [r`n`, tx(t, "oglBuf_wN", "the number of vertices in the buffer; only the batched layout depends on it")],
+        ]}
+        compute={addressNumbers(t)}
+        note={tx(t, "oglBuf_liveNote", "Vertex 100's normal: byte 3212 interleaved, right after its position at 3200 (the 100 × 32 of glBufferSubData above). Batched, it is at 13 200, past all 1000 positions. Change n and only the batched address moves.")} />
       <p>
         {tx(t, "oglBuf_layoutWhich",
           "Interleaved is the usual default: a vertex shader that reads every attribute finds them in one place in memory, so each cache line it fetches is fully used. Separate blocks win in two situations. When one attribute changes and the others do not, you can update just its block, for example positions every frame for a cloth simulation. And when a pass reads only some attributes, it fetches only those. A shadow or depth pre-pass needs positions only, so engines often keep positions in their own stream and everything else interleaved in a second one."

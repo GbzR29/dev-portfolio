@@ -26,6 +26,22 @@ const text: Record<string, string> = {
   oglModel_cacheBody: "Um modelo com trinta malhas muitas vezes compartilha um único atlas entre todas. Sem cache, você decodifica e envia o mesmo PNG trinta vezes, o que transforma um carregamento rápido num lento e desperdiça trinta vezes a VRAM. Use o caminho do arquivo como chave do cache.",
   oglModel_formatTip: "Prefira glTF 2.0 em trabalhos novos. É o único formato popular com uma especificação precisa, guarda parâmetros de material PBR nativamente, e a sua variante binária carrega sem nenhum parsing de texto. OBJ não tem esqueleto nem PBR; FBX é proprietário, e cada exportador discorda sobre unidades e orientação dos eixos.",
   oglModel_transformNote: "O processNode acima achata a árvore e ignora o mTransformation de cada nó. Isso funciona quando toda malha já está guardada em model space, como na maioria dos arquivos OBJ de um objeto só. Uma cena exportada do Blender, ou um glTF cujas partes são posicionadas pelos nós, sai com todas as partes empilhadas na origem. Para manter o posicionamento, passe a matriz acumulada do pai adiante na recursão, global = parentGlobal × node->mTransformation, e guarde-a com cada malha como parte da sua model matrix. O Assimp guarda matrizes em row-major e o GLM em column-major, então transponha cada uma ao converter.",
+
+  // ── In words, derivations (2026-10-09) ──
+  oglModel_chainLabel: "O lugar de um nó no mundo",
+  oglModel_wMk: "o mTransformation do próprio nó k, transposto para o GLM: onde ele fica em relação ao pai",
+  oglModel_wGk: "a matriz global do nó k: onde ele fica no modelo, a matriz de modelo das suas malhas",
+  oglModel_wGp: "a matriz global do pai, já calculada um nível acima na recursão",
+  oglModel_wRoot: "a matriz do nó raiz; muitas vezes a identidade, ou uma correção dos eixos do exportador (Z para cima → Y para cima)",
+  oglModel_chainWords: "Cada nó é posicionado em relação ao pai. Para saber onde ele está no modelo, multiplique as matrizes da raiz até o nó, o pai à esquerda. A recursão faz isso um nível de cada vez.",
+  oglModel_chainDer: "Exemplo resolvido: uma roda num carro",
+  oglModel_cd1: "o nó do carro fica 5 unidades em x. O nó da roda é filho dele e é posicionado em relação ao carro: 1 à direita, 0,5 para baixo, 1 para a frente",
+  oglModel_cd2: "multiplique descendo a cadeia. Duas translações formam uma translação só, cujos deslocamentos se somam",
+  oglModel_cd3: "a malha da roda é modelada em volta da própria origem. O centro dela cai ao lado do carro, onde o artista a colocou",
+  oglModel_cd4t: "achatado, sem matrizes",
+  oglModel_cd4: "o processNode como está escrito pula as duas matrizes, então a roda é desenhada na origem do mundo, a 5 unidades do carro: o amontoado na origem descrito acima",
+  oglModel_wT: "uma matriz de translação que move os pontos por (x, y, z)",
+  oglModel_wMcw: "as matrizes próprias do nó do carro e do nó da roda",
 };
 
 export default text;

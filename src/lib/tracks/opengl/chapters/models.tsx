@@ -2,9 +2,13 @@
 "use client";
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
+import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
 import { tx } from "@/lib/tracks/tx";
 import { Goals } from "@/components/lesson/Prose";
 import type { TrackTranslations } from "@/lib/tracks/types";
+
+const r = String.raw;
 
 // ── Model Loading with Assimp ────────────────────────────────────────────────
 
@@ -201,6 +205,32 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
           "processNode above flattens the tree and ignores each node's mTransformation. That is fine when every mesh is already stored in model space, as in most single-object OBJ files. A scene exported from Blender or a glTF whose parts are placed by their nodes will instead come out with every part piled up at the origin. To keep the placement, pass the parent's accumulated matrix down the recursion, global = parentGlobal × node->mTransformation, and store it with each mesh as part of its model matrix. Assimp stores matrices row-major and GLM column-major, so transpose each one when converting."
         )}
       </Callout>
+
+      <Equation label={tx(t, "oglModel_chainLabel", "A node's place in the world")}
+        where={[
+          [r`M_k`, tx(t, "oglModel_wMk", "node k's own mTransformation, transposed for GLM: where it sits relative to its parent")],
+          [r`G_k`, tx(t, "oglModel_wGk", "node k's global matrix: where it sits in the model, the model matrix of its meshes")],
+          [r`G_{\text{parent}}`, tx(t, "oglModel_wGp", "the parent's global matrix, already computed one level up the recursion")],
+          [r`M_{\text{root}}`, tx(t, "oglModel_wRoot", "the root node's matrix; often the identity, or a fix for the exporter's axes (Z-up to Y-up)")],
+        ]}
+        words={tx(t, "oglModel_chainWords", "Each node is placed relative to its parent. To know where it is in the model, multiply the matrices from the root down to the node, parent on the left. The recursion does this one level at a time.")}>
+        {r`G_k = G_{\text{parent}}\,M_k = M_{\text{root}} \cdots M_{\text{parent}}\,M_k`}
+      </Equation>
+      <Derivation t={t} label={tx(t, "oglModel_chainDer", "Worked example: a wheel on a car")}
+        steps={[
+          { full: true, tex: r`M_c = T(5,\ 0,\ 0) \qquad M_w = T(1,\ -0.5,\ 1)`,
+            why: tx(t, "oglModel_cd1", "the car node sits 5 units along x. The wheel node is its child and is placed relative to the car: 1 right, 0.5 down, 1 forward") },
+          { full: true, tex: r`G_w = M_c\,M_w = T(5 + 1,\ 0 - 0.5,\ 0 + 1) = T(6,\ -0.5,\ 1)`,
+            why: tx(t, "oglModel_cd2", "multiply down the chain. Two translations make one translation whose offsets add") },
+          { full: true, tex: r`G_w\,(0, 0, 0, 1) = (6,\ -0.5,\ 1,\ 1)`,
+            why: tx(t, "oglModel_cd3", "the wheel mesh is modelled around its own origin. Its centre lands next to the car, where the artist put it") },
+          { full: true, tex: r`\text{${tx(t, "oglModel_cd4t", "flattened, no matrices")}}: \quad (0, 0, 0) \;\to\; (0, 0, 0)`,
+            why: tx(t, "oglModel_cd4", "processNode as written skips both matrices, so the wheel is drawn at the world origin, 5 units from its car: the pile-up at the origin described above") },
+        ]}
+        where={[
+          [r`T(x, y, z)`, tx(t, "oglModel_wT", "a translation matrix that moves points by (x, y, z)")],
+          [r`M_c,\ M_w`, tx(t, "oglModel_wMcw", "the car node's and the wheel node's own matrices")],
+        ]} />
 
       <Callout type="warn" t={t}>
         {tx(t, "oglModel_nullWarn",

@@ -9,6 +9,9 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { UBO_ALIGNS, UBO_OFFSET_ALIGNS, nextOffsetNumbers, strideNumbers } from "@/lib/tracks/opengl/live/ubo";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -73,9 +76,18 @@ void main() { gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0); }
           [r`o_{\text{end}}`, tx(t, "oglUbo_wEnd", "the first free byte after the previous member (its offset + its size)")],
           [r`a`, tx(t, "oglUbo_wA", "the new member's alignment, from the table below")],
           [r`\lceil\cdot\rceil`, tx(t, "oglUbo_wCeil", "round up: the smallest multiple of a that is not before o_end")],
-        ]}>
+        ]}
+        words={tx(t, "oglUbo_offWords", "Start where the previous member ended. If that byte is not a multiple of the new member's alignment, skip forward to the next multiple. The skipped bytes are padding.")}>
         {r`o_{\text{next}} = \left\lceil \frac{o_{\text{end}}}{a} \right\rceil a`}
       </Equation>
+      <LiveFormula label={tx(t, "oglUbo_liveNext", "Try it: where does the next member start?")}
+        tex={r`o_{\text{next}} = \left\lceil \frac{o_{\text{end}}}{a} \right\rceil a`}
+        vars={[
+          { id: "end", label: <>o<sub>end</sub></>, min: 0, max: 96, step: 4, value: 28, fmt: v => String(v) },
+          { id: "ai", label: "a", min: 0, max: 2, step: 1, value: 2, fmt: v => String(UBO_ALIGNS[v]) },
+        ]}
+        compute={nextOffsetNumbers(t)}
+        note={tx(t, "oglUbo_liveNextNote", "28 is where the Light block's color ends. A float (a = 4) could start right there; a vec3 (a = 16) jumps to 32, which is why direction sits at 32 and not 28. When o_end is already a multiple of a, the padding is 0.")} />
 
       <LessonTable
         headers={[tx(t, "oglUbo_h0", "Type"), tx(t, "oglUbo_h1", "Size"), tx(t, "oglUbo_h2", "Alignment")]}
@@ -122,14 +134,21 @@ static_assert(sizeof(LightBlock) == 48, "std140 layout mismatch");`}</CodeBlock>
         {tx(t, "oglUbo_workedIntro",
           "The Frame preset in the figure: float time; vec3 camPos; float exposure; vec2 jitter; mat3 normalMat; float weights[3]. Apply the formula member by member in std140:")}
       </p>
-      <ol className="list-decimal pl-6 space-y-1.5">
-        <li>{tx(t, "oglUbo_w1", "time: alignment 4, offset 0, ends at 4.")}</li>
-        <li>{tx(t, "oglUbo_w2", "camPos: alignment 16, so ⌈4/16⌉ × 16 = 16. Bytes 4–15 are padding; it ends at 28.")}</li>
-        <li>{tx(t, "oglUbo_w3", "exposure: alignment 4, 28 is a multiple of 4, so it takes 28–31, filling the vec3's spare slot.")}</li>
-        <li>{tx(t, "oglUbo_w4", "jitter: alignment 8, offset 32, ends at 40.")}</li>
-        <li>{tx(t, "oglUbo_w5", "normalMat: alignment 16, so 48 (bytes 40–47 padding); 3 columns × 16 = 48 bytes, ends at 96.")}</li>
-        <li>{tx(t, "oglUbo_w6", "weights[3]: each element is rounded up to 16, so 3 × 16 = 48 bytes from 96, ends at 144.")}</li>
-      </ol>
+      <Derivation t={t} label={tx(t, "oglUbo_frameDer", "The Frame block, member by member")}
+        steps={[
+          { full: true, tex: r`\text{time}: \quad o = 0, \quad \text{end} = 0 + 4 = 4`,
+            why: tx(t, "oglUbo_w1", "time: alignment 4, offset 0, ends at 4.") },
+          { full: true, tex: r`\text{camPos}: \quad o = \lceil 4/16 \rceil \cdot 16 = 16, \quad \text{end} = 16 + 12 = 28`,
+            why: tx(t, "oglUbo_w2", "camPos: alignment 16, so ⌈4/16⌉ × 16 = 16. Bytes 4–15 are padding; it ends at 28.") },
+          { full: true, tex: r`\text{exposure}: \quad o = \lceil 28/4 \rceil \cdot 4 = 28, \quad \text{end} = 32`,
+            why: tx(t, "oglUbo_w3", "exposure: alignment 4, 28 is a multiple of 4, so it takes 28–31, filling the vec3's spare slot.") },
+          { full: true, tex: r`\text{jitter}: \quad o = \lceil 32/8 \rceil \cdot 8 = 32, \quad \text{end} = 32 + 8 = 40`,
+            why: tx(t, "oglUbo_w4", "jitter: alignment 8, offset 32, ends at 40.") },
+          { full: true, tex: r`\text{normalMat}: \quad o = \lceil 40/16 \rceil \cdot 16 = 48, \quad \text{end} = 48 + 3 \cdot 16 = 96`,
+            why: tx(t, "oglUbo_w5", "normalMat: alignment 16, so 48 (bytes 40–47 padding); 3 columns × 16 = 48 bytes, ends at 96.") },
+          { full: true, tex: r`\text{weights[3]}: \quad o = \lceil 96/16 \rceil \cdot 16 = 96, \quad \text{end} = 96 + 3 \cdot 16 = 144`,
+            why: tx(t, "oglUbo_w6", "weights[3]: each element is rounded up to 16, so 3 × 16 = 48 bytes from 96, ends at 144.") },
+        ]} />
       <p>
         {tx(t, "oglUbo_workedRead",
           "144 bytes for 4 + 12 + 4 + 8 + 36 + 12 = 76 bytes of data: 68 bytes, almost half, are padding. In std430 (storage buffers only) the array packs to 12 bytes and the block shrinks to 112. A plain C++ struct of glm types packs everything to 76 bytes, so from camPos on every offset differs from what the shader reads. Rewriting the block as six vec4s (camPos in one, time, exposure and jitter packed into another, the normal matrix as three, the weights in the sixth) gives 96 bytes with identical offsets in all three layouts.")}
@@ -170,6 +189,19 @@ glBindBuffer(GL_UNIFORM_BUFFER, 0);`}</CodeBlock>
         {tx(t, "oglUbo_manyBody",
           "Per-object data (a model matrix and a colour, 80 bytes) can also live in one big buffer, with glBindBufferRange pointing the block at a different slice before each draw. The catch is GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT: the offset you pass must be a multiple of it, and it is often 256. So each object's slice starts 256 bytes after the previous one, not 80. For 1000 objects that is 256 000 bytes, 250 KiB, of which 80 000 are data. Query the value instead of assuming it.")}
       </p>
+      <LiveFormula label={tx(t, "oglUbo_liveStride", "Try it: how far apart are the slices?")}
+        tex={r`\text{stride} = \left\lceil \frac{s}{A} \right\rceil A`}
+        vars={[
+          { id: "s", label: "s", min: 16, max: 512, step: 16, value: 80, fmt: v => `${v} B` },
+          { id: "ai", label: "A", min: 0, max: 2, step: 1, value: 2, fmt: v => String(UBO_OFFSET_ALIGNS[v]) },
+          { id: "n", label: tx(t, "oglUbo_liveN", "objects"), min: 100, max: 5000, step: 100, value: 1000, fmt: v => String(v) },
+        ]}
+        where={[
+          [r`s`, tx(t, "oglUbo_wS", "the size of one object's block in bytes, sizeof(ObjectBlock)")],
+          [r`A`, tx(t, "oglUbo_wAlign", "GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT: 256 on many desktop GPUs, 64 or 16 on others")],
+        ]}
+        compute={strideNumbers(t)}
+        note={tx(t, "oglUbo_liveStrideNote", "80 bytes with A = 256 gives the 250 KiB of the text, under a third of it data. With A = 16 the stride is 80 and nothing is wasted. Grow the block to 256 bytes and even A = 256 wastes nothing: pack more per object instead of fighting the alignment.")} />
       <CodeBlock lang="cpp" filename="ubo_ring.cpp" t={t}>{`GLint align = 0;
 glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &align);       // e.g. 256
 const GLsizeiptr stride = (sizeof(ObjectBlock) + align - 1) / align * align;   // 80 → 256

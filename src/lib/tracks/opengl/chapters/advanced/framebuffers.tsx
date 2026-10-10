@@ -9,6 +9,9 @@
 
 import { CodeBlock, Callout, H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { FBO_FORMATS, FBO_RES, FBO_SCALES, fboMemoryNumbers, kernelNumbers } from "@/lib/tracks/opengl/live/framebuffers";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -84,6 +87,20 @@ glBindFramebuffer(GL_FRAMEBUFFER, 0);`}</CodeBlock>
         {tx(t, "oglFbo_memBody",
           "What this costs at 1920 × 1080 = 2 073 600 pixels: RGBA16F is 4 channels × 2 bytes = 8 bytes per pixel, so 16.6 MB for the colour; GL_DEPTH24_STENCIL8 packs 24 bits of depth and 8 of stencil into 4 bytes, another 8.3 MB. About 25 MB for one full-screen target. At 4K every number is four times larger, which is why bloom and blur passes usually run on half- or quarter-size targets.")}
       </p>
+      <LiveFormula label={tx(t, "oglFbo_liveMem", "Try it: what does one render target cost?")}
+        tex={r`M = W \cdot H \cdot (b_{color} + b_{ds})`}
+        vars={[
+          { id: "res", label: tx(t, "oglFbo_liveRes", "screen"), min: 0, max: 3, step: 1, value: 1, fmt: v => `${FBO_RES[v][0]}×${FBO_RES[v][1]}` },
+          { id: "fmt", label: tx(t, "oglFbo_liveFmt", "colour format"), min: 0, max: 2, step: 1, value: 1, fmt: v => FBO_FORMATS[v][0] },
+          { id: "sc", label: tx(t, "oglFbo_liveScale", "size"), min: 0, max: 2, step: 1, value: 0, fmt: v => (v === 0 ? "1" : `1/${FBO_SCALES[v]}`) },
+        ]}
+        where={[
+          [r`W,\ H`, tx(t, "oglFbo_wWH", "the target's width and height in pixels; a half-size target halves both, so it has a quarter of the pixels")],
+          [r`b_{color}`, tx(t, "oglFbo_wBc", "bytes per pixel of the colour texture: 4 channels × 1 byte (RGBA8), 2 (16F) or 4 (32F)")],
+          [r`b_{ds}`, tx(t, "oglFbo_wBds", "bytes per pixel of the depth/stencil renderbuffer: 24 + 8 bits = 4 bytes")],
+        ]}
+        compute={fboMemoryNumbers(t)}
+        note={tx(t, "oglFbo_liveMemNote", "1080p with RGBA16F gives the 24.9 MB of the text. Move to 4K and it is four times as much, 99.5 MB; then set the size to 1/2 and you are back to 24.9 MB, the reason bloom runs at half size.")} />
 
       <Callout type="warn" t={t}>
         {tx(t, "oglFbo_completeWarn",
@@ -133,6 +150,16 @@ void main() {
           "The two bit tricks, for gl_VertexID 0, 1, 2. (id << 1) & 2 shifts the id left one bit and keeps only the bit worth 2: 0 → 0, 1 → 2, 2 → 4 & 2 = 0. id & 2 keeps the bit worth 2 of the id itself: 0, 0, 2. So TexCoord is (0,0), (2,0), (0,2), and × 2 − 1 turns that into positions (−1,−1), (3,−1), (−1,3). The long edge runs along x + y = 2 in clip space and passes exactly through the screen's corner (1, 1), where TexCoord is (1, 1). Inside the screen TexCoord goes from 0 to 1, as a quad's would; everything outside is clipped before any fragment is created.")}
       </p>
 
+      <Derivation t={t} label={tx(t, "oglFbo_triDer", "Check: the triangle really covers the corner (1, 1)")}
+        steps={[
+          { full: true, tex: r`(3, -1):\ 3 + (-1) = 2 \qquad (-1, 3):\ -1 + 3 = 2 \;\Rightarrow\; x + y = 2`,
+            why: tx(t, "oglFbo_td1", "both ends of the long edge have x + y = 2, so the edge lies on the line x + y = 2") },
+          { full: true, tex: r`(1, 1):\ 1 + 1 = 2`,
+            why: tx(t, "oglFbo_td2", "the screen's top-right corner lies exactly on that line. The other corners (−1, −1), (1, −1), (−1, 1) give −2, 0 and 0, below 2, so they are inside") },
+          { full: true, tex: r`\text{TexCoord} = \frac{\text{pos} + 1}{2} = \frac{(1, 1) + 1}{2} = (1, 1)`,
+            why: tx(t, "oglFbo_td3", "the shader wrote pos = TexCoord × 2 − 1. Undo it at the corner and TexCoord is (1, 1), exactly what a quad would have there") },
+        ]} />
+
       <FullscreenTriFigure t={t} />
 
       <H2>{tx(t, "oglFbo_effectsTitle", "Effects are just fragment shaders")}</H2>
@@ -174,7 +201,8 @@ void main() {
           [r`i,\ j`, tx(t, "oglFbo_wIJ", "the neighbour's column and row offset, each −1, 0 or 1")],
           [r`k_{ij}`, tx(t, "oglFbo_wK", "the kernel weight for that neighbour, the 3×3 table in the shader")],
           [r`\Delta`, tx(t, "oglFbo_wDelta", "one texel in UV units, 1 / textureSize: 1/1920 ≈ 0.00052 across a 1080p image")],
-        ]}>
+        ]}
+        words={tx(t, "oglFbo_convWords", "For each output pixel, read the pixel itself and its eight neighbours, multiply each by its weight from the 3×3 table, and add the nine products.")}>
         {r`\text{out}(p) = \sum_{j=-1}^{1}\sum_{i=-1}^{1} k_{ij}\;\text{in}\big(p + (i\,\Delta_x,\ j\,\Delta_y)\big)`}
       </Equation>
 
@@ -183,6 +211,21 @@ void main() {
         {tx(t, "oglFbo_workedBody",
           "Take a grey pixel of 0.5 whose eight neighbours are all 0.4. Sharpen (centre 9, neighbours −1): 9 × 0.5 − 8 × 0.4 = 4.5 − 3.2 = 1.3, so the difference to its neighbours grows from 0.1 to 0.9. On a flat area of value v the same kernel gives 9v − 8v = v, unchanged: the weights sum to 1, which keeps overall brightness. Box blur (all weights 1/9): (0.5 + 8 × 0.4) / 9 = 3.7 / 9 ≈ 0.411, the spike almost flattened. Edge detection (centre −8, neighbours 1): 8 × 0.4 − 8 × 0.5 = −0.8, and 0 on any flat area, because its weights sum to 0. That is the general rule: weights summing to 1 preserve brightness, weights summing to 0 respond only to change. The Post-processing chapter has an interactive kernel lab to try these on an image.")}
       </p>
+      <LiveFormula label={tx(t, "oglFbo_liveKernel", "Try it: one pixel and its eight equal neighbours")}
+        tex={r`\text{out} = k_{centre}\,c + 8\,k_{edge}\,n`}
+        vars={[
+          { id: "k", label: tx(t, "oglFbo_liveKernelVar", "kernel"), min: 0, max: 2, step: 1, value: 0,
+            fmt: v => [tx(t, "oglFbo_kSharpen", "sharpen"), tx(t, "oglFbo_kBlur", "box blur"), tx(t, "oglFbo_kEdge", "edge")][v] },
+          { id: "c", label: "c", min: 0, max: 1, step: 0.05, value: 0.5 },
+          { id: "n", label: "n", min: 0, max: 1, step: 0.05, value: 0.4 },
+        ]}
+        where={[
+          [r`c`, tx(t, "oglFbo_wCc", "the value of the centre pixel")],
+          [r`n`, tx(t, "oglFbo_wN", "the value of each of its eight neighbours, all equal here")],
+          [r`k_{centre},\ k_{edge}`, tx(t, "oglFbo_wKk", "the kernel's centre weight and the weight shared by its eight neighbours")],
+        ]}
+        compute={kernelNumbers(t)}
+        note={tx(t, "oglFbo_liveKernelNote", "Set n equal to c: sharpen and blur return c unchanged and edge returns 0, the sum-of-weights rule. Sharpen can leave [0, 1] (1.3 here), which an RGBA16F target keeps and an RGBA8 one clamps.")} />
 
       <Callout type="warn" t={t}>
         {tx(t, "oglFbo_resizeWarn",

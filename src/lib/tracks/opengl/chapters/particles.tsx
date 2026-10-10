@@ -4,6 +4,9 @@
 
 import { CodeBlock, Callout, H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation, Tex } from "@/components/lesson/Tex";
+import { Derivation } from "@/components/lesson/Derivation";
+import { LiveFormula } from "@/components/lesson/LiveFormula";
+import { accumulatorNumbers, aliveNumbers, dragNumbers, streakNumbers, terminalNumbers } from "@/lib/tracks/opengl/live/particles";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
@@ -47,7 +50,8 @@ export function ParticlesContent({ t }: { t: TrackTranslations }) {
           [r`(t_k, c_k)`, tx(t, "oglPart_wKey", "keyframes, sorted by t")],
           [r`k`, tx(t, "oglPart_wK", "the segment with t_k ≤ t < t_{k+1}")],
         ]}
-        note={tx(t, "oglPart_curveNote", "Fire in the figure uses four colour keys: invisible yellow at birth (so it does not pop in), bright orange-yellow, red, then transparent dark red. Fading alpha to 0 at both ends hides both spawning and dying.")}>
+        note={tx(t, "oglPart_curveNote", "Fire in the figure uses four colour keys: invisible yellow at birth (so it does not pop in), bright orange-yellow, red, then transparent dark red. Fading alpha to 0 at both ends hides both spawning and dying.")}
+        words={tx(t, "oglPart_curveWords", "Find the two keyframes the particle's age falls between. Work out how far along it is from the first to the second, as a fraction from 0 to 1, and blend the two values by that fraction.")}>
         {r`c(t) = \operatorname{mix}\!\left(c_k,\ c_{k+1},\ \frac{t - t_k}{t_{k+1} - t_k}\right)`}
       </Equation>
 
@@ -58,9 +62,23 @@ export function ParticlesContent({ t }: { t: TrackTranslations }) {
       </p>
       <Equation label={tx(t, "oglPart_accLabel", "Emission accumulator")}
         where={[[r`R`, tx(t, "oglPart_wR", "rate in particles per second")]]}
-        note={tx(t, "oglPart_accNote", "Over any window the count is exact to within one particle, at any frame rate. For smooth trails from a fast emitter, also spread the spawn positions (and ages) along the path travelled during the frame, or the particles clump into one blob per frame.")}>
+        note={tx(t, "oglPart_accNote", "Over any window the count is exact to within one particle, at any frame rate. For smooth trails from a fast emitter, also spread the spawn positions (and ages) along the path travelled during the frame, or the particles clump into one blob per frame.")}
+        words={tx(t, "oglPart_accWords", "Each frame, add the fraction of a particle this frame is owed. Spawn as many whole particles as the total now holds, and keep the leftover fraction for the next frame.")}>
         {r`a \mathrel{+}= R\,\Delta t \qquad n = \lfloor a \rfloor \qquad a \mathrel{-}= n`}
       </Equation>
+      <LiveFormula label={tx(t, "oglPart_liveAcc", "Try it: the first four frames of the accumulator")}
+        tex={r`a \mathrel{+}= R\,\Delta t \qquad n = \lfloor a \rfloor \qquad a \mathrel{-}= n`}
+        vars={[
+          { id: "R", label: "R", min: 5, max: 500, step: 5, value: 50, fmt: v => `${v}/s` },
+          { id: "fps", label: "fps", min: 30, max: 240, step: 6, value: 144, fmt: v => String(v) },
+        ]}
+        where={[
+          [r`a`, tx(t, "oglPart_wAcc", "the accumulator: particles owed but not spawned yet, always below 1 after a frame")],
+          [r`\Delta t`, tx(t, "oglPart_wDt", "the frame time, 1 / fps")],
+          [r`n`, tx(t, "oglPart_wN", "particles spawned this frame")],
+        ]}
+        compute={accumulatorNumbers(t)}
+        note={tx(t, "oglPart_liveAccNote", "50 per second at 144 fps: nothing spawns in frames 1 and 2, one particle in frame 3, and 0.04 carries on. Rounding 0.347 each frame would spawn none at all. At 60 fps (0.833 per frame) rounding spawns 60 per second instead of 50.")} />
 
       <H2>{tx(t, "oglPart_intTitle", "Moving them: integration")}</H2>
       <p>
@@ -68,7 +86,8 @@ export function ParticlesContent({ t }: { t: TrackTranslations }) {
           "Each frame advances position and velocity by Δt under some forces. The textbook explicit Euler step updates the position with the old velocity. That is unstable: under any spring-like force it adds energy every step. Updating the velocity first and then moving with the new velocity (semi-implicit, or symplectic, Euler) costs exactly the same and stays stable:")}
       </p>
       <Equation label={tx(t, "oglPart_eulerLabel", "Explicit vs semi-implicit Euler")}
-        where={[[r`\mathbf a(\mathbf x, \mathbf v)`, tx(t, "oglPart_wA", "acceleration: gravity, wind, drag, attractors, curl noise…")]]}>
+        where={[[r`\mathbf a(\mathbf x, \mathbf v)`, tx(t, "oglPart_wA", "acceleration: gravity, wind, drag, attractors, curl noise…")]]}
+        words={tx(t, "oglPart_eulerWords", "Both versions move the position by velocity times Δt and change the velocity by acceleration times Δt. The only difference is the order: explicit moves with the velocity from before the update, semi-implicit updates the velocity first and moves with the new one.")}>
         {r`\begin{aligned}
 &\text{explicit:} && \mathbf x_{n+1} = \mathbf x_n + \mathbf v_n\,\Delta t, && \mathbf v_{n+1} = \mathbf v_n + \mathbf a_n\,\Delta t \\
 &\text{semi-implicit:} && \mathbf v_{n+1} = \mathbf v_n + \mathbf a_n\,\Delta t, && \mathbf x_{n+1} = \mathbf x_n + \mathbf v_{n+1}\,\Delta t
@@ -78,9 +97,29 @@ export function ParticlesContent({ t }: { t: TrackTranslations }) {
       <Equation label={tx(t, "oglPart_dragLabel", "Frame-rate independent drag")}
         where={[[r`k`, tx(t, "oglPart_wKd", "drag coefficient, 1/s: the velocity falls to 1/e after 1/k seconds")]]}
         note={tx(t, "oglPart_dragNote", "v *= 0.98 every frame looks identical, but it means strong drag at 144 fps and weak drag at 30 fps. The exponential is the exact solution of dv/dt = −k v, so any sequence of steps adding up to 1 s produces the same slowdown.")}
-        glsl="v *= exp(-k * dt);">
+        glsl="v *= exp(-k * dt);"
+        words={tx(t, "oglPart_dragWords", "Drag takes away a fixed share of the speed per second, not per frame. Over a frame of length Δt, multiply the velocity by e to the power −k·Δt: short frames take a little, long frames take more.")}>
         {r`\frac{d\mathbf v}{dt} = -k\,\mathbf v \;\Rightarrow\; \mathbf v(t + \Delta t) = \mathbf v(t)\,e^{-k\,\Delta t}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglPart_dragDer", "Where the exponential comes from, and why frames do not matter")}
+        steps={[
+          { full: true, tex: r`\frac{dv}{v} = -k\,dt \;\Rightarrow\; \ln v(t + \Delta t) - \ln v(t) = -k\,\Delta t`,
+            why: tx(t, "oglPart_dd1", "move every v to the left and every t to the right, then integrate both sides over one frame") },
+          { full: true, tex: r`v(t + \Delta t) = v(t)\,e^{-k\,\Delta t}`,
+            why: tx(t, "oglPart_dd2", "take e to the power of both sides: the speed is multiplied by a factor that depends only on k·Δt") },
+          { full: true, tex: r`e^{-k\,\Delta t_1}\,e^{-k\,\Delta t_2} = e^{-k\,(\Delta t_1 + \Delta t_2)}`,
+            why: tx(t, "oglPart_dd3", "two short frames multiply to the same factor as one long frame of the same total length, so after 1 s the speed is v·e^(−k) at any frame rate") },
+          { full: true, tex: r`0.98^{30} \approx 0.55 \qquad 0.98^{144} \approx 0.05`,
+            why: tx(t, "oglPart_dd4", "a fixed factor per frame has no Δt in it: after one second it keeps 55% of the speed at 30 fps but only 5% at 144 fps") },
+        ]} />
+      <LiveFormula label={tx(t, "oglPart_liveDrag", "Try it: one second of drag at any frame rate")}
+        tex={r`v(t + \Delta t) = v(t)\,e^{-k\,\Delta t}`}
+        vars={[
+          { id: "k", label: "k", min: 0.1, max: 5, step: 0.1, value: 1 },
+          { id: "fps", label: "fps", min: 30, max: 240, step: 6, value: 144, fmt: v => String(v) },
+        ]}
+        compute={dragNumbers(t)}
+        note={tx(t, "oglPart_liveDragNote", "Change the frame rate: the per-frame factor changes, the speed after one second (e^(−k) = 0.368 for k = 1) does not. The fixed 0.98 jumps from 0.545 at 30 fps to 0.054 at 144 fps.")} />
 
       <H2>{tx(t, "oglPart_poolTitle", "Storage: a pool with swap-remove")}</H2>
       <p>
@@ -120,7 +159,8 @@ export function ParticlesContent({ t }: { t: TrackTranslations }) {
           [r`\hat{\mathbf r},\ \hat{\mathbf u}`, tx(t, "oglPart_wRu", "camera right and up: the first two rows of the view matrix")],
           [r`s,\ \theta`, tx(t, "oglPart_wS", "size and rotation of this particle")],
         ]}
-        note={tx(t, "oglPart_bbNote", "Rotating (cₓ, c_y) by θ first gives spinning smoke. Replacing r̂, û with the velocity direction and its perpendicular gives stretched sparks and rain streaks.")}>
+        note={tx(t, "oglPart_bbNote", "Rotating (cₓ, c_y) by θ first gives spinning smoke. Replacing r̂, û with the velocity direction and its perpendicular gives stretched sparks and rain streaks.")}
+        words={tx(t, "oglPart_bbWords", "Turn the corner (±1, ±1) by the particle's angle. Then start at the particle's centre and step half its size along the camera's right vector times the corner's x, and along the camera's up vector times its y. The quad always lies flat in the screen's plane.")}>
         {r`\mathbf w = \mathbf p + \frac{s}{2}\big(c'_x\,\hat{\mathbf r} + c'_y\,\hat{\mathbf u}\big) \qquad \begin{pmatrix} c'_x \\ c'_y \end{pmatrix} = \begin{pmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{pmatrix}\begin{pmatrix} c_x \\ c_y \end{pmatrix}`}
       </Equation>
       <CodeBlock lang="cpp" filename="render.cpp" t={t}>{`// Per-instance attributes: advance once per particle, not per vertex
@@ -165,11 +205,15 @@ void main() {
           tx(t, "oglPart_bn1", "Additive only adds, and addition commutes: any order gives the same result, so no sorting. Fire, sparks, glows."),
           tx(t, "oglPart_bn2", "Alpha (\"over\") does not commute: particles must be drawn back to front, sorted by view depth every frame."),
           tx(t, "oglPart_bn3", "Premultiplied stores C·α in the texture. α = 1 gives normal blending, α = 0 gives pure addition, so fire and smoke can share one pass and one blend state."),
-        ]}>
+        ]}
+        words={tx(t, "oglPart_blendWords", "Additive puts the particle's light on top of what is there. Alpha replaces a share α of what is there with the particle's colour. Premultiplied does the same as alpha, but the colour already carries its α, so the stored colour decides how much light is added.")}>
         {r`\begin{aligned}
-&\text{additive} && C = C_d + \alpha_s C_s && \texttt{(GL\_ONE, GL\_ONE)} \\
-&\text{alpha} && C = \alpha_s C_s + (1 - \alpha_s)\,C_d && \texttt{(GL\_SRC\_ALPHA, GL\_ONE\_MINUS\_SRC\_ALPHA)} \\
-&\text{premultiplied} && C = (\alpha_s C_s) + (1 - \alpha_s)\,C_d && \texttt{(GL\_ONE, GL\_ONE\_MINUS\_SRC\_ALPHA)}
+&\text{${tx(t, "oglPart_bAdd", "additive")}} && C = C_d + \alpha_s C_s \\
+& && \small\texttt{(GL\_SRC\_ALPHA, GL\_ONE)} \\[6pt]
+&\text{${tx(t, "oglPart_bAlpha", "alpha")}} && C = \alpha_s C_s + (1 - \alpha_s)\,C_d \\
+& && \small\texttt{(GL\_SRC\_ALPHA, GL\_ONE\_MINUS\_SRC\_ALPHA)} \\[6pt]
+&\text{${tx(t, "oglPart_bPremul", "premultiplied")}} && C = (\alpha_s C_s) + (1 - \alpha_s)\,C_d \\
+& && \small\texttt{(GL\_ONE, GL\_ONE\_MINUS\_SRC\_ALPHA)}
 \end{aligned}`}
       </Equation>
       <ParticlesFigure t={t} />
@@ -180,7 +224,8 @@ void main() {
           [r`\delta`, tx(t, "oglPart_wDelta", "fade distance, e.g. 0.3 m")],
         ]}
         note={tx(t, "oglPart_softNote", "A flat quad crossing the floor shows a hard, straight line where it is clipped. Fading alpha as the particle gets close to the geometry behind it removes that line. It needs the scene's depth as a texture, so particles are drawn after the opaque pass with that depth bound for reading (and not attached for writing).")}
-        glsl="alpha *= clamp((sceneDepth - particleDepth) / fadeDistance, 0.0, 1.0);">
+        glsl="alpha *= clamp((sceneDepth - particleDepth) / fadeDistance, 0.0, 1.0);"
+        words={tx(t, "oglPart_softWords", "Measure how far behind the particle the solid scene is at this pixel. If the gap is δ or more, keep the full alpha. As the gap shrinks to 0, fade the alpha to 0 with it.")}>
         {r`\alpha' = \alpha \cdot \operatorname{saturate}\!\left(\frac{z_{scene} - z_p}{\delta}\right)`}
       </Equation>
 
@@ -198,9 +243,26 @@ void main() {
           [r`\tfrac12 \rho_{air} C_d A\, v^2`, tx(t, "oglPart_wDrag", "air drag, which grows with the square of the speed. ρ_air is the air density (1.2 kg/m³), C_d the drag coefficient (≈ 0.5 for a sphere) and A the drop's cross-section")],
           [r`v_t`, tx(t, "oglPart_wVt", "terminal velocity, where drag equals weight. A drop reaches it within a few metres of falling: about 6.5 m/s for a 2 mm drop and 9 m/s for the largest")],
         ]}
-        note={tx(t, "oglPart_vtNote", "So a rain drop needs no gravity integration at all: p += v·Δt with a constant v (plus wind), randomised by ±15% so the rain does not fall in lockstep. That also makes rain cheap enough to be computed without any simulation (see the tip below).")}>
+        note={tx(t, "oglPart_vtNote", "So a rain drop needs no gravity integration at all: p += v·Δt with a constant v (plus wind), randomised by ±15% so the rain does not fall in lockstep. That also makes rain cheap enough to be computed without any simulation (see the tip below).")}
+        words={tx(t, "oglPart_vtWords", "A falling drop speeds up until the air pushing back is as strong as its weight. From then on the forces cancel and the speed stays the same. Setting the two forces equal and solving for v gives that speed.")}>
         {r`m g = \tfrac12\,\rho_{air}\,C_d\,A\,v_t^2 \quad\Longrightarrow\quad v_t = \sqrt{\frac{2 m g}{\rho_{air}\,C_d\,A}}`}
       </Equation>
+      <Derivation t={t} label={tx(t, "oglPart_vtDer", "For a round drop: bigger drops fall faster, with the square root of the size")}
+        steps={[
+          { full: true, tex: r`m = \rho_w\,\tfrac43 \pi r^3 \qquad A = \pi r^2`,
+            why: tx(t, "oglPart_vd1", "a round drop of radius r: its mass is water density ρ_w = 1000 kg/m³ times the volume of a sphere, and the air meets a disc of area πr²") },
+          { full: true, tex: r`v_t^2 = \frac{2 g\,\rho_w\,\tfrac43 \pi r^3}{\rho_{air}\,C_d\,\pi r^2} = \frac{8\,\rho_w\,g\,r}{3\,\rho_{air}\,C_d}`,
+            why: tx(t, "oglPart_vd2", "substitute both into v_t². π cancels, and r³ over r² leaves a single r") },
+          { full: true, tex: r`v_t = \sqrt{\frac{8 \cdot 1000 \cdot 9.81 \cdot 0.001}{3 \cdot 1.2 \cdot 0.5}} = \sqrt{43.6} \approx 6.6\ \text{m/s}`,
+            why: tx(t, "oglPart_vd3", "a 2 mm drop (r = 1 mm = 0.001 m): about 6.6 m/s, close to the measured 6.5 quoted above") },
+          { full: true, tex: r`v_t \propto \sqrt{r}`,
+            why: tx(t, "oglPart_vd4", "four times the radius, only twice the speed. Above about 2 mm the real drop flattens and its drag grows, so measured speeds level off near 9 m/s instead of growing further") },
+        ]} />
+      <LiveFormula label={tx(t, "oglPart_liveVt", "Try it: how fast does a drop of this size fall?")}
+        tex={r`v_t = \sqrt{\frac{2 m g}{\rho_{air}\,C_d\,A}}`}
+        vars={[{ id: "D", label: tx(t, "oglPart_liveDiam", "diameter"), min: 0.2, max: 3, step: 0.1, value: 2, fmt: v => `${v.toFixed(1)} mm` }]}
+        compute={terminalNumbers(t)}
+        note={tx(t, "oglPart_liveVtNote", "A 0.2 mm drizzle droplet falls at about 2 m/s and drifts with the wind; a 2 mm drop at 6.6 m/s. The formula assumes a sphere with C_d = 0.5, which holds up to about 2 mm.")} />
 
       <Equation label={tx(t, "oglPart_boxLabel", "A rain volume that travels with the camera")}
         where={[
@@ -210,9 +272,21 @@ void main() {
           [r`\rho`, tx(t, "oglPart_wRho", "density: drops spawned per second per square metre")],
         ]}
         note={tx(t, "oglPart_boxNote", "The number alive settles at spawn rate × lifetime: ρ·(2B)²·H/v_t. With ρ = 15, B = 10 m, H = 12 m and v_t = 9 m/s that is about 8000 drops. The same drops are recycled everywhere you go, and the viewer never notices, because every place looks equally rainy. Prewarming spawns the first frame's drops at random heights, so the volume starts full instead of beginning with one flat sheet falling from the top.")}
-        glsl={`x -= 2.0 * B * round((x - cam.x) / (2.0 * B));\nz -= 2.0 * B * round((z - cam.z) / (2.0 * B));`}>
+        glsl={`x -= 2.0 * B * round((x - cam.x) / (2.0 * B));\nz -= 2.0 * B * round((z - cam.z) / (2.0 * B));`}
+        words={tx(t, "oglPart_boxWords", "Measure how many box widths the drop is away from the camera, round that to a whole number, and move the drop back by that many widths: it stays in the box. The number of drops alive is the number spawned per second times the seconds each one lives, the time to fall the box's height.")}>
         {r`x \leftarrow x - 2B\,\operatorname{round}\!\Big(\frac{x - c_x}{2B}\Big) \qquad N_{alive} = \rho\,(2B)^2\,\frac{H}{v_t}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglPart_liveAlive", "Try it: how many drops does the box hold?")}
+        tex={r`N_{alive} = \rho\,(2B)^2\,\frac{H}{v_t}`}
+        vars={[
+          { id: "rho", label: "ρ", min: 1, max: 40, step: 1, value: 15, fmt: v => String(v) },
+          { id: "B", label: "B", min: 5, max: 30, step: 1, value: 10, fmt: v => `${v} m` },
+          { id: "H", label: "H", min: 5, max: 30, step: 1, value: 12, fmt: v => `${v} m` },
+          { id: "vt", label: <>v<sub>t</sub></>, min: 2, max: 10, step: 0.5, value: 9, fmt: v => `${v} m/s` },
+        ]}
+        where={[[r`H`, tx(t, "oglPart_wH", "the height of the box: drops spawn at its top and die at the ground")]]}
+        compute={aliveNumbers()}
+        note={tx(t, "oglPart_liveAliveNote", "The defaults give the 8000 drops of the note. Double B and the count quadruples, since the area is (2B)². Slower drizzle (smaller v_t) lives longer, so the same ρ fills the box with more drops.")} />
 
       <Equation label={tx(t, "oglPart_streakLabel", "A streak is motion blur")}
         where={[
@@ -221,9 +295,19 @@ void main() {
           [r`w_{min}`, tx(t, "oglPart_wWmin", "the world-space width of one pixel at distance d: the screen height spans 2d·tan(fov/2) metres, split into H_px pixels")],
         ]}
         note={tx(t, "oglPart_streakNote", "A drop is 2 mm across and nearly round. A photo of rain shows long lines only because it moves 14 cm during a 16 ms exposure. The quad is built in the vertex shader from the head, the tail, and a side vector cross(v, toCamera) that keeps it facing the viewer. Far streaks thinner than a pixel break into flickering dashes. Widening them to one pixel and dividing the alpha by the same factor keeps each streak's total light while removing the aliasing.")}
-        glsl={`vec3 p = pos - vel * shutter * c.y;             // c.y: 0 head, 1 tail\nvec3 side = normalize(cross(vel, normalize(cam - pos)));\nfloat w = max(width, dist * pixel); alpha *= width / w;`}>
-        {r`L = \lVert \mathbf v \rVert\,\Delta t_{shutter} \qquad w_{min} = \frac{2\,d\,\tan(\text{fov}/2)}{H_{px}} \qquad \alpha' = \alpha\,\frac{w}{\max(w,\ w_{min})}`}
+        glsl={`vec3 p = pos - vel * shutter * c.y;             // c.y: 0 head, 1 tail\nvec3 side = normalize(cross(vel, normalize(cam - pos)));\nfloat w = max(width, dist * pixel); alpha *= width / w;`}
+        words={tx(t, "oglPart_streakWords", "A streak is as long as the distance the drop moves while the shutter is open. If it is thinner than one pixel at its distance, widen it to one pixel and lower its alpha by the same factor, so it adds the same light without flickering.")}>
+        {r`\begin{gathered} L = \lVert \mathbf v \rVert\,\Delta t_{shutter} \qquad w_{min} = \frac{2\,d\,\tan(\text{fov}/2)}{H_{px}} \\[6pt] \alpha' = \alpha\,\frac{w}{\max(w,\ w_{min})} \end{gathered}`}
       </Equation>
+      <LiveFormula label={tx(t, "oglPart_liveStreak", "Try it: one streak at this speed and distance")}
+        tex={r`\begin{gathered} L = \lVert \mathbf v \rVert\,\Delta t_{shutter} \qquad w_{min} = \frac{2\,d\,\tan(\text{fov}/2)}{H_{px}} \\[6pt] \alpha' = \alpha\,\frac{w}{\max(w,\ w_{min})} \end{gathered}`}
+        vars={[
+          { id: "v", label: "‖v‖", min: 2, max: 10, step: 0.5, value: 9, fmt: v => `${v} m/s` },
+          { id: "d", label: "d", min: 1, max: 40, step: 1, value: 10, fmt: v => `${v} m` },
+        ]}
+        where={[[r`w`, tx(t, "oglPart_wWdrop", "the streak's real width, 2 mm, the drop's diameter")]]}
+        compute={streakNumbers(t)}
+        note={tx(t, "oglPart_liveStreakNote", "With fov 60°, 1080 pixels and a 16 ms shutter. A 9 m/s drop draws a 14.4 cm streak. Up to about 1.9 m away a pixel is narrower than the drop and nothing changes; at 10 m one pixel is 10.7 mm wide, so the streak is drawn 5 times wider at under a fifth of the alpha.")} />
 
       <p>
         {tx(t, "oglPart_rainHit",
