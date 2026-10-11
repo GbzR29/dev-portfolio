@@ -5,6 +5,7 @@ const track = {
     "what-is-sound": "O que é som?",
     pitch: "Altura e frequência",
     timbre: "Timbre e harmônicos",
+    loudness: "Intensidade e envelope",
   } as Record<string, string>,
   sections: {
     Sound: "Som",

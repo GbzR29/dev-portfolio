@@ -119,6 +119,52 @@ const text: Record<string, string> = {
   figMus_spNote: "Todo pico cai numa linha tracejada: o som é feito de múltiplos inteiros de f. Compare o piano com a onda quadrada (só as linhas ímpares) e com a senoide (um pico só). Toque uma tecla mais aguda e as linhas se afastam, porque ficam a f de distância umas das outras.",
   figMus_spAxis: "dB abaixo da frequência mais forte",
   figMus_spAria: "teclado de piano, de C3 a C5",
+
+  // ── LoudnessStepsFigure ──
+  figMus_lsTitle: "Degraus iguais para o medidor, degraus iguais para o ouvido",
+  figMus_lsLin: "+ mesma amplitude",
+  figMus_lsDb: "× 2 (+6 dB)",
+  figMus_lsPiano: "🎹 ppp → ff",
+  figMus_lsPick: "toque os degraus, ou clique numa barra",
+  figMus_lsAmp: "amplitude",
+  figMus_lsStep: "desde o degrau anterior",
+  figMus_lsNote: "Toque \"+ mesma amplitude\": o primeiro degrau é um salto enorme (×2), os últimos quase não mudam nada (×1,17). Depois toque \"× 2\": as barras de amplitude explodem, mas cada degrau soa mais ou menos do mesmo tamanho. As dinâmicas do piano, de ppp a ff, são espaçadas do mesmo jeito. (Estas gravações foram feitas com uma só força e apenas abaixadas; um piano de verdade tocado mais forte também fica mais brilhante.)",
+  figMus_lsBars: "amplitude: a oscilação de pressão que um medidor mede",
+  figMus_lsRuler: "nível em decibéis: mais perto do que o ouvido ouve",
+  figMus_lsRulerNote: "0 dB = o degrau mais forte; cada −6 dB corta a amplitude pela metade",
+  figMus_lsPlay: "tocar os sete degraus",
+
+  // ── EqualLoudnessFigure ──
+  figMus_elTitle: "Meça a sua própria curva de igual intensidade",
+  figMus_elTest: "tom de teste:",
+  figMus_elLevel: "nível em relação a 1000 Hz",
+  figMus_elYours: "o seu",
+  figMus_elStandard: "ouvido padrão",
+  figMus_elNowRef: "agora: referência de 1000 Hz",
+  figMus_elNowTest: "agora: tom de teste",
+  figMus_elNote: "Aperte comparar: a referência de 1000 Hz e o tom de teste se revezam. Mova o controle até os dois soarem igualmente fortes e escolha o próximo tom de teste. Use fones de ouvido se puder: alto-falantes de notebook e de celular quase não produzem 125 Hz, então os seus pontos graves vão ficar acima da curva. Isso é culpa do alto-falante, não do seu ouvido.",
+  figMus_elAxisF: "frequência (Hz)",
+  figMus_elAxisDb: "dB necessários para soar tão forte quanto 1000 Hz",
+  figMus_elCurve: "ouvido padrão",
+  figMus_elRef: "referência",
+  figMus_elCompare: "comparar",
+
+  // ── EnvelopeFigure ──
+  figMus_enTitle: "Dê forma a uma nota: o envelope ADSR",
+  figMus_enShapes: "formatos:",
+  figMus_en_organ: "órgão",
+  figMus_en_piano: "piano",
+  figMus_en_pluck: "corda dedilhada",
+  figMus_en_violin: "violino com arco",
+  figMus_en_pad: "pad lento",
+  figMus_en_drum: "batida de tambor",
+  figMus_enNoteMouse: "Arraste as três alças, depois segure uma tecla (clique, ou as teclas A S D F… depois de um clique) e solte.",
+  figMus_enNoteTouch: "Arraste as três alças, depois segure uma tecla e solte.",
+  figMus_enNote: "Os mesmos harmônicos toda vez, mas \"órgão\", \"piano\" e \"violino com arco\" soam como instrumentos diferentes. Agora escolha \"pad lento\" e toque a frase rápida: cada nota acaba antes de ter subido, e a melodia vira papa.",
+  figMus_enAxis: "nível da nota ao longo do tempo (arraste as alças)",
+  figMus_enUp: "tecla solta",
+  figMus_enS: "S: segurada",
+  figMus_enPhrase: "tocar uma frase rápida",
 };
 
 export default text;
