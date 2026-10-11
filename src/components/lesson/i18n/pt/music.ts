@@ -165,6 +165,52 @@ const text: Record<string, string> = {
   figMus_enUp: "tecla solta",
   figMus_enS: "S: segurada",
   figMus_enPhrase: "tocar uma frase rápida",
+
+  // ── MetronomeFigure ──
+  figMus_mtTitle: "Um metrônomo: andamento em batidas por minuto",
+  figMus_mtBpm: "andamento (BPM)",
+  figMus_mtBeat: "uma batida a cada",
+  figMus_mtTapped: "seus toques",
+  figMus_mtTaps: "toques",
+  figMus_mtAvg: "em média",
+  figMus_mtEarly: "adiantado",
+  figMus_mtLate: "atrasado",
+  figMus_mtNote: "Parado, o botão de toque mede um andamento: bata uma batida constante (uma música que você conhece, o seu coração) e o controle pula para ela. Rodando, bata junto com os cliques: cada ponto mostra o quanto você se adiantou ou atrasou.",
+  figMus_mtNoteKey: "A barra de espaço também toca quando o botão está em foco.",
+  figMus_mtNoteLat: "O seu aparelho acrescenta alguns milissegundos próprios entre um toque e o som, então trate desvios pequenos como aproximados.",
+  figMus_mtRuler: "palavras de andamento (as faixas variam entre os livros)",
+  figMus_mtStrip: "seus toques contra os cliques (ligue e depois bata)",
+  figMus_mtOn: "no clique",
+  figMus_mtEarlyAx: "adiantado (ms)",
+  figMus_mtLateAx: "atrasado (ms)",
+  figMus_mtStart: "ligar o metrônomo",
+  figMus_mtTap: "toque",
+
+  // ── RhythmToPitchFigure ──
+  figMus_rpTitle: "Acelere um ritmo até ele virar uma nota",
+  figMus_rpRate: "cliques por segundo",
+  figMus_rpGap: "intervalo",
+  figMus_rpHear: "você ouve",
+  figMus_rpZ_beat: "batidas separadas: um pulso",
+  figMus_rpZ_roll: "uma vibração, um rufar de tambor",
+  figMus_rpZ_tone: "um zumbido com altura",
+  figMus_rpNote: "Comece em 60 BPM e arraste o controle devagar para a direita, escutando. Em algum ponto perto de 5 por segundo você não consegue mais bater junto; perto de 20 por segundo os cliques deixam de ser cliques e aparece uma nota grave. Em 55 por segundo é a nota A1, o mesmo Lá da corda Lá solta de um baixo. Nada mudou além da velocidade.",
+  figMus_rpStrip: "um segundo de cliques",
+  figMus_rpRuler: "o que você ouve, pela velocidade (cada ×10 com a mesma largura)",
+  figMus_rpUnit: "cliques por segundo (= Hz)",
+
+  // ── TempoShapesFigure ──
+  figMus_tsTitle: "Uma melodia, quatro jeitos de moldar o andamento",
+  figMus_tsSteady: "constante",
+  figMus_tsBpm: "andamento da versão constante",
+  figMus_tsClicks: "clique em cada batida",
+  figMus_tsLength: "duração",
+  figMus_tsSteadyLen: "constante",
+  figMus_tsNow: "agora",
+  figMus_tsNote: "Toque \"constante\" primeiro, depois as outras com os cliques ligados. As notas e a ordem delas nunca mudam, só quando elas chegam: o accelerando aperta os pontos, o ritardando espalha os últimos, o rubato respira, um pouco mais rápido no meio de cada frase e de volta nas pontas. Os traços cinza são onde cairiam as batidas constantes.",
+  figMus_tsGraph: "andamento (BPM) ao longo do tempo",
+  figMus_tsBeats: "laranja: as batidas desta versão · cinza: batidas constantes",
+  figMus_tsPlay: "tocar a melodia",
 };
 
 export default text;
