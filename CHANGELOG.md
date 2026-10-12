@@ -12,6 +12,14 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ## Outubro de 2026
 
+### 2026-10-12
+
+- **Música, capítulo 6: Duração das notas** (`music/chapters/durations.tsx`, prefixo `musDur_`), seção **Ritmo**. Durações contadas em batidas (t = b × 60/BPM); a árvore das metades e a dedução de b = 4/v; nomes das figuras em PT, inglês americano e britânico, com a história da breve e da semibreve; partes do símbolo (cabeça, haste, colchetes, barras); pausas e a pausa que abre a Quinta de Beethoven; ponto de aumento com a dedução da série b(2 − 1/2ⁿ); ligaduras; contagem das subdivisões em voz alta; tercinas e quiálteras (b' = (m/n)·(4/v)); swing; staccato, legato e o intervalo entre ataques. Duas fórmulas ao vivo (`music/live/durations.ts`: figura + pontos + andamento → batidas e segundos, e n notas no tempo de m) e três widgets novos em `figures/music/`:
+  - `DurationTreeFigure`: as cinco linhas da árvore (semibreve a semicolcheia) num compasso de 4 batidas, cada linha tocável no piano contra o clique, ou todas juntas num acorde de Dó;
+  - `RhythmBuilderFigure`: montador de ritmo em dois compassos, com paleta de figuras, ponto, pausa, desfazer e as melodias "Brilha, brilha", "Bate o sino" (semínima pontuada) e a Quinta de Beethoven (pausas);
+  - `SubdivisionFigure`: a batida dividida em 2, 3 e 4 em ciclo, cada camada com o seu clique, sílabas de contagem, três contra dois e colcheias com swing.
+  - Novos módulos: `notation.tsx` (figuras e pausas desenhadas em SVG, `beatsOf`, nomes das figuras) e `useRhythmPlayer.ts` (toca notas medidas em batidas no relógio de áudio); `playClick` ganhou a opção `hz`. Tradução PT completa.
+
 ### 2026-10-10
 
 - **Música, capítulo 5: Pulso e andamento** (`music/chapters/pulse.tsx`, prefixo `musPul_`), primeiro capítulo da nova seção **Ritmo**. O pulso como algo que o cérebro constrói (sincronização rítmica, a cacatua Snowball); dedução de T = 60/BPM e de f = BPM/60; medir o andamento batendo junto (média dos intervalos); palavras italianas de andamento, o metrônomo de Maelzel e Beethoven; tabela de andamentos do dia a dia; faixa de 30 a 300 BPM, andamento preferido e o toque adiantado; o ritmo que vira altura acima de ~20 Hz (Stockhausen); ritmização subjetiva (Bolton); accelerando, ritardando, rubato, fermata e a fórmula tₙ = Σ 60/BPMₖ. Duas fórmulas ao vivo (`music/live/pulse.ts`: andamento → duração e frequência da batida, e BPM pela média de três intervalos) e três widgets novos em `figures/music/`:

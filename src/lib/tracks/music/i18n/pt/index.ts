@@ -7,9 +7,10 @@ import pitch from "./pitch";
 import timbre from "./timbre";
 import loudness from "./loudness";
 import pulse from "./pulse";
+import durations from "./durations";
 
 const bundle: LessonText = {
-  strings: { ...whatIsSound, ...pitch, ...timbre, ...loudness, ...pulse },
+  strings: { ...whatIsSound, ...pitch, ...timbre, ...loudness, ...pulse, ...durations },
   titles: track.titles,
   sections: track.sections,
 };

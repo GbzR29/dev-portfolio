@@ -16,4 +16,5 @@ export const musicChapters: Chapter[] = [
   { id: "timbre", section: SOUND, title: "Timbre and Harmonics", minRead: 17, load: () => import("./chapters/timbre").then((m) => m.TimbreContent) },
   { id: "loudness", section: SOUND, title: "Loudness and the Envelope", minRead: 18, load: () => import("./chapters/loudness").then((m) => m.LoudnessContent) },
   { id: "pulse", section: RHYTHM, title: "Pulse and Tempo", minRead: 16, load: () => import("./chapters/pulse").then((m) => m.PulseContent) },
+  { id: "durations", section: RHYTHM, title: "Note Durations", minRead: 17, load: () => import("./chapters/durations").then((m) => m.DurationsContent) },
 ];

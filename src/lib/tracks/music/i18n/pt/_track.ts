@@ -7,6 +7,7 @@ const track = {
     timbre: "Timbre e harmônicos",
     loudness: "Intensidade e envelope",
     pulse: "Pulso e andamento",
+    durations: "Duração das notas",
   } as Record<string, string>,
   sections: {
     Sound: "Som",

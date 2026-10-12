@@ -8,7 +8,7 @@
 
 import { audio } from "./context";
 
-let pings: { low: AudioBuffer; high: AudioBuffer } | null = null;
+const pings = new Map<number, AudioBuffer>();               // by pitch in Hz
 let ticks: AudioBuffer | null = null;
 
 /** A decaying ping at `hz` (plus a quieter octave) lasting `len` seconds. */
@@ -23,14 +23,16 @@ function ping(ctx: AudioContext, hz: number, len: number) {
 
 /**
  * Plays one metronome click at context time `when` (now if earlier).
- * `accent` uses the higher ping, as metronomes mark the first beat.
+ * `accent` uses the higher ping, as metronomes mark the first beat; `hz`
+ * picks any other pitch (to tell several layers of clicks apart).
  * Returns a handle that cancels the click if it has not sounded yet.
  */
-export function playClick(when = 0, { level = 0.6, accent = false } = {}): { cancel: () => void } {
+export function playClick(when = 0, { level = 0.6, accent = false, hz }: { level?: number; accent?: boolean; hz?: number } = {}): { cancel: () => void } {
   const { ctx, out } = audio();
-  pings ??= { low: ping(ctx, 1200, 0.045), high: ping(ctx, 1800, 0.045) };
+  hz ??= accent ? 1800 : 1200;
+  if (!pings.has(hz)) pings.set(hz, ping(ctx, hz, 0.045));
   const src = ctx.createBufferSource();
-  src.buffer = accent ? pings.high : pings.low;
+  src.buffer = pings.get(hz)!;
   const g = ctx.createGain();
   g.gain.value = level;
   src.connect(g).connect(out);
