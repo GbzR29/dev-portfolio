@@ -2,7 +2,7 @@
 
 // ── Pulse loop ────────────────────────────────────────────────────────────────
 // Loops a bar of equal pulses, each with its own hits: metronome clicks (any
-// pitch and level) and piano keys. Sounds are booked on the audio clock a
+// pitch and level), drums and piano keys. Sounds are booked on the audio clock a
 // moment ahead, as in the metronome, and every pulse reads the newest loop,
 // so the bar, the tempo and the accents can change while it plays. `pulse`
 // is the index of the pulse being heard (null when stopped). Stops off screen.
@@ -11,11 +11,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useFrame } from "@/components/lesson/kit/figure";
 import { audio, startAudio, type Voice } from "@/components/lesson/kit/audio/context";
 import { playClick } from "@/components/lesson/kit/audio/click";
+import { playDrum, type Drum } from "@/components/lesson/kit/audio/drums";
 import { playPiano } from "@/components/lesson/kit/audio/piano";
 import { usePiano } from "@/components/lesson/kit/audio/usePiano";
 
-/** One sound on a pulse: a click, or a piano key. */
-export type Hit = { hz: number; level: number } | { midi: number; vel: number };
+/** One sound on a pulse: a click, a drum, or a piano key. */
+export type Hit = { hz: number; level: number } | { drum: Drum; level: number } | { midi: number; vel: number };
 /** The bar to loop: the hits of each pulse, and the seconds from one pulse to the next. */
 export type Loop = { pulses: Hit[][]; spp: number };
 
@@ -47,6 +48,7 @@ export function usePulseLoop(on: boolean, loop: Loop) {
         if (i >= pulses.length) i = 0;
         pulses[i].forEach(h => {
           if ("hz" in h) { playClick(next, { hz: h.hz, level: h.level }); return; }
+          if ("drum" in h) { playDrum(h.drum, next, h.level); return; }
           const v = playPiano(h.midi, { when: next, velocity: h.vel });
           if (v) voices.current.push({ v, end: next + spp * 1.6 });
         });

@@ -9,6 +9,7 @@ const track = {
     pulse: "Pulso e andamento",
     durations: "Duração das notas",
     meter: "Compasso e fórmula de compasso",
+    syncopation: "Síncope",
   } as Record<string, string>,
   sections: {
     Sound: "Som",
