@@ -10,6 +10,7 @@ import type { Chapter } from "@/lib/tracks/types";
 const SOUND = "Sound";
 const RHYTHM = "Rhythm";
 const NOTES = "Notes";
+const SCALES = "Scales";
 
 export const musicChapters: Chapter[] = [
   { id: "what-is-sound", section: SOUND, title: "What Is Sound?", minRead: 14, load: () => import("./chapters/what-is-sound").then((m) => m.WhatIsSoundContent) },
@@ -23,4 +24,6 @@ export const musicChapters: Chapter[] = [
   { id: "note-names", section: NOTES, title: "Note Names and the Keyboard", minRead: 17, load: () => import("./chapters/note-names").then((m) => m.NoteNamesContent) },
   { id: "staff", section: NOTES, title: "The Staff and Clefs", minRead: 17, load: () => import("./chapters/staff").then((m) => m.StaffContent) },
   { id: "accidentals", section: NOTES, title: "Sharps, Flats and Naturals", minRead: 18, load: () => import("./chapters/accidentals").then((m) => m.AccidentalsContent) },
+  { id: "temperament", section: NOTES, title: "Equal Temperament", minRead: 19, load: () => import("./chapters/temperament").then((m) => m.TemperamentContent) },
+  { id: "intervals", section: SCALES, title: "Intervals", minRead: 19, load: () => import("./chapters/intervals").then((m) => m.IntervalsContent) },
 ];

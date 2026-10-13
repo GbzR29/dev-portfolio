@@ -22,6 +22,8 @@ import mathProbability from "./mathProbability";
 import mathPractice from "./mathPractice";
 import music from "./music";
 import musicScore from "./musicScore";
+import musicTuning from "./musicTuning";
+import musicIntervals from "./musicIntervals";
 import ocean from "./ocean";
 import pbr from "./pbr";
 import perf from "./perf";
@@ -37,6 +39,6 @@ import underwater from "./underwater";
 import vulkan from "./vulkan";
 import water from "./water";
 
-const bundle: Record<string, string> = { ...advgl, ...ai,...advlighting, ...blackhole, ...figures, ...fog, ...gamedev, ...glass, ...glintro, ...glsl, ...lighting, ...markov, ...math, ...mathAlgebra, ...mathGeometry, ...mathTrig, ...mathLinAlg, ...mathCalculus, ...mathProbability, ...mathPractice, ...music, ...musicScore, ...ocean, ...pbr, ...perf, ...pool, ...post, ...practice, ...river, ...rt, ...sky, ...special, ...tech, ...underwater, ...vulkan, ...water };
+const bundle: Record<string, string> = { ...advgl, ...ai,...advlighting, ...blackhole, ...figures, ...fog, ...gamedev, ...glass, ...glintro, ...glsl, ...lighting, ...markov, ...math, ...mathAlgebra, ...mathGeometry, ...mathTrig, ...mathLinAlg, ...mathCalculus, ...mathProbability, ...mathPractice, ...music, ...musicScore, ...musicTuning, ...musicIntervals, ...ocean, ...pbr, ...perf, ...pool, ...post, ...practice, ...river, ...rt, ...sky, ...special, ...tech, ...underwater, ...vulkan, ...water };
 
 export default bundle;

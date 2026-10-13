@@ -34,6 +34,19 @@ export function StaffArt() {
   );
 }
 
+/** A scrap of staff with two stacked notes and a bracket counting the letters between them. */
+export function IntervalArt() {
+  return (
+    <svg viewBox="0 0 100 56" className="w-[100px] h-[56px]" aria-hidden>
+      {[0, 1, 2, 3, 4].map(i => <line key={i} x1={4} x2={64} y1={10 + i * 8} y2={10 + i * 8} stroke={C.fg} strokeOpacity={0.55} strokeWidth={1.1} />)}
+      <ellipse cx={34} cy={42} rx={5.6} ry={4} transform="rotate(-18 34 42)" fill="none" stroke={C.sky} strokeWidth={2.2} />
+      <ellipse cx={34} cy={26} rx={5.6} ry={4} transform="rotate(-18 34 26)" fill="none" stroke={C.amber} strokeWidth={2.2} />
+      <path d="M72,26 h5 v16 h-5" fill="none" stroke={C.fg} strokeOpacity={0.6} strokeWidth={1.4} />
+      {[0, 1, 2, 3, 4].map(i => <circle key={i} cx={86} cy={42 - i * 4} r={1.6} fill={i === 0 ? C.sky : i === 4 ? C.amber : C.fg} fillOpacity={i % 4 ? 0.5 : 1} />)}
+    </svg>
+  );
+}
+
 /** A scrap of staff with a sharp before a note, and the black key it asks for. */
 export function SharpArt() {
   return (

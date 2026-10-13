@@ -13,11 +13,14 @@ const track = {
     "note-names": "Nomes das notas e o teclado",
     staff: "A pauta e as claves",
     accidentals: "Sustenidos, bemóis e bequadros",
+    temperament: "Temperamento igual",
+    intervals: "Intervalos",
   } as Record<string, string>,
   sections: {
     Sound: "Som",
     Rhythm: "Ritmo",
     Notes: "Notas",
+    Scales: "Escalas",
   } as Record<string, string>,
 };
 

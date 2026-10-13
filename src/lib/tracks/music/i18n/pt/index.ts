@@ -13,9 +13,11 @@ import syncopation from "./syncopation";
 import noteNames from "./note-names";
 import staff from "./staff";
 import accidentals from "./accidentals";
+import temperament from "./temperament";
+import intervals from "./intervals";
 
 const bundle: LessonText = {
-  strings: { ...whatIsSound, ...pitch, ...timbre, ...loudness, ...pulse, ...durations, ...meter, ...syncopation, ...noteNames, ...staff, ...accidentals },
+  strings: { ...whatIsSound, ...pitch, ...timbre, ...loudness, ...pulse, ...durations, ...meter, ...syncopation, ...noteNames, ...staff, ...accidentals, ...temperament, ...intervals },
   titles: track.titles,
   sections: track.sections,
 };
