@@ -58,7 +58,10 @@ export function useRhythmPlayer(on: boolean) {
   }, [piano, stop]);
 
   /** The heard position in beats (negative before the first beat). */
-  const now = useCallback(() => (audio().ctx.currentTime - t0.current) / spb.current, []);
+  const now = useCallback(() => {
+    const { ctx } = audio();
+    return (ctx.currentTime - (ctx.outputLatency || ctx.baseLatency || 0) - t0.current) / spb.current;
+  }, []);
 
   useFrame(on && playing, () => {
     const q = Math.floor(now() * 8) / 8;

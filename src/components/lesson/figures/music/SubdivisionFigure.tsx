@@ -42,7 +42,7 @@ export function MusicSubdivisionFigure({ t }: { t?: TrackTranslations }) {
   const vis = useVisible<HTMLDivElement>();
   const live = useRef({ on, swing, bpm });
   useEffect(() => { live.current = { on, swing, bpm }; }, [on, swing, bpm]);
-  const beats = useRef<{ at: number; k: number }[]>([]);    // booked beat starts, newest last
+  const beats = useRef<{ at: number; k: number; len: number }[]>([]);   // booked beats (start, count, length), newest last
   const head = useRef<SVGLineElement>(null);
 
   // One common way to count each layer out loud
@@ -66,7 +66,7 @@ export function MusicSubdivisionFigure({ t }: { t?: TrackTranslations }) {
         const { on: layers, swing: sw, bpm: tempo } = live.current, period = 60 / tempo;
         LAYERS.filter(n => layers[n]).forEach(n => positions(n, sw).forEach((p, i) =>
           playClick(next + p * period, { hz: HZ[n], level: n === 1 ? 0.6 : 0.4, accent: n === 1 && i === 0 && k % 2 === 0 })));
-        beats.current = [...beats.current.slice(-7), { at: next, k }];
+        beats.current = [...beats.current.slice(-7), { at: next, k, len: period }];
         next += period; k++;
       }
     }, TICK_MS);
@@ -79,7 +79,7 @@ export function MusicSubdivisionFigure({ t }: { t?: TrackTranslations }) {
     const { ctx } = audio(), now = ctx.currentTime - (ctx.outputLatency || ctx.baseLatency || 0);
     const last = [...beats.current].reverse().find(b => b.at <= now);
     if (!last) return;
-    const b = (last.k % SPAN) + Math.min(1, (now - last.at) / (60 / live.current.bpm));
+    const b = (last.k % SPAN) + Math.min(1, (now - last.at) / last.len);
     head.current?.setAttribute("x1", String(xB(b)));
     head.current?.setAttribute("x2", String(xB(b)));
     const q = Math.floor(b * 48) / 48;

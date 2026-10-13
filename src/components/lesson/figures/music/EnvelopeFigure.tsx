@@ -102,16 +102,19 @@ export function MusicEnvelopeFigure({ t }: { t?: TrackTranslations }) {
     if (!d) return;
     if (!n) { d.setAttribute("opacity", "0"); return; }
     const e = envRef.current, now = audio().ctx.currentTime, c = corners(e);
+    // where a note held for tt seconds sits on the drawing (it waits at the end of the sustain)
+    const xHeld = (tt: number) => (tt < e.attack + e.decay ? X0 + tt * PX : Math.min(c.xD + (tt - e.attack - e.decay) * PX, c.xH));
     let x: number, level: number;
     const released = n.up !== null && now >= Math.max(n.up, n.t0 + e.attack);
     if (!released) {
       const tt = now - n.t0;
       level = heldLevel(e, tt);
-      x = tt < e.attack + e.decay ? X0 + tt * PX : Math.min(c.xD + (tt - e.attack - e.decay) * PX, c.xH);
+      x = xHeld(tt);
     } else {
+      // the release starts from wherever the note was let go, so the dot never jumps
       const tr = Math.max(n.up!, n.t0 + e.attack), since = now - tr;
       level = heldLevel(e, tr - n.t0) * Math.exp(-since / (e.release / 3));
-      x = c.xH + Math.min(since, e.release) * PX;
+      x = xHeld(tr - n.t0) + Math.min(since, e.release) * PX;
       if (since > e.release * 1.2) { note.current = null; d.setAttribute("opacity", "0"); return; }
     }
     d.setAttribute("cx", x.toFixed(1));

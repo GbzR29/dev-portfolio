@@ -24,6 +24,7 @@ const RX0 = 210, RX1 = 584, RY = 64;                       // tempo ruler
 const BPM_MIN = 30, BPM_MAX = 240;
 const SX0 = 210, SX1 = 584, SY = 172, S_MS = 150;          // timing strip, ±150 ms
 const AHEAD = 0.12, TICK_MS = 25;                          // scheduler: look 120 ms ahead every 25 ms
+const WIND = 0.3;                                          // s from "start" to the first click: the arm leans out
 
 const MARKINGS: [string, number, number][] = [
   ["Grave", 30, 40], ["Largo", 40, 60], ["Adagio", 60, 76], ["Andante", 76, 108], ["Moderato", 108, 120],
@@ -47,7 +48,7 @@ export function MusicMetronomeFigure({ t }: { t?: TrackTranslations }) {
   const vis = useVisible<HTMLDivElement>();
   const bpmRef = useRef(bpm);
   useEffect(() => { bpmRef.current = bpm; }, [bpm]);
-  const beats = useRef<number[]>([]);                      // scheduled click times, newest last
+  const beats = useRef<{ at: number; n: number; gap: number }[]>([]);   // booked clicks: time, count since start, seconds to the next; newest last
   const arm = useRef<SVGGElement>(null);
   const flash = useRef<SVGCircleElement>(null);
 
@@ -55,13 +56,14 @@ export function MusicMetronomeFigure({ t }: { t?: TrackTranslations }) {
   useEffect(() => {
     if (!running || !vis.on) return;
     const { ctx } = audio();
-    let next = ctx.currentTime + 0.08;
+    let next = ctx.currentTime + WIND, n = 0;
     beats.current = [];
     const id = setInterval(() => {
       while (next < ctx.currentTime + AHEAD) {
+        const gap = 60 / bpmRef.current;
         playClick(next);
-        beats.current = [...beats.current.slice(-15), next];
-        next += 60 / bpmRef.current;
+        beats.current = [...beats.current.slice(-15), { at: next, n: n++, gap }];
+        next += gap;
       }
     }, TICK_MS);
     return () => clearInterval(id);
@@ -77,11 +79,18 @@ export function MusicMetronomeFigure({ t }: { t?: TrackTranslations }) {
       flash.current.setAttribute("opacity", "0.15");
       return;
     }
-    const { ctx } = audio(), now = ctx.currentTime - latency(ctx), period = 60 / bpmRef.current;
-    const last = [...bs].reverse().find(b => b <= now) ?? bs[0] - period;
-    const k = bs.indexOf(last), phase = Math.min(1, (now - last) / period);
+    const { ctx } = audio(), now = ctx.currentTime - latency(ctx);
+    // the last heard click and the real gap to the next one (already fixed when it
+    // was booked, even if the tempo changes meanwhile); before the first, lean out to one side
+    const i = bs.findLastIndex(b => b.at <= now);
+    if (i < 0) {
+      const u = Math.min(1, Math.max(0, 1 - (bs[0].at - now) / WIND)), lean = SWING * (1 - Math.cos(Math.PI * u)) / 2;
+      arm.current.setAttribute("transform", `rotate(${(lean * 180) / Math.PI} ${PIV.x} ${PIV.y})`);
+      return;
+    }
+    const last = bs[i].at, phase = Math.min(1, (now - last) / bs[i].gap);
     // swing from one side to the other between beats; the side alternates each beat
-    const side = (k < 0 ? 0 : k) % 2 === 0 ? 1 : -1;
+    const side = bs[i].n % 2 === 0 ? 1 : -1;
     const ang = side * SWING * Math.cos(Math.PI * phase);
     arm.current.setAttribute("transform", `rotate(${(ang * 180) / Math.PI} ${PIV.x} ${PIV.y})`);
     flash.current.setAttribute("opacity", String(0.15 + 0.85 * Math.exp(-(now - last) / 0.08)));
@@ -103,7 +112,7 @@ export function MusicMetronomeFigure({ t }: { t?: TrackTranslations }) {
       playClick(0, { level: 0.35, accent: true });
       return;
     }
-    const heard = beats.current.map(b => b + latency(ctx));
+    const heard = beats.current.map(b => b.at + latency(ctx));
     if (!heard.length) return;
     const near = heard.reduce((a, b) => (Math.abs(b - now) < Math.abs(a - now) ? b : a));
     setOffsets(os => [...os.slice(-15), (now - near) * 1000]);

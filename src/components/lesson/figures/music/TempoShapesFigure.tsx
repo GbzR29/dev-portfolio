@@ -102,7 +102,7 @@ export function MusicTempoShapesFigure({ t }: { t?: TrackTranslations }) {
 
   // Playhead and lit note follow the audio clock
   useFrame(vis.on && playing, () => {
-    const now = audio().ctx.currentTime - start.current;
+    const { ctx } = audio(), now = ctx.currentTime - (ctx.outputLatency || ctx.baseLatency || 0) - start.current;
     head.current?.setAttribute("x1", String(xT(Math.max(0, now))));
     head.current?.setAttribute("x2", String(xT(Math.max(0, now))));
     const i = tl.onsets.reduce((k, on, j) => (now >= on ? j : k), -1);

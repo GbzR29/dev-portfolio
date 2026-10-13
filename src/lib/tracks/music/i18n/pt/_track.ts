@@ -11,6 +11,7 @@ const track = {
     meter: "Compasso e fórmula de compasso",
     syncopation: "Síncope",
     "note-names": "Nomes das notas e o teclado",
+    staff: "A pauta e as claves",
   } as Record<string, string>,
   sections: {
     Sound: "Som",

@@ -428,7 +428,45 @@ const text: Record<string, string> = {
   figMus_nqAria: "teclado de piano do jogo das notas",
   figMus_nqNote: "Use os marcos: dó logo à esquerda das duas pretas, fá logo à esquerda das três. A partir do dó, conte ré mi; a partir do fá, conte sol lá si. Com os números de oitava ligados, ache primeiro o dó (aqui o C4 é o do meio) e depois suba até a letra. Em \"tecla → nome\", a tecla acesa também soa; tente dizer o nome pela imagem primeiro e, mais tarde, de olhos fechados (os próximos capítulos mostram por que isso é bem mais difícil).",
 
-  figMus_euNote:"Comece com o tresillo: 3 notas em 8 pulsos não podem ficar a 8/3 uma da outra, então os intervalos são os inteiros mais próximos, 3, 3 e 2. Suba k para 5 e sai o cinquillo da música cubana; depois experimente 7 em 12, o sino dos tambores da África Ocidental. Girar começa o mesmo colar em outro pulso: os intervalos continuam, mas o ritmo soa diferente contra o bumbo, que marca a batida. Quase todo par de n e k dá um ritmo que alguma tradição já toca.",
+  // ── StaffFigure ──
+  figMus_stTitle: "Escreva notas na pauta",
+  figMus_stTreble: "clave de sol",
+  figMus_stBass: "clave de fá",
+  figMus_stAlto: "clave de dó",
+  figMus_stGrand: "pauta dupla (piano)",
+  figMus_stClear: "limpar",
+  figMus_stHidden: "mostrar a linha escondida do meio",
+  figMus_stClick: "clique numa linha ou num espaço, ou numa tecla branca",
+  figMus_stBlack: "teclas pretas precisam de sustenido ou bemol na pauta: próximo capítulo",
+  figMus_stOut: "longe demais desta pauta: troque a clave",
+  figMus_stMiddleLedger: "a linha suplementar entre as pautas (a 11ª linha escondida)",
+  figMus_stLine: "linha",
+  figMus_stSpace: "espaço",
+  figMus_stJustBelow: "logo abaixo da pauta",
+  figMus_stJustAbove: "logo acima da pauta",
+  figMus_stLedger: "linha suplementar",
+  figMus_stLedgers: "linhas suplementares",
+  figMus_stBelow: "abaixo",
+  figMus_stAbove: "acima",
+  figMus_stMiddleC: "dó central",
+  figMus_stAria: "teclado de piano que escreve na pauta",
+  figMus_stNote: "Clique na linha de baixo da clave de sol: mi 4 (E4). Um degrau acima, o espaço logo em cima, é fá 4, e cada linha e espaço depois disso é a próxima letra. Troque para a clave de fá: as mesmas cinco linhas agora vão de sol 2 a lá 3. Depois escolha a pauta dupla e toque de baixo para cima: o dó central fica numa linha suplementar curta entre as duas pautas. Mostre a linha escondida e as duas pautas viram uma só pauta de onze linhas sem a do meio.",
+
+  // ── ClefMelodyFigure ──
+  figMus_cmTitle: "O mesmo desenho, outras notas: a clave decide",
+  figMus_cmBottom: "linha de baixo",
+  figMus_cmChanged: "passos mudam de tamanho",
+  figMus_cmRight: "a melodia como foi escrita",
+  figMus_cmPlay: "tocar o que está escrito",
+  figMus_cmNote: "Toque na clave de sol: a Ode à Alegria. Troque para a clave de fá sem mexer numa nota: o desenho é idêntico, mas a linha de baixo agora é o sol 2, então cada nota é outra letra, e soa mais grave. Escute com atenção: não é só mais grave. Os números embaixo das notas são os passos em semitons; onde um 2 virou 1, ou um 1 virou 2, a melodia entorta. A clave só diz qual linha é qual letra, e os semitons mi–fá e si–dó ficam onde as letras estão.",
+
+  // ── StaffQuizFigure ──
+  figMus_sqTitle: "Prática: leia a pauta",
+  figMus_sqBoth: "as duas, misturadas",
+  figMus_sqMarks: "mostrar os marcos",
+  figMus_sqNote: "Não conte a partir da linha de baixo toda vez: aprenda alguns marcos e conte a partir do mais próximo. Na clave de sol, o caracol marca o sol 4 na linha 2, e o dó central fica numa linha suplementar abaixo. Na clave de fá, os pontos marcam o fá 3 na linha 4, e o dó central fica numa linha suplementar acima. Depois, de linha a linha é um salto de duas letras, de linha ao espaço seguinte um grau conjunto. Alguns minutos por dia durante uma semana funcionam melhor que uma hora de uma vez.",
+
+  figMus_euNote: "Comece com o tresillo: 3 notas em 8 pulsos não podem ficar a 8/3 uma da outra, então os intervalos são os inteiros mais próximos, 3, 3 e 2. Suba k para 5 e sai o cinquillo da música cubana; depois experimente 7 em 12, o sino dos tambores da África Ocidental. Girar começa o mesmo colar em outro pulso: os intervalos continuam, mas o ritmo soa diferente contra o bumbo, que marca a batida. Quase todo par de n e k dá um ritmo que alguma tradição já toca.",
 };
 
 export default text;
