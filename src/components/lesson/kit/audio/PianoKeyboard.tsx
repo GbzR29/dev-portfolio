@@ -8,13 +8,15 @@
 // A S D F G H J K L ; are the white keys from the first C, W E T Y U O P the
 // black ones between them.
 //
+// `labelOf` puts any text on any key (white or black), overriding `labels`.
+//
 // `lo` and `hi` should be white keys (a black key at an end would be cut off).
 
 import { useCallback, useEffect, useRef, type KeyboardEvent, type PointerEvent } from "react";
 import { isBlack, noteName, pitchClass } from "./notes";
 
-const WW = 24, WH = 120;                                   // white key, viewBox units
-const BW = 14, BH = 74;                                    // black key
+export const WW = 24, WH = 120;                            // white key, viewBox units
+export const BW = 14, BH = 74;                             // black key
 // Where a black key's centre sits, as a fraction of a white key from the
 // left edge of the white key to its right: C♯ and D♯ lean apart, F♯ G♯ A♯ spread.
 const BLACK_SHIFT: Record<number, number> = { 1: -0.1, 3: 0.1, 6: -0.12, 8: 0, 10: 0.12 };
@@ -23,8 +25,9 @@ const KEYMAP = "awsedftgyhujkolp;";                       // C D♭ D E♭ E F G
 
 export type KeyLabels = "none" | "c" | "white";
 
-/** White keys side by side; each black key straddles the line before the white key above it. */
-function layout(lo: number, hi: number) {
+/** White keys side by side; each black key straddles the line before the white key above it.
+ *  Exported so a widget can draw over the keys in the same viewBox units. */
+export function keyLayout(lo: number, hi: number) {
   const keys = Array.from({ length: hi - lo + 1 }, (_, i) => lo + i);
   const whites = keys.filter(m => !isBlack(m));
   const xOf = new Map(whites.map((m, i) => [m, i * WW]));
@@ -33,7 +36,7 @@ function layout(lo: number, hi: number) {
   return { whites, xOf, blacks, W: whites.length * WW };
 }
 
-export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", color = "#f43f5e", ariaLabel }: {
+export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", labelOf, color = "#f43f5e", ariaLabel }: {
   lo: number;
   hi: number;
   /** Keys drawn as pressed: the ones being played, or a chord to show. */
@@ -41,6 +44,8 @@ export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", col
   onDown: (m: number) => void;
   onUp: (m: number) => void;
   labels?: KeyLabels;
+  /** A label for any key (null for none); replaces `labels` when given. */
+  labelOf?: (m: number) => string | null;
   color?: string;
   ariaLabel?: string;
 }) {
@@ -50,7 +55,7 @@ export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", col
   const handlers = useRef({ onDown, onUp });
   useEffect(() => { handlers.current = { onDown, onUp }; });
 
-  const { whites, xOf, blacks, W } = layout(lo, hi);
+  const { whites, xOf, blacks, W } = keyLayout(lo, hi);
   const firstC = lo + ((12 - pitchClass(lo)) % 12);
 
   const keyAt = (x: number, y: number) => {
@@ -105,7 +110,7 @@ export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", col
       onKeyDown={keyDown} onKeyUp={keyUp} onBlur={blur}>
       {whites.map(m => {
         const on = pressed.has(m);
-        const label = labels === "white" || (labels === "c" && pitchClass(m) === 0) ? noteName(m) : null;
+        const label = labelOf ? labelOf(m) : labels === "white" || (labels === "c" && pitchClass(m) === 0) ? noteName(m) : null;
         return (
           <g key={m}>
             <rect data-m={m} x={xOf.get(m)} y={0} width={WW} height={WH} rx={2.5}
@@ -117,10 +122,19 @@ export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", col
           </g>
         );
       })}
-      {blacks.map(([m, x]) => (
-        <rect key={m} data-m={m} x={x} y={0} width={BW} height={BH} rx={2}
-          fill={pressed.has(m) ? color : "#1f2326"} stroke="#0d0f10" strokeWidth={0.8} />
-      ))}
+      {blacks.map(([m, x]) => {
+        const label = labelOf?.(m);
+        return (
+          <g key={m}>
+            <rect data-m={m} x={x} y={0} width={BW} height={BH} rx={2}
+              fill={pressed.has(m) ? color : "#1f2326"} stroke="#0d0f10" strokeWidth={0.8} />
+            {label && (
+              <text x={x + BW / 2} y={BH - 6} textAnchor="middle" fontSize={6.5}
+                fill="#e8e8e4" pointerEvents="none" fontFamily="var(--font-mono, monospace)">{label}</text>
+            )}
+          </g>
+        );
+      })}
     </svg>
   );
 }

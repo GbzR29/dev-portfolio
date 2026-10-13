@@ -10,10 +10,12 @@ const track = {
     durations: "Duração das notas",
     meter: "Compasso e fórmula de compasso",
     syncopation: "Síncope",
+    "note-names": "Nomes das notas e o teclado",
   } as Record<string, string>,
   sections: {
     Sound: "Som",
     Rhythm: "Ritmo",
+    Notes: "Notas",
   } as Record<string, string>,
 };
 

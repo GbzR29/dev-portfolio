@@ -10,9 +10,10 @@ import pulse from "./pulse";
 import durations from "./durations";
 import meter from "./meter";
 import syncopation from "./syncopation";
+import noteNames from "./note-names";
 
 const bundle: LessonText = {
-  strings: { ...whatIsSound, ...pitch, ...timbre, ...loudness, ...pulse, ...durations, ...meter, ...syncopation },
+  strings: { ...whatIsSound, ...pitch, ...timbre, ...loudness, ...pulse, ...durations, ...meter, ...syncopation, ...noteNames },
   titles: track.titles,
   sections: track.sections,
 };
