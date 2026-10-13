@@ -12,6 +12,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { DivisibilityFigure } from "@/components/lesson/figures/math/DivisibilityFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -219,6 +220,8 @@ export function DivisibilityContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mDiv_m5w", "coprime means both prime"), tx(t, "mDiv_m5r", "gcd = 1"), tx(t, "mDiv_m5", "8 and 15 share no factor, so they are coprime though neither is prime; 3 and 6 are not coprime")],
         ]}
       />
+
+      <MathPracticeFigure t={t} set="divisors" />
 
       <KeyIdeas t={t} id="mDiv" items={[
         "a = q·b + r with 0 ≤ r < b; b divides a (b | a) when r = 0.",

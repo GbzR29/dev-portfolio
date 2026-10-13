@@ -12,6 +12,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { NumberLineFigure } from "@/components/lesson/figures/math/NumberLineFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -242,6 +243,8 @@ export function NumberLineContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mNL_s6t", "Probability and statistics"), tx(t, "mNL_s6d", "describing data, counting, probability, Bayes, random variables and distributions, expectation and variance, sampling, regression, Markov chains")],
         ]}
       />
+
+      <MathPracticeFigure t={t} set="signed" />
 
       <KeyIdeas t={t} id="mNL" items={[
         "The number line places every real number: further right means greater, negatives mirror positives around 0.",

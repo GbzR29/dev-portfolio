@@ -13,6 +13,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { SequenceFigure } from "@/components/lesson/figures/math/SequenceFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -205,6 +206,8 @@ export function SequencesContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mSeq_m5w", "d = a₁ − a₂"), "d = a₂ − a₁", tx(t, "mSeq_m5", "later term minus earlier term; a decreasing sequence has d < 0")],
         ]}
       />
+
+      <MathPracticeFigure t={t} set="sequences" />
 
       <KeyIdeas t={t} id="mSeq" items={[
         "A sequence is an ordered list a₁, a₂, …; explicit rules jump to any term, recursive rules step from the previous one.",

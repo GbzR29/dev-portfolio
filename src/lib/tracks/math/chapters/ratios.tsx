@@ -12,6 +12,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { RatioFigure } from "@/components/lesson/figures/math/RatioFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -187,6 +188,8 @@ export function RatiosContent({ t }: { t: TrackTranslations }) {
       <Callout type="tip" t={t}>
         {tx(t, "mRat_tip", "When a formula mixes quantities, write the units next to the numbers and check that they cancel into the unit you expect. Metres per second times seconds must give metres; if you get metres per second squared, a time factor is missing or doubled.")}
       </Callout>
+
+      <MathPracticeFigure t={t} set="percent" />
 
       <KeyIdeas t={t} id="mRat" items={[
         "A ratio a : b compares by division; a is the share a/(a + b) of the total.",

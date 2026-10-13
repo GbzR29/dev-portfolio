@@ -12,6 +12,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ExpLogFigure } from "@/components/lesson/figures/math/ExpLogFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -142,6 +143,8 @@ export function ExpLogContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mExp_v8", "Halving problems"), "log₂ n", tx(t, "mExp_v8b", "how many times n can be halved before reaching 1: guessing a number from 1 to 1000 by \"higher or lower\" takes at most 10 guesses")],
         ]}
       />
+
+      <MathPracticeFigure t={t} set="explog" />
 
       <KeyIdeas t={t} id="mExp" items={[
         "Exponent rules come from counting copies: bᵐbⁿ = bᵐ⁺ⁿ, (bᵐ)ⁿ = bᵐⁿ, b⁰ = 1, b⁻ⁿ = 1/bⁿ.",

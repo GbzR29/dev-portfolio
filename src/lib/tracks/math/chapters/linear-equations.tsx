@@ -13,6 +13,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { BalanceFigure } from "@/components/lesson/figures/math/BalanceFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -215,6 +216,8 @@ export function LinearEquationsContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mLin_m6w", "no check"), tx(t, "mLin_m6r", "substitute into the original"), tx(t, "mLin_m6", "a check costs seconds and catches every slip, including in the translation from words")],
         ]}
       />
+
+      <MathPracticeFigure t={t} set="linear" />
 
       <KeyIdeas t={t} id="mLin" items={[
         "An equation is a claim that two expressions are equal; a solution is a value that makes it true.",

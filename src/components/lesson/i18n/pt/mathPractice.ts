@@ -1,0 +1,72 @@
+// PT text for the math practice rounds (figures/math/MathPracticeFigure.tsx and
+// the generators in figures/math/practice/). Keys match the tx() calls there;
+// English is the fallback in the code.
+
+const text: Record<string, string> = {
+  // ── MathPracticeFigure ──
+  figMP_check: "conferir",
+  figMP_next: "próxima caixa",
+  figMP_back: "apagar",
+  figMP_box: "sua resposta",
+  figMP_boxFor: "resposta para {x}",
+  figMP_simplify: "Valor certo! Agora escreva na forma irredutível.",
+  figMP_unread: "Digite um número como 12, -3, 2,5 ou 3/4.",
+  figMP_hint: "Frações como 3/4, negativos como -3. Enter confere.",
+  figMP_worked: "resolução",
+  figMP_l1: "fácil",
+  figMP_l2: "médio",
+  figMP_l3: "difícil",
+  figMP_mixed: "misturado",
+  figMP_note: "Cada exercício é criado na hora, então uma rodada nova nunca é igual. O computador escolhe a resposta primeiro e monta a pergunta em volta dela, trabalhando com frações exatas, por isso o gabarito está sempre certo. As respostas são lidas de forma exata: 0,75, 3/4 e 6/8 contam como o mesmo número (quando a forma irredutível é pedida, 6/8 só recebe um lembrete). Uma resposta errada mostra a resolução linha por linha, na ordem em que a lição faz; o número novo de cada linha aparece colorido.",
+
+  // ── Instructions ──
+  mpr_calc: "Calcule",
+  mpr_calcLowest: "Calcule, na forma irredutível",
+  mpr_pctOf: "Quanto é essa porcentagem do número?",
+  mpr_pctWhat: "O primeiro número é quantos por cento do segundo?",
+  mpr_pctChange: "Aplique a variação",
+  mpr_pctBack: "Ache o valor antes da variação",
+  mpr_solveX: "Resolva para x",
+  mpr_gcd: "Ache o máximo divisor comum",
+  mpr_lcm: "Ache o mínimo múltiplo comum",
+  mpr_powLaw: "Ache o expoente n",
+  mpr_toDec: "Escreva na base 10",
+  mpr_toBase: "Escreva na base indicada",
+  mpr_eval: "Calcule o valor da expressão",
+  mpr_collect: "Simplifique para a forma ax + b",
+  mpr_system: "Resolva o sistema",
+  mpr_roots: "Ache as duas soluções",
+  mpr_seqTerm: "Ache o termo pedido",
+  mpr_seqSum: "Some os primeiros termos",
+
+  // ── Titles and kinds ──
+  mpr_tSigned: "Pratique: números com sinal",
+  mpr_tOrder: "Pratique: ordem das operações",
+  mpr_tFractions: "Pratique: frações",
+  mpr_tPercent: "Pratique: porcentagem e proporção",
+  mpr_tDivisors: "Pratique: mdc e mmc",
+  mpr_tPowers: "Pratique: potências e raízes",
+  mpr_tBases: "Pratique: bases numéricas",
+  mpr_tExpressions: "Pratique: expressões",
+  mpr_tLinear: "Pratique: equações do 1º grau",
+  mpr_tSystems: "Pratique: sistemas de equações",
+  mpr_tQuadratics: "Pratique: equações do 2º grau",
+  mpr_tExpLog: "Pratique: expoentes e logaritmos",
+  mpr_tSequences: "Pratique: sequências",
+  mpr_kSigned: "números com sinal",
+  mpr_kOrder: "ordem das operações",
+  mpr_kFractions: "frações",
+  mpr_kPercent: "porcentagem",
+  mpr_kGcd: "mdc e mmc",
+  mpr_kPowers: "potências",
+  mpr_kBases: "bases",
+  mpr_kEval: "calcular o valor",
+  mpr_kCollect: "simplificar",
+  mpr_kLinear: "equações",
+  mpr_kSystem: "sistemas",
+  mpr_kQuadratic: "equações do 2º grau",
+  mpr_kExpLog: "expoentes e logs",
+  mpr_kSequences: "sequências",
+};
+
+export default text;

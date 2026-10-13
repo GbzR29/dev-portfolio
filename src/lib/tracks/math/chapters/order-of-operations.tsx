@@ -11,6 +11,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { ExpressionTreeFigure } from "@/components/lesson/figures/math/ExpressionTreeFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -163,6 +164,8 @@ export function OrderOfOperationsContent({ t }: { t: TrackTranslations }) {
       <Callout type="info" t={t}>
         {tx(t, "mOrd_viral", "The viral puzzles like 6 ÷ 2(1 + 2) are ambiguous on purpose. By the strict rules, 2(1 + 2) is 2 × (1 + 2), and left to right gives 6 ÷ 2 × 3 = 9. But many people, and some calculators, treat a multiplication written without a sign as binding tighter, giving 6 ÷ 6 = 1. The lesson is not which answer is right. It is that well-written mathematics never depends on that question: write 6 ÷ (2 × 3) or (6 ÷ 2) × 3.")}
       </Callout>
+
+      <MathPracticeFigure t={t} set="order" />
 
       <KeyIdeas t={t} id="mOrd" items={[
         "Parentheses, then powers, then × and ÷, then + and −.",

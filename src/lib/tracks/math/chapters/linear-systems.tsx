@@ -13,6 +13,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { LinesFigure } from "@/components/lesson/figures/math/LinesFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -192,6 +193,8 @@ export function LinearSystemsContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mSys_m5w", "using Cramer's rule when ad − bc = 0"), tx(t, "mSys_m5r", "compute ad − bc first"), tx(t, "mSys_m5", "it would divide by zero: the lines are parallel or the same, so there is no single answer")],
         ]}
       />
+
+      <MathPracticeFigure t={t} set="systems" />
 
       <KeyIdeas t={t} id="mSys" items={[
         "A system's solution satisfies every equation at once: for two lines, their crossing point.",

@@ -11,6 +11,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { BaseFigure } from "@/components/lesson/figures/math/BaseFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -181,6 +182,8 @@ export function BasesContent({ t }: { t: TrackTranslations }) {
           ["F₁₆ + 1 = G₁₆", "F₁₆ + 1 = 10₁₆", tx(t, "mBase_m6", "after the last digit, carry into the next place, as 9 + 1 = 10 in decimal")],
         ]}
       />
+
+      <MathPracticeFigure t={t} set="bases" />
 
       <KeyIdeas t={t} id="mBase" items={[
         "In base B each position is worth B times the one to its right; digits run 0 … B − 1.",

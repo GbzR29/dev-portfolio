@@ -14,6 +14,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { QuadraticFigure } from "@/components/lesson/figures/math/QuadraticFigure";
 import { CompleteSquareFigure } from "@/components/lesson/figures/math/CompleteSquareFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -227,6 +228,8 @@ export function QuadraticsContent({ t }: { t: TrackTranslations }) {
           [tx(t, "mQuad_m6w", "keeping the negative time"), tx(t, "mQuad_m6r", "choose the root that makes sense"), tx(t, "mQuad_m6", "both roots solve the equation; only some solve the problem")],
         ]}
       />
+
+      <MathPracticeFigure t={t} set="quadratics" />
 
       <KeyIdeas t={t} id="mQuad" items={[
         "y = ax² + bx + c is a parabola: a > 0 opens up, a < 0 down; c is the value at 0.",

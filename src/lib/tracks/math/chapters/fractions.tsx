@@ -14,6 +14,7 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { FractionFigure } from "@/components/lesson/figures/math/FractionFigure";
 import { DecimalFigure } from "@/components/lesson/figures/math/DecimalFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -246,6 +247,8 @@ export function FractionsContent({ t }: { t: TrackTranslations }) {
           ["2.96 → 2.10 (2 places)", "2.96 → 3.0 (1 place)", tx(t, "mFrac_m5", "rounding a 9 up carries into the digit before it, as 29 + 1 = 30")],
         ]}
       />
+
+      <MathPracticeFigure t={t} set="fractions" />
 
       <KeyIdeas t={t} id="mFrac" items={[
         "a/b means a parts of size 1/b, and also a ÷ b; the denominator is never 0.",

@@ -12,6 +12,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { AlgebraTilesFigure } from "@/components/lesson/figures/math/AlgebraTilesFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -236,6 +237,8 @@ export function ExpressionsContent({ t }: { t: TrackTranslations }) {
           ["−x² with x = −3 → 9", "−(−3)² = −9", tx(t, "mExpr_m6", "substitute in parentheses; the power comes before the minus")],
         ]}
       />
+
+      <MathPracticeFigure t={t} set="expressions" />
 
       <KeyIdeas t={t} id="mExpr" items={[
         "A variable is a number you have not named yet; it obeys every rule numbers obey.",

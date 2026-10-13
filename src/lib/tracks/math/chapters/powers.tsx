@@ -12,6 +12,7 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { PowerFigure } from "@/components/lesson/figures/math/PowerFigure";
+import { MathPracticeFigure } from "@/components/lesson/figures/math/MathPracticeFigure";
 
 const r = String.raw;
 
@@ -198,6 +199,8 @@ export function PowersContent({ t }: { t: TrackTranslations }) {
       <Callout type="tip" t={t}>
         {tx(t, "mPow_tip", "Squaring a sum or taking the root of a sum is where most algebra slips happen. When unsure, test with small numbers: if a formula says (3 + 4)² = 3² + 4², compute both sides, 49 and 25, and the mistake shows itself.")}
       </Callout>
+
+      <MathPracticeFigure t={t} set="powers" />
 
       <KeyIdeas t={t} id="mPow" items={[
         "bⁿ is n copies of b multiplied; area scales with the square of size, volume with the cube.",
