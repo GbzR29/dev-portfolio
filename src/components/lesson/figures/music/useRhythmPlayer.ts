@@ -1,7 +1,8 @@
 "use client";
 
 // ── Rhythm player ─────────────────────────────────────────────────────────────
-// Plays a list of notes measured in beats (start and length) on the piano,
+// Plays a list of notes measured in beats (start and length) on the piano
+// (or, with `instrument`, on the reader's instrument: piano or guitar),
 // optionally with a metronome click on every beat, at a given tempo. Every
 // sound is booked on the audio clock up front, so the rhythm is exact; `pos`
 // follows the heard position in beats (rounded to 1/8 beat) for lighting the
@@ -13,6 +14,8 @@ import { audio, startAudio, type Voice } from "@/components/lesson/kit/audio/con
 import { playPiano } from "@/components/lesson/kit/audio/piano";
 import { playClick } from "@/components/lesson/kit/audio/click";
 import { usePiano } from "@/components/lesson/kit/audio/usePiano";
+import { playNote } from "@/components/lesson/kit/audio/instrument";
+import { useNotes } from "@/components/lesson/kit/audio/useInstrument";
 
 /** One note (or a rest, midi null), in beats from the start. */
 export type RhythmEvent = { at: number; len: number; midi: number | null };
@@ -20,8 +23,9 @@ export type RhythmEvent = { at: number; len: number; midi: number | null };
 const LEAD = 0.15;                                           // s between the click on "play" and the first beat
 const GAP = 0.03;                                            // s cut from each note, so repeated notes are heard apart
 
-export function useRhythmPlayer(on: boolean) {
-  const piano = usePiano();
+export function useRhythmPlayer(on: boolean, { instrument = false } = {}) {
+  const pianoOnly = usePiano(), notes = useNotes();
+  const piano = instrument ? notes : pianoOnly;
   const [playing, setPlaying] = useState(false);
   const [pos, setPos] = useState<number | null>(null);
   const voices = useRef<Voice[]>([]);
@@ -47,7 +51,7 @@ export function useRhythmPlayer(on: boolean) {
     t0.current = start; spb.current = s;
     events.forEach(e => {
       if (e.midi === null) return;
-      const v = playPiano(e.midi, { when: start + e.at * s, velocity: 0.7 });
+      const v = (instrument ? playNote : playPiano)(e.midi, { when: start + e.at * s, velocity: 0.7 });
       if (!v) return;
       voices.current.push(v);
       timers.current.push(setTimeout(() => v.stop(), (LEAD + (e.at + e.len) * s - GAP) * 1000));
@@ -55,7 +59,7 @@ export function useRhythmPlayer(on: boolean) {
     if (clicks) ticks.current = Array.from({ length: Math.ceil(beats) }, (_, k) => playClick(start + k * s, { level: 0.3, accent: k % accentEvery === 0 }));
     timers.current.push(setTimeout(() => { setPlaying(false); setPos(null); }, (LEAD + beats * s + 0.3) * 1000));
     setPlaying(true);
-  }, [piano, stop]);
+  }, [piano, stop, instrument]);
 
   /** The heard position in beats (negative before the first beat). */
   const now = useCallback(() => {

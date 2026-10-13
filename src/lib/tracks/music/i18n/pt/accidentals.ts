@@ -120,6 +120,11 @@ const text: Record<string, string> = {
   musAcc_readTitle: "Lendo sustenidos e bemóis",
   musAcc_readBody: "Ler uma nota com sinal leva dois movimentos, e ajuda mantê-los separados. Primeiro a posição, exatamente como no capítulo 10: a letra e a oitava, como se o sinal não estivesse lá. Depois o sinal: uma tecla para a direita no sustenido, uma para a esquerda no bemol, contando todas as teclas, de qualquer cor. Com prática os dois movimentos viram um olhar só, mas no começo, devagar e na ordem é mais rápido que chutar.",
 
+  musAcc_writeTitle: "Escreva você mesmo",
+  musAcc_writeBody: "Ler é metade da notação; a outra metade é escrever. Tudo desde a seção Ritmo cabe agora numa pauta só: as figuras e os pontos do capítulo 6, os compassos e as fórmulas de compasso do capítulo 7, as linhas e as claves do capítulo 10 e os sinais deste capítulo. O editor abaixo confere as duas coisas que quem está começando mais erra. Primeiro, todo compasso tem de somar a sua fórmula de compasso: em 4/4, uma mínima, uma semínima e duas colcheias dão exatamente quatro tempos, e uma nota que passaria da barra de compasso precisa ser dividida em duas notas unidas por uma ligadura. Segundo, os sinais seguem a regra da barra de compasso, então o editor mostra quais notas soam sustenidas ou bemóis por causa de um sinal escrito antes.",
+  musAcc_writeTry: "Comece pela \"Ode à Alegria\" e mude-a: transforme a última nota do compasso 4 numa semibreve e veja a barra de compasso ficar vermelha, depois deixe o editor dividi-la. Ou limpe a pauta e escreva de ouvido uma música que você conhece, ouvindo cada nota enquanto a coloca.",
+  musAcc_goal5: "Escrever uma melodia sua na pauta, com figuras, pausas, ligaduras e sinais, e conferir que todo compasso soma certo.",
+
   musAcc_next: "O piano só consegue usar uma tecla para sol♯ e lá♭ porque os seus doze semitons foram feitos exatamente iguais, o que as quintas puras não conseguem. O próximo capítulo é esse acordo: por que a oitava tem doze notas e não dez ou dezenove, quão perto 2^(7/12) chega de 3/2, e do que o temperamento igual abriu mão, cent por cent.",
 
   musAcc_key0: "Teclas vizinhas estão a um semitom, dois semitons fazem um tom; entre as teclas brancas, só mi–fá e si–dó são semitons.",

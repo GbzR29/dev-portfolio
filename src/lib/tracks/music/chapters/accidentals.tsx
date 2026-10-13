@@ -18,6 +18,7 @@ import { MusicAccidentalFigure } from "@/components/lesson/figures/music/Acciden
 import { MusicEnharmonicFigure } from "@/components/lesson/figures/music/EnharmonicFigure";
 import { MusicBarRuleFigure } from "@/components/lesson/figures/music/BarRuleFigure";
 import { MusicAccidentalQuizFigure } from "@/components/lesson/figures/music/AccidentalQuizFigure";
+import { MusicScoreEditorFigure } from "@/components/lesson/figures/music/score/ScoreEditorFigure";
 import { accNumbers } from "../live/accidentals";
 
 const r = String.raw;
@@ -37,6 +38,7 @@ export function AccidentalsContent({ t }: { t: TrackTranslations }) {
         "Name every black key two ways, and find the other names of any key (E♯ = F, C♭ = B, and the double signs).",
         "Explain why G♯ and A♭ are one key on the piano but were not the same note in older tunings.",
         "Apply the rule of the bar line: a sign lasts for its line or space until the end of the bar.",
+        "Write a short melody of your own on the staff, with durations, rests, ties and signs, and check that every bar adds up.",
       ]} />
 
       <H2>{tx(t, "musAcc_stepsTitle", "Half steps and whole steps")}</H2>
@@ -204,6 +206,18 @@ export function AccidentalsContent({ t }: { t: TrackTranslations }) {
       </p>
 
       <MusicAccidentalQuizFigure t={t} />
+
+      <H2>{tx(t, "musAcc_writeTitle", "Write it yourself")}</H2>
+      <p>
+        {tx(t, "musAcc_writeBody",
+          "Reading is half of notation; the other half is writing. Everything since the Rhythm section now fits on one staff: the values and dots of chapter 6, the bars and time signatures of chapter 7, the lines and clefs of chapter 10 and the signs of this chapter. The editor below checks the two things beginners most often get wrong. First, every bar must add up to its time signature: in 4/4, a half note, a quarter and two eighths make exactly four beats, and a note that would run past the bar line has to be split into two notes joined by a tie. Second, the signs follow the rule of the bar line, so the editor shows which notes sound sharp or flat because of a sign written earlier.")}
+      </p>
+      <p>
+        {tx(t, "musAcc_writeTry",
+          "Start from \"Ode to Joy\" and change it: make the last note of bar 4 a whole note and watch the bar line turn red, then let the editor split it. Or clear the staff and write a tune you know by ear, listening to every note as you place it.")}
+      </p>
+
+      <MusicScoreEditorFigure t={t} />
 
       <p>
         {tx(t, "musAcc_next",
