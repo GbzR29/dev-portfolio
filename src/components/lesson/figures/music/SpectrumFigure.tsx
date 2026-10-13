@@ -85,7 +85,7 @@ export function MusicSpectrumFigure({ t }: { t?: TrackTranslations }) {
   return (
     <Figure title={tx(t, "figMus_spTitle", "Live spectrum: the harmonics inside a note")}
       head={<Choice value={inst} onChange={v => { voices.releaseAll(); setInst(v); if (v === "piano") piano.ensure().catch(() => {}); }} options={[
-        ["piano", tx(t, "figMus_piano", "🎹 piano")],
+        ["piano", tx(t, "figMus_piano", "piano")],
         ["sine", tx(t, "figMus_sine", "sine")],
         ["square", tx(t, "figMus_square", "square")],
         ["sawtooth", tx(t, "figMus_saw", "sawtooth")],

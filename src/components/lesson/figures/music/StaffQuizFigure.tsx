@@ -13,6 +13,7 @@ import { Practice, type StageApi } from "@/components/lesson/kit/practice/Practi
 import { ChoiceButtons } from "@/components/lesson/kit/practice/ChoiceButtons";
 import { CLEFS, Clef, StaffNote, dName, ledgers, midiOf, type ClefKind } from "./staff";
 import { LETTERS, solfa } from "./names";
+import { StaffArt } from "./practiceArt";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A practice round for reading the staff (kit/practice). A note appears on a
@@ -93,7 +94,7 @@ export function MusicStaffQuizFigure({ t }: { t?: TrackTranslations }) {
       controls={<VolumeSlider t={t} />}
       note={tx(t, "figMus_sqNote", "Don't count from the bottom line every time: learn a few landmarks and count from the nearest one. In treble clef, the G clef's curl marks G4 on line 2, and middle C hangs on one ledger line below. In bass clef, the F clef's dots mark F3 on line 4, and middle C sits one ledger line above. Then line to line is a skip of two letters, line to the next space a single step. A few minutes a day for a week works better than an hour once.")}>
       <div ref={vis.ref}>
-        <Practice<SQ> t={t} id={`music-read-staff-${pick}`} make={make} settings={settings} stage={stage}
+        <Practice<SQ> t={t} id={`music-read-staff-${pick}`} make={make} settings={settings} art={<StaffArt />} stage={stage}
           prompt={() => tx(t, "figMus_sqPrompt", "which note is this?")}
           solution={q => `${names[letter(q.d)]} (${dName(q.d)})`}
           onShow={() => setPicked(null)}

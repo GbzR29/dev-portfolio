@@ -72,7 +72,7 @@ export function MusicOctaveFigure({ t }: { t?: TrackTranslations }) {
     <Figure title={tx(t, "figMus_octTitle", "The same note in four octaves")}
       head={<Choice value={inst} onChange={v => { seq.stop(); setInst(v); }} options={[
         ["sine", tx(t, "figMus_sine", "sine")],
-        ["piano", tx(t, "figMus_piano", "🎹 piano")],
+        ["piano", tx(t, "figMus_piano", "piano")],
       ]} />}
       controls={<>
         <Row>

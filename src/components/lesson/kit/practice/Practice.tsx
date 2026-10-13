@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { bonk, chime } from "./sounds";
+import { Cup, Flame, Seal, StartArt } from "./art";
 
 export type PracticeQuestion = { key: string };
 export type Feedback = { ok: boolean } | null;
@@ -38,7 +39,7 @@ function saveRecord(id: string, r: Record_) {
   try { localStorage.setItem(`practice:${id}`, JSON.stringify(r)); } catch { /* storage blocked */ }
 }
 
-export function Practice<Q extends PracticeQuestion>({ t, id, length = 10, make, prompt, stage, solution, onAnswer, onShow, settings }: {
+export function Practice<Q extends PracticeQuestion>({ t, id, length = 10, make, prompt, stage, solution, onAnswer, onShow, settings, art }: {
   t?: TrackTranslations;
   /** Names the practice in storage: keep it stable, e.g. "music-find-note". */
   id: string;
@@ -57,6 +58,8 @@ export function Practice<Q extends PracticeQuestion>({ t, id, length = 10, make,
   onShow?: (q: Q) => void;
   /** Options shown on the start and summary cards. */
   settings?: ReactNode;
+  /** The start card's picture (a drawn SVG; a generic path-to-a-flag by default). */
+  art?: ReactNode;
 }) {
   const [phase, setPhase] = useState<Phase>("start");
   const [round, setRound] = useState<Round>("main");
@@ -140,7 +143,7 @@ export function Practice<Q extends PracticeQuestion>({ t, id, length = 10, make,
   if (phase === "start") {
     return (
       <div className="pr-root px-4 py-8 flex flex-col items-center text-center gap-4 min-h-[300px] justify-center">
-        <div className="text-[34px] leading-none" aria-hidden>🎯</div>
+        <div className="pr-pop">{art ?? <StartArt />}</div>
         <p className="text-[18px] font-semibold text-[var(--text-main)]">{tx(t, "figPr_startTitle", "A round of {n} questions").replace("{n}", String(length))}</p>
         <p className="text-[13px] text-[var(--text-muted)] max-w-sm">{tx(t, "figPr_startBody", "Answer as many as you can. Mistakes come back at the end for a review round.")}</p>
         {settings && <div className="flex flex-wrap gap-2 justify-center">{settings}</div>}
@@ -171,9 +174,9 @@ export function Practice<Q extends PracticeQuestion>({ t, id, length = 10, make,
               strokeDasharray={`${L * frac} ${L}`} transform="rotate(-90 50 50)" />
             <text x={50} y={57} textAnchor="middle" fontSize={22} fontWeight={700} fill="var(--text-main)">{score}/{total}</text>
           </svg>
-        ) : <div className="text-[40px] pr-pop" aria-hidden>✨</div>}
+        ) : <div className="pr-pop"><Seal /></div>}
         <p className="text-[18px] font-semibold text-[var(--text-main)]">{msg}</p>
-        {newBest && <p className="text-[13px] font-semibold pr-pop" style={{ color: "var(--pr-gold)" }}>🏆 {tx(t, "figPr_newBest", "new personal best!")}</p>}
+        {newBest && <p className="text-[13px] font-semibold pr-pop" style={{ color: "var(--pr-gold)" }}><Cup /> {tx(t, "figPr_newBest", "new personal best!")}</p>}
         <div className="flex flex-wrap gap-2 justify-center text-[12px] font-mono text-[var(--text-muted)]">
           {round === "main" && <span>{tx(t, "figPr_bestStreak", "best streak")}: {bestStreak}</span>}
           {round === "review" && <span>{tx(t, "figPr_tries", "answers")}: {total}</span>}
@@ -220,7 +223,7 @@ export function Practice<Q extends PracticeQuestion>({ t, id, length = 10, make,
         </div>
         <span key={streak} className={`text-[12px] font-mono min-w-[3.2rem] text-right ${streak >= 2 ? "pr-streak" : ""}`}
           style={{ color: streak >= 2 ? "var(--pr-gold)" : "var(--text-muted)" }}>
-          {streak >= 2 ? `🔥 ${streak}` : round === "review" ? tx(t, "figPr_reviewTag", "review") : `${i + 1}/${queue.length}`}
+          {streak >= 2 ? <><Flame /> {streak}</> : round === "review" ? tx(t, "figPr_reviewTag", "review") : `${i + 1}/${queue.length}`}
         </span>
       </div>
 
@@ -250,7 +253,7 @@ export function Practice<Q extends PracticeQuestion>({ t, id, length = 10, make,
           <p className="pr-pop text-[22px] font-bold" style={{ color: "var(--pr-ok)" }}>
             {[tx(t, "figPr_ok0", "Correct!"), tx(t, "figPr_ok1", "Nice!"), tx(t, "figPr_ok2", "Exactly!"), tx(t, "figPr_ok3", "Well done!")][(i + results.length) % 4]}
           </p>
-          {streak >= 3 && <p className="pr-pop text-[14px] font-semibold" style={{ color: "var(--pr-gold)" }}>🔥 {streak} {tx(t, "figPr_inARow", "in a row")}</p>}
+          {streak >= 3 && <p className="pr-pop text-[14px] font-semibold" style={{ color: "var(--pr-gold)" }}><Flame size={17} /> {streak} {tx(t, "figPr_inARow", "in a row")}</p>}
         </button>
       )}
 

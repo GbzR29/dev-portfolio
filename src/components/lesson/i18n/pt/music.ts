@@ -4,8 +4,8 @@
 const text: Record<string, string> = {
   // ── PianoFigure ──
   figMus_pianoTitle: "Um piano para tocar",
-  figMus_piano: "🎹 piano",
-  figMus_synth: "〰 sintetizador",
+  figMus_piano: "piano",
+  figMus_synth: "sintetizador",
   figMus_sine: "seno",
   figMus_triangle: "triângulo",
   figMus_square: "quadrada",
@@ -124,7 +124,7 @@ const text: Record<string, string> = {
   figMus_lsTitle: "Degraus iguais para o medidor, degraus iguais para o ouvido",
   figMus_lsLin: "+ mesma amplitude",
   figMus_lsDb: "× 2 (+6 dB)",
-  figMus_lsPiano: "🎹 ppp → ff",
+  figMus_lsPiano: "piano ppp → ff",
   figMus_lsPick: "toque os degraus, ou clique numa barra",
   figMus_lsAmp: "amplitude",
   figMus_lsStep: "desde o degrau anterior",

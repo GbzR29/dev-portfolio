@@ -74,7 +74,7 @@ export function MusicLoudnessStepsFigure({ t }: { t?: TrackTranslations }) {
       head={<Choice value={kind} onChange={change} options={[
         ["lin", tx(t, "figMus_lsLin", "+ same amplitude")],
         ["db", tx(t, "figMus_lsDb", "× 2 (+6 dB)")],
-        ["piano", tx(t, "figMus_lsPiano", "🎹 ppp → ff")],
+        ["piano", tx(t, "figMus_lsPiano", "piano ppp → ff")],
       ]} />}
       controls={<>
         <Row>

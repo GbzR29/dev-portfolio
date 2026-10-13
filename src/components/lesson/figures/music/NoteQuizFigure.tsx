@@ -13,7 +13,9 @@ import { PianoKeyboard } from "@/components/lesson/kit/audio/PianoKeyboard";
 import { useVoices } from "@/components/lesson/kit/audio/useVoices";
 import { Practice, type StageApi } from "@/components/lesson/kit/practice/Practice";
 import { ChoiceButtons } from "@/components/lesson/kit/practice/ChoiceButtons";
+import { Volume2 } from "lucide-react";
 import { LETTERS, letterIndex, solfa } from "./names";
+import { KeysArt } from "./practiceArt";
 
 // ── What this figure shows ────────────────────────────────────────────────────
 // A practice round for the white keys (kit/practice). Two kinds of question,
@@ -83,7 +85,7 @@ export function MusicNoteQuizFigure({ t }: { t?: TrackTranslations }) {
           <div className="pt-3">
             <ChoiceButtons options={names} right={letterIndex(q.m)} picked={mine?.i ?? null} feedback={feedback}
               onPick={i => { setGiven({ q: q.key, i }); submit(i === letterIndex(q.m)); }}
-              extra={<button type="button" onClick={() => sound(q.m)} className="h-11 px-3 rounded-xl border-2 border-[var(--border)] text-[15px]" aria-label={tx(t, "figMus_nqAgain", "hear it again")}>🔊</button>} />
+              extra={<button type="button" onClick={() => sound(q.m)} className="h-11 px-3 rounded-xl border-2 border-[var(--border)] text-[15px] flex items-center text-[var(--text-muted)] hover:text-[var(--text-main)]" aria-label={tx(t, "figMus_nqAgain", "hear it again")}><Volume2 size={18} /></button>} />
           </div>
         )}
       </div>
@@ -103,7 +105,7 @@ export function MusicNoteQuizFigure({ t }: { t?: TrackTranslations }) {
       controls={<VolumeSlider t={t} />}
       note={tx(t, "figMus_nqNote", "Use the landmarks: C just left of the two black keys, F just left of the three. From C count up D E; from F count up G A B. With octave numbers on, find the C first (C4 is the middle one here), then walk up to the letter. In \"key → name\", the lit key also sounds; try naming it from the picture first, and later with your eyes closed (the next chapters show why that is much harder).")}>
       <div ref={vis.ref}>
-        <Practice<NQ> t={t} id={`music-find-note-${mode}-${octaves ? 3 : 1}`} make={make} settings={settings}
+        <Practice<NQ> t={t} id={`music-find-note-${mode}-${octaves ? 3 : 1}`} make={make} settings={settings} art={<KeysArt />}
           prompt={q => q.kind === "find"
             ? <>{tx(t, "figMus_nqPress", "find")} <span style={{ color: C.amber }}>{nameOf(q.m, octaves)}</span></>
             : tx(t, "figMus_nqWhich", "which note is lit?")}

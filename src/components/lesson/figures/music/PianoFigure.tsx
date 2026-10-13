@@ -72,8 +72,8 @@ export function MusicPianoFigure({ t }: { t?: TrackTranslations }) {
     <Figure title={tx(t, "figMus_pianoTitle", "A playable piano")}
       head={<>
         <Choice value={inst} onChange={changeInst} options={[
-          ["piano", tx(t, "figMus_piano", "🎹 piano")],
-          ["synth", tx(t, "figMus_synth", "〰 synth")],
+          ["piano", tx(t, "figMus_piano", "piano")],
+          ["synth", tx(t, "figMus_synth", "synth")],
         ]} />
         {inst === "synth" && (
           <Choice value={wave} onChange={v => { voices.releaseAll(); setWave(v); }} options={[
