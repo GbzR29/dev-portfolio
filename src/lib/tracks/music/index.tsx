@@ -17,4 +17,5 @@ export const musicChapters: Chapter[] = [
   { id: "loudness", section: SOUND, title: "Loudness and the Envelope", minRead: 18, load: () => import("./chapters/loudness").then((m) => m.LoudnessContent) },
   { id: "pulse", section: RHYTHM, title: "Pulse and Tempo", minRead: 16, load: () => import("./chapters/pulse").then((m) => m.PulseContent) },
   { id: "durations", section: RHYTHM, title: "Note Durations", minRead: 17, load: () => import("./chapters/durations").then((m) => m.DurationsContent) },
+  { id: "meter", section: RHYTHM, title: "Meter and Time Signatures", minRead: 18, load: () => import("./chapters/meter").then((m) => m.MeterContent) },
 ];

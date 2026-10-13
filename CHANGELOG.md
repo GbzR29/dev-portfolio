@@ -12,6 +12,14 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ## Outubro de 2026
 
+### 2026-10-13
+
+- **Música, capítulo 7: Compasso e fórmula de compasso** (`music/chapters/meter.tsx`, prefixo `musMet_`), seção **Ritmo**. Métrica como padrão de batidas fortes e fracas; tempo forte e levare (a mão do regente); a grade métrica de Lerdahl e Jackendoff (por que a batida 3 do 4/4 é média); gestos de regência; barras de compasso, barra dupla e sinal de repetição; duração do compasso t = n × 60/BPM; fórmula de compasso N/d e a dedução de b = d/v (generaliza o 4/v do capítulo 6); tabela de compassos com exemplos; a história do C e do ¢; compassos simples e compostos (n = N/3, batida pontuada) e a tabela binário/ternário/quaternário; 3/4 contra 6/8 e a hemíola; compassos ímpares (aksak, Brubeck, "Money"), o experimento de Hannon e Trehub com bebês, e a dedução de c(n) = c(n−2) + c(n−3) (sequência de Padovan) para os agrupamentos em 2s e 3s; anacruse e hipermetro. Duas fórmulas ao vivo (`music/live/meter.ts`: fórmula de compasso + andamento → fração da semibreve, tipo, batidas e duração do compasso; contagem dos agrupamentos com a lista deles) e três widgets novos em `figures/music/`:
+  - `MeterFigure`: um compasso em ciclo com batidas forte/média/fraca (clique para mudar), predefinições sem acentos, 2/4, 3/4 e 4/4, batidas a mais ou a menos, cliques ou piano ("um-pá", "um-pá-pá");
+  - `HemiolaFigure`: as mesmas seis colcheias como 3/4 (barras em pares) e 6/8 (barras em trios), uma de cada vez, alternando a cada compasso ou as duas juntas (três contra dois);
+  - `OddMeterFigure`: um compasso de 4 a 12 colcheias com todos os agrupamentos em 2s e 3s listados, os famosos marcados (tresillo, Take Five, ratchenitsa, Blue Rondo, kopanitsa), tocados em ciclo.
+  - Novo módulo `usePulseLoop.ts` (ciclo de pulsos com cliques e notas de piano agendados no relógio de áudio, mudando ao vivo). Tradução PT completa.
+
 ### 2026-10-12
 
 - **Música, capítulo 6: Duração das notas** (`music/chapters/durations.tsx`, prefixo `musDur_`), seção **Ritmo**. Durações contadas em batidas (t = b × 60/BPM); a árvore das metades e a dedução de b = 4/v; nomes das figuras em PT, inglês americano e britânico, com a história da breve e da semibreve; partes do símbolo (cabeça, haste, colchetes, barras); pausas e a pausa que abre a Quinta de Beethoven; ponto de aumento com a dedução da série b(2 − 1/2ⁿ); ligaduras; contagem das subdivisões em voz alta; tercinas e quiálteras (b' = (m/n)·(4/v)); swing; staccato, legato e o intervalo entre ataques. Duas fórmulas ao vivo (`music/live/durations.ts`: figura + pontos + andamento → batidas e segundos, e n notas no tempo de m) e três widgets novos em `figures/music/`:
