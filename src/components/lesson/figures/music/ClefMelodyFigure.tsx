@@ -7,8 +7,8 @@ import { C, Choice, Figure, Readout, Row, T, useVisible } from "@/components/les
 import { startAudio } from "@/components/lesson/kit/audio/context";
 import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
 import { SoundButton } from "@/components/lesson/kit/audio/SoundButton";
-import { playPiano } from "@/components/lesson/kit/audio/piano";
-import { usePiano } from "@/components/lesson/kit/audio/usePiano";
+import { playNote } from "@/components/lesson/kit/audio/instrument";
+import { loadStatus, useNotes } from "@/components/lesson/kit/audio/useInstrument";
 import { useSequence } from "@/components/lesson/kit/audio/useSequence";
 import { CLEFS, Clef, StaffNote, dName, ledgers, midiOf, type ClefKind } from "./staff";
 
@@ -26,7 +26,7 @@ const SHAPE = [0, 0, 1, 2, 2, 1, 0, -1, -2, -2, -1, 0, 0, -1, -1];   // steps ab
 
 export function MusicClefMelodyFigure({ t }: { t?: TrackTranslations }) {
   const [clef, setClef] = useState<ClefKind>("treble");
-  const { load, ensure } = usePiano();
+  const { inst, load, ensure } = useNotes();
   const vis = useVisible<HTMLDivElement>();
   const seq = useSequence(vis.on);
 
@@ -40,7 +40,7 @@ export function MusicClefMelodyFigure({ t }: { t?: TrackTranslations }) {
     startAudio();
     if (seq.playing) return seq.stop();
     try { await ensure(); } catch { return; }
-    seq.play(ds.length, i => playPiano(midiOf(ds[i]), { velocity: 0.65 }), { gap: 0.38, hold: 0.36 });
+    seq.play(ds.length, i => playNote(midiOf(ds[i]), { velocity: 0.65 }), { gap: 0.38, hold: 0.36 });
   };
   const lit = seq.step;
   // the steps that differ from the treble version, where the tune is right
@@ -81,7 +81,7 @@ export function MusicClefMelodyFigure({ t }: { t?: TrackTranslations }) {
         </svg>
         <div className="px-3 pb-3 flex items-center gap-3">
           <SoundButton on={seq.playing} onClick={play}>{seq.playing ? tx(t, "figMus_stop", "stop") : tx(t, "figMus_cmPlay", "play what is written")}</SoundButton>
-          {load === "loading" && <span className="text-[11px] font-mono text-[var(--text-muted)]">{tx(t, "figMus_loading", "loading the piano (1.3 MB)…")}</span>}
+          {load === "loading" && <span className="text-[11px] font-mono text-[var(--text-muted)]">{loadStatus(t, inst, load)}</span>}
         </div>
       </div>
     </Figure>

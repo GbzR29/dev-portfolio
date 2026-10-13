@@ -16,6 +16,8 @@ import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MusicKeyNamesFigure } from "@/components/lesson/figures/music/KeyNamesFigure";
 import { MusicSevenOfTwelveFigure } from "@/components/lesson/figures/music/SevenOfTwelveFigure";
 import { MusicNoteQuizFigure } from "@/components/lesson/figures/music/NoteQuizFigure";
+import { InstrumentPicker } from "@/components/lesson/figures/music/InstrumentPicker";
+import { ForInstrument } from "@/components/lesson/kit/audio/useInstrument";
 import { keyNumbers } from "../live/note-names";
 
 const r = String.raw;
@@ -35,6 +37,8 @@ export function NoteNamesContent({ t }: { t: TrackTranslations }) {
         "Turn a key number into a name with its octave (C4, A4), and back.",
         "Count the 88 keys of a piano: how many white, how many black.",
       ]} />
+
+      <InstrumentPicker t={t} />
 
       <H2>{tx(t, "musNam_sevenTitle", "Seven names, over and over")}</H2>
       <p>
@@ -73,6 +77,22 @@ export function NoteNamesContent({ t }: { t: TrackTranslations }) {
         {tx(t, "musNam_findBody",
           "Look at the black keys, not the white ones. They come in groups: two, a gap, three, a gap, two, three, all the way up. Those groups are the map. The white key just left of each group of two is a C (do); the white key just left of each group of three is an F (fa). From those two landmarks you can name any white key by counting: C D E across the group of two, F G A B across the group of three. Notice also where there is no black key: between E and F, and between B and C. Those two pairs of white keys sit right next to each other, and the next section shows why.")}
       </p>
+
+      <ForInstrument only="guitar">
+        <H3>{tx(t, "musNam_gtTitle", "On the guitar neck")}</H3>
+        <p>
+          {tx(t, "musNam_gtOpen",
+            "A guitar has six strings. Played open, with no fret pressed, they give from the thickest to the thinnest: E2, A2, D3, G3, B3, E4. Learn these six names first. They are your landmarks, the way C and F are on the keyboard. A sentence helps to remember them: \"Eddie Ate Dynamite, Good Bye Eddie\".")}
+        </p>
+        <p>
+          {tx(t, "musNam_gtFrets",
+            "Pressing a string just behind a fret shortens the part that vibrates, and each fret raises the note by one half step: fret 1 is one half step up, fret 2 a whole step, fret 12 a whole octave (the string is exactly halved there, chapter 2's ratio 2:1). So one string is a keyboard laid out in a line, with no black or white: every fret is simply the next key. The natural notes follow the same pattern as on the piano: two frets apart, except E–F and B–C, which are only one fret apart. Along the A string: A open, B at fret 2, C at 3, D at 5, E at 7, F at 8, G at 10, and A again at 12.")}
+        </p>
+        <p>
+          {tx(t, "musNam_gtSame",
+            "Unlike on the piano, the same note lives in several places. Fret 5 of the low E string is A2, the same note as the open A string. Fret 5 of the A string gives the open D, and fret 5 of the D string the open G. Then the pattern breaks once: fret 4 of the G string gives the open B. After that, fret 5 of the B string gives the high E again. The reason is the tuning itself. Neighbouring strings are 5 half steps apart, except G and B, which are 4 apart. Guitarists use exactly this to tune by ear. In the widget below, the note you play is filled and every other place where it lives gets a ring.")}
+        </p>
+      </ForInstrument>
 
       <MusicKeyNamesFigure t={t} />
 

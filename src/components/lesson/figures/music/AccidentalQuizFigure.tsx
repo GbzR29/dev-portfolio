@@ -7,9 +7,9 @@ import { Choice, C, Figure, T, useVisible } from "@/components/lesson/kit/figure
 import { startAudio } from "@/components/lesson/kit/audio/context";
 import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
 import { isBlack } from "@/components/lesson/kit/audio/notes";
-import { pianoReady, playPiano } from "@/components/lesson/kit/audio/piano";
-import { usePiano } from "@/components/lesson/kit/audio/usePiano";
-import { PianoKeyboard } from "@/components/lesson/kit/audio/PianoKeyboard";
+import { notesReady, playNote } from "@/components/lesson/kit/audio/instrument";
+import { InstrumentChoice, useNotes } from "@/components/lesson/kit/audio/useInstrument";
+import { NoteSurface } from "@/components/lesson/kit/audio/NoteSurface";
 import { useVoices } from "@/components/lesson/kit/audio/useVoices";
 import { Practice, type StageApi } from "@/components/lesson/kit/practice/Practice";
 import { CLEFS, Clef, StaffNote, ledgers } from "./staff";
@@ -34,14 +34,15 @@ export function MusicAccidentalQuizFigure({ t }: { t?: TrackTranslations }) {
   const [level, setLevel] = useState<Level>("black");
   const [given, setGiven] = useState<{ q: string; m: number } | null>(null);
   const [pressed, setPressed] = useState<ReadonlySet<number>>(new Set());
-  const { ensure } = usePiano();
+  const { inst, ensure } = useNotes();
   const vis = useVisible<HTMLDivElement>();
   const voices = useVoices(vis.on);
+  const guitar = inst === "guitar";
 
   const sound = useCallback((m: number, delay = 0) => {
     startAudio();
-    const go = () => setTimeout(() => { voices.start(m, playPiano(m)); setTimeout(() => voices.release(m), 900); }, delay * 1000);
-    if (pianoReady()) go(); else ensure().then(go, () => {});
+    const go = () => setTimeout(() => { voices.start(m, playNote(m)); setTimeout(() => voices.release(m), 900); }, delay * 1000);
+    if (notesReady()) go(); else ensure().then(go, () => {});
   }, [ensure, voices]);
 
   /** A note from C4 to F5 with a sign the level allows. */
@@ -78,9 +79,10 @@ export function MusicAccidentalQuizFigure({ t }: { t?: TrackTranslations }) {
           {feedback && <T x={XN + 16} y={yOf(q.d) + 4} size={12} bold color={tone}>{spelledName(q)}</T>}
         </svg>
         <div className="pt-2">
-          <PianoKeyboard lo={LO} hi={HI} pressed={pressed} onDown={down}
+          <NoteSurface t={t} lo={LO} hi={HI} pressed={pressed} onDown={down}
             onUp={m => setPressed(s => { const n = new Set(s); n.delete(m); return n; })} labels="c" color="#94a3b8" keyColor={keyColor}
-            ariaLabel={tx(t, "figMus_aqAria", "piano keyboard for the sharps and flats game")} />
+            ariaLabel={tx(t, "figMus_aqAria", "piano keyboard for the sharps and flats game")}
+            guitarAriaLabel={tx(t, "figMus_aqNeckAria", "guitar neck for the sharps and flats game")} />
         </div>
       </div>
     );
@@ -96,10 +98,11 @@ export function MusicAccidentalQuizFigure({ t }: { t?: TrackTranslations }) {
 
   return (
     <Figure title={tx(t, "figMus_aqTitle", "Practice: play what you read")}
+      head={<InstrumentChoice t={t} onChange={() => voices.releaseAll()} />}
       controls={<VolumeSlider t={t} />}
-      note={tx(t, "figMus_aqNote", "Read in two moves. First the letter and its octave, as in the last chapter, ignoring the sign: find that white key. Then the sign: a sharp moves one key to the right, a flat one key to the left, counting black and white keys alike. On the second level some moves land on a white key (E♯ is F, C♭ is B); on the third, the double signs move two keys.")}>
+      note={guitar ? tx(t, "figMus_aqNoteGuitar", "Read in two moves. First the letter and its octave, ignoring the sign: find that note on the neck (any place of it counts). Then the sign: a sharp is one fret towards the body, a flat one fret towards the nut, on the same string. On the second level some moves land on a natural note (E♯ is F, C♭ is B); on the third, the double signs move two frets. The staff is read at the piano's pitch here, not an octave up as in guitar music (chapter 10), so every note sits where the keyboard plays it.") : tx(t, "figMus_aqNote","Read in two moves. First the letter and its octave, as in the last chapter, ignoring the sign: find that white key. Then the sign: a sharp moves one key to the right, a flat one key to the left, counting black and white keys alike. On the second level some moves land on a white key (E♯ is F, C♭ is B); on the third, the double signs move two keys.")}>
       <div ref={vis.ref}>
-        <Practice<AQ> t={t} id={`music-read-accidentals-${level}`} make={make} settings={settings} art={<SharpArt />} stage={stage}
+        <Practice<AQ> t={t} id={`music-read-accidentals-${level}${guitar ? "-guitar" : ""}`} make={make} settings={settings} art={<SharpArt />} stage={stage}
           prompt={() => tx(t, "figMus_aqPrompt", "play this note")}
           solution={q => `${spelledName(q)} (${spelledSolfa(t, q)})`}
           onShow={() => setGiven(null)}

@@ -16,6 +16,8 @@ import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MusicStaffFigure } from "@/components/lesson/figures/music/StaffFigure";
 import { MusicClefMelodyFigure } from "@/components/lesson/figures/music/ClefMelodyFigure";
 import { MusicStaffQuizFigure } from "@/components/lesson/figures/music/StaffQuizFigure";
+import { MusicTabFigure } from "@/components/lesson/figures/music/TabFigure";
+import { ForInstrument } from "@/components/lesson/kit/audio/useInstrument";
 import { staffNumbers } from "../live/staff";
 
 const r = String.raw;
@@ -148,6 +150,37 @@ export function StaffContent({ t }: { t: TrackTranslations }) {
       </p>
 
       <MusicStaffQuizFigure t={t} />
+
+      <ForInstrument only="guitar">
+        <H2>{tx(t, "musStf_gtTitle", "Guitar music: the staff and the tablature")}</H2>
+        <p>
+          {tx(t, "musStf_gtOctave",
+            "Guitar music is written in the treble clef, but one octave higher than it sounds. The reason is the guitar's range. Its lowest note, the open low E string, is E2: on the treble staff that would hang seven ledger lines below the bottom line, and on the bass staff the high notes would fly off the top. Written an octave up, the open low E becomes E3, three ledger lines below the treble staff, and almost everything a guitar plays fits on one staff with a few ledger lines. A small 8 under the clef says so. Without it, guitarists simply know.")}
+        </p>
+        <Equation label={tx(t, "musStf_gtEqLabel", "Where a guitar note is written")}
+          where={[
+            [r`d_{\text{${tx(t, "musStf_gtSounding", "sounding")}}}`, tx(t, "musStf_gtWd", "the note the guitar actually plays, as this chapter's white-key number d = 7·octave + letter (C4 = 28)")],
+            [r`d_{\text{${tx(t, "musStf_gtWritten", "written")}}}`, tx(t, "musStf_gtWw", "the line or space where it is drawn on the treble staff")],
+            [r`7`, tx(t, "musStf_gtW7", "one octave: seven letters, C D E F G A B, so seven lines and spaces")],
+          ]}
+          words={tx(t, "musStf_gtWords", "Draw every note seven steps (one octave) higher than it sounds.")}>
+          {r`d_{\text{${tx(t, "musStf_gtWritten", "written")}}} = d_{\text{${tx(t, "musStf_gtSounding", "sounding")}}} + 7`}
+        </Equation>
+        <p>
+          {tx(t, "musStf_gtExample",
+            "So the open high E string, which sounds E4 (d = 30), is written E5 (d = 37), the space at the top of the staff. The open low E, sounding E2 (d = 16), is written E3 (d = 23). The note does not change, only where it is drawn.")}
+        </p>
+        <p>
+          {tx(t, "musStf_gtTab",
+            "The staff tells you which note to play, but on a guitar most notes can be played in two or three places. Tablature, or tab, tells the hand where. It has six lines, one for each string, with the thin high E on top, as in the widgets of this track. A number on a line is the fret to press on that string; 0 means the string is played open. Tab is older than the staff for plucked instruments: lute players in the 1500s already read it.")}
+        </p>
+        <p>
+          {tx(t, "musStf_gtBoth",
+            "Each one has a blind spot. Tab says nothing about the note's name, and plain tab usually says nothing about rhythm, so you cannot sing a melody from it. The staff says nothing about strings and frets. That is why guitar books print the two together, one note above the other: the staff for what and how long, the tab for where. The tab also records the player's choice of place, which changes how easy a passage is and even how it sounds, since the same note on a thicker string is a little darker.")}
+        </p>
+
+        <MusicTabFigure t={t} />
+      </ForInstrument>
 
       <p>
         {tx(t, "musStf_next",

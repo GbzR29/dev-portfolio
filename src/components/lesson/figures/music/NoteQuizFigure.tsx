@@ -7,9 +7,9 @@ import { Btn, C, Choice, Figure, useVisible } from "@/components/lesson/kit/figu
 import { startAudio } from "@/components/lesson/kit/audio/context";
 import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
 import { isBlack, octave } from "@/components/lesson/kit/audio/notes";
-import { pianoReady, playPiano } from "@/components/lesson/kit/audio/piano";
-import { usePiano } from "@/components/lesson/kit/audio/usePiano";
-import { PianoKeyboard } from "@/components/lesson/kit/audio/PianoKeyboard";
+import { notesReady, playNote } from "@/components/lesson/kit/audio/instrument";
+import { InstrumentChoice, useNotes } from "@/components/lesson/kit/audio/useInstrument";
+import { NoteSurface } from "@/components/lesson/kit/audio/NoteSurface";
 import { useVoices } from "@/components/lesson/kit/audio/useVoices";
 import { Practice, type StageApi } from "@/components/lesson/kit/practice/Practice";
 import { ChoiceButtons } from "@/components/lesson/kit/practice/ChoiceButtons";
@@ -24,6 +24,9 @@ import { KeysArt } from "./practiceArt";
 // pick its name). Letters or solfège. A wrong answer paints the right key
 // green and the pressed one red, plays the right one, and comes back in the
 // review round. Only white keys: black keys are named two chapters later.
+// On the guitar the same game runs on the neck (any place of the note
+// counts); "3 octaves" becomes the neck's own range, E2 to E5, and the best
+// score is kept apart from the piano's.
 
 type Kind = "find" | "name";
 type Mode = Kind | "mixed";
@@ -31,6 +34,7 @@ type Style = "letter" | "solfa";
 type NQ = { key: string; kind: Kind; m: number };
 
 const ONE: [number, number] = [60, 71], THREE: [number, number] = [48, 83];   // C4–B4, C3–B5
+const NECK: [number, number] = [40, 76];                                       // E2–E5, open low E to fret 12
 const whitesIn = ([lo, hi]: [number, number]) => Array.from({ length: hi - lo + 1 }, (_, i) => lo + i).filter(m => !isBlack(m));
 const OK = "#22c55e", BAD = "#ef4444";                      // the practice kit's right / wrong colours
 
@@ -40,19 +44,20 @@ export function MusicNoteQuizFigure({ t }: { t?: TrackTranslations }) {
   const [octaves, setOctaves] = useState(false);
   const [given, setGiven] = useState<{ q: string; m?: number; i?: number } | null>(null);
   const [pressed, setPressed] = useState<ReadonlySet<number>>(new Set());
-  const { ensure } = usePiano();
+  const { inst, ensure } = useNotes();
   const vis = useVisible<HTMLDivElement>();
   const voices = useVoices(vis.on);
   const held = useRef(new Set<number>());
 
   const syl = solfa(t), names = style === "letter" ? LETTERS : syl;
-  const range = octaves ? THREE : ONE;
+  const guitar = inst === "guitar";
+  const range = octaves ? (guitar ? NECK : THREE) : ONE;
   const nameOf = (m: number, withOct: boolean) => names[letterIndex(m)] + (withOct ? octave(m) : "");
 
   const sound = useCallback((m: number, delay = 0) => {
     startAudio();
-    const go = () => setTimeout(() => { voices.start(m, playPiano(m)); setTimeout(() => voices.release(m), 900); }, delay * 1000);
-    if (pianoReady()) go(); else ensure().then(go, () => {});
+    const go = () => setTimeout(() => { voices.start(m, playNote(m)); setTimeout(() => voices.release(m), 900); }, delay * 1000);
+    if (notesReady()) go(); else ensure().then(go, () => {});
   }, [ensure, voices]);
 
   const make = (avoid: string | null): NQ => {
@@ -78,9 +83,10 @@ export function MusicNoteQuizFigure({ t }: { t?: TrackTranslations }) {
     const up = (m: number) => { held.current.delete(m); setPressed(s => { const n = new Set(s); n.delete(m); return n; }); };
     return (
       <div className="px-3 pb-4">
-        <PianoKeyboard lo={range[0]} hi={range[1]} pressed={q.kind === "name" ? new Set([q.m, ...pressed]) : pressed}
+        <NoteSurface t={t} lo={range[0]} hi={range[1]} pressed={q.kind === "name" ? new Set([q.m, ...pressed]) : pressed}
           onDown={down} onUp={up} labels="none" color={q.kind === "name" ? C.amber : "#94a3b8"} keyColor={keyColor}
-          ariaLabel={tx(t, "figMus_nqAria", "piano keyboard for the note game")} />
+          ariaLabel={tx(t, "figMus_nqAria", "piano keyboard for the note game")}
+          guitarAriaLabel={tx(t, "figMus_nqNeckAria", "guitar neck for the note game")} />
         {q.kind === "name" && (
           <div className="pt-3">
             <ChoiceButtons options={names} right={letterIndex(q.m)} picked={mine?.i ?? null} feedback={feedback}
@@ -97,15 +103,20 @@ export function MusicNoteQuizFigure({ t }: { t?: TrackTranslations }) {
       ["mixed", tx(t, "figMus_nqMixed", "mixed")], ["find", tx(t, "figMus_nqFind", "name → key")], ["name", tx(t, "figMus_nqName", "key → name")],
     ]} />
     <Choice value={style} onChange={setStyle} options={[["letter", tx(t, "figMus_knLetter", "letters")], ["solfa", tx(t, "figMus_knSolfa", "do re mi")]]} />
-    <Btn active={octaves} onClick={() => setOctaves(o => !o)}>{tx(t, "figMus_nqOctaves", "with octave numbers (3 octaves)")}</Btn>
+    <Btn active={octaves} onClick={() => setOctaves(o => !o)}>{guitar
+      ? tx(t, "figMus_nqOctavesNeck", "with octave numbers (E2 to E5)")
+      : tx(t, "figMus_nqOctaves", "with octave numbers (3 octaves)")}</Btn>
   </>;
 
   return (
     <Figure title={tx(t, "figMus_nqTitle", "Practice: find the note")}
+      head={<InstrumentChoice t={t} onChange={() => voices.releaseAll()} />}
       controls={<VolumeSlider t={t} />}
-      note={tx(t, "figMus_nqNote", "Use the landmarks: C just left of the two black keys, F just left of the three. From C count up D E; from F count up G A B. With octave numbers on, find the C first (C4 is the middle one here), then walk up to the letter. In \"key → name\", the lit key also sounds; try naming it from the picture first, and later with your eyes closed (the next chapters show why that is much harder).")}>
+      note={guitar
+        ? tx(t, "figMus_nqNoteGuitar", "Use the open strings as landmarks: E A D G B E from the thick string to the thin one. Every fret is one half step, and only E–F and B–C are half steps between letters; every other pair of letters is two frets apart. So from an open A: B is fret 2, C fret 3, D fret 5. Any place of the right note counts. With octave numbers on, remember the low E string is E2, the high one E4, and fret 12 is the open string an octave up.")
+        : tx(t, "figMus_nqNote", "Use the landmarks: C just left of the two black keys, F just left of the three. From C count up D E; from F count up G A B. With octave numbers on, find the C first (C4 is the middle one here), then walk up to the letter. In \"key → name\", the lit key also sounds; try naming it from the picture first, and later with your eyes closed (the next chapters show why that is much harder).")}>
       <div ref={vis.ref}>
-        <Practice<NQ> t={t} id={`music-find-note-${mode}-${octaves ? 3 : 1}`} make={make} settings={settings} art={<KeysArt />}
+        <Practice<NQ> t={t} id={`music-find-note-${mode}-${octaves ? 3 : 1}${guitar ? "-guitar" : ""}`} make={make} settings={settings} art={<KeysArt />}
           prompt={q => q.kind === "find"
             ? <>{tx(t, "figMus_nqPress", "find")} <span style={{ color: C.amber }}>{nameOf(q.m, octaves)}</span></>
             : tx(t, "figMus_nqWhich", "which note is lit?")}

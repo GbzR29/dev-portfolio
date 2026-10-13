@@ -7,9 +7,9 @@ import { Btn, C, Figure, Readout, Row, T, useVisible } from "@/components/lesson
 import { startAudio } from "@/components/lesson/kit/audio/context";
 import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
 import { pitchClass } from "@/components/lesson/kit/audio/notes";
-import { pianoReady, playPiano } from "@/components/lesson/kit/audio/piano";
-import { usePiano } from "@/components/lesson/kit/audio/usePiano";
-import { PianoKeyboard } from "@/components/lesson/kit/audio/PianoKeyboard";
+import { notesReady, playNote } from "@/components/lesson/kit/audio/instrument";
+import { InstrumentChoice, loadStatus, useNotes } from "@/components/lesson/kit/audio/useInstrument";
+import { NoteSurface } from "@/components/lesson/kit/audio/NoteSurface";
 import { useVoices } from "@/components/lesson/kit/audio/useVoices";
 import { PHONE, useMediaQuery } from "@/components/lesson/kit/media";
 import { CLEFS, Clef, StaffNote, ledgers } from "./staff";
@@ -22,6 +22,8 @@ import { AccidentalGlyph, accOffset, keyOf, spelledName, spelledSolfa, spellings
 // keys of the octave lists every spelling of each, coloured by its sign: with
 // sharps and flats only that is 21 names, with the double signs 35, and only
 // G♯/A♭ (the middle key of the group of three) has two instead of three.
+// On the guitar any place on the neck can be pressed; it sounds where it is
+// and is named in the octave of the staff (C4–B4).
 
 const W = 600, STEP = 6, X_CLEF = 46, PAD = 20, LO = 60, HI = 71;
 const { lines, anchor } = CLEFS.treble;
@@ -35,17 +37,17 @@ export function MusicEnharmonicFigure({ t }: { t?: TrackTranslations }) {
   const [m, setM] = useState(68);                           // G♯4 / A♭4
   const [doubles, setDoubles] = useState(true);
   const [pressed, setPressed] = useState<ReadonlySet<number>>(new Set());
-  const { load, ensure } = usePiano();
+  const { inst, load, ensure } = useNotes();
   const vis = useVisible<HTMLDivElement>();
   const voices = useVoices(vis.on);
   const perRow = useMediaQuery(PHONE) ? 6 : 12;
 
   const sound = useCallback((k: number) => {
     startAudio();
-    const go = () => { voices.start(k, playPiano(k)); setTimeout(() => voices.release(k), 900); };
-    if (pianoReady()) go(); else ensure().then(go, () => {});
+    const go = () => { voices.start(k, playNote(k)); setTimeout(() => voices.release(k), 900); };
+    if (notesReady()) go(); else ensure().then(go, () => {});
   }, [ensure, voices]);
-  const pick = (k: number) => { setM(k); sound(k); };
+  const pick = (k: number) => { setM(LO + pitchClass(k)); sound(k); };
 
   const max = doubles ? 2 : 1;
   const names = spellings(m, max);
@@ -55,7 +57,10 @@ export function MusicEnharmonicFigure({ t }: { t?: TrackTranslations }) {
 
   return (
     <Figure title={tx(t, "figMus_ehTitle", "One key, many names")}
-      head={<Btn active={doubles} onClick={() => setDoubles(v => !v)}>{tx(t, "figMus_ehDoubles", "with double sharps and flats")}</Btn>}
+      head={<>
+        <InstrumentChoice t={t} onChange={() => voices.releaseAll()} />
+        <Btn active={doubles} onClick={() => setDoubles(v => !v)}>{tx(t, "figMus_ehDoubles", "with double sharps and flats")}</Btn>
+      </>}
       controls={<>
         <Row>
           <Readout color={C.amber}>{names.map(s => spelledName(s)).join(" = ")}</Readout>
@@ -100,11 +105,12 @@ export function MusicEnharmonicFigure({ t }: { t?: TrackTranslations }) {
           })}
         </svg>
         <div className="px-3 pb-3 pt-2">
-          <PianoKeyboard lo={LO} hi={HI} pressed={new Set([m, ...pressed])} color={C.amber}
+          <NoteSurface t={t} lo={LO} hi={HI} pressed={new Set([m, ...pressed])} color={C.amber}
             onDown={k => { setPressed(s => new Set(s).add(k)); pick(k); }}
             onUp={k => setPressed(s => { const n = new Set(s); n.delete(k); return n; })} labels="none"
-            ariaLabel={tx(t, "figMus_ehAria", "one octave of piano keys: press one to see all its names")} />
-          {load === "loading" && <span className="text-[11px] font-mono text-[var(--text-muted)]">{tx(t, "figMus_loading", "loading the piano (1.3 MB)…")}</span>}
+            ariaLabel={tx(t, "figMus_ehAria", "one octave of piano keys: press one to see all its names")}
+            guitarAriaLabel={tx(t, "figMus_ehNeckAria", "guitar neck: press a note to see all its names")} />
+          {load === "loading" && <span className="text-[11px] font-mono text-[var(--text-muted)]">{loadStatus(t, inst, load)}</span>}
         </div>
       </div>
     </Figure>

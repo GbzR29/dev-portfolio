@@ -7,9 +7,10 @@ import { Btn, C, Choice, Figure, Readout, Row, T, useVisible } from "@/component
 import { startAudio } from "@/components/lesson/kit/audio/context";
 import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
 import { isBlack, midiToFreq } from "@/components/lesson/kit/audio/notes";
-import { pianoReady, playPiano } from "@/components/lesson/kit/audio/piano";
-import { usePiano } from "@/components/lesson/kit/audio/usePiano";
-import { BW, keyLayout, PianoKeyboard, WW } from "@/components/lesson/kit/audio/PianoKeyboard";
+import { notesReady, playNote } from "@/components/lesson/kit/audio/instrument";
+import { InstrumentChoice, loadStatus, useNotes } from "@/components/lesson/kit/audio/useInstrument";
+import { BW, keyLayout, WW } from "@/components/lesson/kit/audio/PianoKeyboard";
+import { NoteSurface } from "@/components/lesson/kit/audio/NoteSurface";
 import { useSequence } from "@/components/lesson/kit/audio/useSequence";
 import { useVoices } from "@/components/lesson/kit/audio/useVoices";
 import { CLEFS, Clef, StaffNote, diatonic, ledgers, midiOf } from "./staff";
@@ -24,6 +25,10 @@ import { WHITE_PCS } from "./names";
 // the number of half steps between them. Pressing a black key writes it with a
 // sharp (or with a flat while a flat sign is picked). Two buttons write and
 // play the chromatic scale: up with sharps, down with flats.
+//
+// On the guitar the same two colours land on the neck, where a sharp is one
+// fret towards the body and a flat one fret towards the nut; the arrow over
+// the keyboard is left out (the mini keyboard is a different width).
 
 type Sign = "none" | "s" | "f" | "n" | "ss" | "ff";
 const ACC: Record<Sign, Acc> = { none: 0, n: 0, s: 1, f: -1, ss: 2, ff: -2 };
@@ -68,16 +73,17 @@ export function MusicAccidentalFigure({ t }: { t?: TrackTranslations }) {
   const [sign, setSign] = useState<Sign>("s");
   const [notes, setNotes] = useState<Note[]>([{ d: 31, a: 0, shown: false }, { d: 31, a: 1, shown: true }, { d: 34, a: -1, shown: true }, { d: 34, a: 0, shown: true }]);
   const [pressed, setPressed] = useState<ReadonlySet<number>>(new Set());
-  const { load, ensure } = usePiano();
+  const { inst, load, ensure } = useNotes();
   const vis = useVisible<HTMLDivElement>();
   const voices = useVoices(vis.on);
   const seq = useSequence(vis.on);
   const svg = useRef<SVGSVGElement>(null);
+  const guitar = inst === "guitar";
 
   const sound = useCallback((m: number) => {
     startAudio();
-    const go = () => { voices.start(m, playPiano(m)); setTimeout(() => voices.release(m), 900); };
-    if (pianoReady()) go(); else ensure().then(go, () => {});
+    const go = () => { voices.start(m, playNote(m)); setTimeout(() => voices.release(m), 900); };
+    if (notesReady()) go(); else ensure().then(go, () => {});
   }, [ensure, voices]);
   const write = (n: Note) => {
     seq.stop();
@@ -104,8 +110,8 @@ export function MusicAccidentalFigure({ t }: { t?: TrackTranslations }) {
     startAudio();
     const run = chromatic(up);
     setNotes(run);
-    const go = () => seq.play(run.length, i => playPiano(keyOf(run[i])), { gap: 0.32, hold: 0.5 });
-    if (pianoReady()) go(); else ensure().then(go, () => {});
+    const go = () => seq.play(run.length, i => playNote(keyOf(run[i])), { gap: 0.32, hold: 0.5 });
+    if (notesReady()) go(); else ensure().then(go, () => {});
   };
 
   const focus = seq.step !== null ? notes[seq.step] : notes[notes.length - 1] ?? null;
@@ -117,6 +123,7 @@ export function MusicAccidentalFigure({ t }: { t?: TrackTranslations }) {
   return (
     <Figure title={tx(t, "figMus_acTitle", "Sharp, flat, natural")}
       head={<Row>
+        <InstrumentChoice t={t} onChange={() => voices.releaseAll()} />
         <Btn onClick={() => runChromatic(true)}>{tx(t, "figMus_acUp", "chromatic up (sharps)")}</Btn>
         <Btn onClick={() => runChromatic(false)}>{tx(t, "figMus_acDown", "down (flats)")}</Btn>
       </Row>}
@@ -133,12 +140,17 @@ export function MusicAccidentalFigure({ t }: { t?: TrackTranslations }) {
             <Readout color={C.amber}>{spelledName(focus)} · {spelledSolfa(t, focus)}</Readout>
             <Readout>m = 12 × {octaveOf(focus.d) + 1} + {P} {focus.a < 0 ? "−" : "+"} {Math.abs(focus.a)} = {sounding}</Readout>
             <Readout>{midiToFreq(sounding!).toFixed(1)} Hz</Readout>
+            {guitar && focus.a !== 0 && (
+              <Readout color={C.amber}>{Math.abs(focus.a)} {Math.abs(focus.a) === 1 ? tx(t, "figMus_acFret", "fret") : tx(t, "figMus_acFrets", "frets")} {focus.a > 0
+                ? tx(t, "figMus_acToBody", "towards the body")
+                : tx(t, "figMus_acToNut", "towards the nut")}</Readout>
+            )}
             {others.length > 0 && <Readout color={C.muted}>{tx(t, "figMus_acSame", "same key as")} {others.map(s => spelledName(s)).join(", ")}</Readout>}
           </>}
         </Row>
         <VolumeSlider t={t} />
       </>}
-      note={tx(t, "figMus_acNote", "Write F, then F with a sharp: the same line, but the key moves one half step up, to the black key. Pick the flat and write B: one half step down. Now try a sharp on E or B: there is no black key above them, so E♯ lands on a white key, F. The blue key is always the letter, the amber one the key the sign asks for. Play the two chromatic scales: going up, the black keys are written as sharps; coming down, the same keys are written as flats.")}>
+      note={guitar ? tx(t, "figMus_acNoteGuitar", "Write F, then F with a sharp: the same line on the staff, one fret higher on the neck (towards the body). Pick the flat and write B: one fret towards the nut. On a string there is nothing special about the \"black\" notes: every fret is one half step, so a sharp is always the next fret and a flat the one before. Try a sharp on E or B: one fret up from E is F, so E♯ is played exactly where F is. The blue dots are the letter, the amber ones the note the sign asks for, everywhere on the neck. Play the two chromatic scales: up the frets with sharps, down with flats.") : tx(t, "figMus_acNote","Write F, then F with a sharp: the same line, but the key moves one half step up, to the black key. Pick the flat and write B: one half step down. Now try a sharp on E or B: there is no black key above them, so E♯ lands on a white key, F. The blue key is always the letter, the amber one the key the sign asks for. Play the two chromatic scales: going up, the black keys are written as sharps; coming down, the same keys are written as flats.")}>
       <div ref={vis.ref}>
         <svg ref={svg} viewBox={`0 0 ${W} ${H}`} className="w-full h-auto block select-none" style={{ cursor: "pointer", touchAction: "manipulation" }} onPointerDown={click}>
           {lines.map(d => <line key={d} x1={X_CLEF - 22} x2={X1} y1={yOf(d)} y2={yOf(d)} stroke={C.fg} strokeOpacity={0.75} strokeWidth={1.2} />)}
@@ -155,10 +167,11 @@ export function MusicAccidentalFigure({ t }: { t?: TrackTranslations }) {
           })}
         </svg>
         <div className="px-3 pb-3">
-          {base !== null && sounding !== null ? <MoveArrow from={base} to={sounding} /> : <MoveArrow from={0} to={0} />}
-          <PianoKeyboard lo={LO} hi={HI} pressed={pressed} onDown={keyDown} onUp={keyUp} labels="c" keyColor={keyColor}
-            ariaLabel={tx(t, "figMus_acAria", "piano keyboard that writes sharps and flats on the staff")} />
-          {load === "loading" && <span className="text-[11px] font-mono text-[var(--text-muted)]">{tx(t, "figMus_loading", "loading the piano (1.3 MB)…")}</span>}
+          {!guitar && (base !== null && sounding !== null ? <MoveArrow from={base} to={sounding} /> : <MoveArrow from={0} to={0} />)}
+          <NoteSurface t={t} lo={LO} hi={HI} pressed={pressed} onDown={keyDown} onUp={keyUp} labels="c" keyColor={keyColor}
+            ariaLabel={tx(t, "figMus_acAria", "piano keyboard that writes sharps and flats on the staff")}
+            guitarAriaLabel={tx(t, "figMus_acNeckAria", "guitar neck that writes sharps and flats on the staff")} />
+          {load === "loading" && <span className="text-[11px] font-mono text-[var(--text-muted)]">{loadStatus(t, inst, load)}</span>}
         </div>
       </div>
     </Figure>

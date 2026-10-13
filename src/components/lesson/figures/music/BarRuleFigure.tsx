@@ -7,8 +7,8 @@ import { Btn, C, Figure, Readout, Row, T, useVisible } from "@/components/lesson
 import { startAudio } from "@/components/lesson/kit/audio/context";
 import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
 import { SoundButton } from "@/components/lesson/kit/audio/SoundButton";
-import { pianoReady, playPiano } from "@/components/lesson/kit/audio/piano";
-import { usePiano } from "@/components/lesson/kit/audio/usePiano";
+import { notesReady, playNote } from "@/components/lesson/kit/audio/instrument";
+import { loadStatus, useNotes } from "@/components/lesson/kit/audio/useInstrument";
 import { useSequence } from "@/components/lesson/kit/audio/useSequence";
 import { CLEFS, Clef, ledgers } from "./staff";
 import { NoteGlyph, RestGlyph } from "./notation";
@@ -70,7 +70,7 @@ function layout(shown: boolean[]) {
 
 export function MusicBarRuleFigure({ t }: { t?: TrackTranslations }) {
   const [erased, setErased] = useState<Set<string>>(new Set());
-  const { load, ensure } = usePiano();
+  const { inst, load, ensure } = useNotes();
   const vis = useVisible<HTMLDivElement>();
   const seq = useSequence(vis.on);
 
@@ -85,9 +85,9 @@ export function MusicBarRuleFigure({ t }: { t?: TrackTranslations }) {
     startAudio();
     const go = () => seq.play(slots.length, s => {
       const i = slots[s], r = i >= 0 ? read[i] : null;
-      return r ? playPiano(keyOf({ d: MELODY[i].d!, a: r.a })) : null;
+      return r ? playNote(keyOf({ d: MELODY[i].d!, a: r.a })) : null;
     }, { gap: 0.17, hold: 0.32 });
-    if (pianoReady()) go(); else ensure().then(go, () => {});
+    if (notesReady()) go(); else ensure().then(go, () => {});
   };
   const now = seq.step !== null ? slots[seq.step] : -1;
 
@@ -162,7 +162,7 @@ export function MusicBarRuleFigure({ t }: { t?: TrackTranslations }) {
           })}
           {BEAMS.map(beam)}
         </svg>
-        {load === "loading" && <span className="px-3 text-[11px] font-mono text-[var(--text-muted)]">{tx(t, "figMus_loading", "loading the piano (1.3 MB)…")}</span>}
+        {load === "loading" && <span className="px-3 text-[11px] font-mono text-[var(--text-muted)]">{loadStatus(t, inst, load)}</span>}
       </div>
     </Figure>
   );

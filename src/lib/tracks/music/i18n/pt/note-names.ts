@@ -89,6 +89,12 @@ const text: Record<string, string> = {
   musNam_key3: "As teclas brancas são as 7 mais uniformes das 12 notas, e as 5 pretas as 5 mais uniformes: as escalas maior e pentatônica que virão.",
   musNam_key4: "A notação científica acrescenta a oitava: dó central = C4 = tecla 60, A4 = 440 Hz; pc = m mod 12 e o = ⌊m/12⌋ − 1, com o número mudando a cada dó.",
   musNam_key5: "Um piano tem 88 teclas, de A0 a C8: 52 brancas e 36 pretas.",
+
+  // ── On the guitar neck (shown only for the guitar) ──
+  musNam_gtTitle: "No braço do violão",
+  musNam_gtOpen: "O violão tem seis cordas. Tocadas soltas, sem apertar nenhuma casa, elas dão da mais grossa para a mais fina: mi2, lá2, ré3, sol3, si3, mi4 (E2, A2, D3, G3, B3, E4). Decore esses seis nomes primeiro. Eles são os seus marcos, como o dó e o fá no teclado. Cantar a sequência ajuda: \"mi, lá, ré, sol, si, mi\".",
+  musNam_gtFrets: "Apertar a corda logo atrás de um traste encurta a parte que vibra, e cada casa sobe a nota um semitom: a casa 1 é um semitom acima, a casa 2 um tom, a casa 12 uma oitava inteira (ali a corda fica dividida exatamente ao meio, a razão 2:1 do capítulo 2). Então uma corda é um teclado posto em fila, sem preto nem branco: cada casa é simplesmente a tecla seguinte. As notas naturais seguem o mesmo padrão do piano: duas casas de distância, menos mi–fá e si–dó, que ficam a uma casa só. Ao longo da corda lá: lá solta, si na casa 2, dó na 3, ré na 5, mi na 7, fá na 8, sol na 10, e lá de novo na 12.",
+  musNam_gtSame: "Ao contrário do piano, a mesma nota mora em vários lugares. A casa 5 da corda mi grave é lá2, a mesma nota da corda lá solta. A casa 5 da corda lá dá o ré solto, e a casa 5 da corda ré dá o sol solto. Aí o padrão quebra uma vez: é a casa 4 da corda sol que dá o si solto. Depois disso, a casa 5 da corda si dá de novo o mi agudo. O motivo é a própria afinação. Cordas vizinhas ficam a 5 semitons uma da outra, menos sol e si, que ficam a 4. É exatamente isso que os violonistas usam para afinar de ouvido. No widget abaixo, a nota que você toca fica preenchida, e todo outro lugar onde ela mora ganha um anel.",
 };
 
 export default text;

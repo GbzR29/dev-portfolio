@@ -15,6 +15,7 @@ import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { MusicAirFigure } from "@/components/lesson/figures/music/AirFigure";
 import { MusicWaveFigure } from "@/components/lesson/figures/music/WaveFigure";
 import { MusicPianoFigure } from "@/components/lesson/figures/music/PianoFigure";
+import { InstrumentPicker } from "@/components/lesson/figures/music/InstrumentPicker";
 
 const r = String.raw;
 
@@ -43,6 +44,8 @@ export function WhatIsSoundContent({ t }: { t: TrackTranslations }) {
         "Compute a wavelength with λ = v/f.",
         "Say which frequencies a human can hear.",
       ]} />
+
+      <InstrumentPicker t={t} />
 
       <H2>{tx(t, "musSnd_travelTitle", "A vibration that travels")}</H2>
       <p>

@@ -89,6 +89,18 @@ const text: Record<string, string> = {
   musStf_key3: "O mesmo desenho sob outra clave são outras notas, e como os semitons ficam com as letras, uma melodia lida na clave errada entorta.",
   musStf_key4: "O sistema de piano é uma pauta de onze linhas com a do meio omitida: essa linha é o dó central, uma linha suplementar abaixo da pauta de sol e uma acima da de fá.",
   musStf_key5: "Linhas suplementares estendem a pauta, 8va muda as notas uma oitava, as hastes sobem abaixo da linha do meio e descem acima dela; leia a partir de marcos, não da linha de baixo.",
+  musStf_gtTitle: "Música para violão: a pauta e a tablatura",
+  musStf_gtOctave: "A música para violão é escrita na clave de sol, mas uma oitava acima de como soa. O motivo é a extensão do violão. A nota mais grave, a corda mi grave solta, é o E2: na pauta de clave de sol ela ficaria pendurada sete linhas suplementares abaixo da linha de baixo, e na clave de fá as notas agudas voariam para cima da pauta. Escrita uma oitava acima, a mi grave solta vira E3, três linhas suplementares abaixo da pauta, e quase tudo o que um violão toca cabe numa pauta só com poucas linhas suplementares. Um pequeno 8 embaixo da clave avisa isso. Quando ele falta, o violonista simplesmente já sabe.",
+  musStf_gtEqLabel: "Onde uma nota do violão é escrita",
+  musStf_gtSounding: "soa",
+  musStf_gtWd: "a nota que o violão realmente toca, no número de tecla branca deste capítulo, d = 7·oitava + letra (C4 = 28)",
+  musStf_gtWritten: "escrita",
+  musStf_gtWw: "a linha ou o espaço onde ela é desenhada na pauta de clave de sol",
+  musStf_gtW7: "uma oitava: sete letras, C D E F G A B, portanto sete linhas e espaços",
+  musStf_gtWords: "Desenhe cada nota sete degraus (uma oitava) acima de como ela soa.",
+  musStf_gtExample: "Assim a corda mi aguda solta, que soa E4 (d = 30), é escrita E5 (d = 37), o último espaço de cima da pauta. A mi grave solta, que soa E2 (d = 16), é escrita E3 (d = 23). A nota não muda, só o lugar onde ela é desenhada.",
+  musStf_gtTab: "A pauta diz qual nota tocar, mas no violão a maioria das notas pode ser tocada em dois ou três lugares. A tablatura, ou tab, diz à mão onde. Ela tem seis linhas, uma por corda, com a mi aguda e fina em cima, como nos widgets desta trilha. Um número numa linha é a casa a apertar naquela corda; 0 quer dizer corda solta. Para os instrumentos dedilhados, a tablatura é mais antiga que a pauta: os alaudistas do século XVI já a liam.",
+  musStf_gtBoth: "Cada uma tem um ponto cego. A tablatura não diz o nome da nota, e a tablatura simples em geral não diz o ritmo, então não dá para cantar uma melodia a partir dela. A pauta não diz nada sobre cordas e casas. Por isso os métodos de violão imprimem as duas juntas, uma nota acima da outra: a pauta para o quê e quanto tempo, a tablatura para onde. A tablatura também registra a escolha de lugar do violonista, que muda o quanto uma passagem é fácil e até como ela soa, já que a mesma nota numa corda mais grossa fica um pouco mais escura.",
 };
 
 export default text;

@@ -7,9 +7,9 @@ import { Btn, C, Choice, Figure, Readout, Row, T, useVisible } from "@/component
 import { startAudio } from "@/components/lesson/kit/audio/context";
 import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
 import { midiToFreq } from "@/components/lesson/kit/audio/notes";
-import { pianoReady, playPiano } from "@/components/lesson/kit/audio/piano";
-import { usePiano } from "@/components/lesson/kit/audio/usePiano";
-import { PianoKeyboard } from "@/components/lesson/kit/audio/PianoKeyboard";
+import { notesReady, playNote } from "@/components/lesson/kit/audio/instrument";
+import { InstrumentChoice, loadStatus, useNotes } from "@/components/lesson/kit/audio/useInstrument";
+import { NoteSurface } from "@/components/lesson/kit/audio/NoteSurface";
 import { useVoices } from "@/components/lesson/kit/audio/useVoices";
 import { CLEFS, Clef, StaffNote, dName, diatonic, ledgers, midiOf, type ClefKind } from "./staff";
 import { solfa } from "./names";
@@ -34,7 +34,7 @@ export function MusicStaffFigure({ t }: { t?: TrackTranslations }) {
   const [hidden, setHidden] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [pressed, setPressed] = useState<ReadonlySet<number>>(new Set());
-  const { load, ensure } = usePiano();
+  const { inst, load, ensure } = useNotes();
   const vis = useVisible<HTMLDivElement>();
   const voices = useVoices(vis.on);
   const svg = useRef<SVGSVGElement>(null);
@@ -47,8 +47,8 @@ export function MusicStaffFigure({ t }: { t?: TrackTranslations }) {
 
   const sound = useCallback((m: number) => {
     startAudio();
-    const go = () => { voices.start(m, playPiano(m)); setTimeout(() => voices.release(m), 900); };
-    if (pianoReady()) go(); else ensure().then(go, () => {});
+    const go = () => { voices.start(m, playNote(m)); setTimeout(() => voices.release(m), 900); };
+    if (notesReady()) go(); else ensure().then(go, () => {});
   }, [ensure, voices]);
   const write = (d: number) => {
     setNotes(ns => [...ns, d].slice(-SLOTS));
@@ -85,10 +85,13 @@ export function MusicStaffFigure({ t }: { t?: TrackTranslations }) {
 
   return (
     <Figure title={tx(t, "figMus_stTitle", "Write notes on the staff")}
-      head={<Choice value={mode} onChange={v => { setMode(v); setNotes([]); setMsg(null); }} options={[
-        ["treble", tx(t, "figMus_stTreble", "treble (G)")], ["bass", tx(t, "figMus_stBass", "bass (F)")],
-        ["alto", tx(t, "figMus_stAlto", "alto (C)")], ["grand", tx(t, "figMus_stGrand", "grand staff")],
-      ]} />}
+      head={<>
+        <InstrumentChoice t={t} onChange={() => voices.releaseAll()} />
+        <Choice value={mode} onChange={v => { setMode(v); setNotes([]); setMsg(null); }} options={[
+          ["treble", tx(t, "figMus_stTreble", "treble (G)")], ["bass", tx(t, "figMus_stBass", "bass (F)")],
+          ["alto", tx(t, "figMus_stAlto", "alto (C)")], ["grand", tx(t, "figMus_stGrand", "grand staff")],
+        ]} />
+      </>}
       controls={<>
         <Row>
           <Btn onClick={() => { setNotes([]); setMsg(null); }}>{tx(t, "figMus_stClear", "clear")}</Btn>
@@ -96,7 +99,9 @@ export function MusicStaffFigure({ t }: { t?: TrackTranslations }) {
         </Row>
         <Row>
           {msg ? <Readout color={C.muted}>{msg}</Readout> : last === null
-            ? <Readout>{tx(t, "figMus_stClick", "click a line or a space, or a white key")}</Readout>
+            ? <Readout>{inst === "guitar"
+                ? tx(t, "figMus_stClickGuitar", "click a line or a space, or a note on the neck")
+                : tx(t, "figMus_stClick", "click a line or a space, or a white key")}</Readout>
             : <>
                 <Readout color={C.amber}>{dName(last)} · {syl[((last % 7) + 7) % 7]}{Math.floor(last / 7)}</Readout>
                 <Readout>d = 7 × {Math.floor(last / 7)} + {((last % 7) + 7) % 7} = {last}</Readout>
@@ -129,9 +134,10 @@ export function MusicStaffFigure({ t }: { t?: TrackTranslations }) {
           })}
         </svg>
         <div className="px-3 pb-3">
-          <PianoKeyboard lo={36} hi={84} pressed={pressed} onDown={keyDown} onUp={keyUp} labels="c"
-            ariaLabel={tx(t, "figMus_stAria", "piano keyboard that writes on the staff")} />
-          {load === "loading" && <span className="text-[11px] font-mono text-[var(--text-muted)]">{tx(t, "figMus_loading", "loading the piano (1.3 MB)…")}</span>}
+          <NoteSurface t={t} lo={36} hi={84} pressed={pressed} onDown={keyDown} onUp={keyUp} labels="c"
+            ariaLabel={tx(t, "figMus_stAria", "piano keyboard that writes on the staff")}
+            guitarAriaLabel={tx(t, "figMus_stNeckAria", "guitar neck that writes on the staff")} />
+          {load === "loading" && <span className="text-[11px] font-mono text-[var(--text-muted)]">{loadStatus(t, inst, load)}</span>}
         </div>
       </div>
     </Figure>

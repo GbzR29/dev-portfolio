@@ -6,8 +6,8 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { Btn, C, Choice, Figure, T, useVisible } from "@/components/lesson/kit/figure";
 import { startAudio } from "@/components/lesson/kit/audio/context";
 import { VolumeSlider } from "@/components/lesson/kit/audio/VolumeSlider";
-import { pianoReady, playPiano } from "@/components/lesson/kit/audio/piano";
-import { usePiano } from "@/components/lesson/kit/audio/usePiano";
+import { notesReady, playNote } from "@/components/lesson/kit/audio/instrument";
+import { useNotes } from "@/components/lesson/kit/audio/useInstrument";
 import { useVoices } from "@/components/lesson/kit/audio/useVoices";
 import { Practice, type StageApi } from "@/components/lesson/kit/practice/Practice";
 import { ChoiceButtons } from "@/components/lesson/kit/practice/ChoiceButtons";
@@ -33,7 +33,7 @@ export function MusicStaffQuizFigure({ t }: { t?: TrackTranslations }) {
   const [style, setStyle] = useState<Style>("letter");
   const [marks, setMarks] = useState(false);
   const [picked, setPicked] = useState<{ q: string; i: number } | null>(null);
-  const { ensure } = usePiano();
+  const { ensure } = useNotes();
   const vis = useVisible<HTMLDivElement>();
   const voices = useVoices(vis.on);
   const names = style === "letter" ? LETTERS : solfa(t);
@@ -41,8 +41,8 @@ export function MusicStaffQuizFigure({ t }: { t?: TrackTranslations }) {
 
   const sound = useCallback((m: number) => {
     startAudio();
-    const go = () => { voices.start(m, playPiano(m)); setTimeout(() => voices.release(m), 900); };
-    if (pianoReady()) go(); else ensure().then(go, () => {});
+    const go = () => { voices.start(m, playNote(m)); setTimeout(() => voices.release(m), 900); };
+    if (notesReady()) go(); else ensure().then(go, () => {});
   }, [ensure, voices]);
 
   /** A note within two ledger lines of the staff. */
