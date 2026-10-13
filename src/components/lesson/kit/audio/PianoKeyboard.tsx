@@ -8,7 +8,8 @@
 // A S D F G H J K L ; are the white keys from the first C, W E T Y U O P the
 // black ones between them.
 //
-// `labelOf` puts any text on any key (white or black), overriding `labels`.
+// `labelOf` puts any text on any key (white or black), overriding `labels`;
+// `keyColor` paints chosen keys (right and wrong answers, say) over everything.
 //
 // `lo` and `hi` should be white keys (a black key at an end would be cut off).
 
@@ -36,7 +37,7 @@ export function keyLayout(lo: number, hi: number) {
   return { whites, xOf, blacks, W: whites.length * WW };
 }
 
-export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", labelOf, color = "#f43f5e", ariaLabel }: {
+export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", labelOf, keyColor, color = "#f43f5e", ariaLabel }: {
   lo: number;
   hi: number;
   /** Keys drawn as pressed: the ones being played, or a chord to show. */
@@ -46,6 +47,8 @@ export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", lab
   labels?: KeyLabels;
   /** A label for any key (null for none); replaces `labels` when given. */
   labelOf?: (m: number) => string | null;
+  /** A colour for any key (null for the usual look); wins over `pressed`. */
+  keyColor?: (m: number) => string | null;
   color?: string;
   ariaLabel?: string;
 }) {
@@ -109,12 +112,12 @@ export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", lab
       onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
       onKeyDown={keyDown} onKeyUp={keyUp} onBlur={blur}>
       {whites.map(m => {
-        const on = pressed.has(m);
+        const paint = keyColor?.(m) ?? null, on = paint !== null || pressed.has(m);
         const label = labelOf ? labelOf(m) : labels === "white" || (labels === "c" && pitchClass(m) === 0) ? noteName(m) : null;
         return (
           <g key={m}>
             <rect data-m={m} x={xOf.get(m)} y={0} width={WW} height={WH} rx={2.5}
-              fill={on ? color : "#fbfbf8"} fillOpacity={on ? 0.85 : 1} stroke="#3b3f42" strokeWidth={0.8} />
+              fill={on ? paint ?? color : "#fbfbf8"} fillOpacity={on ? 0.85 : 1} stroke="#3b3f42" strokeWidth={0.8} />
             {label && (
               <text x={xOf.get(m)! + WW / 2} y={WH - 7} textAnchor="middle" fontSize={8.5}
                 fill={on ? "#fff" : "#55595c"} pointerEvents="none" fontFamily="var(--font-mono, monospace)">{label}</text>
@@ -127,7 +130,7 @@ export function PianoKeyboard({ lo, hi, pressed, onDown, onUp, labels = "c", lab
         return (
           <g key={m}>
             <rect data-m={m} x={x} y={0} width={BW} height={BH} rx={2}
-              fill={pressed.has(m) ? color : "#1f2326"} stroke="#0d0f10" strokeWidth={0.8} />
+              fill={keyColor?.(m) ?? (pressed.has(m) ? color : "#1f2326")} stroke="#0d0f10" strokeWidth={0.8} />
             {label && (
               <text x={x + BW / 2} y={BH - 6} textAnchor="middle" fontSize={6.5}
                 fill="#e8e8e4" pointerEvents="none" fontFamily="var(--font-mono, monospace)">{label}</text>

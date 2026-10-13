@@ -45,6 +45,9 @@ src/components/lesson/kit/             widget INFRASTRUCTURE (no lesson content)
   scene3d.tsx     SVG 3D: projector, orbit controls, boxFaces/frontFacing, lookAt
   svg.tsx, Stepper.tsx, protoTexture.tsx (Arrow/Label, step animations, textured quads)
   Transport.tsx   playback bar under an animated drawing (big ▶/❚❚, ⟲ ⏮ ⏭, readout); part of the stage, not the controls
+  practice/       study-app practice rounds: Practice.tsx (10 questions, progress bar, celebration / wrong-answer sheet,
+                  summary, review of mistakes, best score in localStorage), ChoiceButtons.tsx, sounds.ts (chime/bonk);
+                  styles in src/styles/practice.css; a widget gives make/prompt/stage/solution; model: figures/music/NoteQuizFigure
   lab/Lab.tsx     a figure's full-screen guided "lab": steps with self-ticking goals, hints, quizzes, insights, closing recap
                   (styles in src/styles/lab.css); lab/useLab.ts: ?lab=<id> URL + back button + saved progress; model: figures/markov/
   gl/GLView.tsx   WebGL2 host: context, resize, look/orbit, context loss; useAnimationTime
