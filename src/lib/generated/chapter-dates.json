@@ -341,39 +341,39 @@
   },
   "math/number-line": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/order-of-operations": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/fractions": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/ratios": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/divisibility": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/powers": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/bases": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/expressions": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/linear-equations": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/inequalities": {
     "created": "2026-09-25",
@@ -385,11 +385,11 @@
   },
   "math/linear-systems": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/quadratics": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/polynomials": {
     "created": "2026-09-25",
@@ -397,11 +397,11 @@
   },
   "math/exponents": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/sequences": {
     "created": "2026-09-25",
-    "updated": "2026-10-08"
+    "updated": "2026-10-13"
   },
   "math/angles": {
     "created": "2026-09-25",
@@ -624,6 +624,10 @@
     "updated": "2026-10-13"
   },
   "music/staff": {
+    "created": "2026-10-13",
+    "updated": "2026-10-13"
+  },
+  "music/accidentals": {
     "created": "2026-10-13",
     "updated": "2026-10-13"
   },

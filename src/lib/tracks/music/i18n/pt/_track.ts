@@ -12,6 +12,7 @@ const track = {
     syncopation: "Síncope",
     "note-names": "Nomes das notas e o teclado",
     staff: "A pauta e as claves",
+    accidentals: "Sustenidos, bemóis e bequadros",
   } as Record<string, string>,
   sections: {
     Sound: "Som",

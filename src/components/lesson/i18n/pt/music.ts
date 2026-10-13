@@ -469,6 +469,50 @@ const text: Record<string, string> = {
   figMus_sqNote: "Não conte a partir da linha de baixo toda vez: aprenda alguns marcos e conte a partir do mais próximo. Na clave de sol, o caracol marca o sol 4 na linha 2, e o dó central fica numa linha suplementar abaixo. Na clave de fá, os pontos marcam o fá 3 na linha 4, e o dó central fica numa linha suplementar acima. Depois, de linha a linha é um salto de duas letras, de linha ao espaço seguinte um grau conjunto. Alguns minutos por dia durante uma semana funcionam melhor que uma hora de uma vez.",
 
   figMus_euNote: "Comece com o tresillo: 3 notas em 8 pulsos não podem ficar a 8/3 uma da outra, então os intervalos são os inteiros mais próximos, 3, 3 e 2. Suba k para 5 e sai o cinquillo da música cubana; depois experimente 7 em 12, o sino dos tambores da África Ocidental. Girar começa o mesmo colar em outro pulso: os intervalos continuam, mas o ritmo soa diferente contra o bumbo, que marca a batida. Quase todo par de n e k dá um ritmo que alguma tradição já toca.",
+
+  // ── Sharps, flats and naturals (ch 11) ──
+  figMus_acWff: "dobrado bemol",
+  figMus_acWf: "bemol",
+  figMus_acWn: "bequadro",
+  figMus_acWs: "sustenido",
+  figMus_acWss: "dobrado sustenido",
+  figMus_acTitle: "Sustenido, bemol, bequadro",
+  figMus_acUp: "cromática subindo (sustenidos)",
+  figMus_acDown: "descendo (bemóis)",
+  figMus_acSign: "sinal a escrever",
+  figMus_acNone: "nenhum",
+  figMus_acClick: "escolha um sinal, depois clique numa linha ou num espaço",
+  figMus_acSame: "mesma tecla que",
+  figMus_acAria: "teclado de piano que escreve sustenidos e bemóis na pauta",
+  figMus_acNote: "Escreva fá, depois fá com sustenido: a mesma linha, mas a tecla anda um semitom para cima, até a tecla preta. Escolha o bemol e escreva si: um semitom para baixo. Agora ponha um sustenido no mi ou no si: não há tecla preta acima deles, então mi♯ cai numa tecla branca, o fá. A tecla azul é sempre a letra, a âmbar a tecla que o sinal pede. Toque as duas escalas cromáticas: subindo, as teclas pretas são escritas como sustenidos; descendo, as mesmas teclas são escritas como bemóis.",
+
+  figMus_ehTitle: "Uma tecla, vários nomes",
+  figMus_ehDoubles: "com dobrados sustenidos e bemóis",
+  figMus_ehCount2: "7 letras × 5 sinais = {n} nomes para 12 teclas",
+  figMus_ehCount1: "7 letras × 3 (♭, nenhum, ♯) = {n} nomes para 12 teclas",
+  figMus_ehSameKey: "linhas diferentes,",
+  figMus_ehSameKey2: "a mesma tecla",
+  figMus_ehOnly2: "só 2",
+  figMus_ehAria: "uma oitava de teclas de piano: aperte uma para ver todos os nomes dela",
+  figMus_ehNote: "Aperte a tecla preta entre sol e lá: sol♯ e lá♭, duas notas em linhas diferentes da pauta, uma tecla só. Depois aperte uma tecla branca, por exemplo o dó: ela também é si♯ (uma letra abaixo, subida) e ré dobrado bemol (uma letra acima, descida duas vezes). Com os sinais dobrados ligados, toda tecla tem três nomes, menos uma. Procure na tabela a coluna com só dois e descubra por quê: quais letras ficam a até dois semitons dessa tecla?",
+
+  figMus_brTitle: "Quanto tempo um sinal dura: Für Elise",
+  figMus_brPlay: "tocar como está lido",
+  figMus_brEraseSharp: "apagar o sustenido do compasso 1",
+  figMus_brEraseNatural: "apagar o bequadro",
+  figMus_brWritten: "azul: sinal escrito nesta nota",
+  figMus_brCarried: "roxo: sinal que vem de antes no compasso",
+  figMus_brWrong: "vermelho: não é a nota que Beethoven escreveu; escute",
+  figMus_brReset: "barra de compasso: os sinais acabam",
+  figMus_brNote: "Toque primeiro como está escrito. Depois apague o sustenido do compasso 1: o ré♯ do compasso de anacruse não passa da barra de compasso, então aquele ré vira um ré natural e o famoso balanço desafina. Devolva o sinal e apague o bequadro: o ré♯ de antes, no mesmo compasso, ainda vale, então o ré é lido como ré♯. Os dois sinais que parecem sobrando estão lá por causa de uma só regra: um sinal vale para a sua linha ou espaço até a próxima barra de compasso, e não além.",
+
+  figMus_aqTitle: "Prática: toque o que você lê",
+  figMus_aqPrompt: "toque esta nota",
+  figMus_aqBlack: "teclas pretas",
+  figMus_aqTricky: "+ mi♯, fá♭, si♯, dó♭",
+  figMus_aqDouble: "+ sinais dobrados",
+  figMus_aqAria: "teclado de piano do jogo dos sustenidos e bemóis",
+  figMus_aqNote: "Leia em dois movimentos. Primeiro a letra e a oitava, como no capítulo anterior, ignorando o sinal: ache essa tecla branca. Depois o sinal: o sustenido anda uma tecla para a direita, o bemol uma para a esquerda, contando teclas brancas e pretas igualmente. No segundo nível alguns movimentos caem numa tecla branca (mi♯ é fá, dó♭ é si); no terceiro, os sinais dobrados andam duas teclas.",
 };
 
 export default text;

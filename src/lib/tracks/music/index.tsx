@@ -22,4 +22,5 @@ export const musicChapters: Chapter[] = [
   { id: "syncopation", section: RHYTHM, title: "Syncopation", minRead: 18, load: () => import("./chapters/syncopation").then((m) => m.SyncopationContent) },
   { id: "note-names", section: NOTES, title: "Note Names and the Keyboard", minRead: 17, load: () => import("./chapters/note-names").then((m) => m.NoteNamesContent) },
   { id: "staff", section: NOTES, title: "The Staff and Clefs", minRead: 17, load: () => import("./chapters/staff").then((m) => m.StaffContent) },
+  { id: "accidentals", section: NOTES, title: "Sharps, Flats and Naturals", minRead: 18, load: () => import("./chapters/accidentals").then((m) => m.AccidentalsContent) },
 ];
