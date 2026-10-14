@@ -4,13 +4,19 @@
 import type { Reference } from "../types";
 import { contextEntries } from "./context";
 import { bufferEntries } from "./buffers";
+import { bufferStorageEntries } from "./bufferStorage";
 import { vertexArrayEntries } from "./vertexArrays";
+import { vertexInputExtraEntries } from "./vertexInputExtras";
 import { shaderEntries } from "./shaders";
 import { uniformEntries } from "./uniforms";
+import { uniformExtraEntries } from "./uniformExtras";
 import { drawingEntries } from "./drawing";
+import { drawingAdvancedEntries } from "./drawingAdvanced";
 import { textureEntries } from "./textures";
+import { textureUploadEntries } from "./textureUploads";
 import { fragmentOpEntries } from "./fragmentOps";
 import { blendingEntries } from "./blending";
+import { rasterizationEntries } from "./rasterization";
 import { stencilEntries } from "./stencil";
 import { framebufferEntries } from "./framebuffers";
 import { framebufferExtraEntries } from "./framebufferExtras";
@@ -48,13 +54,19 @@ export const openGLReference: Reference = {
   entries: [
     ...contextEntries,
     ...bufferEntries,
+    ...bufferStorageEntries,
     ...vertexArrayEntries,
+    ...vertexInputExtraEntries,
     ...shaderEntries,
     ...uniformEntries,
+    ...uniformExtraEntries,
     ...drawingEntries,
+    ...drawingAdvancedEntries,
     ...textureEntries,
+    ...textureUploadEntries,
     ...fragmentOpEntries,
     ...blendingEntries,
+    ...rasterizationEntries,
     ...stencilEntries,
     ...framebufferEntries,
     ...framebufferExtraEntries,
