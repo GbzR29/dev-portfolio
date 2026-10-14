@@ -14,6 +14,8 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-13
 
+- **Verificação do Google Search Console:** arquivo `public/google90abaed48d670aa6.html`, que o Google pede para confirmar que o site é seu. Não apagar: sem ele a verificação cai.
+
 - **Lições aparecem no Google (SEO).** Cada lição agora tem um endereço próprio, `/learn/OpenGL/triangle`, no lugar de `/learn/OpenGL?chapter=triangle`. Os links antigos redirecionam sozinhos (308, mantendo o `?step=`). Cada trilha e cada lição têm título, descrição, URL canônica e Open Graph gerados no servidor (`lib/tracks/seo.ts`), por exemplo "Drawing the Triangle | OpenGL 4.6 course". A página /learn também ganhou título e descrição.
   - `app/sitemap.ts` (/sitemap.xml, com as 272 páginas: Home, /learn, livro, blog, 10 trilhas e todas as lições, com a data da última mudança de cada lição) e `app/robots.ts` (/robots.txt).
   - O leitor de lições virou `app/learn/[trackPath]/(lesson)/LessonView.tsx`, montado num layout. Trocar de capítulo muda a URL sem recarregar a página, e o "voltar" do navegador volta para o capítulo anterior. As páginas `(lesson)/page.tsx` e `(lesson)/[chapterId]/page.tsx` só dão os metadados. Capítulo inexistente dá 404.
