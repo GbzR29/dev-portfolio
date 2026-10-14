@@ -213,15 +213,15 @@
   },
   "cpp/templates": {
     "created": "2026-02-10",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "cpp/concepts": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "cpp/constexpr": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "cpp/ranges": {
     "created": "2026-09-03",
