@@ -13,11 +13,14 @@ import { fragmentOpEntries } from "./fragmentOps";
 import { blendingEntries } from "./blending";
 import { stencilEntries } from "./stencil";
 import { framebufferEntries } from "./framebuffers";
+import { framebufferExtraEntries } from "./framebufferExtras";
 import { dsaEntries } from "./dsa";
 import { dsaBufferEntries } from "./dsaBuffers";
 import { dsaTextureEntries } from "./dsaTextures";
 import { dsaFramebufferEntries } from "./dsaFramebuffers";
 import { computeEntries } from "./compute";
+import { syncEntries } from "./sync";
+import { queryEntries } from "./queries";
 import { debugEntries } from "./debug";
 import { legacyEntries } from "./legacy";
 
@@ -38,6 +41,7 @@ export const openGLReference: Reference = {
     { id: "framebuffers",  title: { en: "Framebuffers",              pt: "Framebuffers" } },
     { id: "dsa",           title: { en: "Direct State Access",       pt: "Direct State Access" } },
     { id: "compute",       title: { en: "Compute",                   pt: "Compute" } },
+    { id: "sync",          title: { en: "Sync & queries",            pt: "Sincronização e queries" } },
     { id: "debug",         title: { en: "Debugging",                 pt: "Depuração" } },
     { id: "legacy",        title: { en: "Legacy (immediate mode)",   pt: "Legado (immediate mode)" } },
   ],
@@ -53,11 +57,14 @@ export const openGLReference: Reference = {
     ...blendingEntries,
     ...stencilEntries,
     ...framebufferEntries,
+    ...framebufferExtraEntries,
     ...dsaEntries,
     ...dsaBufferEntries,
     ...dsaTextureEntries,
     ...dsaFramebufferEntries,
     ...computeEntries,
+    ...syncEntries,
+    ...queryEntries,
     ...debugEntries,
     ...legacyEntries,
   ],
