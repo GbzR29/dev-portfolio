@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { Chapter, Track } from "@/lib/tracks/types";
+import { ChapterLink } from "@/components/lesson/ChapterLink";
 
 /** Only the keys this sidebar reads — keeps it decoupled from the full bundle. */
 interface SidebarLabels {
@@ -22,6 +23,8 @@ interface LessonSidebarProps {
   activeId: string;
   visited: Set<string>;
   onSelect: (id: string) => void;
+  /** The chapter's own URL, for the link's href. */
+  chapterHref: (id: string) => string;
   t: SidebarLabels;
   /** When set, a link to the track's API reference is shown under the chapters. */
   referenceHref?: string;
@@ -44,7 +47,7 @@ function groupChapters(chapters: Chapter[]): Group[] {
 }
 
 export function LessonSidebar({
-  track, title, chapters, activeId, visited, onSelect, t, referenceHref,
+  track, title, chapters, activeId, visited, onSelect, chapterHref, t, referenceHref,
 }: LessonSidebarProps) {
   const groups = useMemo(() => groupChapters(chapters), [chapters]);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
@@ -118,9 +121,10 @@ export function LessonSidebar({
                     const isDone   = visited.has(chapter.id);
                     return (
                       <li key={chapter.id}>
-                        <button
-                          onClick={() => onSelect(chapter.id)}
-                          aria-current={isActive ? "page" : undefined}
+                        <ChapterLink
+                          href={chapterHref(chapter.id)}
+                          onSelect={() => onSelect(chapter.id)}
+                          current={isActive}
                           className={`w-full grid grid-cols-[22px_1fr_auto] gap-2 items-baseline text-left py-1.5 pr-2 pl-2.5 -ml-2.5 border-l-2 transition-colors
                             ${isActive
                               ? "border-[var(--primary)] bg-[var(--primary-low)] text-[var(--text-main)] font-medium"
@@ -133,7 +137,7 @@ export function LessonSidebar({
                           {chapter.minRead && (
                             <span className="font-mono text-[10.5px] text-[var(--text-muted)] tabular-nums">{chapter.minRead}m</span>
                           )}
-                        </button>
+                        </ChapterLink>
                       </li>
                     );
                   })}

@@ -1,5 +1,4 @@
 // src/lib/tracks/math/index.tsx
-"use client";
 
 // The Math track: pure mathematics from arithmetic upward, worked by hand,
 // each topic with interactive figures. The programming tracks link back here.

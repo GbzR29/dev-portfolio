@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Spectral, IBM_Plex_Sans, IBM_Plex_Mono } from "next/
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
+import { SITE_URL } from "@/lib/tracks/urls";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -38,6 +39,8 @@ const plexMono = IBM_Plex_Mono({
 
 
 export const metadata: Metadata = {
+  // Relative canonical / Open Graph URLs resolve against the public domain
+  metadataBase: new URL(SITE_URL),
   title: "Gabriel Carvalho",
   description: "Welcome to my online corner!",
 };

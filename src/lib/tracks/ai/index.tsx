@@ -1,5 +1,4 @@
 // src/lib/tracks/ai/index.tsx
-"use client";
 
 // The AI track: artificial intelligence built from scratch in C++, with no
 // libraries — every matrix, derivative and training loop written by hand.

@@ -1,5 +1,4 @@
 // src/lib/tracks/music/index.tsx
-"use client";
 
 // The Music track: music from the ground up, every idea heard. Sound itself
 // first (pitch, timbre, loudness), then rhythm, notes and the staff, scales and

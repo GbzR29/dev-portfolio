@@ -1,5 +1,4 @@
 // src/lib/tracks/glsl/index.tsx
-"use client";
 
 // The GLSL track. This file only lists the chapters; each chapter's
 // content lives in its own module under ./chapters and is loaded on demand.

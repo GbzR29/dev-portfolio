@@ -1,10 +1,15 @@
-// app/learn/[trackPath]/page.tsx
+// app/learn/[trackPath]/(lesson)/LessonView.tsx
 "use client";
+
+// The lesson reader for every chapter of every track. It lives in the
+// (lesson) layout, so moving between /learn/<track> and /learn/<track>/<id>
+// keeps it mounted; the pages under it only supply metadata.
 
 import { ChapterBoundary } from "@/components/lesson/ChapterBoundary";
 import { ChapterContent } from "@/components/lesson/ChapterContent";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { chapterHref, decodeSegment } from "@/lib/tracks/urls";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { getTrack } from "@/lib/tracks";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -27,10 +32,11 @@ import { FocusNav, FocusProgress, ModeToggle, useFocusView, useLessonMode } from
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-/** Chapter selection lives in ?chapter= so lessons can be linked to directly. */
-function readChapterParam(): string | null {
-  if (typeof window === "undefined") return null;
-  return new URLSearchParams(window.location.search).get("chapter");
+/** Whether the address bar already points at this chapter (the track's own
+ *  page counts for its first chapter). */
+function urlShows(trackPath: string, chapterId: string, firstId: string): boolean {
+  const here = decodeSegment(window.location.pathname).replace(/\/$/, "");
+  return here === `/learn/${trackPath}/${chapterId}` || (chapterId === firstId && here === `/learn/${trackPath}`);
 }
 
 /** Focus-mode step from ?step= (1-based in the URL, 0-based here). */
@@ -47,14 +53,16 @@ function scrollBelowBar(el: HTMLElement | null) {
   window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - bar - 12, behavior: "smooth" });
 }
 
-export default function LessonPage() {
+export default function LessonView() {
   const router   = useRouter();
   const params   = useParams();
   const { t, language } = useLanguage();
 
   const trackPath = params?.trackPath
-    ? decodeURIComponent(params.trackPath as string)
+    ? decodeSegment(params.trackPath as string)
     : "";
+  // The chapter in the URL (/learn/<track>/<id>); none on the track's own page
+  const chapterParam = params?.chapterId ? decodeSegment(params.chapterId as string) : null;
   const track     = getTrack(trackPath);
   const reference = getReference(trackPath);
 
@@ -92,13 +100,12 @@ export default function LessonPage() {
     return () => { alive = false; };
   }, [track, reference, activeChapterId]);
 
-  // Init chapter from the URL, else the first one
+  // Follow the URL (first load, back/forward, links): its chapter, else the first one
   useEffect(() => {
-    if (!track || activeChapterId) return;
-    const fromUrl = readChapterParam();
-    const valid   = fromUrl !== null && track.chapters.some((c) => c.id === fromUrl);
-    setActiveChapterId(valid ? fromUrl : track.chapters[0].id);
-  }, [track, activeChapterId]);
+    if (!track) return;
+    const valid = chapterParam !== null && track.chapters.some((c) => c.id === chapterParam);
+    setActiveChapterId(valid ? chapterParam : track.chapters[0].id);
+  }, [track, chapterParam]);
 
   // Redirect if track not found
   useEffect(() => {
@@ -107,17 +114,16 @@ export default function LessonPage() {
     }
   }, [track, router, trackPath]);
 
-  // On chapter change: mark visited, sync URL, scroll to top
+  // On chapter change: mark visited, move the URL to the chapter, scroll to top.
+  // The track's own page shows the first chapter and keeps its URL until another is picked.
   useEffect(() => {
-    if (!activeChapterId) return;
+    if (!activeChapterId || !track) return;
     markVisited(activeChapterId);
-    if (readChapterParam() !== activeChapterId) {
-      const url = new URL(window.location.href);
-      url.searchParams.set("chapter", activeChapterId);
-      window.history.replaceState(window.history.state, "", url);
+    if (!urlShows(trackPath, activeChapterId, track.chapters[0].id)) {
+      router.push(chapterHref(trackPath, activeChapterId), { scroll: false });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [activeChapterId, markVisited]);
+  }, [activeChapterId, markVisited, track, trackPath, router]);
 
   // Remember this chapter (with its title in the reading language) for /learn's "resume"
   const openIndex = track?.chapters.findIndex((c) => c.id === activeChapterId) ?? -1;
@@ -180,13 +186,14 @@ export default function LessonPage() {
   }, [steps.length, step]);
 
   // ?step= mirrors the step while focus mode is on
+  // (left alone while a move to another chapter's URL is still under way)
   useEffect(() => {
-    if (!activeChapterId) return;
+    if (!activeChapterId || !track || !urlShows(trackPath, activeChapterId, track.chapters[0].id)) return;
     const url = new URL(window.location.href);
     if (focus && step > 0) url.searchParams.set("step", String(step + 1));
     else url.searchParams.delete("step");
     if (url.href !== window.location.href) window.history.replaceState(window.history.state, "", url);
-  }, [focus, step, activeChapterId]);
+  }, [focus, step, activeChapterId, track, trackPath]);
 
   const nextChapter = shownChapters[openIndex + 1];
   const moveTo = useCallback((i: number) => {
@@ -275,6 +282,7 @@ export default function LessonPage() {
             activeId={activeChapterId}
             visited={visited}
             onSelect={setActiveChapterId}
+            chapterHref={(id) => chapterHref(trackPath, id)}
             t={t}
             referenceHref={reference ? referenceHref(reference) : undefined}
           />
@@ -372,6 +380,7 @@ export default function LessonPage() {
             prev={shownChapters[currentIndex - 1]}
             next={shownChapters[currentIndex + 1]}
             onSelect={setActiveChapterId}
+            chapterHref={(id) => chapterHref(trackPath, id)}
             labels={{
               prev: ui.lessonPrevShort ?? "previous",
               next: ui.lessonNextShort ?? "next",

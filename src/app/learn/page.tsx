@@ -13,6 +13,7 @@ import { TRACK_CATALOG, type TrackInfo } from "@/lib/tracks/catalog";
 import { getReference, referenceHref } from "@/lib/reference";
 import { readLastLesson, readVisited, type LastLesson } from "@/lib/tracks/progress";
 import { trackName } from "@/lib/tracks/crumbs";
+import { chapterHref } from "@/lib/tracks/urls";
 
 type Strings = Record<string, string | undefined>;
 
@@ -99,7 +100,7 @@ export default function LearnPage() {
               {last && (
                 <div className="hm-resume">
                   <span>{ui.learnResume ?? "where you left off:"}</span>
-                  <Link href={`/learn/${encodeURIComponent(last.track)}?chapter=${encodeURIComponent(last.chapter)}`}>
+                  <Link href={chapterHref(last.track, last.chapter)}>
                     {trackName(ui, last.track)}
                     {last.title && <> · {last.number ? `${last.number}. ` : ""}{last.title}</>} →
                   </Link>

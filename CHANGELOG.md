@@ -14,6 +14,12 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-13
 
+- **Lições aparecem no Google (SEO).** Cada lição agora tem um endereço próprio, `/learn/OpenGL/triangle`, no lugar de `/learn/OpenGL?chapter=triangle`. Os links antigos redirecionam sozinhos (308, mantendo o `?step=`). Cada trilha e cada lição têm título, descrição, URL canônica e Open Graph gerados no servidor (`lib/tracks/seo.ts`), por exemplo "Drawing the Triangle | OpenGL 4.6 course". A página /learn também ganhou título e descrição.
+  - `app/sitemap.ts` (/sitemap.xml, com as 272 páginas: Home, /learn, livro, blog, 10 trilhas e todas as lições, com a data da última mudança de cada lição) e `app/robots.ts` (/robots.txt).
+  - O leitor de lições virou `app/learn/[trackPath]/(lesson)/LessonView.tsx`, montado num layout. Trocar de capítulo muda a URL sem recarregar a página, e o "voltar" do navegador volta para o capítulo anterior. As páginas `(lesson)/page.tsx` e `(lesson)/[chapterId]/page.tsx` só dão os metadados. Capítulo inexistente dá 404.
+  - Os capítulos da barra lateral e os botões de anterior e próxima viraram links de verdade (`lesson/ChapterLink.tsx`), que o Google segue. O clique comum continua trocando no lugar, e o clique do meio abre em outra aba.
+  - Os registros de capítulos (`tracks/<trilha>/index.tsx`) deixaram de ser `"use client"`, porque são só dados e o servidor precisa lê-los. As URLs vêm de `lib/tracks/urls.ts`.
+
 - **Apoio pelo Ko-fi** (`ko-fi.com/gabrielfrc`). Link "me pague um café" no rodapé do Home e uma linha discreta no fim de cada lição, embaixo dos botões de anterior e próxima: "As lições são gratuitas…" + "apoiar no Ko-fi". A xícara é um SVG desenhado (`nav/CoffeeCup.tsx`) e a linha das lições fica em `lesson/SupportNote.tsx`. Sem o widget oficial do Ko-fi e sem scripts de terceiros. Texto em EN e PT.
 
 - **Partículas no fundo do Home** (`components/home/Particles.tsx`). Poucos pontos (no máximo 70) flutuam devagar atrás da página inteira, nos dois temas. As cores vêm de `--hm-ink` e `--hm-accent`, então acompanham a troca de tema. O mouse empurra de leve os pontos próximos, que voltam a flutuar sozinhos. Com "reduzir movimento" ligado, os pontos ficam parados. O céu estrelado fixo do tema escuro continua igual.

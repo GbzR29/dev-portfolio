@@ -13,6 +13,7 @@ import { ReferenceSidebar } from "@/components/reference/ReferenceSidebar";
 import { ReferenceProvider, RefToken } from "@/components/reference/RefToken";
 import { getTrack } from "@/lib/tracks";
 import type { Chapter } from "@/lib/tracks/types";
+import { chapterHref } from "@/lib/tracks/urls";
 import { chaptersUsing } from "@/lib/reference/usage";
 import {
   getReference, loc, referenceHref, referenceIndex,
@@ -338,7 +339,7 @@ export default function ReferenceEntryPage() {
                 {usedIn.map((c) => (
                   <Link
                     key={c.id}
-                    href={`/learn/${encodeURIComponent(trackPath)}?chapter=${c.id}`}
+                    href={chapterHref(trackPath, c.id)}
                     className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm hover:border-[var(--primary)]/50 hover:bg-[var(--primary-low)] transition-colors"
                   >
                     <BookOpen size={15} className="flex-shrink-0 text-[var(--primary)]" />

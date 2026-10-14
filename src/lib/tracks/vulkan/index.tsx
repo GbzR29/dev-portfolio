@@ -1,5 +1,3 @@
-"use client";
-
 // The Vulkan track: the explicit GPU API, built up from an empty window to a
 // textured, depth-tested, multisampled scene with two frames in flight, compute
 // particles and bindless textures. Vulkan 1.3 core (dynamic rendering,

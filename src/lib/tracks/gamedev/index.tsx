@@ -1,5 +1,4 @@
 // src/lib/tracks/gamedev/index.tsx
-"use client";
 
 // The Game Dev track: the techniques between rendering and a finished game —
 // timing, motion and feel, procedural generation, collision detection and the

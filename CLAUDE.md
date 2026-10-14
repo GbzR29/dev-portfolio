@@ -18,7 +18,11 @@ src/components/nav/                    SiteMenu (phone ☰ sheet, styles in src/
 src/app/learn/page.tsx                 /learn landing — track cards on the Home look (HomeNav, home.css); data from the catalog + progress
 src/styles/learn.css                   /learn look: re-values the theme.css tokens while a .learn page is shown, syntax colours, figure numbering
 src/lib/tracks/progress.ts             reading progress + "last lesson" in localStorage (sidebar, /learn "resume")
-src/app/learn/[trackPath]/page.tsx     the ONE page that renders every lesson of every track
+src/app/learn/[trackPath]/(lesson)/    LessonView.tsx = the ONE reader for every lesson of every track, mounted by layout.tsx;
+                                       page.tsx (/learn/<track>, redirects old ?chapter= links) and [chapterId]/page.tsx
+                                       (/learn/<track>/<id>) only give metadata (src/lib/tracks/seo.ts)
+src/lib/tracks/urls.ts                 SITE_URL, trackHref, chapterHref — build every lesson URL with these
+src/app/sitemap.ts, src/app/robots.ts  every track + lesson for search engines (lastmod from chapter-dates.json)
 src/app/learn/[trackPath]/reference/   function reference pages (src/lib/reference)
 src/lib/tracks/catalog.ts              THE list of tracks: id, route path, title, color, status, level/description keys
 src/lib/tracks/index.ts                registry: joins catalog entries with each track's chapter list (getTrack)

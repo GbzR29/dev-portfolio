@@ -1,5 +1,4 @@
 // src/lib/tracks/algorithms/index.tsx
-"use client";
 
 // The Algorithms & Data Structures track: everything built from scratch in
 // C++, from how memory is laid out to graphs. Chapters follow their
