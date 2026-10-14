@@ -13,8 +13,7 @@ function StatusContent() {
   const searchParams = useSearchParams();
   
   const type = searchParams.get("type") || "development";
-  const from = searchParams.get("from") || "home";
-  
+
   const isDev = type === "development";
 
   const backDestinations: Record<string, { label: string; href: string }> = {
@@ -23,7 +22,10 @@ function StatusContent() {
     home: { label: "Return to Main Page", href: "/" },
   };
 
-  const backTo = backDestinations[from] || backDestinations.home;
+  // Only known sections are shown: any other ?from= text would be printed on the page
+  const param = searchParams.get("from") ?? "";
+  const from = Object.hasOwn(backDestinations, param) ? param : "home";
+  const backTo = backDestinations[from];
 
   return (
     <div className="max-w-2xl w-full text-center space-y-8">

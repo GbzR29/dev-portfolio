@@ -35,6 +35,7 @@ const text: Record<string, string> = {
   mPoly_mu2: "2x · (x − 3) = 2x² − 6x",
   mPoly_mu3: "−1 · (x − 3) = −x + 3",
   mPoly_mu4: "junte: x³ + (−3 + 2)x² + (−6 − 1)x + 3. Graus 2 + 1 = 3 ✓",
+  mPoly_binomLink: "Um produto tem um padrão próprio: um binômio multiplicado por ele mesmo, (a + b)ⁿ. O capítulo Binômio de Newton, logo depois deste, escreve esse produto para qualquer n sem precisar multiplicar.",
   mPoly_hornerTitle: "Calculando: o método de Horner",
   mPoly_hornerBody: "Calcular termo a termo recalcula potências de novo e de novo. Colocar x em evidência repetidamente, de dentro para fora, dá uma forma aninhada que usa uma multiplicação e uma adição por coeficiente: para grau n, n multiplicações em vez de cerca de n²/2. À mão isso importa: você nunca calcula uma potência grande como 3⁵, e todo número intermediário fica pequeno. O mesmo padrão, escrito como tabela, é o dispositivo de Briot-Ruffini, mais abaixo.",
   mPoly_eqHorner: "A forma de Horner",

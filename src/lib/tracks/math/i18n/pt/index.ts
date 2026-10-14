@@ -18,6 +18,7 @@ import functions from "./functions";
 import linearSystems from "./linear-systems";
 import quadratics from "./quadratics";
 import polynomials from "./polynomials";
+import binomial from "./binomial";
 import exponents from "./exponents";
 import sequences from "./sequences";
 // ── Geometry ──
@@ -73,7 +74,7 @@ import absorbingChains from "./absorbing-chains";
 const bundle: LessonText = {
   strings: {
     ...numberLine, ...orderOfOperations, ...fractions, ...ratios, ...divisibility, ...powers, ...bases,
-    ...expressions, ...linearEquations, ...inequalities, ...functions, ...linearSystems, ...quadratics, ...polynomials, ...exponents, ...sequences,
+    ...expressions, ...linearEquations, ...inequalities, ...functions, ...linearSystems, ...quadratics, ...polynomials, ...binomial, ...exponents, ...sequences,
     ...angles, ...triangles, ...area, ...pythagoras, ...similarity, ...circle, ...volumes, ...analytic, ...transformations,
     ...trig, ...unitCircle, ...triangleLaws, ...identities, ...polar, ...waves,
     ...vectors, ...matrices, ...determinant, ...inverse, ...eigen, ...complex, ...quaternions,

@@ -5,7 +5,7 @@
 
 import type { Gen } from "./problem";
 import { bases, fractions, gcdLcm, order, percent, powers, signed } from "./arithmetic";
-import { collect, evaluate, explog, linear, quadratic, sequences, system } from "./algebra";
+import { binomialChoose, binomialCoef, collect, evaluate, explog, linear, quadratic, sequences, system } from "./algebra";
 
 export type Kind = { id: string; label: [string, string]; make: Gen };
 export type PracticeSet = { title: [string, string]; kinds: Kind[] };
@@ -25,6 +25,10 @@ export const SETS = {
   linear:     { title: ["mpr_tLinear", "Practice: linear equations"], kinds: [{ id: "linear", label: ["mpr_kLinear", "equations"], make: linear }] },
   systems:    { title: ["mpr_tSystems", "Practice: systems of equations"], kinds: [{ id: "system", label: ["mpr_kSystem", "systems"], make: system }] },
   quadratics: { title: ["mpr_tQuadratics", "Practice: quadratic equations"], kinds: [{ id: "quadratic", label: ["mpr_kQuadratic", "quadratics"], make: quadratic }] },
+  binomial:   { title: ["mpr_tBinomial", "Practice: the binomial theorem"], kinds: [
+    { id: "coef", label: ["mpr_kBinCoef", "coefficients"], make: binomialCoef },
+    { id: "choose", label: ["mpr_kBinChoose", "C(n, k)"], make: binomialChoose },
+  ] },
   explog:     { title: ["mpr_tExpLog", "Practice: exponents and logarithms"], kinds: [{ id: "explog", label: ["mpr_kExpLog", "exponents and logs"], make: explog }] },
   sequences:  { title: ["mpr_tSequences", "Practice: sequences"], kinds: [{ id: "sequences", label: ["mpr_kSequences", "sequences"], make: sequences }] },
 } satisfies Record<string, PracticeSet>;

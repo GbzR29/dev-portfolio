@@ -16,6 +16,7 @@ const track = {
     "linear-systems": "Sistemas lineares",
     quadratics: "Equações do segundo grau",
     polynomials: "Polinômios",
+    binomial: "Binômio de Newton",
     exponents: "Expoentes e logaritmos",
     sequences: "Sequências e séries",
     angles: "Pontos, retas e ângulos",

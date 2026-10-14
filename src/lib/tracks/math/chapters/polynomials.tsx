@@ -87,6 +87,9 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
           { tex: r`= x^3 - 3x^2 + 2x^2 - 6x \amber{- x + 3}`, why: tx(t, "mPoly_mu3", "−1 · (x − 3) = −x + 3") },
           { tex: r`= \green{x^3 - x^2 - 7x + 3}`, why: tx(t, "mPoly_mu4", "collect: x³ + (−3 + 2)x² + (−6 − 1)x + 3. Degrees 2 + 1 = 3 ✓") },
         ]} />
+      <Callout type="info" t={t}>
+        {tx(t, "mPoly_binomLink", "One product has a pattern of its own: a binomial times itself, (a + b)ⁿ. The Binomial Theorem chapter, right after this one, writes it out for any n without multiplying.")}
+      </Callout>
 
       <H2>{tx(t, "mPoly_hornerTitle", "Evaluating: Horner's method")}</H2>
       <p>

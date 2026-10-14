@@ -15,7 +15,6 @@ import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
 import { CountingFigure } from "@/components/lesson/figures/math/CountingFigure";
-import { PascalFigure } from "@/components/lesson/figures/math/PascalFigure";
 
 const r = String.raw;
 
@@ -170,6 +169,10 @@ export function CountingContent({ t }: { t: TrackTranslations }) {
 
       <H2>{tx(t, "mCnt_pascalTitle", "Pascal's triangle and the binomial theorem")}</H2>
       <p>
+        {tx(t, "mCnt_binomBack",
+          "The Binomial Theorem chapter met these numbers as the coefficients of (a + b)ⁿ and built Pascal's triangle from the expansions. This section reads the same facts as counting.")}
+      </p>
+      <p>
         {tx(t, "mCnt_ruleBody",
           "Here is a way to find C(n, k) with additions only. Single out one of the n items, say Ana. Every group of k either contains Ana or not. Groups with Ana: choose her partners, k − 1 from the other n − 1: C(n − 1, k − 1). Groups without Ana: all k from the other n − 1: C(n − 1, k). The two kinds do not overlap, so add them. Write the numbers in rows, each row starting and ending with 1, and every inner number is the sum of the two above it: Pascal's triangle.")}
       </p>
@@ -198,8 +201,6 @@ export function CountingContent({ t }: { t: TrackTranslations }) {
         {tx(t, "mCnt_rowSumBody",
           "Put a = b = 1: 2ⁿ = C(n, 0) + C(n, 1) + … + C(n, n). Each row adds up to a power of 2. That is also a count: a subset of n items is built by deciding in or out for each item, 2 options n times, 2ⁿ subsets, and grouping them by size gives the row. And a counting puzzle in disguise: walking on a street grid from one corner to the corner 4 blocks east and 3 blocks north, always east or north, every route is a word of 7 moves with 3 N's, so there are C(7, 3) = 35 shortest routes.")}
       </p>
-
-      <PascalFigure t={t} />
 
       <H2>{tx(t, "mCnt_repTitle", "When items may repeat")}</H2>
       <p>

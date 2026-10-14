@@ -290,3 +290,52 @@ export const sequences: Gen = (lv: Level) => {
     };
   }, p => p.fields[0].answer.kind === "num" && Math.abs(p.fields[0].answer.value.n) <= 5000);
 };
+
+// ── Binomial theorem ──
+const binom = (N: number, k: number) => { let r = 1; for (let i = 1; i <= k; i++) r = (r * (N - k + i)) / i; return r; };
+/** "2x", "x" — the first term of the bracket. */
+const px = (p: number) => (p === 1 ? "x" : `${p}x`);
+const sq = (q: number) => (q < 0 ? `- ${-q}` : `+ ${q}`);
+
+/** The coefficient of xᵐ in (px + q)ⁿ, or the constant term of (x + q/x)ⁿ. */
+export const binomialCoef: Gen = (lv: Level) => until((): Problem => {
+  if (lv === 3 && Math.random() < 0.5) {
+    const N = pick([4, 6, 8]), q = nz(-2, 2), k = N / 2, c = binom(N, k), ans = c * q ** k;
+    return {
+      key: `bn:c:${N}:${q}`, ask: ["mpr_binConst", "Find the term without x (the constant term)"],
+      tex: `\\left(x ${sq(q)}\\,\\tfrac{1}{x}\\right)^{${N}}`,
+      steps: [
+        `T = \\binom{${N}}{k}\\,x^{${N} - k}\\left(\\tfrac{${q}}{x}\\right)^{k} = \\binom{${N}}{k}\\,${fac(q)}^{k}\\,x^{${N} - 2k}`,
+        `${N} - 2k = 0 \\;\\Rightarrow\\; k = ${k}`,
+        `\\binom{${N}}{${k}} \\cdot ${fac(q)}^{${k}} = ${c} \\cdot ${fac(q ** k)}`,
+        `= ${amber(`${ans}`)}`,
+      ],
+      short: `${ans}`, fields: [num("", fr(ans))],
+    };
+  }
+  const p = lv === 1 ? 1 : ri(1, 3), q = lv === 1 ? nz(-3, 3) : nz(-4, 4);
+  const N = lv === 1 ? ri(3, 5) : ri(3, 6), m = ri(1, N - 1), k = N - m, c = binom(N, k), ans = c * p ** m * q ** k;
+  return {
+    key: `bn:${p}:${q}:${N}:${m}`, ask: ["mpr_binCoef", "Find the number in front of the power of x shown"],
+    tex: `(${px(p)} ${sq(q)})^{${N}} \\;=\\; \\cdots + \\boxed{\\,?\\,}\\,x^{${m}} + \\cdots`,
+    steps: [
+      `T = \\binom{${N}}{k}\\,(${px(p)})^{${N} - k}\\,${fac(q)}^{k}`,
+      `${N} - k = ${m} \\;\\Rightarrow\\; k = ${k}`,
+      `\\binom{${N}}{${k}} \\cdot ${p}^{${m}} \\cdot ${fac(q)}^{${k}} = ${c} \\cdot ${p ** m} \\cdot ${fac(q ** k)}`,
+      `= ${amber(`${ans}`)}`,
+    ],
+    short: `${ans}`, fields: [num("", fr(ans))],
+  };
+}, p => p.fields[0].answer.kind === "num" && Math.abs(p.fields[0].answer.value.n) <= 5000);
+
+/** C(n, k) by the falling-product formula. */
+export const binomialChoose: Gen = (lv: Level) => {
+  const N = lv === 1 ? ri(4, 7) : lv === 2 ? ri(6, 10) : ri(9, 14);
+  const k = lv === 1 ? ri(1, 2) : ri(2, Math.min(4, N - 2)), c = binom(N, k);
+  const top = Array.from({ length: k }, (_, i) => N - i).join(" \\cdot "), bot = Array.from({ length: k }, (_, i) => k - i).join(" \\cdot ");
+  return {
+    key: `bc:${N}:${k}`, ask: ["mpr_binChoose", "Work out the binomial coefficient"], tex: `\\binom{${N}}{${k}}`,
+    steps: chain([`\\binom{${N}}{${k}} = \\frac{${N}!}{${k}!\\,${N - k}!}`, `\\frac{${top}}{${bot}}`, amber(`${c}`)]),
+    short: `${c}`, fields: [num("", fr(c))],
+  };
+};

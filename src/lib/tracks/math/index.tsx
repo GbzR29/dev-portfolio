@@ -29,7 +29,8 @@ const chapters: Chapter[] = [
   { id: "linear-systems",   section: ALGEBRA, title: "Systems of Equations",      minRead: 16, load: () => import("./chapters/linear-systems").then((m) => m.LinearSystemsContent) },
   { id: "quadratics",       section: ALGEBRA, title: "Quadratics",                minRead: 19, load: () => import("./chapters/quadratics").then((m) => m.QuadraticsContent) },
   { id: "polynomials",      section: ALGEBRA, title: "Polynomials",               minRead: 18, load: () => import("./chapters/polynomials").then((m) => m.PolynomialsContent) },
-  { id: "exponents",        section: ALGEBRA, title: "Exponents & Logarithms",    minRead: 13, load: () => import("./chapters/exponents").then((m) => m.ExpLogContent) },
+  { id: "binomial",         section: ALGEBRA, title: "The Binomial Theorem",      minRead: 20, load: () => import("./chapters/binomial").then((m) => m.BinomialContent) },
+  { id: "exponents",       section: ALGEBRA, title: "Exponents & Logarithms",    minRead: 13, load: () => import("./chapters/exponents").then((m) => m.ExpLogContent) },
   { id: "sequences",        section: ALGEBRA, title: "Sequences & Series",        minRead: 17, load: () => import("./chapters/sequences").then((m) => m.SequencesContent) },
 
   { id: "angles",          section: GEOMETRY, title: "Points, Lines & Angles",    minRead: 17, load: () => import("./chapters/angles").then((m) => m.AnglesContent) },
@@ -103,6 +104,7 @@ const requires: Record<string, string[]> = {
   "linear-systems":   ["linear-equations", "algebra"],
   "quadratics":       ["algebra", "powers"],
   "polynomials":      ["quadratics"],
+  "binomial":         ["polynomials", "powers"],
   "exponents":        ["powers", "algebra"],
   "sequences":        ["exponents"],
 
@@ -146,7 +148,7 @@ const requires: Record<string, string[]> = {
   "differential-equations": ["integration-techniques", "exponents"],
 
   "descriptive-stats": ["ratios", "powers"],
-  "counting":          ["powers"],
+  "counting":          ["powers", "binomial"],
   "probability":       ["counting", "fractions"],
   "conditional":       ["probability"],
   "random-variables":  ["conditional", "integrals", "ftc", "descriptive-stats"],
