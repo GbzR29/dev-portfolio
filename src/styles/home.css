@@ -83,6 +83,10 @@ html:not(.dark) .home {
   position: relative;
 }
 
+/* Floating dots behind the whole page (Particles.tsx); the header and main
+   are positioned and come later, so they paint above it */
+.hm-particles { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; }
+
 /* ── Navigation ─────────────────────────────────────────── */
 
 .hm-nav {
