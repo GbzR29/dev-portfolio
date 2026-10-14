@@ -27,6 +27,8 @@ src/lib/tracks/urls.ts                 SITE_URL, learnHref/trackHref/chapterHref
                                        in client components get the page's language with useUrlLang() (src/lib/i18n/useUrlLang.ts)
 src/lib/tracks/seoText.ts              per-track search wording ("OpenGL Tutorial" / "Tutorial de OpenGL") for titles
 src/app/sitemap.ts, src/app/robots.ts  EN + PT pages (hreflang) and the API reference, for search engines
+src/lib/og/                            link-preview images: card.tsx draws (fonts in src/assets/fonts), cards.tsx = text per page;
+                                       each route's opengraph-image.tsx only picks a card (a new route with its own openGraph needs one)
 src/app/learn/[trackPath]/reference/   function reference pages (src/lib/reference)
 src/lib/tracks/catalog.ts              THE list of tracks: id, route path, title, color, status, level/description keys
 src/lib/tracks/index.ts                registry: joins catalog entries with each track's chapter list (getTrack)

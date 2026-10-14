@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: "/pt", languages: languageAlternates("/") },
-  openGraph: { title, description, url: "/pt", siteName: "gabrielfrc.dev", locale: "pt_BR", type: "website", images: [{ url: "/logo.png", width: 600, height: 315, alt: "gabrielfrc.dev" }] },
+  openGraph: { title, description, url: "/pt", siteName: "gabrielfrc.dev", locale: "pt_BR", type: "website" },
 };
 
 export default Home;

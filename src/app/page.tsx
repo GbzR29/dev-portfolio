@@ -24,14 +24,7 @@ export const metadata = {
     description: "C++ programmer working with computer graphics and game engines.",
     url: "https://www.gabrielfrc.dev/",
     siteName: "gabrielfrc.dev",
-    images: [
-      {
-        url: "/logo.png",
-        width: 600,
-        height: 315,
-        alt: "Banner preview",
-      },
-    ],
+    // The image comes from app/opengraph-image.tsx
     locale: "en_US",
     type: "website",
   },

@@ -49,7 +49,7 @@ function strings(lang: UrlLang): Record<string, string | undefined> {
 }
 
 /** The track's name as /learn shows it ("OpenGL 4.6", "Matemática"…). */
-function trackName(info: TrackInfo, lang: UrlLang): string {
+export function trackName(info: TrackInfo, lang: UrlLang): string {
   return strings(lang)[`trackName_${info.id}`] ?? info.title;
 }
 
@@ -58,11 +58,11 @@ function trackDescription(info: TrackInfo, lang: UrlLang): string {
   return strings(lang)[info.descKey] ?? strings("en")[info.descKey] ?? info.descFallback ?? info.title;
 }
 
-function chapterTitle(trackId: string, chapter: Chapter, lang: UrlLang): string {
+export function chapterTitle(trackId: string, chapter: Chapter, lang: UrlLang): string {
   return (lang === "pt" && PT_TITLES[trackId]?.titles[chapter.id]) || chapter.title;
 }
 
-function sectionName(trackId: string, section: string | undefined, lang: UrlLang): string | undefined {
+export function sectionName(trackId: string, section: string | undefined, lang: UrlLang): string | undefined {
   if (!section) return undefined;
   return (lang === "pt" && PT_TITLES[trackId]?.sections[section]) || section;
 }
