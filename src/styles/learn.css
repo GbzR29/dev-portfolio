@@ -179,3 +179,218 @@ html:not(.dark) .learn {
 @media (prefers-reduced-motion: reduce) {
   .learn .lesson-body[data-focus] article > [data-step] { animation: none; }
 }
+
+/* ── Clean look ─────────────────────────────────────────────
+   Pilot tracks (lesson/look.tsx). The column is wide (DocsLayout
+   `wide`), text keeps a comfortable measure centred in it, and
+   figures, code and tables use the full width. Long notes and
+   long listings fold to their first lines with a fade. */
+
+/* Text runs as wide as the figures (user's choice, 2026-10-14); set a length
+   here (e.g. 46rem) to give text a narrower measure again */
+.lesson-wide { --prose-w: none; }
+.lesson-wide > *,
+.lesson-wide .lesson-body > section,
+.lesson-wide .lesson-body article > *,
+.lesson-wide .lesson-body article > p {
+  max-width: var(--prose-w);
+  margin-inline: auto;
+}
+.lesson-wide > .lesson-body,
+.lesson-wide .lesson-body article > :is([data-figure], [data-wide]) { max-width: none; }
+
+/* More air between blocks: paragraphs, headings, lists */
+.lesson-wide .lesson-body article { line-height: 1.85; }
+.lesson-wide .lesson-body article > p { margin-top: 1.9rem !important; }
+.lesson-wide .lesson-body article > h2 { margin-top: 5.5rem !important; }
+.lesson-wide .lesson-body article > h3 { margin-top: 3.25rem !important; }
+.lesson-wide .lesson-body article > :is(h2, h3) + * { margin-top: 1.4rem !important; }
+.lesson-wide .lesson-body article > :is(ul, ol) > li + li { margin-top: 0.7rem; }
+
+/* Callouts (LessonComponents CleanCallout); --tone / --tint come from the type */
+.callout-clean {
+  position: relative;
+  margin-block: 2.75rem !important;
+  padding: 1.15rem 1.5rem 1.2rem 1.6rem;
+  border-radius: 0 12px 12px 0;
+  background: var(--tint);
+  transition: background-color 0.3s ease;
+}
+.callout-clean:hover { background: color-mix(in srgb, var(--tone) 11%, transparent); }
+.callout-rule {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: var(--tone);
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.callout-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tone);
+}
+.callout-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone) 16%, transparent);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s, opacity 0.3s ease 0.15s;
+}
+.callout-body {
+  color: var(--text-main);
+  font-size: 15px;
+  line-height: 1.75;
+  opacity: 0;
+  translate: 0 6px;
+  transition: opacity 0.5s ease 0.25s, translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s;
+}
+
+/* Entrance, once the card has been seen */
+.callout-clean[data-seen] .callout-rule { transform: scaleY(1); }
+.callout-clean[data-seen] .callout-badge { opacity: 1; transform: none; }
+.callout-clean[data-seen] .callout-body { opacity: 0.92; translate: 0 0; }
+
+/* Notes and tips: a chip under their paragraph, opening a popover */
+.lesson-wide .lesson-body article > .callout-chip-wrap { margin-top: 0.85rem !important; }
+.lesson-wide .lesson-body article > .callout-chip-wrap + .callout-chip-wrap { margin-top: 0.5rem !important; }
+.callout-chip-wrap { position: relative; }
+.callout-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.28rem 0.8rem 0.28rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--tone) 32%, transparent);
+  background: var(--tint);
+  color: var(--tone);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, translate 0.2s ease;
+}
+.callout-chip:hover { background: color-mix(in srgb, var(--tone) 15%, transparent); translate: 0 -1px; }
+.callout-chip[aria-expanded="true"] { background: color-mix(in srgb, var(--tone) 18%, transparent); border-color: var(--tone); }
+.callout-chip .callout-badge { width: 20px; height: 20px; opacity: 1; transform: none; }
+.callout-chip-point { opacity: 0.7; }
+
+.callout-pop {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 12px);
+  z-index: 40;
+  width: min(36rem, calc(100vw - 2rem));
+  padding: 0.95rem 1.25rem 1.15rem;
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--tone);
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: 0 22px 60px -18px rgb(0 0 0 / 0.45), 0 2px 8px -2px rgb(0 0 0 / 0.15);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.97);
+  transform-origin: 1.5rem top;
+  transition: opacity 0.2s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.3s;
+}
+/* little beak pointing at the chip */
+.callout-pop::before {
+  content: "";
+  position: absolute;
+  left: 1.4rem;
+  top: -7px;
+  width: 12px;
+  height: 12px;
+  background: var(--card);
+  border-left: 2px solid var(--tone);
+  border-top: 2px solid var(--tone);
+  transform: rotate(45deg);
+}
+.callout-pop[data-above] {
+  top: auto;
+  bottom: calc(100% + 12px);
+  border-top: 1px solid var(--border);
+  border-bottom: 2px solid var(--tone);
+  transform: translateY(8px) scale(0.97);
+  transform-origin: 1.5rem bottom;
+}
+.callout-pop[data-above]::before {
+  top: auto;
+  bottom: -7px;
+  border: none;
+  border-right: 2px solid var(--tone);
+  border-bottom: 2px solid var(--tone);
+}
+.callout-pop[data-open] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+.callout-pop-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.55rem;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tone);
+}
+.callout-pop-head .callout-badge { opacity: 1; transform: none; }
+.callout-pop-close {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.callout-pop-close:hover { background: var(--tint); color: var(--tone); }
+.callout-pop-body { color: var(--text-main); font-size: 15px; line-height: 1.75; }
+
+/* Phones: the popover is a sheet rising from the bottom */
+@media (max-width: 639px) {
+  .callout-pop,
+  .callout-pop[data-above] {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: auto;
+    bottom: 0;
+    width: auto;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 1.1rem 1.25rem calc(1.4rem + env(safe-area-inset-bottom));
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--tone);
+    border-radius: 16px 16px 0 0;
+    transform: translateY(24px);
+  }
+  .callout-pop::before { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .callout-rule, .callout-badge, .callout-body, .callout-chip, .callout-pop { transition: none; }
+  .callout-rule { transform: none; }
+  .callout-badge { opacity: 1; transform: none; }
+  .callout-body { opacity: 0.92; translate: 0 0; }
+  .callout-pop { transform: none; }
+}
+
+.code-folded {
+  -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
+  mask-image: linear-gradient(to bottom, #000 65%, transparent);
+}

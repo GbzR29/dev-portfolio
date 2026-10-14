@@ -14,6 +14,16 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-13
 
+- **Visual "leitura limpa" nas lições, em piloto na trilha de OpenGL** (`lesson/look.tsx`; as outras trilhas continuam iguais até a aprovação):
+  - **Palco largo:** a coluna da lição ficou mais larga (até 70rem; 76rem com a barra lateral recolhida). Texto, figuras, código e tabelas ocupam a mesma largura e ficam alinhados. Num primeiro momento o texto ficava numa coluna mais estreita no centro, mas em 2026-10-14 passou a ter a largura dos widgets, a pedido. A largura do texto é uma variável só (`--prose-w` em `learn.css`, `.lesson-wide`).
+  - **Dicas e notas viram botão com janela:** no lugar do card no meio do texto, aparece logo abaixo do parágrafo um botão pequeno com uma seta curva apontando para ele, o ícone e o rótulo ("Dica", "Nota"). Clicar abre uma janela flutuante com o conteúdo, com animação de surgir e um "biquinho" apontando para o botão. Ela abre abaixo, ou acima quando falta espaço, e fecha com clique fora, Esc ou ×. No celular, a janela sobe de baixo da tela. O texto continua na página (busca e Google encontram).
+  - **Avisos de atenção continuam visíveis**, como card animado: na primeira vez que aparecem na tela, a faixa colorida se desenha de cima para baixo, o ícone surge com um pequeno salto num selo redondo e o texto sobe. Com "reduzir movimento" ligado no sistema, nada anima.
+  - **Mais espaço no texto:** entrelinha maior, mais espaço entre parágrafos, antes dos títulos, entre itens de lista e em volta dos cards.
+  - **Código longo recolhido:** listagens com mais de 24 linhas (o main.cpp inteiro) começam mostrando 14, com "mostrar as N linhas".
+  - **Seções recolhíveis:** clicar no título de uma seção (h2) recolhe a seção inteira, com uma seta que aparece ao passar o mouse. O "Nesta página" reabre a seção antes de rolar até ela. No modo foco isso fica desligado.
+  - **"Funções usadas neste capítulo"** começa compacto, como uma fileira de nomes clicáveis, com "mostrar descrições" para os cards.
+  - **Nomes de código no texto:** chamadas e constantes como `glBindBuffer(GL_ARRAY_BUFFER, vbo)`, `GL_FLOAT`, `GLuint`, `glm::`, `std::`, `sizeof(...)` e nomes de arquivo passam a aparecer como código no texto corrido, nas tabelas e nas caixas de objetivos e ideias-chave, com o card da referência ao passar o mouse (`lesson/proseCode.tsx`).
+
 - **Imagens de prévia (Open Graph) geradas para cada página.** Quando um link do site é colado no WhatsApp, Discord, LinkedIn ou Reddit, aparece um cartão no visual "papel de laboratório" da Home: papel quadriculado, títulos em Spectral, rótulos em IBM Plex Mono e a faixa com a cor da trilha. Cada trilha, lição (EN e PT) e função da referência tem o próprio cartão, com o título, a seção, "lição 4 de 70 · 10 min de leitura" ou o resumo da função. A Home e o /learn também têm cartão, e o livro e o blog usam o da Home. O desenho fica em `lib/og/card.tsx`, os textos em `lib/og/cards.tsx`, e os arquivos `opengraph-image.tsx` em `app/` só escolhem o cartão. As fontes (licença OFL) estão em `src/assets/fonts/`. A Home deixou de usar o `/logo.png` como prévia.
 - **Blog e livro:** o blog ganhou título ("Blog | Gabriel Carvalho") e descrição próprios; o blog e o livro ganharam URL canônica.
 

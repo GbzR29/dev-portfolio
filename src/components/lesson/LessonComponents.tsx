@@ -1,7 +1,9 @@
 // src/components/lesson/LessonComponents.tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useLessonLook } from "./look";
+import { markCode } from "./proseCode";
 import { Prism as SyntaxHighlighter, createElement } from "react-syntax-highlighter";
 import { lessonSyntaxTheme } from "@/lib/syntaxTheme";
 import { RefToken, useReference, useRefEntry } from "@/components/reference/RefToken";
@@ -51,6 +53,10 @@ function linkifyNode(node: HastNode, pattern: RegExp, index: Map<string, RefEntr
 
 // ─── CodeBlock ────────────────────────────────────────────────────────────────
 
+/** Clean look: listings longer than this start folded to CODE_FOLD_TO lines. */
+const CODE_FOLD_OVER = 24;
+const CODE_FOLD_TO = 14;
+
 export function CodeBlock({
   children, lang = "cpp", filename, t,
 }: {
@@ -86,11 +92,19 @@ export function CodeBlock({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Clean look: long listings (a whole main.cpp) start folded to their first lines
+  const look = useLessonLook();
+  const lineCount = children.replace(/\n$/, "").split("\n").length;
+  const foldable = look.clean && lineCount > CODE_FOLD_OVER;
+  const [open, setOpen] = useState(false);
+  const folded = foldable && !open;
+
   return (
-    <div className="rounded-xl overflow-hidden border border-[var(--border)] !my-8">
+    <div data-wide="" className="rounded-xl overflow-hidden border border-[var(--border)] !my-8">
       <div className="flex items-center justify-between px-4 py-1.5 bg-[var(--code-bg)] border-b border-[var(--border)]">
         <span className="font-mono text-[11.5px] text-[var(--text-muted)]">
           {filename ?? lang}
+          {foldable && <span className="ml-3 opacity-70">{tx(t, "codeLines", "{n} lines").replace("{n}", String(lineCount))}</span>}
         </span>
         <button
           onClick={handleCopy}
@@ -99,7 +113,10 @@ export function CodeBlock({
           {copied ? tx(t, "codeCopied", "copied") : tx(t, "codeCopy", "copy")}
         </button>
       </div>
-      <div className="overflow-auto bg-[var(--code-bg)]">
+      <div
+        className={`${folded ? "overflow-hidden code-folded" : "overflow-auto"} bg-[var(--code-bg)]`}
+        style={folded ? { maxHeight: `calc(${CODE_FOLD_TO} * 1.75 * 0.82rem + 1.25rem)` } : undefined}
+      >
         <SyntaxHighlighter
           language={lang}
           style={lessonSyntaxTheme()}
@@ -116,6 +133,18 @@ export function CodeBlock({
           {children}
         </SyntaxHighlighter>
       </div>
+      {foldable && (
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          aria-expanded={open}
+          className="w-full px-4 py-2 bg-[var(--code-bg)] border-t border-[var(--border)] font-mono text-[11.5px] text-[var(--primary)] hover:underline underline-offset-4 text-left"
+        >
+          {open
+            ? tx(t, "codeFold", "fold the code")
+            : tx(t, "codeShowAll", "show all {n} lines").replace("{n}", String(lineCount))}
+        </button>
+      )}
     </div>
   );
 }
@@ -139,12 +168,163 @@ export function Callout({
     tip:  { tone: "var(--success)",   tint: "color-mix(in srgb, var(--success) 8%, transparent)", labelKey: "calloutTip", fallback: "TIP" },
   }[type];
 
+  // Clean look: warnings stay a visible card; notes and tips become a chip under
+  // the paragraph they add to, opening a popover
+  const look = useLessonLook();
+  if (look.clean) {
+    const Variant = type === "warn" ? CleanCallout : CalloutChip;
+    return <Variant type={type} tone={config.tone} tint={config.tint} label={tx(t, config.labelKey, config.fallback)} t={t}>{children}</Variant>;
+  }
+
   return (
     <div className="!my-8 py-4 px-5 border-l-2" style={{ borderColor: config.tone, background: config.tint }}>
       <span className="font-mono text-[11px] uppercase tracking-[0.08em] block mb-1.5" style={{ color: config.tone }}>
         {tx(t, config.labelKey, config.fallback)}
       </span>
       <div className="text-[var(--text-main)] opacity-90 text-[15px] leading-relaxed">{children}</div>
+    </div>
+  );
+}
+
+/** Drawn 14 px marks for the three callout kinds (stroke = the callout's tone). */
+function CalloutIcon({ type }: { type: CalloutType }) {
+  const common = { width: 14, height: 14, viewBox: "0 0 16 16", fill: "none", stroke: "currentColor", strokeWidth: 1.4, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, "aria-hidden": true };
+  if (type === "warn") {
+    return <svg {...common}><path d="M8 1.8 15 14H1z" /><path d="M8 6.2v3.6M8 11.9v.1" /></svg>;
+  }
+  if (type === "tip") {
+    return <svg {...common}><path d="M5.6 10.4A4.6 4.6 0 1 1 10.4 10.4c-.6.5-.9 1.1-.9 1.8H6.5c0-.7-.3-1.3-.9-1.8z" /><path d="M6.4 14.4h3.2" /></svg>;
+  }
+  return <svg {...common}><circle cx="8" cy="8" r="6.6" /><path d="M8 7.2v4.2M8 4.7v.1" /></svg>;
+}
+
+/** The clean-look warning card (styles: learn.css "Clean look"). Always open:
+ *  the first time it scrolls into view its rule draws down, the icon pops in
+ *  and the text rises. */
+function CleanCallout({ type, tone, tint, label, children }: {
+  type: CalloutType;
+  tone: string;
+  tint: string;
+  label: string;
+  t?: TrackTranslations;
+  children: React.ReactNode;
+}) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [seen, setSeen] = useState(false);
+
+  // Play the entrance once, when a fifth of the card is on screen
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") { setSeen(true); return; }
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setSeen(true); io.disconnect(); }
+    }, { threshold: 0.2 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={rootRef}
+      data-callout=""
+      data-seen={seen ? "" : undefined}
+      className="callout-clean"
+      style={{ "--tone": tone, "--tint": tint } as React.CSSProperties}
+    >
+      <span className="callout-rule" aria-hidden="true" />
+      <span className="callout-head font-mono">
+        <span className="callout-badge"><CalloutIcon type={type} /></span>
+        {label}
+      </span>
+      <div className="callout-body">{children}</div>
+    </div>
+  );
+}
+
+/** The clean-look note or tip: a chip under the paragraph it adds to (a curved
+ *  arrow points up at it); the text opens in a popover below the chip, or above
+ *  when there is no room, and as a bottom sheet on phones (learn.css). Closes on
+ *  an outside click, Esc or ×. The text stays in the page while closed. */
+function CalloutChip({ type, tone, tint, label, t, children }: {
+  type: CalloutType;
+  tone: string;
+  tint: string;
+  label: string;
+  t?: TrackTranslations;
+  children: React.ReactNode;
+}) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const chipRef = useRef<HTMLButtonElement>(null);
+  const popId = useId();
+  const [open, setOpen] = useState(false);
+  const [above, setAbove] = useState(false);
+
+  const toggle = () => {
+    if (!open && wrapRef.current) {
+      const r = wrapRef.current.getBoundingClientRect();
+      const below = window.innerHeight - r.bottom;
+      setAbove(below < 320 && r.top > below);
+    }
+    setOpen((o) => !o);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (!wrapRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { setOpen(false); chipRef.current?.focus(); }
+    };
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={wrapRef}
+      data-callout=""
+      className="callout-chip-wrap"
+      style={{ "--tone": tone, "--tint": tint } as React.CSSProperties}
+    >
+      <button
+        ref={chipRef}
+        type="button"
+        className="callout-chip font-mono"
+        aria-expanded={open}
+        aria-controls={popId}
+        onClick={toggle}
+      >
+        {/* curved arrow up to the paragraph this note belongs to */}
+        <svg className="callout-chip-point" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M13 13H7a4 4 0 0 1-4-4V3" /><path d="M1 5l2-2 2 2" />
+        </svg>
+        <span className="callout-badge"><CalloutIcon type={type} /></span>
+        {label}
+      </button>
+      <div
+        id={popId}
+        role="dialog"
+        aria-label={label}
+        className="callout-pop"
+        data-open={open ? "" : undefined}
+        data-above={above ? "" : undefined}
+      >
+        <div className="callout-pop-head font-mono">
+          <span className="callout-badge"><CalloutIcon type={type} /></span>
+          {label}
+          <button type="button" className="callout-pop-close" onClick={() => { setOpen(false); chipRef.current?.focus(); }} aria-label={tx(t, "calloutClose", "close")}>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+              <path d="M4 4l8 8M12 4l-8 8" />
+            </svg>
+          </button>
+        </div>
+        <div className="callout-pop-body">{children}</div>
+      </div>
     </div>
   );
 }
@@ -173,12 +353,35 @@ function slug(text: React.ReactNode): string {
 }
 
 export function H2({ children }: { children: React.ReactNode }) {
+  const look = useLessonLook();
+  const id = slug(children);
+  const folded = look.folded.has(id);
   return (
     <h2
-      id={slug(children)}
+      id={id}
+      data-folded={look.canFold && folded ? "" : undefined}
       className="font-display text-[1.85rem] leading-tight font-normal text-[var(--text-main)] !mt-16 scroll-mt-[calc(var(--nav-h,81px)+24px)] [text-wrap:balance]"
     >
-      {children}
+      {look.canFold ? (
+        // Clean look: the heading folds its section (LessonView hides the section's blocks)
+        <button
+          type="button"
+          data-fold-toggle=""
+          onClick={() => look.toggleFold(id)}
+          aria-expanded={!folded}
+          className="group/fold inline text-left cursor-pointer"
+        >
+          {children}
+          <svg
+            width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"
+            strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+            className={`inline-block ml-3 align-middle text-[var(--text-muted)] transition-[transform,opacity] duration-200
+              ${folded ? "-rotate-90 opacity-100" : "opacity-0 group-hover/fold:opacity-100 group-focus-visible/fold:opacity-100"}`}
+          >
+            <path d="M4 6l4 4 4-4" />
+          </svg>
+        </button>
+      ) : children}
     </h2>
   );
 }
@@ -203,8 +406,10 @@ export function LessonTable({
   headers: string[];
   rows: (string | React.ReactNode)[][];
 }) {
+  // Clean look: code names inside the text columns read as code too
+  const { clean } = useLessonLook();
   return (
-    <div className="overflow-x-auto my-6 border-t border-[var(--border-strong)]">
+    <div data-wide="" className="overflow-x-auto my-6 border-t border-[var(--border-strong)]">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-[var(--border-strong)]">
@@ -220,7 +425,7 @@ export function LessonTable({
             <tr key={i}>
               {row.map((cell, j) => (
                 <td key={j} className={`pl-0 pr-4 py-2.5 text-[13.5px] align-baseline ${j === 0 ? "font-mono text-[var(--primary)]" : "text-[var(--text-main)] opacity-90"}`}>
-                  {cell}
+                  {clean && j > 0 && typeof cell === "string" ? markCode(cell) : cell}
                 </td>
               ))}
             </tr>

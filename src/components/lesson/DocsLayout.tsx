@@ -25,9 +25,11 @@ const RAIL = "sticky top-[var(--nav-h)] h-[calc(100vh-var(--nav-h))] overscroll-
 const STORAGE_KEY = "docs-rail-collapsed";
 
 export function DocsLayout({
-  left, right, children, crumbs, drawerTitle, drawerKey, backHref, backLabel = "Back",
+  left, right, children, crumbs, drawerTitle, drawerKey, backHref, backLabel = "Back", wide = false,
 }: {
   left: ReactNode;
+  /** A wider reading column (clean lesson look): the page keeps text narrow itself. */
+  wide?: boolean;
   right?: ReactNode;
   children: ReactNode;
   /** The page's path, shown in the top bar. */
@@ -171,7 +173,7 @@ export function DocsLayout({
           <main
             className={`mx-auto w-full px-5 sm:px-8 lg:px-10 pt-10 lg:pt-14 pb-32 ${
               animate ? "transition-[max-width] duration-300 ease-out" : ""
-            } ${collapsed ? "max-w-[64rem]" : "max-w-[56rem]"}`}
+            } ${wide ? (collapsed ? "max-w-[76rem]" : "max-w-[70rem]") : collapsed ? "max-w-[64rem]" : "max-w-[56rem]"}`}
           >
             {children}
           </main>

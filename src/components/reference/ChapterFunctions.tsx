@@ -1,8 +1,10 @@
 // src/components/reference/ChapterFunctions.tsx
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, BookMarked } from "lucide-react";
+import { useLessonLook } from "@/components/lesson/look";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { loc, referenceHref, referenceIndex, type Reference } from "@/lib/reference";
 
@@ -15,8 +17,12 @@ export function ChapterFunctions({ reference, names }: { reference: Reference; n
   const tt = t as Record<string, string | undefined>;
   const index = referenceIndex(reference);
   const entries = names.map((n) => index.get(n)).filter((e) => e !== undefined);
+  // Clean look: the names first, as a row of links; the cards with summaries on demand
+  const look = useLessonLook();
+  const [open, setOpen] = useState(false);
 
   if (entries.length === 0) return null;
+  const compact = look.clean && !open;
 
   return (
     <section className="mt-20 pt-10 border-t border-[var(--border)]">
@@ -37,7 +43,29 @@ export function ChapterFunctions({ reference, names }: { reference: Reference; n
           "Click any function to see its parameters, accepted values, common mistakes and an example."}
       </p>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      {look.clean && (
+        <div className="flex flex-wrap items-center gap-2 mb-4">
+          {compact && entries.map((entry) => (
+            <Link
+              key={entry.name}
+              href={referenceHref(reference, entry.name)}
+              className="font-mono text-[12.5px] px-2.5 py-1 rounded-md border border-[var(--border)] bg-[var(--card)] text-[var(--text-main)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors"
+            >
+              {entry.name}
+            </Link>
+          ))}
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            className="font-mono text-[11.5px] text-[var(--primary)] hover:underline underline-offset-4 px-1"
+          >
+            {open ? (tt.refHideSummaries ?? "hide descriptions") : (tt.refShowSummaries ?? "show descriptions")}
+          </button>
+        </div>
+      )}
+
+      <div className={`grid gap-3 sm:grid-cols-2 ${compact ? "hidden" : ""}`}>
         {entries.map((entry) => (
           <Link
             key={entry.name}

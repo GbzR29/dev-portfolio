@@ -23,6 +23,7 @@ import { LessonSidebar } from "@/components/sidebar/LessonSidebar";
 import { DocsLayout } from "@/components/lesson/DocsLayout";
 import { OnThisPage, type TocHeading } from "@/components/lesson/OnThisPage";
 import { ChapterPager } from "@/components/lesson/ChapterPager";
+import { CLEAN_LOOK_TRACKS, LessonLookContext } from "@/components/lesson/look";
 import { SupportNote } from "@/components/lesson/SupportNote";
 import { BeforeYouStart, PrereqProvider } from "@/components/lesson/Prerequisites";
 import { ReferenceProvider } from "@/components/reference/RefToken";
@@ -212,19 +213,46 @@ export default function LessonView() {
 
   useFocusView({ rootRef: contentRef, enabled: focus, step, count: steps.length, go });
 
-  // "On this page" in focus mode: open the heading's step, then scroll to it
+  // ── Clean look (pilot tracks, components/lesson/look.tsx) ──────────────────
+  // Sections folded from their heading are hidden through their data-step tags.
+  const clean = !!track && CLEAN_LOOK_TRACKS.has(track.id);
+  const [folded, setFolded] = useState<Set<string>>(() => new Set());
+  useEffect(() => setFolded(new Set()), [activeChapterId]);
+  const toggleFold = useCallback((headingId: string) => {
+    setFolded((prev) => {
+      const next = new Set(prev);
+      if (next.has(headingId)) next.delete(headingId); else next.add(headingId);
+      return next;
+    });
+  }, []);
+  const look = useMemo(
+    () => ({ clean, canFold: clean && !focus, folded, toggleFold }),
+    [clean, focus, folded, toggleFold],
+  );
+  const foldCss = look.canFold
+    ? steps.map((s, i) => (s.id && folded.has(s.id) ? `.lesson-body article>[data-step="${i}"]:not(h2){display:none}` : "")).join("")
+    : "";
+
+  // "On this page": in focus mode open the heading's step; in reading mode
+  // unfold its section if it is folded; then scroll to it
   const jumpToHeading = useCallback((id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
+    const owner = el.closest<HTMLElement>("article > [data-step]");
+    const s = Number(owner?.dataset.step ?? 0);
     if (focus) {
-      const owner = el.closest<HTMLElement>("article > [data-step]");
-      const s = Number(owner?.dataset.step ?? 0);
       setStep(s);
       requestAnimationFrame(() => scrollBelowBar(el.tagName === "H2" ? stepAnchorRef.current : el));
-    } else {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
     }
-  }, [focus]);
+    const section = steps[s]?.id;
+    if (section && folded.has(section) && el.tagName !== "H2") {
+      toggleFold(section);
+      requestAnimationFrame(() => requestAnimationFrame(() => el.scrollIntoView({ behavior: "smooth", block: "start" })));
+      return;
+    }
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [focus, steps, folded, toggleFold]);
 
   // Scroll spy — highlights ToC item as user scrolls
   useEffect(() => {
@@ -271,7 +299,9 @@ export default function LessonView() {
   return (
     <ReferenceProvider reference={reference}>
     <PrereqProvider chapters={shownChapters} visited={visited} open={openPrereq} labels={prereqLabels}>
+    <LessonLookContext.Provider value={look}>
       <DocsLayout
+        wide={clean}
         crumbs={[...trackCrumbs(ui, trackPath, urlLang), { label: currentChapter?.title ?? "" }]}
         drawerTitle={t.lessonChapters ?? "Chapters"}
         drawerKey={activeChapterId}
@@ -292,6 +322,8 @@ export default function LessonView() {
         }
         right={<OnThisPage headings={headings} activeId={activeTocId} label={ui.lessonOnThisPage ?? "On this page"} onJump={jumpToHeading} />}
       >
+        <div className={clean ? "lesson-wide" : undefined}>
+        {foldCss && <style>{foldCss}</style>}
         {/* Back to the chapter a prerequisite link came from */}
         {backChapter && (
           <button
@@ -397,7 +429,9 @@ export default function LessonView() {
           />
           </>
         )}
+        </div>
       </DocsLayout>
+    </LessonLookContext.Provider>
     </PrereqProvider>
     </ReferenceProvider>
   );
