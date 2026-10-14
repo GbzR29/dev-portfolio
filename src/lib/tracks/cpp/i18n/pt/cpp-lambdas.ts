@@ -1,0 +1,81 @@
+// PT text for src/lib/tracks/cpp/chapters/cpp-lambdas.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  cppLam_intro: "Ordene os inimigos pela distância até o jogador. Em C, o qsort precisa de uma função de comparação escrita em outro ponto do arquivo, ela recebe os argumentos como ponteiros void que você precisa converter de volta, e não tem como saber onde está o jogador, a não ser que você ponha o jogador numa variável global. O C++ deixa escrever a comparação ali mesmo onde você chama o sort, como uma expressão, e entregar a ela qualquer dado de que precise. Essa pequena função sem nome é uma lambda. Lambdas estão por toda parte no C++ moderno: em algoritmos, callbacks, threads e eventos.",
+  cppLam_goal0: "Ler e escrever uma lambda: capturas, parâmetros, tipo de retorno e corpo.",
+  cppLam_goal1: "Escolher entre capturar por valor e por referência, e reconhecer uma captura solta.",
+  cppLam_goal2: "Explicar em que o compilador transforma uma lambda.",
+  cppLam_goal3: "Guardar e passar lambdas com auto, templates, std::function ou ponteiro de função, sabendo quanto cada um custa.",
+
+  cppLam_cTitle: "O jeito do C: um ponteiro de função e uma global",
+  cppLam_cAfter: "Três problemas: a comparação mora longe da chamada, os ponteiros void abrem mão de toda checagem de tipo, e o dado extra viaja por uma global, o que quebra assim que duas threads ordenam ao mesmo tempo.",
+
+  cppLam_anatTitle: "Anatomia de uma lambda",
+  cppLam_hPart: "Parte",
+  cppLam_hMeans: "O que significa",
+  cppLam_a1: "A lista de captura: quais variáveis do código em volta a lambda pode usar, e como. [p] pega uma cópia de p. Um [] vazio não usa nenhuma.",
+  cppLam_a2: "Os parâmetros, exatamente como numa função normal. O sort chama a lambda com dois inimigos de cada vez.",
+  cppLam_a3: "O corpo. Aqui ele responde \"a vem antes de b?\", que é o que o sort pergunta.",
+  cppLam_a4: "O tipo de retorno, escrito depois dos parâmetros. Em geral fica de fora: o compilador deduz pelos return.",
+  cppLam_a5k: "a expressão inteira",
+  cppLam_a5: "Um valor, como 42 ou \"hi\". Pode ser passado a uma função, guardado numa variável com auto, ou chamado ali mesmo.",
+  cppLam_algBody: "Os algoritmos padrão recebem lambdas para dizer o que \"combina\" ou \"vem primeiro\" quer dizer. Os que você vai usar mais:",
+
+  cppLam_capTitle: "Capturas: uma cópia ou uma referência",
+  cppLam_capBody: "Uma lambda pode usar os próprios parâmetros à vontade, mas uma variável local da função em volta só se for capturada. Capturada por valor, a lambda guarda a sua própria cópia, feita quando a lambda é criada. Capturada por referência, ela guarda só um jeito de chegar à original, e a lê toda vez que é chamada. Percorra os três programas com os dois tipos de captura.",
+  cppLam_hCap: "Captura",
+  cppLam_hCapM: "Significado",
+  cppLam_c1: "Nada. A lambda só pode usar os seus parâmetros e nomes globais.",
+  cppLam_c2: "Uma cópia de x, tirada quando a lambda é criada.",
+  cppLam_c3: "Uma referência a x: vê mudanças posteriores e pode mudar x. x precisa viver mais que a lambda.",
+  cppLam_c4: "Uma cópia de cada local que o corpo usa. Prático, mas esconde o que foi capturado.",
+  cppLam_c5: "Uma referência a cada local que o corpo usa. Seguro para uma lambda usada na hora, como numa chamada de algoritmo.",
+  cppLam_c6: "Misturado: x por valor, y por referência. [=, &y] e [&, x] também funcionam.",
+  cppLam_c7: "Dentro de uma função membro: o ponteiro do objeto, para o corpo poder usar os seus membros. É um ponteiro: o objeto precisa viver mais que a lambda.",
+  cppLam_c8: "Uma captura com inicialização: um membro novo n, iniciado com qualquer expressão. [v = std::move(v)] move um objeto grande para dentro da lambda.",
+  cppLam_rule: "A regra: uma lambda usada na hora (passada ao sort, find_if, for_each) pode capturar por referência. Uma lambda guardada ou devolvida (um callback, uma tarefa para outra thread, qualquer coisa que rode depois) deve capturar por valor, porque as variáveis a que ela se referiria podem já não existir. Capturar this num callback guardado tem o mesmo perigo: o objeto pode ser destruído antes.",
+  cppLam_mutTitle: "mutable",
+  cppLam_mutBody: "As cópias de uma lambda são somente leitura dentro do corpo, então [n] { return ++n; } não compila. Escrever mutable depois da lista de parâmetros deixa o corpo mudar as próprias cópias, que então persistem de uma chamada para a outra, como mostra o programa \"um contador\". A variável original nunca é tocada.",
+
+  cppLam_whatTitle: "O que uma lambda é de verdade",
+  cppLam_whatBody: "Não há nada novo por baixo. Para cada expressão lambda, o compilador escreve uma classe com um nome que você nunca vê (o tipo closure): cada variável capturada vira um membro, e o corpo vira o seu operator(), a função membro que roda quando um objeto é chamado como uma função. A própria expressão lambda cria um objeto dessa classe, a closure. Você poderia escrevê-la à mão, e antes do C++11 as pessoas faziam isso, com o nome de objeto função ou functor.",
+  cppLam_whatAfter: "Duas consequências. Uma lambda custa exatamente o que as suas capturas custam: [p] deixa a closure com 8 bytes, o tamanho de um Vec2, e um [] vazio a deixa um objeto vazio. E como cada lambda tem o seu próprio tipo, o sort é compilado especificamente para ela, então a comparação costuma ser colada (inlined) dentro do laço de ordenação. É por isso que std::sort com uma lambda ganha do qsort do C, que precisa chamar por um ponteiro de função toda vez.",
+
+  cppLam_genTitle: "Lambdas genéricas",
+  cppLam_genAfter: "Um parâmetro declarado auto transforma o operator() da lambda num template: uma versão é compilada para cada tipo com que ela é chamada. O capítulo de Templates explica isso por completo.",
+
+  cppLam_storeTitle: "Guardando e passando lambdas",
+  cppLam_storeBody: "Como cada lambda tem o seu próprio tipo sem nome, você não consegue escrever esse tipo. Há quatro jeitos de guardar uma, e eles diferem no custo.",
+  cppLam_hHow: "Como",
+  cppLam_hUse: "Use para",
+  cppLam_hCostL: "Custo",
+  cppLam_s1u: "uma variável local",
+  cppLam_s1c: "Nenhum: é a própria closure.",
+  cppLam_s2u: "uma função que recebe algo chamável, como os algoritmos",
+  cppLam_s2c: "Nenhum em tempo de execução; uma cópia compilada por tipo de lambda.",
+  cppLam_s3u: "guardar chamáveis de tipos diferentes juntos, ou num membro de classe",
+  cppLam_s3c: "Uma chamada indireta (como virtual) e, para capturas grandes, uma alocação no heap. Não guarda uma lambda só-movível; o std::move_only_function do C++23 guarda.",
+  cppLam_s4u: "APIs em C que recebem um callback",
+  cppLam_s4c: "Uma chamada indireta. Só uma lambda sem capturas se converte em um.",
+  cppLam_typeErasure: "std::function pode guardar uma lambda, um ponteiro de função ou um objeto função de qualquer tipo, desde que dê para chamá-lo com os argumentos certos. Esconder o tipo real atrás de um tipo comum assim se chama apagamento de tipo (type erasure). Por dentro, funciona de um jeito bem parecido com a vtable do capítulo anterior.",
+
+  cppLam_evTitle: "Exemplo completo: um pequeno sistema de eventos",
+  cppLam_evAfter: "Cada connect guarda uma lambda num std::function, então lambdas de tipos diferentes dividem um vector. A segunda captura coins por referência, o que aqui só é seguro porque coins e on_pickup morrem juntos no fim de main. Se o sinal vivesse mais que coins, essa referência ficaria solta: exatamente o programa \"sobrevive ao escopo\" da figura.",
+  cppLam_iifeTitle: "Uma lambda chamada na hora",
+  cppLam_iifeAfter: "Alguns valores precisam de várias linhas de lógica para serem calculados, mas nunca deveriam mudar depois. Embrulhar a lógica numa lambda e chamá-la na hora deixa a variável ser const.",
+
+  cppLam_tryTitle: "Experimente",
+  cppLam_try1: "Ordene um std::vector<std::string> por tamanho e, em caso de empate, em ordem alfabética, com uma lambda só.",
+  cppLam_try2: "Escreva make_counter() que devolve uma lambda que conta as próprias chamadas (1, 2, 3…). Crie dois contadores e confira que eles contam separado.",
+  cppLam_try3: "Escreva make_adder com captura [&bonus], chame o resultado e compile com -fsanitize=address. Leia o relatório e depois corrija.",
+  cppLam_try4: "Imprima o sizeof de uma lambda com [], com [int], com [std::string] e com [&a, &b]. Explique cada tamanho.",
+
+  cppLam_key0: "Uma lambda é uma função sem nome escrita onde é usada: [capturas](parâmetros) { corpo }.",
+  cppLam_key1: "Capturando por valor, a lambda guarda uma cópia feita na criação; por referência, lê a original a cada chamada.",
+  cppLam_key2: "Capture por referência só quando a lambda roda antes de a variável morrer; callbacks guardados capturam por valor.",
+  cppLam_key3: "Uma lambda é um objeto de uma classe escondida cujos membros são as capturas e cujo operator() é o corpo.",
+  cppLam_key4: "Algoritmos com lambdas costumam ser inlined, e é por isso que std::sort ganha do qsort.",
+  cppLam_key5: "Guarde uma lambda com auto ou num parâmetro de template de graça; std::function guarda qualquer chamável ao preço de uma chamada indireta.",
+};
+
+export default text;

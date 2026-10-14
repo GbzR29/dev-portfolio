@@ -199,6 +199,18 @@
     "created": "2026-03-18",
     "updated": "2026-10-14"
   },
+  "cpp/cpp-inheritance": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "cpp/cpp-lambdas": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "cpp/cpp-containers": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
   "cpp/templates": {
     "created": "2026-02-10",
     "updated": "2026-10-08"
