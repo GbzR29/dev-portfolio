@@ -16,9 +16,10 @@ import accidentals from "./accidentals";
 import temperament from "./temperament";
 import intervals from "./intervals";
 import majorScale from "./major-scale";
+import minorScale from "./minor-scale";
 
 const bundle: LessonText = {
-  strings: { ...whatIsSound, ...pitch, ...timbre, ...loudness, ...pulse, ...durations, ...meter, ...syncopation, ...noteNames, ...staff, ...accidentals, ...temperament, ...intervals, ...majorScale },
+  strings: { ...whatIsSound, ...pitch, ...timbre, ...loudness, ...pulse, ...durations, ...meter, ...syncopation, ...noteNames, ...staff, ...accidentals, ...temperament, ...intervals, ...majorScale, ...minorScale },
   titles: track.titles,
   sections: track.sections,
 };

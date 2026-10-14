@@ -27,4 +27,5 @@ export const musicChapters: Chapter[] = [
   { id: "temperament", section: NOTES, title: "Equal Temperament", minRead: 19, load: () => import("./chapters/temperament").then((m) => m.TemperamentContent) },
   { id: "intervals", section: SCALES, title: "Intervals", minRead: 19, load: () => import("./chapters/intervals").then((m) => m.IntervalsContent) },
   { id: "major-scale", section: SCALES, title: "The Major Scale", minRead: 19, load: () => import("./chapters/major-scale").then((m) => m.MajorScaleContent) },
+  { id: "minor-scale", section: SCALES, title: "Minor Scales", minRead: 19, load: () => import("./chapters/minor-scale").then((m) => m.MinorScaleContent) },
 ];

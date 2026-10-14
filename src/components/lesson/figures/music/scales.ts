@@ -31,12 +31,50 @@ export function tonicOf(p: number): Spelled {
   return { d: 28 + l, a: a as Acc };
 }
 
-/** The major scale on a spelled tonic, degrees 1…8: one letter per degree, the sign is what the size asks for. */
-export function majorScale(tonic: Spelled): Spelled[] {
-  return [...MAJOR, 12].map((s, k) => {
+/** Any seven-note scale on a spelled tonic, degrees 1…8: one letter per degree, the sign is what the size asks for. */
+export function scaleOn(tonic: Spelled, sizes: readonly number[]): Spelled[] {
+  return [...sizes, 12].map((s, k) => {
     const d = tonic.d + k, a = keyOf(tonic) + s - midiOf(d);
     return { d, a: a as Acc };
   });
+}
+
+/** The major scale on a spelled tonic, degrees 1…8. */
+export const majorScale = (tonic: Spelled) => scaleOn(tonic, MAJOR);
+
+// ── Minor scales ──────────────────────────────────────────────────────────────
+// The natural minor is the major's notes from degree 6 (A to A on the white
+// keys): steps 2 1 2 2 1 2 2. The harmonic minor raises its 7th degree (a
+// leading tone again, at the price of a 3-half-step gap between 6 and 7); the
+// melodic minor raises the 6th too on the way up, and comes down natural.
+// On the line of fifths the natural minor of tonic p is the window p − 4 … p + 2,
+// three places flatwards of p major: its signature has p − 3 sharps (or flats).
+
+export type MinorForm = "natural" | "harmonic" | "melodic";
+
+export const MINOR: Record<MinorForm, number[]> = {
+  natural: [0, 2, 3, 5, 7, 8, 10],
+  harmonic: [0, 2, 3, 5, 7, 8, 11],
+  melodic: [0, 2, 3, 5, 7, 9, 11],
+};
+
+/** Steps between neighbouring degrees 1→2 … 7→8, from the sizes. */
+export const stepsOf = (sizes: readonly number[]) => [...sizes.slice(1), 12].map((s, i) => s - sizes[i]);
+
+/** Natural-minor degrees on the line of fifths, relative to the tonic. */
+export const MINOR_FIFTHS = [0, 2, -3, -1, 1, -4, -2];
+
+export const minorScale = (tonic: Spelled, form: MinorForm = "natural") => scaleOn(tonic, MINOR[form]);
+
+/** The usual 15 minor keys, A♭ minor (7 flats) to A♯ minor (7 sharps): tonic positions on the line of fifths. */
+export const MINOR_POSITIONS = Array.from({ length: 15 }, (_, i) => i - 4);
+/** Signs in the signature of the minor key whose tonic sits at r: + sharps, − flats. */
+export const minorSignature = (r: number) => r - 3;
+
+/** Which sign the signature with `sig` signs puts on letter ℓ (C = 0 … B = 6). */
+export function signatureSign(sig: number, l: number): Acc {
+  const order = sig > 0 ? SHARP_ORDER.slice(0, sig) : FLAT_ORDER.slice(0, -sig);
+  return order.some(q => atFifth(q).l === l) ? (sig > 0 ? 1 : -1) : 0;
 }
 
 /** The same scale spelled naively: every black key as a sharp, whatever letter that takes. */

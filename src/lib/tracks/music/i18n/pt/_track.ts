@@ -16,6 +16,7 @@ const track = {
     temperament: "Temperamento igual",
     intervals: "Intervalos",
     "major-scale": "A escala maior",
+    "minor-scale": "Escalas menores",
   } as Record<string, string>,
   sections: {
     Sound: "Som",

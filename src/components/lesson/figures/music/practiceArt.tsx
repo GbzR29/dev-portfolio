@@ -61,6 +61,20 @@ export function ScaleArt() {
   );
 }
 
+/** A scrap of staff with a three-flat signature and a scale falling to its tonic. */
+export function MinorArt() {
+  return (
+    <svg viewBox="0 0 110 56" className="w-[110px] h-[56px]" aria-hidden>
+      {[0, 1, 2, 3, 4].map(i => <line key={i} x1={4} x2={106} y1={10 + i * 8} y2={10 + i * 8} stroke={C.fg} strokeOpacity={0.55} strokeWidth={1.1} />)}
+      {[[10, 26], [16, 14], [22, 30]].map(([x, y]) => <AccidentalGlyph key={x} a={-1} x={x} y={y} s={8} color={C.purple} />)}
+      {[0, 1, 2, 3, 4].map(i => (
+        <ellipse key={i} cx={40 + i * 14} cy={26 + i * 4} rx={5} ry={3.6} transform={`rotate(-18 ${40 + i * 14} ${26 + i * 4})`}
+          fill={i === 4 ? C.purple : "none"} stroke={i === 4 ? C.purple : C.fg} strokeOpacity={i === 4 ? 1 : 0.7} strokeWidth={1.9} />
+      ))}
+    </svg>
+  );
+}
+
 /** A scrap of staff with a sharp before a note, and the black key it asks for. */
 export function SharpArt() {
   return (
