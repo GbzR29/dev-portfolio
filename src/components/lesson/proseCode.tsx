@@ -20,7 +20,10 @@ const CODE_NAME = new RegExp(
     String.raw`\bGL(?:uint|int|float|double|sizei|sizeiptr|intptr|enum|boolean|bitfield|ubyte|byte|ushort|short|char|void)\b`,
     String.raw`\b(?:glm|std)::[A-Za-z_]\w*(?:::[A-Za-z_]\w*)*(?:\([^()]*\))?`,
     String.raw`\bsizeof\([^()]*\)`,
-    String.raw`\b[\w-]+\.(?:cpp|hpp|h|glsl|vert|frag|geom|comp)\b`,
+    String.raw`\b[\w-]+\.(?:cpp|hpp|glsl|vert|frag|geom|comp)\b`,
+    // ".h" only for header-looking names (SDL.h, glfw3.h, SDL_main.h): "v.h" or
+    // "dst.h" in prose are struct fields (a rect's height), not files
+    String.raw`\b\w*[A-Z0-9_]\w*\.h\b`,
   ].join("|"),
   "g",
 );

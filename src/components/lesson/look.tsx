@@ -1,17 +1,15 @@
 "use client";
 
 // ── Lesson look ─────────────────────────────────────────────────────────────
-// The "clean reading" layout, tried on a few tracks before it becomes the
-// default: a wide stage where figures, code and tables use the full width
-// while the text keeps a comfortable line length (learn.css, .lesson-wide);
-// long cards and code that fold; sections that can be folded from their
-// heading; and code names in prose shown as inline code (Prose.tsx).
-// Components read it through useLessonLook(); outside a lesson it is off.
+// The "clean reading" layout of every lesson (piloted on OpenGL, then made the
+// default for all tracks on 2026-10-14): a wide stage where text, figures,
+// code and tables share one width (learn.css, .lesson-wide); notes and tips as
+// chips that open a popover, warnings as an always-open card; long code that
+// folds; sections that fold from their heading; and code names in prose shown
+// as inline code (proseCode.tsx). Components read it through useLessonLook();
+// outside a lesson page it is off, so the components keep their plain look.
 
 import { createContext, useContext } from "react";
-
-/** Tracks (catalog ids) that use the clean look. */
-export const CLEAN_LOOK_TRACKS = new Set(["opengl"]);
 
 export interface LessonLook {
   clean: boolean;

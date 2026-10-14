@@ -43,9 +43,9 @@ src/components/lesson/i18n/<lang>/     widget translations, one file per figures
 src/components/lesson/LessonComponents.tsx   CodeBlock, Callout, H2, H3, IC, LessonTable, MathBlock, diagrams
 src/components/lesson/ChapterContent.tsx   renders the open chapter (React.lazy + Suspense), preloads the next one
 src/components/lesson/Prose.tsx        Article, Lead, KeyIdeas — chapter page wrappers
-src/components/lesson/look.tsx         "clean look" (pilot: CLEAN_LOOK_TRACKS): wide stage, text as wide as figures (learn.css .lesson-wide, --prose-w;
-                                       wide blocks carry data-figure/data-wide), long callouts/code fold, h2 folds its section,
-                                       code names in prose become <IC> (proseCode.tsx)
+src/components/lesson/look.tsx         "clean look" of every lesson: wide stage, text as wide as figures (learn.css .lesson-wide, --prose-w;
+                                       wide blocks carry data-figure/data-wide); info/tip Callouts = chip + popover, warn = always-open card;
+                                       long code folds; h2 folds its section; code names in prose become <IC> (proseCode.tsx)
 src/components/lesson/Tex.tsx          Equation (KaTeX); \sym{id}{…} links a symbol to its "where" line and colours it (ids in "where" get auto colours; \sym{a b}{…} = several groups); `words` = "in words" toggle
 src/components/lesson/Derivation.tsx   step-by-step derivation (lines + reasons, Transport bar); LiveFormula.tsx: formula with sliders, numbers plugged in live
 src/components/lesson/texLink.ts       autoLink: finds each "where" symbol inside the formula and adds the \sym links itself (cards with a hand-written \sym are left alone)

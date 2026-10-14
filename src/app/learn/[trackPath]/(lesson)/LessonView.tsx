@@ -23,7 +23,7 @@ import { LessonSidebar } from "@/components/sidebar/LessonSidebar";
 import { DocsLayout } from "@/components/lesson/DocsLayout";
 import { OnThisPage, type TocHeading } from "@/components/lesson/OnThisPage";
 import { ChapterPager } from "@/components/lesson/ChapterPager";
-import { CLEAN_LOOK_TRACKS, LessonLookContext } from "@/components/lesson/look";
+import { LessonLookContext } from "@/components/lesson/look";
 import { SupportNote } from "@/components/lesson/SupportNote";
 import { BeforeYouStart, PrereqProvider } from "@/components/lesson/Prerequisites";
 import { ReferenceProvider } from "@/components/reference/RefToken";
@@ -213,9 +213,9 @@ export default function LessonView() {
 
   useFocusView({ rootRef: contentRef, enabled: focus, step, count: steps.length, go });
 
-  // ── Clean look (pilot tracks, components/lesson/look.tsx) ──────────────────
+  // ── Clean look (components/lesson/look.tsx) ────────────────────────────────
   // Sections folded from their heading are hidden through their data-step tags.
-  const clean = !!track && CLEAN_LOOK_TRACKS.has(track.id);
+  const clean = !!track;
   const [folded, setFolded] = useState<Set<string>>(() => new Set());
   useEffect(() => setFolded(new Set()), [activeChapterId]);
   const toggleFold = useCallback((headingId: string) => {
