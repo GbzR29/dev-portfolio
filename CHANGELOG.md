@@ -14,6 +14,8 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-13
 
+- **Ícone do site completo:** `app/favicon.ico` (16, 32 e 48 px, gerado da logo nova), porque a Vercel e os robôs de busca pedem `/favicon.ico` direto e recebiam 404, e por isso continuavam mostrando o ícone antigo em cache. O `app/apple-icon.png` passou a ter 180×180 com fundo branco, porque o iOS pinta de preto o fundo transparente e a logo preta sumia.
+
 - **Verificação do Google Search Console:** arquivo `public/google90abaed48d670aa6.html`, que o Google pede para confirmar que o site é seu. Não apagar: sem ele a verificação cai.
 
 - **Lições aparecem no Google (SEO).** Cada lição agora tem um endereço próprio, `/learn/OpenGL/triangle`, no lugar de `/learn/OpenGL?chapter=triangle`. Os links antigos redirecionam sozinhos (308, mantendo o `?step=`). Cada trilha e cada lição têm título, descrição, URL canônica e Open Graph gerados no servidor (`lib/tracks/seo.ts`), por exemplo "Drawing the Triangle | OpenGL 4.6 course". A página /learn também ganhou título e descrição.
