@@ -10,6 +10,9 @@ import cPreprocessorBuild from "./c-preprocessor-build";
 import cStringsStructs from "./c-strings-structs";
 import cToCpp from "./c-to-cpp";
 import cUndefinedBehavior from "./c-undefined-behavior";
+import cppClasses from "./cpp-classes";
+import cppReferences from "./cpp-references";
+import cppStringsVectors from "./cpp-strings-vectors";
 import concepts from "./concepts";
 import concurrency from "./concurrency";
 import constexpr from "./constexpr";
@@ -28,7 +31,7 @@ import values from "./values";
 import vocabulary from "./vocabulary";
 
 const bundle: LessonText = {
-  strings: { ...history, ...cBasics, ...cMemory, ...cPointers, ...cStringsStructs, ...cPreprocessorBuild, ...cUndefinedBehavior, ...cIoFiles, ...cToCpp, ...concepts, ...concurrency, ...constexpr, ...cpp26, ...errors, ...landscape, ...modules, ...move, ...performance, ...raii, ...ranges, ...templates, ...tooling, ...values, ...vocabulary },
+  strings: { ...history, ...cBasics, ...cMemory, ...cPointers, ...cStringsStructs, ...cPreprocessorBuild, ...cUndefinedBehavior, ...cIoFiles, ...cToCpp, ...cppReferences, ...cppClasses, ...cppStringsVectors, ...concepts, ...concurrency, ...constexpr, ...cpp26, ...errors, ...landscape, ...modules, ...move, ...performance, ...raii, ...ranges, ...templates, ...tooling, ...values, ...vocabulary },
   titles: track.titles,
   sections: track.sections,
 };

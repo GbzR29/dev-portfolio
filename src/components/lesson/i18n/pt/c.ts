@@ -94,6 +94,20 @@ const text: Record<string, string> = {
   figCMem_name_overflow: "erro de um",
   figCMem_name_file: "fopen / fclose",
   figCMem_name_vector: "std::vector",
+  figCMem_name_swapRef: "swap por referência",
+  figCMem_name_refDangle: "referência solta",
+
+  // ── swap by reference, dangling reference ──
+  figCMem_sr2: "A chamada se escreve swap(x, y): sem &. Mas a e b são referências, então ficam ligados ao próprio x e ao próprio y. Por baixo dos panos o compilador passa os endereços deles, que é o que as setas mostram. No código, a simplesmente é outro nome para x.",
+  figCMem_sr3: "Ler a lê x: tmp = 1. Não há * para escrever; o compilador acrescenta a indireção sozinho.",
+  figCMem_sr4: "a = b escreve em x. Atribuir a uma referência nunca a faz se referir a outra coisa: atribui à variável à qual ela está ligada.",
+  figCMem_sr5: "b = tmp escreve 1 em y.",
+  figCMem_sr7: "Imprime 2 1: o mesmo código de máquina da versão com ponteiros, com a legibilidade da versão por valor. E uma referência nunca pode ser NULL, então não há nada para conferir.",
+  figCMem_rd0: "main começa.",
+  figCMem_rd1: "main chama biggest(3, 7); top vai ficar ligado ao que ela devolver. Os parâmetros a e b são cópias, morando no frame de biggest.",
+  figCMem_rd2: "r fica ligado a b, o maior.",
+  figCMem_rd3: "A função devolve uma referência para o seu próprio parâmetro, e então o seu frame acaba. top agora está ligado a uma memória que não pertence mais a ninguém: uma referência solta, o mesmo bug do ponteiro solto do C, com menos sintaxe para avisar você.",
+  figCMem_rd4: "Ler top é comportamento indefinido. Pode imprimir 7, ou lixo assim que outra chamada reaproveitar a stack. GCC e Clang avisam sobre esta função (-Wreturn-local-addr, -Wreturn-stack-address): nunca devolva uma referência para uma local ou para um parâmetro por valor.",
 
   // ── overflow ──
   figCMem_ov0: "main começa.",

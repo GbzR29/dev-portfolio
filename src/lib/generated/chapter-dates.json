@@ -173,7 +173,19 @@
   },
   "cpp/landscape": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
+  },
+  "cpp/cpp-references": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "cpp/cpp-classes": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "cpp/cpp-strings-vectors": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
   },
   "cpp/values": {
     "created": "2026-09-03",

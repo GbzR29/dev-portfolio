@@ -318,4 +318,6 @@ const NAMES: Record<ProgramId, string> = {
   overflow: "off by one",
   file: "fopen / fclose",
   vector: "std::vector",
+  swapRef: "swap by reference",
+  refDangle: "dangling reference",
 };

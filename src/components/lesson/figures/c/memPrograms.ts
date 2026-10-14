@@ -328,5 +328,52 @@ const vector: Program = {
   ],
 };
 
-export const PROGRAMS = { vars, pointer, swapVal, swapPtr, heap, leak, dangling, string, noTerm, struct: structs, overflow, file, vector } as const;
+const swapRef: Program = {
+  id: "swapRef",
+  code: [
+    "void swap(int& a, int& b) {",
+    "    int tmp = a;",
+    "    a = b;",
+    "    b = tmp;",
+    "}",
+    "int main() {",
+    "    int x = 1, y = 2;",
+    "    swap(x, y);",
+    "    std::println(\"{} {}\", x, y);",
+    "}",
+  ],
+  steps: [
+    { line: 5, key: "figCMem_sv0", en: "main starts.", run: m => m.call("main") },
+    { line: 6, key: "figCMem_sv1", en: "x = 1 and y = 2 live in main's frame.", run: m => { m.local("x", "int", 4, ["1"]); m.local("y", "int", 4, ["2"]); } },
+    { line: 0, key: "figCMem_sr2", en: "The call is written swap(x, y): no &. But a and b are references, so they are bound to x and y themselves. Under the hood the compiler passes their addresses, which is what the arrows show. In the code, a simply is another name for x.", run: m => { m.call("swap"); m.pointer("a", "int &", 4, ["x"]); m.pointer("b", "int &", 4, ["y"]); } },
+    { line: 1, key: "figCMem_sr3", en: "Reading a reads x: tmp = 1. There is no * to write; the compiler adds the indirection itself.", run: m => m.local("tmp", "int", 4, ["1"]) },
+    { line: 2, key: "figCMem_sr4", en: "a = b writes into x. Assigning to a reference never makes it refer to something else: it assigns to the variable it is bound to.", run: m => m.set("x", 0, "2") },
+    { line: 3, key: "figCMem_sr5", en: "b = tmp writes 1 into y.", run: m => m.set("y", 0, "1") },
+    { line: 4, key: "figCMem_sv6", en: "swap returns and its frame is gone, with the swapped copies inside.", run: m => m.ret() },
+    { line: 8, key: "figCMem_sr7", en: "Prints 2 1: the same machine code as the pointer version, with the readability of the by-value one. And a reference can never be NULL, so there is nothing to check.", run: m => m.print("2 1\n") },
+  ],
+};
+
+const refDangle: Program = {
+  id: "refDangle",
+  code: [
+    "int& biggest(int a, int b) {",
+    "    int& r = a > b ? a : b;",
+    "    return r;",
+    "}",
+    "int main() {",
+    "    int& top = biggest(3, 7);",
+    "    std::println(\"{}\", top);",
+    "}",
+  ],
+  steps: [
+    { line: 4, key: "figCMem_rd0", en: "main starts.", run: m => m.call("main") },
+    { line: 5, key: "figCMem_rd1", en: "main calls biggest(3, 7); top will be bound to whatever it returns. The parameters a and b are copies, living in biggest's frame.", run: m => { m.pointer("top", "int &", 4); m.call("biggest"); m.local("a", "int", 4, ["3"]); m.local("b", "int", 4, ["7"]); } },
+    { line: 1, key: "figCMem_rd2", en: "r is bound to b, the larger one.", run: m => m.pointer("r", "int &", 4, ["b"]) },
+    { line: 2, key: "figCMem_rd3", en: "The function returns a reference to its own parameter, and then its frame is gone. top is now bound to memory that no longer belongs to anyone: a dangling reference, the same bug as the dangling pointer in C, with less syntax to warn you.", run: m => { m.ret(); const b = m.s.frames.at(-1)!.cells[1]; const top = m.cell("top"); top.ptr = { addr: b.addr, owner: b.key }; m.touched.add(`${top.key}:0`); } },
+    { line: 6, key: "figCMem_rd4", en: "Reading top is undefined behaviour. It may print 7, or garbage once another call reuses the stack. GCC and Clang warn about this function (-Wreturn-local-addr, -Wreturn-stack-address): never return a reference to a local or a by-value parameter.", run: m => m.print("7 (or anything)\n") },
+  ],
+};
+
+export const PROGRAMS = { vars, pointer, swapVal, swapPtr, heap, leak, dangling, string, noTerm, struct: structs, overflow, file, vector, swapRef, refDangle } as const;
 export type ProgramId = keyof typeof PROGRAMS;
