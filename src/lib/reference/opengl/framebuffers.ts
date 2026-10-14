@@ -167,6 +167,10 @@ glGenRenderbuffers(1, &rbo);`,
       en: "Binds a renderbuffer so glRenderbufferStorage can allocate it.",
       pt: "Liga um renderbuffer para que glRenderbufferStorage possa alocá-lo.",
     },
+    description: {
+      en: "Binding a renderbuffer has only one purpose: telling glRenderbufferStorage which renderbuffer to allocate. Unlike textures, a renderbuffer is never bound for drawing; it is used by being attached to a framebuffer. The first bind of a name from glGenRenderbuffers is also what creates the object.",
+      pt: "Ligar um renderbuffer tem um só propósito: dizer a glRenderbufferStorage qual renderbuffer alocar. Diferente das texturas, um renderbuffer nunca é ligado para desenhar; ele é usado ao ser anexado a um framebuffer. O primeiro bind de um nome vindo de glGenRenderbuffers também é o que cria o objeto.",
+    },
     params: [
       { name: "target", type: "GLenum", desc: { en: "Always GL_RENDERBUFFER.", pt: "Sempre GL_RENDERBUFFER." } },
       { name: "renderbuffer", type: "GLuint", desc: { en: "Renderbuffer ID, or 0.", pt: "ID do renderbuffer, ou 0." } },
@@ -184,6 +188,10 @@ glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, w, h);`,
     summary: {
       en: "Allocates the memory of the bound renderbuffer.",
       pt: "Aloca a memória do renderbuffer ligado.",
+    },
+    description: {
+      en: "Gives the bound renderbuffer an image of internalformat and width × height pixels. A renderbuffer is a framebuffer image that shaders cannot read, so it suits buffers needed only while drawing, above all the depth-stencil buffer of an off-screen framebuffer (GL_DEPTH24_STENCIL8).\n\nIts size must match the other attachments; when the window is resized, call it again with the new size.",
+      pt: "Dá ao renderbuffer ligado uma imagem de formato internalformat e width × height pixels. Um renderbuffer é uma imagem de framebuffer que os shaders não podem ler, então serve para buffers necessários só durante o desenho, principalmente o depth-stencil buffer de um framebuffer fora da tela (GL_DEPTH24_STENCIL8).\n\nO tamanho precisa bater com os outros anexos; quando a janela mudar de tamanho, chame de novo com o tamanho novo.",
     },
     params: [
       { name: "target", type: "GLenum", desc: { en: "GL_RENDERBUFFER.", pt: "GL_RENDERBUFFER." } },
@@ -216,6 +224,10 @@ glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDER
     summary: {
       en: "Attaches a renderbuffer to the bound framebuffer.",
       pt: "Anexa um renderbuffer ao framebuffer ligado.",
+    },
+    description: {
+      en: "Connects a renderbuffer to one attachment point of the framebuffer bound to target. From then on, drawing into the framebuffer writes into it: depth values for GL_DEPTH_ATTACHMENT, depth and stencil for GL_DEPTH_STENCIL_ATTACHMENT.\n\nThe typical post-processing framebuffer pairs a colour texture (read in the next pass) with a depth-stencil renderbuffer (needed only for testing). Check the result with glCheckFramebufferStatus.",
+      pt: "Liga um renderbuffer a um ponto de anexo do framebuffer ligado a target. A partir daí, desenhar no framebuffer escreve nele: valores de profundidade em GL_DEPTH_ATTACHMENT, profundidade e stencil em GL_DEPTH_STENCIL_ATTACHMENT.\n\nO framebuffer típico de pós-processamento junta uma textura de cor (lida na passada seguinte) com um renderbuffer de depth-stencil (necessário só para os testes). Confira o resultado com glCheckFramebufferStatus.",
     },
     params: [
       { name: "target", type: "GLenum", desc: { en: "GL_FRAMEBUFFER.", pt: "GL_FRAMEBUFFER." } },

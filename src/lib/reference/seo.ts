@@ -5,7 +5,7 @@
 // reference has no /pt copy.
 
 import type { Metadata } from "next";
-import { getReference, referenceHref, referenceIndex } from "./index";
+import { displayName, getReference, referenceHref, referenceIndex } from "./index";
 
 const SITE_NAME = "gabrielfrc.dev";
 
@@ -34,9 +34,10 @@ export function functionMetadata(trackPath: string, fn: string): Metadata {
   const ref = getReference(trackPath);
   const entry = ref && referenceIndex(ref).get(fn);
   if (!ref || !entry) return {};
+  const name = displayName(entry);
   return meta(
-    `${entry.name} — ${trackPath} reference`,
-    `${entry.name}: ${entry.summary.en} Parameters, accepted values, common errors and a C++ example.`,
+    `${name} — ${trackPath} reference`,
+    `${name}: ${entry.summary.en} ${entry.family ? "How to read the names, every variant and a C++ example." : "Parameters, accepted values, common errors and a C++ example."}`,
     referenceHref(ref, entry.name),
   );
 }

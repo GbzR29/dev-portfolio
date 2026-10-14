@@ -18,6 +18,7 @@ export const dsaTextureEntries: RefEntry[] = [
   {
     name: "glTextureParameteri",
     category: "dsa",
+    diagram: "wrapModes",
     since: "GL 4.5",
     signature: "void glTextureParameteri(GLuint texture, GLenum pname, GLint param);",
     summary: {

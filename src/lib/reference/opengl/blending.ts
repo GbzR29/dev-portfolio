@@ -9,6 +9,7 @@ export const blendingEntries: RefEntry[] = [
   {
     name: "glBlendFuncSeparate",
     category: "fragment-ops",
+    diagram: "blend",
     since: "GL 1.4",
     signature: "void glBlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha);",
     summary: {

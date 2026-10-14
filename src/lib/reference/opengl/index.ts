@@ -29,12 +29,14 @@ import { syncEntries } from "./sync";
 import { queryEntries } from "./queries";
 import { debugEntries } from "./debug";
 import { legacyEntries } from "./legacy";
+import { familyEntries } from "./families";
 
 export const openGLReference: Reference = {
   trackPath: "OpenGL",
   title: "OpenGL 4.6",
   tokenPattern: /\bgl[A-Z][A-Za-z0-9]*\b/g,
   categories: [
+    { id: "families",      title: { en: "Function families",         pt: "Famílias de funções" } },
     { id: "context",       title: { en: "Context & state",           pt: "Contexto e estado" } },
     { id: "buffers",       title: { en: "Buffers",                   pt: "Buffers" } },
     { id: "vertex-arrays", title: { en: "Vertex arrays",             pt: "Vertex arrays" } },
@@ -79,5 +81,6 @@ export const openGLReference: Reference = {
     ...queryEntries,
     ...debugEntries,
     ...legacyEntries,
+    ...familyEntries,
   ],
 };

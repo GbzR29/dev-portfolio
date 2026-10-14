@@ -83,6 +83,7 @@ glDeleteBuffers(1, &vbo);`,
   {
     name: "glVertexAttribPointer",
     category: "vertex-arrays",
+    diagram: "vertexLayout",
     since: "GL 2.0",
     signature:
       "void glVertexAttribPointer(GLuint index, GLint size, GLenum type,\n                           GLboolean normalized, GLsizei stride, const void *pointer);",

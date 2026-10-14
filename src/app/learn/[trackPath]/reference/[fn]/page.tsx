@@ -15,8 +15,9 @@ import { getTrack } from "@/lib/tracks";
 import type { Chapter } from "@/lib/tracks/types";
 import { chapterHref } from "@/lib/tracks/urls";
 import { chaptersUsing } from "@/lib/reference/usage";
+import { ReferenceDiagram } from "@/components/reference/diagrams";
 import {
-  getReference, loc, referenceHref, referenceIndex,
+  displayName, familiesOf, getReference, loc, referenceHref, referenceIndex,
   type RefEntry, type RefParam, type Reference,
 } from "@/lib/reference";
 
@@ -101,11 +102,13 @@ function Signature({ entry }: { entry: RefEntry }) {
   }
   argParts.push(args.slice(last));
 
-  const nameAt = head.lastIndexOf(entry.name);
+  // Family pages have patterns after the name ("glUniform{1|2|3|4}{f|i}") and several lines
+  const nameAt = head.indexOf(entry.name);
   return (
     <pre className="overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--code-bg)] px-5 py-4 font-mono text-[13px] leading-relaxed text-[var(--code-text)]">
       <span className="text-[var(--text-muted)]">{head.slice(0, nameAt)}</span>
       <span className="font-semibold text-[var(--text-main)]">{entry.name}</span>
+      {head.slice(nameAt + entry.name.length)}
       {argParts}
     </pre>
   );
@@ -181,10 +184,14 @@ export default function ReferenceEntryPage() {
   const index    = referenceIndex(reference);
   const category = reference.categories.find((c) => c.id === entry.category);
   const related  = (entry.related ?? []).map((n) => index.get(n)).filter((e) => e !== undefined);
+  const members  = (entry.family?.members ?? []).map((n) => index.get(n)).filter((e) => e !== undefined);
+  const families = familiesOf(reference, entry.name);
 
   const sections = [
     { id: "signature",   title: tt.refSignature ?? "Signature",       show: true },
-    { id: "description", title: tt.refDescription ?? "How it works",  show: !!entry.description },
+    { id: "description", title: tt.refDescription ?? "How it works",  show: !!entry.description || !!entry.diagram },
+    { id: "suffixes",    title: tt.refSuffixes ?? "Reading the name", show: !!entry.family?.suffixes?.length },
+    { id: "members",     title: tt.refMembers ?? "Functions in this family", show: members.length > 0 },
     { id: "parameters",  title: tt.refParameters ?? "Parameters",     show: entry.params.length > 0 },
     { id: "returns",     title: tt.refReturns ?? "Return value",      show: !!entry.returns },
     { id: "notes",       title: tt.refNotes ?? "Tips & pitfalls",     show: !!entry.notes?.length },
@@ -201,7 +208,7 @@ export default function ReferenceEntryPage() {
         crumbs={[
           ...trackCrumbs(tt, trackPath),
           { label: tt.refTitle ?? "Function reference", href: referenceHref(reference) },
-          { label: entry.name },
+          { label: displayName(entry) },
         ]}
         drawerTitle={tt.refTitle ?? "Function reference"}
         drawerKey={fn}
@@ -252,13 +259,31 @@ export default function ReferenceEntryPage() {
                 {entry.since}
               </span>
             )}
+            {entry.family && (
+              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--primary)] rounded border border-[var(--primary)]/40 px-1.5 py-0.5">
+                {tt.refFamilyBadge ?? "family"}
+              </span>
+            )}
           </div>
           <h1 className="font-mono text-3xl md:text-[2.3rem] font-medium tracking-tight mb-5 break-words">
-            {entry.name}
+            {displayName(entry)}
           </h1>
           <p className="text-lg leading-relaxed text-[var(--text-main)]">
             {loc(entry.summary, language)}
           </p>
+          {families.length > 0 && (
+            <p className="mt-4 text-sm text-[var(--text-muted)]">
+              {tt.refPartOf ?? "Part of the family"}{" "}
+              {families.map((f, i) => (
+                <Fragment key={f.name}>
+                  {i > 0 && ", "}
+                  <Link href={referenceHref(reference, f.name)} className="font-mono text-[var(--primary)] hover:underline">
+                    {displayName(f)}
+                  </Link>
+                </Fragment>
+              ))}
+            </p>
+          )}
 
           {entry.deprecated && (
             <div className="mt-6 flex gap-3 rounded-xl border border-yellow-500/30 bg-yellow-500/5 p-4 text-sm leading-relaxed text-[var(--text-muted)]">
@@ -276,9 +301,40 @@ export default function ReferenceEntryPage() {
             <Signature entry={entry} />
           </Section>
 
-          {entry.description && (
+          {(entry.description || entry.diagram) && (
             <Section id="description" title={title("description")}>
-              <RichText text={loc(entry.description, language)} reference={reference} />
+              {entry.description && <RichText text={loc(entry.description, language)} reference={reference} />}
+              {entry.diagram && <ReferenceDiagram id={entry.diagram} language={language} />}
+            </Section>
+          )}
+
+          {entry.family?.suffixes && entry.family.suffixes.length > 0 && (
+            <Section id="suffixes" title={title("suffixes")}>
+              <dl className="divide-y divide-[var(--separator)] rounded-xl border border-[var(--border)] overflow-hidden">
+                {entry.family.suffixes.map((s) => (
+                  <div key={s.part} className="grid sm:grid-cols-[minmax(0,12rem)_1fr] gap-x-4 gap-y-1 px-4 py-3 bg-[var(--card)]">
+                    <dt className="font-mono text-[13px] font-semibold text-[var(--primary)] break-words">{s.part}</dt>
+                    <dd className="text-[14.5px] leading-relaxed">{loc(s.desc, language)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </Section>
+          )}
+
+          {members.length > 0 && (
+            <Section id="members" title={title("members")}>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {members.map((m) => (
+                  <Link
+                    key={m.name}
+                    href={referenceHref(reference, m.name)}
+                    className="group flex flex-col gap-1 rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 hover:border-[var(--primary)]/50 hover:bg-[var(--primary-low)] transition-colors"
+                  >
+                    <span className="font-mono text-[13px] font-semibold text-[var(--text-main)] group-hover:text-[var(--primary)]">{m.name}</span>
+                    <span className="text-xs leading-relaxed text-[var(--text-muted)] line-clamp-2">{loc(m.summary, language)}</span>
+                  </Link>
+                ))}
+              </div>
             </Section>
           )}
 
@@ -362,7 +418,7 @@ export default function ReferenceEntryPage() {
                     href={referenceHref(reference, r.name)}
                     className="group flex flex-col gap-1 rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 hover:border-[var(--primary)]/50 hover:bg-[var(--primary-low)] transition-colors"
                   >
-                    <span className="font-mono text-[13px] font-semibold text-[var(--text-main)] group-hover:text-[var(--primary)]">{r.name}</span>
+                    <span className="font-mono text-[13px] font-semibold text-[var(--text-main)] group-hover:text-[var(--primary)]">{displayName(r)}</span>
                     <span className="text-xs leading-relaxed text-[var(--text-muted)] line-clamp-2">{loc(r.summary, language)}</span>
                   </Link>
                 ))}

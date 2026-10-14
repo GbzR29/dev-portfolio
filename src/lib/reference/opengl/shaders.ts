@@ -106,6 +106,10 @@ if (!ok) {
       en: "Queries a property of a shader — mainly whether it compiled.",
       pt: "Consulta uma propriedade de um shader — principalmente se ele compilou.",
     },
+    description: {
+      en: "glCompileShader never reports failure by itself: it returns nothing, and a shader that did not compile just makes the later link fail. So right after compiling, ask with GL_COMPILE_STATUS. If it is GL_FALSE, ask for GL_INFO_LOG_LENGTH and read the message with glGetShaderInfoLog; it names the line and the mistake.\n\nSkipping this check is the most common reason for a black screen with no error anywhere.",
+      pt: "glCompileShader nunca avisa da falha sozinha: não devolve nada, e um shader que não compilou só faz o link seguinte falhar. Então, logo depois de compilar, pergunte com GL_COMPILE_STATUS. Se vier GL_FALSE, peça GL_INFO_LOG_LENGTH e leia a mensagem com glGetShaderInfoLog; ela diz a linha e o erro.\n\nPular essa verificação é o motivo mais comum de uma tela preta sem erro nenhum.",
+    },
     params: [
       { name: "shader", type: "GLuint", desc: { en: "Shader to query.", pt: "Shader a consultar." } },
       {
@@ -208,6 +212,10 @@ glLinkProgram(program);`,
       en: "Adds a compiled shader to a program before linking.",
       pt: "Adiciona um shader compilado a um programa antes do link.",
     },
+    description: {
+      en: "A program is the set of shader stages the GPU runs together. Attach one shader per stage (at least a vertex and a fragment shader), then call glLinkProgram, which connects the vertex shader's outputs to the fragment shader's inputs by name and type.\n\nAfter a successful link the shaders are no longer needed: detach and delete them, and the program keeps working.",
+      pt: "Um programa é o conjunto de estágios de shader que a GPU roda juntos. Anexe um shader por estágio (no mínimo um vertex e um fragment shader) e depois chame glLinkProgram, que liga as saídas do vertex shader às entradas do fragment shader por nome e tipo.\n\nDepois de um link bem-sucedido os shaders não são mais necessários: desanexe e apague, e o programa continua funcionando.",
+    },
     params: [
       { name: "program", type: "GLuint", desc: { en: "Target program.", pt: "Programa de destino." } },
       { name: "shader", type: "GLuint", desc: { en: "Shader to attach. Only one shader per stage is normally attached.", pt: "Shader a anexar. Normalmente só um shader por estágio." } },
@@ -255,6 +263,10 @@ if (!ok) {
     summary: {
       en: "Queries a property of a program — mainly whether it linked.",
       pt: "Consulta uma propriedade de um programa — principalmente se ele linkou.",
+    },
+    description: {
+      en: "The program-side twin of glGetShaderiv. After glLinkProgram, ask for GL_LINK_STATUS: linking fails when stages do not fit together, for example a fragment shader input with no matching vertex shader output, or a type that differs between the two. If it failed, glGetProgramInfoLog says why.\n\nOther useful questions: GL_ACTIVE_UNIFORMS and GL_ACTIVE_ATTRIBUTES list what survived compilation (unused variables are removed).",
+      pt: "O gêmeo de glGetShaderiv do lado do programa. Depois de glLinkProgram, pergunte GL_LINK_STATUS: o link falha quando os estágios não se encaixam, por exemplo uma entrada do fragment shader sem saída correspondente no vertex shader, ou um tipo diferente entre os dois. Se falhou, glGetProgramInfoLog diz por quê.\n\nOutras perguntas úteis: GL_ACTIVE_UNIFORMS e GL_ACTIVE_ATTRIBUTES listam o que sobreviveu à compilação (variáveis não usadas são removidas).",
     },
     params: [
       { name: "program", type: "GLuint", desc: { en: "Program to query.", pt: "Programa a consultar." } },

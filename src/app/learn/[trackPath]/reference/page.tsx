@@ -9,7 +9,11 @@ import { useLanguage } from "@/components/providers/LanguageProvider";
 import { DocsLayout } from "@/components/lesson/DocsLayout";
 import { trackCrumbs } from "@/lib/tracks/crumbs";
 import { ReferenceSidebar } from "@/components/reference/ReferenceSidebar";
-import { getReference, loc, referenceHref } from "@/lib/reference";
+import { displayName, getReference, loc, referenceHref, sinceVersion } from "@/lib/reference";
+
+/** Version ceilings offered by the filter: 3.3 (most tutorials), 4.1 (macOS), 4.5 (DSA), all. */
+const VERSIONS = [3.3, 4.1, 4.5] as const;
+const VERSION_KEY = "learn-ref-version";
 
 export default function ReferenceIndexPage() {
   const params = useParams();
@@ -20,6 +24,16 @@ export default function ReferenceIndexPage() {
   const trackPath = params?.trackPath ? decodeURIComponent(params.trackPath as string) : "";
   const reference = getReference(trackPath);
   const [query, setQuery] = useState("");
+  // Highest version to show (0 = all); remembered per viewer
+  const [maxVersion, setMaxVersion] = useState(0);
+
+  useEffect(() => {
+    try { setMaxVersion(Number(localStorage.getItem(VERSION_KEY)) || 0); } catch { /* storage blocked */ }
+  }, []);
+  const chooseVersion = (v: number) => {
+    setMaxVersion(v);
+    try { localStorage.setItem(VERSION_KEY, String(v)); } catch { /* storage blocked */ }
+  };
 
   useEffect(() => {
     if (!reference && trackPath) router.replace(`/learn/${encodeURIComponent(trackPath)}`);
@@ -28,21 +42,25 @@ export default function ReferenceIndexPage() {
   const groups = useMemo(() => {
     if (!reference) return [];
     const q = query.trim().toLowerCase();
+    const fits = (v: number | undefined) => !maxVersion || v === undefined || v <= maxVersion + 1e-9;
     return reference.categories
       .map((cat) => ({
         cat,
         entries: reference.entries.filter(
           (e) =>
             e.category === cat.id &&
+            fits(sinceVersion(e)) &&
             (!q ||
               e.name.toLowerCase().includes(q) ||
               loc(e.summary, language).toLowerCase().includes(q)),
         ),
       }))
       .filter((g) => g.entries.length > 0);
-  }, [reference, query, language]);
+  }, [reference, query, language, maxVersion]);
 
   if (!reference) return null;
+  const shown = groups.reduce((n, g) => n + g.entries.length, 0);
+  const hasVersions = reference.entries.some((e) => sinceVersion(e) !== undefined);
 
   return (
     <DocsLayout
@@ -93,9 +111,38 @@ export default function ReferenceIndexPage() {
             className="w-full bg-transparent text-sm text-[var(--text-main)] placeholder:text-[var(--text-muted)] outline-none"
           />
           <span className="font-mono text-[11px] text-[var(--text-muted)] whitespace-nowrap">
-            {reference.entries.length} {tt.refFunctions ?? "functions"}
+            {shown < reference.entries.length
+              ? `${shown} / ${reference.entries.length} ${tt.refShown ?? "shown"}`
+              : `${reference.entries.length} ${tt.refFunctions ?? "functions"}`}
           </span>
         </label>
+
+        {hasVersions && (
+          <div className="mt-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)] mr-1">
+                {tt.refVersion ?? "Available in"}
+              </span>
+              {[0, ...VERSIONS].map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => chooseVersion(v)}
+                  aria-pressed={maxVersion === v}
+                  className={`rounded-full border px-3 py-1 font-mono text-[11.5px] transition-colors
+                    ${maxVersion === v
+                      ? "border-[var(--primary)] bg-[var(--primary-low)] text-[var(--primary)]"
+                      : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--border-strong)]"}`}
+                >
+                  {v ? `GL ≤ ${v.toFixed(1)}` : (tt.refVersionAll ?? "all versions")}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-[12.5px] text-[var(--text-muted)]">
+              {tt.refVersionHint ?? "Hide functions newer than the OpenGL version you target. macOS stops at 4.1."}
+            </p>
+          </div>
+        )}
       </header>
 
       <div className="space-y-14">
@@ -114,9 +161,16 @@ export default function ReferenceIndexPage() {
                 >
                   <span className="flex items-center justify-between gap-2">
                     <span className="font-mono text-[13px] font-semibold text-[var(--text-main)] group-hover:text-[var(--primary)] transition-colors truncate">
-                      {e.name}
+                      {displayName(e)}
                     </span>
-                    <ArrowUpRight size={14} className="flex-shrink-0 text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
+                    <span className="flex items-center gap-2 flex-shrink-0">
+                      {e.since && (
+                        <span className="font-mono text-[10px] text-[var(--text-muted)] rounded border border-[var(--border)] px-1.5 py-px">
+                          {e.since.replace(/^GL /, "")}
+                        </span>
+                      )}
+                      <ArrowUpRight size={14} className="text-[var(--text-muted)] group-hover:text-[var(--primary)] transition-colors" />
+                    </span>
                   </span>
                   <span className="text-xs leading-relaxed text-[var(--text-muted)] line-clamp-2">
                     {loc(e.summary, language)}

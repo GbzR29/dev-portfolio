@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Search } from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { loc, referenceHref, type Reference } from "@/lib/reference";
+import { displayName, loc, referenceHref, type Reference } from "@/lib/reference";
 
 /** Left rail for reference pages: filter box + functions grouped by category. */
 export function ReferenceSidebar({ reference, activeName }: { reference: Reference; activeName?: string }) {
@@ -76,7 +76,7 @@ export function ReferenceSidebar({ reference, activeName }: { reference: Referen
                     }`}
                 >
                   {isActive && <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full bg-[var(--primary)]" />}
-                  {e.name}
+                  {displayName(e)}
                 </Link>
               );
             })}

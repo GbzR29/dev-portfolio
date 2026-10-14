@@ -20,6 +20,7 @@ export const contextEntries: RefEntry[] = [
   {
     name: "glViewport",
     category: "context",
+    diagram: "viewport",
     since: "GL 1.0",
     signature: "void glViewport(GLint x, GLint y, GLsizei width, GLsizei height);",
     summary: {

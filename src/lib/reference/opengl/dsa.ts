@@ -42,6 +42,10 @@ glNamedBufferStorage(vbo, sizeof(vertices), vertices, 0);`,
       en: "glBufferData without binding: (re)allocates a buffer's storage by ID.",
       pt: "glBufferData sem bind: (re)aloca o armazenamento de um buffer pelo ID.",
     },
+    description: {
+      en: "The same job as glBufferData: throw away the buffer's old storage, allocate size bytes and optionally copy data in. The difference is only how the buffer is named: by ID, so nothing has to be bound to GL_ARRAY_BUFFER first.\n\nCalling it again with the same size and nullptr is the classic way to \"orphan\" a buffer each frame: the GPU keeps reading the old memory while you fill the new one.",
+      pt: "O mesmo trabalho de glBufferData: descarta o armazenamento antigo do buffer, aloca size bytes e opcionalmente copia data para dentro. A diferença está só em como o buffer é indicado: pelo ID, então nada precisa estar ligado a GL_ARRAY_BUFFER antes.\n\nChamar de novo com o mesmo tamanho e nullptr é o jeito clássico de deixar um buffer \"órfão\" (orphaning) a cada frame: a GPU continua lendo a memória antiga enquanto você preenche a nova.",
+    },
     params: [
       { name: "buffer", type: "GLuint", desc: { en: "The buffer to allocate.", pt: "O buffer a alocar." } },
       { name: "size", type: "GLsizeiptr", desc: { en: "Size in bytes.", pt: "Tamanho em bytes." } },
@@ -98,6 +102,10 @@ glNamedBufferStorage(ubo, sizeof(CameraData), nullptr, GL_DYNAMIC_STORAGE_BIT);`
     summary: {
       en: "glBufferSubData without binding: overwrites part of a buffer by ID.",
       pt: "glBufferSubData sem bind: sobrescreve parte de um buffer pelo ID.",
+    },
+    description: {
+      en: "Copies size bytes from your memory into the buffer, starting offset bytes in. The size of the buffer does not change, so the range must fit inside it. It is the simplest way to update a uniform buffer or a few vertices each frame.\n\nWith storage made by glNamedBufferStorage, the buffer must have been created with GL_DYNAMIC_STORAGE_BIT, or this call is refused.",
+      pt: "Copia size bytes da sua memória para o buffer, começando offset bytes adentro. O tamanho do buffer não muda, então a faixa precisa caber nele. É o jeito mais simples de atualizar um uniform buffer ou alguns vértices a cada frame.\n\nCom armazenamento feito por glNamedBufferStorage, o buffer precisa ter sido criado com GL_DYNAMIC_STORAGE_BIT, senão esta chamada é recusada.",
     },
     params: [
       { name: "buffer", type: "GLuint", desc: { en: "Buffer to update.", pt: "Buffer a atualizar." } },
@@ -166,11 +174,16 @@ glVertexArrayElementBuffer(vao, ebo);`,
   {
     name: "glVertexArrayAttribFormat",
     category: "dsa",
+    diagram: "vertexLayout",
     since: "GL 4.5",
     signature: "void glVertexArrayAttribFormat(GLuint vaobj, GLuint attribindex, GLint size,\n                               GLenum type, GLboolean normalized, GLuint relativeoffset);",
     summary: {
       en: "Describes the format of one attribute inside a vertex — without saying which buffer.",
       pt: "Descreve o formato de um atributo dentro de um vértice — sem dizer qual buffer.",
+    },
+    description: {
+      en: "The DSA way splits glVertexAttribPointer into three calls. This one says what the attribute looks like: size components of type, starting relativeoffset bytes into each vertex. glVertexArrayAttribBinding then says which binding point it reads from, and glVertexArrayVertexBuffer which buffer sits on that binding point, with the stride.\n\nBecause the format is separate from the buffer, the same VAO layout can be pointed at another buffer with one call.",
+      pt: "O jeito DSA divide glVertexAttribPointer em três chamadas. Esta diz como o atributo é: size componentes do tipo type, começando relativeoffset bytes dentro de cada vértice. glVertexArrayAttribBinding diz depois de qual ponto de binding ele lê, e glVertexArrayVertexBuffer qual buffer está nesse ponto de binding, com o stride.\n\nComo o formato é separado do buffer, o mesmo layout de VAO pode apontar para outro buffer com uma chamada.",
     },
     params: [
       { name: "vaobj", type: "GLuint", desc: { en: "The VAO.", pt: "O VAO." } },
@@ -219,6 +232,10 @@ glVertexArrayAttribBinding(vao, 1, 0);`,
       en: "Enables an attribute of a specific VAO, without binding it.",
       pt: "Ativa um atributo de um VAO específico, sem fazer bind.",
     },
+    description: {
+      en: "Attributes start disabled. A disabled attribute is not read from any buffer: the shader input gets a constant value instead (0, 0, 0, 1 by default), which is why a forgotten enable shows up as every vertex collapsing to the same point or colour. Enable each attribute the shader reads, once, when setting up the VAO.",
+      pt: "Os atributos começam desativados. Um atributo desativado não é lido de nenhum buffer: a entrada do shader recebe um valor constante no lugar (0, 0, 0, 1 por padrão), e é por isso que um enable esquecido aparece como todos os vértices caindo no mesmo ponto ou na mesma cor. Ative cada atributo que o shader lê, uma vez, ao montar o VAO.",
+    },
     params: [
       { name: "vaobj", type: "GLuint", desc: { en: "The VAO.", pt: "O VAO." } },
       { name: "index", type: "GLuint", desc: { en: "Attribute location to enable.", pt: "Location do atributo a ativar." } },
@@ -265,6 +282,10 @@ glGenerateTextureMipmap(tex);`,
       en: "Allocates immutable storage for a texture by ID (DSA glTexStorage2D).",
       pt: "Aloca armazenamento imutável para uma textura pelo ID (glTexStorage2D em DSA).",
     },
+    description: {
+      en: "Allocates every mip level at once, with a fixed size and format, and fills nothing: the pixels come next with glTextureSubImage2D. \"Immutable\" means the size and format can never change, which lets the driver check the texture once instead of at every draw, and rules out the classic bug of a texture that is incomplete because a mip level is missing.\n\nThe format must be a sized one (GL_RGBA8, not GL_RGBA). For colour images use an sRGB format such as GL_SRGB8_ALPHA8, so the GPU converts to linear when sampling.",
+      pt: "Aloca todos os níveis de mipmap de uma vez, com tamanho e formato fixos, e não preenche nada: os pixels vêm depois com glTextureSubImage2D. \"Imutável\" quer dizer que tamanho e formato nunca podem mudar, o que permite ao driver verificar a textura uma vez em vez de a cada desenho, e elimina o bug clássico da textura incompleta por falta de um nível de mipmap.\n\nO formato precisa ter tamanho (GL_RGBA8, não GL_RGBA). Para imagens de cor use um formato sRGB como GL_SRGB8_ALPHA8, assim a GPU converte para linear ao ler.",
+    },
     params: [
       { name: "texture", type: "GLuint", desc: { en: "Texture from glCreateTextures.", pt: "Textura vinda de glCreateTextures." } },
       { name: "levels", type: "GLsizei", desc: { en: "Number of mip levels.", pt: "Número de níveis de mipmap." } },
@@ -286,6 +307,10 @@ glTextureStorage2D(tex, levels, GL_SRGB8_ALPHA8, w, h);`,
     summary: {
       en: "Uploads pixels into a region of an existing texture by ID.",
       pt: "Envia pixels para uma região de uma textura existente pelo ID.",
+    },
+    description: {
+      en: "The usual partner of glTextureStorage2D: storage first, pixels second. It copies a width × height rectangle of your data into one mip level, at (xoffset, yoffset) counted from the bottom-left. format and type describe your data, not the texture: GL_RGBA + GL_UNSIGNED_BYTE for an 8-bit image from stb_image.\n\nAfter uploading level 0, call glGenerateTextureMipmap to fill the smaller levels.",
+      pt: "O par habitual de glTextureStorage2D: primeiro o armazenamento, depois os pixels. Copia um retângulo width × height dos seus dados para um nível de mipmap, em (xoffset, yoffset) contado a partir do canto inferior esquerdo. format e type descrevem os seus dados, não a textura: GL_RGBA + GL_UNSIGNED_BYTE para uma imagem de 8 bits vinda do stb_image.\n\nDepois de enviar o nível 0, chame glGenerateTextureMipmap para preencher os níveis menores.",
     },
     params: [
       { name: "texture", type: "GLuint", desc: { en: "Target texture (already allocated).", pt: "Textura de destino (já alocada)." } },

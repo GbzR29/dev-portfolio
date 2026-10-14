@@ -42,6 +42,10 @@ glEnd();`,
       en: "Finishes a glBegin block and draws the vertices sent inside it.",
       pt: "Encerra um bloco glBegin e desenha os vértices enviados dentro dele.",
     },
+    description: {
+      en: "Closes the block opened by glBegin; the vertices sent in between are assembled into the primitives glBegin asked for. Inside the block only vertex calls were allowed (glVertex, glColor, glNormal, glTexCoord); anything else was an error. Modern code replaces the whole block with one glDrawArrays over a vertex buffer.",
+      pt: "Fecha o bloco aberto por glBegin; os vértices enviados no meio são montados nas primitivas que glBegin pediu. Dentro do bloco só eram permitidas chamadas de vértice (glVertex, glColor, glNormal, glTexCoord); qualquer outra coisa era erro. Código moderno troca o bloco inteiro por um glDrawArrays sobre um vertex buffer.",
+    },
     params: [],
     example: `glBegin(GL_LINES);
     glVertex3f(0, 0, 0);

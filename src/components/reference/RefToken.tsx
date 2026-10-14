@@ -10,7 +10,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import {
-  loc, referenceHref, referenceIndex,
+  displayName, loc, referenceHref, referenceIndex,
   type RefEntry, type Reference,
 } from "@/lib/reference";
 
@@ -67,7 +67,7 @@ function HoverCard({
       className="fixed max-w-[calc(100vw-24px)] rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-xl p-4 text-left animate-in fade-in zoom-in-95 duration-150"
     >
       <div className="flex items-center justify-between gap-3 mb-2">
-        <span className="font-mono text-sm font-semibold text-[var(--primary)]">{entry.name}</span>
+        <span className="font-mono text-sm font-semibold text-[var(--primary)]">{displayName(entry)}</span>
         {entry.since && (
           <span className="text-[10px] font-mono text-[var(--text-muted)] border border-[var(--border)] rounded px-1.5 py-0.5">
             {entry.since}

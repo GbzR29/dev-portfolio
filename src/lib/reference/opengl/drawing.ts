@@ -15,6 +15,7 @@ export const drawingEntries: RefEntry[] = [
   {
     name: "glDrawArrays",
     category: "drawing",
+    diagram: "primitiveModes",
     since: "GL 1.1",
     signature: "void glDrawArrays(GLenum mode, GLint first, GLsizei count);",
     summary: {
@@ -46,6 +47,7 @@ glDrawArrays(GL_TRIANGLES, 0, 3); // one triangle`,
   {
     name: "glDrawElements",
     category: "drawing",
+    diagram: "primitiveModes",
     since: "GL 1.1",
     signature: "void glDrawElements(GLenum mode, GLsizei count, GLenum type, const void *indices);",
     summary: {

@@ -135,6 +135,10 @@ glPopDebugGroup();`,
       en: "Closes the section opened by the last glPushDebugGroup.",
       pt: "Fecha a seção aberta pelo último glPushDebugGroup.",
     },
+    description: {
+      en: "Debug groups nest like brackets: every glPushDebugGroup needs one glPopDebugGroup, in reverse order. Tools such as RenderDoc and Nsight show the frame as a tree built from these pairs (Shadows › Cascade 2 › draw calls), which makes a capture of thousands of calls readable.\n\nA simple way never to forget the pop is a small C++ object that pushes in its constructor and pops in its destructor.",
+      pt: "Os grupos de depuração se aninham como parênteses: cada glPushDebugGroup precisa de um glPopDebugGroup, na ordem inversa. Ferramentas como RenderDoc e Nsight mostram o frame como uma árvore montada com esses pares (Sombras › Cascata 2 › chamadas de desenho), o que torna legível uma captura de milhares de chamadas.\n\nUm jeito simples de nunca esquecer o pop é um pequeno objeto C++ que faz o push no construtor e o pop no destrutor.",
+    },
     params: [],
     errors: [
       { code: "GL_STACK_UNDERFLOW", when: { en: "Called without a matching push.", pt: "Chamada sem um push correspondente." } },

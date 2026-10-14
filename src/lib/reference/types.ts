@@ -44,6 +44,10 @@ export interface RefEntry {
   related?: string[];
   /** Link to the official Khronos page. */
   khronos?: string;
+  /** Present on a family page (glUniform*): the functions it groups and how to read their names. */
+  family?: { members: string[]; suffixes?: { part: string; desc: Localized }[] };
+  /** Id of a drawing shown under "How it works" (components/reference/diagrams). */
+  diagram?: string;
 }
 
 export interface RefCategory {
@@ -59,6 +63,17 @@ export interface Reference {
   entries: RefEntry[];
   /** Regex that finds candidate identifiers in code/prose (must use the `g` flag). */
   tokenPattern: RegExp;
+}
+
+/** The name as shown: family pages get a trailing * (glUniform*). */
+export function displayName(entry: RefEntry): string {
+  return entry.family ? `${entry.name}*` : entry.name;
+}
+
+/** "GL 4.5" → 4.5; undefined for entries without a version (families). */
+export function sinceVersion(entry: RefEntry): number | undefined {
+  const m = entry.since?.match(/(\d+)\.(\d+)/);
+  return m ? Number(m[1]) + Number(m[2]) / 10 : undefined;
 }
 
 export function loc(text: Localized | undefined, language: Language): string {

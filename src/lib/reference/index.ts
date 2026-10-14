@@ -24,10 +24,15 @@ export function referenceIndex(ref: Reference): Map<string, RefEntry> {
   return index;
 }
 
+/** The family pages that list `name` among their members. */
+export function familiesOf(ref: Reference, name: string): RefEntry[] {
+  return ref.entries.filter((e) => e.family?.members.includes(name));
+}
+
 export function referenceHref(ref: Reference, name?: string): string {
   const base = `/learn/${encodeURIComponent(ref.trackPath)}/reference`;
   return name ? `${base}/${name}` : base;
 }
 
 export type { Reference, RefEntry, RefCategory, RefParam, Localized } from "./types";
-export { loc } from "./types";
+export { loc, displayName, sinceVersion } from "./types";

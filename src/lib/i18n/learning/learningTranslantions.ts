@@ -128,6 +128,14 @@ export const learningTranslations = {
     refRelated:           "Related",
     refDeprecated:        "Removed from the core profile.",
     refKhronos:           "Official Khronos documentation",
+    refFamilyBadge:       "family",
+    refMembers:           "Functions in this family",
+    refSuffixes:          "Reading the name",
+    refPartOf:            "Part of the family",
+    refVersion:           "Available in",
+    refVersionAll:        "all versions",
+    refVersionHint:       "Hide functions newer than the OpenGL version you target. macOS stops at 4.1.",
+    refShown:             "shown",
   },
 
   pt: {
@@ -260,6 +268,14 @@ export const learningTranslations = {
     refRelated:           "Relacionadas",
     refDeprecated:        "Removida do core profile.",
     refKhronos:           "Documentação oficial da Khronos",
+    refFamilyBadge:       "família",
+    refMembers:           "Funções desta família",
+    refSuffixes:          "Como ler o nome",
+    refPartOf:            "Faz parte da família",
+    refVersion:           "Disponível em",
+    refVersionAll:        "todas as versões",
+    refVersionHint:       "Esconda as funções mais novas que a versão do OpenGL que você usa. O macOS para no 4.1.",
+    refShown:             "visíveis",
   },
 
   es: {

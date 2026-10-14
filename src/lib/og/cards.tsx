@@ -6,7 +6,7 @@ import { ALL_TRACKS, getTrack } from "@/lib/tracks";
 import { chapterTitle, findChapter, sectionName, trackInfo, trackName } from "@/lib/tracks/seo";
 import { seoWording } from "@/lib/tracks/seoText";
 import { decodeSegment, type UrlLang } from "@/lib/tracks/urls";
-import { getReference, referenceIndex } from "@/lib/reference";
+import { displayName, getReference, referenceIndex } from "@/lib/reference";
 import { renderOgCard } from "./card";
 
 const COPY = {
@@ -112,7 +112,7 @@ export function referenceImage(params: { trackPath: string; fn?: string }) {
   const category = ref.categories.find((cat) => cat.id === entry.category)?.title.en;
   return renderOgCard({
     eyebrow: [`${trackPath} reference`, category].filter(Boolean).join(" / "),
-    title: entry.name,
+    title: displayName(entry),
     monoTitle: true,
     detail: entry.summary.en.length > 96 ? `${entry.summary.en.slice(0, 93).trimEnd()}…` : entry.summary.en,
     footer: "free interactive course",

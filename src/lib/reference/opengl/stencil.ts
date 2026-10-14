@@ -24,6 +24,7 @@ export const stencilEntries: RefEntry[] = [
   {
     name: "glStencilFunc",
     category: "stencil",
+    diagram: "stencil",
     since: "GL 1.0",
     signature: "void glStencilFunc(GLenum func, GLint ref, GLuint mask);",
     summary: {
@@ -61,6 +62,7 @@ drawObjectScaledUp();`,
   {
     name: "glStencilOp",
     category: "stencil",
+    diagram: "stencil",
     since: "GL 1.0",
     signature: "void glStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass);",
     summary: {
@@ -116,6 +118,7 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);`,
   {
     name: "glStencilOpSeparate",
     category: "stencil",
+    diagram: "stencil",
     since: "GL 2.0",
     signature: "void glStencilOpSeparate(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);",
     summary: {

@@ -144,6 +144,10 @@ glUniform3fv(uLightPos, 1, glm::value_ptr(lightPos));`,
       en: "Sets a vec4 uniform from four separate floats.",
       pt: "Define um uniform vec4 a partir de quatro floats separados.",
     },
+    description: {
+      en: "Writes the four values into a vec4 uniform of the program in use; the typical case is a colour with alpha, uniform vec4 uColor. Changing it every frame from the CPU (a colour that pulses with time) is the first animation many people write.\n\nThe four values go in as written: for a colour they are red, green, blue and alpha from 0 to 1, not 0 to 255.",
+      pt: "Escreve os quatro valores num uniform vec4 do programa em uso; o caso típico é uma cor com alfa, uniform vec4 uColor. Mudá-lo a cada frame pela CPU (uma cor que pulsa com o tempo) é a primeira animação que muita gente escreve.\n\nOs quatro valores entram como escritos: numa cor são vermelho, verde, azul e alfa de 0 a 1, não de 0 a 255.",
+    },
     params: [
       LOCATION,
       { name: "v0", type: "GLfloat", desc: { en: "x / r component.", pt: "Componente x / r." } },

@@ -191,6 +191,7 @@ glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT32F, 2048, 2048);`,
   {
     name: "glTexParameteri",
     category: "textures",
+    diagram: "wrapModes",
     since: "GL 1.0",
     signature: "void glTexParameteri(GLenum target, GLenum pname, GLint param);",
     summary: {

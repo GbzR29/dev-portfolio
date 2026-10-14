@@ -73,6 +73,7 @@ glDepthMask(GL_TRUE);`,
   {
     name: "glBlendFunc",
     category: "fragment-ops",
+    diagram: "blend",
     since: "GL 1.0",
     signature: "void glBlendFunc(GLenum sfactor, GLenum dfactor);",
     summary: {
@@ -99,6 +100,7 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);`,
   {
     name: "glCullFace",
     category: "fragment-ops",
+    diagram: "winding",
     since: "GL 1.0",
     signature: "void glCullFace(GLenum mode);",
     summary: {
@@ -129,6 +131,7 @@ glFrontFace(GL_CCW);`,
   {
     name: "glFrontFace",
     category: "fragment-ops",
+    diagram: "winding",
     since: "GL 1.0",
     signature: "void glFrontFace(GLenum mode);",
     summary: {
