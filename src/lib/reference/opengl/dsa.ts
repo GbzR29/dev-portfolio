@@ -3,7 +3,7 @@ import type { RefEntry } from "../types";
 
 const KHR = "https://registry.khronos.org/OpenGL-Refpages/gl4/html/";
 
-const DSA_NOTE = {
+export const DSA_NOTE = {
   en: "Direct State Access (GL 4.5): the object is passed as a parameter, so nothing needs to be bound and no global state is disturbed.",
   pt: "Direct State Access (GL 4.5): o objeto é passado como parâmetro, então nada precisa estar ligado e nenhum estado global é alterado.",
 };

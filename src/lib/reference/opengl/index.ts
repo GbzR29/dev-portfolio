@@ -14,6 +14,9 @@ import { blendingEntries } from "./blending";
 import { stencilEntries } from "./stencil";
 import { framebufferEntries } from "./framebuffers";
 import { dsaEntries } from "./dsa";
+import { dsaBufferEntries } from "./dsaBuffers";
+import { dsaTextureEntries } from "./dsaTextures";
+import { dsaFramebufferEntries } from "./dsaFramebuffers";
 import { computeEntries } from "./compute";
 import { debugEntries } from "./debug";
 import { legacyEntries } from "./legacy";
@@ -51,6 +54,9 @@ export const openGLReference: Reference = {
     ...stencilEntries,
     ...framebufferEntries,
     ...dsaEntries,
+    ...dsaBufferEntries,
+    ...dsaTextureEntries,
+    ...dsaFramebufferEntries,
     ...computeEntries,
     ...debugEntries,
     ...legacyEntries,
