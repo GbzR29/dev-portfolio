@@ -7,6 +7,10 @@ const track = {
     "c-pointers": "Ponteiros",
     "c-memory": "Stack, heap e tempo de vida",
     "c-strings-structs": "Strings, structs e unions",
+    "c-preprocessor-build": "O pré-processador e o build",
+    "c-undefined-behavior": "Comportamento indefinido",
+    "c-io-files": "Entrada, saída e arquivos",
+    "c-to-cpp": "Do C ao C++",
     landscape: "O panorama do C++ moderno",
     values: "Inicialização e valores",
     move: "Semântica de movimento",
@@ -26,6 +30,7 @@ const track = {
   sections: {
     Origins: "Origens",
     "C Foundations": "Fundamentos de C",
+    "From C to C++": "Do C ao C++",
     "Language Core": "Núcleo da linguagem",
     "Generic C++": "C++ genérico",
     "Standard Library": "Biblioteca padrão",

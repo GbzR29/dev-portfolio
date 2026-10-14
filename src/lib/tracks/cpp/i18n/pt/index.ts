@@ -3,9 +3,13 @@
 import type { LessonText } from "@/lib/i18n/lessons";
 import track from "./_track";
 import cBasics from "./c-basics";
+import cIoFiles from "./c-io-files";
 import cMemory from "./c-memory";
 import cPointers from "./c-pointers";
+import cPreprocessorBuild from "./c-preprocessor-build";
 import cStringsStructs from "./c-strings-structs";
+import cToCpp from "./c-to-cpp";
+import cUndefinedBehavior from "./c-undefined-behavior";
 import concepts from "./concepts";
 import concurrency from "./concurrency";
 import constexpr from "./constexpr";
@@ -24,7 +28,7 @@ import values from "./values";
 import vocabulary from "./vocabulary";
 
 const bundle: LessonText = {
-  strings: { ...history, ...cBasics, ...cMemory, ...cPointers, ...cStringsStructs, ...concepts, ...concurrency, ...constexpr, ...cpp26, ...errors, ...landscape, ...modules, ...move, ...performance, ...raii, ...ranges, ...templates, ...tooling, ...values, ...vocabulary },
+  strings: { ...history, ...cBasics, ...cMemory, ...cPointers, ...cStringsStructs, ...cPreprocessorBuild, ...cUndefinedBehavior, ...cIoFiles, ...cToCpp, ...concepts, ...concurrency, ...constexpr, ...cpp26, ...errors, ...landscape, ...modules, ...move, ...performance, ...raii, ...ranges, ...templates, ...tooling, ...values, ...vocabulary },
   titles: track.titles,
   sections: track.sections,
 };

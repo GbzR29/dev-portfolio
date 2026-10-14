@@ -112,11 +112,12 @@ export class Mem {
     this.touched.add(`${p.key}:0`);
   }
 
-  /** A heap block of n elements; returns its id ("#1") for point(). */
-  malloc(type: string, elem: number, n: number) {
+  /** A heap block of n elements; returns its id ("#1") for point(). `label` replaces "malloc(bytes)". */
+  malloc(type: string, elem: number, n: number, label?: string, vals?: string[]) {
     const bytes = elem * n;
     const id = `#${this.s.heap.length + 1}`;
-    this.s.heap.push({ key: id, name: `malloc(${bytes})`, type, elem, addr: this.s.hp, vals: Array(n).fill(null), bytes });
+    this.s.heap.push({ key: id, name: label ?? `malloc(${bytes})`, type, elem, addr: this.s.hp, vals: vals ? [...vals] : Array(n).fill(null), bytes });
+    vals?.forEach((_, i) => this.touched.add(`${id}:${i}`));
     this.s.hp += Math.ceil((bytes + 16) / 16) * 16;     // allocator bookkeeping + rounding
     return id;
   }

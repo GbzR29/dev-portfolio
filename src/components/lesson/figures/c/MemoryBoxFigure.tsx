@@ -315,4 +315,7 @@ const NAMES: Record<ProgramId, string> = {
   string: "string",
   noTerm: "missing \\0",
   struct: "struct",
+  overflow: "off by one",
+  file: "fopen / fclose",
+  vector: "std::vector",
 };

@@ -1,0 +1,77 @@
+// PT text for src/lib/tracks/cpp/chapters/c-undefined-behavior.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  cUb_intro: "O padrão do C é um contrato entre você e o compilador. Você promete nunca fazer certas coisas: ler além do fim de um array, estourar um inteiro com sinal, usar memória liberada. Em troca, o compilador gera código rápido sem conferir nada disso. Se você quebra a promessa, o padrão não diz absolutamente nada sobre o que acontece em seguida. Isso é comportamento indefinido, em inglês undefined behaviour, abreviado UB. Não é um crash nem uma mensagem de erro. É a ausência de qualquer regra, e os otimizadores modernos usam essa ausência de formas que surpreendem até programadores experientes.",
+  cUb_goal0: "Distinguir comportamento indefinido de comportamento definido pela implementação e de comportamento não especificado.",
+  cUb_goal1: "Explicar por que o estouro com sinal é indefinido e o sem sinal não, e verificar estouro do jeito certo.",
+  cUb_goal2: "Reconhecer no código os tipos comuns de UB.",
+  cUb_goal3: "Explicar como um otimizador pode apagar código por causa de UB.",
+  cUb_goal4: "Pegar UB com avisos e com os sanitizers.",
+
+  cUb_kindsTitle: "Quatro níveis de \"depende\"",
+  cUb_hKind: "Tipo",
+  cUb_hMeans: "Significado",
+  cUb_hEx: "Exemplo",
+  cUb_k1: "Definido",
+  cUb_k1m: "o padrão diz exatamente o que acontece",
+  cUb_k1e: "aritmética sem sinal dá a volta módulo 2ⁿ",
+  cUb_k2: "Definido pela implementação",
+  cUb_k2m: "cada compilador escolhe, e precisa documentar a escolha",
+  cUb_k2e: "o tamanho do int; se char tem sinal",
+  cUb_k3: "Não especificado",
+  cUb_k3m: "um entre poucos resultados, sem documentação, pode mudar",
+  cUb_k3e: "a ordem em que f(a(), b()) chama a e b",
+  cUb_k4: "Indefinido",
+  cUb_k4m: "nenhuma exigência, para o programa inteiro",
+  cUb_k4e: "estouro com sinal, acesso fora dos limites, uso depois do free",
+  cUb_whyBody: "Por que uma linguagem deixaria buracos assim? Por velocidade e portabilidade, os dois objetivos para os quais o C foi feito. Conferir cada índice de array custa tempo. As máquinas dos anos 1970 discordavam sobre o que uma soma que estoura deveria fazer, então o padrão se recusou a escolher. E como o compilador pode supor que UB nunca acontece, ele pode raciocinar que um contador de laço nunca dá a volta, ou que um ponteiro que acabou de ser desreferenciado não é NULL, e gerar código mais enxuto a partir disso.",
+
+  cUb_intTitle: "Estouro de inteiros",
+  cUb_intBody: "Um int tem 32 bits, então tem um valor máximo, INT_MAX = 2 147 483 647. Números negativos são guardados em complemento de dois: o bit mais alto vale um peso negativo grande, o que faz o mesmo circuito de soma servir para os dois sinais. A roda abaixo reduz isso a 8 bits. Gire até atravessar o fim da faixa, primeiro sem sinal, depois com sinal.",
+  cUb_optBody: "A regra dos tipos com sinal tem uma consequência surpreendente. Uma checagem de estouro que depende de o estouro acontecer pergunta ao compilador sobre algo que ele pode supor impossível, então ele pode responder \"nunca\" e apagar a checagem. Teste antes da operação, ou use a aritmética com checagem do C23.",
+  cUb_otherIntNote: "Outras armadilhas de inteiros da mesma família: dividir por zero, INT_MIN / -1 (a resposta não cabe) e deslocar por uma quantidade negativa ou pelo menos igual à largura do tipo (1 << 32 para um int de 32 bits). Todas são indefinidas.",
+
+  cUb_oobTitle: "Fora dos limites",
+  cUb_oobBody: "O C não confere índices de array. Um índice uma posição além simplesmente calcula um endereço, e o que estiver lá é lido ou sobrescrito. Avance por este laço com erro de um: o teste i <= 3 devia ser i < 3.",
+
+  cUb_listTitle: "Os suspeitos de sempre",
+  cUb_hUb: "Comportamento indefinido",
+  cUb_hLooks: "Como aparece",
+  cUb_u1: "ler uma local sem inicialização",
+  cUb_u2: "desreferenciar NULL ou um ponteiro solto",
+  cUb_u3: "índice fora dos limites",
+  cUb_u4: "estouro com sinal, divisão por zero, deslocamentos inválidos",
+  cUb_u5: "modificar um literal de string",
+  cUb_u6: "mudar uma variável duas vezes sem ponto de sequência",
+  cUb_u7: "ler memória por um ponteiro de tipo não relacionado",
+  cUb_u8: "usar o resultado de uma função que terminou sem return",
+  cUb_punTip: "Para olhar os bits de um float, copie-os em vez de converter o ponteiro: memcpy(&bits, &f, sizeof bits); é definido, e os compiladores o transformam numa única instrução.",
+
+  cUb_exploitTitle: "Quando o otimizador leva você ao pé da letra",
+  cUb_exploitBody: "Este é o padrão que transformou um bug numa falha de segurança no kernel do Linux em 2009. A função lê através de p antes de conferir p. Ler através de NULL é indefinido, então o compilador conclui que p não pode ser NULL na checagem e remove a checagem como código morto. O programa que você escreveu tinha uma rede de proteção; o programa que roda, não.",
+
+  cUb_defTitle: "Defesas",
+  cUb_defBody: "Você não enxerga UB só testando: o programa pode se comportar perfeitamente até uma nova versão do compilador ou um novo nível de otimização. O que funciona é deixar ferramentas procurarem UB a cada execução.",
+  cUb_hTool: "Ferramenta",
+  cUb_hFinds: "O que encontra",
+  cUb_t1: "variáveis sem inicialização, returns faltando, conversões suspeitas, formatos de printf errados: os casos visíveis na compilação",
+  cUb_t2: "UBSan: estouro com sinal, deslocamentos inválidos, divisão por zero, acesso desalinhado ou por NULL, na execução, com o número da linha",
+  cUb_t3: "ASan: fora dos limites, uso depois do free, double free, vazamentos",
+  cUb_t4: "faz o estouro com sinal dar a volta como o sem sinal: remove uma classe de UB, com um pequeno custo de otimização",
+  cUb_t5n: "analisadores estáticos",
+  cUb_t5: "clang --analyze, cppcheck: seguem caminhos pelo código sem executá-lo",
+  cUb_ruleWarn: "\"Funciona na minha máquina\" não prova nada para código com UB. Compile toda configuração de depuração e de teste com -fsanitize=address,undefined; o capítulo Ferramentas mostra como pôr isso no CMake e na integração contínua.",
+
+  cUb_tryTitle: "Experimente",
+  cUb_try1: "Compile will_overflow_bad com -O0 e com -O2 no Compiler Explorer e compare o assembly.",
+  cUb_try2: "Escreva um laço com i <= n sobre um array de n elementos. Rode com e sem -fsanitize=address.",
+  cUb_try3: "Escreva int safe_mul(int a, int b, int *out) que devolve 0 em vez de estourar, primeiro com comparações contra INT_MAX, depois com ckd_mul.",
+
+  cUb_key0: "Comportamento indefinido quer dizer que o padrão não impõe regra nenhuma, para o programa inteiro, não só para uma linha.",
+  cUb_key1: "O C tem UB por velocidade: nenhuma checagem na execução, e liberdade para o otimizador.",
+  cUb_key2: "Aritmética sem sinal dá a volta por definição; estouro com sinal é indefinido. Confira antes da operação, ou use ckd_add.",
+  cUb_key3: "O compilador pode supor que UB nunca acontece, e apagar checagens que só fazem sentido se acontecesse.",
+  cUb_key4: "Compile e teste com -Wall -Wextra e -fsanitize=address,undefined; testes passando, sozinhos, não provam nada.",
+};
+
+export default text;

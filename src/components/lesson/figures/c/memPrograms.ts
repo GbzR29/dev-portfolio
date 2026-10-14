@@ -261,5 +261,72 @@ const structs: Program = {
   ],
 };
 
-export const PROGRAMS = { vars, pointer, swapVal, swapPtr, heap, leak, dangling, string, noTerm, struct: structs } as const;
+const overflow: Program = {
+  id: "overflow",
+  code: [
+    "int main(void) {",
+    "    int secret = 42;",
+    "    int a[3] = {1, 2, 3};",
+    "    for (int i = 0; i <= 3; i++)",
+    "        a[i] = 0;",
+    "    printf(\"%d\\n\", secret);",
+    "}",
+  ],
+  steps: [
+    { line: 0, key: "figCMem_ov0", en: "main starts.", run: m => m.call("main") },
+    { line: 1, key: "figCMem_ov1", en: "secret = 42 is declared first, so it sits at the higher address.", run: m => m.local("secret", "int", 4, ["42"]) },
+    { line: 2, key: "figCMem_ov2", en: "a takes the 12 bytes just below secret. a[0], a[1] and a[2] are the only valid elements.", run: m => m.local("a", "int[3]", 4, ["1", "2", "3"]) },
+    { line: 4, key: "figCMem_ov3", en: "For i = 0, 1 and 2 the loop clears the array, as intended.", run: m => { m.local("i", "int", 4, ["2"]); m.set("a", 0, "0"); m.set("a", 1, "0"); m.set("a", 2, "0"); } },
+    { line: 3, key: "figCMem_ov4", en: "i = 3. The test is i <= 3 instead of i < 3, so the loop runs once more: the classic off-by-one.", run: m => m.set("i", 0, "3") },
+    { line: 4, key: "figCMem_ov5", en: "a[3] is the address of a plus 3 × 4 bytes: exactly where secret lives. The write lands there. No error, no warning, no crash.", run: m => m.set("secret", 0, "0") },
+    { line: 5, key: "figCMem_ov6", en: "secret prints 0 although no line ever assigned it. Here the stack layout made it secret; with another compiler or with -O2 it may be the return address, or the loop may never end. That is undefined behaviour.", run: m => { m.drop("i"); m.print("0\n"); } },
+  ],
+};
+
+const file: Program = {
+  id: "file",
+  code: [
+    "int main(void) {",
+    "    FILE *f = fopen(\"scores.txt\", \"r\");",
+    "    if (f == NULL) return 1;",
+    "    char line[6];",
+    "    fgets(line, sizeof line, f);",
+    "    fclose(f);",
+    "    f = NULL;",
+    "    return 0;",
+    "}",
+  ],
+  steps: [
+    { line: 0, key: "figCMem_fl0", en: "main starts.", run: m => m.call("main") },
+    { line: 1, key: "figCMem_fl1", en: "fopen asks the operating system to open the file and allocates a FILE structure to track it: the file's handle, the read position and a buffer. f points at it.", run: m => { const b = m.malloc("FILE", 216, 1, "FILE  scores.txt", ["open"]); m.pointer("f", "FILE *", 216, [b]); } },
+    { line: 2, key: "figCMem_fl2", en: "fopen returns NULL if the file is missing or cannot be read. Always check, and errno says why." },
+    { line: 3, key: "figCMem_fl3", en: "A small array for one line of text, not yet filled.", run: m => m.local("line", "char[6]", 1, [null, null, null, null, null, null]) },
+    { line: 4, key: "figCMem_fl4", en: "fgets reads one line, at most sizeof line − 1 = 5 characters, keeps the '\\n' and always adds the '\\0'. The file held \"42\".", run: m => { m.set("line", 0, "4"); m.set("line", 1, "2"); m.set("line", 2, "\\n"); m.set("line", 3, "\\0"); } },
+    { line: 5, key: "figCMem_fl5", en: "fclose writes out anything still buffered, closes the operating-system handle and frees the FILE. Forgetting it leaks the handle, and a process may only hold a limited number of them open.", run: m => m.freeVia("f"), cut: true },
+    { line: 6, key: "figCMem_fl6", en: "As after free: clear the pointer so it cannot be used by mistake.", run: m => m.point("f", null), cut: true },
+    { line: 7, key: "figCMem_fl7", en: "The end. Check the summary: no leaked FILE, no pointer to a closed one.", run: () => {} },
+  ],
+};
+
+const vector: Program = {
+  id: "vector",
+  code: [
+    "int main() {",
+    "    std::vector<int> v = {1, 2, 3};",
+    "    v.push_back(4);",
+    "    int sum = 0;",
+    "    for (int x : v) sum += x;",
+    "}   // no free, no delete",
+  ],
+  steps: [
+    { line: 0, key: "figCMem_vc0", en: "This one is C++. main starts.", run: m => m.call("main") },
+    { line: 1, key: "figCMem_vc1", en: "A std::vector is three small values on the stack: a pointer to a heap block, the size (elements used) and the capacity (elements allocated). Its constructor allocated the block and copied 1, 2, 3 in. The same IntVec you wrote by hand in C.", run: m => { const b = m.malloc("int", 4, 3, "operator new(12)", ["1", "2", "3"]); m.pointer("v.data", "int *", 4, [b]); m.local("v.size", "size_t", 8, ["3"]); m.local("v.cap", "size_t", 8, ["3"]); } },
+    { line: 2, key: "figCMem_vc2", en: "push_back finds the block full (size = capacity). It allocates a block twice as large and copies the elements across.", run: m => { const b = m.malloc("int", 4, 6, "operator new(24)", ["1", "2", "3"]); m.set(b, 3, "4"); } },
+    { line: 2, key: "figCMem_vc3", en: "Then it frees the old block, points data at the new one and updates size and capacity. All the realloc bookkeeping from the C chapter, done inside push_back.", run: m => { m.freeVia("v.data"); m.point("v.data", ["#2"]); m.set("v.size", 0, "4"); m.set("v.cap", 0, "6"); } },
+    { line: 4, key: "figCMem_vc4", en: "The loop reads the elements through data, exactly like a C array: sum = 10.", run: m => m.local("sum", "int", 4, ["10"]) },
+    { line: 5, key: "figCMem_vc5", en: "At the closing brace v goes out of scope, and C++ calls its destructor, ~vector(), which frees the block. You wrote no free, so there is no free to forget, and this happens on every way out of the block, even an early return.", run: m => { m.freeVia("v.data"); m.drop("v.data"); m.drop("v.size"); m.drop("v.cap"); } },
+  ],
+};
+
+export const PROGRAMS = { vars, pointer, swapVal, swapPtr, heap, leak, dangling, string, noTerm, struct: structs, overflow, file, vector } as const;
 export type ProgramId = keyof typeof PROGRAMS;
