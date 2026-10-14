@@ -85,9 +85,15 @@ export function CubeBuildFigure({ t }: { t?: TrackTranslations }) {
     const cs = triCorners(k), ps = cs.map(c => sc[c]);
     return { k, face: Math.floor(k / 2), ps, depth: (ps[0].depth + ps[1].depth + ps[2].depth) / 3 };
   });
-  // With the depth test the nearest surface wins, which for a convex cube is
-  // the same as painting far to near; without it, later draws simply cover.
-  const painted = depth ? [...tris].sort((a, b) => b.depth - a.depth) : tris;
+  // With the depth test the nearest surface wins. For a convex cube that is
+  // exactly "faces turned away first, faces turned toward us last": within each
+  // group no two faces overlap on screen. (Sorting triangles by their centre's
+  // depth is NOT enough: a bottom triangle's centre can be nearer than a front
+  // one's, and the order flips while the cube turns.) Without the test, later
+  // draws simply cover.
+  const painted = depth
+    ? [...tris.filter(tr => !faceFront[tr.face]), ...tris.filter(tr => faceFront[tr.face])]
+    : tris;
 
   // A corner is hidden when none of the faces turned toward us touches it
   const cornerSeen = CORNERS.map((_, c) => FACE_CORNERS.some((fc, f) => faceFront[f] && fc.includes(c)));
