@@ -7,13 +7,14 @@
 // G♯ and A♭ really sound the same (the Pythagorean comma); how long a sign
 // lasts (to the bar line), ties, courtesy signs and key signatures.
 
-import { H2, H3, LessonTable } from "@/components/lesson/LessonComponents";
+import { H2, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
 import { Derivation } from "@/components/lesson/Derivation";
 import { LiveFormula } from "@/components/lesson/LiveFormula";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { KeyIdeas, Article, Lead, Goals } from "@/components/lesson/Prose";
+import { Deeper } from "@/components/lesson/Deeper";
 import { MusicAccidentalFigure } from "@/components/lesson/figures/music/AccidentalFigure";
 import { MusicEnharmonicFigure } from "@/components/lesson/figures/music/EnharmonicFigure";
 import { MusicBarRuleFigure } from "@/components/lesson/figures/music/BarRuleFigure";
@@ -67,11 +68,12 @@ export function AccidentalsContent({ t }: { t: TrackTranslations }) {
           "Signs are written and said in opposite orders. On the staff the sign comes first, just left of the note head and on the same line or space, so the eye meets it before the note. In words it comes after: we write ♯ then the note, but say \"F sharp\". A sharp does not always land on a black key: it means \"the next key to the right\", whatever colour that is. E♯ is the key of F, and C♭ the key of B.")}
       </p>
 
-      <H3>{tx(t, "musAcc_histTitle", "Where the signs came from: two kinds of b")}</H3>
+      <Deeper t={t} title={tx(t, "musAcc_histTitle", "Where the signs came from: two kinds of b")}>
       <p>
         {tx(t, "musAcc_histBody",
           "The first note to get a sign was B. In medieval chant, the step from F up to B spans three whole steps, the tritone, an interval singers found harsh and avoided. So they often sang B a half step lower, and scribes marked the lower B with a round letter b, called \"b molle\" (soft b), and the normal B with a square b, \"b durum\" (hard b). The round b became the flat ♭. The square b became the natural ♮, and a crossed version of it, used to raise other notes, became the sharp ♯. The words stayed too: French bémol and bécarre, Italian bemolle and bequadro. In German, the square b looked like an h, which is why German calls B♭ \"B\" and B natural \"H\", as chapter 9 promised to explain; and the German words for major and minor, Dur and Moll, are the hard and soft b.")}
       </p>
+      </Deeper>
 
       <H2>{tx(t, "musAcc_keyTitle", "Which key does a written note ask for?")}</H2>
       <p>
@@ -153,7 +155,7 @@ export function AccidentalsContent({ t }: { t: TrackTranslations }) {
 
       <MusicEnharmonicFigure t={t} />
 
-      <H3>{tx(t, "musAcc_sameTitle", "Do G♯ and A♭ really sound the same?")}</H3>
+      <Deeper t={t} title={tx(t, "musAcc_sameTitle", "Do G♯ and A♭ really sound the same?")}>
       <p>
         {tx(t, "musAcc_sameBody",
           "On a modern piano, yes: one key, one string, one frequency. But for most of history they were two different notes. Older tunings built the scale from pure fifths, the ratio 3 : 2 that sounds perfectly smooth (chapter 3). Reach G♯ by going up in fifths from C, and A♭ by going down, and the two do not meet:")}
@@ -171,6 +173,7 @@ export function AccidentalsContent({ t }: { t: TrackTranslations }) {
         {tx(t, "musAcc_sameEnd",
           "A quarter of a half step is easy to hear in a slow chord. Singers and string players, who can place a note anywhere, still often lean a G♯ that leads up to A slightly higher. Keyboards, with one key per slot, had to choose, and the choice the modern piano made is the next chapter: split the comma evenly among all twelve keys, so G♯ and A♭ become exactly the same.")}
       </p>
+      </Deeper>
 
       <H2>{tx(t, "musAcc_ruleTitle", "How long a sign lasts")}</H2>
       <p>

@@ -9,6 +9,7 @@ import type { ReactNode } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
 import { Callout } from "./LessonComponents";
+import { Deeper } from "./Deeper";
 import { useLessonLook } from "./look";
 import { markCode, markCodeInProse } from "./proseCode";
 
@@ -52,7 +53,7 @@ export function KeyIdeas({ t, id, items }: { t: TrackTranslations; id: string; i
 export const Lead = ({ children }: { children: ReactNode }) => <p className="text-lg text-[var(--text-main)]">{children}</p>;
 
 /** Text inside these is prose too, so code names in it get marked (clean look). */
-const PROSE_COMPONENTS: ReadonlySet<unknown> = new Set([Lead, Callout]);
+const PROSE_COMPONENTS: ReadonlySet<unknown> = new Set([Lead, Callout, Deeper]);
 
 export function Article({ children }: { children: ReactNode }) {
   const look = useLessonLook();

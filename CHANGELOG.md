@@ -12,6 +12,10 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ## Outubro de 2026
 
+### 2026-10-14
+
+- **Blocos "Aprofundar"** (`lesson/Deeper.tsx`, estilos em `learn.css` "Deeper"). Um trecho opcional de uma lição (história, uma prova mais longa, um desvio de que a linha principal não precisa) fica fechado como uma barra com o rótulo "Aprofundar", o título e o tempo de leitura, calculado das palavras de dentro. Clicar abre o bloco ali mesmo, com animação. No fim do bloco há um "recolher" que o fecha e, se a barra já saiu da tela, volta até ela. O texto fechado continua na página, e a busca do navegador (Ctrl+F) o encontra e abre o bloco sozinha. Nomes de código dentro dele também ganham destaque. Piloto em Música, cap. 11: "De onde vieram os sinais: dois tipos de b" e "Sol♯ e lá♭ soam mesmo igual?".
+
 ### 2026-10-13
 
 - **Visual "leitura limpa" em todas as lições** (`lesson/look.tsx`). Primeiro foi testado como piloto na trilha de OpenGL e, depois de aprovado, em 2026-10-14 passou a valer para as 10 trilhas e para as futuras. Antes de ligar, todo o texto das lições (EN e PT) foi varrido em busca de falsos positivos do destaque de código. O único caso foi `.h`: `v.h` em Matemática e `dst.h` em SDL3 são campos, não arquivos. A regra passou a aceitar `.h` só em nomes com cara de cabeçalho (`SDL.h`, `glfw3.h`, `SDL_main.h`).
