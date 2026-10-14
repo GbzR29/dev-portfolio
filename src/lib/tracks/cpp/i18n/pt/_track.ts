@@ -2,6 +2,11 @@
 
 const track = {
   titles: {
+    history: "A história do C e do C++",
+    "c-basics": "C: o seu primeiro programa",
+    "c-pointers": "Ponteiros",
+    "c-memory": "Stack, heap e tempo de vida",
+    "c-strings-structs": "Strings, structs e unions",
     landscape: "O panorama do C++ moderno",
     values: "Inicialização e valores",
     move: "Semântica de movimento",
@@ -19,6 +24,8 @@ const track = {
     tooling: "Ferramentas, build e sanitizers",
   } as Record<string, string>,
   sections: {
+    Origins: "Origens",
+    "C Foundations": "Fundamentos de C",
     "Language Core": "Núcleo da linguagem",
     "Generic C++": "C++ genérico",
     "Standard Library": "Biblioteca padrão",

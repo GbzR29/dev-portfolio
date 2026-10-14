@@ -12,7 +12,7 @@ export const learningTranslations = {
 
     // Track descriptions
     trackCppDesc:
-      "Master modern C++ from the ground up: memory management, RAII, templates, move semantics, and the patterns that power performant game engines.",
+      "From C to modern C++: pointers, memory and the stack and heap first, then RAII, templates, move semantics and the patterns that power performant game engines.",
     trackOpenglDesc:
       "Understand the full OpenGL pipeline: vertex buffers, shaders, textures, framebuffers, and compute shaders — through hands-on C++ code.",
     trackVulkanDesc:
@@ -38,7 +38,7 @@ export const learningTranslations = {
     lessonProgress:   "Progress",
 
     // ── Redesign (2026-09) ──────────────────────────────────────────────
-    trackName_cpp: "Modern C++",
+    trackName_cpp: "C/C++",
     trackName_opengl: "OpenGL 4.6",
     trackName_glsl: "GLSL",
     trackName_sdl3: "SDL3",
@@ -147,7 +147,7 @@ export const learningTranslations = {
     begAdv:       "Iniciante → Avançado",
 
     trackCppDesc:
-      "Domine o C++ moderno desde a base: gerenciamento de memória, RAII, templates, move semantics e os padrões que alimentam game engines de alta performance.",
+      "Do C ao C++ moderno: primeiro ponteiros, memória, stack e heap, depois RAII, templates, move semantics e os padrões que alimentam game engines de alta performance.",
     trackOpenglDesc:
       "Entenda o pipeline completo do OpenGL: vertex buffers, shaders, texturas, framebuffers e compute shaders — com código C++ prático.",
     trackVulkanDesc:
@@ -172,7 +172,7 @@ export const learningTranslations = {
     lessonProgress:    "Progresso",
 
     // ── Redesign (2026-09) ──────────────────────────────────────────────
-    trackName_cpp: "C++ moderno",
+    trackName_cpp: "C/C++",
     trackName_opengl: "OpenGL 4.6",
     trackName_glsl: "GLSL",
     trackName_sdl3: "SDL3",
@@ -311,7 +311,7 @@ export const learningTranslations = {
     lessonProgress:    "Progreso",
 
     // ── Redesign (2026-09) ──────────────────────────────────────────────
-    trackName_cpp: "C++ moderno",
+    trackName_cpp: "C/C++",
     trackName_opengl: "OpenGL 4.6",
     trackName_glsl: "GLSL",
     trackName_sdl3: "SDL3",
@@ -416,7 +416,7 @@ export const learningTranslations = {
     lessonProgress:    "进度",
 
     // ── Redesign (2026-09) ──────────────────────────────────────────────
-    trackName_cpp: "现代 C++",
+    trackName_cpp: "C/C++",
     trackName_opengl: "OpenGL 4.6",
     trackName_glsl: "GLSL",
     trackName_sdl3: "SDL3",

@@ -1,11 +1,17 @@
 // src/lib/tracks/cpp/index.tsx
 
-// The Modern C++ track. This file only lists the chapters; each chapter's
-// content lives in its own module under ./chapters and is loaded on demand.
+// The C/C++ track: C first, then modern C++. This file only lists the chapters;
+// each chapter's content lives in its own module under ./chapters and is
+// loaded on demand.
 
 import type { Chapter } from "@/lib/tracks/types";
 
 export const cppChapters: Chapter[] = [
+  { id: "history", section: "Origins",                 title: "The Story of C and C++",       minRead: 13, load: () => import("./chapters/history").then((m) => m.HistoryContent) },
+  { id: "c-basics", section: "C Foundations",          title: "C: Your First Program",        minRead: 14, load: () => import("./chapters/c-basics").then((m) => m.CBasicsContent) },
+  { id: "c-pointers", section: "C Foundations",        title: "Pointers",                     minRead: 15, load: () => import("./chapters/c-pointers").then((m) => m.CPointersContent) },
+  { id: "c-memory", section: "C Foundations",          title: "Stack, Heap & Lifetime",       minRead: 15, load: () => import("./chapters/c-memory").then((m) => m.CMemoryContent) },
+  { id: "c-strings-structs", section: "C Foundations", title: "Strings, Structs & Unions",    minRead: 14, load: () => import("./chapters/c-strings-structs").then((m) => m.CStringsStructsContent) },
   { id: "landscape", section: "Language Core",   title: "The Modern C++ Landscape",     minRead: 9,  load: () => import("./chapters/landscape").then((m) => m.LandscapeContent) },
   { id: "values", section: "Language Core",      title: "Initialization & Values",      minRead: 10, load: () => import("./chapters/values").then((m) => m.ValuesContent) },
   { id: "move", section: "Language Core",        title: "Move Semantics",               minRead: 12, load: () => import("./chapters/move").then((m) => m.MoveContent) },

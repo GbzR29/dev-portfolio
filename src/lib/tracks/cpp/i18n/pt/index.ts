@@ -2,10 +2,15 @@
 
 import type { LessonText } from "@/lib/i18n/lessons";
 import track from "./_track";
+import cBasics from "./c-basics";
+import cMemory from "./c-memory";
+import cPointers from "./c-pointers";
+import cStringsStructs from "./c-strings-structs";
 import concepts from "./concepts";
 import concurrency from "./concurrency";
 import constexpr from "./constexpr";
 import cpp26 from "./cpp26";
+import history from "./history";
 import errors from "./errors";
 import landscape from "./landscape";
 import modules from "./modules";
@@ -19,7 +24,7 @@ import values from "./values";
 import vocabulary from "./vocabulary";
 
 const bundle: LessonText = {
-  strings: { ...concepts, ...concurrency, ...constexpr, ...cpp26, ...errors, ...landscape, ...modules, ...move, ...performance, ...raii, ...ranges, ...templates, ...tooling, ...values, ...vocabulary },
+  strings: { ...history, ...cBasics, ...cMemory, ...cPointers, ...cStringsStructs, ...concepts, ...concurrency, ...constexpr, ...cpp26, ...errors, ...landscape, ...modules, ...move, ...performance, ...raii, ...ranges, ...templates, ...tooling, ...values, ...vocabulary },
   titles: track.titles,
   sections: track.sections,
 };

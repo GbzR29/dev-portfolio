@@ -135,6 +135,26 @@
     "created": "2026-09-26",
     "updated": "2026-10-08"
   },
+  "cpp/history": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "cpp/c-basics": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "cpp/c-pointers": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "cpp/c-memory": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "cpp/c-strings-structs": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
   "cpp/landscape": {
     "created": "2026-09-03",
     "updated": "2026-10-08"

@@ -25,7 +25,7 @@ export interface TrackInfo {
 
 export const TRACK_CATALOG: TrackInfo[] = [
   {
-    id: "cpp", path: "C++", title: "Modern C++", accentColor: "#3b82f6", status: "available", plannedLessons: 15,
+    id: "cpp", path: "C++", title: "C/C++", accentColor: "#3b82f6", status: "available", plannedLessons: 23,
     levelKey: "begAdv", descKey: "trackCppDesc",
   },
   {

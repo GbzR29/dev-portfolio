@@ -22,8 +22,8 @@ const SEO_TEXT: Record<string, Record<UrlLang, Wording>> = {
     pt: { title: "Tutorial de Vulkan: aprenda Vulkan em C++ passo a passo", short: "Tutorial de Vulkan" },
   },
   cpp: {
-    en: { title: "Modern C++ Tutorial: Memory, RAII, Templates and Move Semantics", short: "Modern C++ Tutorial" },
-    pt: { title: "Curso de C++ moderno: memória, RAII, templates e move semantics", short: "Curso de C++" },
+    en: { title: "C and C++ Tutorial: Pointers, Memory, RAII and Templates", short: "C/C++ Tutorial" },
+    pt: { title: "Curso de C e C++: ponteiros, memória, RAII e templates", short: "Curso de C/C++" },
   },
   sdl3: {
     en: { title: "SDL3 Tutorial: Windows, Input and 2D Rendering in C++", short: "SDL3 Tutorial" },
