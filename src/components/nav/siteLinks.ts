@@ -6,16 +6,19 @@
 
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import type { Language } from "@/lib/i18n";
+import { homeHref, useUrlLang } from "@/lib/i18n/useUrlLang";
+import { learnHref } from "@/lib/tracks/urls";
 
 export const LANGUAGES: Language[] = ["en", "pt", "es", "zh"];
 
 export function useSiteLinks() {
   const { t } = useLanguage();
+  const lang = useUrlLang();
   return [
-    { href: "/#about", label: t.navAbout },
-    { href: "/learn", label: t.navLearn },
+    { href: homeHref(lang, "#about"), label: t.navAbout },
+    { href: learnHref(lang), label: t.navLearn },
     { href: "/the-weight-of-being", label: t.navBook },
     { href: "/blog", label: t.navBlog },
-    { href: "/#contact", label: t.navContact },
+    { href: homeHref(lang, "#contact"), label: t.navContact },
   ];
 }

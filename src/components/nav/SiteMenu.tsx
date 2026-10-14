@@ -15,6 +15,7 @@ import { Menu, X } from "lucide-react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { LANGUAGES, useSiteLinks } from "./siteLinks";
+import { homeHref, useUrlLang } from "@/lib/i18n/useUrlLang";
 
 export interface MenuCrumb {
   label: string;
@@ -26,6 +27,7 @@ export function SiteMenu({ crumbs = [], className = "" }: { crumbs?: MenuCrumb[]
   const [mounted, setMounted] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
+  const urlLang = useUrlLang();
   const links = useSiteLinks();
   const pathname = usePathname();
   const button = useRef<HTMLButtonElement>(null);
@@ -71,7 +73,7 @@ export function SiteMenu({ crumbs = [], className = "" }: { crumbs?: MenuCrumb[]
           <div className="sm-backdrop" onClick={() => setOpen(false)} />
           <nav className="sm-sheet" aria-label="Primary">
             <div className="sm-head">
-              <Link className="sm-brand" href="/" onClick={() => setOpen(false)}>Gabriel Carvalho</Link>
+              <Link className="sm-brand" href={homeHref(urlLang)} onClick={() => setOpen(false)}>Gabriel Carvalho</Link>
               <button ref={close} type="button" className="sm-close" onClick={() => setOpen(false)} aria-label={t.navClose}>
                 <X size={20} strokeWidth={1.75} />
               </button>

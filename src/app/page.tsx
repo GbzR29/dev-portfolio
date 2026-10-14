@@ -11,11 +11,13 @@ import Contact from "@/components/home/Contact";
 import HomeFooter from "@/components/home/HomeFooter";
 import Reveal from "@/components/home/Reveal";
 import Particles from "@/components/home/Particles";
+import { languageAlternates } from "@/lib/tracks/urls";
 
 export const metadata = {
   title: "Gabriel Carvalho | C++ & graphics programmer",
   description:
-    "C++ programmer working with computer graphics and game engines. Interactive courses on OpenGL, GLSL, C++ and math.",
+    "C++ programmer working with computer graphics and game engines. Free interactive courses on OpenGL, GLSL, Vulkan, C++ and math.",
+  alternates: { canonical: "/", languages: languageAlternates("/") },
 
   openGraph: {
     title: "Gabriel Carvalho | C++ & graphics programmer",
@@ -30,7 +32,7 @@ export const metadata = {
         alt: "Banner preview",
       },
     ],
-    locale: "pt_BR",
+    locale: "en_US",
     type: "website",
   },
 };

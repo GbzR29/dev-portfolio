@@ -9,6 +9,8 @@ import { useLanguage } from "@/components/providers/LanguageProvider";
 import { TRACK_CATALOG } from "@/lib/tracks/catalog";
 import { ALL_TRACKS } from "@/lib/tracks";
 import { BOOK } from "@/lib/book";
+import { useUrlLang } from "@/lib/i18n/useUrlLang";
+import { learnHref, trackHref } from "@/lib/tracks/urls";
 
 const TRACKS = TRACK_CATALOG
   .filter((info) => ALL_TRACKS[info.path])
@@ -19,6 +21,7 @@ const TOTAL_LESSONS = TRACKS.reduce((sum, tr) => sum + tr.lessons, 0);
 
 export default function Now() {
   const { t } = useLanguage();
+  const urlLang = useUrlLang();
 
   return (
     <section className="hm-sec">
@@ -49,13 +52,13 @@ export default function Now() {
           <ul className="hm-tracks">
             {TRACKS.map((tr) => (
               <li key={tr.path}>
-                <Link href={`/learn/${encodeURIComponent(tr.path)}`}>
+                <Link href={trackHref(tr.path, urlLang)}>
                   {tr.path} <b>{tr.lessons}</b>
                 </Link>
               </li>
             ))}
           </ul>
-          <Link className="hm-more" href="/learn">{t.tracksMore}</Link>
+          <Link className="hm-more" href={learnHref(urlLang)}>{t.tracksMore}</Link>
         </article>
       </div>
     </section>

@@ -1,37 +1,54 @@
 "use client";
 
+// ── Language ────────────────────────────────────────────────────────────────
+// Pages under /pt (Home, /learn, tracks, lessons) are Portuguese by URL, so
+// search engines index them in PT; visiting one also saves PT as the reader's
+// choice. Elsewhere the saved choice applies (English by default). Picking a
+// language moves to that language's copy of the page when there is one.
+
 import React, { createContext, useContext, useState, useEffect } from "react";
-// Importamos apenas o objeto unificado e o tipo Language do index
-import { translations, Language } from "@/lib/i18n"; 
+import { usePathname, useRouter } from "next/navigation";
+import { translations, Language } from "@/lib/i18n";
+import { langOfPath, pathInLang } from "@/lib/tracks/urls";
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: typeof translations.en; // Tipagem automática para o intellisense
+  t: typeof translations.en;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Language>("en");
+  const pathname = usePathname();
+  const router = useRouter();
+  const urlLang: Language | null = langOfPath(pathname) === "pt" ? "pt" : null;
+  const [saved, setSaved] = useState<Language>("en");
+  const language = urlLang ?? saved;
 
-  // Carrega o idioma salvo no carregamento inicial
+  // The saved choice, read once; a /pt page makes PT the choice
   useEffect(() => {
-    const saved = localStorage.getItem("lang") as Language;
-    if (saved && translations[saved]) {
-      setLanguageState(saved);
+    if (urlLang) {
+      setSaved(urlLang);
+      localStorage.setItem("lang", urlLang);
+      return;
     }
-  }, []);
+    const stored = localStorage.getItem("lang") as Language;
+    if (stored && translations[stored]) setSaved(stored);
+  }, [urlLang]);
+
+  useEffect(() => {
+    document.documentElement.lang = language === "pt" ? "pt-BR" : language;
+  }, [language]);
 
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
+    setSaved(lang);
     localStorage.setItem("lang", lang);
-    // Opcional: Atualiza a tag lang do HTML para acessibilidade/SEO
-    document.documentElement.lang = lang;
+    // Move to this page's copy in the new language, if it has one
+    const target = lang === "pt" || lang === "en" ? pathInLang(pathname, lang) : pathInLang(pathname, "en");
+    if (target && target !== pathname) router.push(target + window.location.search + window.location.hash);
   };
 
-  // Aqui o 't' agora contém a união de todos os seus arquivos (home, learning, blog)
-  //correção temporária para as traduções
   const t = translations[language] as typeof translations.en;
 
   return (

@@ -8,8 +8,8 @@
 import { ChapterBoundary } from "@/components/lesson/ChapterBoundary";
 import { ChapterContent } from "@/components/lesson/ChapterContent";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { chapterHref, decodeSegment } from "@/lib/tracks/urls";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { chapterHref, decodeSegment, langOfPath, learnHref, trackHref, type UrlLang } from "@/lib/tracks/urls";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { getTrack } from "@/lib/tracks";
 import type { TrackTranslations } from "@/lib/tracks/types";
@@ -34,9 +34,10 @@ import { FocusNav, FocusProgress, ModeToggle, useFocusView, useLessonMode } from
 
 /** Whether the address bar already points at this chapter (the track's own
  *  page counts for its first chapter). */
-function urlShows(trackPath: string, chapterId: string, firstId: string): boolean {
+function urlShows(trackPath: string, chapterId: string, firstId: string, lang: UrlLang): boolean {
   const here = decodeSegment(window.location.pathname).replace(/\/$/, "");
-  return here === `/learn/${trackPath}/${chapterId}` || (chapterId === firstId && here === `/learn/${trackPath}`);
+  const track = decodeSegment(trackHref(trackPath, lang));
+  return here === `${track}/${chapterId}` || (chapterId === firstId && here === track);
 }
 
 /** Focus-mode step from ?step= (1-based in the URL, 0-based here). */
@@ -63,6 +64,8 @@ export default function LessonView() {
     : "";
   // The chapter in the URL (/learn/<track>/<id>); none on the track's own page
   const chapterParam = params?.chapterId ? decodeSegment(params.chapterId as string) : null;
+  // Under /pt every lesson link stays in the Portuguese copy
+  const urlLang   = langOfPath(usePathname());
   const track     = getTrack(trackPath);
   const reference = getReference(trackPath);
 
@@ -119,11 +122,11 @@ export default function LessonView() {
   useEffect(() => {
     if (!activeChapterId || !track) return;
     markVisited(activeChapterId);
-    if (!urlShows(trackPath, activeChapterId, track.chapters[0].id)) {
-      router.push(chapterHref(trackPath, activeChapterId), { scroll: false });
+    if (!urlShows(trackPath, activeChapterId, track.chapters[0].id, urlLang)) {
+      router.push(chapterHref(trackPath, activeChapterId, urlLang), { scroll: false });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [activeChapterId, markVisited, track, trackPath, router]);
+  }, [activeChapterId, markVisited, track, trackPath, router, urlLang]);
 
   // Remember this chapter (with its title in the reading language) for /learn's "resume"
   const openIndex = track?.chapters.findIndex((c) => c.id === activeChapterId) ?? -1;
@@ -188,12 +191,12 @@ export default function LessonView() {
   // ?step= mirrors the step while focus mode is on
   // (left alone while a move to another chapter's URL is still under way)
   useEffect(() => {
-    if (!activeChapterId || !track || !urlShows(trackPath, activeChapterId, track.chapters[0].id)) return;
+    if (!activeChapterId || !track || !urlShows(trackPath, activeChapterId, track.chapters[0].id, urlLang)) return;
     const url = new URL(window.location.href);
     if (focus && step > 0) url.searchParams.set("step", String(step + 1));
     else url.searchParams.delete("step");
     if (url.href !== window.location.href) window.history.replaceState(window.history.state, "", url);
-  }, [focus, step, activeChapterId, track, trackPath]);
+  }, [focus, step, activeChapterId, track, trackPath, urlLang]);
 
   const nextChapter = shownChapters[openIndex + 1];
   const moveTo = useCallback((i: number) => {
@@ -269,10 +272,10 @@ export default function LessonView() {
     <ReferenceProvider reference={reference}>
     <PrereqProvider chapters={shownChapters} visited={visited} open={openPrereq} labels={prereqLabels}>
       <DocsLayout
-        crumbs={[...trackCrumbs(ui, trackPath), { label: currentChapter?.title ?? "" }]}
+        crumbs={[...trackCrumbs(ui, trackPath, urlLang), { label: currentChapter?.title ?? "" }]}
         drawerTitle={t.lessonChapters ?? "Chapters"}
         drawerKey={activeChapterId}
-        backHref="/learn"
+        backHref={learnHref(urlLang)}
         backLabel={ui.lessonAllTracks ?? "All tracks"}
         left={
           <LessonSidebar
@@ -282,7 +285,7 @@ export default function LessonView() {
             activeId={activeChapterId}
             visited={visited}
             onSelect={setActiveChapterId}
-            chapterHref={(id) => chapterHref(trackPath, id)}
+            chapterHref={(id) => chapterHref(trackPath, id, urlLang)}
             t={t}
             referenceHref={reference ? referenceHref(reference) : undefined}
           />
@@ -380,7 +383,7 @@ export default function LessonView() {
             prev={shownChapters[currentIndex - 1]}
             next={shownChapters[currentIndex + 1]}
             onSelect={setActiveChapterId}
-            chapterHref={(id) => chapterHref(trackPath, id)}
+            chapterHref={(id) => chapterHref(trackPath, id, urlLang)}
             labels={{
               prev: ui.lessonPrevShort ?? "previous",
               next: ui.lessonNextShort ?? "next",

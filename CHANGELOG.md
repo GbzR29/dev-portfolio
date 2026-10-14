@@ -14,6 +14,14 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-13
 
+- **SEO, segunda parte: português indexável, títulos de busca, dados estruturados e referência.**
+  - **Cópia em português com endereço próprio:** `/pt`, `/pt/learn`, `/pt/learn/<trilha>` e `/pt/learn/<trilha>/<lição>` (`app/pt/`, arquivos finos que reaproveitam as páginas em inglês). O idioma vem da URL, então o Google lê essas páginas em PT, com título e descrição em PT. Visitar uma página /pt salva PT como escolha. Trocar o idioma no seletor leva à cópia da página no outro idioma, quando ela existe. Os links da navegação, das trilhas, da barra lateral e dos breadcrumbs ficam dentro do /pt. As duas cópias se apontam com `hreflang` (en, pt-BR, x-default).
+  - **Títulos pensados para busca** (`lib/tracks/seoText.ts`): trilha "OpenGL Tutorial: Learn Modern OpenGL in C++ (free, interactive)" / "Tutorial de OpenGL: aprenda OpenGL moderno em C++ (grátis e interativo)"; lição "Vertex Buffer Objects | OpenGL Tutorial" / "… | Tutorial de OpenGL". Isso vale para as 10 trilhas. Descrições por lição nos dois idiomas, com o título traduzido, a seção e o número da lição.
+  - **Dados estruturados (JSON-LD):** `Course` com a lista das lições na página da trilha, `LearningResource` com datas e tempo de leitura em cada lição, e `BreadcrumbList` (Aprender › Trilha › Lição) nas duas.
+  - **Referência de funções:** título e descrição próprios no índice ("OpenGL Function Reference: all 101 functions explained") e em cada função ("glDrawArrays — OpenGL reference", com o resumo da função), via `layout.tsx` novos.
+  - **Sitemap** com 644 URLs: as páginas em EN e PT ligadas entre si e as 102 páginas de referência.
+  - Descrição padrão do site trocada ("Welcome to my online corner!" → uma frase sobre o site). `<html lang>` agora começa em `en` e segue o idioma da página.
+
 - **Ícone do site completo:** `app/favicon.ico` (16, 32 e 48 px, gerado da logo nova), porque a Vercel e os robôs de busca pedem `/favicon.ico` direto e recebiam 404, e por isso continuavam mostrando o ícone antigo em cache. O `app/apple-icon.png` passou a ter 180×180 com fundo branco, porque o iOS pinta de preto o fundo transparente e a logo preta sumia.
 
 - **Verificação do Google Search Console:** arquivo `public/google90abaed48d670aa6.html`, que o Google pede para confirmar que o site é seu. Não apagar: sem ele a verificação cai.

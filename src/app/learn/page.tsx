@@ -13,7 +13,8 @@ import { TRACK_CATALOG, type TrackInfo } from "@/lib/tracks/catalog";
 import { getReference, referenceHref } from "@/lib/reference";
 import { readLastLesson, readVisited, type LastLesson } from "@/lib/tracks/progress";
 import { trackName } from "@/lib/tracks/crumbs";
-import { chapterHref } from "@/lib/tracks/urls";
+import { chapterHref, trackHref, type UrlLang } from "@/lib/tracks/urls";
+import { useUrlLang } from "@/lib/i18n/useUrlLang";
 
 type Strings = Record<string, string | undefined>;
 
@@ -27,12 +28,12 @@ const TOTAL_LESSONS = AVAILABLE.reduce((n, info) => n + (getTrack(info.path)?.ch
 
 // ── Track card ───────────────────────────────────────────────────────────────
 
-function TrackCard({ info, t, visited }: { info: TrackInfo; t: Strings; visited: number }) {
+function TrackCard({ info, t, visited, lang }: { info: TrackInfo; t: Strings; visited: number; lang: UrlLang }) {
   const track = getTrack(info.path);
   const reference = getReference(info.path);
   const level = t[info.levelKey] ?? info.levelFallback;
   const desc = t[info.descKey] ?? info.descFallback;
-  const href = `/learn/${encodeURIComponent(info.path)}`;
+  const href = trackHref(info.path, lang);
 
   if (!track) {
     return (
@@ -74,6 +75,7 @@ function TrackCard({ info, t, visited }: { info: TrackInfo; t: Strings; visited:
 
 export default function LearnPage() {
   const { t } = useLanguage();
+  const urlLang = useUrlLang();
   const ui = t as unknown as Strings;
 
   // Progress lives in localStorage, so it is read after mount (the server has none)
@@ -100,7 +102,7 @@ export default function LearnPage() {
               {last && (
                 <div className="hm-resume">
                   <span>{ui.learnResume ?? "where you left off:"}</span>
-                  <Link href={chapterHref(last.track, last.chapter)}>
+                  <Link href={chapterHref(last.track, last.chapter, urlLang)}>
                     {trackName(ui, last.track)}
                     {last.title && <> · {last.number ? `${last.number}. ` : ""}{last.title}</>} →
                   </Link>
@@ -117,7 +119,7 @@ export default function LearnPage() {
             <h2>{ui.learnTracks ?? "Tracks"}</h2>
             <div className="hm-track-grid">
               {TRACK_CATALOG.map((info) => (
-                <TrackCard key={info.id} info={info} t={ui} visited={visited[info.id] ?? 0} />
+                <TrackCard key={info.id} info={info} t={ui} visited={visited[info.id] ?? 0} lang={urlLang} />
               ))}
             </div>
           </section>

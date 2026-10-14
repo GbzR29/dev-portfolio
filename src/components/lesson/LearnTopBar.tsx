@@ -13,6 +13,7 @@ import { useTheme } from "@/components/providers/ThemeProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { SiteMenu } from "@/components/nav/SiteMenu";
 import { LANGUAGES } from "@/components/nav/siteLinks";
+import { homeHref, useUrlLang } from "@/lib/i18n/useUrlLang";
 
 export interface Crumb {
   label: string;
@@ -22,11 +23,12 @@ export interface Crumb {
 export function LearnTopBar({ crumbs = [] }: { crumbs?: Crumb[] }) {
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
+  const urlLang = useUrlLang();
 
   return (
     <header className="sticky top-0 z-40 h-12 border-b border-[var(--border)] bg-[var(--navbar-bg)] backdrop-blur-md">
       <div className="h-full flex items-center gap-5 px-4 sm:px-6">
-        <Link href="/" className="hidden sm:block font-display text-[17px] text-[var(--text-main)] whitespace-nowrap hover:text-[var(--primary)] transition-colors">
+        <Link href={homeHref(urlLang)} className="hidden sm:block font-display text-[17px] text-[var(--text-main)] whitespace-nowrap hover:text-[var(--primary)] transition-colors">
           Gabriel Carvalho
         </Link>
 

@@ -42,14 +42,15 @@ export const metadata: Metadata = {
   // Relative canonical / Open Graph URLs resolve against the public domain
   metadataBase: new URL(SITE_URL),
   title: "Gabriel Carvalho",
-  description: "Welcome to my online corner!",
+  description:
+    "Gabriel Carvalho, C++ and graphics programmer. Free interactive courses on OpenGL, GLSL, Vulkan, C++ and math, and a science-fiction novel in progress.",
 };
 
 
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
 
   return (
-    <html lang="pt-br">
+    <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${spectral.variable} ${plexSans.variable} ${plexMono.variable} antialiased`}>
 
         <LanguageProvider>

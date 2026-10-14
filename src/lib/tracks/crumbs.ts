@@ -4,6 +4,7 @@
 
 import type { Crumb } from "@/components/lesson/LearnTopBar";
 import { TRACK_CATALOG } from "./catalog";
+import { learnHref, trackHref, type UrlLang } from "./urls";
 
 type Strings = Record<string, string | undefined>;
 
@@ -13,9 +14,10 @@ export function trackName(t: Strings, trackPath: string): string {
   return (info && t[`trackName_${info.id}`]) ?? info?.title ?? trackPath;
 }
 
-export function trackCrumbs(t: Strings, trackPath: string): Crumb[] {
+/** `lang` keeps the links inside the /pt copy when the page is one. */
+export function trackCrumbs(t: Strings, trackPath: string, lang?: UrlLang): Crumb[] {
   return [
-    { label: t.learnCrumb ?? "learn", href: "/learn" },
-    { label: trackName(t, trackPath), href: `/learn/${encodeURIComponent(trackPath)}` },
+    { label: t.learnCrumb ?? "learn", href: learnHref(lang) },
+    { label: trackName(t, trackPath), href: trackHref(trackPath, lang) },
   ];
 }

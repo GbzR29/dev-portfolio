@@ -11,16 +11,18 @@ import { useTheme } from "@/components/providers/ThemeProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { SiteMenu } from "@/components/nav/SiteMenu";
 import { LANGUAGES, useSiteLinks } from "@/components/nav/siteLinks";
+import { homeHref, useUrlLang } from "@/lib/i18n/useUrlLang";
 
 export default function HomeNav() {
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const pathname = usePathname();
   const links = useSiteLinks();
+  const urlLang = useUrlLang();
 
   return (
     <nav className="hm-nav" aria-label="Primary">
-      <Link className="hm-brand" href="/">Gabriel Carvalho</Link>
+      <Link className="hm-brand" href={homeHref(urlLang)}>Gabriel Carvalho</Link>
       <div className="hm-links">
         {links.map((l) => (
           <Link key={l.href} href={l.href} aria-current={pathname === l.href ? "page" : undefined}>{l.label}</Link>

@@ -20,9 +20,13 @@ src/styles/learn.css                   /learn look: re-values the theme.css toke
 src/lib/tracks/progress.ts             reading progress + "last lesson" in localStorage (sidebar, /learn "resume")
 src/app/learn/[trackPath]/(lesson)/    LessonView.tsx = the ONE reader for every lesson of every track, mounted by layout.tsx;
                                        page.tsx (/learn/<track>, redirects old ?chapter= links) and [chapterId]/page.tsx
-                                       (/learn/<track>/<id>) only give metadata (src/lib/tracks/seo.ts)
-src/lib/tracks/urls.ts                 SITE_URL, trackHref, chapterHref — build every lesson URL with these
-src/app/sitemap.ts, src/app/robots.ts  every track + lesson for search engines (lastmod from chapter-dates.json)
+                                       (/learn/<track>/<id>) only give metadata + JSON-LD (src/lib/tracks/lessonRoutes.tsx, seo.ts)
+src/app/pt/                            Portuguese copies with their own URLs (/pt, /pt/learn, /pt/learn/<track>/<id>): thin files
+                                       reusing the English pages with lang "pt"; LanguageProvider reads the /pt prefix
+src/lib/tracks/urls.ts                 SITE_URL, learnHref/trackHref/chapterHref(…, lang), pathInLang — build every URL with these;
+                                       in client components get the page's language with useUrlLang() (src/lib/i18n/useUrlLang.ts)
+src/lib/tracks/seoText.ts              per-track search wording ("OpenGL Tutorial" / "Tutorial de OpenGL") for titles
+src/app/sitemap.ts, src/app/robots.ts  EN + PT pages (hreflang) and the API reference, for search engines
 src/app/learn/[trackPath]/reference/   function reference pages (src/lib/reference)
 src/lib/tracks/catalog.ts              THE list of tracks: id, route path, title, color, status, level/description keys
 src/lib/tracks/index.ts                registry: joins catalog entries with each track's chapter list (getTrack)

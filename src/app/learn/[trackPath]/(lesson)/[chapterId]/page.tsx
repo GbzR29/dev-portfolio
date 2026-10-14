@@ -1,24 +1,12 @@
 // app/learn/[trackPath]/(lesson)/[chapterId]/page.tsx
-// /learn/<track>/<chapter id>: one URL per lesson, with its own title and
-// description. The lesson itself is drawn by LessonView in the layout.
+// /learn/<track>/<chapter id>: one URL per lesson, with its own title,
+// description and structured data. The lesson itself is drawn by LessonView
+// in the layout. Shared with /pt/learn/… (src/lib/tracks/lessonRoutes.tsx).
 
-import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
-import { getTrack } from "@/lib/tracks";
-import { chapterMetadata, findChapter } from "@/lib/tracks/seo";
-import { decodeSegment } from "@/lib/tracks/urls";
+import { ChapterRoute, chapterPageMetadata, type ChapterProps } from "@/lib/tracks/lessonRoutes";
 
-type Props = { params: Promise<{ trackPath: string; chapterId: string }> };
+export const generateMetadata = (props: ChapterProps) => chapterPageMetadata(props, "en");
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { trackPath, chapterId } = await params;
-  return chapterMetadata(decodeSegment(trackPath), decodeSegment(chapterId));
-}
-
-export default async function ChapterPage({ params }: Props) {
-  const { trackPath, chapterId } = await params;
-  const track = getTrack(decodeSegment(trackPath));
-  if (!track) redirect("/status?type=development&from=learn");
-  if (!findChapter(track, decodeSegment(chapterId))) notFound();
-  return null;
+export default function ChapterPage(props: ChapterProps) {
+  return ChapterRoute(props, "en");
 }
