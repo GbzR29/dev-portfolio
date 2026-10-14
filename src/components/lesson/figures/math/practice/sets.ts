@@ -5,6 +5,7 @@
 
 import type { Gen } from "./problem";
 import { bases, fractions, gcdLcm, order, percent, powers, signed } from "./arithmetic";
+import { modInverse, modPower, modReduce } from "./modular";
 import { binomialChoose, binomialCoef, collect, evaluate, explog, linear, quadratic, sequences, system } from "./algebra";
 
 export type Kind = { id: string; label: [string, string]; make: Gen };
@@ -18,6 +19,11 @@ export const SETS = {
   divisors:   { title: ["mpr_tDivisors", "Practice: gcd and lcm"], kinds: [{ id: "gcd", label: ["mpr_kGcd", "gcd and lcm"], make: gcdLcm }] },
   powers:     { title: ["mpr_tPowers", "Practice: powers and roots"], kinds: [{ id: "powers", label: ["mpr_kPowers", "powers"], make: powers }] },
   bases:      { title: ["mpr_tBases", "Practice: number bases"], kinds: [{ id: "bases", label: ["mpr_kBases", "bases"], make: bases }] },
+  modular:    { title: ["mpr_tModular", "Practice: modular arithmetic"], kinds: [
+    { id: "reduce", label: ["mpr_kModReduce", "remainders"], make: modReduce },
+    { id: "power", label: ["mpr_kModPow", "powers"], make: modPower },
+    { id: "inverse", label: ["mpr_kModInv", "inverses"], make: modInverse },
+  ] },
   expressions: { title: ["mpr_tExpressions", "Practice: expressions"], kinds: [
     { id: "eval", label: ["mpr_kEval", "evaluate"], make: evaluate },
     { id: "collect", label: ["mpr_kCollect", "simplify"], make: collect },

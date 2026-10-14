@@ -10,6 +10,7 @@ import ratios from "./ratios";
 import divisibility from "./divisibility";
 import powers from "./powers";
 import bases from "./bases";
+import modular from "./modular";
 // ── Algebra ──
 import expressions from "./expressions";
 import linearEquations from "./linear-equations";
@@ -73,7 +74,7 @@ import absorbingChains from "./absorbing-chains";
 
 const bundle: LessonText = {
   strings: {
-    ...numberLine, ...orderOfOperations, ...fractions, ...ratios, ...divisibility, ...powers, ...bases,
+    ...numberLine, ...orderOfOperations, ...fractions, ...ratios, ...divisibility, ...powers, ...bases, ...modular,
     ...expressions, ...linearEquations, ...inequalities, ...functions, ...linearSystems, ...quadratics, ...polynomials, ...binomial, ...exponents, ...sequences,
     ...angles, ...triangles, ...area, ...pythagoras, ...similarity, ...circle, ...volumes, ...analytic, ...transformations,
     ...trig, ...unitCircle, ...triangleLaws, ...identities, ...polar, ...waves,

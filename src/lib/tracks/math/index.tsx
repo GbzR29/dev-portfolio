@@ -21,6 +21,7 @@ const chapters: Chapter[] = [
   { id: "divisibility",        section: ARITHMETIC, title: "Divisibility, Primes, GCD & LCM", minRead: 17, load: () => import("./chapters/divisibility").then((m) => m.DivisibilityContent) },
   { id: "powers",              section: ARITHMETIC, title: "Powers & Roots",               minRead: 17, load: () => import("./chapters/powers").then((m) => m.PowersContent) },
   { id: "bases",               section: ARITHMETIC, title: "Number Bases",                 minRead: 15, load: () => import("./chapters/bases").then((m) => m.BasesContent) },
+  { id: "modular",             section: ARITHMETIC, title: "Modular Arithmetic",           minRead: 22, load: () => import("./chapters/modular").then((m) => m.ModularContent) },
 
   { id: "expressions",      section: ALGEBRA, title: "Expressions",               minRead: 15, load: () => import("./chapters/expressions").then((m) => m.ExpressionsContent) },
   { id: "linear-equations", section: ALGEBRA, title: "Linear Equations",          minRead: 17, load: () => import("./chapters/linear-equations").then((m) => m.LinearEquationsContent) },
@@ -96,6 +97,7 @@ const requires: Record<string, string[]> = {
   "divisibility":        ["fractions"],
   "powers":              ["order-of-operations"],
   "bases":               ["powers", "divisibility"],
+  "modular":             ["divisibility", "powers", "bases"],
 
   "expressions":      ["order-of-operations", "fractions"],
   "linear-equations": ["expressions"],

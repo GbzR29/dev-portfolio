@@ -9,6 +9,7 @@ const track = {
     divisibility: "Divisibilidade, primos, MDC e MMC",
     powers: "Potências e raízes",
     bases: "Bases numéricas",
+    modular: "Aritmética modular",
     expressions: "Expressões",
     "linear-equations": "Equações do primeiro grau",
     inequalities: "Inequações",
