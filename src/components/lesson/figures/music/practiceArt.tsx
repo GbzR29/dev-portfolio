@@ -47,6 +47,20 @@ export function IntervalArt() {
   );
 }
 
+/** A scrap of staff with a one-sharp signature and a scale climbing out of it. */
+export function ScaleArt() {
+  return (
+    <svg viewBox="0 0 110 56" className="w-[110px] h-[56px]" aria-hidden>
+      {[0, 1, 2, 3, 4].map(i => <line key={i} x1={4} x2={106} y1={10 + i * 8} y2={10 + i * 8} stroke={C.fg} strokeOpacity={0.55} strokeWidth={1.1} />)}
+      <AccidentalGlyph a={1} x={14} y={10} s={8} color={C.amber} />
+      {[0, 1, 2, 3, 4, 5].map(i => (
+        <ellipse key={i} cx={34 + i * 13} cy={46 - i * 4} rx={5} ry={3.6} transform={`rotate(-18 ${34 + i * 13} ${46 - i * 4})`}
+          fill={i === 0 ? C.sky : "none"} stroke={i === 0 ? C.sky : C.fg} strokeOpacity={i === 0 ? 1 : 0.7} strokeWidth={1.9} />
+      ))}
+    </svg>
+  );
+}
+
 /** A scrap of staff with a sharp before a note, and the black key it asks for. */
 export function SharpArt() {
   return (
