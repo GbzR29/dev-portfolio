@@ -10,6 +10,8 @@ import { uniformEntries } from "./uniforms";
 import { drawingEntries } from "./drawing";
 import { textureEntries } from "./textures";
 import { fragmentOpEntries } from "./fragmentOps";
+import { blendingEntries } from "./blending";
+import { stencilEntries } from "./stencil";
 import { framebufferEntries } from "./framebuffers";
 import { dsaEntries } from "./dsa";
 import { computeEntries } from "./compute";
@@ -29,6 +31,7 @@ export const openGLReference: Reference = {
     { id: "drawing",       title: { en: "Drawing",                   pt: "Desenho" } },
     { id: "textures",      title: { en: "Textures",                  pt: "Texturas" } },
     { id: "fragment-ops",  title: { en: "Depth, blending & culling", pt: "Profundidade, blending e culling" } },
+    { id: "stencil",       title: { en: "Stencil",                   pt: "Stencil" } },
     { id: "framebuffers",  title: { en: "Framebuffers",              pt: "Framebuffers" } },
     { id: "dsa",           title: { en: "Direct State Access",       pt: "Direct State Access" } },
     { id: "compute",       title: { en: "Compute",                   pt: "Compute" } },
@@ -44,6 +47,8 @@ export const openGLReference: Reference = {
     ...drawingEntries,
     ...textureEntries,
     ...fragmentOpEntries,
+    ...blendingEntries,
+    ...stencilEntries,
     ...framebufferEntries,
     ...dsaEntries,
     ...computeEntries,

@@ -14,6 +14,7 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ### 2026-10-14
 
+- **Referência de OpenGL, lote 1 de complementação** (stencil, blending e profundidade). Uma contagem mostrou que cerca de 70 funções citadas nas lições não estavam na referência (101 entradas) e por isso ficavam sem link e sem cartão no código. Este lote acrescenta 11, em EN e PT, cada uma com como funciona, parâmetros com valores, dicas, erros e exemplo. Nova categoria **Stencil** (`reference/opengl/stencil.ts`): `glStencilFunc`, `glStencilOp`, `glStencilMask`, `glStencilOpSeparate`, `glClearStencil`. Em profundidade e blending (`reference/opengl/blending.ts`): `glBlendFuncSeparate`, `glBlendEquation`, `glBlendFunci`, `glColorMask`, `glDepthRange`, `glClearDepth`. Agora são 112 funções.
 - **Blocos "Aprofundar"** (`lesson/Deeper.tsx`, estilos em `learn.css` "Deeper"). Um trecho opcional de uma lição (história, uma prova mais longa, um desvio de que a linha principal não precisa) fica fechado como uma barra com o rótulo "Aprofundar", o título e o tempo de leitura, calculado das palavras de dentro. Clicar abre o bloco ali mesmo, com animação. No fim do bloco há um "recolher" que o fecha e, se a barra já saiu da tela, volta até ela. O texto fechado continua na página, e a busca do navegador (Ctrl+F) o encontra e abre o bloco sozinha. Nomes de código dentro dele também ganham destaque. Piloto em Música, cap. 11: "De onde vieram os sinais: dois tipos de b" e "Sol♯ e lá♭ soam mesmo igual?".
 
 ### 2026-10-13
