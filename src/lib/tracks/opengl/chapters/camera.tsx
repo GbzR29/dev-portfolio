@@ -1,7 +1,7 @@
 "use client";
 
 // OpenGL track — "Camera & View Matrix". Code-along continuation of the
-// spinning cube from "Transformations + GLM": what the chapter adds to
+// spinning cube from "Drawing a Cube": what the chapter adds to
 // main.cpp; glm::lookAt (its three inputs, how it builds right/up/forward,
 // the figure, the matrix, a worked camera at (3, 0, 3)); step 1, five cubes
 // and a camera circling them; step 2, walking with WASD and delta time;
@@ -40,7 +40,7 @@ export function CameraContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "oglCam_alongTitle", "What this chapter adds to main.cpp")}</H2>
       <p>
         {tx(t, "oglCam_alongBody",
-          "It continues the main.cpp from the end of the Transformations + GLM chapter, in four steps. Run the program after each one; each step says what you should see. The checkpoint at the end shows the whole file.")}
+          "It continues the main.cpp from the end of the Drawing a Cube chapter, in four steps. Run the program after each one; each step says what you should see. The checkpoint at the end shows the whole file.")}
       </p>
       <ol className="list-decimal pl-6 space-y-1.5">
         <li>{tx(t, "oglCam_along1", "Step 1: five cubes instead of one, and glm::lookAt instead of the fixed translate. The camera circles the cubes by itself.")}</li>
@@ -417,7 +417,7 @@ void scrollCallback(GLFWwindow*, double, double yoffset) {
       <H2>{tx(t, "oglCam_soFarTitle", "Your main.cpp so far")}</H2>
       <p>
         {tx(t, "oglCam_soFarBody",
-          "The whole file after step 4. Compared with the Transformations + GLM version, the changes are marked NEW: the camera state, three functions above main, three lines in step 3, the cube positions and lastFrame in step 4, and the timing, input, view, projection and cube loop in the render loop. The helpers are shortened because they did not change.")}
+          "The whole file after step 4. Compared with the Drawing a Cube version, the changes are marked NEW: the camera state, three functions above main, three lines in step 3, the cube positions and lastFrame in step 4, and the timing, input, view, projection and cube loop in the render loop. The helpers are shortened because they did not change.")}
       </p>
       <CodeBlock lang="cpp" filename="src/main.cpp" t={t}>{`#include <glad/glad.h>      // MUST come before glfw3.h
 #include <GLFW/glfw3.h>
@@ -532,7 +532,7 @@ int main() {
     if (shaderProgram == 0) { glfwTerminate(); return 1; }
 
     // 4b. Vertex data → VAO + VBO + EBO (unchanged: the cube's 24 vertices, 36 indices)
-    float vertices[] = { /* ... as in Transformations + GLM ... */ };
+    float vertices[] = { /* ... as in Drawing a Cube ... */ };
     GLuint indices[]  = { /* ... */ };
     GLuint vao, vbo, ebo;
     glGenVertexArrays(1, &vao);

@@ -8,7 +8,8 @@
 // and the identity; why 3×3 cannot translate, w = 1 for points and w = 0 for
 // directions (homogeneous figure); combining transforms by multiplying
 // matrices, worked 2×2 example of why order matters; the matrices in GLM
-// (mathlab.cpp continued, float rounding); common mistakes. The MVP pipeline
+// (mathlab.cpp continued, float rounding); on your square (a mat3 rotation
+// built by hand in the vertex shader); common mistakes. The MVP pipeline
 // itself is taught in "Transformations + GLM".
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
@@ -46,6 +47,7 @@ export function LinearAlgebraContent({ t }: { t: TrackTranslations }) {
         "Build scaling, rotation and translation matrices.",
         "Explain why 3D graphics uses 4 × 4 matrices.",
         "Combine transformations in the right order with GLM.",
+        "Turn your square with a rotation matrix written by hand in GLSL.",
       ]} />
 
       {/* ── WHAT A MATRIX IS ────────────────────────────────────────────── */}
@@ -420,6 +422,62 @@ column 3 of T*R*S2 = (5, 0, -2, 1)`}</CodeBlock>
         {tx(t, "oglMat_labTry",
           "To see the rounding error, change tidy to just return x and run again. The S2 * R * T line now ends in (-5.24537e-07, 6, -2, 1): the 0 has become −0.000000525. Then try glm::radians(45.0f): cos 45° = sin 45° ≈ 0.707, and the point (1, 0, 0, 1) should land on (0.707, 0.707, 0, 1).")}
       </Callout>
+
+      {/* ── ON YOUR SQUARE ──────────────────────────────────────────────── */}
+      <H2>{tx(t, "oglMat_squareTitle", "On your square: a rotation matrix by hand")}</H2>
+      <p>
+        {tx(t, "oglMat_sq1",
+          "At the end of the last chapter, your square circles the window with a uOffset vector, always upright. Now make it turn as well, with the rotation matrix from this chapter, built by hand in the vertex shader. No GLM yet: GLSL has matrix types of its own, mat2, mat3 and mat4.")}
+      </p>
+      <CodeBlock lang="glsl" filename="vertex shader (in main.cpp)" t={t}>{`#version 460 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
+out vec2 TexCoord;
+uniform vec3 uOffset;
+uniform float uAngle;                              // NEW: the turn, in radians
+
+void main() {
+    float c = cos(uAngle), s = sin(uAngle);        // NEW
+    mat3 rotZ = mat3( c,   s,   0.0,               // NEW: column 0, where x lands
+                     -s,   c,   0.0,               //      column 1, where y lands
+                      0.0, 0.0, 1.0);              //      column 2, z stays
+    gl_Position = vec4(rotZ * aPos + uOffset, 1.0);   // NEW: turn, then move
+    TexCoord = aTexCoord;
+}`}</CodeBlock>
+      <p>
+        {tx(t, "oglMat_sq2",
+          "Watch out for one thing. Each line inside mat3(…) looks like a row, but it is a column. GLSL fills a matrix column by column, the same order GLM and OpenGL store it in. So the first three numbers, (c, s, 0), are column 0: where the x arrow lands. That is exactly the first column of R_z(θ) above. If you wrote the rows instead, the square would turn the other way.")}
+      </p>
+      <p>{tx(t, "oglMat_sq3", "On the C++ side, one more location in step 4 and one more uniform in the loop, next to the offset:")}</p>
+      <CodeBlock lang="cpp" filename="src/main.cpp (step 4, and the loop)" t={t}>{`// step 4, after makeProgram
+GLint angleLoc = glGetUniformLocation(shaderProgram, "uAngle");   // NEW
+
+// in the render loop, after glUseProgram(shaderProgram)
+float time = (float)glfwGetTime();
+float dx = std::cos(time), dy = std::sin(time);
+glUniform3f(offsetLoc, 0.4f * dx, 0.4f * dy, 0.0f);
+glUniform1f(angleLoc, time);                                      // NEW: 1 radian per second`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "oglMat_tLine", "Line"), tx(t, "oglMat_tDoes", "What it does")]}
+        rows={[
+          [<IC key="1">{"mat3(c, s, 0.0, -s, c, 0.0, 0.0, 0.0, 1.0)"}</IC>, tx(t, "oglMat_sqL1", "R_z(θ), column by column: x lands on (cos θ, sin θ, 0), y on (−sin θ, cos θ, 0), z stays.")],
+          [<IC key="2">{"rotZ * aPos"}</IC>, tx(t, "oglMat_sqL2", "matrix times vector, matrix first. The square turns around (0, 0, 0), which is its own centre.")],
+          [<IC key="3">{"+ uOffset"}</IC>, tx(t, "oglMat_sqL3", "then the move from the last chapter. Turn first, move second, so it turns in place and then travels.")],
+          [<IC key="4">{"glUniform1f(angleLoc, time)"}</IC>, tx(t, "oglMat_sqL4", "the angle in radians grows by 1 every second: a full turn every 2π ≈ 6.3 seconds.")],
+        ]}
+      />
+      <p>
+        {tx(t, "oglMat_sqWorked",
+          "Check a moment. At time = π/2 ≈ 1.57 s, c = 0 and s = 1. Take the top-right corner, (0.5, 0.5, 0). By the column rule, rotZ times it is 0.5 × column 0 + 0.5 × column 1 = 0.5 × (0, 1, 0) + 0.5 × (−1, 0, 0) = (−0.5, 0.5, 0). The top-right corner is now top-left: a quarter turn, counter-clockwise. The offset at that moment is 0.4 × (0, 1, 0), so the corner ends at (−0.5, 0.9, 0).")}
+      </p>
+      <Callout type="info" t={t}>
+        {tx(t, "oglMat_sqRun",
+          "Run it: the square turns while it circles. It looks squashed at some angles and normal at others. That is not your matrix: the window is wider than it is tall, and x from −1 to 1 is stretched over 1280 pixels while y gets only 720. The projection matrix in the next chapter fixes that.")}
+      </Callout>
+      <p>
+        {tx(t, "oglMat_sqOrder",
+          "Now see why order matters, on screen. Change the line to rotZ * (aPos + uOffset): move first, then turn. The turn now happens around the middle of the window, not around the square, so the offset is turned too. The offset already points at angle time on its circle; turning it by time more puts it at angle 2 × time, so the square races around the window twice as fast. Change it back afterwards. The next chapter replaces uOffset and uAngle with a single 4×4 matrix that does both, in the order you choose.")}
+      </p>
 
       {/* ── MISTAKES ────────────────────────────────────────────────────── */}
       <H2>{tx(t, "oglMat_mistakesTitle", "Common mistakes")}</H2>

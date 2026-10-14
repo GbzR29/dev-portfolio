@@ -5,6 +5,7 @@ const text: Record<string, string> = {
   oglMat_goal1: "Montar matrizes de escala, rotação e translação.",
   oglMat_goal2: "Explicar por que gráficos 3D usam matrizes 4 × 4.",
   oglMat_goal3: "Combinar transformações na ordem certa com GLM.",
+  oglMat_goal4: "Girar o seu quadrado com uma matriz de rotação escrita à mão em GLSL.",
   oglMat_intro: "Um modelo tem centenas ou milhares de vértices. Para movê-lo, girá-lo ou redimensioná-lo, todos eles precisam mudar do mesmo jeito. Uma matriz é uma receita compacta para uma mudança dessas, e a GPU a aplica em todo vértice. Este capítulo monta essa ideia um passo de cada vez: o que é uma matriz, como ela muda um vetor, as matrizes que escalam, giram e movem, e como encadeá-las. Ele usa as operações com vetores do capítulo anterior, principalmente o produto escalar.",
 
   oglMat_whatTitle: "O que é uma matriz",
@@ -110,6 +111,19 @@ const text: Record<string, string> = {
   oglMat_e5b: "na GLM 1.0 isso não é a identidade. Escreva glm::mat4(1.0f).",
   oglMat_e6: "Girar em torno de um eixo de comprimento 0",
   oglMat_e6b: "o glm::rotate normaliza o eixo, e (0, 0, 0) não tem direção: a matriz se enche de NaN. Passe um eixo de verdade.",
+  // ── No seu quadrado (2026-10-14) ──
+  oglMat_squareTitle: "No seu quadrado: uma matriz de rotação à mão",
+  oglMat_sq1: "No fim do capítulo anterior, o seu quadrado dá voltas pela janela com um vetor uOffset, sempre em pé. Agora faça ele girar também, com a matriz de rotação deste capítulo, montada à mão no vertex shader. Ainda sem GLM: o GLSL tem os próprios tipos de matriz, mat2, mat3 e mat4.",
+  oglMat_sq2: "Cuidado com um detalhe. Cada linha dentro de mat3(…) parece uma linha da matriz, mas é uma coluna. O GLSL preenche a matriz coluna por coluna, na mesma ordem em que a GLM e o OpenGL a guardam. Então os três primeiros números, (c, s, 0), são a coluna 0: onde a seta do x cai. É exatamente a primeira coluna da R_z(θ) lá de cima. Se você escrevesse as linhas, o quadrado giraria para o outro lado.",
+  oglMat_sq3: "No lado do C++, mais uma location no passo 4 e mais um uniform no loop, ao lado do offset:",
+  oglMat_sqL1: "R_z(θ), coluna por coluna: x cai em (cos θ, sin θ, 0), y em (−sin θ, cos θ, 0), z fica onde está.",
+  oglMat_sqL2: "matriz vezes vetor, a matriz primeiro. O quadrado gira em torno de (0, 0, 0), que é o próprio centro dele.",
+  oglMat_sqL3: "depois, o movimento do capítulo anterior. Gira primeiro, move depois, então ele gira no lugar e só então viaja.",
+  oglMat_sqL4: "o ângulo em radianos cresce 1 a cada segundo: uma volta inteira a cada 2π ≈ 6,3 segundos.",
+  oglMat_sqWorked: "Confira um instante. Em time = π/2 ≈ 1,57 s, c = 0 e s = 1. Pegue o canto de cima à direita, (0.5, 0.5, 0). Pela regra das colunas, rotZ vezes ele é 0.5 × coluna 0 + 0.5 × coluna 1 = 0.5 × (0, 1, 0) + 0.5 × (−1, 0, 0) = (−0.5, 0.5, 0). O canto de cima à direita agora está em cima à esquerda: um quarto de volta, no sentido anti-horário. O offset nesse instante é 0.4 × (0, 1, 0), então o canto termina em (−0.5, 0.9, 0).",
+  oglMat_sqRun: "Rode: o quadrado gira enquanto dá voltas. Em certos ângulos ele parece achatado, em outros normal. Não é a sua matriz: a janela é mais larga do que alta, e o x de −1 a 1 se estica por 1280 pixels enquanto o y ganha só 720. A matriz de projeção do próximo capítulo resolve isso.",
+  oglMat_sqOrder: "Agora veja na tela por que a ordem importa. Troque a linha por rotZ * (aPos + uOffset): move primeiro, gira depois. O giro agora acontece em torno do meio da janela, não do quadrado, então o offset também é girado. O offset já aponta para o ângulo time no círculo dele; girá-lo mais time o leva ao ângulo 2 × time, então o quadrado corre pela janela duas vezes mais rápido. Depois desfaça a troca. O próximo capítulo troca uOffset e uAngle por uma única matriz 4×4 que faz as duas coisas, na ordem que você escolher.",
+
   oglMat_next: "Em seguida, Transformações + GLM põe essas matrizes no seu programa. Uma matriz por objeto (a matriz de modelo), uma para a câmera (a matriz de visão) e uma para a perspectiva (a matriz de projeção) levam cada vértice do modelo até a tela.",
 
   oglMat_key0: "Uma matriz é uma grade de números; multiplicada por um vetor, ela dá um vetor mudado.",

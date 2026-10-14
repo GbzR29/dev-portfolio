@@ -5,12 +5,12 @@ const text: Record<string, string> = {
   oglTr_goal0: "Mover uma forma com uma matriz no vertex shader.",
   oglTr_goal1: "Seguir um vértice pelos espaços de modelo, de visão e de projeção.",
   oglTr_goal2: "Escolher entre projeção perspectiva e ortográfica.",
-  oglTr_intro: "Até agora, todo vértice que você escreveu ia direto para a tela. O x e o y dele já eram coordenadas NDC, de −1 a 1. Este capítulo coloca as matrizes dos dois capítulos anteriores entre o vértice e a tela. Primeiro o quadrado texturizado se move e gira. Depois ele é visto em perspectiva, e então vira um cubo 3D girando.",
+  oglTr_intro: "Até agora, todo vértice que você escreveu ia direto para a tela. O x e o y dele já eram coordenadas NDC, de −1 a 1. Este capítulo coloca as matrizes dos dois capítulos anteriores entre o vértice e a tela. Primeiro o quadrado texturizado se move e gira. Depois ele é visto em perspectiva, deitado como um ladrilho no chão. O próximo capítulo o dobra num cubo.",
+  oglTr_s1hand: "Se você fez as seções \"No seu quadrado\" dos dois capítulos anteriores, o seu shader também tem uOffset e uAngle. O uTransform substitui os dois. Apague-os do shader, e no main.cpp apague offsetLoc, angleLoc, as chamadas glUniform deles e as linhas de time, dx e dy (o código abaixo declara time de novo). A matriz abaixo faz o mesmo giro e o mesmo movimento que você escreveu à mão, mais uma escala, numa multiplicação só.",
   oglTr_alongTitle: "O que este capítulo acrescenta ao main.cpp",
-  oglTr_alongBody: "Ele continua o main.cpp do fim do capítulo Textures, em três passos. Rode o programa depois de cada um; cada passo diz o que você deve ver. O checkpoint no fim mostra o arquivo inteiro.",
+  oglTr_alongBody: "Ele continua o main.cpp do fim do capítulo Textures, em dois passos. Rode o programa depois de cada um; cada passo diz o que você deve ver. O checkpoint no fim mostra o arquivo inteiro.",
   oglTr_along1: "Passo 1: um uniform de matriz no vertex shader, refeito a cada frame, para o quadrado encolher, se mover e girar.",
   oglTr_along2: "Passo 2: três matrizes (model, view e projection), para o quadrado ser visto por uma câmera, em perspectiva.",
-  oglTr_along3: "Passo 3: o quadrado vira um cubo com a imagem nas seis faces, e o teste de profundidade é ligado.",
 
   // ── GLM ──
   oglTr_glmTitle: "A GLM no seu projeto",
@@ -81,7 +81,7 @@ const text: Record<string, string> = {
   mvpModel: "Posiciona o objeto no espaço do mundo (translate / rotate / scale)",
   mvpView: "Simula uma câmera — transforma espaço do mundo em espaço da câmera",
   mvpProjection: "Aplica perspectiva — objetos distantes aparecem menores",
-  ch08_journeyIntro: "Veja as três acontecerem com um vértice. Cada passo leva a cena inteira para o próximo espaço, e a tabela acompanha as coordenadas do mesmo vértice pelo caminho. Depois da projeção, a GPU divide x, y e z por w sozinha; você nunca escreve esse passo.",
+  ch08_journeyIntro: "Veja as três acontecerem com um vértice. A figura olha de um lugar fixo; o que muda é a cena, levada de um espaço para o próximo. Aperte play, ou escolha um espaço no topo. Abaixo do desenho aparece a matriz que levou o vértice até ali, com os números dele antes e depois. Depois da projeção, a GPU divide x, y e z por w sozinha; você nunca escreve esse passo.",
   oglTr_wTitle: "Por que a perspectiva precisa de w",
   oglTr_w1: "Coisas distantes parecem menores porque são divididas pela distância. Uma matriz só sabe multiplicar e somar, não sabe dividir. Então a matriz de projeção faz o melhor possível: copia para w a distância à frente da câmera. Depois do vertex shader, a GPU divide x, y e z por w. Essa divisão se chama divisão perspectiva.",
   oglTr_w2: "Com números: uma câmera com campo de visão de 45°, e dois pontos na mesma altura, y = 0.5. Um está 2 unidades à frente da câmera (z = −2), o outro a 4 unidades (z = −4). A projeção multiplica y por 2,414 (que é 1 / tan 22,5°, explicado com a matriz de projeção abaixo) e põe a distância em w:",
@@ -130,33 +130,18 @@ const text: Record<string, string> = {
   oglTr_s2Worked: "Acompanhe o canto de cima à direita, (0.5, 0.5, 0), pelos quatro passos, com a janela de 1280 × 720. A matriz model o inclina para (0.5, 0.287, −0.410): mais baixo e empurrado para trás. A matriz view o move para (0.5, 0.287, −3.410). A projeção dá as coordenadas de clip (0.679, 0.692, 3.216, 3.410), com w = 3.410, a distância. A divisão dá as NDC (0.199, 0.203, 0.943): um pouco à direita e acima do centro da janela. O z de 0.943 é o que o teste de profundidade vai comparar.",
   oglTr_s2Run: "Rode: a imagem se deita como um ladrilho no chão, com a borda de trás mais estreita que a da frente. Ela não está mais esticada: redimensione a janela e ela mantém a forma.",
 
-  // ── Step 3 ──
-  oglTr_s3Title: "Passo 3: um cubo girando",
-  oglTr_s3a: "Um cubo tem 8 cantos, mas o array de vértices precisa de 24 vértices: 4 por face, 6 faces. Por que não 8? Um vértice é o conjunto inteiro dos seus atributos, não só uma posição. Cada canto toca três faces, e em cada face ele precisa de um (u, v) diferente, para a imagem ficar certa em todas as faces. Então cada canto aparece três vezes, com três coordenadas de textura diferentes.",
-  oglTr_s3b: "Cada face é escrita como o quadrado: cima-esquerda, baixo-esquerda, baixo-direita, cima-direita, vistos de fora do cubo. Os índices seguem o mesmo padrão 0 1 2, 0 2 3, mais 4 para cada face anterior. Escrever todas as faces no sentido anti-horário vistas de fora ainda não importa. Vai importar quando a GPU for instruída a pular as faces viradas para longe da câmera, no capítulo Face Winding & Culling.",
-  oglTr_s3c: "Todo o resto do passo 4b continua: sizeof(vertices) e sizeof(indices) acompanham os novos arrays sozinhos, e o layout continua x y z u v. Só o draw call muda, de 6 índices para 36: 6 faces × 2 triângulos × 3 cantos.",
-  oglTr_s3d: "Agora as faces se sobrepõem na tela, e a mais próxima precisa vencer. Por padrão isso não acontece: o OpenGL simplesmente pinta cada triângulo por cima do que já está lá, então uma face de trás desenhada depois da da frente a cobre. O teste de profundidade resolve isso. Para cada pixel ele guarda a profundidade (o z depois da divisão) da superfície mais próxima desenhada até então, e descarta fragmentos mais distantes. Uma linha no passo 4 o liga. O glClear já limpa os valores de profundidade a cada frame (a parte GL_DEPTH_BUFFER_BIT, presente desde o capítulo Window & Context).",
-  oglTr_s3e: "O eixo (0.5, 1, 0) é inclinado, então o cubo dá cambalhotas e mostra todas as faces. glm::rotate o normaliza para comprimento 1 sozinho. O capítulo Depth Testing, dois capítulos adiante, explica como o teste de profundidade funciona e o que mais ele pode fazer.",
-
   // ── Checkpoint ──
   oglTr_soFarTitle: "Seu main.cpp até aqui",
-  oglTr_soFarBody: "O arquivo inteiro depois do passo 3. Comparado com a versão do capítulo Textures, as mudanças estão marcadas NEW: os includes da GLM, os três uniforms no vertex shader, os vértices e índices do cubo, o teste de profundidade e as locations dos uniforms no passo 4, e as matrizes e os 36 índices no loop. Os helpers estão abreviados porque não mudaram.",
-  oglTr_soFarRun: "Rode: um cubo com a sua imagem em todas as faces dá cambalhotas devagar no meio da janela, em perspectiva. As faces da frente escondem as de trás.",
+  oglTr_soFarBody: "O arquivo inteiro depois do passo 2. Comparado com a versão do capítulo Textures, as mudanças estão marcadas NEW: os includes da GLM, os três uniforms no vertex shader, as locations dos uniforms no passo 4 e as três matrizes no loop. Os dados de vértice e o draw call não mudaram: ainda é o quadrado. Os helpers estão abreviados porque também não mudaram.",
+  oglTr_soFarRun: "Rode: a sua imagem se deita como um ladrilho no chão, em perspectiva: a borda de trás fica mais estreita que a da frente. Redimensione a janela e ela mantém a forma.",
   oglTr_tSee: "O que você vê",
   oglTr_tCause: "Causa provável",
   oglTr_r1: "nada, só a cor de fundo",
   oglTr_r1b: "uma matriz que nunca foi definida é toda zeros, o que esmaga todos os vértices num ponto só. Confira se nenhuma location é −1 (imprima-as) e se todo glUniformMatrix4fv roda depois do glUseProgram.",
-  oglTr_r2: "as faces de trás do cubo aparecem através das da frente",
-  oglTr_r2b: "falta o glEnable(GL_DEPTH_TEST), ou o glClear está sem GL_DEPTH_BUFFER_BIT.",
-  oglTr_r3: "só uma face, ou metade do cubo, é desenhada",
-  oglTr_r3b: "o draw call ainda diz 6 em vez de 36.",
-  oglTr_r4: "o cubo gira rápido demais",
-  oglTr_r4b: "o ângulo foi dado em graus: time * 50.0f sem glm::radians.",
-  oglTr_r5: "o cubo parece achatado ou esticado",
+  oglTr_r5: "o quadrado parece achatado ou esticado",
   oglTr_r5b: "o aspect está errado: divisão inteira (faltou o (float)), ou largura e altura trocadas.",
-  oglTr_r6: "o cubo está enorme e cortado, ou não aparece",
-  oglTr_r6b: "a matriz view move +3 em vez de −3, o que põe o cubo atrás da câmera.",
-  oglTr_try: "Experimente: desenhe o mesmo cubo várias vezes. Um VAO basta; só a matriz model muda. Ponha algumas posições num array e, no loop, para cada uma, monte model = translate(posição) × rotate(…), envie-a e chame glDrawElements de novo. Depois remova o glEnable(GL_DEPTH_TEST) para ver o que o teste de profundidade estava fazendo.",
+  oglTr_r6: "o quadrado está enorme e cortado, ou não aparece",
+  oglTr_r6b: "a matriz view move +3 em vez de −3, o que põe o quadrado atrás da câmera.",
 
   // ── Mistakes ──
   oglTr_mistakesTitle: "Erros comuns",
@@ -174,7 +159,7 @@ const text: Record<string, string> = {
   oglTr_e5b: "o teste de profundidade não consegue mais separar as superfícies, e elas piscam uma através da outra. Mantenha o near tão grande e o far tão pequeno quanto a cena permitir.",
   oglTr_e6: "Pedir as locations dos uniforms a cada frame",
   oglTr_e6b: "funciona, mas procura no programa pelo nome toda vez. Busque-as uma vez no passo 4.",
-  oglTr_next: "Em seguida, Camera & View Matrix troca o translate(0, 0, −3) fixo por uma câmera de verdade: glm::lookAt, o mouse para olhar em volta e o teclado para andar.",
+  oglTr_next: "Em seguida, Desenhando um cubo dobra o quadrado num cubo: quantos vértices ele precisa, se vale usar um index buffer, e o teste de profundidade que mantém as faces da frente na frente.",
 
   // ── Key ideas ──
   oglTr_key0:"Um uniform mat4 no vertex shader move todos os vértices: gl_Position = matriz * vec4(aPos, 1.0). Envie-o com glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m)).",
@@ -183,7 +168,6 @@ const text: Record<string, string> = {
   oglTr_key3:"A projeção põe a distância em w; a GPU então divide por w, e as coisas distantes encolhem. Essa divisão é a divisão perspectiva.",
   oglTr_key4:"O OpenGL não tem câmera: a matriz view move o mundo inteiro no sentido oposto. glm::lookAt a monta a partir de uma posição e de um alvo.",
   oglTr_key5:"glm::perspective recebe o FOV em radianos, o aspect largura / altura, e os planos near e far; nunca um near de 0.",
-  oglTr_key6:"Um cubo texturizado precisa de 24 vértices (cada face com seu uv) e 36 índices, e do teste de profundidade para as faces da frente esconderem as de trás.",
 
   // ── Fórmulas em palavras, deduções e ao vivo (2026-10-09) ──
   oglTr_perspWords: "As linhas 1 e 2 escalam x e y conforme a abertura da visão (x também pelo formato da janela). A linha 3 transforma a distância num valor de profundidade. A linha 4 copia a distância à frente da câmera para w, para que a divisão por w feita pela GPU deixe as coisas distantes pequenas.",

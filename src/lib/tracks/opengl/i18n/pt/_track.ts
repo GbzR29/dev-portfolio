@@ -14,6 +14,7 @@ const track = {
     vectors: "Vetores para 3D",
     "linear-algebra": "Matrizes para 3D",
     transformations: "Transformações + GLM",
+    cube: "Desenhando um cubo",
     camera: "Câmera e matriz de visão",
     "depth-testing": "Teste de profundidade",
     "light-color": "Luz e cor",

@@ -279,6 +279,33 @@ const text: Record<string, string> = {
   figGlIdx_tooMany: "Esta malha tem mais vértices do que um unsigned byte consegue numerar (0…255): os índices dariam a volta e apontariam para os vértices errados. Use GL_UNSIGNED_SHORT.",
   figGlIdx_note: "Clique em qualquer triângulo. Cada ponto da grade é guardado uma vez e numerado linha a linha; cada triângulo são três números na lista de índices, e triângulos vizinhos simplesmente repetem os números dos vértices que dividem. Sem índices, cada triângulo precisa dos seus três vértices completos. Quanto maior o vértice (um modelo de verdade tem posição, normal e coordenada de textura: 32 bytes) e quanto mais triângulos dividem cada vértice, maior a economia. O tamanho do índice também importa: GL_UNSIGNED_SHORT reduz a lista de índices à metade, mas só consegue numerar 65 536 vértices.",
 
+  // ── CubeBuildFigure ──
+  figGlCube_title: "Um cubo, triângulo por triângulo",
+  figGlCube_modeA: "36 vértices",
+  figGlCube_modeB: "8 + índices",
+  figGlCube_modeC: "24 + índices",
+  figGlCube_total: "total",
+  figGlCube_play: "desenhar triângulo por triângulo",
+  figGlCube_pickHint: "Clique num triângulo ou num canto do cubo.",
+  figGlCube_tri: "triângulo",
+  figGlCube_noIdx: "sem lista de índices: a GPU lê os vértices",
+  figGlCube_corner: "canto",
+  figGlCube_vertex1: "vértice",
+  figGlCube_verticesN: "vértices",
+  figGlCube_cornerB: "Guardado uma vez só, então só cabe um (u, v) para as três faces: uma textura não fica certa nas três.",
+  figGlCube_cornerC: "Um vértice para cada face que ele toca, cada um com o (u, v) daquela face. Mesma posição, vértices diferentes.",
+  figGlCube_cornerA: "Uma cópia para cada canto de triângulo que cai aqui: os mesmos dados escritos de novo a cada vez.",
+  figGlCube_noDepth: "sem teste de profundidade: o que é desenhado por último cobre",
+  figGlCube_dragMouse: "arraste para girar · clique para inspecionar",
+  figGlCube_dragTouch: "arraste para girar · toque para inspecionar",
+  figGlCube_f_front: "frente",
+  figGlCube_f_back: "trás",
+  figGlCube_f_right: "direita",
+  figGlCube_f_left: "esquerda",
+  figGlCube_f_top: "cima",
+  figGlCube_f_bottom: "baixo",
+  figGlCube_note: "Aperte play para ver o draw call percorrer a lista, três números por triângulo. A imagem é a mesma nos três layouts; os números nos cantos mostram o que o VBO guarda. Com 8 vértices, cada canto é um vértice. Com 24, cada canto são três vértices, um por face. Com 36, cada canto de triângulo é um vértice próprio. Depois desligue o GL_DEPTH_TEST e aperte play de novo: a partir mais ou menos da face de trás, triângulos desenhados depois cobrem os mais próximos.",
+
   figGlVao_note:"Um VAO guarda, para cada location de atributo: se está ligado, o formato (size, type, normalized, stride, offset) e o buffer de onde lê; mais o vínculo do element buffer. Ele não guarda o vínculo de GL_ARRAY_BUFFER, o programa de shader, uniforms nem texturas. O buffer que um atributo lê é capturado quando o glVertexAttribPointer roda, então é essa a chamada que precisa do VAO certo e do buffer certo vinculados.",
 };
 

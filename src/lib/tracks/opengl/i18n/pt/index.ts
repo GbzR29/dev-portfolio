@@ -8,6 +8,7 @@ import clustered from "./clustered";
 import color from "./color";
 import compute from "./compute";
 import csm from "./csm";
+import cube from "./cube";
 import decals from "./decals";
 import depthTesting from "./depth-testing";
 import dsa from "./dsa";
@@ -47,7 +48,7 @@ import volumetrics from "./volumetrics";
 import winding from "./winding";
 
 const bundle: LessonText = {
-  strings: { ...advanced, ...camera, ...clustered, ...color, ...compute, ...csm, ...decals, ...depthTesting, ...dsa, ...ebo, ...gi, ...legacy, ...lightColor, ...lightingAdvanced, ...lightingBasics, ...linearAlgebra, ...models, ...oit, ...particles, ...pbr, ...performance, ...picking, ...pipeline, ...post, ...reflections, ...setup, ...shaderStages, ...shaders, ...skeletal, ...stencil, ...temporal, ...terrain, ...text, ...texturecompression, ...textures, ...tooling, ...transformations, ...triangle, ...vao, ...vbo, ...vectors, ...volumetrics, ...winding },
+  strings: { ...advanced, ...camera, ...clustered, ...color, ...compute, ...csm, ...cube, ...decals, ...depthTesting, ...dsa, ...ebo, ...gi, ...legacy, ...lightColor, ...lightingAdvanced, ...lightingBasics, ...linearAlgebra, ...models, ...oit, ...particles, ...pbr, ...performance, ...picking, ...pipeline, ...post, ...reflections, ...setup, ...shaderStages, ...shaders, ...skeletal, ...stencil, ...temporal, ...terrain, ...text, ...texturecompression, ...textures, ...tooling, ...transformations, ...triangle, ...vao, ...vbo, ...vectors, ...volumetrics, ...winding },
   titles: track.titles,
   sections: track.sections,
 };

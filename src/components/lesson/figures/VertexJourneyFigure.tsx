@@ -1,295 +1,248 @@
 "use client";
 
-import { useId } from "react";
 import { tx } from "@/lib/tracks/tx";
 import type { TrackTranslations } from "@/lib/tracks/types";
-import { useStepper, stepAmount, StepperControls } from "../kit/Stepper";
+import { useStepper, stepAmount } from "../kit/Stepper";
+import { Transport } from "../kit/Transport";
 import { Arrow, Label, pts } from "../kit/svg";
-import {
-  type V3, type Box, add, sub, scale, lerp3, rotY, makeProjector, useOrbit, boxFaces, frontFacing, lightAmount,
-  towardEye, visibleRuns,
-  lookAtBasis, viewTransform,
-} from "../kit/scene3d";
-import { TexturedFace, FigureIcon, useProtoTextures } from "../kit/protoTexture";
+import { type V3, sub, lerp3, makeProjector, boxFaces, frontFacing, lightAmount, rotY } from "../kit/scene3d";
 import { FigureShell } from "@/components/lesson/kit/FigureShell";
+import {
+  STATIONS, V_LOCAL, EYE, CAM_AHEAD, FRUSTUM, WINDOW_RECT, NDC_C, K, WIN, MODEL_YAW_DEG,
+  stageAt, type Station,
+} from "./journeyModel";
 
 // ── What this figure shows ────────────────────────────────────────────────────
-// One vertex on its way to the screen. Each step animates the whole scene into
-// the next space, so the matrices stop being abstract:
-//   0 local  →  1 world (M)  →  2 view (V)  →  3 clip + NDC (P, then ÷w)  →  4 screen (viewport)
+// One vertex on its way to the screen, seen from a FIXED viewpoint: the scene
+// itself changes from one space to the next, the way the matrices change the
+// numbers. Six stations: local → world (M) → view (V) → clip (P) → NDC (÷ w)
+// → screen (viewport). Clip space looks like view space (nothing is divided
+// yet); the pink line is the w the projection stored. In the last step the
+// drawing turns to face the window. The panel shows the tracked vertex and
+// the exact matrix that took it there.
 
-const VW = 560, VH = 310;
+const VW = 520, VH = 330;
 
-// Scene
-const MODEL_POS: V3 = [0.6, 0, -0.6];
-const MODEL_YAW = (35 * Math.PI) / 180;
-const CAM = lookAtBasis([1.9, 1.2, 1.9], [0.5, 0, -0.5]);
-const V_LOCAL: V3 = [0.5, 0.5, 0.5];
-
-// Projection
-const FOV = (50 * Math.PI) / 180, ASPECT = 1.6, NEAR = 1, FAR = 5;
-const TH = Math.tan(FOV / 2);
-const VIEWPORT = { w: 800, h: 500 };
-
-// Where the NDC cube is drawn, in view-space units (so the morph stays on screen)
-const K = 1.7, NDC_Z = -4.2;
-const ndcDisplay = (n: V3): V3 => [n[0] * K, n[1] * K, NDC_Z - n[2] * K];
-
-const COL_V = "#f59e0b";
-
-const clipOf = (v: V3): [number, number, number, number] => [
-  v[0] / (ASPECT * TH),
-  v[1] / TH,
-  (-(FAR + NEAR) / (FAR - NEAR)) * v[2] - (2 * FAR * NEAR) / (FAR - NEAR),
-  -v[2],
+/** Where the drawing is centred, and how big a unit is, at each station. */
+const FRAME: { c: V3; unit: number }[] = [
+  { c: [0, 0, 0], unit: 95 },
+  { c: [1.1, 0.5, 0.2], unit: 46 },
+  { c: [0.2, 0, -2.0], unit: 46 },
+  { c: [0.2, 0, -2.0], unit: 46 },
+  { c: NDC_C, unit: 50 },
+  { c: NDC_C, unit: 56 },
 ];
-const ndcOf = (v: V3): V3 => { const c = clipOf(v); return [c[0] / c[3], c[1] / c[3], c[2] / c[3]]; };
-
-/** Model matrix applied partway: rotate first, then translate (T·R). */
-const model = (q: V3, a: number): V3 => add(rotY(q, MODEL_YAW * a), scale(MODEL_POS, a));
-
-/** Full pipeline at progress p, for a point that starts in local space. */
-function pipeline(q: V3, p: number, isLocal: boolean): V3 {
-  const aM = stepAmount(p, 1), aV = stepAmount(p, 2), aP = stepAmount(p, 3), aS = stepAmount(p, 4);
-  const world = isLocal ? model(q, aM) : q;
-  const view = viewTransform(CAM, aV).point(world);
-  if (aP === 0) return view;
-  const nd = ndcDisplay(ndcOf(view));
-  const morphed = lerp3(view, nd, aP);
-  // The viewport flattens z away and stretches x back out by the aspect ratio
-  return [morphed[0] * (1 + (ASPECT - 1) * aS), morphed[1], morphed[2] + (NDC_Z - morphed[2]) * aS];
-}
-
-// Frustum corners in view space → world, so they ride along with the pipeline
-const frustumWorld = (() => {
-  const rect = (d: number): V3[] => {
-    const h = TH * d, w = h * ASPECT;
-    return [[-w, -h, -d], [w, -h, -d], [w, h, -d], [-w, h, -d]];
-  };
-  const toWorld = (v: V3): V3 => add(CAM.pos, add(scale(CAM.r, v[0]), add(scale(CAM.u, v[1]), scale(CAM.f, -v[2]))));
-  return { near: rect(NEAR).map(toWorld), far: rect(FAR).map(toWorld) };
-})();
-
-// Ground grid (world space); hidden once the projection starts
-const GRID: [V3, V3][] = Array.from({ length: 7 }, (_, i) => i - 3).flatMap(k => [
-  [[k, -0.5, -3], [k, -0.5, 3]] as [V3, V3],
-  [[-3, -0.5, k], [3, -0.5, k]] as [V3, V3],
-]);
-
-// The diagram stays centred on whatever the current space is about
-const CENTERS: V3[] = [[0, 0, 0], [1.1, 0.5, 0.5], [0, 0, -2.2], [0, 0, NDC_Z], [0, 0, NDC_Z]];
-const centerAt = (p: number): V3 => {
-  const i = Math.max(0, Math.min(3, Math.floor(p)));
-  return lerp3(CENTERS[i], CENTERS[i + 1], p - i);
-};
+const ORBIT = { yaw: -0.62, pitch: 0.34 };
 
 const f2 = (n: number) => (Math.abs(n) < 0.005 ? 0 : n).toFixed(2);
 const fv = (v: number[]) => `(${v.map(f2).join(", ")})`;
 
+// Ground grid at y = −0.5 (world space); drawn in world and view space only
+const GRID: [V3, V3][] = Array.from({ length: 7 }, (_, i) => i - 3).flatMap(k => [
+  [[k, -0.5, -3], [k, -0.5, 3]] as [V3, V3],
+  [[-3, -0.5, k], [3, -0.5, k]] as [V3, V3],
+]);
+const FR_EDGES = [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]];
+
+function MatrixGrid({ m, color }: { m: Float32Array; color: string }) {
+  return (
+    <span className="inline-grid grid-cols-4 gap-x-2 px-1.5 py-0.5 border-x font-mono text-[10.5px] tabular-nums" style={{ borderColor: color }}>
+      {Array.from({ length: 16 }, (_, i) => {
+        const r = Math.floor(i / 4), c = i % 4;
+        return <span key={i} className="text-right">{f2(m[c * 4 + r])}</span>;
+      })}
+    </span>
+  );
+}
+
 export function VertexJourneyFigure({ t }: { t?: TrackTranslations }) {
-  const st = useStepper(4, 1500);
-  const { orbit, handlers, ref, reset } = useOrbit({ yaw: -0.55, pitch: 0.38, zoom: 1 });
-  const textures = useProtoTextures();
-  const uid = useId().replace(/:/g, "");
+  const st = useStepper(5, 1500, 700);
   const p = st.p;
-  const aM = stepAmount(p, 1), aV = stepAmount(p, 2), aP = stepAmount(p, 3), aS = stepAmount(p, 4);
+  const aM = stepAmount(p, 1), aC = stepAmount(p, 3), aN = stepAmount(p, 4), aS = stepAmount(p, 5);
+  const current = Math.round(st.raw);
 
-  const c = centerAt(p);
-  const P0 = makeProjector(orbit, VW / 2, VH / 2 + 10, 50, 14);
-  const P = (q: V3) => P0(sub(q, c));
-  const L = (q: V3) => P(pipeline(q, p, true));      // a local-space point
-  const Wd = (q: V3) => P(pipeline(q, p, false));    // a world-space point
+  // ── The fixed viewpoint; only the frame (centre, scale) follows the scene ─
+  const i0 = Math.min(4, Math.floor(p)), fr = p - i0;
+  const centre = lerp3(FRAME[i0].c, FRAME[i0 + 1].c, fr);
+  const unit = FRAME[i0].unit + (FRAME[i0 + 1].unit - FRAME[i0].unit) * fr;
+  // In the last step the drawing turns to face the window, as the camera sees it
+  const P0 = makeProjector({ yaw: ORBIT.yaw * (1 - aS), pitch: ORBIT.pitch * (1 - aS), zoom: 1 }, VW / 2, VH / 2 + 8, unit, 14);
+  const D = (q: V3) => P0(sub(q, centre));
+  const L = (q: V3) => D(stageAt(q, p, true));        // a point of the cube (local space)
+  const Wd = (q: V3) => D(stageAt(q, p, false));      // a point of the scene (world space)
 
-  // Object faces, shaded by their (rotating) normals
-  // Faces are sorted by their depth before the viewport flattens them, so the
-  // painter's order still makes sense once everything lies in one plane.
-  // Up to NDC, back faces are the ones turned away from the diagram's eye.
-  // The screen step flattens everything into the scene camera's image, so from
-  // there on the camera decides — like glCullFace: a face is kept when its NDC
-  // corners wind counter-clockwise (y up; frontFacing expects y down).
+  // ── The cube: faces turned toward the viewer, far to near ────────────────
+  const preP = Math.min(p, 4);
   const faces = boxFaces([0, 0, 0], [0.5, 0.5, 0.5]).map(fc => {
     const sp = fc.pts.map(L);
-    const pre = fc.pts.map(q => P(pipeline(q, Math.min(p, 3), true)));
-    const n = viewTransform(CAM, aV).dir(rotY(fc.normal, MODEL_YAW * aM));
-    const depth = pre.reduce((a, b) => a + b.depth, 0) / 4;
-    const ndc = fc.pts.map(q => ndcOf(viewTransform(CAM, 1).point(model(q, 1))));
-    const front = aS > 0 ? frontFacing(ndc.map(v => ({ x: v[0], y: -v[1] }))) : frontFacing(pre);
-    return { sp, quad: fc.pts, light: lightAmount(n), depth, front };
+    const depth = fc.pts.map(q => P0(sub(stageAt(q, preP, true), centre)).depth).reduce((a, b) => a + b, 0) / 4;
+    const n = rotY(fc.normal, (MODEL_YAW_DEG * Math.PI / 180) * aM);
+    return { sp, depth, light: lightAmount(n), front: frontFacing(sp) };
   }).filter(f => f.front).sort((a, b) => b.depth - a.depth);
 
   const vtx = L(V_LOCAL);
+  const st0 = STATIONS[current];
+  const showWorld = aM > 0 && aN === 0;                // grid, camera: until the divide
+  // The w of clip space: the vertex's distance in front of the camera, along −z
+  // (from view space on, the camera is at (0, 0, 0) and the drawing is in view units)
+  const vView = stageAt(V_LOCAL, 3, true);
+  const origin = D([0, 0, 0]), wFoot = D([0, 0, vView[2]]);
+  const wAlpha = aC * (1 - aN);
 
-  // Values for the table
-  const vWorld = model(V_LOCAL, 1);
-  const vView = viewTransform(CAM, 1).point(vWorld);
-  const vClip = clipOf(vView);
-  const vNdc = ndcOf(vView);
-  const px = [(vNdc[0] + 1) / 2 * VIEWPORT.w, (vNdc[1] + 1) / 2 * VIEWPORT.h, (vNdc[2] + 1) / 2];
+  const captions: Record<string, string> = {
+    local: tx(t, "figVJ_c0", "Local space: the cube as you typed it in vertices[], centred on its own (0, 0, 0). The orange dot is the corner we follow, (0.5, 0.5, 0.5)."),
+    world: tx(t, "figVJ_c1", "The model matrix turns the cube 35° around y and moves it to (1, 0, −1), its place in the scene. The camera and the space it can see (the blue frustum) are part of the scene too."),
+    view: tx(t, "figVJ_c2", "The view matrix moves the whole scene so the camera sits at (0, 0, 0), looking down −z. Nothing changed shape: the numbers are now measured from the camera."),
+    clip: tx(t, "figVJ_c3", "The projection matrix adds a fourth number, w: how far the vertex is in front of the camera (the pink line). x, y and z are scaled so the frustum's walls will land on −1 and 1. Nothing is divided yet, so the picture does not move."),
+    ndc: tx(t, "figVJ_c4", "The GPU divides x, y and z by w. Far things shrink, and the frustum becomes the NDC cube: −1 to 1 on every axis, near at z = −1, far at z = +1."),
+    screen: tx(t, "figVJ_c5", `The viewport turns x and y into pixels of a ${WIN.w} × ${WIN.h} window, with (0, 0) at the bottom-left. z goes to the depth buffer, from 0 at the near plane to 1 at the far plane.`),
+  };
 
-  const rows: { key: string; name: string; formula: string; value: string; color: string }[] = [
-    { key: "figJ_local",  name: "Local",  formula: "v",               value: fv([...V_LOCAL, 1]), color: "#60a5fa" },
-    { key: "figJ_world",  name: "World",  formula: "M · v",           value: fv([...vWorld, 1]), color: "#34d399" },
-    { key: "figJ_view",   name: "View",   formula: "V · M · v",       value: fv([...vView, 1]), color: "#a78bfa" },
-    { key: "figJ_clip",   name: "Clip → NDC", formula: "P · V · M · v, then ÷ w",
-      value: `${fv(vClip)} ÷ ${f2(vClip[3])} = ${fv(vNdc)}`, color: "#f472b6" },
-    { key: "figJ_screen", name: "Screen", formula: "viewport",        value: `(${px[0].toFixed(0)}, ${px[1].toFixed(0)}) px · depth ${px[2].toFixed(3)}`, color: COL_V },
-  ];
-  const current = Math.round(st.raw);
-
-  const captions: [string, string][] = [
-    ["figJ_c0", "Local space: the model as the artist made it, centred on its own origin. The orange dot is the vertex we will follow."],
-    ["figJ_c1", "The model matrix rotates it and moves it into its place in the world, next to the camera."],
-    ["figJ_c2", "The view matrix moves the whole world so the camera sits at the origin looking down −Z."],
-    ["figJ_c3", "The projection matrix plus the divide by w squeezes the frustum into the NDC cube: far things get smaller, the pyramid becomes a box. (NDC is left-handed: +z now points away.)"],
-    ["figJ_c4", "The viewport flattens the cube onto the window: x and y become pixels, z goes to the depth buffer."],
-  ];
-
-  // Frustum and NDC cube edges
-  const fr = frustumWorld;
-  const frustumEdges: [V3, V3][] = [
-    ...fr.near.map((q, i) => [q, fr.near[(i + 1) % 4]] as [V3, V3]),
-    ...fr.far.map((q, i) => [q, fr.far[(i + 1) % 4]] as [V3, V3]),
-    ...fr.near.map((q, i) => [q, fr.far[i]] as [V3, V3]),
-  ];
-  const showFrustum = aM > 0;
-  const camPt = Wd(CAM.pos);
-
-  // Viewport rectangle (appears in the last step)
-  const vpRect: V3[] = [[-K * ASPECT, -K, NDC_Z], [K * ASPECT, -K, NDC_Z], [K * ASPECT, K, NDC_Z], [-K * ASPECT, K, NDC_Z]];
+  const opLine = (s: Station, i: number) => {
+    const prev = STATIONS[i - 1];
+    if (!s.op || !prev) return <span className="text-[var(--text-muted)]">{tx(t, "figVJ_start", "the numbers in vertices[], with w = 1")}</span>;
+    if (s.op.matrix) return (
+      <span className="inline-flex items-center gap-1.5 flex-wrap">
+        <MatrixGrid m={s.op.matrix} color={s.color} />
+        <span>· {fv(prev.value)} = <b style={{ color: s.color }}>{fv(s.value)}</b></span>
+      </span>
+    );
+    return <span>{s.op.formula} = <b style={{ color: s.color }}>{s.id === "screen" ? `(${s.value[0].toFixed(0)}, ${s.value[1].toFixed(0)}, ${s.value[2].toFixed(3)})` : fv(s.value)}</b></span>;
+  };
 
   return (
     <FigureShell>
-      <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3">
+      <div className="px-4 py-2.5 border-b border-[var(--border)] bg-[var(--surface)] flex items-center justify-between gap-3 flex-wrap">
         <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">
-          {tx(t, "figJ_title", "A Vertex's Journey — Local to Screen")}
+          {tx(t, "figVJ_title", "A vertex's journey, local to screen")}
         </span>
-        <span className="text-[9px] text-[var(--text-muted)] font-mono text-right">
-          {tx(t, "figCam_hint", "drag the figure to look around · scroll to zoom")}
-        </span>
+        <div className="flex gap-1 flex-wrap">
+          {STATIONS.map((s, i) => (
+            <button key={s.id} type="button" onClick={() => st.scrub(i)}
+              className={`px-2 py-0.5 text-[10px] font-semibold rounded-lg border transition-all ${i === current
+                ? "bg-[var(--primary-low)]" : "border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--primary)]"}`}
+              style={i === current ? { color: s.color, borderColor: s.color } : undefined}>
+              {tx(t, `figVJ_n_${s.id}`, s.name)}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="bg-[var(--code-bg)] border-b border-[var(--border)] relative">
-        <svg ref={ref} viewBox={`0 0 ${VW} ${VH}`} className="w-full h-auto select-none cursor-grab active:cursor-grabbing"
-          style={{ touchAction: "none" }} role="img" aria-label="A vertex travelling through the MVP spaces" {...handlers}>
-
-          {/* Ground grid — only up to view space: parts of it are behind the
-              camera, where dividing by w would fling them across the canvas */}
-          {aM > 0 && aP === 0 && GRID.map(([a, b], i) => {
+      <div className="bg-[var(--code-bg)] border-b border-[var(--border)]">
+        <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full h-auto select-none" role="img" aria-label="A vertex travelling from local space to the screen">
+          {/* Ground grid */}
+          {showWorld && GRID.map(([a, b], i) => {
             const A = Wd(a), B = Wd(b);
-            return <line key={i} x1={A.x} y1={A.y} x2={B.x} y2={B.y} stroke="var(--code-line)"
-              strokeWidth="0.8" opacity={Math.min(1, aM * 2)} />;
+            return <line key={i} x1={A.x} y1={A.y} x2={B.x} y2={B.y} stroke="var(--code-line)" strokeWidth="0.8" opacity={Math.min(1, aM * 2)} />;
           })}
 
-          {/* Local axes in step 0, world axes afterwards */}
-          {([[1.2, 0, 0], [0, 1.2, 0], [0, 0, 1.2]] as V3[]).map((d, i) => {
+          {/* Axes: the cube's own in local space, the scene's (or the camera's) afterwards */}
+          {aN === 0 && ([[1, 0, 0], [0, 1, 0], [0, 0, 1]] as V3[]).map((d, i) => {
             const o = aM > 0 ? Wd([0, 0, 0]) : L([0, 0, 0]);
-            const e = aM > 0 ? Wd(d) : L(d);
+            const e = aM > 0 ? Wd(d) : L(d.map(n => n * 1.25) as V3);
             return (
-              <g key={i} opacity={1 - aP}>
+              <g key={i} opacity={0.85}>
                 <Arrow a={o} b={e} color="var(--code-muted)" w={1.1} head={5} />
                 <text x={e.x + 4} y={e.y + 3} fill="var(--code-muted)" fontSize="9" fontFamily="monospace">{"xyz"[i]}</text>
               </g>
             );
           })}
 
-          {/* Frustum (world → view → NDC cube → flat) */}
-          {showFrustum && frustumEdges.map(([a, b], i) => {
-            const A = Wd(a), B = Wd(b);
-            return <line key={i} x1={A.x} y1={A.y} x2={B.x} y2={B.y} stroke="rgba(59,130,246,0.7)"
-              strokeWidth="1" opacity={Math.min(1, aM * 2)} />;
+          {/* Frustum: a pyramid in the scene, a box after the divide, the window at the end */}
+          {aM > 0 && FR_EDGES.map(([a, b], i) => {
+            const A = Wd(FRUSTUM[a]), B = Wd(FRUSTUM[b]);
+            return <line key={i} x1={A.x} y1={A.y} x2={B.x} y2={B.y} stroke="#3b82f6" strokeOpacity={0.65 * (1 - aS)} strokeWidth="1" opacity={Math.min(1, aM * 2)} />;
           })}
 
-          {/* Viewport rectangle */}
+          {/* The window */}
           {aS > 0 && (() => {
-            const r = vpRect.map(P);
+            const r = WINDOW_RECT.map(D);
             return (
               <g opacity={aS}>
-                <polygon points={pts(r)} fill="rgba(245,158,11,0.08)" stroke={COL_V} strokeWidth="1.4" />
-                <Label x={r[0].x - 4} y={r[0].y + 14} anchor="end" color={COL_V}>(0, 0)</Label>
-                <Label x={r[2].x + 4} y={r[2].y - 4} color={COL_V}>{`(${VIEWPORT.w}, ${VIEWPORT.h})`}</Label>
+                <polygon points={pts(r)} fill="rgba(245,158,11,0.07)" stroke="#f59e0b" strokeWidth="1.4" />
+                <Label x={r[0].x} y={r[0].y + 14} color="#f59e0b">(0, 0)</Label>
+                <Label x={r[2].x} y={r[2].y - 6} anchor="end" color="#f59e0b">{`(${WIN.w}, ${WIN.h})`}</Label>
               </g>
             );
           })()}
 
-          {/* Camera: a dot with a short forward arrow, until the projection absorbs it */}
-          {showFrustum && aP === 0 && (
-            <g opacity={Math.min(1, aM * 2)}>
-              <FigureIcon name="camera" x={camPt.x} y={camPt.y} size={22}>
-                <circle cx={camPt.x} cy={camPt.y} r={4} fill="var(--text-main)" />
-              </FigureIcon>
-              <Arrow a={camPt} b={Wd(add(CAM.pos, scale(CAM.f, 0.9)))} color="#3b82f6" w={2} head={6} />
-              <Label x={camPt.x + 8} y={camPt.y - 8} color="var(--text-main)">{aV >= 1 ? "camera (0,0,0)" : "camera"}</Label>
+          {/* NDC cube corners */}
+          {aN > 0 && aS < 1 && (() => {
+            const a = D([NDC_C[0] - K, NDC_C[1] - K, NDC_C[2] + K]), b = D([NDC_C[0] + K, NDC_C[1] + K, NDC_C[2] - K]);
+            return (
+              <g opacity={aN * (1 - aS)}>
+                <Label x={a.x - 6} y={a.y + 14} anchor="end" color="#fb923c">(−1, −1, −1)</Label>
+                <Label x={b.x + 6} y={b.y - 4} color="#fb923c">(1, 1, 1)</Label>
+              </g>
+            );
+          })()}
+
+          {/* The camera */}
+          {showWorld && (() => {
+            const c = Wd(EYE);
+            return (
+              <g opacity={Math.min(1, aM * 2)}>
+                <Arrow a={c} b={Wd(CAM_AHEAD)} color="#3b82f6" w={2} head={6} />
+                <circle cx={c.x} cy={c.y} r={4.5} fill="var(--text-main)" />
+                <Label x={c.x + 9} y={c.y - 7} color="var(--text-main)">{tx(t, "figVJ_camera", "camera")}</Label>
+              </g>
+            );
+          })()}
+
+          {/* The cube */}
+          {faces.map((f, i) => {
+            const g = Math.round(90 + 110 * f.light);
+            return <polygon key={i} points={pts(f.sp)} fill={`rgb(${g - 10},${g - 30},${g + 40})`} stroke="#c4b5fd" strokeOpacity={0.6} strokeWidth="1" strokeLinejoin="round" />;
+          })}
+
+          {/* w: the distance in front of the camera, along −z */}
+          {wAlpha > 0 && (
+            <g opacity={wAlpha}>
+              <line x1={origin.x} y1={origin.y} x2={wFoot.x} y2={wFoot.y} stroke="#f472b6" strokeWidth="2.5" />
+              <line x1={wFoot.x} y1={wFoot.y} x2={vtx.x} y2={vtx.y} stroke="#f472b6" strokeWidth="1.2" strokeDasharray="3 3" />
+              <Label x={(origin.x + wFoot.x) / 2 - 6} y={(origin.y + wFoot.y) / 2 + 14} anchor="end" color="#f472b6" bold>
+                {`w = ${f2(STATIONS[3].value[3])}`}
+              </Label>
             </g>
           )}
 
-          {/* The object */}
-          {faces.map((f, i) => (
-            <TexturedFace key={i} id={`${uid}-f${i}`} quad={f.quad} project={L} name="purple" tex={textures?.purple} light={f.light} />
-          ))}
-
-          {/* Axes again, only the parts in front of the cube (rigid spaces only) */}
-          {aP === 0 && (() => {
-            const vt = viewTransform(CAM, aV);
-            const cube: Box = {
-              c: pipeline([0, 0, 0], p, true), half: [0.5, 0.5, 0.5],
-              ax: [vt.dir(rotY([1, 0, 0], MODEL_YAW * aM)), vt.dir(rotY([0, 1, 0], MODEL_YAW * aM)), vt.dir(rotY([0, 0, 1], MODEL_YAW * aM))],
-            };
-            const toward = towardEye(orbit);
-            return ([[1.2, 0, 0], [0, 1.2, 0], [0, 0, 1.2]] as V3[]).map((d, i) => {
-              const o3 = pipeline([0, 0, 0], p, aM === 0), e3 = pipeline(d, p, aM === 0);
-              return visibleRuns(o3, e3, [cube], toward).map(([ra, rb], k) => {
-                const A = P(ra), B = P(rb);
-                const atTip = Math.hypot(rb[0] - e3[0], rb[1] - e3[1], rb[2] - e3[2]) < 1e-6;
-                return atTip ? (
-                  <g key={`${i}-${k}`}>
-                    <Arrow a={A} b={B} color="var(--code-muted)" w={1.1} head={5} />
-                    <text x={B.x + 4} y={B.y + 3} fill="var(--code-muted)" fontSize="9" fontFamily="monospace">{"xyz"[i]}</text>
-                  </g>
-                ) : <line key={`${i}-${k}`} x1={A.x} y1={A.y} x2={B.x} y2={B.y} stroke="var(--code-muted)" strokeWidth="1.1" />;
-              });
-            });
-          })()}
-
           {/* The tracked vertex */}
-          <circle cx={vtx.x} cy={vtx.y} r={4.5} fill={COL_V} stroke="white" strokeWidth="1.2" />
-          <Label x={vtx.x + 8} y={vtx.y - 6} color={COL_V} bold>v</Label>
+          <circle cx={vtx.x} cy={vtx.y} r={5} fill="#f59e0b" stroke="var(--code-bg)" strokeWidth="1.5" />
+          <Label x={vtx.x + 9} y={vtx.y - 6} color="#f59e0b" bold>
+            {aS > 0.5 ? `(${STATIONS[5].value[0].toFixed(0)}, ${STATIONS[5].value[1].toFixed(0)}) px` : "v"}
+          </Label>
 
-          {/* Name of the space we are in */}
-          <Label x={10} y={20} color={rows[current].color} bold size={10}>
-            {`${tx(t, rows[current].key, rows[current].name)} space`}
+          {/* Name of the space */}
+          <Label x={12} y={22} color={st0.color} bold size={11}>
+            {tx(t, `figVJ_s_${st0.id}`, `${st0.name} space`)}
           </Label>
         </svg>
-        <button onClick={reset}
-          className="absolute top-3 right-3 text-[9px] font-mono px-2 py-0.5 rounded border border-[var(--border)] bg-[var(--card)] text-[var(--text-muted)] hover:text-[var(--primary)]">
-          {tx(t, "figCam_resetView", "reset view")}
-        </button>
+        <Transport t={t} speed playing={st.playing} onPlay={st.play} onStep={st.next} onBack={st.prev} onReset={st.restart}
+          playLabel={tx(t, "figVJ_play", "follow the vertex")} readout={`${current} / 5`} />
       </div>
 
-      <div className="p-4 md:p-5 space-y-4">
-        <p className="text-[12.5px] text-[var(--text-main)] leading-relaxed min-h-[40px]">
-          {tx(t, ...captions[current])}
-        </p>
-
-        {/* The vertex in every space */}
+      <div className="p-4 md:p-5 space-y-3">
+        <p className="text-[12.5px] text-[var(--text-main)] leading-relaxed min-h-[40px]">{captions[st0.id]}</p>
+        <div className="font-mono text-[11px] text-[var(--text-main)] overflow-x-auto">{opLine(st0, current)}</div>
         <div className="overflow-x-auto">
           <table className="w-full font-mono text-[10.5px] border-collapse">
             <tbody>
-              {rows.map((r, i) => (
-                <tr key={r.key} onClick={() => st.scrub(i)}
+              {STATIONS.map((s, i) => (
+                <tr key={s.id} onClick={() => st.scrub(i)}
                   className={`cursor-pointer transition-colors ${i === current ? "bg-[var(--primary-low)]" : "hover:bg-[var(--primary-low)]/50"}`}
                   style={{ opacity: i > current ? 0.4 : 1 }}>
-                  <td className="py-1 px-2 whitespace-nowrap font-bold" style={{ color: r.color }}>
-                    {tx(t, r.key, r.name)}
+                  <td className="py-1 px-2 whitespace-nowrap font-bold" style={{ color: s.color }}>{tx(t, `figVJ_n_${s.id}`, s.name)}</td>
+                  <td className="py-1 px-2 whitespace-nowrap text-[var(--text-muted)]">{s.op?.label ?? "v"}</td>
+                  <td className="py-1 px-2 whitespace-nowrap">
+                    {i > current ? "…" : s.id === "screen"
+                      ? `(${s.value[0].toFixed(0)}, ${s.value[1].toFixed(0)}) px · ${tx(t, "figVJ_depth", "depth")} ${s.value[2].toFixed(3)}`
+                      : fv(s.value)}
                   </td>
-                  <td className="py-1 px-2 whitespace-nowrap text-[var(--text-muted)]">{r.formula}</td>
-                  <td className="py-1 px-2 whitespace-nowrap text-[var(--text-main)]">{i <= current ? r.value : "…"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
-        <StepperControls s={st} />
       </div>
     </FigureShell>
   );

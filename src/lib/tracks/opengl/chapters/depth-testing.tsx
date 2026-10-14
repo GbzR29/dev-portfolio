@@ -552,7 +552,7 @@ int main() {
     if (shaderProgram == 0) { glfwTerminate(); return 1; }
 
     // 4b. Vertex data → VAO + VBO + EBO (unchanged: the cube's 24 vertices, 36 indices)
-    float vertices[] = { /* ... as in Transformations + GLM ... */ };
+    float vertices[] = { /* ... as in Drawing a Cube ... */ };
     GLuint indices[]  = { /* ... */ };
     GLuint vao, vbo, ebo;
     // ... glGen*, glBindVertexArray, glBufferData, the two attributes, the EBO ...

@@ -8,7 +8,8 @@
 // the |a| notation; normalizing; the dot product (both formulas, the cos θ
 // table, uses); the cross product (the component pattern, right-hand rule,
 // area, triangle normals); the four kinds of "multiply"; the full mathlab.cpp
-// with its expected output; common mistakes.
+// with its expected output; on your square (a uOffset uniform in main.cpp
+// moves it around a circle); common mistakes.
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
 import { Equation } from "@/components/lesson/Tex";
@@ -34,6 +35,7 @@ export function VectorsContent({ t }: { t: TrackTranslations }) {
         "Use the dot product to measure how much two directions agree.",
         "Use the cross product to get a direction perpendicular to two others.",
         "Write the same operations with GLM.",
+        "Move your square with a vector added in the vertex shader.",
       ]} />
 
       {/* ── WHAT A VECTOR IS ────────────────────────────────────────────── */}
@@ -563,6 +565,52 @@ p * q = (4, -10, 18)`}</CodeBlock>
       <Callout type="tip" t={t}>
         {tx(t, "oglVec_soFarTry",
           "Now change the numbers and predict the output before you run it. Move the enemy to (2, 0, 1), the player's own position, and see what normalize does with the zero vector (you will get nan, the NaN from the warning above).")}
+      </Callout>
+
+      {/* ── ON YOUR SQUARE ──────────────────────────────────────────────── */}
+      <H2>{tx(t, "oglVec_squareTitle", "On your square: a vector that moves it")}</H2>
+      <p>
+        {tx(t, "oglVec_sq1",
+          "The math lab prints numbers. Now use a vector in the real program: the main.cpp from the end of the Textures chapter, with its textured square. Adding the same vector to every vertex moves the whole square. That is vector addition, done once for each of its 4 vertices.")}
+      </p>
+      <p>{tx(t, "oglVec_sq2", "In the vertex shader, add a vec3 uniform and add it to the position:")}</p>
+      <CodeBlock lang="glsl" filename="vertex shader (in main.cpp)" t={t}>{`#version 460 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
+out vec2 TexCoord;
+uniform vec3 uOffset;                          // NEW: the same arrow for every vertex
+
+void main() {
+    gl_Position = vec4(aPos + uOffset, 1.0);   // NEW: was vec4(aPos, 1.0)
+    TexCoord = aTexCoord;
+}`}</CodeBlock>
+      <p>
+        {tx(t, "oglVec_sq3",
+          "In step 4, right after the program is made, ask where the uniform lives. Then, in the render loop, send a new offset every frame, after glUseProgram and before the draw call. Add #include <cmath> at the top of main.cpp for std::cos and std::sin:")}
+      </p>
+      <CodeBlock lang="cpp" filename="src/main.cpp (step 4, and the loop)" t={t}>{`// step 4, after makeProgram
+GLint offsetLoc = glGetUniformLocation(shaderProgram, "uOffset");
+
+// in the render loop, after glUseProgram(shaderProgram)
+float time = (float)glfwGetTime();                     // seconds since glfwInit
+float dx = std::cos(time), dy = std::sin(time);        // a direction of length 1
+glUniform3f(offsetLoc, 0.4f * dx, 0.4f * dy, 0.0f);    // scaled to length 0.4`}</CodeBlock>
+      <LessonTable
+        headers={[tx(t, "oglVec_tLine", "Line"), tx(t, "oglVec_tDoes", "What it does")]}
+        rows={[
+          [<IC key="1">{"aPos + uOffset"}</IC>, tx(t, "oglVec_sqL1", "vector addition, part by part, in the shader. Every vertex gets the same arrow, so the square moves as one piece.")],
+          [<IC key="2">{"(cos t, sin t, 0)"}</IC>, tx(t, "oglVec_sqL2", "a point on the unit circle. Its length is √(cos² t + sin² t) = √1 = 1 at every moment, so it is a pure direction that slowly turns.")],
+          [<IC key="3">{"0.4f * dx, 0.4f * dy"}</IC>, tx(t, "oglVec_sqL3", "a number times a vector: same direction, length 0.4. The square's centre runs around a circle of radius 0.4.")],
+          [<IC key="4">{"glUniform3f"}</IC>, tx(t, "oglVec_sqL4", "sends three floats to a vec3 uniform of the program in use. That is why it comes after glUseProgram.")],
+        ]}
+      />
+      <p>
+        {tx(t, "oglVec_sqWorked",
+          "Check one moment. At time 0, dx = 1 and dy = 0, so the offset is (0.4, 0, 0). The top-left corner (−0.5, 0.5, 0) becomes (−0.5 + 0.4, 0.5 + 0, 0 + 0) = (−0.1, 0.5, 0). The whole square has moved 0.4 to the right.")}
+      </p>
+      <Callout type="info" t={t}>
+        {tx(t, "oglVec_sqRun",
+          "Run it: the square circles around the middle of the window, once every 2π ≈ 6.3 seconds. It never turns: the image stays upright, because adding a vector only moves. Change 0.4 to 0.8 and part of it leaves the window, because x and y only reach from −1 to 1. Keep these lines: the next chapter adds a turn next to them.")}
       </Callout>
 
       {/* ── MISTAKES ────────────────────────────────────────────────────── */}

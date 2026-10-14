@@ -5,6 +5,7 @@ const text: Record<string, string> = {
   oglVec_goal1: "Usar o produto escalar para medir quanto duas direções concordam.",
   oglVec_goal2: "Usar o produto vetorial para obter uma direção perpendicular a duas outras.",
   oglVec_goal3: "Escrever as mesmas operações com GLM.",
+  oglVec_goal4: "Mover o seu quadrado com um vetor somado no vertex shader.",
   oglVec_intro: "Até aqui o quadrado fica parado em coordenadas fixas. Para movê-lo, girá-lo e olhá-lo por uma câmera, você precisa de duas ferramentas: vetores e matrizes. Este capítulo é sobre vetores; o próximo, sobre matrizes. Cada operação aparece de quatro jeitos: em palavras, num desenho, com números de verdade e como código GLM que você pode rodar.",
 
   oglVec_whatTitle: "O que é um vetor",
@@ -159,6 +160,18 @@ const text: Record<string, string> = {
   oglVec_e5b: "o resultado aponta para o lado oposto: a normal aponta para dentro da superfície, e a iluminação fica preta. Use cross(B − A, C − A) para cantos listados no sentido anti-horário.",
   oglVec_e6: "Esperar que o produto vetorial de vetores paralelos funcione",
   oglVec_e6b: "ele dá (0, 0, 0). Uma câmera olhando reto para cima com up = (0, 1, 0) cai nisso; o capítulo da câmera mostra a solução.",
+  // ── No seu quadrado (2026-10-14) ──
+  oglVec_squareTitle: "No seu quadrado: um vetor que o move",
+  oglVec_sq1: "O math lab imprime números. Agora use um vetor no programa de verdade: o main.cpp do fim do capítulo Texturas, com o seu quadrado texturizado. Somar o mesmo vetor a todos os vértices move o quadrado inteiro. É soma de vetores, feita uma vez para cada um dos seus 4 vértices.",
+  oglVec_sq2: "No vertex shader, acrescente um uniform vec3 e some-o à posição:",
+  oglVec_sq3: "No passo 4, logo depois de o programa ser criado, pergunte onde o uniform fica. Depois, no loop de renderização, mande um offset novo a cada frame, depois do glUseProgram e antes do draw call. Acrescente #include <cmath> no topo do main.cpp, por causa de std::cos e std::sin:",
+  oglVec_sqL1: "soma de vetores, parte por parte, no shader. Todo vértice recebe a mesma seta, então o quadrado se move como uma peça só.",
+  oglVec_sqL2: "um ponto no círculo unitário. O comprimento dele é √(cos² t + sin² t) = √1 = 1 em todo instante, então é uma direção pura que gira devagar.",
+  oglVec_sqL3: "um número vezes um vetor: mesma direção, comprimento 0.4. O centro do quadrado corre num círculo de raio 0.4.",
+  oglVec_sqL4: "manda três floats para um uniform vec3 do programa em uso. Por isso vem depois do glUseProgram.",
+  oglVec_sqWorked: "Confira um instante. No tempo 0, dx = 1 e dy = 0, então o offset é (0.4, 0, 0). O canto de cima à esquerda (−0.5, 0.5, 0) vira (−0.5 + 0.4, 0.5 + 0, 0 + 0) = (−0.1, 0.5, 0). O quadrado inteiro andou 0.4 para a direita.",
+  oglVec_sqRun: "Rode: o quadrado dá voltas em torno do meio da janela, uma a cada 2π ≈ 6,3 segundos. Ele nunca gira: a imagem fica em pé, porque somar um vetor só move. Troque 0.4 por 0.8 e parte dele sai da janela, porque x e y só vão de −1 a 1. Mantenha essas linhas: o próximo capítulo acrescenta um giro ao lado delas.",
+
   oglVec_next: "Vetores descrevem pontos e direções. O próximo capítulo, Matrizes para 3D, é sobre a ferramenta que muda muitos pontos de uma vez: uma matriz move, gira ou redimensiona todos os vértices de um modelo numa única multiplicação.",
 
   oglVec_key0: "Um vec3 são três números, lidos como um ponto (um lugar) ou uma seta (uma direção e um comprimento); o código decide qual.",

@@ -7,8 +7,9 @@
 // order figure, spinning with glfwGetTime); the coordinate spaces and MVP
 // (journey figure, why perspective needs w, worked numbers); the view matrix
 // as "moving the world"; perspective (frustum figure, matrix, near plane) and
-// orthographic projection; step 2, three matrices and the aspect ratio; step
-// 3, a textured cube with the depth test; the code-along checkpoint; mistakes.
+// orthographic projection; step 2, three matrices and the aspect ratio; the
+// code-along checkpoint (the cube itself is the next chapter, "Drawing a Cube");
+// mistakes.
 // The numbers in the worked examples were checked with GLM 1.0.1.
 
 import { CodeBlock, Callout, H2, H3, IC, LessonTable } from "@/components/lesson/LessonComponents";
@@ -28,7 +29,7 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
     <Article>
       <Lead>
         {tx(t, "oglTr_intro",
-          "Until now, every vertex you wrote went straight to the screen. Its x and y were already NDC coordinates, from −1 to 1. This chapter puts the matrices from the previous two chapters between the vertex and the screen. First the textured square moves and spins. Then it is seen in perspective, and then it becomes a spinning 3D cube.")}
+          "Until now, every vertex you wrote went straight to the screen. Its x and y were already NDC coordinates, from −1 to 1. This chapter puts the matrices from the previous two chapters between the vertex and the screen. First the textured square moves and spins. Then it is seen in perspective, tilted back like a floor tile. The next chapter folds it into a cube.")}
       </Lead>
 
       <Goals t={t} id="oglTr" items={[
@@ -41,12 +42,11 @@ export function TransformationsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "oglTr_alongTitle", "What this chapter adds to main.cpp")}</H2>
       <p>
         {tx(t, "oglTr_alongBody",
-          "It continues the main.cpp from the end of the Textures chapter, in three steps. Run the program after each one; each step says what you should see. The checkpoint at the end shows the whole file.")}
+          "It continues the main.cpp from the end of the Textures chapter, in two steps. Run the program after each one; each step says what you should see. The checkpoint at the end shows the whole file.")}
       </p>
       <ol className="list-decimal pl-6 space-y-1.5">
         <li>{tx(t, "oglTr_along1", "Step 1: one matrix uniform in the vertex shader, rebuilt every frame, so the square shrinks, moves and spins.")}</li>
         <li>{tx(t, "oglTr_along2", "Step 2: three matrices (model, view and projection), so the square is seen through a camera, in perspective.")}</li>
-        <li>{tx(t, "oglTr_along3", "Step 3: the square becomes a cube with the image on all six faces, and the depth test is turned on.")}</li>
       </ol>
 
       {/* ── GLM ─────────────────────────────────────────────────────────── */}
@@ -83,6 +83,10 @@ void main() {
     gl_Position = uTransform * vec4(aPos, 1.0);   // NEW: was vec4(aPos, 1.0)
     TexCoord = aTexCoord;
 }`}</CodeBlock>
+      <p>
+        {tx(t, "oglTr_s1hand",
+          "If you did the \"On your square\" sections of the last two chapters, your shader also has uOffset and uAngle. uTransform replaces both. Delete them from the shader, and in main.cpp delete offsetLoc, angleLoc, their glUniform calls and the time, dx and dy lines (the code below declares time again). The matrix below does the same turn and move you wrote by hand, plus a scale, in one multiplication.")}
+      </p>
       <p>
         {tx(t, "oglTr_s1b",
           "vec4(aPos, 1.0) makes the position a point with w = 1, so the 4×4 matrix can move it. The matrix is the same for every vertex of the draw. That is what a uniform is for. The texture coordinate is not touched: the image stays glued to the square wherever the square goes.")}
@@ -208,7 +212,7 @@ glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);`}</CodeBlock>
       />
       <p>
         {tx(t, "ch08_journeyIntro",
-          "Watch all three happen to one vertex. Each step moves the whole scene into the next space, and the table tracks the same vertex's coordinates along the way. After the projection, the GPU divides x, y and z by w on its own; you never write that step.")}
+          "Watch all three happen to one vertex. The figure looks from a fixed place; what changes is the scene, carried from one space to the next. Press play, or pick a space at the top. Under the drawing you see the matrix that took the vertex there, and its numbers before and after. After the projection, the GPU divides x, y and z by w on its own; you never write that step.")}
       </p>
 
       <VertexJourneyFigure t={t} />
@@ -415,69 +419,11 @@ glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));`}</C
           "Run it: the image lies back like a tile on the floor, its far edge narrower than its near edge. It is no longer stretched: resize the window and it keeps its shape.")}
       </Callout>
 
-      {/* ── STEP 3 ──────────────────────────────────────────────────────── */}
-      <H2>{tx(t, "oglTr_s3Title", "Step 3: a spinning cube")}</H2>
-      <p>
-        {tx(t, "oglTr_s3a",
-          "A cube has 8 corners, but the vertex array needs 24 vertices: 4 per face, 6 faces. Why not 8? A vertex is the whole set of its attributes, not just a position. Each corner touches three faces, and on each face it needs a different (u, v), so the image sits right on every face. So each corner appears three times, with three different texture coordinates.")}
-      </p>
-      <p>
-        {tx(t, "oglTr_s3b",
-          "Each face is written like the square: top-left, bottom-left, bottom-right, top-right, as seen from outside the cube. Its indices follow the same 0 1 2, 0 2 3 pattern, plus 4 for each face before it. Writing every face counter-clockwise from outside does not matter yet. It will once the GPU is told to skip faces that point away from the camera, in the Face Winding & Culling chapter.")}
-      </p>
-      <CodeBlock lang="cpp" filename="src/main.cpp (step 4b)" t={t}>{`float vertices[] = {
-//    x      y      z     u     v
-    // front (+z)
-    -0.5f,  0.5f,  0.5f, 0.0f, 1.0f,   -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f, 1.0f, 0.0f,    0.5f,  0.5f,  0.5f, 1.0f, 1.0f,
-    // back (−z)
-     0.5f,  0.5f, -0.5f, 0.0f, 1.0f,    0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f, 1.0f, 0.0f,   -0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
-    // right (+x)
-     0.5f,  0.5f,  0.5f, 0.0f, 1.0f,    0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f, 1.0f, 0.0f,    0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
-    // left (−x)
-    -0.5f,  0.5f, -0.5f, 0.0f, 1.0f,   -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f, 1.0f, 0.0f,   -0.5f,  0.5f,  0.5f, 1.0f, 1.0f,
-    // top (+y)
-    -0.5f,  0.5f, -0.5f, 0.0f, 1.0f,   -0.5f,  0.5f,  0.5f, 0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f, 1.0f, 0.0f,    0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
-    // bottom (−y)
-    -0.5f, -0.5f,  0.5f, 0.0f, 1.0f,   -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f, 1.0f, 0.0f,    0.5f, -0.5f,  0.5f, 1.0f, 1.0f,
-};
-GLuint indices[] = {
-     0,  1,  2,   0,  2,  3,    // front
-     4,  5,  6,   4,  6,  7,    // back
-     8,  9, 10,   8, 10, 11,    // right
-    12, 13, 14,  12, 14, 15,    // left
-    16, 17, 18,  16, 18, 19,    // top
-    20, 21, 22,  20, 22, 23,    // bottom
-};`}</CodeBlock>
-      <p>
-        {tx(t, "oglTr_s3c",
-          "Everything else in step 4b stays: sizeof(vertices) and sizeof(indices) follow the new arrays by themselves, and the layout is still x y z u v. Only the draw call changes, from 6 indices to 36: 6 faces × 2 triangles × 3 corners.")}
-      </p>
-      <p>
-        {tx(t, "oglTr_s3d",
-          "Now the faces overlap on screen, and the nearest one must win. By default it does not: OpenGL simply paints each triangle over whatever is there, so a back face drawn after the front face covers it. The depth test fixes that. For each pixel it keeps the depth (the z from the divide) of the nearest surface drawn so far, and throws away fragments that are farther. One line in step 4 turns it on. The glClear call already clears the depth values every frame (the GL_DEPTH_BUFFER_BIT part, there since the Window & Context chapter).")}
-      </p>
-      <CodeBlock lang="cpp" filename="src/main.cpp (step 4, and the loop)" t={t}>{`glEnable(GL_DEPTH_TEST);     // step 4: keep the nearest surface per pixel
-
-// in the loop: spin around a slanted axis, 50° per second
-glm::mat4 model = glm::rotate(glm::mat4(1.0f), time * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-// ...
-glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);   // was 6`}</CodeBlock>
-      <p>
-        {tx(t, "oglTr_s3e",
-          "The axis (0.5, 1, 0) leans to the side, so the cube tumbles and shows all its faces. glm::rotate normalizes it to length 1 by itself. The Depth Testing chapter, two chapters on, explains how the depth test works and what else it can do.")}
-      </p>
-
       {/* ── CHECKPOINT ──────────────────────────────────────────────────── */}
       <H2>{tx(t, "oglTr_soFarTitle", "Your main.cpp so far")}</H2>
       <p>
         {tx(t, "oglTr_soFarBody",
-          "The whole file after step 3. Compared with the Textures chapter's version, the changes are marked NEW: the GLM includes, the three uniforms in the vertex shader, the cube's vertices and indices, the depth test and the uniform locations in step 4, and the matrices and 36 indices in the loop. The helpers are shortened because they did not change.")}
+          "The whole file after step 2. Compared with the Textures chapter's version, the changes are marked NEW: the GLM includes, the three uniforms in the vertex shader, the uniform locations in step 4, and the three matrices in the loop. The vertex data and the draw call did not change: it is still the square. The helpers are shortened because they did not change either.")}
       </p>
       <CodeBlock lang="cpp" filename="src/main.cpp" t={t}>{`#include <glad/glad.h>      // MUST come before glfw3.h
 #include <GLFW/glfw3.h>
@@ -538,37 +484,18 @@ int main() {
     GLuint shaderProgram = makeProgram(vertexShaderSource, fragmentShaderSource);
     if (shaderProgram == 0) { glfwTerminate(); return 1; }
 
-    // 4b. Vertex data → VAO + VBO + EBO            >>> NEW: a cube, 24 vertices
+    // 4b. Vertex data → VAO + VBO + EBO (unchanged: the square)
     float vertices[] = {
-    //    x      y      z     u     v
-        // front (+z)
-        -0.5f,  0.5f,  0.5f, 0.0f, 1.0f,   -0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f, 1.0f, 0.0f,    0.5f,  0.5f,  0.5f, 1.0f, 1.0f,
-        // back (−z)
-         0.5f,  0.5f, -0.5f, 0.0f, 1.0f,    0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, 1.0f, 0.0f,   -0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
-        // right (+x)
-         0.5f,  0.5f,  0.5f, 0.0f, 1.0f,    0.5f, -0.5f,  0.5f, 0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f, 1.0f, 0.0f,    0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
-        // left (−x)
-        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f,   -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f, 1.0f, 0.0f,   -0.5f,  0.5f,  0.5f, 1.0f, 1.0f,
-        // top (+y)
-        -0.5f,  0.5f, -0.5f, 0.0f, 1.0f,   -0.5f,  0.5f,  0.5f, 0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f, 1.0f, 0.0f,    0.5f,  0.5f, -0.5f, 1.0f, 1.0f,
-        // bottom (−y)
-        -0.5f, -0.5f,  0.5f, 0.0f, 1.0f,   -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f, 1.0f, 0.0f,    0.5f, -0.5f,  0.5f, 1.0f, 1.0f,
+    //    x      y     z     u     v
+        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,   // 0: top-left
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,   // 1: bottom-left
+         0.5f, -0.5f, 0.0f, 1.0f, 0.0f,   // 2: bottom-right
+         0.5f,  0.5f, 0.0f, 1.0f, 1.0f,   // 3: top-right
     };
     GLuint indices[] = {
-         0,  1,  2,   0,  2,  3,    // front
-         4,  5,  6,   4,  6,  7,    // back
-         8,  9, 10,   8, 10, 11,    // right
-        12, 13, 14,  12, 14, 15,    // left
-        16, 17, 18,  16, 18, 19,    // top
-        20, 21, 22,  20, 22, 23,    // bottom
+        0, 1, 2,
+        0, 2, 3,
     };
-    //                                               <<< end of NEW
     GLuint vao, vbo, ebo;
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
@@ -591,11 +518,10 @@ int main() {
     glUseProgram(shaderProgram);
     glUniform1i(glGetUniformLocation(shaderProgram, "uTexture"), 0);
 
-    // 4d. Matrices and depth                        >>> NEW
+    // 4d. Matrix uniforms                            >>> NEW
     GLint modelLoc      = glGetUniformLocation(shaderProgram, "uModel");
     GLint viewLoc       = glGetUniformLocation(shaderProgram, "uView");
     GLint projectionLoc = glGetUniformLocation(shaderProgram, "uProjection");
-    glEnable(GL_DEPTH_TEST);
     //                                               <<< end of NEW
 
     // ── 5. The render loop ───────────────────────────────────────────────────
@@ -607,9 +533,8 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // >>> NEW: model, view and projection, rebuilt every frame
-        float time = (float)glfwGetTime();
-        glm::mat4 model = glm::rotate(glm::mat4(1.0f), time * glm::radians(50.0f),
-                                      glm::vec3(0.5f, 1.0f, 0.0f));
+        glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(-55.0f),
+                                      glm::vec3(1.0f, 0.0f, 0.0f));
         glm::mat4 view  = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
@@ -624,7 +549,7 @@ int main() {
         glUniformMatrix4fv(viewLoc,       1, GL_FALSE, glm::value_ptr(view));         // NEW
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));   // NEW
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);                  // NEW: 36
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -641,34 +566,16 @@ int main() {
 }`}</CodeBlock>
       <p>
         {tx(t, "oglTr_soFarRun",
-          "Run it: a cube with your image on every face tumbles slowly in the middle of the window, in perspective. Its near faces hide its far ones.")}
+          "Run it: your image lies back like a tile on the floor, in perspective: its far edge is narrower than its near edge. Resize the window and it keeps its shape.")}
       </p>
       <LessonTable
         headers={[tx(t, "oglTr_tSee", "What you see"), tx(t, "oglTr_tCause", "Likely cause")]}
         rows={[
           [tx(t, "oglTr_r1", "nothing at all, only the clear colour"), tx(t, "oglTr_r1b", "a matrix that was never set is all zeros, which squashes every vertex to one point. Check that every location is not −1 (print them) and that every glUniformMatrix4fv runs after glUseProgram.")],
-          [tx(t, "oglTr_r2", "the cube's far faces show through its near ones"), tx(t, "oglTr_r2b", "glEnable(GL_DEPTH_TEST) is missing, or glClear lacks GL_DEPTH_BUFFER_BIT.")],
-          [tx(t, "oglTr_r3", "only one face, or half the cube, is drawn"), tx(t, "oglTr_r3b", "the draw call still says 6 instead of 36.")],
-          [tx(t, "oglTr_r4", "the cube spins far too fast"), tx(t, "oglTr_r4b", "the angle was given in degrees: time * 50.0f without glm::radians.")],
-          [tx(t, "oglTr_r5", "the cube looks squashed or stretched"), tx(t, "oglTr_r5b", "the aspect is wrong: integer division ((float) missing), or width and height swapped.")],
-          [tx(t, "oglTr_r6", "the cube is huge and clipped, or not there"), tx(t, "oglTr_r6b", "the view matrix moves by +3 instead of −3, which puts the cube behind the camera.")],
+          [tx(t, "oglTr_r5", "the square looks squashed or stretched"), tx(t, "oglTr_r5b", "the aspect is wrong: integer division ((float) missing), or width and height swapped.")],
+          [tx(t, "oglTr_r6", "the square is huge and clipped, or not there"), tx(t, "oglTr_r6b", "the view matrix moves by +3 instead of −3, which puts the square behind the camera.")],
         ]}
       />
-      <Callout type="tip" t={t}>
-        {tx(t, "oglTr_try",
-          "Try it: draw the same cube several times. One VAO is enough; only the model matrix changes. Put a few positions in an array, and in the loop, for each one, build model = translate(position) × rotate(…), send it, and call glDrawElements again. Then remove glEnable(GL_DEPTH_TEST) to see what the depth test was doing.")}
-      </Callout>
-      <CodeBlock lang="cpp" filename="many_cubes.cpp" t={t}>{`glm::vec3 positions[] = {
-    glm::vec3( 0.0f,  0.0f,  0.0f),
-    glm::vec3( 2.0f,  1.0f, -5.0f),
-    glm::vec3(-1.5f, -1.0f, -2.5f),
-};
-for (int i = 0; i < 3; ++i) {
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), positions[i]);   // acts last: move into place
-    model = glm::rotate(model, time + i, glm::vec3(0.5f, 1.0f, 0.0f)); // acts first: spin around its centre
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);
-}`}</CodeBlock>
 
       {/* ── MISTAKES ────────────────────────────────────────────────────── */}
       <H2>{tx(t, "oglTr_mistakesTitle", "Common mistakes")}</H2>
@@ -685,7 +592,7 @@ for (int i = 0; i < 3; ++i) {
       />
       <p>
         {tx(t, "oglTr_next",
-          "Next, Camera & View Matrix replaces the fixed translate(0, 0, −3) with a real camera: glm::lookAt, the mouse to look around and the keyboard to move.")}
+          "Next, Drawing a Cube folds the square into a cube: how many vertices it needs, whether to use an index buffer, and the depth test that keeps its near faces in front.")}
       </p>
 
       <KeyIdeas t={t} id="oglTr" items={[
@@ -695,7 +602,6 @@ for (int i = 0; i < 3; ++i) {
         "The projection puts the distance into w; the GPU then divides by w, so far things shrink. That divide is the perspective divide.",
         "OpenGL has no camera: the view matrix moves the whole world the opposite way. glm::lookAt builds it from a position and a target.",
         "glm::perspective takes the FOV in radians, the aspect width / height, and near and far planes; never a near plane of 0.",
-        "A textured cube needs 24 vertices (each face its own uv) and 36 indices, and the depth test so near faces hide far ones.",
       ]} />
     </Article>
   );

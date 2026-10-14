@@ -9,7 +9,7 @@ const text: Record<string, string> = {
 
   // ── O que muda ──
   oglCam_alongTitle: "O que este capítulo acrescenta ao main.cpp",
-  oglCam_alongBody: "Ele continua o main.cpp do fim do capítulo Transformations + GLM, em quatro passos. Rode o programa depois de cada um; cada passo diz o que você deve ver. O checkpoint no final mostra o arquivo inteiro.",
+  oglCam_alongBody: "Ele continua o main.cpp do fim do capítulo Desenhando um cubo, em quatro passos. Rode o programa depois de cada um; cada passo diz o que você deve ver. O checkpoint no final mostra o arquivo inteiro.",
   oglCam_along1: "Passo 1: cinco cubos em vez de um, e glm::lookAt em vez do translate fixo. A câmera circula os cubos sozinha.",
   oglCam_along2: "Passo 2: W, A, S e D movem a câmera, na mesma velocidade em qualquer computador.",
   oglCam_along3: "Passo 3: o mouse gira a câmera: para os lados, para cima e para baixo.",
@@ -124,7 +124,7 @@ const text: Record<string, string> = {
 
   // ── Checkpoint ──
   oglCam_soFarTitle: "Seu main.cpp até aqui",
-  oglCam_soFarBody: "O arquivo inteiro depois do passo 4. Comparado com a versão de Transformations + GLM, as mudanças estão marcadas com NEW: o estado da câmera, três funções acima do main, três linhas no passo 3, as posições dos cubos e o lastFrame no passo 4, e o tempo, a entrada, a view, a projeção e o laço dos cubos no loop de renderização. Os helpers estão abreviados porque não mudaram.",
+  oglCam_soFarBody: "O arquivo inteiro depois do passo 4. Comparado com a versão de Desenhando um cubo, as mudanças estão marcadas com NEW: o estado da câmera, três funções acima do main, três linhas no passo 3, as posições dos cubos e o lastFrame no passo 4, e o tempo, a entrada, a view, a projeção e o laço dos cubos no loop de renderização. Os helpers estão abreviados porque não mudaram.",
   oglCam_soFarRun: "Rode: cinco cubos girando, o cursor escondido, e uma câmera que você pilota com W A S D, o mouse e a rodinha. Esc sai.",
   oglCam_tSee: "O que você vê",
   oglCam_tCause: "Causa provável",
