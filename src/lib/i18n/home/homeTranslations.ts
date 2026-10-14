@@ -85,6 +85,7 @@ export const homeTranslations = {
     contactCopied:   "copied",
     contactSelected: "selected",
     contactCv:       "CV",
+    footCoffee:      "buy me a coffee",
 
     // ── Book page ───────────────────────────────────────────────────────────
     bookBack:        "← home",
@@ -177,6 +178,7 @@ export const homeTranslations = {
     contactCopied:   "copiado",
     contactSelected: "selecionado",
     contactCv:       "Currículo",
+    footCoffee:      "me pague um café",
 
     // ── Book page ───────────────────────────────────────────────────────────
     bookBack:        "← início",

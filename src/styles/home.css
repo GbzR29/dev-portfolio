@@ -386,6 +386,7 @@ html:not(.dark) .home {
 }
 .hm-foot nav { display: flex; gap: 14px; }
 .hm-foot a:hover { color: var(--hm-accent); }
+.hm-kofi { display: inline-flex; align-items: center; gap: 5px; }
 
 /* ── Book page ──────────────────────────────────────────── */
 

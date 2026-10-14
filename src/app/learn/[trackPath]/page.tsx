@@ -18,6 +18,7 @@ import { LessonSidebar } from "@/components/sidebar/LessonSidebar";
 import { DocsLayout } from "@/components/lesson/DocsLayout";
 import { OnThisPage, type TocHeading } from "@/components/lesson/OnThisPage";
 import { ChapterPager } from "@/components/lesson/ChapterPager";
+import { SupportNote } from "@/components/lesson/SupportNote";
 import { BeforeYouStart, PrereqProvider } from "@/components/lesson/Prerequisites";
 import { ReferenceProvider } from "@/components/reference/RefToken";
 import { ChapterFunctions } from "@/components/reference/ChapterFunctions";
@@ -366,6 +367,7 @@ export default function LessonPage() {
 
         {/* In focus mode the pager appears only when the track ends here */}
         {(!focusSteps || (lastStep && !nextChapter)) && (
+          <>
           <ChapterPager
             prev={shownChapters[currentIndex - 1]}
             next={shownChapters[currentIndex + 1]}
@@ -377,6 +379,11 @@ export default function LessonPage() {
               backToTracks: ui.lessonAllTracks ?? "All tracks",
             }}
           />
+          <SupportNote
+            text={ui.lessonSupport ?? "These lessons are free. If one helped you, a coffee helps keep them coming."}
+            link={ui.lessonSupportLink ?? "support on Ko-fi"}
+          />
+          </>
         )}
       </DocsLayout>
     </PrereqProvider>

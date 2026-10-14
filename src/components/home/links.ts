@@ -7,4 +7,5 @@ export const CONTACT = {
   githubUser: "GbzR29",
   linkedin: "https://www.linkedin.com/in/gabriel-carvalho-479740234/",
   cv: "/pdf/resume.pdf",
+  kofi: "https://ko-fi.com/gabrielfrc",
 };
