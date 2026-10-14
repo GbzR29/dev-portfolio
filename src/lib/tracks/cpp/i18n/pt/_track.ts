@@ -15,7 +15,7 @@ const track = {
     "cpp-references": "Referências, sobrecarga e namespaces",
     "cpp-classes": "Classes, construtores e destrutores",
     "cpp-strings-vectors": "std::string e std::vector",
-    values: "Inicialização e valores",
+    values: "Valores, cópias e inicialização",
     move: "Semântica de movimento",
     raii: "RAII e smart pointers",
     templates: "Templates e código genérico",

@@ -6,7 +6,8 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { C, Choice, Figure, Readout, Row } from "@/components/lesson/kit/figure";
 import { useStepper } from "@/components/lesson/kit/Stepper";
 import { Transport } from "@/components/lesson/kit/Transport";
-import { lifeSnapshots, type Obj, type ObjState } from "./lifeModel";
+import { heapLeaks, lifeSnapshots, type Obj, type ObjState } from "./lifeModel";
+import { LifeHeap, PtrTag } from "./LifeHeap";
 import { LIFE_PROGRAMS, type LifeProgramId } from "./lifePrograms";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -17,11 +18,13 @@ import { LIFE_PROGRAMS, type LifeProgramId } from "./lifePrograms";
 // it is being destroyed. The console shows what the constructors and
 // destructors print. "No destructors" mode skips every call the compiler
 // inserts at the end of a scope, the way C behaves, and the summary then lists
-// the resources nobody released.
+// the resources nobody released. Programs that use the heap also get a heap
+// panel (LifeHeap.tsx): blocks, who points at them, shared_ptr counts, double
+// frees and leaked blocks.
 
 const STATE_COL: Record<ObjState, string> = { building: C.amber, alive: C.sky, dying: C.red, dead: C.red };
 
-export function LifetimeFigure({ t, programs }: { t?: TrackTranslations; programs: LifeProgramId[] }) {
+export function LifetimeFigure({ t, programs, title }: { t?: TrackTranslations; programs: LifeProgramId[]; title?: string }) {
   const [pid, setPid] = useState<LifeProgramId>(programs[0]);
   const [noDtors, setNoDtors] = useState(false);
   const prog = LIFE_PROGRAMS[pid];
@@ -30,6 +33,9 @@ export function LifetimeFigure({ t, programs }: { t?: TrackTranslations; program
   const k = Math.max(0, Math.min(snaps.length - 1, Math.floor(s.raw + 1e-9)));
   const snap = snaps[k];
   const st = snap.state;
+  const hasHeap = useMemo(() => snaps.some(sn => sn.state.heap.length > 0), [snaps]);
+  const leaked = heapLeaks(st);
+  const held = [...st.leaks, ...leaked.map(b => `${b.id} ${b.label}`)];
   const alive = st.scopes.filter(sc => !sc.closed).flatMap(sc => sc.objs).filter(o => o.state !== "dead").length;
 
   const choose = (id: LifeProgramId) => { setPid(id); s.restart(); };
@@ -52,6 +58,7 @@ export function LifetimeFigure({ t, programs }: { t?: TrackTranslations; program
           <span className="text-[var(--text-muted)] text-[11px]">{o.type}</span>
           <span className="ml-auto text-[10.5px]" style={{ color: col }}>{stateName(o)}</span>
         </div>
+        <PtrTag t={t} o={o} st={st} />
         {o.res && <div className="font-mono text-[10.5px] text-[var(--text-muted)]">{tx(t, "figCppLife_owns", "owns")}: {o.res}</div>}
         {kids.length > 0 && <div className="mt-1.5 ml-2 flex flex-col gap-1.5">{kids.map(c => drawObj(c, all))}</div>}
       </div>
@@ -60,7 +67,7 @@ export function LifetimeFigure({ t, programs }: { t?: TrackTranslations; program
 
   return (
     <Figure
-      title={tx(t, "figCppLife_title", "Lifetime: when constructors and destructors run")}
+      title={title ?? tx(t, "figCppLife_title", "Lifetime: when constructors and destructors run")}
       head={programs.length > 1 ? (
         <Choice value={pid} onChange={choose}
           options={programs.map(id => [id, tx(t, `figCppLife_name_${id}`, NAMES[id])] as [LifeProgramId, string])} />
@@ -68,16 +75,20 @@ export function LifetimeFigure({ t, programs }: { t?: TrackTranslations; program
       controls={<>
         <Row>
           <Readout>{tx(t, "figCppLife_aliveN", "objects alive")}: {alive}</Readout>
-          <Readout color={st.leaks.length ? C.red : undefined}>
-            {tx(t, "figCppLife_held", "resources never released")}: {st.leaks.length ? st.leaks.join(", ") : "0"}
+          <Readout color={held.length ? C.red : undefined}>
+            {tx(t, "figCppLife_held", "resources never released")}: {held.length ? held.join(", ") : "0"}
           </Readout>
+          {st.errors.length > 0 && <Readout color={C.red}>{tx(t, "figCppLife_errors", "errors")}: {st.errors.join(", ")}</Readout>}
         </Row>
         <label className="flex items-center gap-2 text-[12px] text-[var(--text-main)] cursor-pointer select-none">
           <input type="checkbox" checked={noDtors} onChange={e => toggle(e.target.checked)} className="accent-[var(--primary)]" />
           {tx(t, "figCppLife_noDtors", "Break it: no destructors (what C does)")}
         </label>
       </>}
-      note={tx(t, "figCppLife_note", "Amber: under construction. Blue: complete. Red: being destroyed. With destructors switched off, objects simply vanish at the end of their scope and whatever they owned stays taken: in C, that is the cleanup call you had to remember yourself.")}
+      note={<>
+        {tx(t, "figCppLife_note", "Amber: under construction. Blue: complete. Red: being destroyed. With destructors switched off, objects simply vanish at the end of their scope and whatever they owned stays taken: in C, that is the cleanup call you had to remember yourself.")}
+        {hasHeap && <> {tx(t, "figCppLife_noteHeap", "Each heap block has its own colour, and an object's \"→ #1\" says which block its pointer holds. A freed block fades out; one freed twice, or one nobody can reach any more, turns red.")}</>}
+      </>}
     >
       <div className="grid 2xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         {/* ── Code ── */}
@@ -111,11 +122,12 @@ export function LifetimeFigure({ t, programs }: { t?: TrackTranslations; program
               );
             })}
           </div>
+          {hasHeap && <LifeHeap t={t} st={st} touched={snap.touched} leaked={leaked} />}
           <div className="px-3 pb-3">
             <div className="rounded-lg bg-[var(--code-surface)] border border-[var(--code-border)] px-3 py-2 font-mono text-[11.5px] leading-[1.5] min-h-[3rem]">
               <div className="uppercase tracking-wider text-[10px] text-[var(--text-muted)] mb-0.5">{tx(t, "figCppLife_output", "output")}</div>
               {st.out.length ? st.out.map((l, i) => (
-                <div key={i} style={{ color: l.startsWith("-") || l.startsWith("close") ? C.red : C.green }}>{l}</div>
+                <div key={i} style={{ color: l.startsWith("-") || l.startsWith("close") ? C.red : /^(copy|assign|move)/.test(l) ? C.amber : C.green }}>{l}</div>
               )) : <div className="text-[var(--text-muted)]">—</div>}
             </div>
           </div>
@@ -131,4 +143,15 @@ const NAMES: Record<LifeProgramId, string> = {
   scopes: "scopes",
   members: "members",
   early: "early return",
+  copies: "when copies happen",
+  shallow: "shallow copy",
+  deep: "deep copy",
+  move: "move",
+  forgot: "forgotten nullptr",
+  ret: "return r",
+  retMove: "return std::move(r)",
+  unique: "unique_ptr",
+  shared: "shared_ptr",
+  cycle: "cycle",
+  weak: "weak_ptr",
 };

@@ -4,6 +4,8 @@
 // its destructor prints "- name".
 
 import type { LifeProgram } from "./lifeModel";
+import { COPY_MOVE_PROGRAMS } from "./copyMovePrograms";
+import { OWN_PROGRAMS } from "./ownPrograms";
 
 const scopes: LifeProgram = {
   id: "scopes",
@@ -83,5 +85,5 @@ const early: LifeProgram = {
   ],
 };
 
-export const LIFE_PROGRAMS = { scopes, members, early } as const;
+export const LIFE_PROGRAMS = { scopes, members, early, ...COPY_MOVE_PROGRAMS, ...OWN_PROGRAMS } as const;
 export type LifeProgramId = keyof typeof LIFE_PROGRAMS;

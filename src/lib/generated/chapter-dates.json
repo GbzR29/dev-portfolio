@@ -189,15 +189,15 @@
   },
   "cpp/values": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "cpp/move": {
     "created": "2026-03-18",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "cpp/raii": {
     "created": "2026-03-18",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "cpp/templates": {
     "created": "2026-02-10",
