@@ -237,23 +237,23 @@
   },
   "cpp/modules": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "cpp/concurrency": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "cpp/performance": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "cpp/cpp26": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "cpp/tooling": {
     "created": "2026-09-03",
-    "updated": "2026-10-08"
+    "updated": "2026-10-14"
   },
   "gamedev/game-loop": {
     "created": "2026-09-25",
