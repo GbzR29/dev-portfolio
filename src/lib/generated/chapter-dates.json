@@ -151,6 +151,22 @@
     "created": "2026-10-14",
     "updated": "2026-10-14"
   },
+  "asm/arithmetic-flags": {
+    "created": "2026-10-15",
+    "updated": "2026-10-15"
+  },
+  "asm/jumps-loops": {
+    "created": "2026-10-15",
+    "updated": "2026-10-15"
+  },
+  "asm/stack-calls": {
+    "created": "2026-10-15",
+    "updated": "2026-10-15"
+  },
+  "asm/calling-convention": {
+    "created": "2026-10-15",
+    "updated": "2026-10-15"
+  },
   "cpp/history": {
     "created": "2026-10-14",
     "updated": "2026-10-14"

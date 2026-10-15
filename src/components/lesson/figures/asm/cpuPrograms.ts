@@ -6,6 +6,7 @@
 // Linux (Compiler Explorer, NASM 3.01).
 
 import type { Gpr, SrcLine } from "./cpuModel";
+import { FLOW_NAMES, FLOW_PROGRAMS, type FlowProgramId } from "./cpuProgramsFlow";
 
 export type Watch = { sym: string; len: number; as: "text" | "dword" };
 
@@ -18,12 +19,16 @@ export type CpuProgram = {
   watch?: Watch[];                   // memory shown under the registers
   cuts?: number[][];                 // lines that can be removed together ("break it"); the button sits on the first
   bin?: string;                      // executable name shown in the terminal
+  stack?: boolean;                   // show the stack, one 8-byte slot per row
+  stackBytes?: number;               // a small stack, so an overflow shows up in a few dozen steps
+  maxSteps?: number;                 // an endless loop is stopped (Ctrl+C) after this many steps
   notes: Record<number, string>;
 };
 
-export type CpuProgramId = "tiny" | "subregs" | "hello" | "endian" | "array";
+export type CpuProgramId = "tiny" | "subregs" | "hello" | "endian" | "array" | FlowProgramId;
 
 export const CPU_PROGRAMS: Record<CpuProgramId, CpuProgram> = {
+  ...FLOW_PROGRAMS,
   // ── What is assembly: fetch, decode, execute ──
   tiny: {
     bytes: true, snippet: true, regs: ["rax", "rbx"],
@@ -166,6 +171,7 @@ export const CPU_PROGRAMS: Record<CpuProgramId, CpuProgram> = {
 };
 
 export const CPU_NAMES: Record<CpuProgramId, string> = {
+  ...FLOW_NAMES,
   tiny: "five instructions",
   subregs: "parts of rax",
   hello: "hello",

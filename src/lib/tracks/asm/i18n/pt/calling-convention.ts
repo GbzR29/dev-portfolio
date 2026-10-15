@@ -1,0 +1,76 @@
+// PT text for src/lib/tracks/asm/chapters/calling-convention.tsx. Keys match the tx() calls there; English is the fallback in the code.
+
+const text: Record<string, string> = {
+  asmCall_intro: "call e ret só mexem no rip. Onde vão os argumentos, onde volta o resultado e quais registradores uma função pode sobrescrever não são decisões da CPU: são um acordo, a convenção de chamada. Todos os compiladores de um sistema seguem a mesma, e é por isso que C, C++, Rust e o seu assembly conseguem chamar uns aos outros. Este capítulo cobre a convenção do Linux e do macOS, a System V, com as diferenças do Windows, e termina com assembly e C chamando um ao outro de verdade.",
+  asmCall_goal0: "Dizer em quais registradores uma função encontra os seus seis primeiros argumentos inteiros e os de ponto flutuante, e onde ela põe o resultado.",
+  asmCall_goal1: "Distinguir registradores salvos por quem chama dos salvos por quem é chamado, e guardar os que você usar.",
+  asmCall_goal2: "Manter a pilha alinhada em 16 bytes em todo call.",
+  asmCall_goal3: "Chamar uma função C a partir de assembly, e escrever uma função em assembly que o C consiga chamar.",
+
+  asmCall_abiTitle: "Um acordo chamado ABI",
+  asmCall_abiBody: "A convenção de chamada faz parte da ABI, a interface binária de aplicação: as regras que código de máquina compilado separadamente precisa compartilhar para funcionar junto. A API é o que você vê num arquivo de cabeçalho; a ABI é o que esse cabeçalho significa em registradores e bytes. Linux, macOS e os BSDs usam a ABI System V AMD64. O Windows usa a sua própria, em geral chamada de convenção x64 da Microsoft, ou Win64.",
+  asmCall_hWhat: "O quê",
+  asmCall_a1: "argumentos inteiros e ponteiros 1–6",
+  asmCall_a2: "argumentos de ponto flutuante 1–8",
+  asmCall_a3: "mais argumentos",
+  asmCall_a3v: "na pilha, acima do endereço de retorno: [rsp + 8], [rsp + 16]… na entrada",
+  asmCall_a4: "resultado inteiro",
+  asmCall_a4v: "rax (eax para um int); um resultado de 16 bytes em rdx:rax",
+  asmCall_a5: "resultado de ponto flutuante",
+  asmCall_mnemonic: "Um jeito de lembrar os quatro primeiros, em inglês: \"Diane's silk dress costs\" (o vestido de seda da Diane custa): rdi, rsi, rdx, rcx. Argumentos inteiros e de ponto flutuante são contados separadamente, então em f(int a, double b, int c), a vai em edi, b em xmm0 e c em esi. Escolha uma função abaixo e compare as duas convenções:",
+  asmCall_figNote: "Cada arranjo da figura bate com o que o gcc 14 gera no Linux e no Windows (MinGW). Mais uma surpresa do Windows: lá o long tem 4 bytes, e no Linux tem 8; é por isso que os exemplos usam int e long long.",
+
+  asmCall_saveTitle: "Quem guarda quais registradores",
+  asmCall_saveBody: "Uma função precisa de registradores para trabalhar, mas quem a chamou também. A convenção os divide em dois grupos:",
+  asmCall_hGroup: "Grupo",
+  asmCall_hRule: "Regra",
+  asmCall_g1: "salvos por quem chama (rascunho)",
+  asmCall_g1r: "qualquer call pode destruí-los. Se quem chama precisa de um valor depois do call, é ele quem precisa guardá-lo num lugar seguro.",
+  asmCall_g2: "salvos por quem é chamado (preservados)",
+  asmCall_g2r: "uma função que muda um deles precisa restaurá-lo antes do ret, em geral com push no começo e pop no fim.",
+  asmCall_saveRun: "Quem chama, abaixo, guarda 10 em rbx durante um call. A função pega o rbx emprestado e o devolve. Remova o push e o pop dela e rode de novo.",
+  asmCall_saveBreak: "Sem o push e o pop, a função deixa 9 em rbx, e quem chamou soma 9 em vez de 10: código de saída 34 em vez de 35. Nada quebra. Esse é o pior tipo de bug de convenção de chamada, porque aparece longe da causa, num código que está certo. Os compiladores usam a regra nos dois sentidos. O gcc -O0 compila int twice(int x) { return square(x) + square(x + 1); } com push rbx no prólogo: ele guarda o primeiro resultado em ebx, onde a segunda chamada não pode destruí-lo.",
+
+  asmCall_alignTitle: "Alinhamento no call",
+  asmCall_alignBody: "A regra do capítulo anterior importa assim que você chama um código que não escreveu. O rsp precisa ser múltiplo de 16 na instrução call. Funções de biblioteca podem contar com isso, usando instruções como movaps, que quebram com um endereço desalinhado. No Linux, um main que chama printf(\"%f\\n\", 2.5) sem corrigir o alinhamento morre com uma falha de segmentação dentro do printf.",
+  asmCall_alBody: "Funções variádicas como o printf acrescentam mais uma regra. Elas não sabem quantos argumentos de ponto flutuante receberam, então quem chama põe em al o número de registradores xmm que usou. Esqueça isso com um double, deixando al = 0, e o printf nem olha o xmm0: o mesmo programa imprimiu 0.000000 no Linux, sem erro nenhum. Os dois resultados foram conferidos num Linux de verdade.",
+
+  asmCall_cFromAsmTitle: "Chamando C a partir de assembly",
+  asmCall_cFromAsmBody: "Com a convenção em mãos, um programa em assembly pode usar a biblioteca do C. Ele define main em vez de _start, porque o gcc liga junto o código de inicialização do C, que prepara a biblioteca e depois chama o main. O main devolve o código de saída em eax.",
+  asmCall_hLine: "Linha",
+  asmCall_hWhy: "Por quê",
+  asmCall_l1: "avisa o NASM de que o nome está definido em outro lugar; o linker o encontra",
+  asmCall_l2: "declara que este arquivo não precisa de uma pilha executável; sem isso o linker emite um aviso",
+  asmCall_l3: "o printf mora numa biblioteca compartilhada carregada num endereço aleatório; a chamada passa por uma pequena tabela que o carregador preenche, a PLT (procedure linkage table, tabela de ligação de procedimentos). O gcc gera executáveis independentes de posição por padrão, e eles exigem isso",
+
+  asmCall_asmFromCTitle: "Chamando assembly a partir do C",
+  asmCall_asmFromCBody: "O outro sentido é o jeito mais comum de usar assembly hoje: uma função pequena e muito usada, escrita à mão e chamada de um programa em C ou C++. A função só precisa seguir a convenção.",
+  asmCall_winBreak: "Montado para Windows (nasm -f win64 e depois o gcc do MinGW), o mesmo sumsq.asm liga sem nenhum aviso e imprime 0. No Windows, a e b chegam em ecx e edx, então a função eleva ao quadrado o que quer que edi e esi tivessem. A versão que lê ecx e edx imprime 25. O linker só casa nomes; ele não enxerga convenções.",
+
+  asmCall_otherTitle: "Windows e ARM64 em resumo",
+  asmCall_o1: "argumentos inteiros",
+  asmCall_o2: "argumentos de ponto flutuante",
+  asmCall_o2w: "xmm0 – xmm3, por posição",
+  asmCall_o3: "resultado",
+  asmCall_o4: "salvos por quem é chamado",
+  asmCall_o5: "endereço de retorno",
+  asmCall_o5s: "na pilha",
+  asmCall_o5w: "na pilha, mais 32 bytes de shadow space",
+  asmCall_o5a: "no registrador x30, o link register",
+  asmCall_otherBody: "No ARM64 a instrução de chamada, bl (branch with link, desvio com ligação), põe o endereço de retorno em x30 em vez de empilhá-lo, e o ret salta para x30. Uma função que não chama nada nem toca na memória para ir e voltar; uma que chama outras guarda o x30 na pilha por conta própria. O macOS em Intel segue o System V, com um detalhe: os nomes do C ganham um sublinhado na frente, então você escreve call _printf.",
+
+  asmCall_tryTitle: "Tente você mesmo",
+  asmCall_try1: "Escreva long add6(long a, long b, long c, long d, long e, long f) em assembly e chame-a do C. Depois acrescente um sétimo argumento: onde a função o encontra?",
+  asmCall_try2: "Faça o square.asm imprimir 2.5 com \"%f\": o double vai em xmm0 (carregue-o de um dq 2.5 na .data com movsd), e al precisa valer 1. Depois apague o sub rsp, 8 e veja o programa quebrar.",
+  asmCall_try3: "No programa do registrador preservado, guarde o valor em r12 em vez de rbx. O que precisa mudar na função? E se você usasse r11?",
+
+  asmCall_key0: "A convenção de chamada é um acordo, parte da ABI; a CPU não a impõe.",
+  asmCall_key1: "System V: argumentos inteiros em rdi, rsi, rdx, rcx, r8, r9; os de ponto flutuante em xmm0–xmm7; o resto na pilha. Resultados em rax ou xmm0.",
+  asmCall_key2: "Registradores salvos por quem chama podem ser destruídos por qualquer call. Os salvos por quem é chamado (rbx, rbp, r12–r15) precisam ser restaurados antes do ret.",
+  asmCall_key3: "O rsp precisa ser múltiplo de 16 em cada call; na entrada da função ele está 8 bytes fora.",
+  asmCall_key4: "Numa chamada variádica como o printf, al guarda o número de registradores xmm usados.",
+  asmCall_key5: "Do assembly, chame o C com extern e wrt ..plt, e defina main quando o gcc fizer a ligação. Do C, declare um protótipo e siga a convenção no assembly.",
+  asmCall_key6: "O Win64 passa quatro argumentos em rcx, rdx, r8, r9 e reserva o shadow space; o ARM64 passa oito em x0–x7 e guarda o endereço de retorno em x30.",
+};
+
+export default text;

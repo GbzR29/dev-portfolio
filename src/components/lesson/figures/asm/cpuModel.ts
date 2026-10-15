@@ -6,8 +6,9 @@
 // 32-bit part clears the top half, writing an 8- or 16-bit part keeps the
 // rest, exactly like the real CPU. Instruction lengths come from the real
 // encodings (each program line carries NASM's bytes), so rip moves the way it
-// does on hardware. Touching memory that is not mapped stops the program with
-// a segmentation fault, as Linux would.
+// does on hardware. Touching memory that is not mapped, or jumping to an
+// address with no code, stops the program with a segmentation fault; dividing
+// by zero stops it with SIGFPE, as Linux would.
 //
 // The parser is not an assembler: it understands the programs written for the
 // figures (see cpuPrograms.ts) and throws on anything else, so a typo shows up
@@ -24,7 +25,8 @@ export type RegRef = { name: string; base: Gpr; width: Width; shift: 0 | 8 };
 export const TEXT_BASE = 0x401000;
 export const DATA_BASE = 0x402000;
 export const STACK_TOP = 0x7ffffffde000;
-const STACK_SIZE = 0x1000;
+export const STACK_START = STACK_TOP - 0x10;      // rsp when the program starts
+export const STACK_SIZE = 0x1000;
 const PAGE = 0x1000;
 
 // ── Register names ───────────────────────────────────────────────────────────
@@ -67,6 +69,9 @@ export const hexAddr = (n: number) => "0x" + n.toString(16);
 
 // ── State ────────────────────────────────────────────────────────────────────
 
+/** segfault = SIGSEGV (139), divide = SIGFPE (136), hung = stopped with Ctrl+C after too many steps (130). */
+export type FaultKind = "segfault" | "divide" | "hung";
+
 export type Flags = { zf: boolean; sf: boolean; cf: boolean; of: boolean };
 
 export type CpuState = {
@@ -76,7 +81,7 @@ export type CpuState = {
   mem: Map<number, number>;          // address → byte (unwritten bytes read as 0)
   out: string;
   exit?: number;                     // set once the program has ended (exit status)
-  fault?: string;                    // English description of the crash
+  fault?: FaultKind;                 // how it ended, when it did not call exit
   faultAddr?: number;
 };
 
@@ -261,12 +266,12 @@ export type Effect = {
 };
 
 export class Fault extends Error {
-  constructor(public addr: number) { super("segfault"); }
+  constructor(public addr: number, public kind: "segfault" | "divide" = "segfault") { super(kind); }
 }
 
 export function initialState(img: Image): CpuState {
   const regs = Object.fromEntries(GPR.map(r => [r, B0])) as Record<Gpr, bigint>;
-  regs.rsp = BigInt(STACK_TOP - 0x10);
+  regs.rsp = BigInt(STACK_START);
   return {
     regs, rip: img.instrs[0]?.addr ?? TEXT_BASE,
     flags: { zf: false, sf: false, cf: false, of: false },
@@ -278,13 +283,13 @@ const clone = (s: CpuState): CpuState => ({ ...s, regs: { ...s.regs }, flags: { 
 
 export class Cpu {
   fx: Effect = { regs: new Set(), mem: new Set(), read: new Set(), flags: false };
-  constructor(public s: CpuState, private img: Image) {}
+  constructor(public s: CpuState, private img: Image, private stackBytes = STACK_SIZE) {}
 
   /** Linux maps whole 4 KiB pages: bytes just past .data read as 0 instead of crashing. */
   private mapped(a: number) {
     const dataPages = Math.ceil((this.img.dataEnd - DATA_BASE) / PAGE) * PAGE;
     return (a >= DATA_BASE && a < DATA_BASE + dataPages)
-      || (a >= STACK_TOP - STACK_SIZE && a < STACK_TOP);
+      || (a >= STACK_TOP - this.stackBytes && a < STACK_TOP);
   }
   readMem(a: number, w: Width): bigint {
     let v = B0;
@@ -390,6 +395,23 @@ export class Cpu {
     throw new Error(`cpu: unknown condition ${cc}`);
   }
 
+  /** div / idiv: rdx:rax (or edx:eax) ÷ the operand; quotient to rax, remainder to rdx. */
+  divide(signedDiv: boolean, src: Opnd, w: Width) {
+    if (w !== 32 && w !== 64) throw new Error("cpu: div supports 32 and 64 bits only");
+    const lo = regRef(w === 64 ? "rax" : "eax")!, hi = regRef(w === 64 ? "rdx" : "edx")!;
+    const W = BigInt(w);
+    const raw = (this.getReg(hi) << W) | this.getReg(lo);
+    const d = this.get(src, w);
+    if (d === B0) throw new Fault(this.s.rip, "divide");
+    const n = signedDiv ? signed(raw, (2 * w) as Width) : raw;
+    const dv = signedDiv ? signed(d, w) : d;
+    const q = n / dv, r = n - q * dv;                // BigInt division truncates toward zero, like idiv
+    const fits = signedDiv ? q >= -(B1 << (W - B1)) && q < (B1 << (W - B1)) : q <= mask(w);
+    if (!fits) throw new Fault(this.s.rip, "divide");   // the quotient does not fit: also #DE
+    this.setReg(lo, q & mask(w));
+    this.setReg(hi, r & mask(w));
+  }
+
   syscall(next: number) {
     const r = this.s.regs;
     const n = Number(r.rax);
@@ -470,6 +492,13 @@ export class Cpu {
         this.s.flags.cf = ovf; this.s.flags.of = ovf; this.fx.flags = true;
         this.set(a, w, r); break;
       }
+      case "cdq": case "cqo": {
+        const w2: Width = op === "cqo" ? 64 : 32;
+        const neg = signed(this.getReg(regRef(w2 === 64 ? "rax" : "eax")!), w2) < B0;
+        this.setReg(regRef(w2 === 64 ? "rdx" : "edx")!, neg ? mask(w2) : B0); break;
+      }
+      case "div": case "idiv": this.divide(op === "idiv", a, w); break;
+      case "leave": this.s.regs.rsp = this.s.regs.rbp; this.fx.regs.add("rsp"); this.s.regs.rbp = this.pop(); this.fx.regs.add("rbp"); break;
       case "push": this.push(this.get(a, 64)); break;
       case "pop": this.set(a, 64, this.pop()); break;
       case "call": this.push(BigInt(next)); rip = Number(this.get(a, 64)); break;
@@ -480,6 +509,11 @@ export class Cpu {
       default: {
         const j = op.match(/^j(\w+)$/);
         if (j) { if (this.cond(j[1])) rip = Number(this.get(a, 64)); break; }
+        const sc = op.match(/^set(w+)$/);
+        if (sc) { this.set(a, 8, this.cond(sc[1]) ? B1 : B0); break; }
+        const cm = op.match(/^cmov(w+)$/);
+        // A 32-bit cmov writes its destination even when the condition is false, so the top half is cleared either way
+        if (cm) { this.set(a, w, this.cond(cm[1]) ? this.get(b, w) : this.get(a, w)); break; }
         throw new Error(`cpu: no instruction ${op}`);
       }
     }
@@ -491,12 +525,23 @@ export class Cpu {
 
 export type Snap = {
   state: CpuState;
-  /** Source line that just ran; -1 before the first step, "ghost" for bytes past the code. */
-  line: number | "ghost" | -1;
+  /**
+   * Source line that just ran; -1 before the first step, "ghost" for the zero
+   * bytes past the code, "nowhere" for a fetch from an address with no code,
+   * "hung" for the stop after too many steps.
+   */
+  line: number | "ghost" | "nowhere" | "hung" | -1;
   fx: Effect;
 };
 
+export type RunOptions = {
+  snippet?: boolean;                 // stop after the last line instead of running on
+  maxSteps?: number;                 // give up (as if Ctrl+C) after this many instructions
+  stackBytes?: number;               // size of the mapped stack
+};
+
 const MAX_STEPS = 400;
+const noFx = (): Effect => ({ regs: new Set(), mem: new Set(), read: new Set(), flags: false });
 
 /**
  * Every state of the program, from the first instruction to exit, a crash or
@@ -504,14 +549,23 @@ const MAX_STEPS = 400;
  * zero bytes there decode as `add byte [rax], al`, which is what a real program
  * that forgets to exit runs into.
  */
-export function run(lines: SrcLine[], skip: Set<number> = new Set(), snippet = false): { img: Image; snaps: Snap[] } {
+export function run(lines: SrcLine[], skip: Set<number> = new Set(), opts: RunOptions = {}): { img: Image; snaps: Snap[] } {
+  const { snippet = false, maxSteps = MAX_STEPS, stackBytes = STACK_SIZE } = opts;
   const img = load(lines, skip);
   let s = initialState(img);
-  const snaps: Snap[] = [{ state: s, line: -1, fx: { regs: new Set(), mem: new Set(), read: new Set(), flags: false } }];
-  for (let n = 0; n < MAX_STEPS && s.exit === undefined && !s.fault; n++) {
+  const snaps: Snap[] = [{ state: s, line: -1, fx: noFx() }];
+  // Only the page that holds the code is executable; past the last instruction it is zeros
+  const codePageEnd = TEXT_BASE + Math.max(PAGE, Math.ceil((img.textEnd - TEXT_BASE) / PAGE) * PAGE);
+  let n = 0;
+  for (; n < maxSteps && s.exit === undefined && !s.fault; n++) {
     const i = img.byAddr.get(s.rip);
     if (i === undefined && snippet) break;
-    const cpu = new Cpu(clone(s), img);
+    if (i === undefined && (s.rip < img.textEnd || s.rip >= codePageEnd)) {
+      s = { ...s, fault: "segfault", faultAddr: s.rip, exit: 139 };
+      snaps.push({ state: s, line: "nowhere", fx: noFx() });
+      break;
+    }
+    const cpu = new Cpu(clone(s), img, stackBytes);
     let line: Snap["line"];
     try {
       if (i === undefined) {
@@ -526,12 +580,15 @@ export function run(lines: SrcLine[], skip: Set<number> = new Set(), snippet = f
     } catch (e) {
       if (!(e instanceof Fault)) throw e;
       line = i === undefined ? "ghost" : img.instrs[i].line;
-      cpu.s.fault = "segfault";
+      cpu.s.fault = e.kind;
       cpu.s.faultAddr = e.addr;
-      cpu.s.exit = 139;                              // 128 + SIGSEGV (11)
+      cpu.s.exit = e.kind === "divide" ? 136 : 139;  // 128 + SIGFPE (8) or SIGSEGV (11)
     }
     s = cpu.s;
     snaps.push({ state: s, line, fx: cpu.fx });
+  }
+  if (n === maxSteps && s.exit === undefined && !snippet) {
+    snaps.push({ state: { ...s, fault: "hung", exit: 130 }, line: "hung", fx: noFx() });   // 128 + SIGINT (2)
   }
   return { img, snaps };
 }

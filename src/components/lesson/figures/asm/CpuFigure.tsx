@@ -6,7 +6,8 @@ import type { TrackTranslations } from "@/lib/tracks/types";
 import { C, Choice, Figure } from "@/components/lesson/kit/figure";
 import { useStepper } from "@/components/lesson/kit/Stepper";
 import { Transport } from "@/components/lesson/kit/Transport";
-import { hex64, hexAddr, signed, splitBytes, run, type Gpr, type Snap } from "./cpuModel";
+import { hex64, hexAddr, signed, splitBytes, run, STACK_SIZE, STACK_TOP, type Gpr, type Snap } from "./cpuModel";
+import { StackView } from "./StackView";
 import { CPU_NAMES, CPU_PROGRAMS, type CpuProgramId, type Watch } from "./cpuPrograms";
 
 // ── What this figure shows ────────────────────────────────────────────────────
@@ -17,7 +18,8 @@ import { CPU_NAMES, CPU_PROGRAMS, type CpuProgramId, type Watch } from "./cpuPro
 // runs one instruction, the way the processor does: fetch the bytes at rip,
 // decode, execute, move rip on. Lines with a "remove" button can be taken out
 // ("break it"): the program then runs on into whatever comes next, often a
-// segmentation fault, exactly as it would on Linux.
+// segmentation fault, exactly as it would on Linux. Programs that use the
+// stack show it under the registers (StackView).
 
 function useWidth<E extends HTMLElement>() {
   const ref = useRef<E>(null);
@@ -65,7 +67,10 @@ export function CpuFigure({ t, programs }: { t?: TrackTranslations; programs: Cp
   const prog = CPU_PROGRAMS[pid];
   const showAddr = !narrow || !!prog.bytes;
   const removed = useMemo(() => new Set((removedBy[pid] ?? []).flatMap(i => prog.cuts?.[i] ?? [])), [removedBy, pid, prog]);
-  const { img, snaps } = useMemo(() => run(prog.code, removed, !!prog.snippet), [prog, removed]);
+  const stackBottom = STACK_TOP - (prog.stackBytes ?? STACK_SIZE);
+  const { img, snaps } = useMemo(
+    () => run(prog.code, removed, { snippet: !!prog.snippet, maxSteps: prog.maxSteps, stackBytes: prog.stackBytes }),
+    [prog, removed]);
   const s = useStepper(snaps.length - 1, 1000, 500);
   const k = Math.max(0, Math.min(snaps.length - 1, Math.floor(s.raw + 1e-9)));
   const snap: Snap = snaps[k];
@@ -83,17 +88,29 @@ export function CpuFigure({ t, programs }: { t?: TrackTranslations; programs: Cp
   const choose = (id: CpuProgramId) => { setPid(id); s.restart(); };
 
   // ── What the last step did ──
+  const overflow = st.fault === "segfault" && st.faultAddr !== undefined && st.faultAddr < stackBottom && st.faultAddr >= stackBottom - 0x1000;
   let note: string;
   if (snap.line === -1) {
     note = tx(t, "figAsmCpu_start", "Before the first instruction. rip holds the address of the first one; press the step button to run it.");
   } else if (snap.line === "ghost") {
     note = tx(t, "figAsmCpu_ghost", "There is no exit, so the CPU carries on with whatever bytes follow the code. They are zeros, and the bytes 00 00 mean add [rax], al: add al to the byte at the address in rax. rax still holds 17, the result of write, and address 17 belongs to nobody.");
-  } else if (st.fault) {
+  } else if (snap.line === "nowhere") {
+    note = tx(t, "figAsmCpu_nowhere", "rip = {a}, but no code lives at that address, so the CPU cannot fetch an instruction there. This is what happens when ret pops something that is not a return address: it jumps wherever that value points.")
+      .replace("{a}", hexAddr(st.rip));
+  } else if (snap.line === "hung") {
+    note = tx(t, "figAsmCpu_hung", "The figure stopped the program here. Nothing in the loop changes what the cmp compares, so the jump is taken every time: an endless loop. In a terminal you would stop it with Ctrl+C, which sends SIGINT (signal 2): exit status 130 = 128 + 2.");
+  } else if (st.fault === "divide") {
+    note = tx(t, "figAsmCpu_divHere", "This division could not finish: the divisor is 0, or the quotient does not fit in the register.");
+  } else if (st.fault && !overflow) {
     note = tx(t, "figAsmCpu_faultHere", "This instruction could not finish: the address it works out is not one the program may use.");
   } else {
     note = tx(t, `figAsmCpu_${pid}_${snap.line}`, prog.notes[snap.line] ?? "");
   }
-  const fault = st.fault ? tx(t, "figAsmCpu_fault", "Segmentation fault: the program touched address {a}, which is not mapped in its memory. Linux stops it, and the shell reports exit status 139 = 128 + 11, the number of the signal SIGSEGV.")
+  const fault =st.fault === "hung" ? "" : st.fault === "divide"
+    ? tx(t, "figAsmCpu_divFault", "Division error: the CPU refuses the division. Linux sends SIGFPE (signal 8), and the shell reports exit status 136 = 128 + 8. FPE stands for floating-point exception, an old name: this was an integer division.")
+    : overflow ? tx(t, "figAsmCpu_overflow", "Stack overflow: this instruction needed address {a}, just below the end of the stack. Every call that never returned is still holding its slots, and the stack has run out. Linux stops the program with a segmentation fault (exit status 139).")
+      .replace("{a}", hexAddr(st.faultAddr ?? 0))
+    : st.fault ? tx(t, "figAsmCpu_fault", "Segmentation fault: the program touched address {a}, which is not mapped in its memory. Linux stops it, and the shell reports exit status 139 = 128 + 11, the number of the signal SIGSEGV.")
     .replace("{a}", hexAddr(st.faultAddr ?? 0)) : "";
   const ended = !prog.snippet || k === snaps.length - 1;
 
@@ -207,6 +224,13 @@ export function CpuFigure({ t, programs }: { t?: TrackTranslations; programs: Cp
                 </li>
               );
             })}
+            {snap.line === "nowhere" && (
+              <li className="flex items-start gap-2 rounded px-1 bg-[var(--primary-low)]">
+                <span className="w-3 shrink-0" />
+                {showAddr && <span className={`${narrow ? "w-[3.2rem]" : "w-[4.6rem]"} shrink-0 opacity-70`} style={{ color: C.red }}>{st.rip.toString(16)}</span>}
+                <span className="whitespace-pre flex-1" style={{ color: C.red }}>??   {tx(t, "figAsmCpu_noCode", "no code here")}</span>
+              </li>
+            )}
             {snap.line === "ghost" && (
               <li className="flex items-start gap-2 rounded px-1 bg-[var(--primary-low)]">
                 <span className="w-3 shrink-0" />
@@ -232,11 +256,14 @@ export function CpuFigure({ t, programs }: { t?: TrackTranslations; programs: Cp
               </div>
             )}
             {prog.watch?.map(watchRow)}
+            {prog.stack && <StackView t={t} st={st} fx={snap.fx} img={img} bottom={stackBottom} />}
             {showOut && (
               <div className={`${mono} text-[11.5px] rounded-lg border border-[var(--code-border)] bg-[var(--code-surface)] px-3 py-2 leading-relaxed`}>
                 <div className="text-[var(--text-muted)]">$ ./{prog.bin ?? "prog"}</div>
                 <div className="text-[var(--text-main)] whitespace-pre-wrap">{st.out.replace(/\n$/, "") || " "}</div>
-                {st.fault && <div style={{ color: C.red }}>Segmentation fault (core dumped)</div>}
+                {st.fault === "hung" && <div style={{ color: C.red }}>^C</div>}
+                {st.fault === "divide" && <div style={{ color: C.red }}>Floating point exception (core dumped)</div>}
+                {st.fault === "segfault" && <div style={{ color: C.red }}>Segmentation fault (core dumped)</div>}
                 {st.exit !== undefined && ended && <>
                   <div className="text-[var(--text-muted)]">$ echo $?</div>
                   <div className="text-[var(--text-main)]">{st.exit}</div>
