@@ -9,6 +9,7 @@ import { TRACK_CATALOG } from "./catalog";
 import { openGLChapters } from "./opengl";
 import { glslChapters }   from "./glsl";
 import { cppChapters }    from "./cpp";
+import { asmChapters }    from "./asm";
 import { sdl3Chapters }   from "./sdl3";
 import { gameDevChapters } from "./gamedev";
 import { mathChapters }   from "./math";
@@ -22,6 +23,7 @@ const CHAPTERS: Record<string, Chapter[]> = {
   opengl:  openGLChapters,
   glsl:    glslChapters,
   cpp:     cppChapters,
+  asm:     asmChapters,
   sdl3:    sdl3Chapters,
   gamedev: gameDevChapters,
   math:    mathChapters,

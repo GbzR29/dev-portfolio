@@ -25,6 +25,10 @@ const SEO_TEXT: Record<string, Record<UrlLang, Wording>> = {
     en: { title: "C and C++ Tutorial: Pointers, Memory, RAII and Templates", short: "C/C++ Tutorial" },
     pt: { title: "Curso de C e C++: ponteiros, memória, RAII e templates", short: "Curso de C/C++" },
   },
+  asm: {
+    en: { title: "x86-64 Assembly Tutorial: Learn NASM Step by Step", short: "Assembly Tutorial" },
+    pt: { title: "Tutorial de Assembly x86-64: aprenda NASM passo a passo", short: "Tutorial de Assembly" },
+  },
   sdl3: {
     en: { title: "SDL3 Tutorial: Windows, Input and 2D Rendering in C++", short: "SDL3 Tutorial" },
     pt: { title: "Tutorial de SDL3: janelas, input e renderização 2D em C++", short: "Tutorial de SDL3" },

@@ -13,6 +13,8 @@ export const learningTranslations = {
     // Track descriptions
     trackCppDesc:
       "From C to modern C++: pointers, memory and the stack and heap first, then RAII, templates, move semantics and the patterns that power performant game engines.",
+    trackAsmDesc:
+      "x86-64 assembly from the ground up with NASM: registers and memory, mov and addressing, flags, jumps and the stack, calling conventions, then reading compiler output, floating point, SIMD and the CPU pipeline — every instruction stepped through on a live CPU.",
     trackOpenglDesc:
       "Understand the full OpenGL pipeline: vertex buffers, shaders, textures, framebuffers, and compute shaders — through hands-on C++ code.",
     trackVulkanDesc:
@@ -39,6 +41,7 @@ export const learningTranslations = {
 
     // ── Redesign (2026-09) ──────────────────────────────────────────────
     trackName_cpp: "C/C++",
+    trackName_asm: "x86-64 Assembly",
     trackName_opengl: "OpenGL 4.6",
     trackName_glsl: "GLSL",
     trackName_sdl3: "SDL3",
@@ -148,6 +151,8 @@ export const learningTranslations = {
 
     trackCppDesc:
       "Do C ao C++ moderno: primeiro ponteiros, memória, stack e heap, depois RAII, templates, move semantics e os padrões que alimentam game engines de alta performance.",
+    trackAsmDesc:
+      "Assembly x86-64 desde a base com NASM: registradores e memória, mov e modos de endereçamento, flags, saltos e a pilha, convenções de chamada, e depois ler a saída do compilador, ponto flutuante, SIMD e o pipeline da CPU — cada instrução executada passo a passo numa CPU interativa.",
     trackOpenglDesc:
       "Entenda o pipeline completo do OpenGL: vertex buffers, shaders, texturas, framebuffers e compute shaders — com código C++ prático.",
     trackVulkanDesc:
@@ -173,6 +178,7 @@ export const learningTranslations = {
 
     // ── Redesign (2026-09) ──────────────────────────────────────────────
     trackName_cpp: "C/C++",
+    trackName_asm: "Assembly x86-64",
     trackName_opengl: "OpenGL 4.6",
     trackName_glsl: "GLSL",
     trackName_sdl3: "SDL3",

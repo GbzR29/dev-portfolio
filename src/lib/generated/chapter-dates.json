@@ -135,6 +135,22 @@
     "created": "2026-09-26",
     "updated": "2026-10-08"
   },
+  "asm/what-is-assembly": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "asm/registers": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "asm/first-program": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
+  "asm/mov-addressing": {
+    "created": "2026-10-14",
+    "updated": "2026-10-14"
+  },
   "cpp/history": {
     "created": "2026-10-14",
     "updated": "2026-10-14"

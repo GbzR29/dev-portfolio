@@ -29,6 +29,10 @@ export const TRACK_CATALOG: TrackInfo[] = [
     levelKey: "begAdv", descKey: "trackCppDesc",
   },
   {
+    id: "asm", path: "Assembly", title: "x86-64 Assembly", accentColor: "#64748b", status: "available", plannedLessons: 16,
+    levelKey: "intermediate", descKey: "trackAsmDesc",
+  },
+  {
     id: "opengl", path: "OpenGL", title: "OpenGL 4.6", accentColor: "#8b5cf6", status: "available", plannedLessons: 13,
     levelKey: "intermediate", descKey: "trackOpenglDesc",
   },

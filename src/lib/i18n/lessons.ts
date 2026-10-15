@@ -29,6 +29,7 @@ type Loader<T> = Partial<Record<Language, () => Promise<T>>>;
 
 const TRACKS: Record<string, Loader<LessonText>> = {
   cpp:     { pt: () => import("@/lib/tracks/cpp/i18n/pt").then((m) => m.default) },
+  asm:     { pt: () => import("@/lib/tracks/asm/i18n/pt").then((m) => m.default) },
   sdl3:    { pt: () => import("@/lib/tracks/sdl3/i18n/pt").then((m) => m.default) },
   gamedev: { pt: () => import("@/lib/tracks/gamedev/i18n/pt").then((m) => m.default) },
   math:    { pt: () => import("@/lib/tracks/math/i18n/pt").then((m) => m.default) },

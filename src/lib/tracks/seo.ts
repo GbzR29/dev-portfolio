@@ -14,6 +14,7 @@ import { chapterDates } from "./dates";
 import { learningTranslations } from "@/lib/i18n/learning/learningTranslantions";
 import aiPt from "./ai/i18n/pt/_track";
 import algorithmsPt from "./algorithms/i18n/pt/_track";
+import asmPt from "./asm/i18n/pt/_track";
 import cppPt from "./cpp/i18n/pt/_track";
 import gamedevPt from "./gamedev/i18n/pt/_track";
 import glslPt from "./glsl/i18n/pt/_track";
@@ -29,7 +30,7 @@ const IN_LANGUAGE: Record<UrlLang, string> = { en: "en", pt: "pt-BR" };
 
 type TitleFile = { titles: Record<string, string>; sections: Record<string, string> };
 const PT_TITLES: Record<string, TitleFile> = {
-  ai: aiPt, algorithms: algorithmsPt, cpp: cppPt, gamedev: gamedevPt, glsl: glslPt,
+  ai: aiPt, algorithms: algorithmsPt, asm: asmPt, cpp: cppPt, gamedev: gamedevPt, glsl: glslPt,
   math: mathPt, music: musicPt, opengl: openglPt, sdl3: sdl3Pt, vulkan: vulkanPt,
 };
 
