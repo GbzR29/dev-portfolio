@@ -28,5 +28,9 @@ export const aiChapters: Chapter[] = [
   { id: "k-nearest-neighbours", section: CLASSIC, title: "k-Nearest Neighbours",                        minRead: 21, load: () => import("./chapters/k-nearest-neighbours").then((m) => m.KNearestNeighboursContent) },
   { id: "decision-trees",       section: CLASSIC, title: "Decision Trees",                              minRead: 23, load: () => import("./chapters/decision-trees").then((m) => m.DecisionTreesContent) },
   { id: "k-means",              section: CLASSIC, title: "k-Means Clustering",                          minRead: 21, load: () => import("./chapters/k-means").then((m) => m.KMeansContent) },
-  { id: "perceptron", section: NEURAL, title: "The Perceptron", minRead: 24, load: () => import("./chapters/perceptron").then((m) => m.PerceptronContent) },
+  { id: "perceptron",      section: NEURAL, title: "The Perceptron",               minRead: 24, load: () => import("./chapters/perceptron").then((m) => m.PerceptronContent) },
+  { id: "mlp",             section: NEURAL, title: "Multi-Layer Perceptrons",      minRead: 22, load: () => import("./chapters/mlp").then((m) => m.MlpContent) },
+  { id: "backpropagation", section: NEURAL, title: "Backpropagation",              minRead: 26, load: () => import("./chapters/backpropagation").then((m) => m.BackpropagationContent) },
+  { id: "training",        section: NEURAL, title: "Training: Initialisation & Optimisers", minRead: 28, load: () => import("./chapters/training").then((m) => m.TrainingContent) },
+  { id: "regularisation",  section: NEURAL, title: "Regularisation: Weight Decay, Dropout & Early Stopping", minRead: 24, load: () => import("./chapters/regularisation").then((m) => m.RegularisationContent) },
 ];

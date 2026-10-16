@@ -2,6 +2,7 @@
 
 import type { LessonText } from "@/lib/i18n/lessons";
 import track from "./_track";
+import backpropagation from "./backpropagation";
 import data from "./data";
 import decisionTrees from "./decision-trees";
 import generalisation from "./generalisation";
@@ -10,13 +11,17 @@ import kMeans from "./k-means";
 import kNearestNeighbours from "./k-nearest-neighbours";
 import linearRegression from "./linear-regression";
 import logisticRegression from "./logistic-regression";
+import mlp from "./mlp";
 import perceptron from "./perceptron";
+import regularisation from "./regularisation";
+import training from "./training";
 import whatIsAi from "./what-is-ai";
 
 const bundle: LessonText = {
   strings: {
-    ...data, ...decisionTrees, ...generalisation, ...gradientDescent, ...kMeans,
-    ...kNearestNeighbours, ...linearRegression, ...logisticRegression, ...perceptron, ...whatIsAi,
+    ...backpropagation, ...data, ...decisionTrees, ...generalisation, ...gradientDescent, ...kMeans,
+    ...kNearestNeighbours, ...linearRegression, ...logisticRegression, ...mlp, ...perceptron,
+    ...regularisation, ...training, ...whatIsAi,
   },
   titles: track.titles,
   sections: track.sections,

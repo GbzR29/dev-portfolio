@@ -12,6 +12,10 @@ const track = {
     "decision-trees": "Árvores de decisão",
     "k-means": "Agrupamento k-means",
     perceptron: "O perceptron",
+    mlp: "Perceptrons multicamadas",
+    backpropagation: "Retropropagação (backpropagation)",
+    training: "Treinamento: inicialização e otimizadores",
+    regularisation: "Regularização: weight decay, dropout e parada antecipada",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",

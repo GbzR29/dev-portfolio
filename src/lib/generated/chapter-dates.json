@@ -39,6 +39,22 @@
     "created": "2026-10-04",
     "updated": "2026-10-08"
   },
+  "ai/mlp": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/backpropagation": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/training": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/regularisation": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
   "algorithms/memory": {
     "created": "2026-09-26",
     "updated": "2026-10-08"
