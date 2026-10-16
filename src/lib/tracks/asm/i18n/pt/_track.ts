@@ -10,10 +10,15 @@ const track = {
     "jumps-loops": "Saltos e laços",
     "stack-calls": "A pilha e as chamadas de função",
     "calling-convention": "A convenção de chamada",
+    "reading-compiler-output": "Lendo a saída do compilador",
+    "arrays-structs": "Arrays e structs na memória",
+    "floating-point": "Ponto flutuante: SSE e xmm",
+    "pointers-and-memory": "Ponteiros, memória e UB",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
     "Control Flow & Functions": "Controle de fluxo e funções",
+    "From C to Assembly": "Do C ao assembly",
   } as Record<string, string>,
 };
 

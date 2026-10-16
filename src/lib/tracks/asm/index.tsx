@@ -15,4 +15,8 @@ export const asmChapters: Chapter[] = [
   { id: "jumps-loops", section: "Control Flow & Functions",      title: "Jumps & Loops",               minRead: 16, load: () => import("./chapters/jumps-loops").then((m) => m.JumpsLoopsContent) },
   { id: "stack-calls", section: "Control Flow & Functions",      title: "The Stack & Function Calls",  minRead: 16, load: () => import("./chapters/stack-calls").then((m) => m.StackCallsContent) },
   { id: "calling-convention", section: "Control Flow & Functions", title: "The Calling Convention",    minRead: 17, load: () => import("./chapters/calling-convention").then((m) => m.CallingConventionContent) },
+  { id: "reading-compiler-output", section: "From C to Assembly", title: "Reading Compiler Output",       minRead: 17, load: () => import("./chapters/reading-compiler-output").then((m) => m.ReadingCompilerOutputContent) },
+  { id: "arrays-structs", section: "From C to Assembly",          title: "Arrays & Structs in Memory",    minRead: 16, load: () => import("./chapters/arrays-structs").then((m) => m.ArraysStructsContent) },
+  { id: "floating-point", section: "From C to Assembly",          title: "Floating Point: SSE & xmm",     minRead: 18, load: () => import("./chapters/floating-point").then((m) => m.FloatingPointContent) },
+  { id: "pointers-and-memory", section: "From C to Assembly",     title: "Pointers, Memory & UB",         minRead: 17, load: () => import("./chapters/pointers-and-memory").then((m) => m.PointersAndMemoryContent) },
 ];

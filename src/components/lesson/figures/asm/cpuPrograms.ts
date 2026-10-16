@@ -7,6 +7,7 @@
 
 import type { Gpr, SrcLine } from "./cpuModel";
 import { FLOW_NAMES, FLOW_PROGRAMS, type FlowProgramId } from "./cpuProgramsFlow";
+import { C_NAMES, C_PROGRAMS, type CProgramId } from "./cpuProgramsC";
 
 export type Watch = { sym: string; len: number; as: "text" | "dword" };
 
@@ -25,10 +26,11 @@ export type CpuProgram = {
   notes: Record<number, string>;
 };
 
-export type CpuProgramId = "tiny" | "subregs" | "hello" | "endian" | "array" | FlowProgramId;
+export type CpuProgramId = "tiny" | "subregs" | "hello" | "endian" | "array" | FlowProgramId | CProgramId;
 
 export const CPU_PROGRAMS: Record<CpuProgramId, CpuProgram> = {
   ...FLOW_PROGRAMS,
+  ...C_PROGRAMS,
   // ── What is assembly: fetch, decode, execute ──
   tiny: {
     bytes: true, snippet: true, regs: ["rax", "rbx"],
@@ -172,6 +174,7 @@ export const CPU_PROGRAMS: Record<CpuProgramId, CpuProgram> = {
 
 export const CPU_NAMES: Record<CpuProgramId, string> = {
   ...FLOW_NAMES,
+  ...C_NAMES,
   tiny: "five instructions",
   subregs: "parts of rax",
   hello: "hello",

@@ -10,10 +10,15 @@ import jumpsLoops from "./jumps-loops";
 import registers from "./registers";
 import stackCalls from "./stack-calls";
 import whatIsAssembly from "./what-is-assembly";
+import readingCompilerOutput from "./reading-compiler-output";
+import arraysStructs from "./arrays-structs";
+import floatingPoint from "./floating-point";
+import pointersAndMemory from "./pointers-and-memory";
 
 const bundle: LessonText = {
   strings: { ...whatIsAssembly, ...registers, ...firstProgram, ...movAddressing,
-    ...arithmeticFlags, ...jumpsLoops, ...stackCalls, ...callingConvention },
+    ...arithmeticFlags, ...jumpsLoops, ...stackCalls, ...callingConvention,
+    ...readingCompilerOutput, ...arraysStructs, ...floatingPoint, ...pointersAndMemory },
   titles: track.titles,
   sections: track.sections,
 };

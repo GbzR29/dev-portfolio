@@ -167,6 +167,22 @@
     "created": "2026-10-15",
     "updated": "2026-10-15"
   },
+  "asm/reading-compiler-output": {
+    "created": "2026-10-15",
+    "updated": "2026-10-15"
+  },
+  "asm/arrays-structs": {
+    "created": "2026-10-15",
+    "updated": "2026-10-15"
+  },
+  "asm/floating-point": {
+    "created": "2026-10-15",
+    "updated": "2026-10-15"
+  },
+  "asm/pointers-and-memory": {
+    "created": "2026-10-15",
+    "updated": "2026-10-15"
+  },
   "cpp/history": {
     "created": "2026-10-14",
     "updated": "2026-10-14"
