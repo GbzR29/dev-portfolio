@@ -14,11 +14,16 @@ const track = {
     "arrays-structs": "Arrays e structs na memória",
     "floating-point": "Ponto flutuante: SSE e xmm",
     "pointers-and-memory": "Ponteiros, memória e UB",
+    simd: "SIMD: SSE e AVX",
+    "cpu-pipeline": "Pipelines, desvios e caches",
+    arm64: "O ARM64 em comparação",
+    "inline-asm": "Assembly inline e intrínsecos",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
     "Control Flow & Functions": "Controle de fluxo e funções",
     "From C to Assembly": "Do C ao assembly",
+    Performance: "Desempenho",
   } as Record<string, string>,
 };
 

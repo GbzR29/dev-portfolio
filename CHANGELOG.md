@@ -12,6 +12,15 @@ Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · G
 
 ## Outubro de 2026
 
+### 2026-10-16
+
+- **Trilha Assembly x86-64, lote 4 "Desempenho"** (4 capítulos novos, EN e PT, numa seção nova; com ele a trilha chega às 16 lições planejadas). Toda saída de compilador é a real do gcc 14.2 (Compiler Explorer), para x86-64 e para ARM64; todos os tempos foram medidos num Ryzen 5 5600X com o gcc 14 local; o programa ARM64 e o bug de inline asm foram executados no Linux:
+  - **"SIMD: SSE e AVX"** (`simd`): faixas de xmm/ymm/zmm e quais processadores têm cada extensão; soma de ints medida (escalar 0,268 ns, SSE 0,052 ns = 5,2×, AVX2 0,025 ns = 10,7×); o laço vetorizado do gcc (broadcast, laço principal, resto, vzeroupper); por que a soma de floats só vetoriza com -ffast-math; addps à mão no NASM; intrínsecos; SIGILL e __builtin_cpu_supports.
+  - **"Pipelines, desvios e caches"** (`cpu-pipeline`): pipeline de 5 estágios, stall, bolha, forwarding e flush; núcleos fora de ordem; latência × vazão com 1 e 4 acumuladores (0,64 → 0,17 ns); previsão de desvios com dados aleatórios, ordenados e alternados (2,02 / 0,38 / 0,34 ns) e cmov (0,43 ns); latência medida de L1 (0,9 ns) a RAM (100 ns); o que fazer em cada caso.
+  - **"O ARM64 em comparação"** (`arm64`): registradores lado a lado, load/store e instruções de 4 bytes, saída do gcc para os dois processadores (csel, ldr pós-indexado, bl/stp/ldp, movz/movk), flags só com adds/subs, cbz/tbnz, AAPCS64, um programa ARM64 completo rodado no Linux (imprime e sai com 55), modelo de memória mais fraco.
+  - **"Assembly inline e intrínsecos"** (`inline-asm`): asm estendido do GCC (template, saídas, entradas, clobbers, restrições); uma restrição "=r" errada que compila sem aviso e imprime 4198504 em vez de 42; volatile e "memory"; rdtsc; builtins e intrínsecos contra asm inline (popcount); quando assembly vale a pena; o MSVC sem asm inline em x64.
+  - **Widgets novos:** corrida de soma escalar × SSE × AVX2 com as faixas juntando no fim (`SimdRaceFigure`); diagrama de pipeline ciclo a ciclo com forwarding liga/desliga e flush de desvio (`PipelineFigure` + `pipelineModel.ts`); previsor de desvios com contador de 2 bits ou com histórico (`BranchPredictorFigure`); escada de latência medida (`LatencyFigure`). O comparador C ↔ assembly ganhou níveis com fonte própria, rótulos e saída ARM64 (12 programas novos em `compilerDataPerf.ts`).
+
 ### 2026-10-15
 
 - **Trilha Assembly x86-64, lote 3 "Do C ao assembly"** (4 capítulos novos, EN e PT, numa seção nova). Toda saída de compilador é a real do gcc 14.2 (Compiler Explorer, sintaxe Intel), e os programas foram executados no Linux; os programas NASM foram montados com o NASM 2.16 local:

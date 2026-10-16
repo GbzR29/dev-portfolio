@@ -168,20 +168,36 @@
     "updated": "2026-10-15"
   },
   "asm/reading-compiler-output": {
-    "created": "2026-10-15",
-    "updated": "2026-10-15"
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
   },
   "asm/arrays-structs": {
-    "created": "2026-10-15",
-    "updated": "2026-10-15"
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
   },
   "asm/floating-point": {
-    "created": "2026-10-15",
-    "updated": "2026-10-15"
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
   },
   "asm/pointers-and-memory": {
-    "created": "2026-10-15",
-    "updated": "2026-10-15"
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "asm/simd": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "asm/cpu-pipeline": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "asm/arm64": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "asm/inline-asm": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
   },
   "cpp/history": {
     "created": "2026-10-14",

@@ -4,7 +4,14 @@
 // assembly line carries the C line it came from (0 = none). `out` is what the
 // program printed when main ran `call` on Linux, built with those flags.
 
-export type CeLevel = { flags: string; asm: [text: string, line: number][]; out?: string };
+export type CeLevel = {
+  flags: string;
+  asm: [text: string, line: number][];
+  out?: string;
+  label?: string;                    // button text, when it is not the flags
+  c?: string[];                      // this level's own C source
+  cc?: "arm64";                      // compiled for ARM64 instead of x86-64
+};
 export type CeProgram = { c: string[]; levels: CeLevel[]; call?: string };
 
 export type CeProgramId = "square" | "max" | "div10" | "sum" | "second" | "local" | "null" | "over" | "alias" | "asan";

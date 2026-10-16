@@ -19,4 +19,8 @@ export const asmChapters: Chapter[] = [
   { id: "arrays-structs", section: "From C to Assembly",          title: "Arrays & Structs in Memory",    minRead: 16, load: () => import("./chapters/arrays-structs").then((m) => m.ArraysStructsContent) },
   { id: "floating-point", section: "From C to Assembly",          title: "Floating Point: SSE & xmm",     minRead: 18, load: () => import("./chapters/floating-point").then((m) => m.FloatingPointContent) },
   { id: "pointers-and-memory", section: "From C to Assembly",     title: "Pointers, Memory & UB",         minRead: 17, load: () => import("./chapters/pointers-and-memory").then((m) => m.PointersAndMemoryContent) },
+  { id: "simd", section: "Performance",                        title: "SIMD: SSE & AVX",               minRead: 17, load: () => import("./chapters/simd").then((m) => m.SimdContent) },
+  { id: "cpu-pipeline", section: "Performance",                title: "Pipelines, Branches & Caches",  minRead: 19, load: () => import("./chapters/cpu-pipeline").then((m) => m.CpuPipelineContent) },
+  { id: "arm64", section: "Performance",                       title: "ARM64 Compared",                minRead: 18, load: () => import("./chapters/arm64").then((m) => m.Arm64Content) },
+  { id: "inline-asm", section: "Performance",                  title: "Inline Assembly & Intrinsics",  minRead: 16, load: () => import("./chapters/inline-asm").then((m) => m.InlineAsmContent) },
 ];
