@@ -16,11 +16,17 @@ const track = {
     backpropagation: "Retropropagação (backpropagation)",
     training: "Treinamento: inicialização e otimizadores",
     regularisation: "Regularização: weight decay, dropout e parada antecipada",
+    cnn: "Redes neurais convolucionais",
+    embeddings: "Embeddings: palavras como vetores",
+    rnn: "Redes neurais recorrentes e LSTMs",
+    attention: "Atenção",
+    transformers: "Transformers e grandes modelos de linguagem",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
     "Classic Machine Learning": "Machine learning clássico",
     "Neural Networks": "Redes neurais",
+    "Deep Learning": "Aprendizado profundo",
   } as Record<string, string>,
 };
 

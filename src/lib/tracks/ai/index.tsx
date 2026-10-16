@@ -17,6 +17,7 @@ import type { Chapter } from "@/lib/tracks/types";
 const FOUNDATIONS = "Foundations";
 const CLASSIC = "Classic Machine Learning";
 const NEURAL = "Neural Networks";
+const DEEP = "Deep Learning";
 
 export const aiChapters: Chapter[] = [
   { id: "what-is-ai",        section: FOUNDATIONS, title: "What Is AI? Learning from Data", minRead: 17, load: () => import("./chapters/what-is-ai").then((m) => m.WhatIsAiContent) },
@@ -33,4 +34,9 @@ export const aiChapters: Chapter[] = [
   { id: "backpropagation", section: NEURAL, title: "Backpropagation",              minRead: 26, load: () => import("./chapters/backpropagation").then((m) => m.BackpropagationContent) },
   { id: "training",        section: NEURAL, title: "Training: Initialisation & Optimisers", minRead: 28, load: () => import("./chapters/training").then((m) => m.TrainingContent) },
   { id: "regularisation",  section: NEURAL, title: "Regularisation: Weight Decay, Dropout & Early Stopping", minRead: 24, load: () => import("./chapters/regularisation").then((m) => m.RegularisationContent) },
+  { id: "cnn",             section: DEEP, title: "Convolutional Neural Networks", minRead: 27, load: () => import("./chapters/cnn").then((m) => m.CnnContent) },
+  { id: "embeddings",      section: DEEP, title: "Embeddings: Words as Vectors", minRead: 24, load: () => import("./chapters/embeddings").then((m) => m.EmbeddingsContent) },
+  { id: "rnn",             section: DEEP, title: "Recurrent Neural Networks & LSTMs", minRead: 27, load: () => import("./chapters/rnn").then((m) => m.RnnContent) },
+  { id: "attention",       section: DEEP, title: "Attention", minRead: 25, load: () => import("./chapters/attention").then((m) => m.AttentionContent) },
+  { id: "transformers",    section: DEEP, title: "Transformers & Large Language Models", minRead: 30, load: () => import("./chapters/transformers").then((m) => m.TransformersContent) },
 ];

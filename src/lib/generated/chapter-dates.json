@@ -55,6 +55,26 @@
     "created": "2026-10-16",
     "updated": "2026-10-16"
   },
+  "ai/cnn": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/embeddings": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/rnn": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/attention": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/transformers": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
   "algorithms/memory": {
     "created": "2026-09-26",
     "updated": "2026-10-08"
