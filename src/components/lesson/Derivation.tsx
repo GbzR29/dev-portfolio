@@ -64,7 +64,7 @@ export function Derivation({ label, steps, where, note, t }: {
         <div className="px-4 pt-3 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)]">{label}</div>
       )}
       <div className="px-4 pt-4 pb-2 overflow-x-auto">
-        <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-1.5 gap-y-1 w-max min-w-full text-[var(--text-main)] text-[1.05rem]">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-1.5 gap-y-1 w-max min-w-full text-[var(--text-main)] text-[length:calc(1.05rem*var(--tex-scale))]">
           {steps.slice(0, shown).map((s, i) => {
             const lit = i === focus;
             const col = s.full ? "col-span-2" : i === 0 ? "col-start-1 justify-self-end" : "col-start-2";

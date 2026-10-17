@@ -194,7 +194,7 @@ export function Equation({ children, label, where, note, notes, glsl, glm, words
       )}
       {inWords && words
         ? <div className="eq-words px-5 py-5 text-[15px] leading-relaxed text-[var(--text-main)]">{words}</div>
-        : <div className="px-4 py-5 overflow-x-auto text-[var(--text-main)] text-[1.1rem]"
+        : <div className="px-4 py-5 overflow-x-auto text-[var(--text-main)] text-[length:calc(1.1rem*var(--tex-scale))]"
             dangerouslySetInnerHTML={{ __html: html }} />}
       <WhereList where={card.where} colors={card.colors} />
       {notes && notes.length > 0 && (

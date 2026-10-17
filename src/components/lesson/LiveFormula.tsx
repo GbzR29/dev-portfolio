@@ -36,7 +36,7 @@ export function LiveFormula({ label, tex, vars, compute, where, note }: {
   return (
     <div ref={links.ref} {...links.handlers} className="eq-card my-6 rounded-xl border border-[var(--border)] bg-[var(--card)] shadow-[var(--shadow-sm)] overflow-hidden">
       {label && <div className="px-4 pt-3 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--text-muted)]">{label}</div>}
-      <div className="px-4 pt-4 pb-2 overflow-x-auto text-[var(--text-main)] text-[1.1rem]" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="px-4 pt-4 pb-2 overflow-x-auto text-[var(--text-main)] text-[length:calc(1.1rem*var(--tex-scale))]" dangerouslySetInnerHTML={{ __html: html }} />
       <div className="px-4 pb-3 grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
         {vars.map(v => (
           <Slider key={v.id} label={v.label} value={vals[v.id]} min={v.min} max={v.max} step={v.step} fmt={v.fmt}
