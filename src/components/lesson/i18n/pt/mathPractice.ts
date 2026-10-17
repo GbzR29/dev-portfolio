@@ -81,6 +81,36 @@ const text: Record<string, string> = {
   mpr_kQuadratic: "equações do 2º grau",
   mpr_kExpLog: "expoentes e logs",
   mpr_kSequences: "sequências",
+  // summation (2026-10-16)
+  mpr_tSummation: "Pratique: somatórios",
+  mpr_kSumClosed: "formas fechadas",
+  mpr_kSumTele: "telescópicas",
+  mpr_kSumGeo: "geométricas",
+  mpr_sumEval: "Ache o valor da soma",
+  mpr_sumTele: "Ache o valor (pode ser fração)",
+  mpr_sumGeo: "Ache o valor (pode ser fração)",
+  // sets (2026-10-16)
+  mpr_tSets: "Pratique: contagem com conjuntos",
+  mpr_kSetUnion: "uniões",
+  mpr_kSetMult: "múltiplos",
+  mpr_kSetSizes: "subconjuntos e produtos",
+  mpr_setUnion: "Ache o tamanho pedido",
+  mpr_setNeither: "Quantos não estão em nenhum dos dois conjuntos?",
+  mpr_setMult: "Quantos de 1, …, N são divisíveis por a ou por b?",
+  mpr_setMultNone: "Quantos de 1, …, N não são divisíveis nem por a nem por b?",
+  mpr_setPower: "Quantos subconjuntos tem um conjunto com n elementos?",
+  mpr_setProd: "Quantos elementos tem o produto?",
+  mpr_setK: "Quantos subconjuntos têm exatamente k elementos?",
+  // logic (2026-10-16)
+  mpr_tLogic: "Pratique: tabelas-verdade",
+  mpr_kLogic: "linhas verdadeiras",
+  mpr_logicCount: "Em quantas linhas da tabela-verdade a fórmula é verdadeira?",
+  // induction (2026-10-16)
+  mpr_tInduction: "Pratique: indução",
+  mpr_kIndStep: "usar a hipótese",
+  mpr_kIndStart: "onde começar",
+  mpr_indStep: "P(k) dá a soma até k. Use-a para achar a soma até k + 1",
+  mpr_indStart: "Ache o menor n₀ tal que a desigualdade vale para todo n ≥ n₀",
 };
 
 export default text;

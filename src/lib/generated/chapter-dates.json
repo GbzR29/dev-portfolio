@@ -591,6 +591,26 @@
     "created": "2026-09-25",
     "updated": "2026-10-13"
   },
+  "math/sets": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "math/logic": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "math/proofs": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "math/summation": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "math/induction": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
   "math/angles": {
     "created": "2026-09-25",
     "updated": "2026-10-08"

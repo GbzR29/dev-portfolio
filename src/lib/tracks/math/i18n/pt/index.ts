@@ -22,6 +22,12 @@ import polynomials from "./polynomials";
 import binomial from "./binomial";
 import exponents from "./exponents";
 import sequences from "./sequences";
+// ── Logic & Proof ──
+import sets from "./sets";
+import logic from "./logic";
+import proofs from "./proofs";
+import summation from "./summation";
+import induction from "./induction";
 // ── Geometry ──
 import angles from "./angles";
 import triangles from "./triangles";
@@ -76,6 +82,7 @@ const bundle: LessonText = {
   strings: {
     ...numberLine, ...orderOfOperations, ...fractions, ...ratios, ...divisibility, ...powers, ...bases, ...modular,
     ...expressions, ...linearEquations, ...inequalities, ...functions, ...linearSystems, ...quadratics, ...polynomials, ...binomial, ...exponents, ...sequences,
+    ...sets, ...logic, ...proofs, ...summation, ...induction,
     ...angles, ...triangles, ...area, ...pythagoras, ...similarity, ...circle, ...volumes, ...analytic, ...transformations,
     ...trig, ...unitCircle, ...triangleLaws, ...identities, ...polar, ...waves,
     ...vectors, ...matrices, ...determinant, ...inverse, ...eigen, ...complex, ...quaternions,

@@ -6,6 +6,10 @@
 import type { Gen } from "./problem";
 import { bases, fractions, gcdLcm, order, percent, powers, signed } from "./arithmetic";
 import { modInverse, modPower, modReduce } from "./modular";
+import { sumClosed, sumGeometric, sumTelescope } from "./summation";
+import { indStart, indStep } from "./induction";
+import { setMultiples, setSizes, setUnion } from "./setcount";
+import { logicCount } from "./logic";
 import { binomialChoose, binomialCoef, collect, evaluate, explog, linear, quadratic, sequences, system } from "./algebra";
 
 export type Kind = { id: string; label: [string, string]; make: Gen };
@@ -37,6 +41,21 @@ export const SETS = {
   ] },
   explog:     { title: ["mpr_tExpLog", "Practice: exponents and logarithms"], kinds: [{ id: "explog", label: ["mpr_kExpLog", "exponents and logs"], make: explog }] },
   sequences:  { title: ["mpr_tSequences", "Practice: sequences"], kinds: [{ id: "sequences", label: ["mpr_kSequences", "sequences"], make: sequences }] },
+  summation:  { title: ["mpr_tSummation", "Practice: sums"], kinds: [
+    { id: "closed", label: ["mpr_kSumClosed", "closed forms"], make: sumClosed },
+    { id: "telescope", label: ["mpr_kSumTele", "telescoping"], make: sumTelescope },
+    { id: "geometric", label: ["mpr_kSumGeo", "geometric"], make: sumGeometric },
+  ] },
+  setCounting: { title: ["mpr_tSets", "Practice: counting with sets"], kinds: [
+    { id: "union", label: ["mpr_kSetUnion", "unions"], make: setUnion },
+    { id: "multiples", label: ["mpr_kSetMult", "multiples"], make: setMultiples },
+    { id: "sizes", label: ["mpr_kSetSizes", "subsets and products"], make: setSizes },
+  ] },
+  logic:      { title: ["mpr_tLogic", "Practice: truth tables"], kinds: [{ id: "count", label: ["mpr_kLogic", "true rows"], make: logicCount }] },
+  induction:  { title: ["mpr_tInduction", "Practice: induction"], kinds: [
+    { id: "step", label: ["mpr_kIndStep", "use the hypothesis"], make: indStep },
+    { id: "start", label: ["mpr_kIndStart", "where to start"], make: indStart },
+  ] },
 } satisfies Record<string, PracticeSet>;
 
 export type SetId = keyof typeof SETS;

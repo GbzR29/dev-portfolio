@@ -12,6 +12,7 @@ const TRIGONOMETRY = "Trigonometry";
 const LINEAR_ALGEBRA = "Linear Algebra";
 const CALCULUS = "Calculus";
 const PROBABILITY = "Probability & Statistics";
+const LOGIC = "Logic & Proof";
 
 const chapters: Chapter[] = [
   { id: "number-line",         section: ARITHMETIC, title: "Numbers & the Number Line",    minRead: 16, load: () => import("./chapters/number-line").then((m) => m.NumberLineContent) },
@@ -33,6 +34,12 @@ const chapters: Chapter[] = [
   { id: "binomial",         section: ALGEBRA, title: "The Binomial Theorem",      minRead: 20, load: () => import("./chapters/binomial").then((m) => m.BinomialContent) },
   { id: "exponents",       section: ALGEBRA, title: "Exponents & Logarithms",    minRead: 13, load: () => import("./chapters/exponents").then((m) => m.ExpLogContent) },
   { id: "sequences",        section: ALGEBRA, title: "Sequences & Series",        minRead: 17, load: () => import("./chapters/sequences").then((m) => m.SequencesContent) },
+
+  { id: "sets",             section: LOGIC, title: "Sets",                       minRead: 20, load: () => import("./chapters/sets").then((m) => m.SetsContent) },
+  { id: "logic",            section: LOGIC, title: "Logic & Quantifiers",        minRead: 20, load: () => import("./chapters/logic").then((m) => m.LogicContent) },
+  { id: "proofs",           section: LOGIC, title: "Methods of Proof",           minRead: 21, load: () => import("./chapters/proofs").then((m) => m.ProofsContent) },
+  { id: "summation",        section: LOGIC, title: "Summation & Its Rules",      minRead: 20, load: () => import("./chapters/summation").then((m) => m.SummationContent) },
+  { id: "induction",        section: LOGIC, title: "Proof by Induction",         minRead: 19, load: () => import("./chapters/induction").then((m) => m.InductionContent) },
 
   { id: "angles",          section: GEOMETRY, title: "Points, Lines & Angles",    minRead: 17, load: () => import("./chapters/angles").then((m) => m.AnglesContent) },
   { id: "triangles",       section: GEOMETRY, title: "Triangles & Congruence",    minRead: 18, load: () => import("./chapters/triangles").then((m) => m.TrianglesContent) },
@@ -109,6 +116,12 @@ const requires: Record<string, string[]> = {
   "binomial":         ["polynomials", "powers"],
   "exponents":        ["powers", "algebra"],
   "sequences":        ["exponents"],
+
+  "sets":             ["number-line", "divisibility", "binomial"],
+  "logic":            ["sets"],
+  "proofs":           ["logic", "divisibility"],
+  "summation":        ["sequences", "binomial"],
+  "induction":        ["summation", "proofs", "modular"],
 
   "angles":          ["number-line"],
   "triangles":       ["angles"],
