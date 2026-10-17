@@ -15,6 +15,9 @@ import { eulerOdd, graphFamilies, graphHandshake, hamCount, planarBound, planarE
 import { recRoots, recTerms } from "./recur";
 import { polyRemainder, polyRoots, polyRuffini } from "./polydiv";
 import { gsGreen, liWork, vfDivCurl } from "./veccalc";
+import { fouCoef, fouOrtho, fouParseval } from "./fourier";
+import { varAction, varEL, varJ } from "./variations";
+import { pdeGrid, pdeHeat, pdeWave } from "./pde";
 import { binomialChoose, binomialCoef, collect, evaluate, explog, linear, quadratic, sequences, system } from "./algebra";
 
 export type Kind = { id: string; label: [string, string]; make: Gen };
@@ -73,6 +76,21 @@ export const SETS = {
   vectorFields: { title: ["mpr_tVf", "Practice: divergence and curl"], kinds: [{ id: "divcurl", label: ["mpr_kVf", "div and curl"], make: vfDivCurl }] },
   lineIntegrals: { title: ["mpr_tLi", "Practice: work along a path"], kinds: [{ id: "work", label: ["mpr_kLi", "work"], make: liWork }] },
   greenStokes: { title: ["mpr_tGs", "Practice: Green's theorem"], kinds: [{ id: "green", label: ["mpr_kGs", "edge = inside"], make: gsGreen }] },
+  fourier:    { title: ["mpr_tFou", "Practice: Fourier series"], kinds: [
+    { id: "ortho", label: ["mpr_kFouOrtho", "orthogonality"], make: fouOrtho },
+    { id: "coef", label: ["mpr_kFouCoef", "coefficients"], make: fouCoef },
+    { id: "parseval", label: ["mpr_kFouPar", "Parseval and cₙ"], make: fouParseval },
+  ] },
+  variations: { title: ["mpr_tVar", "Practice: calculus of variations"], kinds: [
+    { id: "functional", label: ["mpr_kVarJ", "functionals"], make: varJ },
+    { id: "euler", label: ["mpr_kVarEL", "Euler–Lagrange"], make: varEL },
+    { id: "action", label: ["mpr_kVarAct", "least action"], make: varAction },
+  ] },
+  pde:        { title: ["mpr_tPde", "Practice: heat and waves"], kinds: [
+    { id: "heat", label: ["mpr_kPdeHeat", "heat"], make: pdeHeat },
+    { id: "wave", label: ["mpr_kPdeWave", "waves"], make: pdeWave },
+    { id: "grid", label: ["mpr_kPdeGrid", "grid steps"], make: pdeGrid },
+  ] },
   graphs:     { title: ["mpr_tGraphs", "Practice: degrees and edges"], kinds: [
     { id: "handshake", label: ["mpr_kGrHand", "handshake lemma"], make: graphHandshake },
     { id: "families", label: ["mpr_kGrFam", "named graphs"], make: graphFamilies },

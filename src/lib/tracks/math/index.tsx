@@ -85,6 +85,9 @@ const chapters: Chapter[] = [
   { id: "vector-fields",          section: CALCULUS, title: "Vector Fields, Divergence & Curl", minRead: 22, load: () => import("./chapters/vector-fields").then((m) => m.VectorFieldsContent) },
   { id: "line-integrals",         section: CALCULUS, title: "Line Integrals & Conservative Fields", minRead: 23, load: () => import("./chapters/line-integrals").then((m) => m.LineIntegralsContent) },
   { id: "green-stokes",           section: CALCULUS, title: "The Theorems of Green, Gauss & Stokes", minRead: 23, load: () => import("./chapters/green-stokes").then((m) => m.GreenStokesContent) },
+  { id: "fourier",                section: CALCULUS, title: "Fourier Series & the Fourier Transform", minRead: 26, load: () => import("./chapters/fourier").then((m) => m.FourierContent) },
+  { id: "calculus-of-variations", section: CALCULUS, title: "The Calculus of Variations", minRead: 24, load: () => import("./chapters/calculus-of-variations").then((m) => m.CalculusOfVariationsContent) },
+  { id: "pde",                    section: CALCULUS, title: "Partial Differential Equations: Heat & Waves", minRead: 25, load: () => import("./chapters/pde").then((m) => m.PdeContent) },
 
   { id: "descriptive-stats", section: PROBABILITY, title: "Descriptive Statistics",          minRead: 20, load: () => import("./chapters/descriptive-stats").then((m) => m.DescriptiveStatsContent) },
   { id: "counting",         section: PROBABILITY, title: "Counting: Permutations & Combinations", minRead: 20, load: () => import("./chapters/counting").then((m) => m.CountingContent) },
@@ -178,6 +181,9 @@ const requires: Record<string, string[]> = {
   "vector-fields":          ["partial-derivatives", "cross", "differential-equations"],
   "line-integrals":         ["vector-fields", "ftc", "dot"],
   "green-stokes":           ["line-integrals", "multiple-integrals"],
+  "fourier":                ["waves", "integration-techniques", "complex", "dot"],
+  "calculus-of-variations": ["derivative-uses", "partial-derivatives", "integration-techniques", "differential-equations"],
+  "pde":                    ["fourier", "partial-derivatives", "differential-equations"],
 
   "descriptive-stats": ["ratios", "powers"],
   "counting":          ["powers", "binomial"],

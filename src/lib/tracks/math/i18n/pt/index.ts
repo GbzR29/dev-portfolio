@@ -70,6 +70,9 @@ import differentialEquations from "./differential-equations";
 import vectorFields from "./vector-fields";
 import lineIntegrals from "./line-integrals";
 import greenStokes from "./green-stokes";
+import fourier from "./fourier";
+import calculusOfVariations from "./calculus-of-variations";
+import pde from "./pde";
 // ── Probability & Statistics ──
 import descriptiveStats from "./descriptive-stats";
 import counting from "./counting";
@@ -97,7 +100,7 @@ const bundle: LessonText = {
     ...angles, ...triangles, ...area, ...pythagoras, ...similarity, ...circle, ...volumes, ...analytic, ...transformations,
     ...trig, ...unitCircle, ...triangleLaws, ...identities, ...trigEquations, ...polar, ...waves,
     ...vectors, ...matrices, ...determinant, ...inverse, ...eigen, ...complex, ...quaternions,
-    ...limits, ...derivatives, ...derivativeRules, ...derivativeUses, ...integrals, ...ftc, ...integrationTechniques, ...series, ...partialDerivatives, ...multipleIntegrals, ...differentialEquations, ...vectorFields, ...lineIntegrals, ...greenStokes,
+    ...limits, ...derivatives, ...derivativeRules, ...derivativeUses, ...integrals, ...ftc, ...integrationTechniques, ...series, ...partialDerivatives, ...multipleIntegrals, ...differentialEquations, ...vectorFields, ...lineIntegrals, ...greenStokes, ...fourier, ...calculusOfVariations, ...pde,
     ...descriptiveStats, ...counting, ...probability, ...conditional, ...randomVariables, ...expectation, ...distributions, ...sampling, ...regression, ...markovChains, ...absorbingChains,
     ...graphsIntro, ...eulerPaths, ...treesMath, ...planarColoring, ...recurrences,
   },
