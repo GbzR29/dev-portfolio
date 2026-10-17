@@ -18,6 +18,7 @@ const FOUNDATIONS = "Foundations";
 const CLASSIC = "Classic Machine Learning";
 const NEURAL = "Neural Networks";
 const DEEP = "Deep Learning";
+const RL = "Reinforcement Learning & Game AI";
 
 export const aiChapters: Chapter[] = [
   { id: "what-is-ai",        section: FOUNDATIONS, title: "What Is AI? Learning from Data", minRead: 17, load: () => import("./chapters/what-is-ai").then((m) => m.WhatIsAiContent) },
@@ -39,4 +40,9 @@ export const aiChapters: Chapter[] = [
   { id: "rnn",             section: DEEP, title: "Recurrent Neural Networks & LSTMs", minRead: 27, load: () => import("./chapters/rnn").then((m) => m.RnnContent) },
   { id: "attention",       section: DEEP, title: "Attention", minRead: 25, load: () => import("./chapters/attention").then((m) => m.AttentionContent) },
   { id: "transformers",    section: DEEP, title: "Transformers & Large Language Models", minRead: 30, load: () => import("./chapters/transformers").then((m) => m.TransformersContent) },
+  { id: "game-search",     section: RL, title: "Game Search: Minimax & Alpha-Beta", minRead: 25, load: () => import("./chapters/game-search").then((m) => m.GameSearchContent) },
+  { id: "mcts",            section: RL, title: "Monte Carlo Tree Search", minRead: 24, load: () => import("./chapters/mcts").then((m) => m.MctsContent) },
+  { id: "bandits-mdps",    section: RL, title: "Bandits & Markov Decision Processes", minRead: 28, load: () => import("./chapters/bandits-mdps").then((m) => m.BanditsMdpsContent) },
+  { id: "q-learning",      section: RL, title: "Q-Learning & Deep Reinforcement Learning", minRead: 29, load: () => import("./chapters/q-learning").then((m) => m.QLearningContent) },
+  { id: "game-ai",         section: RL, title: "AI in Games: State Machines, Behaviour Trees & Steering", minRead: 27, load: () => import("./chapters/game-ai").then((m) => m.GameAiContent) },
 ];

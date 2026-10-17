@@ -21,12 +21,18 @@ const track = {
     rnn: "Redes neurais recorrentes e LSTMs",
     attention: "Atenção",
     transformers: "Transformers e grandes modelos de linguagem",
+    "game-search": "Busca em jogos: minimax e alfa-beta",
+    mcts: "Busca em árvore Monte Carlo",
+    "bandits-mdps": "Bandits e processos de decisão de Markov",
+    "q-learning": "Q-learning e aprendizado por reforço profundo",
+    "game-ai": "IA em jogos: máquinas de estados, árvores de comportamento e steering",
   } as Record<string, string>,
   sections: {
     Foundations: "Fundamentos",
     "Classic Machine Learning": "Machine learning clássico",
     "Neural Networks": "Redes neurais",
     "Deep Learning": "Aprendizado profundo",
+    "Reinforcement Learning & Game AI": "Aprendizado por reforço e IA para jogos",
   } as Record<string, string>,
 };
 

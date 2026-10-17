@@ -75,6 +75,26 @@
     "created": "2026-10-16",
     "updated": "2026-10-16"
   },
+  "ai/game-search": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/mcts": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/bandits-mdps": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/q-learning": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "ai/game-ai": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
   "algorithms/memory": {
     "created": "2026-09-26",
     "updated": "2026-10-08"
