@@ -37,6 +37,7 @@ const TRACKS: Record<string, Loader<LessonText>> = {
   vulkan:  { pt: () => import("@/lib/tracks/vulkan/i18n/pt").then((m) => m.default) },
   ai:      { pt: () => import("@/lib/tracks/ai/i18n/pt").then((m) => m.default) },
   music:   { pt: () => import("@/lib/tracks/music/i18n/pt").then((m) => m.default) },
+  physics: { pt: () => import("@/lib/tracks/physics/i18n/pt").then((m) => m.default) },
   opengl: {
     pt: () => import("@/lib/tracks/opengl/i18n/pt").then((m) => m.default),
     es: () => import("@/lib/tracks/opengl/i18n/es").then((m) => m.default),

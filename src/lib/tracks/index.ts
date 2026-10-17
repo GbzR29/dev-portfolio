@@ -17,6 +17,7 @@ import { algorithmsChapters } from "./algorithms";
 import { vulkanChapters } from "./vulkan";
 import { aiChapters }     from "./ai";
 import { musicChapters }  from "./music";
+import { physicsChapters } from "./physics";
 
 // Keyed by catalog id.
 const CHAPTERS: Record<string, Chapter[]> = {
@@ -31,6 +32,7 @@ const CHAPTERS: Record<string, Chapter[]> = {
   vulkan:  vulkanChapters,
   ai:      aiChapters,
   music:   musicChapters,
+  physics: physicsChapters,
 };
 
 // Keyed by route segment (/learn/[trackPath]). Built once, so every lookup of

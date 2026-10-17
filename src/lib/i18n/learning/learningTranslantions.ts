@@ -191,7 +191,7 @@ export const learningTranslations = {
     trackName_chemistry: "Química",
     trackName_music: "Música",
     trackPhysicsDesc:
-      "Física desde a base: movimento, forças, energia e momento, rotação, gravidade e órbitas, oscilações e ondas, e depois fluidos, calor, luz e eletromagnetismo — cada lei deduzida, cada ideia simulada.",
+      "Física desde a base: movimento, forças, energia e momento, rotação, gravidade e órbitas, oscilações e ondas, fluidos e calor, eletromagnetismo e luz, e depois mecânica analítica, relatividade, mecânica quântica, partículas e cosmologia — cada lei deduzida, cada ideia simulada.",
     trackChemistryDesc:
       "Química desde a base: átomos e tabela periódica, ligações e moléculas, mol e reações, gases e soluções, energia e velocidade das reações, equilíbrio, ácidos e bases — cada fórmula explicada, cada ideia interativa.",
     trackMusicDesc:

@@ -15,6 +15,8 @@ export const blogTranslations = {
     allPosts:         "All posts",
     latestPost:       "Latest",
     featuredLabel:    "Featured",
+    blogEyebrow:      "blog · {n} posts",
+    blogAll:          "all",
   },
 
   pt: {
@@ -31,6 +33,8 @@ export const blogTranslations = {
     allPosts:         "Todos os posts",
     latestPost:       "Recente",
     featuredLabel:    "Destaque",
+    blogEyebrow:      "blog · {n} posts",
+    blogAll:          "todos",
   },
 
   es: {

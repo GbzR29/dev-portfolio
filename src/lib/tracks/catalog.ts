@@ -70,9 +70,9 @@ export const TRACK_CATALOG: TrackInfo[] = [
     descKey: "trackAiDesc", descFallback: "Artificial intelligence from scratch in C++: data and features, regression and gradient descent, classic machine learning, neural networks and backpropagation, deep learning, reinforcement learning and game AI — every formula derived, every model trained by hand.",
   },
   {
-    id: "physics", path: "Physics", title: "Physics", accentColor: "#0ea5e9", status: "coming-soon", plannedLessons: 24,
+    id: "physics", path: "Physics", title: "Physics", accentColor: "#0ea5e9", status: "available", plannedLessons: 48,
     levelKey: "begAdv", levelFallback: "Beginner → Advanced",
-    descKey: "trackPhysicsDesc", descFallback: "Physics from the ground up: motion, forces, energy and momentum, rotation, gravity and orbits, oscillations and waves, then fluids, heat, light and electromagnetism — every law derived, every idea simulated.",
+    descKey: "trackPhysicsDesc", descFallback: "Physics from the ground up: motion, forces, energy and momentum, rotation, gravity and orbits, oscillations and waves, fluids and heat, electromagnetism and light, then analytical mechanics, relativity, quantum mechanics, particles and cosmology — every law derived, every idea simulated.",
   },
   {
     id: "chemistry", path: "Chemistry", title: "Chemistry", accentColor: "#84cc16", status: "coming-soon", plannedLessons: 20,

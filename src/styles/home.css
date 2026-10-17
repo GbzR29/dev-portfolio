@@ -428,6 +428,67 @@ html:not(.dark) .home {
 .hm-how h3 { font-family: var(--hm-display); font-weight: 400; font-size: 19px; margin: 0 0 6px; }
 .hm-how p { margin: 0; color: var(--hm-ink-soft); line-height: 1.6; font-size: 14.5px; }
 
+/* ── Blog ───────────────────────────────────────────────── */
+
+.hm-blog-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 20px; }
+.hm-sec .hm-blog-head h2 {
+  font-family: var(--hm-mono);
+  font-weight: 500;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hm-muted);
+  margin: 0;
+}
+.hm-filter { display: flex; flex-wrap: wrap; gap: 6px; }
+.hm-filter .hm-pill[aria-pressed="true"] { color: var(--hm-accent); border-color: var(--hm-accent); }
+
+.hm-post { padding: 0; gap: 0; overflow: hidden; grid-template-rows: auto 1fr; }
+.hm-post:hover { border-color: var(--hm-line-strong); transform: translateY(-2px); }
+.hm-post-img { position: relative; aspect-ratio: 16 / 9; border-bottom: 1px solid var(--hm-line); background: var(--hm-bg); }
+.hm-post-img img { transition: transform 0.6s ease; }
+.hm-post:hover .hm-post-img img { transform: scale(1.03); }
+.hm-post-body { padding: 20px 22px 22px; display: grid; gap: 10px; align-content: start; grid-template-rows: auto auto 1fr auto auto; }
+.hm-post h3 { font-size: 22px; transition: color 0.15s; }
+.hm-post:hover h3 { color: var(--hm-accent); }
+.hm-post p { font-size: 14.5px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.hm-post .hm-more { padding-top: 4px; }
+
+/* The newest post: image beside the text on wide screens */
+.hm-post-lead { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-rows: none; }
+.hm-post-lead .hm-post-img { aspect-ratio: auto; min-height: 260px; border-bottom: 0; border-right: 1px solid var(--hm-line); }
+.hm-post-lead .hm-post-body { padding: 28px; align-content: center; grid-template-rows: none; }
+.hm-post-lead h3 { font-size: clamp(26px, 3.4vw, 32px); }
+.hm-post-lead p { -webkit-line-clamp: 5; font-size: 15.5px; }
+
+.hm-post-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 18px; }
+
+.hm-news { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 20px 40px; align-items: end; }
+.hm-news h3 { font-family: var(--hm-display); font-weight: 400; font-size: clamp(24px, 3.4vw, 30px); line-height: 1.15; margin: 0 0 10px; text-wrap: balance; }
+.hm-news p { margin: 0; color: var(--hm-ink-soft); line-height: 1.65; max-width: 34em; }
+.hm-news-form { display: flex; gap: 8px; }
+.hm-news-form input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--hm-mono);
+  font-size: 14px;
+  color: var(--hm-ink);
+  background: var(--hm-surface);
+  border: 1px solid var(--hm-line);
+  border-radius: var(--hm-radius);
+  padding: 8px 12px;
+}
+.hm-news-form input::placeholder { color: var(--hm-muted); }
+.hm-news-form input:focus { outline: none; border-color: var(--hm-accent); }
+.hm-copy:hover { border-color: var(--hm-accent); }
+
+@media (max-width: 760px) {
+  .hm-post-lead { grid-template-columns: 1fr; }
+  .hm-post-lead .hm-post-img { aspect-ratio: 16 / 9; min-height: 0; border-right: 0; border-bottom: 1px solid var(--hm-line); }
+  .hm-post-lead .hm-post-body { padding: 20px 22px 22px; }
+  .hm-news { grid-template-columns: 1fr; }
+}
+
 /* ── Motion ─────────────────────────────────────────────── */
 /* Kept small: a short rise-and-fade for the hero on load and for each section
    the first time it scrolls in (Reveal.tsx adds .hm-reveal / .is-in). */

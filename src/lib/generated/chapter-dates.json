@@ -1119,6 +1119,22 @@
     "created": "2026-09-03",
     "updated": "2026-10-08"
   },
+  "physics/units-measurement": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "physics/kinematics-1d": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "physics/kinematics-2d": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
+  "physics/relative-motion": {
+    "created": "2026-10-16",
+    "updated": "2026-10-16"
+  },
   "sdl3/whats-new": {
     "created": "2026-09-03",
     "updated": "2026-10-08"

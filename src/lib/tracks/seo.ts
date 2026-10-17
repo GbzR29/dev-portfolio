@@ -21,6 +21,7 @@ import glslPt from "./glsl/i18n/pt/_track";
 import mathPt from "./math/i18n/pt/_track";
 import musicPt from "./music/i18n/pt/_track";
 import openglPt from "./opengl/i18n/pt/_track";
+import physicsPt from "./physics/i18n/pt/_track";
 import sdl3Pt from "./sdl3/i18n/pt/_track";
 import vulkanPt from "./vulkan/i18n/pt/_track";
 
@@ -31,7 +32,7 @@ const IN_LANGUAGE: Record<UrlLang, string> = { en: "en", pt: "pt-BR" };
 type TitleFile = { titles: Record<string, string>; sections: Record<string, string> };
 const PT_TITLES: Record<string, TitleFile> = {
   ai: aiPt, algorithms: algorithmsPt, asm: asmPt, cpp: cppPt, gamedev: gamedevPt, glsl: glslPt,
-  math: mathPt, music: musicPt, opengl: openglPt, sdl3: sdl3Pt, vulkan: vulkanPt,
+  math: mathPt, music: musicPt, opengl: openglPt, physics: physicsPt, sdl3: sdl3Pt, vulkan: vulkanPt,
 };
 
 // ── Lookups ────────────────────────────────────────────────────────────────

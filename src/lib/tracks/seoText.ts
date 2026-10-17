@@ -49,6 +49,10 @@ const SEO_TEXT: Record<string, Record<UrlLang, Wording>> = {
     en: { title: "AI from Scratch in C++: Machine Learning and Neural Networks", short: "AI from Scratch" },
     pt: { title: "IA do zero em C++: machine learning e redes neurais", short: "IA do zero" },
   },
+  physics: {
+    en: { title: "Physics from Scratch: Mechanics, Waves, Electromagnetism, Relativity and Quantum", short: "Physics from Scratch" },
+    pt: { title: "Física do zero: mecânica, ondas, eletromagnetismo, relatividade e quântica", short: "Física do zero" },
+  },
   music: {
     en: { title: "Music Theory from Scratch: Notes, Intervals, Scales and Chords", short: "Music Theory" },
     pt: { title: "Teoria musical do zero: notas, intervalos, escalas e acordes", short: "Teoria musical" },
