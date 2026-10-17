@@ -592,24 +592,24 @@
     "updated": "2026-10-13"
   },
   "math/sets": {
-    "created": "2026-10-16",
-    "updated": "2026-10-16"
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
   },
   "math/logic": {
-    "created": "2026-10-16",
-    "updated": "2026-10-16"
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
   },
   "math/proofs": {
-    "created": "2026-10-16",
-    "updated": "2026-10-16"
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
   },
   "math/summation": {
-    "created": "2026-10-16",
-    "updated": "2026-10-16"
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
   },
   "math/induction": {
-    "created": "2026-10-16",
-    "updated": "2026-10-16"
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
   },
   "math/angles": {
     "created": "2026-09-25",
@@ -662,6 +662,10 @@
   "math/identities": {
     "created": "2026-09-26",
     "updated": "2026-10-08"
+  },
+  "math/trig-equations": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
   },
   "math/polar": {
     "created": "2026-09-26",

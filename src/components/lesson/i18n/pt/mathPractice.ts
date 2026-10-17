@@ -111,6 +111,11 @@ const text: Record<string, string> = {
   mpr_kIndStart: "onde começar",
   mpr_indStep: "P(k) dá a soma até k. Use-a para achar a soma até k + 1",
   mpr_indStart: "Ache o menor n₀ tal que a desigualdade vale para todo n ≥ n₀",
+  // trig equations (2026-10-17)
+  mpr_tTrigEq: "Pratique: equações trigonométricas",
+  mpr_kTeqBasic: "sin, cos, tan = c",
+  mpr_kTeqQuad: "segundo grau em sin ou cos",
+  mpr_teqAll: "Ache todas as soluções com 0° ≤ x < 360°",
 };
 
 export default text;

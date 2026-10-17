@@ -55,6 +55,7 @@ const chapters: Chapter[] = [
   { id: "unit-circle",   section: TRIGONOMETRY, title: "Radians & the Unit Circle",    minRead: 17, load: () => import("./chapters/unit-circle").then((m) => m.UnitCircleContent) },
   { id: "triangle-laws", section: TRIGONOMETRY, title: "Laws of Sines & Cosines",      minRead: 18, load: () => import("./chapters/triangle-laws").then((m) => m.TriangleLawsContent) },
   { id: "identities",    section: TRIGONOMETRY, title: "Identities & Rotation",        minRead: 17, load: () => import("./chapters/identities").then((m) => m.IdentitiesContent) },
+  { id: "trig-equations", section: TRIGONOMETRY, title: "Trigonometric Equations",      minRead: 21, load: () => import("./chapters/trig-equations").then((m) => m.TrigEquationsContent) },
   { id: "polar",         section: TRIGONOMETRY, title: "Polar Coordinates & atan2",    minRead: 16, load: () => import("./chapters/polar").then((m) => m.PolarContent) },
   { id: "waves",         section: TRIGONOMETRY, title: "Waves & Oscillation",          minRead: 17, load: () => import("./chapters/waves").then((m) => m.WavesContent) },
 
@@ -137,6 +138,7 @@ const requires: Record<string, string[]> = {
   "unit-circle":   ["trig", "circle"],
   "triangle-laws": ["unit-circle"],
   "identities":    ["unit-circle", "transformations"],
+  "trig-equations": ["identities", "inequalities", "quadratics"],
   "polar":         ["unit-circle", "analytic"],
   "waves":         ["unit-circle", "algebra"],
 

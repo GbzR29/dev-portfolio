@@ -38,6 +38,7 @@ const track = {
     "unit-circle": "Radianos e o círculo unitário",
     "triangle-laws": "Leis dos senos e dos cossenos",
     identities: "Identidades e rotação",
+    "trig-equations": "Equações trigonométricas",
     polar: "Coordenadas polares e atan2",
     waves: "Ondas e oscilação",
     vectors: "Vetores",

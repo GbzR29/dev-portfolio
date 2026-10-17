@@ -10,6 +10,7 @@ import { sumClosed, sumGeometric, sumTelescope } from "./summation";
 import { indStart, indStep } from "./induction";
 import { setMultiples, setSizes, setUnion } from "./setcount";
 import { logicCount } from "./logic";
+import { trigBasic, trigQuadratic } from "./trigeq";
 import { binomialChoose, binomialCoef, collect, evaluate, explog, linear, quadratic, sequences, system } from "./algebra";
 
 export type Kind = { id: string; label: [string, string]; make: Gen };
@@ -55,6 +56,10 @@ export const SETS = {
   induction:  { title: ["mpr_tInduction", "Practice: induction"], kinds: [
     { id: "step", label: ["mpr_kIndStep", "use the hypothesis"], make: indStep },
     { id: "start", label: ["mpr_kIndStart", "where to start"], make: indStart },
+  ] },
+  trigEquations: { title: ["mpr_tTrigEq", "Practice: trigonometric equations"], kinds: [
+    { id: "basic", label: ["mpr_kTeqBasic", "sin, cos, tan = c"], make: trigBasic },
+    { id: "quadratic", label: ["mpr_kTeqQuad", "quadratic in sin or cos"], make: trigQuadratic },
   ] },
 } satisfies Record<string, PracticeSet>;
 

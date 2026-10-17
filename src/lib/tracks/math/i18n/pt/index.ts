@@ -43,6 +43,7 @@ import trig from "./trig";
 import unitCircle from "./unit-circle";
 import triangleLaws from "./triangle-laws";
 import identities from "./identities";
+import trigEquations from "./trig-equations";
 import polar from "./polar";
 import waves from "./waves";
 // ── Linear Algebra ──
@@ -84,7 +85,7 @@ const bundle: LessonText = {
     ...expressions, ...linearEquations, ...inequalities, ...functions, ...linearSystems, ...quadratics, ...polynomials, ...binomial, ...exponents, ...sequences,
     ...sets, ...logic, ...proofs, ...summation, ...induction,
     ...angles, ...triangles, ...area, ...pythagoras, ...similarity, ...circle, ...volumes, ...analytic, ...transformations,
-    ...trig, ...unitCircle, ...triangleLaws, ...identities, ...polar, ...waves,
+    ...trig, ...unitCircle, ...triangleLaws, ...identities, ...trigEquations, ...polar, ...waves,
     ...vectors, ...matrices, ...determinant, ...inverse, ...eigen, ...complex, ...quaternions,
     ...limits, ...derivatives, ...derivativeRules, ...derivativeUses, ...integrals, ...ftc, ...integrationTechniques, ...series, ...partialDerivatives, ...multipleIntegrals, ...differentialEquations,
     ...descriptiveStats, ...counting, ...probability, ...conditional, ...randomVariables, ...expectation, ...distributions, ...sampling, ...regression, ...markovChains, ...absorbingChains,
