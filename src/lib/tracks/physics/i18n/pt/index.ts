@@ -6,9 +6,13 @@ import unitsMeasurement from "./units-measurement";
 import kinematics1d from "./kinematics-1d";
 import kinematics2d from "./kinematics-2d";
 import relativeMotion from "./relative-motion";
+import newtonsLaws from "./newtons-laws";
+import forces from "./forces";
+import circularMotion from "./circular-motion";
+import workEnergy from "./work-energy";
 
 const bundle: LessonText = {
-  strings: { ...unitsMeasurement, ...kinematics1d, ...kinematics2d, ...relativeMotion },
+  strings: { ...unitsMeasurement, ...kinematics1d, ...kinematics2d, ...relativeMotion, ...newtonsLaws, ...forces, ...circularMotion, ...workEnergy },
   titles: track.titles,
   sections: track.sections,
 };

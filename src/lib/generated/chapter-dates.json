@@ -1207,6 +1207,22 @@
     "created": "2026-10-16",
     "updated": "2026-10-16"
   },
+  "physics/newtons-laws": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/forces": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/circular-motion": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/work-energy": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
   "sdl3/whats-new": {
     "created": "2026-09-03",
     "updated": "2026-10-08"
