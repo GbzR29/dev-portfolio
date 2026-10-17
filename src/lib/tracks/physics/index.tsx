@@ -17,4 +17,8 @@ export const physicsChapters: Chapter[] = [
   { id: "forces", section: "Dynamics",                        title: "Forces You Meet Every Day",       minRead: 20, load: () => import("./chapters/forces").then((m) => m.ForcesContent) },
   { id: "circular-motion", section: "Dynamics",               title: "Circular Motion",                 minRead: 18, load: () => import("./chapters/circular-motion").then((m) => m.CircularMotionContent) },
   { id: "work-energy", section: "Dynamics",                   title: "Work, Energy & Power",            minRead: 20, load: () => import("./chapters/work-energy").then((m) => m.WorkEnergyContent) },
+  { id: "momentum-collisions", section: "Conservation & Rotation", title: "Momentum & Collisions",      minRead: 20, load: () => import("./chapters/momentum-collisions").then((m) => m.MomentumCollisionsContent) },
+  { id: "rotation", section: "Conservation & Rotation",       title: "Rotation, Torque & Inertia",      minRead: 21, load: () => import("./chapters/rotation").then((m) => m.RotationContent) },
+  { id: "angular-momentum", section: "Conservation & Rotation", title: "Angular Momentum",              minRead: 19, load: () => import("./chapters/angular-momentum").then((m) => m.AngularMomentumContent) },
+  { id: "gravity-orbits", section: "Conservation & Rotation", title: "Gravity & Orbits",                minRead: 22, load: () => import("./chapters/gravity-orbits").then((m) => m.GravityOrbitsContent) },
 ];

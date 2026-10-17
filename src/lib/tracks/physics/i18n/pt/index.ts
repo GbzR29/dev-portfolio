@@ -10,9 +10,13 @@ import newtonsLaws from "./newtons-laws";
 import forces from "./forces";
 import circularMotion from "./circular-motion";
 import workEnergy from "./work-energy";
+import momentumCollisions from "./momentum-collisions";
+import rotation from "./rotation";
+import angularMomentum from "./angular-momentum";
+import gravityOrbits from "./gravity-orbits";
 
 const bundle: LessonText = {
-  strings: { ...unitsMeasurement, ...kinematics1d, ...kinematics2d, ...relativeMotion, ...newtonsLaws, ...forces, ...circularMotion, ...workEnergy },
+  strings: { ...unitsMeasurement, ...kinematics1d, ...kinematics2d, ...relativeMotion, ...newtonsLaws, ...forces, ...circularMotion, ...workEnergy, ...momentumCollisions, ...rotation, ...angularMomentum, ...gravityOrbits },
   titles: track.titles,
   sections: track.sections,
 };

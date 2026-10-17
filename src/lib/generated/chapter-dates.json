@@ -1223,6 +1223,22 @@
     "created": "2026-10-17",
     "updated": "2026-10-17"
   },
+  "physics/momentum-collisions": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/rotation": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/angular-momentum": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/gravity-orbits": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
   "sdl3/whats-new": {
     "created": "2026-09-03",
     "updated": "2026-10-08"
