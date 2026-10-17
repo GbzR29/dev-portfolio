@@ -78,6 +78,12 @@ import sampling from "./sampling";
 import regression from "./regression";
 import markovChains from "./markov-chains";
 import absorbingChains from "./absorbing-chains";
+// ── Discrete Mathematics ──
+import graphsIntro from "./graphs-intro";
+import eulerPaths from "./euler-paths";
+import treesMath from "./trees-math";
+import planarColoring from "./planar-coloring";
+import recurrences from "./recurrences";
 
 const bundle: LessonText = {
   strings: {
@@ -89,6 +95,7 @@ const bundle: LessonText = {
     ...vectors, ...matrices, ...determinant, ...inverse, ...eigen, ...complex, ...quaternions,
     ...limits, ...derivatives, ...derivativeRules, ...derivativeUses, ...integrals, ...ftc, ...integrationTechniques, ...series, ...partialDerivatives, ...multipleIntegrals, ...differentialEquations,
     ...descriptiveStats, ...counting, ...probability, ...conditional, ...randomVariables, ...expectation, ...distributions, ...sampling, ...regression, ...markovChains, ...absorbingChains,
+    ...graphsIntro, ...eulerPaths, ...treesMath, ...planarColoring, ...recurrences,
   },
   titles: track.titles,
   sections: track.sections,

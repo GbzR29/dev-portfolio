@@ -35,6 +35,7 @@ import mathCalculus from "./mathCalculus";
 import mathProbability from "./mathProbability";
 import mathPractice from "./mathPractice";
 import mathLogic from "./mathLogic";
+import mathDiscrete from "./mathDiscrete";
 import music from "./music";
 import musicScore from "./musicScore";
 import musicTuning from "./musicTuning";
@@ -57,6 +58,6 @@ import underwater from "./underwater";
 import vulkan from "./vulkan";
 import water from "./water";
 
-const bundle: Record<string, string> = { ...advgl, ...ai, ...aiNeural, ...aiDeep, ...aiRl, ...asm, ...asmFlow, ...asmC, ...asmPerf, ...advlighting, ...blackhole, ...cLang, ...cppLang, ...cppOwn, ...cppObj, ...cppGen, ...cppStd, ...cppSys, ...figures, ...fog, ...gamedev, ...glass, ...glintro, ...glsl, ...lighting, ...markov, ...math, ...mathAlgebra, ...mathGeometry, ...mathTrig, ...mathLinAlg, ...mathCalculus, ...mathProbability, ...mathPractice, ...mathLogic, ...music, ...musicScore, ...musicTuning, ...musicIntervals, ...musicScales, ...musicMinor, ...ocean, ...pbr, ...perf, ...physics, ...pool, ...post, ...practice, ...river, ...rt, ...sky, ...special, ...tech, ...underwater, ...vulkan, ...water };
+const bundle: Record<string, string> = { ...advgl, ...ai, ...aiNeural, ...aiDeep, ...aiRl, ...asm, ...asmFlow, ...asmC, ...asmPerf, ...advlighting, ...blackhole, ...cLang, ...cppLang, ...cppOwn, ...cppObj, ...cppGen, ...cppStd, ...cppSys, ...figures, ...fog, ...gamedev, ...glass, ...glintro, ...glsl, ...lighting, ...markov, ...math, ...mathAlgebra, ...mathGeometry, ...mathTrig, ...mathLinAlg, ...mathCalculus, ...mathProbability, ...mathPractice, ...mathLogic, ...mathDiscrete,...music, ...musicScore, ...musicTuning, ...musicIntervals, ...musicScales, ...musicMinor, ...ocean, ...pbr, ...perf, ...physics, ...pool, ...post, ...practice, ...river, ...rt, ...sky, ...special, ...tech, ...underwater, ...vulkan, ...water };
 
 export default bundle;

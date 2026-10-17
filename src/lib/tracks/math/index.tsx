@@ -13,6 +13,7 @@ const LINEAR_ALGEBRA = "Linear Algebra";
 const CALCULUS = "Calculus";
 const PROBABILITY = "Probability & Statistics";
 const LOGIC = "Logic & Proof";
+const DISCRETE = "Discrete Mathematics";
 
 const chapters: Chapter[] = [
   { id: "number-line",         section: ARITHMETIC, title: "Numbers & the Number Line",    minRead: 16, load: () => import("./chapters/number-line").then((m) => m.NumberLineContent) },
@@ -92,6 +93,12 @@ const chapters: Chapter[] = [
   { id: "regression",        section: PROBABILITY, title: "Correlation & Linear Regression", minRead: 21, load: () => import("./chapters/regression").then((m) => m.RegressionContent) },
   { id: "markov-chains",     section: PROBABILITY, title: "Markov Chains",                   minRead: 34, load: () => import("./chapters/markov-chains").then((m) => m.MarkovChainsContent) },
   { id: "absorbing-chains",  section: PROBABILITY, title: "Absorbing Chains & Hitting Times", minRead: 38, load: () => import("./chapters/absorbing-chains").then((m) => m.AbsorbingChainsContent) },
+
+  { id: "graphs-intro",    section: DISCRETE, title: "Graphs: Vertices, Edges & Degrees",  minRead: 21, load: () => import("./chapters/graphs-intro").then((m) => m.GraphsIntroContent) },
+  { id: "euler-paths",     section: DISCRETE, title: "Euler & Hamilton: One-Stroke Routes", minRead: 20, load: () => import("./chapters/euler-paths").then((m) => m.EulerPathsContent) },
+  { id: "trees-math",      section: DISCRETE, title: "Trees & Counting Them",              minRead: 22, load: () => import("./chapters/trees-math").then((m) => m.TreesMathContent) },
+  { id: "planar-coloring", section: DISCRETE, title: "Planar Graphs & Colouring",          minRead: 22, load: () => import("./chapters/planar-coloring").then((m) => m.PlanarColoringContent) },
+  { id: "recurrences",     section: DISCRETE, title: "Recurrence Relations",               minRead: 22, load: () => import("./chapters/recurrences").then((m) => m.RecurrencesContent) },
 ];
 
 // ── Prerequisites ────────────────────────────────────────────────────────────
@@ -175,6 +182,12 @@ const requires: Record<string, string[]> = {
   "regression":        ["descriptive-stats", "partial-derivatives", "dot"],
   "markov-chains":     ["conditional", "random-variables", "matrices", "sequences"],
   "absorbing-chains":  ["markov-chains", "expectation", "inverse"],
+
+  "graphs-intro":    ["sets", "summation", "counting", "matrices"],
+  "euler-paths":     ["graphs-intro", "proofs"],
+  "trees-math":      ["graphs-intro", "induction", "counting"],
+  "planar-coloring": ["trees-math", "euler-paths", "inequalities"],
+  "recurrences":     ["sequences", "induction", "quadratics", "eigen"],
 };
 
 export const mathChapters: Chapter[] = chapters.map((c) => ({ ...c, requires: requires[c.id] }));

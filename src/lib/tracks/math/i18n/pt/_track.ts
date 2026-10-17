@@ -72,6 +72,11 @@ const track = {
     regression: "Correlação e regressão linear",
     "markov-chains": "Cadeias de Markov",
     "absorbing-chains": "Cadeias absorventes e tempos de chegada",
+    "graphs-intro": "Grafos: vértices, arestas e graus",
+    "euler-paths": "Euler e Hamilton: rotas de um traço só",
+    "trees-math": "Árvores e como contá-las",
+    "planar-coloring": "Grafos planares e coloração",
+    recurrences: "Relações de recorrência",
   } as Record<string, string>,
   sections: {
     Arithmetic: "Aritmética",
@@ -82,6 +87,7 @@ const track = {
     "Linear Algebra": "Álgebra linear",
     Calculus: "Cálculo",
     "Probability & Statistics": "Probabilidade e estatística",
+    "Discrete Mathematics": "Matemática discreta",
   } as Record<string, string>,
 };
 

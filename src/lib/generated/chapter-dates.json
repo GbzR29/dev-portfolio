@@ -799,6 +799,26 @@
     "created": "2026-10-09",
     "updated": "2026-10-09"
   },
+  "math/graphs-intro": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "math/euler-paths": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "math/trees-math": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "math/planar-coloring": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "math/recurrences": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
   "music/what-is-sound": {
     "created": "2026-10-10",
     "updated": "2026-10-13"

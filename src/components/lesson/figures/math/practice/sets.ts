@@ -11,6 +11,8 @@ import { indStart, indStep } from "./induction";
 import { setMultiples, setSizes, setUnion } from "./setcount";
 import { logicCount } from "./logic";
 import { trigBasic, trigQuadratic } from "./trigeq";
+import { eulerOdd, graphFamilies, graphHandshake, hamCount, planarBound, planarEuler, treeEdges, treeLeaves, treePrufer } from "./graphs";
+import { recRoots, recTerms } from "./recur";
 import { binomialChoose, binomialCoef, collect, evaluate, explog, linear, quadratic, sequences, system } from "./algebra";
 
 export type Kind = { id: string; label: [string, string]; make: Gen };
@@ -60,6 +62,27 @@ export const SETS = {
   trigEquations: { title: ["mpr_tTrigEq", "Practice: trigonometric equations"], kinds: [
     { id: "basic", label: ["mpr_kTeqBasic", "sin, cos, tan = c"], make: trigBasic },
     { id: "quadratic", label: ["mpr_kTeqQuad", "quadratic in sin or cos"], make: trigQuadratic },
+  ] },
+  graphs:     { title: ["mpr_tGraphs", "Practice: degrees and edges"], kinds: [
+    { id: "handshake", label: ["mpr_kGrHand", "handshake lemma"], make: graphHandshake },
+    { id: "families", label: ["mpr_kGrFam", "named graphs"], make: graphFamilies },
+  ] },
+  euler:      { title: ["mpr_tEuler", "Practice: Euler and Hamilton"], kinds: [
+    { id: "odd", label: ["mpr_kEulOdd", "odd vertices"], make: eulerOdd },
+    { id: "hamilton", label: ["mpr_kHam", "Hamilton cycles"], make: hamCount },
+  ] },
+  trees:      { title: ["mpr_tTrees", "Practice: trees"], kinds: [
+    { id: "edges", label: ["mpr_kTreeE", "edges and pieces"], make: treeEdges },
+    { id: "leaves", label: ["mpr_kTreeL", "leaves"], make: treeLeaves },
+    { id: "prufer", label: ["mpr_kPrufer", "Cayley and Prüfer"], make: treePrufer },
+  ] },
+  planar:     { title: ["mpr_tPlanar", "Practice: planar graphs"], kinds: [
+    { id: "euler", label: ["mpr_kPlEuler", "V − E + F = 2"], make: planarEuler },
+    { id: "bound", label: ["mpr_kPlBound", "edge bounds"], make: planarBound },
+  ] },
+  recurrences: { title: ["mpr_tRec", "Practice: recurrences"], kinds: [
+    { id: "terms", label: ["mpr_kRecTerms", "terms and fixed points"], make: recTerms },
+    { id: "roots", label: ["mpr_kRecRoots", "characteristic roots"], make: recRoots },
   ] },
 } satisfies Record<string, PracticeSet>;
 
