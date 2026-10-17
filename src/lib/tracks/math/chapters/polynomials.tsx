@@ -94,7 +94,7 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mPoly_hornerTitle", "Evaluating: Horner's method")}</H2>
       <p>
         {tx(t, "mPoly_hornerBody",
-          "Evaluating term by term recomputes powers again and again. Factoring x out repeatedly, from the inside, gives a nested form that uses one multiplication and one addition per coefficient: for degree n, n multiplications instead of about n²/2. By hand this matters: you never compute a large power like 3⁵, and every intermediate number stays small. The same pattern, written as a table, is synthetic division below.")}
+          "Evaluating term by term recomputes powers again and again. Factoring x out repeatedly, from the inside, gives a nested form that uses one multiplication and one addition per coefficient: for degree n, n multiplications instead of about n²/2. By hand this matters: you never compute a large power like 3⁵, and every intermediate number stays small. The same pattern, written as a table, is Ruffini's rule (synthetic division), the subject of the next chapter.")}
       </p>
       <Equation label={tx(t, "mPoly_eqHorner", "Horner's form")}
         where={[
@@ -113,7 +113,7 @@ export function PolynomialsContent({ t }: { t: TrackTranslations }) {
       <H2>{tx(t, "mPoly_divTitle", "Division, remainders and factors")}</H2>
       <p>
         {tx(t, "mPoly_divBody",
-          "Polynomials divide like whole numbers: 17 ÷ 5 is 3 remainder 2 because 17 = 5 · 3 + 2. In the same way, dividing p(x) by (x − r) gives a quotient q(x), one degree lower, and a remainder, which is just a number. The shortcut for dividing by (x − r) is synthetic division, and it is exactly Horner's method run at x = r: the intermediate values are the quotient's coefficients and the final value is the remainder.")}
+          "Polynomials divide like whole numbers: 17 ÷ 5 is 3 remainder 2 because 17 = 5 · 3 + 2. In the same way, dividing p(x) by (x − r) gives a quotient q(x), one degree lower, and a remainder, which is just a number. The shortcut for dividing by (x − r) is synthetic division, and it is exactly Horner's method run at x = r: the intermediate values are the quotient's coefficients and the final value is the remainder. The next chapter, \"Polynomial Division & Ruffini's Rule\", sets it out as a table and adds long division, rational roots and the relations between roots and coefficients.")}
       </p>
       <Equation label={tx(t, "mPoly_eqRem", "The remainder theorem")}
         where={[

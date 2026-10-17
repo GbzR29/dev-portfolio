@@ -19,6 +19,7 @@ import functions from "./functions";
 import linearSystems from "./linear-systems";
 import quadratics from "./quadratics";
 import polynomials from "./polynomials";
+import polynomialDivision from "./polynomial-division";
 import binomial from "./binomial";
 import exponents from "./exponents";
 import sequences from "./sequences";
@@ -66,6 +67,9 @@ import series from "./series";
 import partialDerivatives from "./partial-derivatives";
 import multipleIntegrals from "./multiple-integrals";
 import differentialEquations from "./differential-equations";
+import vectorFields from "./vector-fields";
+import lineIntegrals from "./line-integrals";
+import greenStokes from "./green-stokes";
 // ── Probability & Statistics ──
 import descriptiveStats from "./descriptive-stats";
 import counting from "./counting";
@@ -88,12 +92,12 @@ import recurrences from "./recurrences";
 const bundle: LessonText = {
   strings: {
     ...numberLine, ...orderOfOperations, ...fractions, ...ratios, ...divisibility, ...powers, ...bases, ...modular,
-    ...expressions, ...linearEquations, ...inequalities, ...functions, ...linearSystems, ...quadratics, ...polynomials, ...binomial, ...exponents, ...sequences,
+    ...expressions, ...linearEquations, ...inequalities, ...functions, ...linearSystems, ...quadratics, ...polynomials, ...polynomialDivision, ...binomial, ...exponents, ...sequences,
     ...sets, ...logic, ...proofs, ...summation, ...induction,
     ...angles, ...triangles, ...area, ...pythagoras, ...similarity, ...circle, ...volumes, ...analytic, ...transformations,
     ...trig, ...unitCircle, ...triangleLaws, ...identities, ...trigEquations, ...polar, ...waves,
     ...vectors, ...matrices, ...determinant, ...inverse, ...eigen, ...complex, ...quaternions,
-    ...limits, ...derivatives, ...derivativeRules, ...derivativeUses, ...integrals, ...ftc, ...integrationTechniques, ...series, ...partialDerivatives, ...multipleIntegrals, ...differentialEquations,
+    ...limits, ...derivatives, ...derivativeRules, ...derivativeUses, ...integrals, ...ftc, ...integrationTechniques, ...series, ...partialDerivatives, ...multipleIntegrals, ...differentialEquations, ...vectorFields, ...lineIntegrals, ...greenStokes,
     ...descriptiveStats, ...counting, ...probability, ...conditional, ...randomVariables, ...expectation, ...distributions, ...sampling, ...regression, ...markovChains, ...absorbingChains,
     ...graphsIntro, ...eulerPaths, ...treesMath, ...planarColoring, ...recurrences,
   },

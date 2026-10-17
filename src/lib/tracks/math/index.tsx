@@ -32,7 +32,8 @@ const chapters: Chapter[] = [
   { id: "linear-systems",   section: ALGEBRA, title: "Systems of Equations",      minRead: 16, load: () => import("./chapters/linear-systems").then((m) => m.LinearSystemsContent) },
   { id: "quadratics",       section: ALGEBRA, title: "Quadratics",                minRead: 19, load: () => import("./chapters/quadratics").then((m) => m.QuadraticsContent) },
   { id: "polynomials",      section: ALGEBRA, title: "Polynomials",               minRead: 18, load: () => import("./chapters/polynomials").then((m) => m.PolynomialsContent) },
-  { id: "binomial",         section: ALGEBRA, title: "The Binomial Theorem",      minRead: 20, load: () => import("./chapters/binomial").then((m) => m.BinomialContent) },
+  { id: "polynomial-division", section: ALGEBRA, title: "Polynomial Division & Ruffini's Rule", minRead: 22, load: () => import("./chapters/polynomial-division").then((m) => m.PolynomialDivisionContent) },
+  { id: "binomial",       section: ALGEBRA, title: "The Binomial Theorem",      minRead: 20, load: () => import("./chapters/binomial").then((m) => m.BinomialContent) },
   { id: "exponents",       section: ALGEBRA, title: "Exponents & Logarithms",    minRead: 13, load: () => import("./chapters/exponents").then((m) => m.ExpLogContent) },
   { id: "sequences",        section: ALGEBRA, title: "Sequences & Series",        minRead: 17, load: () => import("./chapters/sequences").then((m) => m.SequencesContent) },
 
@@ -81,6 +82,9 @@ const chapters: Chapter[] = [
   { id: "partial-derivatives",    section: CALCULUS, title: "Partial Derivatives & the Gradient", minRead: 21, load: () => import("./chapters/partial-derivatives").then((m) => m.PartialDerivativesContent) },
   { id: "multiple-integrals",     section: CALCULUS, title: "Multiple Integrals",        minRead: 20, load: () => import("./chapters/multiple-integrals").then((m) => m.MultipleIntegralsContent) },
   { id: "differential-equations", section: CALCULUS, title: "Differential Equations",    minRead: 22, load: () => import("./chapters/differential-equations").then((m) => m.DifferentialEquationsContent) },
+  { id: "vector-fields",          section: CALCULUS, title: "Vector Fields, Divergence & Curl", minRead: 22, load: () => import("./chapters/vector-fields").then((m) => m.VectorFieldsContent) },
+  { id: "line-integrals",         section: CALCULUS, title: "Line Integrals & Conservative Fields", minRead: 23, load: () => import("./chapters/line-integrals").then((m) => m.LineIntegralsContent) },
+  { id: "green-stokes",           section: CALCULUS, title: "The Theorems of Green, Gauss & Stokes", minRead: 23, load: () => import("./chapters/green-stokes").then((m) => m.GreenStokesContent) },
 
   { id: "descriptive-stats", section: PROBABILITY, title: "Descriptive Statistics",          minRead: 20, load: () => import("./chapters/descriptive-stats").then((m) => m.DescriptiveStatsContent) },
   { id: "counting",         section: PROBABILITY, title: "Counting: Permutations & Combinations", minRead: 20, load: () => import("./chapters/counting").then((m) => m.CountingContent) },
@@ -121,6 +125,7 @@ const requires: Record<string, string[]> = {
   "linear-systems":   ["linear-equations", "algebra"],
   "quadratics":       ["algebra", "powers"],
   "polynomials":      ["quadratics"],
+  "polynomial-division": ["polynomials", "divisibility", "linear-systems"],
   "binomial":         ["polynomials", "powers"],
   "exponents":        ["powers", "algebra"],
   "sequences":        ["exponents"],
@@ -170,6 +175,9 @@ const requires: Record<string, string[]> = {
   "partial-derivatives":    ["derivative-rules", "dot"],
   "multiple-integrals":     ["ftc", "polar"],
   "differential-equations": ["integration-techniques", "exponents"],
+  "vector-fields":          ["partial-derivatives", "cross", "differential-equations"],
+  "line-integrals":         ["vector-fields", "ftc", "dot"],
+  "green-stokes":           ["line-integrals", "multiple-integrals"],
 
   "descriptive-stats": ["ratios", "powers"],
   "counting":          ["powers", "binomial"],

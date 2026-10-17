@@ -577,7 +577,11 @@
   },
   "math/polynomials": {
     "created": "2026-09-25",
-    "updated": "2026-10-14"
+    "updated": "2026-10-17"
+  },
+  "math/polynomial-division": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
   },
   "math/binomial": {
     "created": "2026-10-14",
@@ -754,6 +758,18 @@
   "math/differential-equations": {
     "created": "2026-09-26",
     "updated": "2026-10-09"
+  },
+  "math/vector-fields": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "math/line-integrals": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "math/green-stokes": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
   },
   "math/descriptive-stats": {
     "created": "2026-09-26",

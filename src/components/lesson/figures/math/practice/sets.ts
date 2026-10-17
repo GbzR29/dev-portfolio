@@ -13,6 +13,8 @@ import { logicCount } from "./logic";
 import { trigBasic, trigQuadratic } from "./trigeq";
 import { eulerOdd, graphFamilies, graphHandshake, hamCount, planarBound, planarEuler, treeEdges, treeLeaves, treePrufer } from "./graphs";
 import { recRoots, recTerms } from "./recur";
+import { polyRemainder, polyRoots, polyRuffini } from "./polydiv";
+import { gsGreen, liWork, vfDivCurl } from "./veccalc";
 import { binomialChoose, binomialCoef, collect, evaluate, explog, linear, quadratic, sequences, system } from "./algebra";
 
 export type Kind = { id: string; label: [string, string]; make: Gen };
@@ -63,6 +65,14 @@ export const SETS = {
     { id: "basic", label: ["mpr_kTeqBasic", "sin, cos, tan = c"], make: trigBasic },
     { id: "quadratic", label: ["mpr_kTeqQuad", "quadratic in sin or cos"], make: trigQuadratic },
   ] },
+  polyDivision: { title: ["mpr_tPolyDiv", "Practice: dividing polynomials"], kinds: [
+    { id: "ruffini", label: ["mpr_kPdRuffini", "Ruffini"], make: polyRuffini },
+    { id: "remainder", label: ["mpr_kPdRem", "remainder theorem"], make: polyRemainder },
+    { id: "roots", label: ["mpr_kPdRoots", "roots and Girard"], make: polyRoots },
+  ] },
+  vectorFields: { title: ["mpr_tVf", "Practice: divergence and curl"], kinds: [{ id: "divcurl", label: ["mpr_kVf", "div and curl"], make: vfDivCurl }] },
+  lineIntegrals: { title: ["mpr_tLi", "Practice: work along a path"], kinds: [{ id: "work", label: ["mpr_kLi", "work"], make: liWork }] },
+  greenStokes: { title: ["mpr_tGs", "Practice: Green's theorem"], kinds: [{ id: "green", label: ["mpr_kGs", "edge = inside"], make: gsGreen }] },
   graphs:     { title: ["mpr_tGraphs", "Practice: degrees and edges"], kinds: [
     { id: "handshake", label: ["mpr_kGrHand", "handshake lemma"], make: graphHandshake },
     { id: "families", label: ["mpr_kGrFam", "named graphs"], make: graphFamilies },
