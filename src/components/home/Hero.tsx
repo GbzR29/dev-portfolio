@@ -5,11 +5,14 @@
 
 import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useUrlLang } from "@/lib/i18n/useUrlLang";
+import { learnUrl } from "@/lib/site";
 import HomeNav from "./HomeNav";
 import Stars from "./Stars";
 
 export default function Hero() {
   const { t } = useLanguage();
+  const urlLang = useUrlLang();
 
   return (
     <header className="hm-hero-wrap">
@@ -22,7 +25,7 @@ export default function Hero() {
           <p className="hm-lead">{t.heroLead}</p>
           <div className="hm-cta">
             <Link href="/the-weight-of-being">{t.heroBookLink}</Link>
-            <Link href="/learn">{t.heroTracksLink}</Link>
+            <a href={learnUrl(urlLang)}>{t.heroTracksLink}</a>
             <a href="/pdf/resume.pdf" target="_blank" rel="noopener noreferrer">{t.heroCvLink}</a>
           </div>
           <div className="hm-status">

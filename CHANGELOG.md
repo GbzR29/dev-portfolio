@@ -3,14 +3,22 @@
 Registro datado de tudo o que foi feito e criado no site.
 
 - As datas são as dos commits (fuso local, AAAA-MM-DD). Um trabalho feito em vários dias e commitado de uma vez aparece na data do commit.
-- A data de criação e de última atualização de cada lição também aparece no topo da própria lição. Ela é gerada do histórico do git por `scripts/gen-chapter-dates.mjs` (`npm run dates`, que também roda antes de `dev` e `build`) e fica em `src/lib/generated/chapter-dates.json`.
 - Para registrar algo novo, acrescente uma entrada no topo, com a data.
-
-Totais em 2026-10-09: 9 trilhas e 243 lições (OpenGL 70 · Matemática 62 · GLSL 24 · Algoritmos 24 · Vulkan 16 · C++ 15 · Game Dev 12 · SDL3 10 · IA 10).
+- Desde 2026-10-18 os cursos são um site à parte, o From Scratch Lab (fromscratchlab.com), com repositório próprio; as entradas antigas sobre trilhas e lições ficam aqui como histórico.
 
 ---
 
 ## Outubro de 2026
+
+### 2026-10-18
+
+- **Os cursos saem do portfólio e viram o From Scratch Lab.** O `/learn` passa a ser um site próprio, `www.fromscratchlab.com`, num repositório separado (com o histórico do git preservado). Neste repositório:
+  - **Redirecionamentos permanentes (308)** em `next.config.ts`: `/learn`, `/learn/…`, `/pt/learn` e `/pt/learn/…` levam às mesmas páginas no site novo, sem o `/learn` (links antigos com `?chapter=` também funcionam, o site novo os resolve).
+  - **Links para o site novo:** o "aprender" do menu, o botão do topo da Home e o card "No que estou trabalhando", que agora se chama From Scratch Lab e lista as trilhas com links diretos (sem a contagem de aulas, que o portfólio não tem mais como calcular).
+  - **Código removido:** rotas do learn, componentes de lição, widgets, referência do OpenGL, barra lateral, `lib/tracks`, `lib/reference`, traduções das lições, CSS dos widgets e das fórmulas, os scripts de manifesto de texturas e de datas das lições, as pastas `public/textures` e `public/sounds` (~73 MB) e as dependências `katex` e `react-syntax-highlighter`. O build passa de mais de 900 páginas para 14.
+  - **Novo `src/lib/site.ts`** com o endereço do site, o idioma pela URL e os links para o From Scratch Lab, no lugar de `lib/tracks/urls.ts`; `useMediaQuery` passou para `src/lib/useMediaQuery.ts`.
+  - **SEO:** o sitemap lista só a Home (EN e PT), o livro e o blog; o card de prévia da Home menciona os cursos em fromscratchlab.com.
+  - `CLAUDE.md` reescrito só com o portfólio.
 
 ### 2026-10-17
 

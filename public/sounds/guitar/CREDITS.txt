@@ -1,5 +1,0 @@
-ClassicalGuitar-multisampled — Yamaha Eterna classical (nylon-string) guitar, recorded by "quartertone".
-Source: https://freesound.org/people/quartertone/packs/11573/
-License: Creative Commons Attribution 4.0 (CC-BY 4.0), https://creativecommons.org/licenses/by/4.0/
-MP3 files (27 notes, D2–A♯5; the pack's D5, which sounds D♯5, is left out) as distributed by the tonejs-instruments project (Nicholaus Brosowsky):
-https://github.com/nbrosowsky/tonejs-instruments (samples/guitar-nylon)

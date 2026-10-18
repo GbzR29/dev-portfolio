@@ -66,9 +66,9 @@ export const homeTranslations = {
     bookChapters:   "chapters: —",
     bookMore:       "About the book →",
     tracksKind:     "Interactive courses",
-    tracksTitle:    "Learn from scratch",
-    tracksBody:     "{n} hand-written lessons with interactive figures that run in the browser. Every formula is explained term by term.",
-    tracksMore:     "Open the tracks →",
+    tracksTitle:    "From Scratch Lab",
+    tracksBody:     "My courses site: hundreds of hand-written lessons with interactive figures that run in the browser. Every formula is explained term by term.",
+    tracksMore:     "Open fromscratchlab.com →",
 
     // ── Recent writing ──────────────────────────────────────────────────────
     writingTitle:   "Recent writing",
@@ -159,9 +159,9 @@ export const homeTranslations = {
     bookChapters:   "capítulos: —",
     bookMore:       "Sobre o livro →",
     tracksKind:     "Cursos interativos",
-    tracksTitle:    "Aprender do zero",
-    tracksBody:     "{n} aulas escritas à mão, com figuras interativas que rodam no navegador. Cada fórmula é explicada termo a termo.",
-    tracksMore:     "Abrir as trilhas →",
+    tracksTitle:    "From Scratch Lab",
+    tracksBody:     "Meu site de cursos: centenas de aulas escritas à mão, com figuras interativas que rodam no navegador. Cada fórmula é explicada termo a termo.",
+    tracksMore:     "Abrir fromscratchlab.com →",
 
     // ── Recent writing ──────────────────────────────────────────────────────
     writingTitle:   "Escrita recente",
@@ -252,9 +252,9 @@ export const homeTranslations = {
     bookChapters:   "capítulos: —",
     bookMore:       "Sobre el libro →",
     tracksKind:     "Cursos interactivos",
-    tracksTitle:    "Aprender desde cero",
-    tracksBody:     "{n} lecciones escritas a mano, con figuras interactivas que se ejecutan en el navegador. Cada fórmula se explica término a término.",
-    tracksMore:     "Abrir los cursos →",
+    tracksTitle:    "From Scratch Lab",
+    tracksBody:     "Mi sitio de cursos: cientos de lecciones escritas a mano, con figuras interactivas que se ejecutan en el navegador. Cada fórmula se explica término a término.",
+    tracksMore:     "Abrir fromscratchlab.com →",
 
     // ── Recent writing ──────────────────────────────────────────────────────
     writingTitle:   "Escritura reciente",
@@ -344,9 +344,9 @@ export const homeTranslations = {
     bookChapters:   "章节：—",
     bookMore:       "关于这本书 →",
     tracksKind:     "交互式课程",
-    tracksTitle:    "从零开始学",
-    tracksBody:     "{n} 节手写课程，配有在浏览器中运行的交互图示。每个公式都逐项讲解。",
-    tracksMore:     "打开课程 →",
+    tracksTitle:    "From Scratch Lab",
+    tracksBody:     "我的课程网站：数百节手写课程，配有在浏览器中运行的交互图示。每个公式都逐项讲解。",
+    tracksMore:     "打开 fromscratchlab.com →",
 
     // ── Recent writing ──────────────────────────────────────────────────────
     writingTitle:   "近期文章",

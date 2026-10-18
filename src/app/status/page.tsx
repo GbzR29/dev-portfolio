@@ -7,6 +7,7 @@ import Link from "next/link";
 import "@/styles/home.css";
 import HomeNav from "@/components/home/HomeNav";
 import Footer from "@/components/footer/Footer";
+import { LEARN_URL } from "@/lib/site";
 
 // 2. Crie um componente interno para a lógica que usa searchParams
 function StatusContent() {
@@ -18,7 +19,7 @@ function StatusContent() {
 
   const backDestinations: Record<string, { label: string; href: string }> = {
     blog: { label: "Return to Blog", href: "/blog" },
-    learn: { label: "Return to Modules", href: "/learn" },
+    learn: { label: "Return to From Scratch Lab", href: LEARN_URL },
     home: { label: "Return to Main Page", href: "/" },
   };
 

@@ -3,7 +3,7 @@
 // metadata. LanguageProvider reads the /pt prefix and renders it in PT.
 
 import type { Metadata } from "next";
-import { languageAlternates } from "@/lib/tracks/urls";
+import { languageAlternates } from "@/lib/site";
 import Home from "../page";
 
 const title = "Gabriel Carvalho | Programador C++ e computação gráfica";

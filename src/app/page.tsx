@@ -11,7 +11,7 @@ import Contact from "@/components/home/Contact";
 import HomeFooter from "@/components/home/HomeFooter";
 import Reveal from "@/components/home/Reveal";
 import Particles from "@/components/home/Particles";
-import { languageAlternates } from "@/lib/tracks/urls";
+import { languageAlternates } from "@/lib/site";
 
 export const metadata = {
   title: "Gabriel Carvalho | C++ & graphics programmer",

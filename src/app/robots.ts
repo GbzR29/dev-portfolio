@@ -1,7 +1,7 @@
 // app/robots.ts → /robots.txt
 
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/tracks/urls";
+import { SITE_URL } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {

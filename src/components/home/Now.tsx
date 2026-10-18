@@ -1,23 +1,17 @@
 "use client";
 
 // ── What I'm working on ─────────────────────────────────────────────────────
-// The book and the /learn tracks side by side. Lesson counts come from the
-// track registry, so they stay right as chapters are added.
+// The book and the courses side by side. The courses live on their own site,
+// From Scratch Lab, so this card only links there: the track list is written
+// out by hand (each name is also the track's path on that site).
 
 import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { TRACK_CATALOG } from "@/lib/tracks/catalog";
-import { ALL_TRACKS } from "@/lib/tracks";
 import { BOOK } from "@/lib/book";
 import { useUrlLang } from "@/lib/i18n/useUrlLang";
-import { learnHref, trackHref } from "@/lib/tracks/urls";
+import { learnUrl } from "@/lib/site";
 
-const TRACKS = TRACK_CATALOG
-  .filter((info) => ALL_TRACKS[info.path])
-  .map((info) => ({ path: info.path, lessons: ALL_TRACKS[info.path].chapters.length }))
-  .sort((a, b) => b.lessons - a.lessons);
-
-const TOTAL_LESSONS = TRACKS.reduce((sum, tr) => sum + tr.lessons, 0);
+const TRACKS = ["OpenGL", "Math", "Physics", "C++", "AI", "GLSL", "Algorithms", "Vulkan", "Assembly", "Music", "GameDev", "SDL3"];
 
 export default function Now() {
   const { t } = useLanguage();
@@ -48,17 +42,15 @@ export default function Now() {
           <div className="hm-fig">{t.nowFigTracks}</div>
           <div className="hm-kind">{t.tracksKind}</div>
           <h3>{t.tracksTitle}</h3>
-          <p>{t.tracksBody.replace("{n}", String(TOTAL_LESSONS))}</p>
+          <p>{t.tracksBody}</p>
           <ul className="hm-tracks">
-            {TRACKS.map((tr) => (
-              <li key={tr.path}>
-                <Link href={trackHref(tr.path, urlLang)}>
-                  {tr.path} <b>{tr.lessons}</b>
-                </Link>
+            {TRACKS.map((path) => (
+              <li key={path}>
+                <a href={learnUrl(urlLang, path)}>{path}</a>
               </li>
             ))}
           </ul>
-          <Link className="hm-more" href={learnHref(urlLang)}>{t.tracksMore}</Link>
+          <a className="hm-more" href={learnUrl(urlLang)}>{t.tracksMore}</a>
         </article>
       </div>
     </section>

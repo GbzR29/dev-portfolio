@@ -1,12 +1,12 @@
 # dev-portfolio
 
-Next.js 16 (App Router) + React 19 + Tailwind. Personal portfolio with a blog
-(MongoDB) and a set of interactive graphics-programming courses under `/learn`.
+Next.js 16 (App Router) + React 19 + Tailwind. Personal portfolio (gabrielfrc.dev) with a blog (MongoDB)
+and the page of the novel. The interactive courses that used to live here under `/learn` moved on
+2026-10-18 to their own site and repo, **From Scratch Lab** (https://www.fromscratchlab.com,
+C:\Users\gabri\Desktop\from-scratch-lab): lesson work happens there, not here. `next.config.ts`
+redirects the old `/learn/*` and `/pt/learn/*` URLs to it (308).
 
 Commands: `npm run dev`, `npm run build`, `npx tsc --noEmit -p .`, `npx eslint <path>`.
-`predev`/`prebuild` regenerate `src/lib/generated/assets.json` from `public/textures`
-and `src/lib/generated/chapter-dates.json` (lesson created/updated dates from git, shown in the lesson header;
-`npm run dates`; committed, since the deploy's shallow clone has no history).
 Record every change with its date at the top of `CHANGELOG.md` (Portuguese, newest first).
 The build logs a MongoDB `ENOTFOUND` when offline — expected, the blog handles it.
 
@@ -14,112 +14,26 @@ The build logs a MongoDB `ENOTFOUND` when offline — expected, the blog handles
 
 ```
 src/app/page.tsx, src/components/home/ Home (and the book page /the-weight-of-being); styles in src/styles/home.css (--hm-* tokens, .home scope)
-src/components/nav/                    SiteMenu (phone ☰ sheet, styles in src/styles/sitemenu.css) + siteLinks (links, languages) shared by HomeNav and LearnTopBar; HomeNav is the nav of every page (blog/status borrow it via .hm-scope)
-src/app/learn/page.tsx                 /learn landing — track cards on the Home look (HomeNav, home.css); data from the catalog + progress
-src/styles/learn.css                   /learn look: re-values the theme.css tokens while a .learn page is shown, syntax colours, figure numbering
-src/lib/tracks/progress.ts             reading progress + "last lesson" in localStorage (sidebar, /learn "resume")
-src/app/learn/[trackPath]/(lesson)/    LessonView.tsx = the ONE reader for every lesson of every track, mounted by layout.tsx;
-                                       page.tsx (/learn/<track>, redirects old ?chapter= links) and [chapterId]/page.tsx
-                                       (/learn/<track>/<id>) only give metadata + JSON-LD (src/lib/tracks/lessonRoutes.tsx, seo.ts)
-src/app/pt/                            Portuguese copies with their own URLs (/pt, /pt/learn, /pt/learn/<track>/<id>): thin files
-                                       reusing the English pages with lang "pt"; LanguageProvider reads the /pt prefix
-src/lib/tracks/urls.ts                 SITE_URL, learnHref/trackHref/chapterHref(…, lang), pathInLang — build every URL with these;
+src/components/home/Now.tsx            "What I'm working on": the book + a card linking to From Scratch Lab (track list written by hand)
+src/components/nav/                    SiteMenu (phone ☰ sheet, styles in src/styles/sitemenu.css) + siteLinks (links, languages);
+                                       HomeNav is the nav of every page (blog/status borrow it via .hm-scope)
+src/app/pt/                            Portuguese Home (/pt), a thin file reusing the English page; LanguageProvider reads the /pt prefix
+src/lib/site.ts                        SITE_URL, LEARN_URL + learnUrl(lang, track), langOfPath/pathInLang/languageAlternates;
                                        in client components get the page's language with useUrlLang() (src/lib/i18n/useUrlLang.ts)
-src/lib/tracks/seoText.ts              per-track search wording ("OpenGL Tutorial" / "Tutorial de OpenGL") for titles
-src/app/sitemap.ts, src/app/robots.ts  EN + PT pages (hreflang) and the API reference, for search engines
-src/lib/og/                            link-preview images: card.tsx draws (fonts in src/assets/fonts), cards.tsx = text per page;
-                                       each route's opengraph-image.tsx only picks a card (a new route with its own openGraph needs one)
-src/app/learn/[trackPath]/reference/   function reference pages (src/lib/reference; one file per category in reference/opengl;
-                                       family pages glUniform* etc. = entries with `family`; `diagram: "<id>"` → components/reference/diagrams)
-src/lib/tracks/catalog.ts              THE list of tracks: id, route path, title, color, status, level/description keys
-src/lib/tracks/index.ts                registry: joins catalog entries with each track's chapter list (getTrack)
-src/lib/tracks/types.ts                Track / Chapter types
-src/lib/tracks/tx.ts                   tx(t, key, englishFallback) — the only translation helper to use
-src/lib/tracks/<track>/index.tsx       exports `<track>Chapters: Chapter[]` (id, section, title, minRead, load) — metadata + lazy loaders
-src/lib/tracks/<track>/chapters/*.tsx  lesson content, one module per chapter (or small group)
-src/lib/tracks/<track>/presets/        shader sources used by the lessons (opengl, glsl)
-src/lib/i18n/                          UI strings (en/pt/zh/es) + lessons.ts (loads lesson/widget text on demand)
-src/lib/tracks/<track>/i18n/<lang>/    lesson translations, one file per chapter module + _track.ts (titles, sections)
-src/components/lesson/i18n/<lang>/     widget translations, one file per figures/ topic folder
-src/components/lesson/LessonComponents.tsx   CodeBlock, Callout, H2, H3, IC, LessonTable, MathBlock, diagrams
-src/components/lesson/ChapterContent.tsx   renders the open chapter (React.lazy + Suspense), preloads the next one
-src/components/lesson/Prose.tsx        Article, Lead, KeyIdeas — chapter page wrappers
-src/components/lesson/look.tsx         "clean look" of every lesson: wide stage, text as wide as figures (learn.css .lesson-wide, --prose-w;
-                                       wide blocks carry data-figure/data-wide); info/tip Callouts = chip + popover, warn = always-open card;
-                                       long code folds; h2 folds its section; code names in prose become <IC> (proseCode.tsx)
-src/components/lesson/Tex.tsx          Equation (KaTeX); \sym{id}{…} links a symbol to its "where" line and colours it (ids in "where" get auto colours; \sym{a b}{…} = several groups); `words` = "in words" toggle
-src/components/lesson/Derivation.tsx   step-by-step derivation (lines + reasons, Transport bar); LiveFormula.tsx: formula with sliders, numbers plugged in live
-src/components/lesson/texLink.ts       autoLink: finds each "where" symbol inside the formula and adds the \sym links itself (cards with a hand-written \sym are left alone)
-src/components/lesson/texMatrix.ts     bmatrix + linkedProduct (A·B = C with row/column-linked \sym ids); MatrixProduct.tsx: product filled entry by entry
-src/components/lesson/kit/             widget INFRASTRUCTURE (no lesson content):
-  figure.tsx      SVG figure blocks (Figure, Slider, plot, useDrag, useRaf, useVisible…)
-  FigureShell.tsx the frame of EVERY widget: phone pinning, fullscreen, touch hints (styles in src/styles/figure.css)
-  media.ts        useMediaQuery + PHONE / STACKED / TOUCH queries
-  vec3.ts         the only 3D vector math (Vec3, add, cross, norm, rotY…)
-  scene3d.tsx     SVG 3D: projector, orbit controls, boxFaces/frontFacing, lookAt
-  svg.tsx, Stepper.tsx, protoTexture.tsx (Arrow/Label, step animations, textured quads)
-  Transport.tsx   playback bar under an animated drawing (big ▶/❚❚, ⟲ ⏮ ⏭, readout); part of the stage, not the controls
-  practice/       study-app practice rounds: Practice.tsx (10 questions, progress bar, celebration / wrong-answer sheet,
-                  summary, review of mistakes, best score in localStorage), ChoiceButtons.tsx, sounds.ts (chime/bonk);
-                  styles in src/styles/practice.css; a widget gives make/prompt/stage/solution; model: figures/music/NoteQuizFigure
-  lab/Lab.tsx     a figure's full-screen guided "lab": steps with self-ticking goals, hints, quizzes, insights, closing recap
-                  (styles in src/styles/lab.css); lab/useLab.ts: ?lab=<id> URL + back button + saved progress; model: figures/markov/
-  gl/GLView.tsx   WebGL2 host: context, resize, look/orbit, context loss; useAnimationTime
-  gl/gl.ts, gl/glx.ts, gl/context.ts   mat4, shaders, meshes, render targets, context release
-  audio/          Web Audio: context.ts (one AudioContext + master volume; call startAudio() in the click handler),
-                  notes.ts (MIDI ↔ Hz, names), piano.ts (Salamander samples in public/sounds/piano, lazy),
-                  synth.ts (oscillator + ADSR, live setFreq/setLevel), PianoKeyboard.tsx, VolumeSlider.tsx,
-                  useVoices (silences a widget off screen)
-src/components/lesson/figures/         the widgets themselves, grouped by topic folder
-src/components/lesson/glsl/            ShaderPlayground + GLSL figures
-src/components/lesson/DocsLayout.tsx, LearnTopBar.tsx, src/components/sidebar/LessonSidebar.tsx   shared lesson layout (slim top bar with breadcrumbs, height --nav-h)
+src/lib/i18n/                          UI strings (en/pt/zh/es): home + blog translations
+src/app/blog/, src/components/blog/, src/services/postService   blog, posts from MongoDB (src/lib/db/mongo.ts)
+src/app/sitemap.ts, src/app/robots.ts  Home (EN + PT, hreflang), the book and the blog
+src/lib/og/                            link-preview images: card.tsx draws (fonts in src/assets/fonts), cards.tsx = the Home's text;
+                                       each route's opengraph-image.tsx only picks a card
+next.config.ts                         security headers + the /learn → fromscratchlab.com redirects
 ```
-
-Sidebar, prev/next, numbering, progress and section headers are all generated
-from the `chapters` array — never hand-write them.
-
-## Adding or editing a lesson
-
-- Edit only the chapter module you need; don't load a whole track.
-- New chapter: create `src/lib/tracks/<track>/chapters/<id>.tsx` exporting
-  `XxxContent({ t }: { t: TrackTranslations })`, then add one line to the
-  track's `index.tsx` with `load: () => import("./chapters/<id>").then((m) => m.XxxContent)`.
-  Never import chapter modules statically — that pulls every lesson into every page.
-  Model to copy: `src/lib/tracks/gamedev/`.
-- New track: add it to `catalog.ts`, create `<track>/index.tsx`, register it in `tracks/index.ts`.
-- All prose goes through `tx(t, "<prefix>_<key>", "English text")` from
-  `@/lib/tracks/tx` — don't redefine `tx` locally.
-- Keep URLs stable: chapter `id` and the registry key form the route.
-- Chapter modules are `"use client"` (they use interactive components).
-- English lives only in the `tx` fallbacks. Translations: add the key to the
-  matching `i18n/<lang>/<chapter-module>.ts` (widgets: `components/lesson/i18n/<lang>/<topic>.ts`).
-  A missing key simply shows English. `useLessonText` loads only the open track's file set.
-
-## Widget rules
-
-- Every widget's outer frame is `<FigureShell>` (kit `Figure` already uses it); never hand-write the
-  `my-6 rounded-xl …` card. Its first child is the title bar and that bar's first `<span>` is the title:
-  learn.css numbers it automatically ("fig. 3.2 — title"), so keep that order.
-- Use theme tokens (`var(--primary)`, `var(--card)`, `var(--text-muted)`…) for chrome; literal colours only for data
-  (axes, points, curves), which stay the same in both themes. It finds the drawing itself; mark keyboard/mouse-only hint text with
-  `data-mouse-only` (and a `data-touch-only` alternative if there is one).
-- Animated widgets pause off screen: `const vis = useVisible<HTMLElement>()`, `useAnimationTime(playing && vis.on)`, `<figure ref={vis.ref}>`.
-- A widget with a lab: `const lab = useLab("<track>-<topic>")` (stable id: it is in URLs and storage), `<LabButton lab={lab}>`
-  in the `Figure` head (`fullscreen={false}`), `<Lab lab={lab} recap={[…]}>` rendered beside it with the same stage; the drawing component owns its own `useDrag`, since it is mounted twice while the lab is open.
-- WebGL widgets render through `GLView`; a widget that creates its own context must call `claimContext`/`releaseContext` (kit/gl/context.ts).
-- `boxFaces` faces wind CCW from outside (it fixes left-handed axes itself); `frontFacing` relies on that.
 
 ## Conventions
 
-- Lessons must explain every formula term, step and constant (user preference).
 - Preserve the existing visual design; no cosmetic changes unless asked.
 - Match the surrounding code style: section comments `// ── Title ───`, English
   code comments, CSS variables such as `var(--text-muted)` for colors.
 - Keep files small with a single responsibility; split instead of growing past ~600 lines.
-
-## Still to do (agreed, one small step at a time)
-
-- Translations: PT is complete (all tracks + widgets). ES/ZH exist only for OpenGL and GLSL lessons; no ES/ZH widget text yet.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

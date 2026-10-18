@@ -1,10 +1,10 @@
 "use client";
 
 // The URL language of the current page ("pt" under /pt, else "en"), so links
-// built with the helpers in lib/tracks/urls.ts stay in the same copy.
+// built with the helpers in lib/site.ts stay in the same copy.
 
 import { usePathname } from "next/navigation";
-import { langOfPath, type UrlLang } from "@/lib/tracks/urls";
+import { langOfPath, type UrlLang } from "@/lib/site";
 
 export function useUrlLang(): UrlLang {
   return langOfPath(usePathname());

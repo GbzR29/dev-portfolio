@@ -1,7 +1,7 @@
 "use client";
 
 // ── Language ────────────────────────────────────────────────────────────────
-// Pages under /pt (Home, /learn, tracks, lessons) are Portuguese by URL, so
+// Pages under /pt (only Home, since the courses moved out) are Portuguese by URL, so
 // search engines index them in PT; visiting one also saves PT as the reader's
 // choice. Elsewhere the saved choice applies (English by default). Picking a
 // language moves to that language's copy of the page when there is one.
@@ -9,7 +9,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { translations, Language } from "@/lib/i18n";
-import { langOfPath, pathInLang } from "@/lib/tracks/urls";
+import { langOfPath, pathInLang } from "@/lib/site";
 
 interface LanguageContextType {
   language: Language;

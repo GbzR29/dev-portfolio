@@ -1,7 +1,7 @@
 "use client";
 
 // ── Home navigation ─────────────────────────────────────────────────────────
-// A quiet text bar for the Home, the book page, /learn and the blog: name,
+// A quiet text bar for the Home, the book page, the blog and status: name,
 // links, theme toggle and the language switch. On phones the links and tools
 // move into the ☰ sheet (components/nav/SiteMenu). Styles: .hm-nav in home.css.
 

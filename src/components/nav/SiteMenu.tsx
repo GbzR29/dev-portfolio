@@ -1,10 +1,10 @@
 "use client";
 
 // ── Site menu (phones) ──────────────────────────────────────────────────────
-// The ☰ button that HomeNav and LearnTopBar show on narrow screens, and the
-// sheet it opens from the right: the page's path (lessons), the site links,
-// the theme toggle and the language switch. The sheet is portalled to <body>
-// because the lesson bar's backdrop blur would otherwise trap a fixed child.
+// The ☰ button that HomeNav shows on narrow screens, and the sheet it opens
+// from the right: an optional path of breadcrumbs, the site links, the theme
+// toggle and the language switch. The sheet is portalled to <body> so no
+// parent with a backdrop blur can trap the fixed sheet.
 // Styles: src/styles/sitemenu.css (own tokens, same palette as the Home).
 
 import Link from "next/link";

@@ -30,6 +30,19 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+  // ── The courses moved to From Scratch Lab (2026-10-18) ──────────────────────
+  // Same paths there, without the /learn prefix (query strings, like the old
+  // ?chapter= links, are passed along and handled by that site). permanent =
+  // 308, which search engines treat as a permanent move.
+  async redirects() {
+    const LEARN = "https://www.fromscratchlab.com";
+    return [
+      { source: "/learn", destination: LEARN, permanent: true },
+      { source: "/learn/:path*", destination: `${LEARN}/:path*`, permanent: true },
+      { source: "/pt/learn", destination: `${LEARN}/pt`, permanent: true },
+      { source: "/pt/learn/:path*", destination: `${LEARN}/pt/:path*`, permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -9,7 +9,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { useMediaQuery } from "@/components/lesson/kit/media";
+import { useMediaQuery } from "@/lib/useMediaQuery";
 
 /** Same breakpoint as the one-column .hm-about layout in home.css */
 const STACKED_ABOUT = "(max-width: 680px)";
