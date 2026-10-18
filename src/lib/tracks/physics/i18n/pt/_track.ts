@@ -18,12 +18,17 @@ const track = {
     "damping-resonance": "Amortecimento e ressonância",
     "waves": "Ondas",
     "sound": "Som",
+    "fluid-statics": "Fluidos em repouso: pressão e empuxo",
+    "fluid-dynamics": "Fluidos em movimento",
+    "temperature-heat": "Temperatura e calor",
+    "thermodynamics": "Termodinâmica",
   } as Record<string, string>,
   sections: {
     "Foundations & Motion": "Fundamentos e movimento",
     "Dynamics": "Dinâmica",
     "Conservation & Rotation": "Conservação e rotação",
     "Oscillations & Waves": "Oscilações e ondas",
+    "Fluids & Heat": "Fluidos e calor",
   } as Record<string, string>,
 };
 

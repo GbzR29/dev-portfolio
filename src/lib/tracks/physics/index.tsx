@@ -25,4 +25,8 @@ export const physicsChapters: Chapter[] = [
   { id: "damping-resonance", section: "Oscillations & Waves", title: "Damping & Resonance",             minRead: 21, load: () => import("./chapters/damping-resonance").then((m) => m.DampingResonanceContent) },
   { id: "waves", section: "Oscillations & Waves",             title: "Waves",                           minRead: 22, load: () => import("./chapters/waves").then((m) => m.WavesContent) },
   { id: "sound", section: "Oscillations & Waves",             title: "Sound",                           minRead: 22, load: () => import("./chapters/sound").then((m) => m.SoundContent) },
+  { id: "fluid-statics", section: "Fluids & Heat",            title: "Fluids at Rest: Pressure & Buoyancy", minRead: 22, load: () => import("./chapters/fluid-statics").then((m) => m.FluidStaticsContent) },
+  { id: "fluid-dynamics", section: "Fluids & Heat",           title: "Fluids in Motion",                minRead: 21, load: () => import("./chapters/fluid-dynamics").then((m) => m.FluidDynamicsContent) },
+  { id: "temperature-heat", section: "Fluids & Heat",         title: "Temperature & Heat",              minRead: 23, load: () => import("./chapters/temperature-heat").then((m) => m.TemperatureHeatContent) },
+  { id: "thermodynamics", section: "Fluids & Heat",           title: "Thermodynamics",                  minRead: 24, load: () => import("./chapters/thermodynamics").then((m) => m.ThermodynamicsContent) },
 ];

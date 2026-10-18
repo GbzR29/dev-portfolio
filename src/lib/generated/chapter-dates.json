@@ -1255,6 +1255,22 @@
     "created": "2026-10-17",
     "updated": "2026-10-17"
   },
+  "physics/fluid-statics": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/fluid-dynamics": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/temperature-heat": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/thermodynamics": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
   "sdl3/whats-new": {
     "created": "2026-09-03",
     "updated": "2026-10-08"
