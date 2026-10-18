@@ -13,7 +13,6 @@ export const blogTranslations = {
     subscribe:        "Subscribe",
     readTime:         "min read",
     allPosts:         "All posts",
-    latestPost:       "Latest",
     featuredLabel:    "Featured",
     blogEyebrow:      "blog · {n} posts",
     blogAll:          "all",
@@ -31,7 +30,6 @@ export const blogTranslations = {
     subscribe:        "Inscrever-se",
     readTime:         "min de leitura",
     allPosts:         "Todos os posts",
-    latestPost:       "Recente",
     featuredLabel:    "Destaque",
     blogEyebrow:      "blog · {n} posts",
     blogAll:          "todos",
@@ -49,7 +47,6 @@ export const blogTranslations = {
     subscribe:        "Suscribirse",
     readTime:         "min de lectura",
     allPosts:         "Todos los posts",
-    latestPost:       "Reciente",
     featuredLabel:    "Destacado",
   },
 
@@ -65,7 +62,6 @@ export const blogTranslations = {
     subscribe:        "订阅",
     readTime:         "分钟阅读",
     allPosts:         "全部文章",
-    latestPost:       "最新",
     featuredLabel:    "精选",
   },
 };

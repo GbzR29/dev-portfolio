@@ -12,6 +12,13 @@ Registro datado de tudo o que foi feito e criado no site.
 
 ### 2026-10-18
 
+- **Faxina e otimização do portfólio** (depois da saída dos cursos), sem mudança visual: as 4 páginas conferidas no tema claro e escuro, no computador e no celular, ficaram idênticas à versão no ar.
+  - **Arquivos sem uso removidos:** `components/ui` (Button, InputBox), `components/particles/TriangleParticles`, `lib/utils`, `lib/z-index` e `styles/z-index.css`, traduções da antiga seção "sobre", `components.json` (configuração do shadcn) e as imagens `public/Hexagono.svg`, `public/logo.png` e `public/projects/*`, que nenhuma página usava.
+  - **Dependências removidas:** `framer-motion`, `t-writer.js`, `class-variance-authority`, `@radix-ui/react-slot`, `tailwind-merge`, `clsx`, `react-icon` (pacote errado, ao lado do `react-icons` usado de verdade) e o plugin `tailwindcss-animate`.
+  - **Fontes:** Geist e Geist Mono eram baixadas em toda visita e nenhum estilo as usava; saíram. O site carrega só Spectral, IBM Plex Sans e IBM Plex Mono.
+  - **CSS morto removido:** o resto da antiga página `/learn` no `home.css`, os efeitos de brilho, os ajustes de contraste para classes que nenhum componente usa e as animações órfãs no `globals.css`, 22 variáveis de cor das lições no `theme.css`, os "breadcrumbs" do menu de celular (só a barra das lições os usava) e uma chave de tradução do blog sem uso.
+  - **Descrições para buscadores** do site e da Home atualizadas: os cursos aparecem como From Scratch Lab.
+
 - **Os cursos saem do portfólio e viram o From Scratch Lab.** O `/learn` passa a ser um site próprio, `www.fromscratchlab.com`, num repositório separado (com o histórico do git preservado). Neste repositório:
   - **Redirecionamentos permanentes (308)** em `next.config.ts`: `/learn`, `/learn/…`, `/pt/learn` e `/pt/learn/…` levam às mesmas páginas no site novo, sem o `/learn` (links antigos com `?chapter=` também funcionam, o site novo os resolve).
   - **Links para o site novo:** o "aprender" do menu, o botão do topo da Home e o card "No que estou trabalhando", que agora se chama From Scratch Lab e lista as trilhas com links diretos (sem a contagem de aulas, que o portfólio não tem mais como calcular).

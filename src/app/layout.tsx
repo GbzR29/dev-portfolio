@@ -1,23 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Spectral, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Spectral, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-
-// Home + book page type family (see src/styles/home.css)
+// The site's type family (see src/styles/home.css and sitemenu.css)
 const spectral = Spectral({
   subsets: ["latin"],
   weight: ["400", "500"],
@@ -43,7 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Gabriel Carvalho",
   description:
-    "Gabriel Carvalho, C++ and graphics programmer. Free interactive courses on OpenGL, GLSL, Vulkan, C++ and math, and a science-fiction novel in progress.",
+    "Gabriel Carvalho, C++ and graphics programmer. A science-fiction novel in progress, a blog, and free interactive courses at From Scratch Lab.",
 };
 
 
@@ -51,7 +40,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${spectral.variable} ${plexSans.variable} ${plexMono.variable} antialiased`}>
+      <body className={`${spectral.variable} ${plexSans.variable} ${plexMono.variable} antialiased`}>
 
         <LanguageProvider>
           <ThemeProvider>

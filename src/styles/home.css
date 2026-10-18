@@ -3,7 +3,7 @@
    Light = "lab notebook" (grid paper, petrol ink).
    Dark  = "dusk" (slate sky, peach accent, static stars).
    Every token here is prefixed --hm- and scoped to .home, so
-   the global theme.css (used by /learn and the blog) is untouched.
+   the global theme.css (used by the blog and status) is untouched.
    .hm-scope carries the same tokens without the page styles, for
    pages that only borrow HomeNav (blog, status).
 ========================================================= */
@@ -315,7 +315,6 @@ html:not(.dark) .home {
   color: var(--hm-ink-soft);
 }
 .hm-tracks a:hover { color: var(--hm-accent); }
-.hm-tracks b { font-weight: 500; color: var(--hm-ink); font-variant-numeric: tabular-nums; }
 
 /* Recent writing */
 .hm-posts { list-style: none; margin: 0; padding: 0; display: grid; }
@@ -402,31 +401,8 @@ html:not(.dark) .home {
 .hm-book-body { display: grid; gap: 14px; max-width: 38em; }
 .hm-book-body p { margin: 0; line-height: 1.75; color: var(--hm-ink-soft); font-size: 17px; }
 
-/* ── /learn landing ─────────────────────────────────────── */
-
+/* The nav link of the page being shown */
 .hm-links a[aria-current] { color: var(--hm-accent); }
-.hm-resume { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; font-family: var(--hm-mono); font-size: 12.5px; color: var(--hm-muted); }
-.home .hm-resume a { color: var(--hm-accent); border-bottom: 1px solid var(--hm-line-strong); padding-bottom: 1px; }
-.home .hm-resume a:hover { border-color: var(--hm-accent); }
-
-.hm-in.hm-wide { max-width: 1400px; }
-.hm-track-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 18px; }
-.hm-track { grid-template-rows: auto auto 1fr auto auto auto; padding: 22px 24px; gap: 10px; }
-.hm-track.soon { background: transparent; border-style: dashed; box-shadow: none; }
-.hm-track h3 { font-size: 26px; }
-.hm-track p { font-size: 14.5px; }
-.hm-level { display: flex; align-items: center; gap: 8px; font-family: var(--hm-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hm-muted); }
-.hm-level i { width: 8px; height: 8px; border-radius: 1px; background: var(--track); flex: none; }
-.hm-track .hm-meta { font-variant-numeric: tabular-nums; }
-.hm-prog { height: 3px; background: var(--hm-line); border-radius: 2px; overflow: hidden; }
-.hm-prog i { display: block; height: 100%; background: var(--hm-accent); }
-.hm-track-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 6px; }
-.home .hm-ref { font-family: var(--hm-mono); font-size: 12px; color: var(--hm-muted); }
-.home a.hm-ref:hover { color: var(--hm-accent); }
-
-.hm-how { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 18px 32px; }
-.hm-how h3 { font-family: var(--hm-display); font-weight: 400; font-size: 19px; margin: 0 0 6px; }
-.hm-how p { margin: 0; color: var(--hm-ink-soft); line-height: 1.6; font-size: 14.5px; }
 
 /* ── Blog ───────────────────────────────────────────────── */
 

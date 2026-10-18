@@ -8,7 +8,7 @@ import Home from "../page";
 
 const title = "Gabriel Carvalho | Programador C++ e computação gráfica";
 const description =
-  "Programador C++ que trabalha com computação gráfica e motores de jogo. Cursos interativos e gratuitos de OpenGL, GLSL, Vulkan, C++ e matemática.";
+  "Programador C++ que trabalha com computação gráfica e motores de jogo. Autor do From Scratch Lab, cursos interativos e gratuitos de OpenGL, Vulkan, C++, matemática e física.";
 
 export const metadata: Metadata = {
   title,

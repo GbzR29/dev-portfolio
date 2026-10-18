@@ -2,8 +2,7 @@
 
 // ── Site menu (phones) ──────────────────────────────────────────────────────
 // The ☰ button that HomeNav shows on narrow screens, and the sheet it opens
-// from the right: an optional path of breadcrumbs, the site links, the theme
-// toggle and the language switch. The sheet is portalled to <body> so no
+// from the right: the site links, the theme toggle and the language switch. The sheet is portalled to <body> so no
 // parent with a backdrop blur can trap the fixed sheet.
 // Styles: src/styles/sitemenu.css (own tokens, same palette as the Home).
 
@@ -17,12 +16,7 @@ import { useLanguage } from "@/components/providers/LanguageProvider";
 import { LANGUAGES, useSiteLinks } from "./siteLinks";
 import { homeHref, useUrlLang } from "@/lib/i18n/useUrlLang";
 
-export interface MenuCrumb {
-  label: string;
-  href?: string;
-}
-
-export function SiteMenu({ crumbs = [], className = "" }: { crumbs?: MenuCrumb[]; className?: string }) {
+export function SiteMenu({ className = "" }: { className?: string }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { theme, toggleTheme } = useTheme();
@@ -52,8 +46,6 @@ export function SiteMenu({ crumbs = [], className = "" }: { crumbs?: MenuCrumb[]
     };
   }, [open]);
 
-  const path = crumbs.filter((c) => c.href);
-
   return (
     <>
       <button
@@ -78,14 +70,6 @@ export function SiteMenu({ crumbs = [], className = "" }: { crumbs?: MenuCrumb[]
                 <X size={20} strokeWidth={1.75} />
               </button>
             </div>
-
-            {path.length > 0 && (
-              <div className="sm-path">
-                {path.map((c) => (
-                  <Link key={c.href} href={c.href!} onClick={() => setOpen(false)}>← {c.label}</Link>
-                ))}
-              </div>
-            )}
 
             <ul className="sm-links">
               {links.map((l) => (

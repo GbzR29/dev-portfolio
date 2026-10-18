@@ -16,7 +16,7 @@ import { languageAlternates } from "@/lib/site";
 export const metadata = {
   title: "Gabriel Carvalho | C++ & graphics programmer",
   description:
-    "C++ programmer working with computer graphics and game engines. Free interactive courses on OpenGL, GLSL, Vulkan, C++ and math.",
+    "C++ programmer working with computer graphics and game engines. Author of From Scratch Lab, free interactive courses on OpenGL, Vulkan, C++, math and physics.",
   alternates: { canonical: "/", languages: languageAlternates("/") },
 
   openGraph: {

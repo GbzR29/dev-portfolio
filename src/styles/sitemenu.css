@@ -1,7 +1,7 @@
 /* =========================================================
    SITE MENU (phones)
    The ☰ button and the sheet of src/components/nav/SiteMenu.tsx.
-   It is used on the Home, /learn, the lessons and the blog, so it
+   It is used on the Home, the book page, the blog and status, so it
    carries its own tokens: the Home palette (home.css), light =
    "lab notebook", dark = "dusk".
 ========================================================= */
@@ -9,7 +9,6 @@
 .site-menu,
 .sm-open {
   --sm-bg: #f1f1eb;
-  --sm-surface: #fafaf6;
   --sm-ink: #1d2427;
   --sm-muted: #6a7275;
   --sm-accent: #2e6166;
@@ -21,7 +20,6 @@
 .dark .site-menu,
 .dark .sm-open {
   --sm-bg: #1a1c29;
-  --sm-surface: #212436;
   --sm-ink: #e7e3ef;
   --sm-muted: #8f8ca6;
   --sm-accent: #f1b39c;
@@ -89,17 +87,6 @@
   cursor: pointer;
 }
 .sm-close:hover { color: var(--sm-accent); }
-
-.sm-path {
-  display: grid;
-  gap: 10px;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--sm-line);
-  font-family: var(--sm-mono);
-  font-size: 12.5px;
-  color: var(--sm-muted);
-}
-.sm-path a:hover { color: var(--sm-accent); }
 
 .sm-links { list-style: none; margin: 0; padding: 8px 0; }
 .sm-links a {
