@@ -21,4 +21,8 @@ export const physicsChapters: Chapter[] = [
   { id: "rotation", section: "Conservation & Rotation",       title: "Rotation, Torque & Inertia",      minRead: 21, load: () => import("./chapters/rotation").then((m) => m.RotationContent) },
   { id: "angular-momentum", section: "Conservation & Rotation", title: "Angular Momentum",              minRead: 19, load: () => import("./chapters/angular-momentum").then((m) => m.AngularMomentumContent) },
   { id: "gravity-orbits", section: "Conservation & Rotation", title: "Gravity & Orbits",                minRead: 22, load: () => import("./chapters/gravity-orbits").then((m) => m.GravityOrbitsContent) },
+  { id: "simple-harmonic", section: "Oscillations & Waves",   title: "Simple Harmonic Motion",          minRead: 21, load: () => import("./chapters/simple-harmonic").then((m) => m.SimpleHarmonicContent) },
+  { id: "damping-resonance", section: "Oscillations & Waves", title: "Damping & Resonance",             minRead: 21, load: () => import("./chapters/damping-resonance").then((m) => m.DampingResonanceContent) },
+  { id: "waves", section: "Oscillations & Waves",             title: "Waves",                           minRead: 22, load: () => import("./chapters/waves").then((m) => m.WavesContent) },
+  { id: "sound", section: "Oscillations & Waves",             title: "Sound",                           minRead: 22, load: () => import("./chapters/sound").then((m) => m.SoundContent) },
 ];

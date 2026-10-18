@@ -14,9 +14,13 @@ import momentumCollisions from "./momentum-collisions";
 import rotation from "./rotation";
 import angularMomentum from "./angular-momentum";
 import gravityOrbits from "./gravity-orbits";
+import simpleHarmonic from "./simple-harmonic";
+import dampingResonance from "./damping-resonance";
+import waves from "./waves";
+import sound from "./sound";
 
 const bundle: LessonText = {
-  strings: { ...unitsMeasurement, ...kinematics1d, ...kinematics2d, ...relativeMotion, ...newtonsLaws, ...forces, ...circularMotion, ...workEnergy, ...momentumCollisions, ...rotation, ...angularMomentum, ...gravityOrbits },
+  strings: { ...unitsMeasurement, ...kinematics1d, ...kinematics2d, ...relativeMotion, ...newtonsLaws, ...forces, ...circularMotion, ...workEnergy, ...momentumCollisions, ...rotation, ...angularMomentum, ...gravityOrbits, ...simpleHarmonic, ...dampingResonance, ...waves, ...sound },
   titles: track.titles,
   sections: track.sections,
 };

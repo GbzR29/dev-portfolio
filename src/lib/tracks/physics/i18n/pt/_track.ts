@@ -14,11 +14,16 @@ const track = {
     "rotation": "Rotação, torque e inércia",
     "angular-momentum": "Momento angular",
     "gravity-orbits": "Gravitação e órbitas",
+    "simple-harmonic": "Movimento harmônico simples",
+    "damping-resonance": "Amortecimento e ressonância",
+    "waves": "Ondas",
+    "sound": "Som",
   } as Record<string, string>,
   sections: {
     "Foundations & Motion": "Fundamentos e movimento",
     "Dynamics": "Dinâmica",
     "Conservation & Rotation": "Conservação e rotação",
+    "Oscillations & Waves": "Oscilações e ondas",
   } as Record<string, string>,
 };
 

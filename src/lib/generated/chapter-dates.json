@@ -1239,6 +1239,22 @@
     "created": "2026-10-17",
     "updated": "2026-10-17"
   },
+  "physics/simple-harmonic": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/damping-resonance": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/waves": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
+  "physics/sound": {
+    "created": "2026-10-17",
+    "updated": "2026-10-17"
+  },
   "sdl3/whats-new": {
     "created": "2026-09-03",
     "updated": "2026-10-08"
