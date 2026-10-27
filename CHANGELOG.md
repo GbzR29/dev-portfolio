@@ -12,6 +12,7 @@ Registro datado de tudo o que foi feito e criado no site.
 
 ### 2026-10-27
 
+- **Barra de andamento do livro** na seção "Andamento" de /the-weight-of-being: fase atual, "11 / ~40 capítulos" (o "~" só aparece com total estimado), percentual e "atualizado em out 2026" no formato de cada idioma. O preenchimento cresce uma vez quando a seção aparece (fica parado com "reduzir movimento"); marcas por capítulo só até 30 capítulos; `role="progressbar"` com rótulo traduzido; textos em EN, PT, ES e ZH. Os números ficam todos em `src/lib/bookProgress.ts`.
 - **Apresentação do livro** na página /the-weight-of-being: o texto provisório deu lugar à sinopse de Elara e Oryn, em quatro parágrafos, em PT e com tradução em EN (ES e ZH mostram o texto em inglês por enquanto).
 
 ### 2026-10-18

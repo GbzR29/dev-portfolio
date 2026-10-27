@@ -401,6 +401,52 @@ html:not(.dark) .home {
 .hm-book-body { display: grid; gap: 14px; max-width: 38em; }
 .hm-book-body p { margin: 0; line-height: 1.75; color: var(--hm-ink-soft); font-size: 17px; }
 
+/* Progress bar (BookProgress.tsx): --p = share written 0–1, --n = chapters.
+   data-phase="armed" holds the fill at 0 until the bar scrolls into view. */
+.hm-progress { display: grid; gap: 10px; max-width: 38em; }
+.hm-progress-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 14px;
+  font-family: var(--hm-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hm-muted);
+}
+.hm-progress-head b { font-weight: 500; color: var(--hm-accent); }
+.hm-progress-nums { display: flex; gap: 14px; font-variant-numeric: tabular-nums; }
+.hm-progress-nums span:last-child { color: var(--hm-ink); }
+.hm-progress-track {
+  position: relative;
+  height: 6px;
+  background: var(--hm-line);
+  border-radius: var(--hm-radius);
+  overflow: hidden;
+}
+.hm-progress-track i {
+  position: absolute;
+  inset: 0;
+  background: var(--hm-accent);
+  transform-origin: left;
+  transform: scaleX(var(--p));
+  transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hm-progress[data-phase="armed"] .hm-progress-track i { transform: scaleX(0); }
+/* One gap in the page color at the end of each chapter */
+.hm-progress-track[data-ticks]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to right,
+    transparent 0 calc(100% / var(--n) - 1px),
+    var(--hm-bg) calc(100% / var(--n) - 1px) calc(100% / var(--n))
+  );
+}
+.hm-progress-date { font-family: var(--hm-mono); font-size: 11px; color: var(--hm-muted); }
+
 /* The nav link of the page being shown */
 .hm-links a[aria-current] { color: var(--hm-accent); }
 

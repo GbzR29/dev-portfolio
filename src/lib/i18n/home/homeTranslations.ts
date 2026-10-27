@@ -103,6 +103,10 @@ export const homeTranslations = {
     bookExcerptPlaceholder: "A short excerpt from the first chapter. Coming soon.",
     bookUpdatesTitle: "Progress",
     bookUpdatesPlaceholder: "Notes on the writing process and milestones. Coming soon.",
+    bookProgressLabel: "Book progress",
+    bookChaptersUnit: "chapters",
+    bookUpdatedOn:    "updated",
+    bookStages: { "first-draft": "first draft", revision: "revision", editing: "editing", done: "done" },
   },
 
   pt: {
@@ -200,6 +204,10 @@ export const homeTranslations = {
     bookExcerptPlaceholder: "Um trecho curto do primeiro capítulo. Em breve.",
     bookUpdatesTitle: "Andamento",
     bookUpdatesPlaceholder: "Notas sobre o processo de escrita e os marcos. Em breve.",
+    bookProgressLabel: "Andamento do livro",
+    bookChaptersUnit: "capítulos",
+    bookUpdatedOn:    "atualizado em",
+    bookStages: { "first-draft": "primeiro rascunho", revision: "revisão", editing: "edição", done: "concluído" },
   },
 
   es: {
@@ -291,6 +299,10 @@ export const homeTranslations = {
     bookExcerptPlaceholder: "Un fragmento corto del primer capítulo. Próximamente.",
     bookUpdatesTitle: "Progreso",
     bookUpdatesPlaceholder: "Notas sobre el proceso de escritura y los hitos. Próximamente.",
+    bookProgressLabel: "Progreso del libro",
+    bookChaptersUnit: "capítulos",
+    bookUpdatedOn:    "actualizado en",
+    bookStages: { "first-draft": "primer borrador", revision: "revisión", editing: "edición", done: "terminado" },
   },
 
   zh: {
@@ -382,6 +394,10 @@ export const homeTranslations = {
     bookExcerptPlaceholder: "第一章的简短节选。即将推出。",
     bookUpdatesTitle: "进度",
     bookUpdatesPlaceholder: "关于写作过程和里程碑的记录。即将推出。",
+    bookProgressLabel: "写作进度",
+    bookChaptersUnit: "章",
+    bookUpdatedOn:    "更新于",
+    bookStages: { "first-draft": "初稿", revision: "修订", editing: "编辑", done: "完成" },
   },
 };
 

@@ -10,6 +10,7 @@ import { BOOK } from "@/lib/book";
 import HomeNav from "./HomeNav";
 import Stars from "./Stars";
 import HomeFooter from "./HomeFooter";
+import BookProgress from "./BookProgress";
 
 export default function BookContent() {
   const { t } = useLanguage();
@@ -50,6 +51,7 @@ export default function BookContent() {
         </section>
         <section className="hm-sec">
           <h2>{t.bookUpdatesTitle}</h2>
+          <BookProgress />
           <div className="hm-book-body">
             <p className="hm-ph">{t.bookUpdatesPlaceholder}</p>
           </div>
