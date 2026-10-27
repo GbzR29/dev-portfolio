@@ -1,8 +1,8 @@
 "use client";
 
 // ── Book page ───────────────────────────────────────────────────────────────
-// /the-weight-of-being. Every text block is a placeholder until the synopsis,
-// excerpt and progress notes are written.
+// /the-weight-of-being. The presentation is written; the excerpt and progress
+// notes are still placeholders.
 
 import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
@@ -34,7 +34,7 @@ export default function BookContent() {
               <span>{t.bookChapters}</span>
             </div>
             <div className="hm-book-body">
-              <p className="hm-ph">{t.bookIntroPlaceholder}</p>
+              {t.bookIntro.map((para) => <p key={para}>{para}</p>)}
             </div>
           </div>
         </div>

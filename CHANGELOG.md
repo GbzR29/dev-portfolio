@@ -10,6 +10,10 @@ Registro datado de tudo o que foi feito e criado no site.
 
 ## Outubro de 2026
 
+### 2026-10-27
+
+- **Apresentação do livro** na página /the-weight-of-being: o texto provisório deu lugar à sinopse de Elara e Oryn, em quatro parágrafos, em PT e com tradução em EN (ES e ZH mostram o texto em inglês por enquanto).
+
 ### 2026-10-18
 
 - **Faxina e otimização do portfólio** (depois da saída dos cursos), sem mudança visual: as 4 páginas conferidas no tema claro e escuro, no computador e no celular, ficaram idênticas à versão no ar.

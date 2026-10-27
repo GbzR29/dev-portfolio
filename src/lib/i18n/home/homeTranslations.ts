@@ -3,6 +3,15 @@
 // The copy is provisional: the owner will rewrite it. Keys marked
 // "placeholder" stand in for text that has not been written yet.
 
+// ── Book presentation ───────────────────────────────────────────────────────
+// One string per paragraph. ES and ZH show the English text until translated.
+const bookIntroEn = [
+  "Two young people wake up in different places, with no names, no memories and no explanation for their own existence.",
+  "Elara wakes up aboard a ship that seems to have died long before her. The panels are burnt, the metal keeps the cold of abandoned things and, in the middle of the silence, only one voice still answers.",
+  "Oryn wakes up in a cell in Clarindel, an unknown city that seems to have its own reasons for keeping him locked up.",
+  "Separated by worlds they do not yet understand, the two will have to unravel the places where they woke up and find out what, after all, they are. But the closer they get to the answers, the more one question presses on them: what if, behind the past they are searching for, there is something far worse than the unknown that awaits them?",
+];
+
 export const homeTranslations = {
   en: {
     // ── Navbar ──────────────────────────────────────────────────────────────
@@ -89,8 +98,7 @@ export const homeTranslations = {
 
     // ── Book page ───────────────────────────────────────────────────────────
     bookBack:        "← home",
-    bookIntroPlaceholder:
-      "The presentation of the book goes here: the premise, the world and who the story follows. Coming soon.",
+    bookIntro: bookIntroEn,
     bookExcerptTitle: "Excerpt",
     bookExcerptPlaceholder: "A short excerpt from the first chapter. Coming soon.",
     bookUpdatesTitle: "Progress",
@@ -182,8 +190,12 @@ export const homeTranslations = {
 
     // ── Book page ───────────────────────────────────────────────────────────
     bookBack:        "← início",
-    bookIntroPlaceholder:
-      "Aqui entra a apresentação do livro: a premissa, o mundo e quem a história acompanha. Em breve.",
+    bookIntro: [
+      "Dois jovens despertam em lugares distintos, sem nomes, sem lembranças e sem qualquer explicação para a própria existência.",
+      "Elara acorda a bordo de uma nave que parece ter morrido muito antes dela. Os painéis estão queimados, o metal conserva o frio das coisas abandonadas e, em meio ao silêncio, apenas uma voz ainda responde.",
+      "Oryn desperta em uma cela de Clarindel, uma cidade desconhecida que parece ter seus próprios motivos para mantê-lo preso.",
+      "Separados por mundos que ainda não compreendem, os dois terão de desvendar os lugares onde despertaram e descobrir o que, afinal, eles são. Mas, quanto mais se aproximam das respostas, mais uma pergunta se impõe: e se, por trás do passado que procuram, houver algo muito pior do que o desconhecido que os aguarda?",
+    ],
     bookExcerptTitle: "Trecho",
     bookExcerptPlaceholder: "Um trecho curto do primeiro capítulo. Em breve.",
     bookUpdatesTitle: "Andamento",
@@ -274,8 +286,7 @@ export const homeTranslations = {
 
     // ── Book page ───────────────────────────────────────────────────────────
     bookBack:        "← inicio",
-    bookIntroPlaceholder:
-      "Aquí va la presentación del libro: la premisa, el mundo y a quién sigue la historia. Próximamente.",
+    bookIntro: bookIntroEn,
     bookExcerptTitle: "Fragmento",
     bookExcerptPlaceholder: "Un fragmento corto del primer capítulo. Próximamente.",
     bookUpdatesTitle: "Progreso",
@@ -366,8 +377,7 @@ export const homeTranslations = {
 
     // ── Book page ───────────────────────────────────────────────────────────
     bookBack:        "← 首页",
-    bookIntroPlaceholder:
-      "这里将介绍这本书：前提、世界观以及故事的主角。即将推出。",
+    bookIntro: bookIntroEn,
     bookExcerptTitle: "节选",
     bookExcerptPlaceholder: "第一章的简短节选。即将推出。",
     bookUpdatesTitle: "进度",
